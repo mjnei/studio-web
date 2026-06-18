@@ -67,7 +67,7 @@ function RailLink({
       onClick={onClick}
       title={collapsed ? item.label : undefined}
       className={`flex items-center gap-3 rounded-md transition-colors ${
-        collapsed ? "justify-center px-0 py-2" : "px-2.5 py-2 text-sm"
+        collapsed ? "justify-center px-0 py-2" : "px-2.5 py-2 text-base"
       } ${
         active
           ? "bg-accent-cyan-muted text-accent-cyan"
@@ -98,7 +98,7 @@ function LogoMark({ collapsed }: { collapsed?: boolean }) {
   return (
     <Link
       href="/dashboard"
-      className="flex items-center gap-2 text-base font-bold text-text-primary"
+      className="flex items-center gap-2 text-lg font-bold text-text-primary"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -129,7 +129,7 @@ function UserSection({ collapsed, onNavigate }: { collapsed?: boolean; onNavigat
       <Link
         href="/profile"
         onClick={onNavigate}
-        className={`flex items-center gap-3 rounded-md text-sm text-text-muted hover:bg-surface-hover hover:text-text-secondary ${
+        className={`flex items-center gap-3 rounded-md text-base text-text-muted hover:bg-surface-hover hover:text-text-secondary ${
           collapsed ? "justify-center p-0" : "px-2.5 py-2"
         }`}
       >
@@ -138,14 +138,14 @@ function UserSection({ collapsed, onNavigate }: { collapsed?: boolean; onNavigat
         </span>
         {!collapsed && (
           <div className="flex-1 overflow-hidden">
-            <p className="truncate text-sm text-text-primary">Huavoi User</p>
-            <p className="truncate text-xs text-text-muted">you@example.com</p>
+            <p className="truncate text-base text-text-primary">Huavoi User</p>
+            <p className="truncate text-sm text-text-muted">you@example.com</p>
           </div>
         )}
       </Link>
       {!collapsed && (
         <div className="mt-2 px-2.5">
-          <select className="w-full rounded-md border border-border-default bg-surface-raised px-2 py-1.5 text-xs text-text-secondary focus:border-accent-cyan focus:outline-none">
+          <select className="w-full rounded-md border border-border-default bg-surface-raised px-2 py-1.5 text-sm text-text-secondary focus:border-accent-cyan focus:outline-none">
             <option>English</option>
           </select>
         </div>
@@ -199,7 +199,7 @@ export function DrawerContent({
 
       <div className={`flex-1 overflow-y-auto ${collapsed ? "px-2 py-3" : "px-3 py-3"}`}>
         {!collapsed && (
-          <p className="mb-1 px-2 text-[10px] font-semibold uppercase tracking-wider text-text-muted">
+          <p className="mb-1 px-2 text-[11px] font-semibold uppercase tracking-wider text-text-muted">
             Main
           </p>
         )}
@@ -218,7 +218,7 @@ export function DrawerContent({
         <div className={`my-3 border-t border-border-default ${collapsed ? "mx-0" : "mx-1"}`} />
 
         {!collapsed && (
-          <p className="mb-1 px-2 text-[10px] font-semibold uppercase tracking-wider text-text-muted">
+          <p className="mb-1 px-2 text-[11px] font-semibold uppercase tracking-wider text-text-muted">
             Utilities
           </p>
         )}
