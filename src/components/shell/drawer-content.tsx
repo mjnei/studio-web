@@ -71,7 +71,7 @@ function RailLink({
       } ${
         active
           ? "bg-accent-cyan-muted text-accent-cyan"
-          : "text-text-muted hover:bg-surface-hover hover:text-text-secondary"
+          : "text-text-secondary hover:bg-surface-hover hover:text-text-primary"
       }`}
     >
       <svg
@@ -129,7 +129,7 @@ function UserSection({ collapsed, onNavigate }: { collapsed?: boolean; onNavigat
       <Link
         href="/profile"
         onClick={onNavigate}
-        className={`flex items-center gap-3 rounded-md text-base text-text-muted hover:bg-surface-hover hover:text-text-secondary ${
+        className={`flex items-center gap-3 rounded-md text-base text-text-secondary hover:bg-surface-hover hover:text-text-primary ${
           collapsed ? "justify-center p-0" : "px-2.5 py-2"
         }`}
       >
@@ -139,7 +139,7 @@ function UserSection({ collapsed, onNavigate }: { collapsed?: boolean; onNavigat
         {!collapsed && (
           <div className="flex-1 overflow-hidden">
             <p className="truncate text-base text-text-primary">Huavoi User</p>
-            <p className="truncate text-sm text-text-muted">you@example.com</p>
+            <p className="truncate text-sm text-text-secondary">you@example.com</p>
           </div>
         )}
       </Link>
@@ -175,7 +175,7 @@ export function DrawerContent({
         <LogoMark collapsed={collapsed} />
         <button
           onClick={onToggle}
-          className={`rounded-md p-1 text-text-muted hover:bg-surface-hover hover:text-text-secondary ${
+          className={`rounded-md p-1 text-text-secondary hover:bg-surface-hover hover:text-text-primary ${
             collapsed ? "" : "ml-auto"
           }`}
           aria-label="Toggle sidebar"
@@ -199,7 +199,7 @@ export function DrawerContent({
 
       <div className={`flex-1 overflow-y-auto ${collapsed ? "px-2 py-3" : "px-3 py-3"}`}>
         {!collapsed && (
-          <p className="mb-1 px-2 text-[11px] font-semibold uppercase tracking-wider text-text-muted">
+          <p className="mb-1 px-2 text-[11px] font-semibold uppercase tracking-wider text-text-secondary">
             Main
           </p>
         )}
@@ -218,7 +218,7 @@ export function DrawerContent({
         <div className={`my-3 border-t border-border-default ${collapsed ? "mx-0" : "mx-1"}`} />
 
         {!collapsed && (
-          <p className="mb-1 px-2 text-[11px] font-semibold uppercase tracking-wider text-text-muted">
+          <p className="mb-1 px-2 text-[11px] font-semibold uppercase tracking-wider text-text-secondary">
             Utilities
           </p>
         )}
