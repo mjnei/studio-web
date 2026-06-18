@@ -44,7 +44,7 @@ export default function HelpPage() {
         {helpSections.map((section) => (
           <section key={section.title}>
             <h2 className="mb-3 text-lg font-semibold text-text-secondary">{section.title}</h2>
-            <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
               {section.articles.map((article) => (
                 <div
                   key={article.title}

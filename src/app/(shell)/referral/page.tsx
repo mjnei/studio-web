@@ -28,7 +28,7 @@ export default function ReferralPage() {
           <p className="mb-4 text-sm text-text-muted">
             Share your referral link. When someone signs up using your link, you both earn free render credits.
           </p>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <div className="flex-1 rounded-md border border-border-default bg-surface-raised px-3 py-2">
               <p className="text-xs text-text-muted">Your referral link</p>
               <p className="truncate text-sm text-text-primary">{referralLink}</p>
@@ -50,7 +50,7 @@ export default function ReferralPage() {
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-lg font-semibold">Your stats</h2>
           </div>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div className="rounded-md bg-surface-raised p-4">
               <p className="text-sm text-text-muted">Total referrals</p>
               <p className="mt-1 text-xl font-bold">3</p>

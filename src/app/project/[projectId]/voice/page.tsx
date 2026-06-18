@@ -7,7 +7,7 @@ export default function VoicePage() {
 
       <section className="mb-8">
         <h3 className="mb-3 text-base font-medium text-text-secondary">1. Choose a Voice</h3>
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {["Voice A", "Voice B", "Voice C", "Voice D"].map((name, i) => (
             <div
               key={name}
@@ -36,13 +36,13 @@ export default function VoicePage() {
         <h3 className="mb-3 text-base font-medium text-text-secondary">2. Preview Voice</h3>
         <div className="rounded-lg border border-border-default bg-surface-panel p-4">
           <div className="flex items-center gap-4">
-            <button className="rounded-md p-2 text-text-muted hover:bg-surface-hover hover:text-text-secondary">
+            <button className="shrink-0 rounded-md p-2 text-text-muted hover:bg-surface-hover hover:text-text-secondary">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             </button>
             <div className="h-8 flex-1 rounded bg-surface-raised" />
           </div>
           <p className="mt-2 text-xs text-text-muted">Preview of the first few sentences in the selected voice.</p>
-          <div className="mt-3 flex gap-2">
+          <div className="mt-3 flex flex-wrap gap-2">
             <button className="rounded-md bg-accent-gradient-solid px-3 py-1.5 text-sm font-medium text-white hover:opacity-90">
               Sounds good, continue
             </button>

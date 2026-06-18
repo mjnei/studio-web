@@ -8,10 +8,10 @@ export default function VoicesPage() {
   return (
     <div>
       <h1 className="mb-6 text-2xl font-bold">My Voices</h1>
-      <div className="mb-6 flex gap-1 rounded-lg bg-surface-panel p-1">
+      <div className="mb-6 flex gap-1 overflow-x-auto rounded-lg bg-surface-panel p-1">
         <button
           onClick={() => setTab("my")}
-          className={`rounded-md px-4 py-1.5 text-sm font-medium ${
+          className={`shrink-0 rounded-md px-4 py-1.5 text-sm font-medium ${
             tab === "my" ? "bg-surface-raised text-text-primary" : "text-text-muted hover:text-text-secondary"
           }`}
         >
@@ -19,7 +19,7 @@ export default function VoicesPage() {
         </button>
         <button
           onClick={() => setTab("stock")}
-          className={`rounded-md px-4 py-1.5 text-sm font-medium ${
+          className={`shrink-0 rounded-md px-4 py-1.5 text-sm font-medium ${
             tab === "stock" ? "bg-surface-raised text-text-primary" : "text-text-muted hover:text-text-secondary"
           }`}
         >

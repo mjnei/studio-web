@@ -12,7 +12,7 @@ export default function DashboardPage() {
           New Project
         </Link>
       </div>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div className="rounded-lg border border-border-default bg-surface-panel p-5">
           <h2 className="mb-1 text-sm font-medium text-text-secondary">Recent Projects</h2>
           <p className="text-2xl font-bold text-text-primary">0</p>

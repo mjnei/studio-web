@@ -60,22 +60,22 @@ export default function SettingsPage() {
             <div>
               <h3 className="mb-2 text-sm font-medium text-text-secondary">In-app alerts</h3>
               <div className="space-y-3">
-                <label className="flex items-center justify-between">
-                  <span className="text-sm text-text-secondary">Render completion</span>
+              <label className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <span className="text-sm text-text-secondary">Render completion</span>
                   <Toggle
                     checked={notifications.renderCompletion}
                     onChange={() => setNotifications((n) => ({ ...n, renderCompletion: !n.renderCompletion }))}
                   />
                 </label>
-                <label className="flex items-center justify-between">
-                  <span className="text-sm text-text-secondary">Render failure</span>
+              <label className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <span className="text-sm text-text-secondary">Render failure</span>
                   <Toggle
                     checked={notifications.renderFailure}
                     onChange={() => setNotifications((n) => ({ ...n, renderFailure: !n.renderFailure }))}
                   />
                 </label>
-                <label className="flex items-center justify-between">
-                  <span className="text-sm text-text-secondary">New project shared with me</span>
+              <label className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <span className="text-sm text-text-secondary">New project shared with me</span>
                   <Toggle
                     checked={true}
                     onChange={() => {}}
@@ -86,22 +86,22 @@ export default function SettingsPage() {
             <div className="border-t border-border-default pt-4">
               <h3 className="mb-2 text-sm font-medium text-text-secondary">Email notifications</h3>
               <div className="space-y-3">
-                <label className="flex items-center justify-between">
-                  <span className="text-sm text-text-secondary">Email alerts for renders</span>
+              <label className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <span className="text-sm text-text-secondary">Email alerts for renders</span>
                   <Toggle
                     checked={notifications.emailNotifications}
                     onChange={() => setNotifications((n) => ({ ...n, emailNotifications: !n.emailNotifications }))}
                   />
                 </label>
-                <label className="flex items-center justify-between">
-                  <span className="text-sm text-text-secondary">Weekly usage summary</span>
+              <label className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <span className="text-sm text-text-secondary">Weekly usage summary</span>
                   <Toggle
                     checked={notifications.weeklySummary}
                     onChange={() => setNotifications((n) => ({ ...n, weeklySummary: !n.weeklySummary }))}
                   />
                 </label>
-                <label className="flex items-center justify-between">
-                  <span className="text-sm text-text-secondary">Product updates & changelog</span>
+              <label className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <span className="text-sm text-text-secondary">Product updates & changelog</span>
                   <Toggle
                     checked={true}
                     onChange={() => {}}
@@ -115,7 +115,7 @@ export default function SettingsPage() {
         <section className="rounded-lg border border-border-default bg-surface-panel p-6">
           <h2 className="mb-2 text-lg font-semibold">Project Defaults</h2>
           <p className="mb-4 text-sm text-text-muted">Pre-fill these values when you create a new project.</p>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
             <div>
               <label className="mb-1 block text-sm text-text-secondary">Default voice</label>
               <select
@@ -170,7 +170,7 @@ export default function SettingsPage() {
         <section className="rounded-lg border border-border-default bg-surface-panel p-6">
           <h2 className="mb-2 text-lg font-semibold">Script Generation</h2>
           <p className="mb-4 text-sm text-text-muted">Default AI behavior when generating scripts.</p>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
             <div>
               <label className="mb-1 block text-sm text-text-secondary">Default tone</label>
               <select
@@ -203,7 +203,7 @@ export default function SettingsPage() {
         <section className="rounded-lg border border-border-default bg-surface-panel p-6">
           <h2 className="mb-4 text-lg font-semibold">Render & Compose</h2>
           <div className="space-y-4">
-            <label className="flex items-center justify-between">
+            <label className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm text-text-secondary">Auto-compose on export</p>
                 <p className="text-xs text-text-muted">Skip manual compose step and go straight to render queue.</p>
@@ -244,7 +244,7 @@ export default function SettingsPage() {
         <section className="rounded-lg border border-border-default bg-surface-panel p-6">
           <h2 className="mb-4 text-lg font-semibold">Appearance</h2>
           <div className="space-y-3">
-            <label className="flex items-center justify-between">
+            <label className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm text-text-secondary">Compact mode</p>
                 <p className="text-xs text-text-muted">Reduce spacing and use smaller thumbnails.</p>
@@ -254,7 +254,7 @@ export default function SettingsPage() {
                 onChange={() => setAppearance((a) => ({ ...a, compactMode: !a.compactMode }))}
               />
             </label>
-            <label className="flex items-center justify-between">
+            <label className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm text-text-secondary">Auto-play previews</p>
                 <p className="text-xs text-text-muted">Automatically play clip and voice previews when opened.</p>
@@ -264,7 +264,7 @@ export default function SettingsPage() {
                 onChange={() => setAppearance((a) => ({ ...a, autoPlayPreviews: !a.autoPlayPreviews }))}
               />
             </label>
-            <label className="flex items-center justify-between">
+            <label className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm text-text-secondary">Waveform animations</p>
                 <p className="text-xs text-text-muted">Animate audio waveforms when playing. Disable for reduced motion.</p>
@@ -280,14 +280,14 @@ export default function SettingsPage() {
         <section className="rounded-lg border border-border-default bg-surface-panel p-6">
           <h2 className="mb-4 text-lg font-semibold">Data & Privacy</h2>
           <div className="space-y-3">
-            <label className="flex items-center justify-between">
+            <label className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm text-text-secondary">Allow usage analytics</p>
                 <p className="text-xs text-text-muted">Help us improve by sharing anonymized usage data.</p>
               </div>
               <Toggle checked={true} onChange={() => {}} />
             </label>
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm text-text-secondary">Export all my data</p>
                 <p className="text-xs text-text-muted">Download a zip of your projects, voices, and account info.</p>

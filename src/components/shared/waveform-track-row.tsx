@@ -6,8 +6,8 @@ export function WaveformTrackRow({
   muted?: boolean;
 }) {
   return (
-    <div className="flex items-center gap-3">
-      <span className="w-28 shrink-0 text-xs text-text-muted">{label}</span>
+    <div className="flex items-center gap-2 md:gap-3">
+      <span className="w-20 shrink-0 text-xs text-text-muted md:w-28">{label}</span>
       <button className="rounded p-1 text-text-muted hover:bg-surface-hover hover:text-text-secondary">
         {muted ? (
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>

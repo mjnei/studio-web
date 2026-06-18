@@ -20,22 +20,22 @@ export default function ProfilePage() {
     <div>
       <h1 className="mb-6 text-2xl font-bold">Profile</h1>
       <div className="space-y-6">
-        <section className="rounded-lg border border-border-default bg-surface-panel p-6">
-          <div className="mb-6 flex items-center gap-4">
-            <div className="relative flex h-20 w-20 items-center justify-center rounded-full bg-surface-raised text-2xl font-bold text-text-muted">
+        <section className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-6">
+          <div className="mb-6 flex flex-col items-center gap-4 sm:flex-row">
+            <div className="relative flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-surface-raised text-2xl font-bold text-text-muted">
               H
               <button className="absolute -bottom-0.5 -right-0.5 flex h-6 w-6 items-center justify-center rounded-full border border-border-default bg-surface-panel text-text-muted hover:text-text-secondary">
                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
               </button>
             </div>
-            <div className="flex-1">
+            <div className="flex-1 text-center sm:text-left">
               {editing ? (
                 <div className="space-y-2">
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="rounded-md border border-border-default bg-surface-raised px-3 py-2 text-lg font-semibold text-text-primary focus:border-accent-cyan focus:outline-none"
+                    className="w-full rounded-md border border-border-default bg-surface-raised px-3 py-2 text-lg font-semibold text-text-primary focus:border-accent-cyan focus:outline-none"
                   />
                 </div>
               ) : (
@@ -67,7 +67,7 @@ export default function ProfilePage() {
               </button>
             )}
           </div>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div className="rounded-md bg-surface-raised p-4">
               <p className="text-sm text-text-muted">Renders this month</p>
               <p className="mt-1 text-xl font-bold">0</p>
@@ -83,10 +83,10 @@ export default function ProfilePage() {
           </div>
         </section>
 
-        <section className="rounded-lg border border-border-default bg-surface-panel p-6">
+        <section className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-6">
           <h2 className="mb-4 text-lg font-semibold">Personal Information</h2>
           <div className="max-w-lg space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
                 <label className="mb-1 block text-sm text-text-secondary">First name</label>
                 <input
@@ -145,7 +145,7 @@ export default function ProfilePage() {
           </div>
         </section>
 
-        <section className="rounded-lg border border-border-default bg-surface-panel p-6">
+        <section className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-6">
           <h2 className="mb-4 text-lg font-semibold">Password & Security</h2>
           <div className="max-w-lg space-y-4">
             <div>
@@ -195,12 +195,12 @@ export default function ProfilePage() {
             )}
             <div>
               <label className="mb-2 block text-sm text-text-secondary">Two-factor authentication</label>
-              <div className="flex items-center justify-between rounded-md border border-border-default bg-surface-raised p-3">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between rounded-md border border-border-default bg-surface-raised p-3">
                 <div>
                   <p className="text-sm text-text-primary">2FA is not enabled</p>
                   <p className="text-xs text-text-muted">Add an extra layer of security to your account.</p>
                 </div>
-                <button className="rounded-md bg-accent-cyan px-3 py-1.5 text-sm font-medium text-white hover:opacity-90">
+                <button className="shrink-0 rounded-md bg-accent-cyan px-3 py-1.5 text-sm font-medium text-white hover:opacity-90">
                   Enable
                 </button>
               </div>
@@ -208,17 +208,17 @@ export default function ProfilePage() {
           </div>
         </section>
 
-        <section className="rounded-lg border border-border-default bg-surface-panel p-6">
+        <section className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-6">
           <h2 className="mb-4 text-lg font-semibold">Connected Accounts</h2>
           <div className="max-w-lg space-y-3">
-            <div className="flex items-center justify-between rounded-md border border-border-default bg-surface-raised p-3">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between rounded-md border border-border-default bg-surface-raised p-3">
               <div className="flex items-center gap-3">
                 <span className="text-sm font-medium text-text-primary">Google</span>
                 {socialGoogle && <span className="text-xs text-status-completed">Connected</span>}
               </div>
               <button
                 onClick={() => setSocialGoogle(!socialGoogle)}
-                className={`rounded-md border px-3 py-1 text-xs font-medium ${
+                className={`shrink-0 rounded-md border px-3 py-1 text-xs font-medium ${
                   socialGoogle
                     ? "border-status-failed/40 text-status-failed hover:bg-status-failed/10"
                     : "border-accent-cyan/40 text-accent-cyan hover:bg-accent-cyan-muted"
@@ -227,14 +227,14 @@ export default function ProfilePage() {
                 {socialGoogle ? "Disconnect" : "Connect"}
               </button>
             </div>
-            <div className="flex items-center justify-between rounded-md border border-border-default bg-surface-raised p-3">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between rounded-md border border-border-default bg-surface-raised p-3">
               <div className="flex items-center gap-3">
                 <span className="text-sm font-medium text-text-primary">Apple</span>
                 {socialApple && <span className="text-xs text-status-completed">Connected</span>}
               </div>
               <button
                 onClick={() => setSocialApple(!socialApple)}
-                className={`rounded-md border px-3 py-1 text-xs font-medium ${
+                className={`shrink-0 rounded-md border px-3 py-1 text-xs font-medium ${
                   socialApple
                     ? "border-status-failed/40 text-status-failed hover:bg-status-failed/10"
                     : "border-accent-cyan/40 text-accent-cyan hover:bg-accent-cyan-muted"
@@ -246,20 +246,20 @@ export default function ProfilePage() {
           </div>
         </section>
 
-        <section className="flex items-center justify-between rounded-lg border border-border-default bg-surface-panel p-6">
+        <section className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-lg border border-border-default bg-surface-panel p-4 md:p-6">
           <div>
             <h2 className="text-lg font-semibold">Sign out</h2>
             <p className="text-sm text-text-muted">End your current session on this device.</p>
           </div>
           <Link
             href="/login"
-            className="rounded-md border border-border-default bg-surface-raised px-4 py-2 text-sm text-text-secondary hover:bg-surface-hover"
+            className="shrink-0 rounded-md border border-border-default bg-surface-raised px-4 py-2 text-sm text-text-secondary hover:bg-surface-hover"
           >
             Sign out
           </Link>
         </section>
 
-        <section className="rounded-lg border border-status-failed/30 bg-surface-panel p-6">
+        <section className="rounded-lg border border-status-failed/30 bg-surface-panel p-4 md:p-6">
           <h2 className="mb-2 text-lg font-semibold text-status-failed">Danger Zone</h2>
           <p className="mb-4 text-sm text-text-muted">Permanently delete your account and all associated data — projects, voices, renders, and referral history. This cannot be undone.</p>
           {showDeleteConfirm ? (

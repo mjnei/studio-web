@@ -18,12 +18,12 @@ export default function JobsPage() {
   return (
     <div>
       <h1 className="mb-6 text-2xl font-bold">My Jobs</h1>
-      <div className="mb-6 flex gap-1 rounded-lg bg-surface-panel p-1">
+      <div className="mb-6 flex gap-1 overflow-x-auto rounded-lg bg-surface-panel p-1">
         {tabs.map((t) => (
           <button
             key={t.value}
             onClick={() => setFilter(t.value)}
-            className={`rounded-md px-3 py-1.5 text-sm font-medium ${
+            className={`shrink-0 rounded-md px-3 py-1.5 text-sm font-medium ${
               filter === t.value ? "bg-surface-raised text-text-primary" : "text-text-muted hover:text-text-secondary"
             }`}
           >

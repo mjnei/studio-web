@@ -2,11 +2,11 @@ export default function MoviesPage() {
   return (
     <div>
       <h1 className="mb-6 text-2xl font-bold">Movie Library</h1>
-      <div className="mb-6 flex items-center gap-3">
+      <div className="mb-6 flex flex-wrap items-center gap-3">
         <input
           type="text"
           placeholder="Search movies..."
-          className="w-full max-w-md rounded-md border border-border-default bg-surface-raised px-3 py-2 text-sm text-text-primary placeholder-text-muted focus:border-accent-cyan focus:outline-none"
+          className="w-full rounded-md border border-border-default bg-surface-raised px-3 py-2 text-sm text-text-primary placeholder-text-muted focus:border-accent-cyan focus:outline-none sm:w-auto sm:max-w-md"
         />
         <button className="rounded-md border border-border-default bg-surface-raised px-3 py-2 text-sm text-text-secondary hover:bg-surface-hover">
           Filters
