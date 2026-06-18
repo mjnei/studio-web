@@ -42,7 +42,7 @@ const helpSections = [
       },
       {
         title: "Cloning your own voice",
-        description: "Uploading or recording a sample to create a custom voice clone.",
+        description: "Recording a sample from your microphone to create a custom voice clone.",
       },
       {
         title: "Voice preview before render",

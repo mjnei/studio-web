@@ -1,6 +1,11 @@
 "use client";
 
+import { useState } from "react";
+import { VoiceRecorder } from "@/components/shared/voice-recorder";
+
 export default function VoicePage() {
+  const [selectedVoice, setSelectedVoice] = useState<string | null>(null);
+
   return (
     <div>
       <h2 className="mb-6 text-lg font-semibold">Voice Selection & Generation</h2>
@@ -11,7 +16,10 @@ export default function VoicePage() {
           {["Voice A", "Voice B", "Voice C", "Voice D"].map((name, i) => (
             <div
               key={name}
-              className="rounded-lg border border-border-default bg-surface-panel p-4 hover:border-accent-cyan/40"
+              onClick={() => setSelectedVoice(name)}
+              className={`cursor-pointer rounded-lg border bg-surface-panel p-4 transition hover:border-accent-cyan/40 ${
+                selectedVoice === name ? "border-accent-cyan" : "border-border-default"
+              }`}
             >
               <div className="mb-2 flex items-center justify-between">
                 <p className="text-sm font-medium text-text-primary">{name}</p>
@@ -33,17 +41,19 @@ export default function VoicePage() {
               <div className="mt-2 h-6 rounded bg-surface-raised" />
             </div>
           ))}
-          <div className="flex items-center justify-center rounded-lg border border-dashed border-border-default bg-surface-panel p-4 text-center">
-            <div className="flex h-full flex-col gap-6 overflow-y-auto">
-              <p className="text-sm text-text-secondary">Upload or record</p>
-              <p className="mt-1 text-xs text-text-muted">30–60s for best clone quality</p>
-            </div>
-          </div>
         </div>
       </section>
 
       <section className="mb-8">
-        <h3 className="mb-3 text-base font-medium text-text-secondary">2. Preview Voice</h3>
+        <h3 className="mb-3 text-base font-medium text-text-secondary">2. Record Your Voice</h3>
+        <p className="mb-3 text-sm text-text-muted">
+          Record a sample from your microphone to create a custom voice clone. No file uploads — your voice stays in the browser.
+        </p>
+        <VoiceRecorder />
+      </section>
+
+      <section className="mb-8">
+        <h3 className="mb-3 text-base font-medium text-text-secondary">3. Preview Voice</h3>
         <div className="rounded-lg border border-border-default bg-surface-panel p-4">
           <div className="flex items-center gap-4">
             <button className="shrink-0 rounded-md p-2 text-text-muted hover:bg-surface-hover hover:text-text-secondary">
@@ -75,11 +85,11 @@ export default function VoicePage() {
 
       <section>
         <h3 className="mb-3 text-base font-medium text-text-secondary">
-          3. Generate Full Voiceover
+          4. Generate Full Voiceover
         </h3>
         <div className="rounded-lg border border-border-default bg-surface-panel p-4">
           <p className="text-sm text-text-muted">
-            Select a voice and preview it first, then generate the full voiceover here.
+            Record and preview your voice first, then generate the full voiceover here.
           </p>
         </div>
       </section>

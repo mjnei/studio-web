@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { VoiceRecorder } from "@/components/shared/voice-recorder";
 
 export default function VoicesPage() {
   const [tab, setTab] = useState<"my" | "stock">("my");
+  const [showRecorder, setShowRecorder] = useState(false);
 
   return (
     <div>
@@ -32,13 +34,22 @@ export default function VoicesPage() {
       </div>
       {tab === "my" ? (
         <div className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-8 text-center">
-          <p className="mb-2 text-text-secondary">You haven&apos;t saved any voices yet.</p>
-          <p className="mb-4 text-sm text-text-muted">
-            Upload or record a sample to clone your first voice.
-          </p>
-          <button className="rounded-md bg-accent-gradient-solid px-4 py-2 text-sm font-medium text-white hover:opacity-90">
-            Upload or record
-          </button>
+          {showRecorder ? (
+            <VoiceRecorder />
+          ) : (
+            <>
+              <p className="mb-2 text-text-secondary">You haven&apos;t saved any voices yet.</p>
+              <p className="mb-4 text-sm text-text-muted">
+                Record a sample from your microphone to clone your first voice.
+              </p>
+              <button
+                onClick={() => setShowRecorder(true)}
+                className="rounded-md bg-accent-gradient-solid px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+              >
+                Record your voice
+              </button>
+            </>
+          )}
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
