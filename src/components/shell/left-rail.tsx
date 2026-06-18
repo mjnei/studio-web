@@ -7,7 +7,7 @@ import { useSidebar } from "@/components/shell/sidebar-context";
 
 export function LeftRail() {
   const pathname = usePathname();
-  const { collapsed, mobileOpen, setMobileOpen, isNarrow } = useSidebar();
+  const { collapsed, mobileOpen, setMobileOpen, isNarrow, toggle } = useSidebar();
 
   useEffect(() => {
     setMobileOpen(false);
@@ -30,7 +30,7 @@ export function LeftRail() {
             collapsed ? "w-14" : "w-52"
           }`}
         >
-          <DrawerContent pathname={pathname} collapsed={collapsed} />
+          <DrawerContent pathname={pathname} collapsed={collapsed} onToggle={toggle} />
         </aside>
       )}
 

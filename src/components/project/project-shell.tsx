@@ -52,7 +52,7 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
             collapsed ? "w-14" : "w-52"
           }`}
         >
-          <DrawerContent pathname={pathname} collapsed={collapsed} />
+          <DrawerContent pathname={pathname} collapsed={collapsed} onToggle={toggle} />
         </aside>
       )}
 
