@@ -24,7 +24,7 @@ export default function VoicePage() {
             </div>
           ))}
           <div className="flex items-center justify-center rounded-lg border border-dashed border-border-default bg-surface-panel p-4 text-center">
-            <div>
+    <div className="flex h-full flex-col gap-6 overflow-y-auto">
               <p className="text-sm text-text-secondary">Upload or record</p>
               <p className="mt-1 text-xs text-text-muted">30–60s for best clone quality</p>
             </div>

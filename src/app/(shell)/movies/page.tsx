@@ -12,15 +12,7 @@ export default function MoviesPage() {
           Filters
         </button>
       </div>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {Array.from({ length: 8 }).map((_, i) => (
-          <div
-            key={i}
-            className="aspect-[2/3] animate-pulse rounded-lg bg-surface-panel"
-          />
-        ))}
-      </div>
-      <div className="mt-8 rounded-lg border border-border-default bg-surface-panel p-8 text-center">
+      <div className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-8 text-center">
         <p className="mb-2 text-text-secondary">No movies in your library yet.</p>
         <p className="text-sm text-text-muted">Upload clips or browse the stock catalog to get started.</p>
       </div>

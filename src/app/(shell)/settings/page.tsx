@@ -54,7 +54,7 @@ export default function SettingsPage() {
     <div>
       <h1 className="mb-6 text-2xl font-bold">Settings</h1>
       <div className="space-y-6">
-        <section className="rounded-lg border border-border-default bg-surface-panel p-6">
+        <section className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-6">
           <h2 className="mb-4 text-lg font-semibold">Notifications</h2>
           <div className="space-y-4">
             <div>
@@ -112,7 +112,7 @@ export default function SettingsPage() {
           </div>
         </section>
 
-        <section className="rounded-lg border border-border-default bg-surface-panel p-6">
+        <section className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-6">
           <h2 className="mb-2 text-lg font-semibold">Project Defaults</h2>
           <p className="mb-4 text-sm text-text-muted">Pre-fill these values when you create a new project.</p>
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
@@ -167,7 +167,7 @@ export default function SettingsPage() {
           </div>
         </section>
 
-        <section className="rounded-lg border border-border-default bg-surface-panel p-6">
+        <section className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-6">
           <h2 className="mb-2 text-lg font-semibold">Script Generation</h2>
           <p className="mb-4 text-sm text-text-muted">Default AI behavior when generating scripts.</p>
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
@@ -200,7 +200,7 @@ export default function SettingsPage() {
           </div>
         </section>
 
-        <section className="rounded-lg border border-border-default bg-surface-panel p-6">
+        <section className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-6">
           <h2 className="mb-4 text-lg font-semibold">Render & Compose</h2>
           <div className="space-y-4">
             <label className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -241,7 +241,7 @@ export default function SettingsPage() {
           </div>
         </section>
 
-        <section className="rounded-lg border border-border-default bg-surface-panel p-6">
+        <section className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-6">
           <h2 className="mb-4 text-lg font-semibold">Appearance</h2>
           <div className="space-y-3">
             <label className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -277,7 +277,7 @@ export default function SettingsPage() {
           </div>
         </section>
 
-        <section className="rounded-lg border border-border-default bg-surface-panel p-6">
+        <section className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-6">
           <h2 className="mb-4 text-lg font-semibold">Data & Privacy</h2>
           <div className="space-y-3">
             <label className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">

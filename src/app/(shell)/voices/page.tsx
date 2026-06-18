@@ -27,7 +27,7 @@ export default function VoicesPage() {
         </button>
       </div>
       {tab === "my" ? (
-        <div className="rounded-lg border border-border-default bg-surface-panel p-8 text-center">
+        <div className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-8 text-center">
           <p className="mb-2 text-text-secondary">You haven&apos;t saved any voices yet.</p>
           <p className="mb-4 text-sm text-text-muted">Upload or record a sample to clone your first voice.</p>
           <button className="rounded-md bg-accent-gradient-solid px-4 py-2 text-sm font-medium text-white hover:opacity-90">

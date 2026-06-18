@@ -31,7 +31,7 @@ export default function JobsPage() {
           </button>
         ))}
       </div>
-      <div className="rounded-lg border border-border-default bg-surface-panel p-8 text-center">
+      <div className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-8 text-center">
         <p className="mb-2 text-text-secondary">No render jobs yet.</p>
         <p className="text-sm text-text-muted">
           When you export a project, it will appear here so you can track progress.

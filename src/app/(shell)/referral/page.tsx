@@ -23,7 +23,7 @@ export default function ReferralPage() {
     <div>
       <h1 className="mb-6 text-2xl font-bold">Referral</h1>
       <div className="space-y-6">
-        <section className="rounded-lg border border-border-default bg-surface-panel p-6">
+        <section className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-6">
           <h2 className="mb-2 text-lg font-semibold">Invite friends, earn credits</h2>
           <p className="mb-4 text-sm text-text-muted">
             Share your referral link. When someone signs up using your link, you both earn free render credits.
@@ -46,7 +46,7 @@ export default function ReferralPage() {
           </div>
         </section>
 
-        <section className="rounded-lg border border-border-default bg-surface-panel p-6">
+        <section className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-6">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-lg font-semibold">Your stats</h2>
           </div>
@@ -66,10 +66,10 @@ export default function ReferralPage() {
           </div>
         </section>
 
-        <section className="rounded-lg border border-border-default bg-surface-panel p-6">
+        <section className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-6">
           <h2 className="mb-4 text-lg font-semibold">Referral history</h2>
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full min-w-[420px] text-sm">
               <thead>
                 <tr className="border-b border-border-default text-left text-xs text-text-muted">
                   <th className="pb-2 font-medium">Referred</th>

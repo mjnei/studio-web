@@ -13,20 +13,20 @@ export default function DashboardPage() {
         </Link>
       </div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <div className="rounded-lg border border-border-default bg-surface-panel p-5">
+        <div className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-5">
           <h2 className="mb-1 text-sm font-medium text-text-secondary">Recent Projects</h2>
           <p className="text-2xl font-bold text-text-primary">0</p>
         </div>
-        <div className="rounded-lg border border-border-default bg-surface-panel p-5">
+        <div className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-5">
           <h2 className="mb-1 text-sm font-medium text-text-secondary">Active Renders</h2>
           <p className="text-2xl font-bold text-text-primary">0</p>
         </div>
-        <div className="rounded-lg border border-border-default bg-surface-panel p-5">
+        <div className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-5">
           <h2 className="mb-1 text-sm font-medium text-text-secondary">My Voices</h2>
           <p className="text-2xl font-bold text-text-primary">0</p>
         </div>
       </div>
-      <div className="mt-8 rounded-lg border border-border-default bg-surface-panel p-8 text-center">
+      <div className="mt-8 rounded-lg border border-border-default bg-surface-panel p-4 md:p-8 text-center">
         <p className="text-text-secondary">No recent activity yet. Start by creating a new project.</p>
       </div>
     </div>

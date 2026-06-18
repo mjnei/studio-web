@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function ProjectsPage() {
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-2xl font-bold">Projects</h1>
         <Link
           href="/project/new"
@@ -12,7 +12,7 @@ export default function ProjectsPage() {
           New Project
         </Link>
       </div>
-      <div className="rounded-lg border border-border-default bg-surface-panel p-8 text-center">
+      <div className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-8 text-center">
         <p className="mb-4 text-text-secondary">You don&apos;t have any projects yet.</p>
         <Link
           href="/project/new"

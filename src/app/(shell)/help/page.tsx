@@ -58,7 +58,7 @@ export default function HelpPage() {
           </section>
         ))}
       </div>
-      <div className="mt-8 rounded-lg border border-border-default bg-surface-panel p-6 text-center">
+      <div className="mt-8 rounded-lg border border-border-default bg-surface-panel p-4 md:p-6 text-center">
         <h2 className="mb-2 text-lg font-semibold">Still need help?</h2>
         <p className="mb-4 text-sm text-text-muted">
           Can&apos;t find what you&apos;re looking for? Reach out to our support team.
