@@ -1,12 +1,16 @@
 "use client";
 
-export function TopNav({ onMenuClick }: { onMenuClick?: () => void }) {
+import { useSidebar } from "@/components/shell/sidebar-context";
+
+export function TopNav() {
+  const { toggle, isNarrow } = useSidebar();
+
   return (
     <header className="flex h-14 shrink-0 items-center gap-3 border-b border-border-default bg-surface-panel px-3 md:px-4 md:gap-4">
       <button
-        onClick={onMenuClick}
-        className="hide-desktop rounded-md p-1.5 text-text-muted hover:bg-surface-hover hover:text-text-secondary"
-        aria-label="Open navigation"
+        onClick={toggle}
+        className="rounded-md p-1.5 text-text-muted hover:bg-surface-hover hover:text-text-secondary"
+        aria-label={isNarrow ? "Open navigation" : "Toggle sidebar"}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -33,7 +37,7 @@ export function TopNav({ onMenuClick }: { onMenuClick?: () => void }) {
           href="/projects"
           className="rounded-md bg-accent-gradient-solid px-3 py-1.5 text-sm font-medium text-white hover:opacity-90"
         >
-          <span className="hide-mobile">New Project</span>
+          <span className="hidden sm:inline">New Project</span>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="18"
@@ -44,7 +48,7 @@ export function TopNav({ onMenuClick }: { onMenuClick?: () => void }) {
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="hide-desktop inline"
+            className="inline sm:hidden"
           >
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />

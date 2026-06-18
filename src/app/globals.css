@@ -55,14 +55,3 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 
-@media (max-width: 767px) {
-  .hide-mobile {
-    display: none !important;
-  }
-}
-
-@media (min-width: 768px) {
-  .hide-desktop {
-    display: none !important;
-  }
-}

@@ -54,16 +54,21 @@ function RailLink({
   item,
   isActive: active,
   onClick,
+  collapsed,
 }: {
   item: { href: string; label: string; icon: string };
   isActive: boolean;
   onClick?: () => void;
+  collapsed?: boolean;
 }) {
   return (
     <Link
       href={item.href}
       onClick={onClick}
-      className={`flex items-center gap-3 rounded-md px-2.5 py-2 text-sm transition-colors ${
+      title={collapsed ? item.label : undefined}
+      className={`flex items-center gap-3 rounded-md transition-colors ${
+        collapsed ? "justify-center px-0 py-2" : "px-2.5 py-2 text-sm"
+      } ${
         active
           ? "bg-accent-cyan-muted text-accent-cyan"
           : "text-text-muted hover:bg-surface-hover hover:text-text-secondary"
@@ -79,69 +84,125 @@ function RailLink({
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
+        className="shrink-0"
       >
         <path d={item.icon} />
       </svg>
-      <span>{item.label}</span>
+      {!collapsed && <span>{item.label}</span>}
     </Link>
+  );
+}
+
+function LogoMark({ collapsed }: { collapsed?: boolean }) {
+  return (
+    <Link
+      href="/dashboard"
+      className={`flex items-center gap-2 text-base font-bold text-text-primary ${
+        collapsed ? "justify-center" : ""
+      }`}
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="shrink-0 text-accent-cyan"
+      >
+        <polygon points="12 2 2 7 12 12 22 7 12 2" />
+        <polyline points="2 17 12 22 22 17" />
+        <polyline points="2 12 12 17 22 12" />
+      </svg>
+      {!collapsed && <span>Huavoi</span>}
+    </Link>
+  );
+}
+
+function UserSection({
+  collapsed,
+  onNavigate,
+}: {
+  collapsed?: boolean;
+  onNavigate?: () => void;
+}) {
+  return (
+    <div className={`border-t border-border-default p-3 ${collapsed ? "flex flex-col items-center gap-2" : ""}`}>
+      <Link
+        href="/profile"
+        onClick={onNavigate}
+        className={`flex items-center gap-3 rounded-md text-sm text-text-muted hover:bg-surface-hover hover:text-text-secondary ${
+          collapsed ? "justify-center p-0" : "px-2.5 py-2"
+        }`}
+      >
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent-cyan/20 text-xs font-medium text-accent-cyan">
+          H
+        </span>
+        {!collapsed && (
+          <div className="flex-1 overflow-hidden">
+            <p className="truncate text-sm text-text-primary">Huavoi User</p>
+            <p className="truncate text-xs text-text-muted">you@example.com</p>
+          </div>
+        )}
+      </Link>
+      {!collapsed && (
+        <div className="mt-2 px-2.5">
+          <select className="w-full rounded-md border border-border-default bg-surface-raised px-2 py-1.5 text-xs text-text-secondary focus:border-accent-cyan focus:outline-none">
+            <option>English</option>
+          </select>
+        </div>
+      )}
+    </div>
   );
 }
 
 export function DrawerContent({
   pathname,
   onNavigate,
+  collapsed,
 }: {
   pathname: string;
   onNavigate?: () => void;
+  collapsed?: boolean;
 }) {
   return (
     <div className="flex h-full flex-col">
-      <div className="flex h-14 items-center border-b border-border-default px-4">
-        <Link
-          href="/dashboard"
-          onClick={onNavigate}
-          className="flex items-center gap-2 text-base font-bold text-text-primary"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="text-accent-cyan"
-          >
-            <polygon points="12 2 2 7 12 12 22 7 12 2" />
-            <polyline points="2 17 12 22 22 17" />
-            <polyline points="2 12 12 17 22 12" />
-          </svg>
-          Huavoi
-        </Link>
+      <div
+        className={`flex h-14 items-center border-b border-border-default shrink-0 ${
+          collapsed ? "justify-center" : "px-4"
+        }`}
+      >
+        <LogoMark collapsed={collapsed} />
       </div>
 
-      <div className="flex-1 overflow-y-auto px-3 py-3">
-        <p className="mb-1 px-2 text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-          Main
-        </p>
-        <div className="space-y-0.5">
+      <div className={`flex-1 overflow-y-auto ${collapsed ? "px-2 py-3" : "px-3 py-3"}`}>
+        {!collapsed && (
+          <p className="mb-1 px-2 text-[10px] font-semibold uppercase tracking-wider text-text-muted">
+            Main
+          </p>
+        )}
+        <div className={`space-y-0.5 ${collapsed ? "" : ""}`}>
           {mainItems.map((item) => (
             <RailLink
               key={item.href}
               item={item}
               isActive={isActive(pathname, item.href)}
               onClick={onNavigate}
+              collapsed={collapsed}
             />
           ))}
         </div>
 
-        <div className="my-3 border-t border-border-default mx-1" />
+        <div className={`my-3 border-t border-border-default ${collapsed ? "mx-0" : "mx-1"}`} />
 
-        <p className="mb-1 px-2 text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-          Utilities
-        </p>
+        {!collapsed && (
+          <p className="mb-1 px-2 text-[10px] font-semibold uppercase tracking-wider text-text-muted">
+            Utilities
+          </p>
+        )}
         <div className="space-y-0.5">
           {utilityItems.map((item) => (
             <RailLink
@@ -149,34 +210,13 @@ export function DrawerContent({
               item={item}
               isActive={isActive(pathname, item.href)}
               onClick={onNavigate}
+              collapsed={collapsed}
             />
           ))}
         </div>
       </div>
 
-      <div className="border-t border-border-default p-3">
-        <Link
-          href="/profile"
-          onClick={onNavigate}
-          className="flex items-center gap-3 rounded-md px-2.5 py-2 text-sm text-text-muted hover:bg-surface-hover hover:text-text-secondary"
-        >
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent-cyan/20 text-xs font-medium text-accent-cyan">
-            H
-          </span>
-          <div className="flex-1 overflow-hidden">
-            <p className="truncate text-sm text-text-primary">Huavoi User</p>
-            <p className="truncate text-xs text-text-muted">you@example.com</p>
-          </div>
-        </Link>
-        <div className="mt-2 px-2.5">
-          <select className="w-full rounded-md border border-border-default bg-surface-raised px-2 py-1.5 text-xs text-text-secondary focus:border-accent-cyan focus:outline-none">
-            <option>English</option>
-            <option>中文</option>
-            <option>Español</option>
-            <option>Français</option>
-          </select>
-        </div>
-      </div>
+      <UserSection collapsed={collapsed} onNavigate={onNavigate} />
     </div>
   );
 }
