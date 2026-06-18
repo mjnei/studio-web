@@ -122,15 +122,11 @@ function LogoMark({ collapsed }: { collapsed?: boolean }) {
   );
 }
 
-function UserSection({
-  collapsed,
-  onNavigate,
-}: {
-  collapsed?: boolean;
-  onNavigate?: () => void;
-}) {
+function UserSection({ collapsed, onNavigate }: { collapsed?: boolean; onNavigate?: () => void }) {
   return (
-    <div className={`border-t border-border-default p-3 ${collapsed ? "flex flex-col items-center gap-2" : ""}`}>
+    <div
+      className={`border-t border-border-default p-3 ${collapsed ? "flex flex-col items-center gap-2" : ""}`}
+    >
       <Link
         href="/profile"
         onClick={onNavigate}

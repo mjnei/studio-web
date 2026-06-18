@@ -35,20 +35,10 @@ export function LeftRail() {
       )}
 
       {isNarrow && mobileOpen && (
-        <div
-          className="fixed inset-0 z-50 flex"
-          role="dialog"
-          aria-modal="true"
-        >
-          <div
-            className="absolute inset-0 bg-black/50"
-            onClick={() => setMobileOpen(false)}
-          />
+        <div className="fixed inset-0 z-50 flex" role="dialog" aria-modal="true">
+          <div className="absolute inset-0 bg-black/50" onClick={() => setMobileOpen(false)} />
           <div className="relative w-72 shrink-0 border-r border-border-default bg-surface-panel shadow-xl">
-            <DrawerContent
-              pathname={pathname}
-              onNavigate={() => setMobileOpen(false)}
-            />
+            <DrawerContent pathname={pathname} onNavigate={() => setMobileOpen(false)} />
           </div>
         </div>
       )}

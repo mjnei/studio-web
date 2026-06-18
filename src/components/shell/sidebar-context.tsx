@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useState,
-  useCallback,
-  useEffect,
-  type ReactNode,
-} from "react";
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
 
 type SidebarContextValue = {
   collapsed: boolean;
@@ -49,9 +42,7 @@ export function SidebarProvider({ children }: { children: ReactNode }) {
   }, [isNarrow]);
 
   return (
-    <SidebarContext.Provider
-      value={{ collapsed, mobileOpen, toggle, setMobileOpen, isNarrow }}
-    >
+    <SidebarContext.Provider value={{ collapsed, mobileOpen, toggle, setMobileOpen, isNarrow }}>
       {children}
     </SidebarContext.Provider>
   );
