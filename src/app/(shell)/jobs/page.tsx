@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-type FilterTab = "all" | "pending" | "processing" | "failed" | "completed";
+type FilterTab = "all" | "pending" | "completed";
 
 export default function JobsPage() {
   const [filter, setFilter] = useState<FilterTab>("all");
@@ -10,20 +10,18 @@ export default function JobsPage() {
   const tabs: { label: string; value: FilterTab }[] = [
     { label: "All", value: "all" },
     { label: "Pending", value: "pending" },
-    { label: "Processing", value: "processing" },
-    { label: "Failed", value: "failed" },
     { label: "Completed", value: "completed" },
   ];
 
   return (
     <div>
       <h1 className="mb-6 text-2xl font-bold">My Jobs</h1>
-      <div className="mb-6 flex gap-1 overflow-x-auto rounded-lg bg-surface-panel p-1">
+      <div className="mb-6 flex gap-2">
         {tabs.map((t) => (
           <button
             key={t.value}
             onClick={() => setFilter(t.value)}
-            className={`shrink-0 rounded-md px-3 py-1.5 text-sm font-medium ${
+            className={`rounded-md px-3 py-1.5 text-sm font-medium ${
               filter === t.value
                 ? "bg-surface-raised text-text-primary"
                 : "text-text-muted hover:text-text-secondary"
