@@ -12,7 +12,9 @@ export default function LoginPage() {
       <h2 className="mb-6 text-lg font-semibold text-text-primary">Welcome back</h2>
       <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
         <div>
-          <label htmlFor="email" className="mb-1 block text-sm text-text-secondary">Email</label>
+          <label htmlFor="email" className="mb-1 block text-sm text-text-secondary">
+            Email
+          </label>
           <input
             id="email"
             type="email"
@@ -23,7 +25,9 @@ export default function LoginPage() {
           />
         </div>
         <div>
-          <label htmlFor="password" className="mb-1 block text-sm text-text-secondary">Password</label>
+          <label htmlFor="password" className="mb-1 block text-sm text-text-secondary">
+            Password
+          </label>
           <input
             id="password"
             type="password"
@@ -34,7 +38,9 @@ export default function LoginPage() {
           />
         </div>
         <div className="text-right">
-          <Link href="/forgot-password" className="text-xs text-accent-cyan hover:underline">Forgot password?</Link>
+          <Link href="/forgot-password" className="text-xs text-accent-cyan hover:underline">
+            Forgot password?
+          </Link>
         </div>
         <button
           type="submit"
@@ -58,7 +64,9 @@ export default function LoginPage() {
       </div>
       <p className="mt-6 text-center text-sm text-text-muted">
         Don&apos;t have an account?{" "}
-        <Link href="/signup" className="text-accent-cyan hover:underline">Sign up</Link>
+        <Link href="/signup" className="text-accent-cyan hover:underline">
+          Sign up
+        </Link>
       </p>
     </div>
   );

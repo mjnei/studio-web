@@ -14,7 +14,9 @@ export default function MoviesPage() {
       </div>
       <div className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-8 text-center">
         <p className="mb-2 text-text-secondary">No movies in your library yet.</p>
-        <p className="text-sm text-text-muted">Upload clips or browse the stock catalog to get started.</p>
+        <p className="text-sm text-text-muted">
+          Upload clips or browse the stock catalog to get started.
+        </p>
       </div>
     </div>
   );

@@ -26,7 +26,8 @@ export default function ReferralPage() {
         <section className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-6">
           <h2 className="mb-2 text-lg font-semibold">Invite friends, earn credits</h2>
           <p className="mb-4 text-sm text-text-muted">
-            Share your referral link. When someone signs up using your link, you both earn free render credits.
+            Share your referral link. When someone signs up using your link, you both earn free
+            render credits.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <div className="flex-1 rounded-md border border-border-default bg-surface-raised px-3 py-2">
@@ -42,7 +43,9 @@ export default function ReferralPage() {
           </div>
           <div className="mt-3 flex items-center gap-2">
             <span className="text-xs text-text-muted">Your code:</span>
-            <code className="rounded bg-surface-raised px-2 py-0.5 text-xs font-mono text-accent-cyan">{referralCode}</code>
+            <code className="rounded bg-surface-raised px-2 py-0.5 text-xs font-mono text-accent-cyan">
+              {referralCode}
+            </code>
           </div>
         </section>
 

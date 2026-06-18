@@ -27,7 +27,9 @@ export default function DashboardPage() {
         </div>
       </div>
       <div className="mt-8 rounded-lg border border-border-default bg-surface-panel p-4 md:p-8 text-center">
-        <p className="text-text-secondary">No recent activity yet. Start by creating a new project.</p>
+        <p className="text-text-secondary">
+          No recent activity yet. Start by creating a new project.
+        </p>
       </div>
     </div>
   );

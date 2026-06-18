@@ -12,7 +12,8 @@ export default function ForgotPasswordPage() {
       <div className="rounded-lg border border-border-default bg-surface-panel p-8 text-center">
         <h2 className="mb-3 text-lg font-semibold text-text-primary">Check your email</h2>
         <p className="mb-6 text-sm text-text-secondary">
-          If an account exists for <span className="text-text-primary">{email}</span>, you&apos;ll receive a password reset link.
+          If an account exists for <span className="text-text-primary">{email}</span>, you&apos;ll
+          receive a password reset link.
         </p>
         <Link
           href="/login"
@@ -27,10 +28,20 @@ export default function ForgotPasswordPage() {
   return (
     <div className="rounded-lg border border-border-default bg-surface-panel p-8">
       <h2 className="mb-2 text-lg font-semibold text-text-primary">Reset your password</h2>
-      <p className="mb-6 text-sm text-text-secondary">Enter your email and we&apos;ll send you a reset link.</p>
-      <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); setSubmitted(true); }}>
+      <p className="mb-6 text-sm text-text-secondary">
+        Enter your email and we&apos;ll send you a reset link.
+      </p>
+      <form
+        className="space-y-4"
+        onSubmit={(e) => {
+          e.preventDefault();
+          setSubmitted(true);
+        }}
+      >
         <div>
-          <label htmlFor="email" className="mb-1 block text-sm text-text-secondary">Email</label>
+          <label htmlFor="email" className="mb-1 block text-sm text-text-secondary">
+            Email
+          </label>
           <input
             id="email"
             type="email"
@@ -48,7 +59,9 @@ export default function ForgotPasswordPage() {
         </button>
       </form>
       <p className="mt-4 text-center text-sm text-text-muted">
-        <Link href="/login" className="text-accent-cyan hover:underline">Back to login</Link>
+        <Link href="/login" className="text-accent-cyan hover:underline">
+          Back to login
+        </Link>
       </p>
     </div>
   );

@@ -25,7 +25,21 @@ export default function ProfilePage() {
             <div className="relative flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-surface-raised text-2xl font-bold text-text-muted">
               H
               <button className="absolute -bottom-0.5 -right-0.5 flex h-6 w-6 items-center justify-center rounded-full border border-border-default bg-surface-panel text-text-muted hover:text-text-secondary">
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="17 8 12 3 7 8" />
+                  <line x1="12" y1="3" x2="12" y2="15" />
+                </svg>
               </button>
             </div>
             <div className="flex-1 text-center sm:text-left">
@@ -105,7 +119,9 @@ export default function ProfilePage() {
               </div>
             </div>
             <div>
-              <label htmlFor="profile-email" className="mb-1 block text-sm text-text-secondary">Email address</label>
+              <label htmlFor="profile-email" className="mb-1 block text-sm text-text-secondary">
+                Email address
+              </label>
               <div className="flex gap-2">
                 <input
                   id="profile-email"
@@ -118,10 +134,14 @@ export default function ProfilePage() {
                   Verify
                 </button>
               </div>
-              <p className="mt-1 text-xs text-text-muted">Email must be verified to receive notifications.</p>
+              <p className="mt-1 text-xs text-text-muted">
+                Email must be verified to receive notifications.
+              </p>
             </div>
             <div>
-              <label htmlFor="profile-bio" className="mb-1 block text-sm text-text-secondary">Bio</label>
+              <label htmlFor="profile-bio" className="mb-1 block text-sm text-text-secondary">
+                Bio
+              </label>
               <textarea
                 id="profile-bio"
                 rows={3}
@@ -159,7 +179,9 @@ export default function ProfilePage() {
             {showChangePassword && (
               <div className="space-y-3 rounded-md border border-border-default bg-surface-raised p-4">
                 <div>
-                  <label htmlFor="current-pw" className="mb-1 block text-sm text-text-secondary">Current password</label>
+                  <label htmlFor="current-pw" className="mb-1 block text-sm text-text-secondary">
+                    Current password
+                  </label>
                   <input
                     id="current-pw"
                     type="password"
@@ -169,7 +191,9 @@ export default function ProfilePage() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="new-pw" className="mb-1 block text-sm text-text-secondary">New password</label>
+                  <label htmlFor="new-pw" className="mb-1 block text-sm text-text-secondary">
+                    New password
+                  </label>
                   <input
                     id="new-pw"
                     type="password"
@@ -179,7 +203,9 @@ export default function ProfilePage() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="confirm-pw" className="mb-1 block text-sm text-text-secondary">Confirm new password</label>
+                  <label htmlFor="confirm-pw" className="mb-1 block text-sm text-text-secondary">
+                    Confirm new password
+                  </label>
                   <input
                     id="confirm-pw"
                     type="password"
@@ -194,11 +220,15 @@ export default function ProfilePage() {
               </div>
             )}
             <div>
-              <label className="mb-2 block text-sm text-text-secondary">Two-factor authentication</label>
+              <label className="mb-2 block text-sm text-text-secondary">
+                Two-factor authentication
+              </label>
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between rounded-md border border-border-default bg-surface-raised p-3">
                 <div>
                   <p className="text-sm text-text-primary">2FA is not enabled</p>
-                  <p className="text-xs text-text-muted">Add an extra layer of security to your account.</p>
+                  <p className="text-xs text-text-muted">
+                    Add an extra layer of security to your account.
+                  </p>
                 </div>
                 <button className="shrink-0 rounded-md bg-accent-cyan px-3 py-1.5 text-sm font-medium text-white hover:opacity-90">
                   Enable
@@ -261,10 +291,15 @@ export default function ProfilePage() {
 
         <section className="rounded-lg border border-status-failed/30 bg-surface-panel p-4 md:p-6">
           <h2 className="mb-2 text-lg font-semibold text-status-failed">Danger Zone</h2>
-          <p className="mb-4 text-sm text-text-muted">Permanently delete your account and all associated data — projects, voices, renders, and referral history. This cannot be undone.</p>
+          <p className="mb-4 text-sm text-text-muted">
+            Permanently delete your account and all associated data — projects, voices, renders, and
+            referral history. This cannot be undone.
+          </p>
           {showDeleteConfirm ? (
             <div className="space-y-3 rounded-md border border-status-failed/30 bg-surface-raised p-4">
-              <p className="text-sm text-status-failed">Type <strong>delete my account</strong> to confirm:</p>
+              <p className="text-sm text-status-failed">
+                Type <strong>delete my account</strong> to confirm:
+              </p>
               <input
                 type="text"
                 placeholder="delete my account"

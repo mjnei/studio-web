@@ -24,7 +24,9 @@ export default function JobsPage() {
             key={t.value}
             onClick={() => setFilter(t.value)}
             className={`shrink-0 rounded-md px-3 py-1.5 text-sm font-medium ${
-              filter === t.value ? "bg-surface-raised text-text-primary" : "text-text-muted hover:text-text-secondary"
+              filter === t.value
+                ? "bg-surface-raised text-text-primary"
+                : "text-text-muted hover:text-text-secondary"
             }`}
           >
             {t.label}

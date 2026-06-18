@@ -20,14 +20,29 @@ export function VersionSwitcher({
         className="flex items-center gap-1 rounded-md border border-border-default bg-surface-raised px-2 py-1 text-xs text-text-secondary hover:bg-surface-hover"
       >
         {current}
-        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="m6 9 6 6 6-6" />
+        </svg>
       </button>
       {open && (
         <div className="absolute left-0 top-full z-10 mt-1 rounded-md border border-border-default bg-surface-panel py-1 shadow-lg">
           {versions.map((v) => (
             <button
               key={v}
-              onClick={() => { onSelect(v); setOpen(false); }}
+              onClick={() => {
+                onSelect(v);
+                setOpen(false);
+              }}
               className={`block w-full px-3 py-1.5 text-left text-xs ${
                 v === current ? "text-accent-cyan" : "text-text-secondary hover:bg-surface-hover"
               }`}

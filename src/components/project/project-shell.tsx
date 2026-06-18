@@ -54,17 +54,44 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
             className="hide-desktop rounded-md p-1.5 text-text-muted hover:bg-surface-hover hover:text-text-secondary"
             aria-label="Open navigation"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/></svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <rect width="18" height="18" x="3" y="3" rx="2" />
+              <path d="M9 3v18" />
+            </svg>
           </button>
           <Link href="/projects" className="text-text-muted hover:text-text-secondary">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="m15 18-6-6 6-6" />
+            </svg>
           </Link>
           <h1 className="text-base font-semibold">Untitled Project</h1>
-          <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium text-white ${statusColors["Draft"]}`}>
+          <span
+            className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium text-white ${statusColors["Draft"]}`}
+          >
             Draft
           </span>
           <div className="ml-auto flex items-center gap-2 md:hidden">
-            {(currentStep === "compose") && (
+            {currentStep === "compose" && (
               <button className="rounded-md bg-accent-gradient-solid px-3 py-1.5 text-sm font-medium text-white hover:opacity-90">
                 Export
               </button>
@@ -77,19 +104,35 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
             const isCompleted = i < activeIndex;
             return (
               <div key={stage.step} className="flex shrink-0 items-center">
-                {i > 0 && <div className={`h-px w-4 md:w-6 ${i <= activeIndex ? "bg-accent-cyan" : "bg-border-default"}`} />}
+                {i > 0 && (
+                  <div
+                    className={`h-px w-4 md:w-6 ${i <= activeIndex ? "bg-accent-cyan" : "bg-border-default"}`}
+                  />
+                )}
                 <Link
                   href={`/project/${projectId}/${stage.step}`}
                   className={`flex items-center gap-1 rounded-md px-2 py-1 text-sm ${
                     isActive
                       ? "bg-accent-cyan-muted text-accent-cyan font-medium"
                       : isCompleted
-                      ? "text-accent-cyan"
-                      : "text-text-muted hover:text-text-secondary"
+                        ? "text-accent-cyan"
+                        : "text-text-muted hover:text-text-secondary"
                   }`}
                 >
                   {isCompleted && (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M20 6 9 17l-5-5" />
+                    </svg>
                   )}
                   {stage.label}
                 </Link>
@@ -98,7 +141,7 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
           })}
         </nav>
         <div className="ml-auto hidden items-center gap-2 md:flex">
-          {(currentStep === "compose") && (
+          {currentStep === "compose" && (
             <>
               <select className="rounded-md border border-border-default bg-surface-raised px-2 py-1 text-xs text-text-secondary">
                 <option>1080p / 30fps</option>
@@ -115,15 +158,8 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
       <main className="flex-1 overflow-y-auto p-3 md:p-6">{children}</main>
 
       {drawerOpen && (
-        <div
-          className="hide-desktop fixed inset-0 z-50 flex"
-          role="dialog"
-          aria-modal="true"
-        >
-          <div
-            className="absolute inset-0 bg-black/50"
-            onClick={closeDrawer}
-          />
+        <div className="hide-desktop fixed inset-0 z-50 flex" role="dialog" aria-modal="true">
+          <div className="absolute inset-0 bg-black/50" onClick={closeDrawer} />
           <div className="relative w-72 shrink-0 border-r border-border-default bg-surface-panel shadow-xl">
             <DrawerContent pathname={pathname} onNavigate={closeDrawer} />
           </div>

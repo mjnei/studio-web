@@ -60,52 +60,54 @@ export default function SettingsPage() {
             <div>
               <h3 className="mb-2 text-sm font-medium text-text-secondary">In-app alerts</h3>
               <div className="space-y-3">
-              <label className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <span className="text-sm text-text-secondary">Render completion</span>
+                <label className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <span className="text-sm text-text-secondary">Render completion</span>
                   <Toggle
                     checked={notifications.renderCompletion}
-                    onChange={() => setNotifications((n) => ({ ...n, renderCompletion: !n.renderCompletion }))}
+                    onChange={() =>
+                      setNotifications((n) => ({ ...n, renderCompletion: !n.renderCompletion }))
+                    }
                   />
                 </label>
-              <label className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <span className="text-sm text-text-secondary">Render failure</span>
+                <label className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <span className="text-sm text-text-secondary">Render failure</span>
                   <Toggle
                     checked={notifications.renderFailure}
-                    onChange={() => setNotifications((n) => ({ ...n, renderFailure: !n.renderFailure }))}
+                    onChange={() =>
+                      setNotifications((n) => ({ ...n, renderFailure: !n.renderFailure }))
+                    }
                   />
                 </label>
-              <label className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <span className="text-sm text-text-secondary">New project shared with me</span>
-                  <Toggle
-                    checked={true}
-                    onChange={() => {}}
-                  />
+                <label className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <span className="text-sm text-text-secondary">New project shared with me</span>
+                  <Toggle checked={true} onChange={() => {}} />
                 </label>
               </div>
             </div>
             <div className="border-t border-border-default pt-4">
               <h3 className="mb-2 text-sm font-medium text-text-secondary">Email notifications</h3>
               <div className="space-y-3">
-              <label className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <span className="text-sm text-text-secondary">Email alerts for renders</span>
+                <label className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <span className="text-sm text-text-secondary">Email alerts for renders</span>
                   <Toggle
                     checked={notifications.emailNotifications}
-                    onChange={() => setNotifications((n) => ({ ...n, emailNotifications: !n.emailNotifications }))}
+                    onChange={() =>
+                      setNotifications((n) => ({ ...n, emailNotifications: !n.emailNotifications }))
+                    }
                   />
                 </label>
-              <label className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <span className="text-sm text-text-secondary">Weekly usage summary</span>
+                <label className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <span className="text-sm text-text-secondary">Weekly usage summary</span>
                   <Toggle
                     checked={notifications.weeklySummary}
-                    onChange={() => setNotifications((n) => ({ ...n, weeklySummary: !n.weeklySummary }))}
+                    onChange={() =>
+                      setNotifications((n) => ({ ...n, weeklySummary: !n.weeklySummary }))
+                    }
                   />
                 </label>
-              <label className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <span className="text-sm text-text-secondary">Product updates & changelog</span>
-                  <Toggle
-                    checked={true}
-                    onChange={() => {}}
-                  />
+                <label className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <span className="text-sm text-text-secondary">Product updates & changelog</span>
+                  <Toggle checked={true} onChange={() => {}} />
                 </label>
               </div>
             </div>
@@ -114,7 +116,9 @@ export default function SettingsPage() {
 
         <section className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-6">
           <h2 className="mb-2 text-lg font-semibold">Project Defaults</h2>
-          <p className="mb-4 text-sm text-text-muted">Pre-fill these values when you create a new project.</p>
+          <p className="mb-4 text-sm text-text-muted">
+            Pre-fill these values when you create a new project.
+          </p>
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
             <div>
               <label className="mb-1 block text-sm text-text-secondary">Default voice</label>
@@ -153,7 +157,9 @@ export default function SettingsPage() {
               </select>
             </div>
             <div>
-              <label className="mb-1 block text-sm text-text-secondary">Default export format</label>
+              <label className="mb-1 block text-sm text-text-secondary">
+                Default export format
+              </label>
               <select
                 value={defaults.exportFormat}
                 onChange={(e) => setDefaults((d) => ({ ...d, exportFormat: e.target.value }))}
@@ -169,7 +175,9 @@ export default function SettingsPage() {
 
         <section className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-6">
           <h2 className="mb-2 text-lg font-semibold">Script Generation</h2>
-          <p className="mb-4 text-sm text-text-muted">Default AI behavior when generating scripts.</p>
+          <p className="mb-4 text-sm text-text-muted">
+            Default AI behavior when generating scripts.
+          </p>
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
             <div>
               <label className="mb-1 block text-sm text-text-secondary">Default tone</label>
@@ -206,7 +214,9 @@ export default function SettingsPage() {
             <label className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm text-text-secondary">Auto-compose on export</p>
-                <p className="text-xs text-text-muted">Skip manual compose step and go straight to render queue.</p>
+                <p className="text-xs text-text-muted">
+                  Skip manual compose step and go straight to render queue.
+                </p>
               </div>
               <Toggle
                 checked={render.autoCompose}
@@ -214,7 +224,9 @@ export default function SettingsPage() {
               />
             </label>
             <div>
-              <label className="mb-1 block text-sm text-text-secondary">Default background music</label>
+              <label className="mb-1 block text-sm text-text-secondary">
+                Default background music
+              </label>
               <select
                 value={render.backgroundMusic}
                 onChange={(e) => setRender((r) => ({ ...r, backgroundMusic: e.target.value }))}
@@ -227,7 +239,9 @@ export default function SettingsPage() {
               </select>
             </div>
             <div>
-              <label className="mb-1 block text-sm text-text-secondary">Default voiceover volume</label>
+              <label className="mb-1 block text-sm text-text-secondary">
+                Default voiceover volume
+              </label>
               <input
                 type="range"
                 min="0"
@@ -247,7 +261,9 @@ export default function SettingsPage() {
             <label className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm text-text-secondary">Compact mode</p>
-                <p className="text-xs text-text-muted">Reduce spacing and use smaller thumbnails.</p>
+                <p className="text-xs text-text-muted">
+                  Reduce spacing and use smaller thumbnails.
+                </p>
               </div>
               <Toggle
                 checked={appearance.compactMode}
@@ -257,21 +273,29 @@ export default function SettingsPage() {
             <label className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm text-text-secondary">Auto-play previews</p>
-                <p className="text-xs text-text-muted">Automatically play clip and voice previews when opened.</p>
+                <p className="text-xs text-text-muted">
+                  Automatically play clip and voice previews when opened.
+                </p>
               </div>
               <Toggle
                 checked={appearance.autoPlayPreviews}
-                onChange={() => setAppearance((a) => ({ ...a, autoPlayPreviews: !a.autoPlayPreviews }))}
+                onChange={() =>
+                  setAppearance((a) => ({ ...a, autoPlayPreviews: !a.autoPlayPreviews }))
+                }
               />
             </label>
             <label className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm text-text-secondary">Waveform animations</p>
-                <p className="text-xs text-text-muted">Animate audio waveforms when playing. Disable for reduced motion.</p>
+                <p className="text-xs text-text-muted">
+                  Animate audio waveforms when playing. Disable for reduced motion.
+                </p>
               </div>
               <Toggle
                 checked={appearance.waveformAnimation}
-                onChange={() => setAppearance((a) => ({ ...a, waveformAnimation: !a.waveformAnimation }))}
+                onChange={() =>
+                  setAppearance((a) => ({ ...a, waveformAnimation: !a.waveformAnimation }))
+                }
               />
             </label>
           </div>
@@ -283,14 +307,18 @@ export default function SettingsPage() {
             <label className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm text-text-secondary">Allow usage analytics</p>
-                <p className="text-xs text-text-muted">Help us improve by sharing anonymized usage data.</p>
+                <p className="text-xs text-text-muted">
+                  Help us improve by sharing anonymized usage data.
+                </p>
               </div>
               <Toggle checked={true} onChange={() => {}} />
             </label>
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm text-text-secondary">Export all my data</p>
-                <p className="text-xs text-text-muted">Download a zip of your projects, voices, and account info.</p>
+                <p className="text-xs text-text-muted">
+                  Download a zip of your projects, voices, and account info.
+                </p>
               </div>
               <button className="rounded-md border border-border-default bg-surface-raised px-3 py-1.5 text-sm text-text-secondary hover:bg-surface-hover">
                 Request export

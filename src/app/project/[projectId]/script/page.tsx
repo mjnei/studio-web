@@ -39,9 +39,13 @@ export default function ScriptPage() {
               <div className="space-y-2">
                 {Array.from({ length: 4 }).map((_, i) => (
                   <div key={i} className="rounded-md bg-surface-raised p-2">
-                    <p className="mb-1 text-xs text-text-muted">00:{(i * 15).toString().padStart(2, "0")} — 00:{((i + 1) * 15).toString().padStart(2, "0")}</p>
+                    <p className="mb-1 text-xs text-text-muted">
+                      00:{(i * 15).toString().padStart(2, "0")} — 00:
+                      {((i + 1) * 15).toString().padStart(2, "0")}
+                    </p>
                     <p className="text-sm text-text-secondary">
-                      Script segment {i + 1} placeholder text for the {variant.toLowerCase()} variant...
+                      Script segment {i + 1} placeholder text for the {variant.toLowerCase()}{" "}
+                      variant...
                     </p>
                   </div>
                 ))}

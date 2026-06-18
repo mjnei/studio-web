@@ -2,33 +2,69 @@ const helpSections = [
   {
     title: "Getting Started",
     articles: [
-      { title: "Creating your first project", description: "Learn how to set up a new video project and select a source clip." },
-      { title: "Understanding the pipeline", description: "A walkthrough of the Source → Script → Voice → Compose workflow." },
-      { title: "Choosing a movie clip", description: "How to browse, filter, and preview clips from the movie library." },
+      {
+        title: "Creating your first project",
+        description: "Learn how to set up a new video project and select a source clip.",
+      },
+      {
+        title: "Understanding the pipeline",
+        description: "A walkthrough of the Source → Script → Voice → Compose workflow.",
+      },
+      {
+        title: "Choosing a movie clip",
+        description: "How to browse, filter, and preview clips from the movie library.",
+      },
     ],
   },
   {
     title: "Script & AI",
     articles: [
-      { title: "Generating AI scripts", description: "How Huavoi creates candidate scripts and how to pick the best one." },
-      { title: "Editing scripts by segment", description: "Timestamped editing, AI-assisted rewrites, and version history." },
-      { title: "Tone and length options", description: "Customizing the AI output: narrative, promotional, short, or detailed." },
+      {
+        title: "Generating AI scripts",
+        description: "How Huavoi creates candidate scripts and how to pick the best one.",
+      },
+      {
+        title: "Editing scripts by segment",
+        description: "Timestamped editing, AI-assisted rewrites, and version history.",
+      },
+      {
+        title: "Tone and length options",
+        description: "Customizing the AI output: narrative, promotional, short, or detailed.",
+      },
     ],
   },
   {
     title: "Voice & Audio",
     articles: [
-      { title: "Selecting a preset voice", description: "Browsing and previewing stock voices for your voiceover." },
-      { title: "Cloning your own voice", description: "Uploading or recording a sample to create a custom voice clone." },
-      { title: "Voice preview before render", description: "How to test a short preview clip before committing to a full TTS render." },
+      {
+        title: "Selecting a preset voice",
+        description: "Browsing and previewing stock voices for your voiceover.",
+      },
+      {
+        title: "Cloning your own voice",
+        description: "Uploading or recording a sample to create a custom voice clone.",
+      },
+      {
+        title: "Voice preview before render",
+        description: "How to test a short preview clip before committing to a full TTS render.",
+      },
     ],
   },
   {
     title: "Compose & Export",
     articles: [
-      { title: "Using the multi-track timeline", description: "Arranging video, voiceover, music, and SFX on the timeline." },
-      { title: "Render queue and wait times", description: "How rendering works, expected wait times, and safe-to-close behavior." },
-      { title: "Export formats and resolution", description: "Choosing resolution, FPS, and format for your final export." },
+      {
+        title: "Using the multi-track timeline",
+        description: "Arranging video, voiceover, music, and SFX on the timeline.",
+      },
+      {
+        title: "Render queue and wait times",
+        description: "How rendering works, expected wait times, and safe-to-close behavior.",
+      },
+      {
+        title: "Export formats and resolution",
+        description: "Choosing resolution, FPS, and format for your final export.",
+      },
     ],
   },
 ];

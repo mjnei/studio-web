@@ -12,7 +12,9 @@ export default function SignupPage() {
       <h2 className="mb-6 text-lg font-semibold text-text-primary">Create your account</h2>
       <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
         <div>
-          <label htmlFor="email" className="mb-1 block text-sm text-text-secondary">Email</label>
+          <label htmlFor="email" className="mb-1 block text-sm text-text-secondary">
+            Email
+          </label>
           <input
             id="email"
             type="email"
@@ -23,7 +25,9 @@ export default function SignupPage() {
           />
         </div>
         <div>
-          <label htmlFor="password" className="mb-1 block text-sm text-text-secondary">Password</label>
+          <label htmlFor="password" className="mb-1 block text-sm text-text-secondary">
+            Password
+          </label>
           <input
             id="password"
             type="password"
@@ -55,7 +59,9 @@ export default function SignupPage() {
       </div>
       <p className="mt-6 text-center text-sm text-text-muted">
         Already have an account?{" "}
-        <Link href="/login" className="text-accent-cyan hover:underline">Log in</Link>
+        <Link href="/login" className="text-accent-cyan hover:underline">
+          Log in
+        </Link>
       </p>
     </div>
   );

@@ -28,15 +28,8 @@ export function LeftRail({ open, onClose }: { open: boolean; onClose: () => void
       </aside>
 
       {open && (
-        <div
-          className="hide-desktop fixed inset-0 z-50 flex"
-          role="dialog"
-          aria-modal="true"
-        >
-          <div
-            className="absolute inset-0 bg-black/50"
-            onClick={onClose}
-          />
+        <div className="hide-desktop fixed inset-0 z-50 flex" role="dialog" aria-modal="true">
+          <div className="absolute inset-0 bg-black/50" onClick={onClose} />
           <div
             ref={drawerRef}
             className="relative w-72 shrink-0 border-r border-border-default bg-surface-panel shadow-xl"
