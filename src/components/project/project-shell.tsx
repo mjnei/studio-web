@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
-import { PanelLeft, ChevronDown, ArrowLeft, Check } from "lucide-react";
+import { useEffect, useState } from "react";
+import { PanelLeft, ArrowLeft, Check } from "lucide-react";
 import { DrawerContent } from "@/components/shell/drawer-content";
 import { useSidebar } from "@/components/shell/sidebar-context";
 import { Button } from "@/components/ui/button";
+import { useProjectState } from "@/lib/hooks/use-project-state";
 
 const stages = [
   { step: "source", label: "Source" },
@@ -26,12 +27,48 @@ const statusColors: Record<Status, string> = {
   Completed: "bg-status-completed",
 };
 
+// Determine project status based on completed steps
+function getProjectStatus(
+  hasMovie: boolean,
+  hasScript: boolean,
+  hasVoice: boolean,
+  hasVideo: boolean,
+  isRendering: boolean
+): Status {
+  if (hasVideo) return "Completed";
+  if (isRendering) return "Rendering";
+  if (hasVoice) return "Voice Ready";
+  if (hasScript) return "Script Ready";
+  return "Draft";
+}
+
 export function ProjectShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const projectId = pathname.split("/")[2];
   const currentStep = pathname.split("/")[3] || "source";
   const activeIndex = stages.findIndex((s) => s.step === currentStep);
   const { collapsed, mobileOpen, setMobileOpen, toggle, isNarrow } = useSidebar();
+
+  // Get project state from persistent storage
+  const { state: projectState, isLoading } = useProjectState(projectId);
+  
+  // Determine which steps are completed based on project state
+  const completedSteps = {
+    source: !!projectState?.movieId,
+    script: !!projectState?.scripts && projectState.scripts.length > 0,
+    voice: !!projectState?.audioUrl,
+    compose: !!projectState?.videoUrl,
+  };
+
+  const projectStatus = getProjectStatus(
+    completedSteps.source,
+    completedSteps.script,
+    completedSteps.voice,
+    completedSteps.compose,
+    projectState?.isRendering || false
+  );
+
+  const projectTitle = projectState?.title || projectState?.movieTitle || "Untitled Project";
 
   useEffect(() => {
     setMobileOpen(false);
@@ -71,11 +108,11 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
             <Link href="/projects" className="text-text-muted hover:text-text-secondary">
               <ArrowLeft size={20} />
             </Link>
-            <h1 className="text-base font-semibold">Untitled Project</h1>
+            <h1 className="text-base font-semibold">{projectTitle}</h1>
             <span
-              className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium text-white ${statusColors["Draft"]}`}
+              className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium text-white ${statusColors[projectStatus]}`}
             >
-              Draft
+              {projectStatus}
             </span>
             <div className="ml-auto flex items-center gap-2 md:hidden">
               {currentStep === "compose" && (
@@ -88,23 +125,32 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
           <nav className="flex items-center gap-0.5 overflow-x-auto px-3 pb-2 md:ml-6 md:flex md:pb-0">
             {stages.map((stage, i) => {
               const isActive = stage.step === currentStep;
-              const isCompleted = i < activeIndex;
+              const isCompleted = completedSteps[stage.step as keyof typeof completedSteps];
+              const isAccessible = i === 0 || completedSteps[stages[i - 1].step as keyof typeof completedSteps];
+              
               return (
                 <div key={stage.step} className="flex shrink-0 items-center">
                   {i > 0 && (
                     <div
-                      className={`h-px w-4 md:w-6 ${i <= activeIndex ? "bg-accent-cyan" : "bg-border-default"}`}
+                      className={`h-px w-4 md:w-6 ${isCompleted ? "bg-accent-cyan" : "bg-border-default"}`}
                     />
                   )}
                   <Link
-                    href={`/project/${projectId}/${stage.step}`}
+                    href={isAccessible ? `/project/${projectId}/${stage.step}` : "#"}
                     className={`flex items-center gap-1 rounded-md px-2 py-1 text-sm ${
                       isActive
                         ? "bg-accent-cyan-muted text-accent-cyan font-medium"
                         : isCompleted
-                          ? "text-accent-cyan"
-                          : "text-text-muted hover:text-text-secondary"
+                          ? "text-accent-cyan hover:bg-accent-cyan-muted/50"
+                          : isAccessible
+                            ? "text-text-muted hover:text-text-secondary"
+                            : "text-text-disabled cursor-not-allowed"
                     }`}
+                    onClick={(e) => {
+                      if (!isAccessible) {
+                        e.preventDefault();
+                      }
+                    }}
                   >
                     {isCompleted && <Check size={14} strokeWidth={3} />}
                     {stage.label}

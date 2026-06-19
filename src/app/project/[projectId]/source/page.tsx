@@ -1,46 +1,78 @@
 "use client";
 
+import { useParams, useRouter } from "next/navigation";
+import { MovieSelection } from "@/components/project/movie-selection";
+import { useProjectState } from "@/lib/hooks/use-project-state";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+
 export default function SourcePage() {
+  const params = useParams();
+  const router = useRouter();
+  const projectId = params.projectId as string;
+  const { state, updateMovie, isLoading } = useProjectState(projectId);
+
+  const handleMovieSelect = (movie: {
+    id: string;
+    title: string;
+    year: number;
+    poster: string;
+    rating: number;
+    genre: string[];
+    duration: string;
+  }) => {
+    updateMovie({
+      id: movie.id,
+      title: movie.title,
+      poster: movie.poster,
+      genre: movie.genre.join(", "), // Convert array to string
+      rating: movie.rating,
+      duration: parseInt(movie.duration), // Parse duration string to number
+    });
+  };
+
+  const handleContinue = () => {
+    if (state?.movieId) {
+      router.push(`/project/${projectId}/script`);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <div className="text-center">
+          <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-accent-cyan border-r-transparent" />
+          <p className="text-text-secondary">Loading project...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex h-full flex-col gap-4 md:flex-row md:gap-6">
-      <div className="flex-1">
-        <h2 className="mb-4 text-lg font-semibold">Select a Movie Clip</h2>
-        <div className="mb-4 flex flex-wrap items-center gap-2 md:gap-3">
-          <input
-            type="text"
-            placeholder="Search movies..."
-            className="w-full rounded-md border border-border-default bg-surface-raised px-3 py-2 text-sm text-text-primary placeholder-text-muted focus:border-accent-cyan focus:outline-none md:w-auto md:max-w-sm"
-          />
-          <button className="rounded-md border border-border-default bg-surface-raised px-3 py-2 text-sm text-text-secondary hover:bg-surface-hover">
-            Genre
-          </button>
-          <button className="rounded-md border border-border-default bg-surface-raised px-3 py-2 text-sm text-text-secondary hover:bg-surface-hover">
-            Duration
-          </button>
-          <button className="rounded-md border border-border-default bg-surface-raised px-3 py-2 text-sm text-text-secondary hover:bg-surface-hover">
-            Resolution
-          </button>
+    <div className="flex flex-col gap-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-semibold text-text-primary">Select Source Movie</h2>
+          <p className="mt-1 text-sm text-text-muted">
+            Choose a movie clip to create your dubbed video project
+          </p>
         </div>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div
-              key={i}
-              className="group cursor-pointer overflow-hidden rounded-lg border border-border-default bg-surface-panel transition-colors hover:border-accent-cyan/40"
-            >
-              <div className="aspect-video bg-surface-raised" />
-              <div className="p-3">
-                <p className="text-sm font-medium text-text-primary">Movie Title {i + 1}</p>
-                <p className="mt-0.5 text-xs text-text-muted">1:30:00 &middot; Drama</p>
-              </div>
-            </div>
-          ))}
-        </div>
+        {state?.movieId && (
+          <Button
+            variant="primary"
+            size="md"
+            icon={<ArrowRight className="h-4 w-4" />}
+            onClick={handleContinue}
+          >
+            Continue to Script
+          </Button>
+        )}
       </div>
-      <div className="w-full shrink-0 rounded-lg border border-border-default bg-surface-panel p-4 md:w-80">
-        <h3 className="mb-3 text-sm font-medium text-text-secondary">Preview</h3>
-        <div className="aspect-video rounded-md bg-surface-raised" />
-        <p className="mt-3 text-sm text-text-muted">Select a clip to preview it here.</p>
-      </div>
+
+      <MovieSelection
+        selectedMovie={state?.movieId}
+        onSelect={handleMovieSelect}
+      />
     </div>
   );
 }

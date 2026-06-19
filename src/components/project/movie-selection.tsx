@@ -128,7 +128,6 @@ export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps)
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           icon={<Search className="w-5 h-5" />}
-          size="lg"
         />
       </div>
 
