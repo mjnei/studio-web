@@ -88,6 +88,7 @@ export default function ProfilePage() {
       <h1 className="mb-6 text-2xl font-bold">Profile</h1>
       <div className="space-y-6">
         <section className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-6">
+          <h2 className="mb-4 text-lg font-semibold">Account Overview</h2>
           <div className="mb-6 flex flex-col items-center gap-4 sm:flex-row">
             {user.picture_url ? (
               <img
@@ -111,7 +112,7 @@ export default function ProfilePage() {
                   />
                 </div>
               ) : (
-                <h2 className="text-lg font-semibold">{user.name}</h2>
+                <h3 className="text-lg font-semibold">{user.name}</h3>
               )}
               <p className="text-sm text-text-muted">{user.email}</p>
             </div>
@@ -306,21 +307,21 @@ export default function ProfilePage() {
           </div>
         </section>
 
-        <section className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between rounded-lg border border-border-default bg-surface-panel p-4 md:p-6">
-          <div>
-            <h2 className="text-lg font-semibold">Sign out</h2>
+        <section className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-6">
+          <h2 className="mb-4 text-lg font-semibold">Sign out</h2>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm text-text-muted">End your current session on this device.</p>
+            <button
+              onClick={logout}
+              className="shrink-0 rounded-md border border-border-default bg-surface-raised px-4 py-2 text-sm text-text-secondary hover:bg-surface-hover"
+            >
+              Sign out
+            </button>
           </div>
-          <button
-            onClick={logout}
-            className="shrink-0 rounded-md border border-border-default bg-surface-raised px-4 py-2 text-sm text-text-secondary hover:bg-surface-hover"
-          >
-            Sign out
-          </button>
         </section>
 
         <section className="rounded-lg border border-status-failed/30 bg-surface-panel p-4 md:p-6">
-          <h2 className="mb-2 text-lg font-semibold text-status-failed">Danger Zone</h2>
+          <h2 className="mb-4 text-lg font-semibold text-status-failed">Danger Zone</h2>
           <p className="mb-4 text-sm text-text-muted">
             Permanently delete your account and all associated data — projects, voices, renders, and
             referral history. This cannot be undone.
