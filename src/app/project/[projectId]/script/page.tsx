@@ -5,7 +5,8 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useProjectState } from "@/lib/hooks/use-project-state";
-import { ArrowRight, ArrowLeft, Sparkles, Copy, Download, Trash2, Edit2, Check } from "lucide-react";
+import { WorkflowNavigation } from "@/components/project/workflow-navigation";
+import { Sparkles, Copy, Trash2, Edit2, Check } from "lucide-react";
 
 export default function ScriptPage() {
   const params = useParams();
@@ -69,16 +70,6 @@ This isn't just a movie. It's an experience that will stay with you long after t
     }
   };
 
-  const handleContinue = () => {
-    if (activeScript) {
-      router.push(`/project/${projectId}/voice`);
-    }
-  };
-
-  const handleBack = () => {
-    router.push(`/project/${projectId}/source`);
-  };
-
   if (isLoading) {
     return (
       <div className="flex h-full items-center justify-center">
@@ -100,26 +91,11 @@ This isn't just a movie. It's an experience that will stay with you long after t
             AI-powered script generation for {state?.movieTitle || "your project"}
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="secondary"
-            size="md"
-            icon={<ArrowLeft className="h-4 w-4" />}
-            onClick={handleBack}
-          >
-            Back
-          </Button>
-          {activeScript && (
-            <Button
-              variant="primary"
-              size="md"
-              icon={<ArrowRight className="h-4 w-4" />}
-              onClick={handleContinue}
-            >
-              Continue to Voice
-            </Button>
-          )}
-        </div>
+        <WorkflowNavigation
+          projectId={projectId}
+          currentStep="script"
+          canGoNext={!!activeScript}
+        />
       </div>
 
       {/* Movie Info */}

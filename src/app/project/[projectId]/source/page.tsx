@@ -1,14 +1,12 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { MovieSelection } from "@/components/project/movie-selection";
 import { useProjectState } from "@/lib/hooks/use-project-state";
-import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { WorkflowNavigation } from "@/components/project/workflow-navigation";
 
 export default function SourcePage() {
   const params = useParams();
-  const router = useRouter();
   const projectId = params.projectId as string;
   const { state, updateMovie, isLoading } = useProjectState(projectId);
 
@@ -31,12 +29,6 @@ export default function SourcePage() {
     });
   };
 
-  const handleContinue = () => {
-    if (state?.movieId) {
-      router.push(`/project/${projectId}/script`);
-    }
-  };
-
   if (isLoading) {
     return (
       <div className="flex h-full items-center justify-center">
@@ -57,16 +49,11 @@ export default function SourcePage() {
             Choose a movie clip to create your dubbed video project
           </p>
         </div>
-        {state?.movieId && (
-          <Button
-            variant="primary"
-            size="md"
-            icon={<ArrowRight className="h-4 w-4" />}
-            onClick={handleContinue}
-          >
-            Continue to Script
-          </Button>
-        )}
+        <WorkflowNavigation
+          projectId={projectId}
+          currentStep="source"
+          canGoNext={!!state?.movieId}
+        />
       </div>
 
       <MovieSelection

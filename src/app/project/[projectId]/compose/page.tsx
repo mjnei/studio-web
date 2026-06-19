@@ -5,14 +5,15 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useProjectState } from "@/lib/hooks/use-project-state";
+import { WorkflowNavigation } from "@/components/project/workflow-navigation";
 import {
-  ArrowLeft,
   Play,
   Download,
   CheckCircle,
   Loader2,
   Video,
   Sparkles,
+  ArrowLeft,
 } from "lucide-react";
 
 const generationSteps = [
@@ -75,19 +76,11 @@ export default function ComposePage() {
     });
   };
 
-  const handleBack = () => {
-    router.push(`/project/${projectId}/voice`);
-  };
-
   const handleDownload = () => {
     if (state?.videoUrl) {
       // TODO: Implement actual download
       console.log("Downloading:", state.videoUrl);
     }
-  };
-
-  const handleGoToProjects = () => {
-    router.push("/projects");
   };
 
   if (isLoading) {
@@ -101,8 +94,8 @@ export default function ComposePage() {
     );
   }
 
-  const isCompleted = state?.videoStatus === "completed" && state?.videoUrl;
-  const isProcessing = state?.videoStatus === "processing" && state?.isRendering;
+  const isCompleted = !!(state?.videoStatus === "completed" && state?.videoUrl);
+  const isProcessing = !!(state?.videoStatus === "processing" && state?.isRendering);
 
   return (
     <div className="flex flex-col gap-6">
@@ -114,19 +107,15 @@ export default function ComposePage() {
             Generate and preview your final video
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          {!isProcessing && (
-            <Button
-              variant="secondary"
-              size="md"
-              icon={<ArrowLeft className="h-4 w-4" />}
-              onClick={handleBack}
-            >
-              Back
-            </Button>
-          )}
-          {isCompleted && (
-            <>
+        <WorkflowNavigation
+          projectId={projectId}
+          currentStep="compose"
+          canGoNext={isCompleted}
+          nextLabel={isCompleted ? "Go to Projects" : undefined}
+          canGoBack={!isProcessing}
+          isProcessing={isProcessing}
+          additionalActions={
+            isCompleted ? (
               <Button
                 variant="secondary"
                 size="md"
@@ -135,12 +124,9 @@ export default function ComposePage() {
               >
                 Download
               </Button>
-              <Button variant="primary" size="md" onClick={handleGoToProjects}>
-                Go to Projects
-              </Button>
-            </>
-          )}
-        </div>
+            ) : undefined
+          }
+        />
       </div>
 
       {/* Project Summary */}

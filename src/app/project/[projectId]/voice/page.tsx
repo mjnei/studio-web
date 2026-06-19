@@ -2,10 +2,11 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { Play, Pause, Download, ArrowRight, ArrowLeft, Sparkles, Volume2, Loader2 } from "lucide-react";
+import { Play, Pause, Download, Sparkles, Volume2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useProjectState } from "@/lib/hooks/use-project-state";
+import { WorkflowNavigation } from "@/components/project/workflow-navigation";
 
 const mockVoices = [
   { id: "voice-1", name: "Emma", gender: "Female", accent: "US English", description: "Warm and friendly" },
@@ -69,16 +70,6 @@ export default function VoicePage() {
     setGenerationProgress(0);
   };
 
-  const handleContinue = () => {
-    if (state?.audioUrl) {
-      router.push(`/project/${projectId}/compose`);
-    }
-  };
-
-  const handleBack = () => {
-    router.push(`/project/${projectId}/script`);
-  };
-
   const togglePlayback = () => {
     // TODO: Implement actual audio playback
     setIsPlaying(!isPlaying);
@@ -105,26 +96,11 @@ export default function VoicePage() {
             Convert your script to speech with AI-powered text-to-speech
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="secondary"
-            size="md"
-            icon={<ArrowLeft className="h-4 w-4" />}
-            onClick={handleBack}
-          >
-            Back
-          </Button>
-          {state?.audioUrl && (
-            <Button
-              variant="primary"
-              size="md"
-              icon={<ArrowRight className="h-4 w-4" />}
-              onClick={handleContinue}
-            >
-              Continue to Compose
-            </Button>
-          )}
-        </div>
+        <WorkflowNavigation
+          projectId={projectId}
+          currentStep="voice"
+          canGoNext={!!state?.audioUrl}
+        />
       </div>
 
       {/* Script Summary */}
