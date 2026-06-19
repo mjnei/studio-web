@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { PanelLeft, ChevronDown, ArrowLeft, Check } from "lucide-react";
 import { DrawerContent } from "@/components/shell/drawer-content";
 import { useSidebar } from "@/components/shell/sidebar-context";
 import { Button } from "@/components/ui/button";
@@ -65,35 +66,10 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
               className="rounded-md p-1.5 text-text-muted hover:bg-surface-hover hover:text-text-secondary"
               aria-label={isNarrow ? "Open navigation" : "Toggle sidebar"}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <rect width="18" height="18" x="3" y="3" rx="2" />
-                <path d="M9 3v18" />
-              </svg>
+              <PanelLeft size={20} />
             </button>
             <Link href="/projects" className="text-text-muted hover:text-text-secondary">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="m15 18-6-6 6-6" />
-              </svg>
+              <ArrowLeft size={20} />
             </Link>
             <h1 className="text-base font-semibold">Untitled Project</h1>
             <span
@@ -130,21 +106,7 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
                           : "text-text-muted hover:text-text-secondary"
                     }`}
                   >
-                    {isCompleted && (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="3"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M20 6 9 17l-5-5" />
-                      </svg>
-                    )}
+                    {isCompleted && <Check size={14} strokeWidth={3} />}
                     {stage.label}
                   </Link>
                 </div>

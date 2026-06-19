@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
+import { Mic, X, Play, Pause, Circle, Square, Volume2, VolumeX, RotateCcw, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type RecorderState = "idle" | "requesting" | "recording" | "recorded";
@@ -275,11 +276,7 @@ export function VoiceRecorder({ onRecorded }: { onRecorded?: (blob: Blob) => voi
     <div className="rounded-lg border border-border-default bg-surface-panel p-4">
       {error && (
         <div className="mb-3 flex items-start gap-2 rounded-md bg-red-500/10 px-3 py-2">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mt-0.5 shrink-0 text-red-400">
-            <circle cx="12" cy="12" r="10" />
-            <line x1="12" y1="8" x2="12" y2="12" />
-            <line x1="12" y1="16" x2="12.01" y2="16" />
-          </svg>
+          <X size={16} className="mt-0.5 shrink-0 text-red-400" />
           <p className="text-sm text-red-300">{error}</p>
         </div>
       )}
@@ -298,10 +295,7 @@ export function VoiceRecorder({ onRecorded }: { onRecorded?: (blob: Blob) => voi
             className="flex h-14 w-14 items-center justify-center rounded-full bg-red-500 text-white transition hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 focus:ring-offset-surface-panel"
             title="Start recording"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" />
-              <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
-            </svg>
+            <Circle size={24} className="fill-current" />
           </button>
           <p className="text-sm text-text-secondary">Click to record from your microphone</p>
           <p className="text-xs text-text-muted">30–60s recommended · max {formatTime(MAX_DURATION_S)}</p>
@@ -331,9 +325,7 @@ export function VoiceRecorder({ onRecorded }: { onRecorded?: (blob: Blob) => voi
             className="flex h-14 w-14 items-center justify-center rounded-full bg-surface-raised text-text-primary transition hover:bg-surface-hover focus:outline-none focus:ring-2 focus:ring-text-muted focus:ring-offset-2 focus:ring-offset-surface-panel"
             title="Stop recording"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <rect x="6" y="6" width="12" height="12" rx="2" />
-            </svg>
+            <Square size={24} className="fill-current" />
           </button>
           <p className="text-sm text-text-secondary">Recording… click to stop</p>
         </div>
@@ -350,16 +342,7 @@ export function VoiceRecorder({ onRecorded }: { onRecorded?: (blob: Blob) => voi
               className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent-cyan text-white transition hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-accent-cyan focus:ring-offset-2 focus:ring-offset-surface-panel"
               title={isPlaying ? "Pause" : "Play"}
             >
-              {isPlaying ? (
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                  <rect x="6" y="4" width="4" height="16" rx="1" />
-                  <rect x="14" y="4" width="4" height="16" rx="1" />
-                </svg>
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                  <polygon points="5 3 19 12 5 21 5 3" />
-                </svg>
-              )}
+              {isPlaying ? <Pause size={18} /> : <Play size={18} />}
             </button>
             <button
               onClick={(e) => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { PanelLeft } from "lucide-react";
+import { PanelLeft, Search, Plus, Bell, ChevronDown } from "lucide-react";
 import { useSidebar } from "@/components/shell/sidebar-context";
 import { Button } from "@/components/ui/button";
 
@@ -26,19 +26,7 @@ export function TopNav() {
           {/* Search Bar */}
           <div className="hidden lg:block relative">
             <div className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted">
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
+              <Search size={16} />
             </div>
             <input
               type="text"
@@ -52,23 +40,7 @@ export function TopNav() {
             variant="primary"
             size="md"
             className="group hidden sm:inline-flex"
-            icon={
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="transition-transform group-hover:rotate-90 duration-300"
-              >
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
-              </svg>
-            }
+            icon={<Plus size={18} className="transition-transform group-hover:rotate-90 duration-300" />}
           >
             <a href="/projects">New Project</a>
           </Button>
@@ -79,43 +51,14 @@ export function TopNav() {
             size="md"
             iconOnly
             className="sm:hidden"
-            icon={
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
-              </svg>
-            }
+            icon={<Plus size={18} />}
           >
             <a href="/projects" />
           </Button>
 
           {/* Notifications */}
           <button className="relative rounded-lg p-2 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all focus-ring group">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="group-hover:scale-110 transition-transform duration-200"
-            >
-              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
-              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
-            </svg>
+            <Bell size={20} className="group-hover:scale-110 transition-transform duration-200" />
             <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-status-failed pulse-soft" />
           </button>
         </div>

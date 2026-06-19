@@ -1,5 +1,6 @@
 "use client";
 
+import { Settings, HelpCircle, Home, Folder, Film, Mic, Briefcase, User, ChevronDown, X, Activity, Loader2, Search } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 
@@ -53,6 +54,17 @@ function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(href + "/");
 }
 
+const iconMap: Record<string, React.ReactNode> = {
+  "/dashboard": <Home size={20} />,
+  "/projects": <Folder size={20} />,
+  "/movies": <Film size={20} />,
+  "/voices": <Mic size={20} />,
+  "/jobs": <Briefcase size={20} />,
+  "/referral": <User size={20} />,
+  "/help": <HelpCircle size={20} />,
+  "/settings": <Settings size={20} />,
+};
+
 function RailLink({
   item,
   isActive: active,
@@ -77,20 +89,7 @@ function RailLink({
           : "text-text-secondary hover:bg-surface-hover hover:text-text-primary hover:border hover:border-border-default"
       }`}
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="20"
-        height="20"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="shrink-0"
-      >
-        <path d={item.icon} />
-      </svg>
+      {iconMap[item.href] || <Search size={20} />}
       {!collapsed && <span>{item.label}</span>}
     </Link>
   );
@@ -104,22 +103,7 @@ function LogoMark({ collapsed }: { collapsed?: boolean }) {
       className="flex items-center gap-2.5 text-lg font-bold group"
     >
       <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-accent-secondary via-accent-primary to-accent-tertiary shadow-lg group-hover:shadow-xl transition-all">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="white"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="shrink-0"
-        >
-          <polygon points="12 2 2 7 12 12 22 7 12 2" />
-          <polyline points="2 17 12 22 22 17" />
-          <polyline points="2 12 12 17 22 12" />
-        </svg>
+        <Activity size={20} className="text-white" />
       </div>
       <span className="bg-gradient-to-r from-text-primary to-text-secondary bg-clip-text text-transparent">
         Huavoi
@@ -216,21 +200,7 @@ export function DrawerContent({
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
             title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className={`transition-transform duration-200 ${collapsed ? "rotate-180" : ""}`}
-            >
-              <rect width="18" height="18" x="3" y="3" rx="2" />
-              <path d="M9 3v18" />
-            </svg>
+            <ChevronDown size={18} className={`transition-transform duration-200 ${collapsed ? "rotate-180" : ""}`} />
           </button>
         )}
         {onClose && (
@@ -240,21 +210,7 @@ export function DrawerContent({
             aria-label="Close menu"
             title="Close menu"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
+            <X size={20} />
           </button>
         )}
       </div>
