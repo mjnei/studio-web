@@ -40,7 +40,9 @@ export function TopNav() {
             variant="primary"
             size="md"
             className="group hidden sm:inline-flex"
-            icon={<Plus size={18} className="transition-transform group-hover:rotate-90 duration-300" />}
+            icon={
+              <Plus size={18} className="transition-transform group-hover:rotate-90 duration-300" />
+            }
           >
             <a href="/projects">New Project</a>
           </Button>

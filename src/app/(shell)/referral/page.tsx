@@ -35,12 +35,7 @@ export default function ReferralPage() {
               <p className="text-xs text-text-muted">Your referral link</p>
               <p className="truncate text-sm text-text-primary">{referralLink}</p>
             </div>
-            <Button
-              variant="primary"
-              size="md"
-              onClick={handleCopy}
-              className="shrink-0"
-            >
+            <Button variant="primary" size="md" onClick={handleCopy} className="shrink-0">
               {copied ? "Copied!" : "Copy link"}
             </Button>
           </div>

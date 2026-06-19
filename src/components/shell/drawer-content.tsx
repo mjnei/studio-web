@@ -1,6 +1,20 @@
 "use client";
 
-import { Settings, HelpCircle, Home, Folder, Film, Mic, Briefcase, User, ChevronDown, X, Activity, Loader2, Search } from "lucide-react";
+import {
+  Settings,
+  HelpCircle,
+  Home,
+  Folder,
+  Film,
+  Mic,
+  Briefcase,
+  User,
+  ChevronDown,
+  X,
+  Activity,
+  Loader2,
+  Search,
+} from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 
@@ -98,10 +112,7 @@ function RailLink({
 function LogoMark({ collapsed }: { collapsed?: boolean }) {
   if (collapsed) return null;
   return (
-    <Link
-      href="/dashboard"
-      className="flex items-center gap-2.5 text-lg font-bold group"
-    >
+    <Link href="/dashboard" className="flex items-center gap-2.5 text-lg font-bold group">
       <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-accent-secondary via-accent-primary to-accent-tertiary shadow-lg group-hover:shadow-xl transition-all">
         <Activity size={20} className="text-white" />
       </div>
@@ -200,7 +211,10 @@ export function DrawerContent({
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
             title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
-            <ChevronDown size={18} className={`transition-transform duration-200 ${collapsed ? "rotate-180" : ""}`} />
+            <ChevronDown
+              size={18}
+              className={`transition-transform duration-200 ${collapsed ? "rotate-180" : ""}`}
+            />
           </button>
         )}
         {onClose && (

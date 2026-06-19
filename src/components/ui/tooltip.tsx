@@ -9,12 +9,7 @@ export interface TooltipProps {
   delay?: number;
 }
 
-export function Tooltip({
-  content,
-  children,
-  position = "top",
-  delay = 200,
-}: TooltipProps) {
+export function Tooltip({ content, children, position = "top", delay = 200 }: TooltipProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [showTimeout, setShowTimeout] = useState<NodeJS.Timeout>();
 
@@ -47,7 +42,11 @@ export function Tooltip({
   };
 
   return (
-    <div className="relative inline-block" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+    <div
+      className="relative inline-block"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       {children}
 
       {isVisible && (

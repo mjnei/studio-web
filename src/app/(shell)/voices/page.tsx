@@ -43,11 +43,7 @@ export default function VoicesPage() {
               <p className="mb-4 text-sm text-text-muted">
                 Record a sample from your microphone to clone your first voice.
               </p>
-              <Button
-                variant="primary"
-                size="md"
-                onClick={() => setShowRecorder(true)}
-              >
+              <Button variant="primary" size="md" onClick={() => setShowRecorder(true)}>
                 Record your voice
               </Button>
             </>

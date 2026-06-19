@@ -34,7 +34,11 @@ export default function ScriptPage() {
             >
               <div className="mb-3 flex items-center justify-between">
                 <span className="text-sm font-medium text-text-primary">{variant}</span>
-                <Button variant="ghost" size="sm" className="text-accent-cyan hover:text-accent-cyan">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-accent-cyan hover:text-accent-cyan"
+                >
                   Use this script
                 </Button>
               </div>

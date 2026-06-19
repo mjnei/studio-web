@@ -236,7 +236,11 @@ export default function ProfilePage() {
                 }}
                 className="text-sm text-accent-cyan hover:underline"
               >
-                {showChangePassword ? "Cancel" : user.has_password ? "Change password" : "Set password"}
+                {showChangePassword
+                  ? "Cancel"
+                  : user.has_password
+                    ? "Change password"
+                    : "Set password"}
               </button>
             </div>
             {showChangePassword && (

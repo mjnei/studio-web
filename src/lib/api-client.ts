@@ -27,7 +27,11 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     const refreshed = await refreshSession();
     if (refreshed) {
       headers["Authorization"] = `Bearer ${accessToken}`;
-      const retry = await fetch(`${API_BASE}${path}`, { ...options, headers, credentials: "include" });
+      const retry = await fetch(`${API_BASE}${path}`, {
+        ...options,
+        headers,
+        credentials: "include",
+      });
       if (!retry.ok) {
         const errorText = await retry.text();
         throw new ApiError(retry.status, errorText);
@@ -68,7 +72,10 @@ export async function loginWithFirebase(idToken: string): Promise<{ access_token
   return res;
 }
 
-export async function loginWithPassword(email: string, password: string): Promise<{ access_token: string }> {
+export async function loginWithPassword(
+  email: string,
+  password: string
+): Promise<{ access_token: string }> {
   const res = await request<{ access_token: string }>("/users/login/password", {
     method: "POST",
     body: JSON.stringify({ email, password }),
@@ -77,7 +84,11 @@ export async function loginWithPassword(email: string, password: string): Promis
   return res;
 }
 
-export async function signupWithPassword(email: string, password: string, name: string): Promise<{ access_token: string }> {
+export async function signupWithPassword(
+  email: string,
+  password: string,
+  name: string
+): Promise<{ access_token: string }> {
   const res = await request<{ access_token: string }>("/auth/register", {
     method: "POST",
     body: JSON.stringify({ email, password, name }),
@@ -163,7 +174,10 @@ export async function setPassword(password: string): Promise<UserResponse> {
   });
 }
 
-export async function changePassword(currentPassword: string, newPassword: string): Promise<UserResponse> {
+export async function changePassword(
+  currentPassword: string,
+  newPassword: string
+): Promise<UserResponse> {
   return request<UserResponse>("/users/me/change-password", {
     method: "POST",
     body: JSON.stringify({ current_password: currentPassword, new_password: newPassword }),

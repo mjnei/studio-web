@@ -1,18 +1,8 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useState,
-  useCallback,
-  useEffect,
-  type ReactNode,
-} from "react";
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import {
-  signInWithPopup,
-  signOut as firebaseSignOut,
-} from "firebase/auth";
+import { signInWithPopup, signOut as firebaseSignOut } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/firebase";
 import {
   loginWithFirebase,
@@ -41,7 +31,17 @@ type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 const AUTH_ROUTES = ["/login", "/signup", "/forgot-password"];
-const PROTECTED_ROUTE_PREFIXES = ["/dashboard", "/projects", "/movies", "/voices", "/jobs", "/profile", "/settings", "/referral", "/help"];
+const PROTECTED_ROUTE_PREFIXES = [
+  "/dashboard",
+  "/projects",
+  "/movies",
+  "/voices",
+  "/jobs",
+  "/profile",
+  "/settings",
+  "/referral",
+  "/help",
+];
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserResponse | null>(null);
@@ -96,7 +96,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await refreshUser();
       router.push("/dashboard");
     },
-    [refreshUser, router],
+    [refreshUser, router]
   );
 
   const signupWithPassword = useCallback(
@@ -105,7 +105,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await refreshUser();
       router.push("/dashboard");
     },
-    [refreshUser, router],
+    [refreshUser, router]
   );
 
   const logout = useCallback(async () => {

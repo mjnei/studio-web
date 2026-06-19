@@ -41,7 +41,8 @@ export default function VoicePage() {
       <section className="mb-8">
         <h3 className="mb-3 text-base font-medium text-text-secondary">2. Record Your Voice</h3>
         <p className="mb-3 text-sm text-text-muted">
-          Record a sample from your microphone to create a custom voice clone. No file uploads — your voice stays in the browser.
+          Record a sample from your microphone to create a custom voice clone. No file uploads —
+          your voice stays in the browser.
         </p>
         <VoiceRecorder />
       </section>

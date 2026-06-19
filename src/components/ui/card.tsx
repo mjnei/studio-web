@@ -20,18 +20,13 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
     },
     ref
   ) => {
-    const baseStyles =
-      "rounded-xl transition-all duration-200 ease-smooth backdrop-blur-sm";
+    const baseStyles = "rounded-xl transition-all duration-200 ease-smooth backdrop-blur-sm";
 
     const variants = {
-      default:
-        "bg-surface-panel/80 border border-border-default hover:border-border-strong",
-      elevated:
-        "bg-surface-elevated shadow-md border border-border-subtle",
-      bordered:
-        "bg-surface-raised border-2 border-border-default",
-      glass:
-        "bg-surface-panel/40 border border-border-default backdrop-blur-xl",
+      default: "bg-surface-panel/80 border border-border-default hover:border-border-strong",
+      elevated: "bg-surface-elevated shadow-md border border-border-subtle",
+      bordered: "bg-surface-raised border-2 border-border-default",
+      glass: "bg-surface-panel/40 border border-border-default backdrop-blur-xl",
     };
 
     const paddings = {
@@ -41,9 +36,10 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
       lg: "p-8",
     };
 
-    const hoverStyles = hover || interactive
-      ? "hover:border-accent-primary/50 hover:shadow-glow hover:-translate-y-1 cursor-pointer"
-      : "";
+    const hoverStyles =
+      hover || interactive
+        ? "hover:border-accent-primary/50 hover:shadow-glow hover:-translate-y-1 cursor-pointer"
+        : "";
 
     return (
       <div
@@ -78,11 +74,7 @@ export interface CardTitleProps extends HTMLAttributes<HTMLHeadingElement> {}
 export const CardTitle = forwardRef<HTMLHeadingElement, CardTitleProps>(
   ({ className = "", children, ...props }, ref) => {
     return (
-      <h3
-        ref={ref}
-        className={`text-lg font-semibold text-text-primary ${className}`}
-        {...props}
-      >
+      <h3 ref={ref} className={`text-lg font-semibold text-text-primary ${className}`} {...props}>
         {children}
       </h3>
     );
@@ -96,11 +88,7 @@ export interface CardDescriptionProps extends HTMLAttributes<HTMLParagraphElemen
 export const CardDescription = forwardRef<HTMLParagraphElement, CardDescriptionProps>(
   ({ className = "", children, ...props }, ref) => {
     return (
-      <p
-        ref={ref}
-        className={`text-sm text-text-secondary ${className}`}
-        {...props}
-      >
+      <p ref={ref} className={`text-sm text-text-secondary ${className}`} {...props}>
         {children}
       </p>
     );

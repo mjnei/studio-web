@@ -8,16 +8,7 @@ export interface SkeletonProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(
-  (
-    {
-      variant = "text",
-      width,
-      height,
-      className = "",
-      ...props
-    },
-    ref
-  ) => {
+  ({ variant = "text", width, height, className = "", ...props }, ref) => {
     const baseStyles =
       "shimmer bg-gradient-to-r from-surface-hover via-surface-elevated to-surface-hover bg-surface-hover animate-pulse";
 

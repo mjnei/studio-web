@@ -113,27 +113,30 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
               );
             })}
           </nav>
-            <div className="ml-auto hidden items-center gap-2 md:flex">
-              {currentStep === "compose" && (
-                <>
-                  <select className="rounded-md border border-border-default bg-surface-raised px-2 py-1 text-xs text-text-secondary">
-                    <option>1080p / 30fps</option>
-                    <option>720p / 30fps</option>
-                    <option>4K / 60fps</option>
-                  </select>
-                  <Button variant="primary" size="sm">
-                    Export
-                  </Button>
-                </>
-              )}
-            </div>
+          <div className="ml-auto hidden items-center gap-2 md:flex">
+            {currentStep === "compose" && (
+              <>
+                <select className="rounded-md border border-border-default bg-surface-raised px-2 py-1 text-xs text-text-secondary">
+                  <option>1080p / 30fps</option>
+                  <option>720p / 30fps</option>
+                  <option>4K / 60fps</option>
+                </select>
+                <Button variant="primary" size="sm">
+                  Export
+                </Button>
+              </>
+            )}
+          </div>
         </header>
         <main className="flex-1 overflow-y-auto p-4 md:p-6">{children}</main>
       </div>
 
       {isNarrow && mobileOpen && (
         <div className="fixed inset-0 z-50 flex" role="dialog" aria-modal="true">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setMobileOpen(false)}
+          />
           <div className="relative w-80 max-w-[85vw] shrink-0 border-r border-border-default bg-surface-panel shadow-2xl">
             <DrawerContent pathname={pathname} onNavigate={() => setMobileOpen(false)} />
           </div>

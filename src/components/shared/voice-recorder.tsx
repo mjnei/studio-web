@@ -1,7 +1,18 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
-import { Mic, X, Play, Pause, Circle, Square, Volume2, VolumeX, RotateCcw, Check } from "lucide-react";
+import {
+  Mic,
+  X,
+  Play,
+  Pause,
+  Circle,
+  Square,
+  Volume2,
+  VolumeX,
+  RotateCcw,
+  Check,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type RecorderState = "idle" | "requesting" | "recording" | "recorded";
@@ -9,12 +20,7 @@ type RecorderState = "idle" | "requesting" | "recording" | "recorded";
 const MAX_DURATION_S = 15;
 
 function getSupportedMimeType(): string {
-  const types = [
-    "audio/webm;codecs=opus",
-    "audio/webm",
-    "audio/ogg;codecs=opus",
-    "audio/mp4",
-  ];
+  const types = ["audio/webm;codecs=opus", "audio/webm", "audio/ogg;codecs=opus", "audio/mp4"];
   for (const type of types) {
     if (MediaRecorder.isTypeSupported(type)) return type;
   }
@@ -162,9 +168,10 @@ export function VoiceRecorder({ onRecorded }: { onRecorded?: (blob: Blob) => voi
         }
       }, 200);
     } catch (err) {
-      const msg = err instanceof DOMException && err.name === "NotAllowedError"
-        ? "Microphone access denied. Please allow microphone permissions and try again."
-        : "Could not start recording. Please check your microphone and try again.";
+      const msg =
+        err instanceof DOMException && err.name === "NotAllowedError"
+          ? "Microphone access denied. Please allow microphone permissions and try again."
+          : "Could not start recording. Please check your microphone and try again.";
       setError(msg);
       setState("idle");
     }
@@ -181,7 +188,12 @@ export function VoiceRecorder({ onRecorded }: { onRecorded?: (blob: Blob) => voi
     const url = audioUrlRef.current;
     if (!url) return;
 
-    if (audioRef.current && audioRef.current.paused && audioRef.current.currentTime > 0 && audioRef.current.currentTime < audioRef.current.duration) {
+    if (
+      audioRef.current &&
+      audioRef.current.paused &&
+      audioRef.current.currentTime > 0 &&
+      audioRef.current.currentTime < audioRef.current.duration
+    ) {
       audioRef.current.play();
       setIsPlaying(true);
       return;
@@ -243,7 +255,8 @@ export function VoiceRecorder({ onRecorded }: { onRecorded?: (blob: Blob) => voi
   }, []);
 
   const seekPlayback = useCallback((fraction: number) => {
-    if (!audioRef.current || !audioRef.current.duration || !isFinite(audioRef.current.duration)) return;
+    if (!audioRef.current || !audioRef.current.duration || !isFinite(audioRef.current.duration))
+      return;
     audioRef.current.currentTime = fraction * audioRef.current.duration;
     setPlaybackProgress(fraction);
     setPlaybackTime(audioRef.current.currentTime);
@@ -298,7 +311,9 @@ export function VoiceRecorder({ onRecorded }: { onRecorded?: (blob: Blob) => voi
             <Circle size={24} className="fill-current" />
           </button>
           <p className="text-sm text-text-secondary">Click to record from your microphone</p>
-          <p className="text-xs text-text-muted">30–60s recommended · max {formatTime(MAX_DURATION_S)}</p>
+          <p className="text-xs text-text-muted">
+            30–60s recommended · max {formatTime(MAX_DURATION_S)}
+          </p>
         </div>
       )}
 
@@ -309,7 +324,9 @@ export function VoiceRecorder({ onRecorded }: { onRecorded?: (blob: Blob) => voi
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75" />
               <span className="relative inline-flex h-3 w-3 rounded-full bg-red-500" />
             </span>
-            <span className="text-xl font-mono font-medium text-text-primary">{formatTime(duration)}</span>
+            <span className="text-xl font-mono font-medium text-text-primary">
+              {formatTime(duration)}
+            </span>
             <span className="text-xs text-text-muted">/ {formatTime(MAX_DURATION_S)}</span>
           </div>
           <div className="w-full max-w-sm">
@@ -334,7 +351,9 @@ export function VoiceRecorder({ onRecorded }: { onRecorded?: (blob: Blob) => voi
       {state === "recorded" && (
         <div className="flex flex-col gap-4 py-2">
           {maxReached && (
-            <p className="text-xs text-text-muted">Maximum duration reached. Recording stopped automatically.</p>
+            <p className="text-xs text-text-muted">
+              Maximum duration reached. Recording stopped automatically.
+            </p>
           )}
           <div className="flex items-center gap-3">
             <button
@@ -363,18 +382,10 @@ export function VoiceRecorder({ onRecorded }: { onRecorded?: (blob: Blob) => voi
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={discardRecording}
-            >
+            <Button variant="secondary" size="sm" onClick={discardRecording}>
               Discard &amp; re-record
             </Button>
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={startRecording}
-            >
+            <Button variant="primary" size="sm" onClick={startRecording}>
               Save this voice
             </Button>
           </div>

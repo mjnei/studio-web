@@ -30,9 +30,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           <h1 className="text-3xl font-bold bg-gradient-to-r from-text-primary to-text-secondary bg-clip-text text-transparent">
             Huavoi Studio
           </h1>
-          <p className="mt-2 text-sm text-text-secondary">
-            AI-assisted video production
-          </p>
+          <p className="mt-2 text-sm text-text-secondary">AI-assisted video production</p>
         </div>
         {children}
       </div>

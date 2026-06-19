@@ -91,9 +91,7 @@ export default function MoviesPage() {
       <div className="mb-8 flex items-end justify-between">
         <div>
           <h1 className="mb-1 text-2xl font-bold">Movie Library</h1>
-          <p className="text-sm text-text-muted">
-            Discover and explore popular movies from TMDB
-          </p>
+          <p className="text-sm text-text-muted">Discover and explore popular movies from TMDB</p>
         </div>
         <span className="rounded-full bg-accent-cyan-muted px-3 py-1 text-xs font-medium text-accent-cyan">
           {movies.length} movies
@@ -145,9 +143,7 @@ export default function MoviesPage() {
               </div>
               <div className="absolute right-2 top-2 flex items-center gap-1 rounded-md bg-black/70 px-1.5 py-0.5 backdrop-blur-sm">
                 <Star className="h-3 w-3 text-yellow-400 fill-yellow-400" />
-                <span className="text-[11px] font-semibold text-white">
-                  {movie.rating}
-                </span>
+                <span className="text-[11px] font-semibold text-white">{movie.rating}</span>
               </div>
             </div>
             <div className="p-3">

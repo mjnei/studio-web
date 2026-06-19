@@ -37,11 +37,7 @@ export default function DashboardPage() {
           <h1 className="text-3xl font-bold text-text-primary mb-2">Dashboard</h1>
           <p className="text-text-secondary">Welcome back! Here's your overview.</p>
         </div>
-        <Button
-          variant="primary"
-          size="lg"
-          icon={<Plus className="w-5 h-5" />}
-        >
+        <Button variant="primary" size="lg" icon={<Plus className="w-5 h-5" />}>
           <Link href="/projects">New Project</Link>
         </Button>
       </div>
@@ -49,11 +45,11 @@ export default function DashboardPage() {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-8">
         {stats.map((stat, index) => (
-          <Card 
-            key={index} 
-            variant="elevated" 
-            padding="md" 
-            interactive 
+          <Card
+            key={index}
+            variant="elevated"
+            padding="md"
+            interactive
             className="group fade-in"
             style={{ animationDelay: `${index * 100}ms` }}
           >
@@ -85,19 +81,35 @@ export default function DashboardPage() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <Button variant="secondary" fullWidth className="justify-start hover:bg-surface-hover transition-all">
+            <Button
+              variant="secondary"
+              fullWidth
+              className="justify-start hover:bg-surface-hover transition-all"
+            >
               <Plus className="w-5 h-5" />
               New Project
             </Button>
-            <Button variant="secondary" fullWidth className="justify-start hover:bg-surface-hover transition-all">
+            <Button
+              variant="secondary"
+              fullWidth
+              className="justify-start hover:bg-surface-hover transition-all"
+            >
               <Upload className="w-5 h-5" />
               Upload Media
             </Button>
-            <Button variant="secondary" fullWidth className="justify-start hover:bg-surface-hover transition-all">
+            <Button
+              variant="secondary"
+              fullWidth
+              className="justify-start hover:bg-surface-hover transition-all"
+            >
               <Mic className="w-5 h-5" />
               Add Voice
             </Button>
-            <Button variant="secondary" fullWidth className="justify-start hover:bg-surface-hover transition-all">
+            <Button
+              variant="secondary"
+              fullWidth
+              className="justify-start hover:bg-surface-hover transition-all"
+            >
               <Settings className="w-5 h-5" />
               Settings
             </Button>
@@ -116,9 +128,7 @@ export default function DashboardPage() {
             <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-surface-hover border border-border-default">
               <Inbox className="w-8 h-8 text-text-muted" />
             </div>
-            <p className="text-lg font-medium text-text-primary mb-2">
-              No recent activity yet
-            </p>
+            <p className="text-lg font-medium text-text-primary mb-2">No recent activity yet</p>
             <p className="text-text-secondary mb-6 max-w-md">
               Start by creating a new project to see your activity here.
             </p>

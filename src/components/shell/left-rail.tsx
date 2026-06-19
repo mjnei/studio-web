@@ -50,9 +50,9 @@ export function LeftRail() {
             role="dialog"
             aria-modal="true"
           >
-            <DrawerContent 
-              pathname={pathname} 
-              onNavigate={() => setMobileOpen(false)} 
+            <DrawerContent
+              pathname={pathname}
+              onNavigate={() => setMobileOpen(false)}
               onClose={() => setMobileOpen(false)}
             />
           </div>

@@ -32,9 +32,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="w-full">
         {label && (
-          <label className="mb-2 block text-sm font-medium text-text-secondary">
-            {label}
-          </label>
+          <label className="mb-2 block text-sm font-medium text-text-secondary">{label}</label>
         )}
         <div className="relative">
           {icon && (
@@ -72,12 +70,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         </div>
         <div className="mt-1.5 flex items-center justify-between">
           <div>
-            {error && (
-              <p className="text-xs text-status-failed">{error}</p>
-            )}
-            {helperText && !error && (
-              <p className="text-xs text-text-muted">{helperText}</p>
-            )}
+            {error && <p className="text-xs text-status-failed">{error}</p>}
+            {helperText && !error && <p className="text-xs text-text-muted">{helperText}</p>}
           </div>
           {showCharCount && maxLength && (
             <p className="text-xs text-text-muted">

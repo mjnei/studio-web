@@ -24,11 +24,10 @@ export default function ProjectsPage() {
             <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-accent-secondary to-accent-tertiary shadow-lg">
               <Folder className="w-10 h-10 text-white" />
             </div>
-            <h2 className="text-2xl font-bold text-text-primary mb-2">
-              No projects yet
-            </h2>
+            <h2 className="text-2xl font-bold text-text-primary mb-2">No projects yet</h2>
             <p className="text-text-secondary mb-8 max-w-md">
-              Get started by creating your first project. You can manage all your projects and renders from here.
+              Get started by creating your first project. You can manage all your projects and
+              renders from here.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <Button variant="primary" size="lg">
@@ -49,7 +48,8 @@ export default function ProjectsPage() {
         </CardHeader>
         <CardContent>
           <p className="text-sm text-text-secondary">
-            Projects help you organize your voice recordings, renders, and media. Each project can have multiple renders with different settings.
+            Projects help you organize your voice recordings, renders, and media. Each project can
+            have multiple renders with different settings.
           </p>
         </CardContent>
       </Card>

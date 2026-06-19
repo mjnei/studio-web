@@ -8,7 +8,7 @@
   --surface-hover: #1c2128;
   --surface-elevated: #21262d;
   --surface-overlay: rgba(10, 14, 23, 0.8);
-  
+
   /* Borders */
   --border-default: rgba(255, 255, 255, 0.08);
   --border-subtle: rgba(255, 255, 255, 0.04);
@@ -128,7 +128,8 @@ body {
   }
 
   @keyframes gradient {
-    0%, 100% {
+    0%,
+    100% {
       background-position: 0% 50%;
     }
     50% {
@@ -175,7 +176,8 @@ body {
   }
 
   @keyframes pulseSoft {
-    0%, 100% {
+    0%,
+    100% {
       opacity: 1;
     }
     50% {
