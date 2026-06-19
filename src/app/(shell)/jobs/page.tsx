@@ -1,35 +1,31 @@
 "use client";
 
 import { useState } from "react";
+import { Select } from "@/components/ui/select";
 
 type FilterTab = "all" | "pending" | "completed";
 
 export default function JobsPage() {
   const [filter, setFilter] = useState<FilterTab>("all");
 
-  const tabs: { label: string; value: FilterTab }[] = [
-    { label: "All", value: "all" },
-    { label: "Pending", value: "pending" },
-    { label: "Completed", value: "completed" },
+  const filterOptions = [
+    { value: "all" as const, label: "All Jobs" },
+    { value: "pending" as const, label: "Pending" },
+    { value: "completed" as const, label: "Completed" },
   ];
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold">My Jobs</h1>
-      <div className="mb-6 flex gap-2">
-        {tabs.map((t) => (
-          <button
-            key={t.value}
-            onClick={() => setFilter(t.value)}
-            className={`rounded-md px-3 py-1.5 text-sm font-medium ${
-              filter === t.value
-                ? "bg-surface-raised text-text-primary"
-                : "text-text-muted hover:text-text-secondary"
-            }`}
-          >
-            {t.label}
-          </button>
-        ))}
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="text-2xl font-bold">My Jobs</h1>
+        <div className="w-full sm:w-48">
+          <Select
+            value={filter}
+            onChange={(value) => setFilter(value as FilterTab)}
+            options={filterOptions}
+            placeholder="Filter jobs"
+          />
+        </div>
       </div>
       <div className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-8 text-center">
         <p className="mb-2 text-text-secondary">No render jobs yet.</p>

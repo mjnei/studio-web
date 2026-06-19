@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
+import { useToast } from "@/components/ui/toast";
 
 export default function SignupPage() {
   const {
@@ -15,6 +16,7 @@ export default function SignupPage() {
     isAuthenticated,
     isLoading: authLoading,
   } = useAuth();
+  const toast = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -44,9 +46,11 @@ export default function SignupPage() {
     setLoading(true);
     try {
       await signupWithPassword(email, password, name);
+      toast.success("Account created!", "Welcome to Huavoi Studio.");
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Signup failed";
       setError(msg);
+      toast.error("Signup failed", msg);
       setLoading(false);
     }
   }
@@ -56,9 +60,11 @@ export default function SignupPage() {
     setLoading(true);
     try {
       await loginWithGoogle();
+      toast.success("Account created!", "Welcome to Huavoi Studio.");
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Google sign-in failed";
       setError(msg);
+      toast.error("Signup failed", msg);
       setLoading(false);
     }
   }

@@ -1,10 +1,14 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Select } from "@/components/ui/select";
+import { useState } from "react";
 
 const variants = ["Narrative", "Promotional", "Energetic"];
 
 export default function ScriptPage() {
+  const [scriptLength, setScriptLength] = useState("standard");
+
   return (
     <div className="flex h-full flex-col gap-4 md:flex-row md:gap-6">
       <div className="w-full shrink-0 rounded-lg border border-border-default bg-surface-panel p-4 md:w-80">
@@ -16,11 +20,16 @@ export default function ScriptPage() {
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
           <h2 className="text-lg font-semibold">AI Script Generation</h2>
           <div className="flex items-center gap-2">
-            <select className="rounded-md border border-border-default bg-surface-raised px-2 py-1 text-xs text-text-secondary">
-              <option>Standard</option>
-              <option>Short</option>
-              <option>Detailed</option>
-            </select>
+            <Select
+              value={scriptLength}
+              onChange={setScriptLength}
+              options={[
+                { value: "standard", label: "Standard" },
+                { value: "short", label: "Short" },
+                { value: "detailed", label: "Detailed" },
+              ]}
+              size="sm"
+            />
             <Button variant="primary" size="sm">
               Regenerate all
             </Button>

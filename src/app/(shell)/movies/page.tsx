@@ -1,4 +1,9 @@
+"use client";
+
+import { useState } from "react";
 import { Star, Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
 
 const movies = [
   {
@@ -86,6 +91,9 @@ const movies = [
 const genres = ["All", "Sci-Fi", "Drama", "Action", "Animation", "Crime", "Comedy", "Thriller"];
 
 export default function MoviesPage() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedGenre, setSelectedGenre] = useState("all");
+
   return (
     <div>
       <div className="mb-8 flex items-end justify-between">
@@ -99,27 +107,25 @@ export default function MoviesPage() {
       </div>
 
       <div className="mb-8 flex flex-wrap items-center gap-3">
-        <div className="relative flex-1 sm:max-w-md">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
-          <input
+        <div className="flex-1 sm:max-w-md">
+          <Input
             type="text"
             placeholder="Search movies..."
-            className="w-full rounded-lg border border-border-default bg-surface-raised py-2.5 pl-10 pr-3 text-sm text-text-primary placeholder-text-muted transition focus:border-accent-cyan focus:outline-none"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            icon={<Search className="h-4 w-4" />}
           />
         </div>
-        <div className="flex flex-wrap gap-2">
-          {genres.map((genre, i) => (
-            <button
-              key={genre}
-              className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition ${
-                i === 0
-                  ? "bg-accent-cyan text-white"
-                  : "border border-border-default bg-surface-raised text-text-secondary hover:border-accent-cyan hover:text-accent-cyan"
-              }`}
-            >
-              {genre}
-            </button>
-          ))}
+        <div className="w-48">
+          <Select
+            value={selectedGenre}
+            onChange={setSelectedGenre}
+            options={genres.map((genre) => ({
+              value: genre.toLowerCase().replace(/\s+/g, "-"),
+              label: genre,
+            }))}
+            placeholder="Filter by genre"
+          />
         </div>
       </div>
 

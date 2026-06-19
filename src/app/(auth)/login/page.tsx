@@ -7,9 +7,11 @@ import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
+import { useToast } from "@/components/ui/toast";
 
 export default function LoginPage() {
   const { loginWithGoogle, loginWithPassword, isAuthenticated, isLoading: authLoading } = useAuth();
+  const toast = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -21,9 +23,11 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await loginWithPassword(email, password);
+      toast.success("Welcome back!", "You have successfully signed in.");
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Invalid email or password";
       setError(msg);
+      toast.error("Login failed", msg);
       setLoading(false);
     }
   }
@@ -33,9 +37,11 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await loginWithGoogle();
+      toast.success("Welcome back!", "You have successfully signed in with Google.");
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Google sign-in failed";
       setError(msg);
+      toast.error("Login failed", msg);
       setLoading(false);
     }
   }
