@@ -2,59 +2,62 @@
 
 ## Documentation Overview
 
-This directory contains comprehensive documentation of the Huavoi Studio frontend design system and recent improvements.
+This directory contains comprehensive documentation of the Huavoi Studio frontend design system, project workflow, and recent improvements.
 
 ### 📚 Documentation Files
 
 #### Getting Started
-- **[QUICK_REFERENCE.md](./QUICK_REFERENCE.md)** ⭐ **START HERE**
+- **[QUICK_REFERENCE.md](./reference/QUICK_REFERENCE.md)** ⭐ **START HERE**
   - Quick lookup for CSS variables, components, and common patterns
   - Useful for developers who just need to build
 
-- **[DESIGN_GUIDE.md](./DESIGN_GUIDE.md)** ✨ **FOR BUILDERS**
+- **[DESIGN_GUIDE.md](./guides/DESIGN_GUIDE.md)** ✨ **FOR BUILDERS**
   - Component usage examples
   - Common patterns and best practices
   - Responsive design guidelines
   - Accessibility tips
   - Performance optimization
 
+#### Workflow Documentation
+- **[WORKFLOW_GUIDE.md](./guides/WORKFLOW_GUIDE.md)** 🚀 **NEW PROJECT WORKFLOW**
+  - Complete guide to the 4-step project creation workflow
+  - State management and persistence
+  - API integration points
+  - Testing checklist
+  - User journey examples
+  - Troubleshooting guide
+
 #### System Documentation
-- **[DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md)** 📖 **FOUNDATIONAL**
+- **[DESIGN_SYSTEM.md](./guides/DESIGN_SYSTEM.md)** 📖 **FOUNDATIONAL**
   - Original design system documentation
   - Color system specification
   - Component specifications
   - Typography system
   - Layout guidelines
 
-- **[FRONTEND_IMPROVEMENTS_SUMMARY.md](./FRONTEND_IMPROVEMENTS_SUMMARY.md)** 📊 **EXECUTIVE SUMMARY**
-  - High-level overview of all improvements
-  - Before/after comparison
-  - Key achievements
-  - Success metrics
+#### Implementation & Reference
+- **[COMPONENT_EXAMPLES.md](./guides/COMPONENT_EXAMPLES.md)** 📚 **COMPONENT SHOWCASE**
+  - Detailed examples of all UI components
+  - Component usage patterns
+  - Props reference
 
-#### Implementation Details
-- **[DESIGN_IMPROVEMENTS.md](./DESIGN_IMPROVEMENTS.md)** 🎯 **IMPROVEMENTS PLANNED**
-  - Original improvement proposal
-  - Detailed specifications
-  - Implementation priorities
+#### Implementation Reports
+- **[COMPLETION_REPORT.md](./implementation/COMPLETION_REPORT.md)** ✅ **PROJECT COMPLETION**
+  - Final status and deliverables
+  - Quality metrics and testing results
 
-- **[DESIGN_IMPROVEMENTS_IMPLEMENTED.md](./DESIGN_IMPROVEMENTS_IMPLEMENTED.md)** ✅ **WHAT WAS DONE**
-  - Detailed list of all implemented changes
+- **[FRONTEND_UPDATES.md](./implementation/FRONTEND_UPDATES.md)** 📊 **PAGE UPDATES**
+  - Frontend pages updated with new components
+  - Integration examples
+  - Before/after comparisons
+
+- **[IMPLEMENTED_CHANGES.md](./implementation/IMPLEMENTED_CHANGES.md)** 📝 **IMPLEMENTATION SUMMARY**
+  - Detailed list of all changes
   - File-by-file modifications
   - Component enhancements explained
 
-#### Other Resources
-- **[MIGRATION_GUIDE.md](./MIGRATION_GUIDE.md)**
-  - Guide for migrating to new design system
-
-- **[REDESIGN_SUMMARY.md](./REDESIGN_SUMMARY.md)**
-  - Visual redesign summary
-
-- **[RESPONSIVENESS_FIXES.md](./RESPONSIVENESS_FIXES.md)**
-  - Responsive design improvements
-
-- **[VISUAL_IMPROVEMENTS.md](./VISUAL_IMPROVEMENTS.md)**
-  - Visual enhancements details
+- **[NEW_COMPONENTS_SUMMARY.md](./implementation/NEW_COMPONENTS_SUMMARY.md)**
+  - Summary of new components created
 
 ---
 
@@ -62,34 +65,25 @@ This directory contains comprehensive documentation of the Huavoi Studio fronten
 
 ### I want to...
 
+#### Learn the new project workflow
+1. Read [WORKFLOW_GUIDE.md](./guides/WORKFLOW_GUIDE.md) for complete overview
+2. Review the 4-step process and state management
+3. Check testing checklist for implementation verification
+4. Review API integration points
+
 #### Build a new feature
-1. Read [QUICK_REFERENCE.md](./QUICK_REFERENCE.md) for component names and imports
-2. Check [DESIGN_GUIDE.md](./DESIGN_GUIDE.md) for examples and patterns
+1. Read [QUICK_REFERENCE.md](./reference/QUICK_REFERENCE.md) for component names and imports
+2. Check [DESIGN_GUIDE.md](./guides/DESIGN_GUIDE.md) for examples and patterns
 3. Use the components from `src/components/ui/`
 
 #### Understand the design system
-1. Read [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md) for foundational concepts
-2. Review [QUICK_REFERENCE.md](./QUICK_REFERENCE.md) for color and spacing system
+1. Read [DESIGN_SYSTEM.md](./guides/DESIGN_SYSTEM.md) for foundational concepts
+2. Review [QUICK_REFERENCE.md](./reference/QUICK_REFERENCE.md) for color and spacing system
 3. Check component source files in `src/components/`
 
-#### Learn about recent improvements
-1. Start with [FRONTEND_IMPROVEMENTS_SUMMARY.md](./FRONTEND_IMPROVEMENTS_SUMMARY.md)
-2. Review [DESIGN_IMPROVEMENTS_IMPLEMENTED.md](./DESIGN_IMPROVEMENTS_IMPLEMENTED.md) for details
-3. Check specific files mentioned in the implementation doc
-
-#### Migrate existing code
-1. Follow [MIGRATION_GUIDE.md](./MIGRATION_GUIDE.md)
-2. Use [DESIGN_GUIDE.md](./DESIGN_GUIDE.md) for pattern examples
-3. Reference [QUICK_REFERENCE.md](./QUICK_REFERENCE.md) for component props
-
-#### Fix accessibility issues
-1. See "Accessibility" section in [DESIGN_GUIDE.md](./DESIGN_GUIDE.md)
-2. Check [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md) for color contrast info
-3. Review component implementations for focus states
-
-#### Optimize performance
-1. See "Performance Tips" in [DESIGN_GUIDE.md](./DESIGN_GUIDE.md)
-2. Check [QUICK_REFERENCE.md](./QUICK_REFERENCE.md) "Performance Tips" section
+#### See all components in action
+1. Check [COMPONENT_EXAMPLES.md](./guides/COMPONENT_EXAMPLES.md) for showcases
+2. Review [DESIGN_GUIDE.md](./guides/DESIGN_GUIDE.md) for detailed examples
 
 ---
 
