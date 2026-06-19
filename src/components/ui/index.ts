@@ -5,3 +5,6 @@ export * from "./badge";
 export * from "./loading";
 export * from "./skeleton";
 export * from "./tooltip";
+export * from "./modal";
+export * from "./select";
+export * from "./toast";

@@ -193,6 +193,178 @@ import { Tooltip } from "@/components/ui/tooltip";
 <Tooltip content="Help" delay={300}>Help</Tooltip>
 ```
 
+### Modal
+
+```tsx
+import { Modal, ConfirmModal, FormModal } from "@/components/ui/modal";
+
+// Basic Modal
+<Modal open={isOpen} onClose={() => setIsOpen(false)} title="Modal Title">
+  <p>Modal content goes here</p>
+</Modal>
+
+// Modal with Footer
+<Modal
+  open={isOpen}
+  onClose={() => setIsOpen(false)}
+  title="Confirm Action"
+  footer={
+    <>
+      <Button variant="secondary" onClick={onCancel}>Cancel</Button>
+      <Button variant="primary" onClick={onConfirm}>Confirm</Button>
+    </>
+  }
+>
+  <p>Are you sure you want to proceed?</p>
+</Modal>
+
+// Confirmation Modal (Preset)
+<ConfirmModal
+  open={isOpen}
+  onClose={() => setIsOpen(false)}
+  onConfirm={handleDelete}
+  title="Delete Project"
+  description="This action cannot be undone."
+  confirmText="Delete"
+  variant="danger"
+  loading={loading}
+/>
+
+// Form Modal (Preset)
+<FormModal
+  open={isOpen}
+  onClose={() => setIsOpen(false)}
+  onSubmit={handleSubmit}
+  title="Create Project"
+  submitText="Create"
+  loading={loading}
+>
+  <Input label="Name" value={name} onChange={(e) => setName(e.target.value)} />
+</FormModal>
+
+// Sizes
+<Modal size="sm">Small modal</Modal>
+<Modal size="md">Medium modal (default)</Modal>
+<Modal size="lg">Large modal</Modal>
+<Modal size="xl">Extra large modal</Modal>
+```
+
+### Select
+
+```tsx
+import { Select, MultiSelect } from "@/components/ui/select";
+
+// Basic Select
+<Select
+  value={value}
+  onChange={setValue}
+  options={[
+    { value: "1", label: "Option 1" },
+    { value: "2", label: "Option 2" }
+  ]}
+  placeholder="Select an option"
+/>
+
+// With Label and Helper
+<Select
+  label="Project Type"
+  value={type}
+  onChange={setType}
+  options={options}
+  helperText="Choose your project type"
+/>
+
+// With Icons
+<Select
+  value={value}
+  onChange={setValue}
+  options={[
+    { value: "audio", label: "Audio", icon: <Mic size={16} /> },
+    { value: "video", label: "Video", icon: <Video size={16} /> }
+  ]}
+/>
+
+// Searchable
+<Select
+  value={country}
+  onChange={setCountry}
+  options={countryOptions}
+  searchable
+  placeholder="Search countries..."
+/>
+
+// With Error
+<Select
+  label="Voice"
+  value={voice}
+  onChange={setVoice}
+  options={voiceOptions}
+  error="Please select a voice"
+/>
+
+// Multi-Select
+<MultiSelect
+  value={tags}
+  onChange={setTags}
+  options={tagOptions}
+  placeholder="Select tags"
+  searchable
+/>
+
+// Multi-Select with Max
+<MultiSelect
+  value={selected}
+  onChange={setSelected}
+  options={options}
+  maxSelections={3}
+  helperText="Select up to 3 items"
+/>
+```
+
+### Toast Notifications
+
+```tsx
+import { useToast, ToastProvider } from "@/components/ui/toast";
+
+// Setup in root layout
+<ToastProvider position="top-right" maxToasts={5}>
+  {children}
+</ToastProvider>
+
+// Using in components
+function MyComponent() {
+  const toast = useToast();
+
+  // Success notification
+  toast.success("Success!", "Your changes have been saved");
+
+  // Error notification
+  toast.error("Error", "Something went wrong");
+
+  // Warning notification
+  toast.warning("Warning", "Please review your input");
+
+  // Info notification
+  toast.info("Info", "New updates available");
+
+  // Custom duration (milliseconds)
+  toast.success("Saved", "Data saved", 3000);
+
+  // Never auto-dismiss
+  toast.warning("Important", "Read carefully", 0);
+}
+
+// In async operations
+async function handleSave() {
+  try {
+    await saveData();
+    toast.success("Saved", "Your data has been saved");
+  } catch (error) {
+    toast.error("Failed", "Unable to save data");
+  }
+}
+```
+
 ## Animations & Transitions
 
 ### Duration Classes
