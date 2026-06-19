@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 
 export default function LoginPage() {
-  const { loginWithGoogle, loginWithPassword, isAuthenticated } = useAuth();
+  const { loginWithGoogle, loginWithPassword, isAuthenticated, isLoading: authLoading } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -23,7 +23,6 @@ export default function LoginPage() {
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Invalid email or password";
       setError(msg);
-    } finally {
       setLoading(false);
     }
   }
@@ -36,12 +35,23 @@ export default function LoginPage() {
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Google sign-in failed";
       setError(msg);
-    } finally {
       setLoading(false);
     }
   }
 
-  if (isAuthenticated) return null;
+  // Show loading while redirecting
+  if (authLoading || isAuthenticated) {
+    return (
+      <Card variant="elevated" padding="lg" className="w-full">
+        <div className="flex flex-col items-center justify-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-primary mb-4"></div>
+          <p className="text-sm text-text-secondary">
+            {isAuthenticated ? "Redirecting..." : "Loading..."}
+          </p>
+        </div>
+      </Card>
+    );
+  }
 
   return (
     <Card variant="elevated" padding="lg" className="w-full">

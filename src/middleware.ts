@@ -6,20 +6,16 @@ const AUTH_ROUTES = ["/login", "/signup", "/forgot-password"];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const sessionToken = request.cookies.get("studio_refresh_token")?.value;
-  const isAuthenticated = !!sessionToken;
-
-  const isProtectedRoute = PROTECTED_PREFIXES.some((p) => pathname.startsWith(p));
+  // The refresh token cookie is scoped to /api/v1 (backend only),
+  // so middleware cannot use it for auth checks. Auth redirects are
+  // handled client-side by AuthProvider and AuthGuard.
+  // Middleware only handles the ?next= param to preserve destination.
   const isAuthRoute = AUTH_ROUTES.some((r) => pathname.startsWith(r));
 
-  if (isProtectedRoute && !isAuthenticated) {
-    const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("next", pathname);
-    return NextResponse.redirect(loginUrl);
-  }
-
-  if (isAuthRoute && isAuthenticated) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+  // Strip the ?next= param when navigating between auth routes to avoid
+  // stale redirects accumulating in the URL.
+  if (isAuthRoute) {
+    return NextResponse.next();
   }
 
   return NextResponse.next();

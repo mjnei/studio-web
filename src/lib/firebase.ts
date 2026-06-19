@@ -2,13 +2,13 @@ import { initializeApp, getApps } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBLYxLDBGl9QrAsqIXU9L4jjw2GpMYMyzo",
-  authDomain: "voiv-f4391.firebaseapp.com",
-  projectId: "voiv-f4391",
-  storageBucket: "voiv-f4391.firebasestorage.app",
-  messagingSenderId: "356312940280",
-  appId: "1:356312940280:web:48c68a2081ab7afc0f050d",
-  measurementId: "G-BCW4X07GVN",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];

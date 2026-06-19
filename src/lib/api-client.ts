@@ -28,14 +28,24 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     if (refreshed) {
       headers["Authorization"] = `Bearer ${accessToken}`;
       const retry = await fetch(`${API_BASE}${path}`, { ...options, headers, credentials: "include" });
-      if (!retry.ok) throw new ApiError(retry.status, await retry.text());
+      if (!retry.ok) {
+        const errorText = await retry.text();
+        throw new ApiError(retry.status, errorText);
+      }
       return retry.json();
     }
     setAccessToken(null);
     throw new ApiError(401, "Session expired");
   }
   if (!res.ok) {
-    throw new ApiError(res.status, await res.text());
+    const errorText = await res.text();
+    // Try to parse JSON error response
+    try {
+      const errorJson = JSON.parse(errorText);
+      throw new ApiError(res.status, errorJson.detail || errorJson.message || errorText);
+    } catch {
+      throw new ApiError(res.status, errorText);
+    }
   }
   if (res.status === 204) return undefined as T;
   return res.json();
@@ -62,6 +72,15 @@ export async function loginWithPassword(email: string, password: string): Promis
   const res = await request<{ access_token: string }>("/users/login/password", {
     method: "POST",
     body: JSON.stringify({ email, password }),
+  });
+  setAccessToken(res.access_token);
+  return res;
+}
+
+export async function signupWithPassword(email: string, password: string, name: string): Promise<{ access_token: string }> {
+  const res = await request<{ access_token: string }>("/auth/register", {
+    method: "POST",
+    body: JSON.stringify({ email, password, name }),
   });
   setAccessToken(res.access_token);
   return res;

@@ -17,6 +17,7 @@ import { auth, googleProvider } from "@/lib/firebase";
 import {
   loginWithFirebase,
   loginWithPassword as apiLoginWithPassword,
+  signupWithPassword as apiSignupWithPassword,
   fetchSession,
   logout as apiLogout,
   getMe,
@@ -31,6 +32,7 @@ type AuthContextValue = {
   isAuthenticated: boolean;
   loginWithGoogle: () => Promise<void>;
   loginWithPassword: (email: string, password: string) => Promise<void>;
+  signupWithPassword: (email: string, password: string, name: string) => Promise<void>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
   deleteUser: () => Promise<void>;
@@ -85,14 +87,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const idToken = await credential.user.getIdToken();
     await loginWithFirebase(idToken);
     await refreshUser();
-  }, [refreshUser]);
+    router.push("/dashboard");
+  }, [refreshUser, router]);
 
   const loginWithPassword = useCallback(
     async (email: string, password: string) => {
       await apiLoginWithPassword(email, password);
       await refreshUser();
+      router.push("/dashboard");
     },
-    [refreshUser],
+    [refreshUser, router],
+  );
+
+  const signupWithPassword = useCallback(
+    async (email: string, password: string, name: string) => {
+      await apiSignupWithPassword(email, password, name);
+      await refreshUser();
+      router.push("/dashboard");
+    },
+    [refreshUser, router],
   );
 
   const logout = useCallback(async () => {
@@ -123,6 +136,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAuthenticated,
         loginWithGoogle,
         loginWithPassword,
+        signupWithPassword,
         logout,
         refreshUser,
         deleteUser,
@@ -142,7 +156,14 @@ export function useAuth(): AuthContextValue {
 export function AuthGuard({ children }: { children: ReactNode }) {
   const { isLoading, isAuthenticated } = useAuth();
   const pathname = usePathname();
+  const router = useRouter();
   const isProtectedRoute = PROTECTED_ROUTE_PREFIXES.some((p) => pathname.startsWith(p));
+
+  useEffect(() => {
+    if (!isLoading && isProtectedRoute && !isAuthenticated) {
+      router.replace("/login");
+    }
+  }, [isLoading, isProtectedRoute, isAuthenticated, router]);
 
   if (isLoading) {
     return (
