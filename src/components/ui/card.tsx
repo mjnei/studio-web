@@ -1,9 +1,10 @@
 import { HTMLAttributes, forwardRef } from "react";
 
 export interface CardProps extends HTMLAttributes<HTMLDivElement> {
-  variant?: "default" | "elevated" | "bordered";
+  variant?: "default" | "elevated" | "bordered" | "glass";
   hover?: boolean;
   padding?: "none" | "sm" | "md" | "lg";
+  interactive?: boolean;
 }
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
@@ -12,6 +13,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
       variant = "default",
       hover = false,
       padding = "md",
+      interactive = false,
       className = "",
       children,
       ...props
@@ -19,15 +21,17 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
     ref
   ) => {
     const baseStyles =
-      "rounded-xl transition-all duration-200 backdrop-blur-sm";
+      "rounded-xl transition-all duration-200 ease-smooth backdrop-blur-sm";
 
     const variants = {
       default:
-        "bg-surface-panel/80 border border-border-default",
+        "bg-surface-panel/80 border border-border-default hover:border-border-strong",
       elevated:
-        "bg-surface-elevated shadow-lg border border-border-subtle",
+        "bg-surface-elevated shadow-md border border-border-subtle",
       bordered:
         "bg-surface-raised border-2 border-border-default",
+      glass:
+        "bg-surface-panel/40 border border-border-default backdrop-blur-xl",
     };
 
     const paddings = {
@@ -37,8 +41,8 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
       lg: "p-8",
     };
 
-    const hoverStyles = hover
-      ? "hover:border-accent-primary/30 hover:shadow-xl hover:-translate-y-0.5 cursor-pointer"
+    const hoverStyles = hover || interactive
+      ? "hover:border-accent-primary/50 hover:shadow-glow hover:-translate-y-1 cursor-pointer"
       : "";
 
     return (

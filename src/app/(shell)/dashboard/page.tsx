@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 export default function DashboardPage() {
   const stats = [
@@ -73,7 +74,7 @@ export default function DashboardPage() {
     <div className="max-w-7xl mx-auto">
       {/* Header */}
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
+        <div className="fade-in">
           <h1 className="text-3xl font-bold text-text-primary mb-2">Dashboard</h1>
           <p className="text-text-secondary">Welcome back! Here's your overview.</p>
         </div>
@@ -103,19 +104,26 @@ export default function DashboardPage() {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-8">
         {stats.map((stat, index) => (
-          <Card key={index} variant="elevated" padding="md" hover className="group">
+          <Card 
+            key={index} 
+            variant="elevated" 
+            padding="md" 
+            interactive 
+            className="group fade-in"
+            style={{ animationDelay: `${index * 100}ms` }}
+          >
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <CardHeader className="mb-3 p-0">
                   <CardDescription className="mb-1">{stat.title}</CardDescription>
-                  <CardTitle className="text-4xl font-bold">
+                  <CardTitle className="text-4xl font-bold text-text-primary">
                     {stat.value}
                   </CardTitle>
                 </CardHeader>
                 <p className="text-xs text-text-muted">{stat.description}</p>
               </div>
               <div
-                className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${stat.gradient} text-white shadow-lg transition-transform group-hover:scale-110`}
+                className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${stat.gradient} text-white shadow-md transition-all duration-300 ease-smooth group-hover:scale-110 group-hover:shadow-lg`}
               >
                 {stat.icon}
               </div>
@@ -125,14 +133,14 @@ export default function DashboardPage() {
       </div>
 
       {/* Quick Actions */}
-      <Card variant="default" padding="lg" className="mb-8">
+      <Card variant="elevated" padding="lg" className="mb-8 fade-in">
         <CardHeader>
           <CardTitle>Quick Actions</CardTitle>
           <CardDescription>Get started with these common tasks</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <Button variant="secondary" fullWidth className="justify-start">
+            <Button variant="secondary" fullWidth className="justify-start hover:bg-surface-hover transition-all">
               <svg
                 className="w-5 h-5"
                 fill="none"
@@ -148,7 +156,7 @@ export default function DashboardPage() {
               </svg>
               New Project
             </Button>
-            <Button variant="secondary" fullWidth className="justify-start">
+            <Button variant="secondary" fullWidth className="justify-start hover:bg-surface-hover transition-all">
               <svg
                 className="w-5 h-5"
                 fill="none"
@@ -164,7 +172,7 @@ export default function DashboardPage() {
               </svg>
               Upload Media
             </Button>
-            <Button variant="secondary" fullWidth className="justify-start">
+            <Button variant="secondary" fullWidth className="justify-start hover:bg-surface-hover transition-all">
               <svg
                 className="w-5 h-5"
                 fill="none"
@@ -180,7 +188,7 @@ export default function DashboardPage() {
               </svg>
               Add Voice
             </Button>
-            <Button variant="secondary" fullWidth className="justify-start">
+            <Button variant="secondary" fullWidth className="justify-start hover:bg-surface-hover transition-all">
               <svg
                 className="w-5 h-5"
                 fill="none"
@@ -207,14 +215,14 @@ export default function DashboardPage() {
       </Card>
 
       {/* Recent Activity */}
-      <Card variant="default" padding="lg">
+      <Card variant="elevated" padding="lg" className="fade-in">
         <CardHeader className="mb-6">
           <CardTitle>Recent Activity</CardTitle>
           <CardDescription>Your latest projects and renders</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col items-center justify-center py-12 text-center">
-            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-surface-hover">
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-surface-hover border border-border-default">
               <svg
                 className="w-8 h-8 text-text-muted"
                 fill="none"
