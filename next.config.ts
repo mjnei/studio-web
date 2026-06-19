@@ -2,6 +2,16 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   allowedDevOrigins: ['192.168.50.111'],
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          { key: "Cross-Origin-Opener-Policy", value: "same-origin-allow-popups" },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;

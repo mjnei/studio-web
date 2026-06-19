@@ -24,23 +24,35 @@ export function LeftRail() {
 
   return (
     <>
+      {/* Desktop Sidebar */}
       {!isNarrow && (
         <aside
-          className={`flex shrink-0 flex-col border-r border-border-default bg-surface-panel transition-[width] duration-200 ease-in-out ${
-            collapsed ? "w-14" : "w-52"
+          className={`flex shrink-0 flex-col border-r border-border-default bg-surface-panel/80 backdrop-blur-xl transition-all duration-300 ease-in-out ${
+            collapsed ? "w-16" : "w-64"
           }`}
         >
           <DrawerContent pathname={pathname} collapsed={collapsed} onToggle={toggle} />
         </aside>
       )}
 
+      {/* Mobile Overlay & Sidebar */}
       {isNarrow && mobileOpen && (
-        <div className="fixed inset-0 z-50 flex" role="dialog" aria-modal="true">
-          <div className="absolute inset-0 bg-black/50" onClick={() => setMobileOpen(false)} />
-          <div className="relative w-72 shrink-0 border-r border-border-default bg-surface-panel shadow-xl">
+        <>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+            onClick={() => setMobileOpen(false)}
+            aria-hidden="true"
+          />
+          {/* Drawer */}
+          <div
+            className="fixed inset-y-0 left-0 z-50 w-80 max-w-[85vw] border-r border-border-default bg-surface-panel shadow-2xl animate-in slide-in-from-left duration-300"
+            role="dialog"
+            aria-modal="true"
+          >
             <DrawerContent pathname={pathname} onNavigate={() => setMobileOpen(false)} />
           </div>
-        </div>
+        </>
       )}
     </>
   );

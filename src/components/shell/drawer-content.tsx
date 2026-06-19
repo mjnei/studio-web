@@ -69,12 +69,12 @@ function RailLink({
       href={item.href}
       onClick={onClick}
       title={collapsed ? item.label : undefined}
-      className={`flex items-center gap-3 rounded-md transition-colors ${
-        collapsed ? "justify-center px-0 py-2" : "px-2.5 py-2 text-base"
+      className={`flex items-center gap-3 rounded-lg transition-all duration-200 ${
+        collapsed ? "justify-center px-0 py-2.5" : "px-3 py-2.5 text-sm font-medium"
       } ${
         active
-          ? "bg-accent-cyan-muted text-accent-cyan"
-          : "text-text-secondary hover:bg-surface-hover hover:text-text-primary"
+          ? "bg-gradient-to-r from-accent-secondary/20 via-accent-primary/20 to-accent-tertiary/20 text-accent-primary shadow-sm border border-accent-primary/30"
+          : "text-text-secondary hover:bg-surface-hover hover:text-text-primary hover:border hover:border-border-default"
       }`}
     >
       <svg
@@ -101,25 +101,29 @@ function LogoMark({ collapsed }: { collapsed?: boolean }) {
   return (
     <Link
       href="/dashboard"
-      className="flex items-center gap-2 text-lg font-bold text-text-primary"
+      className="flex items-center gap-2.5 text-lg font-bold group"
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="shrink-0 text-accent-cyan"
-      >
-        <polygon points="12 2 2 7 12 12 22 7 12 2" />
-        <polyline points="2 17 12 22 22 17" />
-        <polyline points="2 12 12 17 22 12" />
-      </svg>
-      <span>Huavoi</span>
+      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-accent-secondary via-accent-primary to-accent-tertiary shadow-lg group-hover:shadow-xl transition-all">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="white"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="shrink-0"
+        >
+          <polygon points="12 2 2 7 12 12 22 7 12 2" />
+          <polyline points="2 17 12 22 22 17" />
+          <polyline points="2 12 12 17 22 12" />
+        </svg>
+      </div>
+      <span className="bg-gradient-to-r from-text-primary to-text-secondary bg-clip-text text-transparent">
+        Huavoi
+      </span>
     </Link>
   );
 }
@@ -134,41 +138,45 @@ function UserSection({ collapsed, onNavigate }: { collapsed?: boolean; onNavigat
 
   return (
     <div
-      className={`border-t border-border-default p-3 ${collapsed ? "flex flex-col items-center gap-2" : ""}`}
+      className={`border-t border-border-default p-4 bg-surface-raised/50 ${
+        collapsed ? "flex flex-col items-center gap-2" : ""
+      }`}
     >
       <Link
         href="/profile"
         onClick={onNavigate}
-        className={`flex items-center gap-3 rounded-md text-base text-text-secondary hover:bg-surface-hover hover:text-text-primary ${
-          collapsed ? "justify-center p-0" : "px-2.5 py-2"
+        className={`flex items-center gap-3 rounded-lg text-sm transition-all ${
+          collapsed
+            ? "justify-center p-0"
+            : "px-3 py-2.5 hover:bg-surface-hover border border-transparent hover:border-border-default"
         }`}
       >
         {user?.picture_url ? (
           <img
             src={user.picture_url}
             alt={displayName}
-            className="h-8 w-8 shrink-0 rounded-full object-cover"
+            className="h-10 w-10 shrink-0 rounded-full object-cover ring-2 ring-accent-primary/20"
           />
         ) : (
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent-cyan/20 text-xs font-medium text-accent-cyan">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-accent-secondary to-accent-primary text-sm font-bold text-white shadow-lg">
             {initials}
           </span>
         )}
         {!collapsed && (
           <div className="flex-1 overflow-hidden">
-            <p className="truncate text-base text-text-primary">{displayName}</p>
-            <p className="truncate text-sm text-text-secondary">{displayEmail}</p>
+            <p className="truncate text-sm font-medium text-text-primary">{displayName}</p>
+            <p className="truncate text-xs text-text-secondary">{displayEmail}</p>
           </div>
         )}
       </Link>
       {!collapsed && (
-        <div className="mt-2 flex gap-2 px-2.5">
+        <div className="mt-3 flex gap-2 px-3">
           <button
             onClick={() => {
               onNavigate?.();
               logout();
             }}
-            className="flex-1 rounded-md border border-border-default bg-surface-raised px-2 py-1.5 text-sm text-text-secondary hover:bg-surface-hover"
+            className="flex-1 rounded-lg border border-border-default bg-surface-raised px-3 py-2 text-sm font-medium text-text-secondary hover:bg-surface-hover hover:text-text-primary hover:border-accent-primary/30 transition-all"
           >
             Sign out
           </button>
@@ -192,42 +200,42 @@ export function DrawerContent({
   return (
     <div className="flex h-full flex-col">
       <div
-        className={`flex h-14 items-center border-b border-border-default shrink-0 ${
-          collapsed ? "justify-center" : "px-4"
+        className={`flex h-16 items-center border-b border-border-default shrink-0 ${
+          collapsed ? "justify-center px-2" : "px-4"
         }`}
       >
         <LogoMark collapsed={collapsed} />
-        <button
-          onClick={onToggle}
-          className={`rounded-md p-1 text-text-secondary hover:bg-surface-hover hover:text-text-primary ${
-            collapsed ? "" : "ml-auto"
-          }`}
-          aria-label="Toggle sidebar"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+        {!collapsed && (
+          <button
+            onClick={onToggle}
+            className="ml-auto rounded-lg p-2 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all"
+            aria-label="Toggle sidebar"
           >
-            <rect width="18" height="18" x="3" y="3" rx="2" />
-            <path d="M9 3v18" />
-          </svg>
-        </button>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <rect width="18" height="18" x="3" y="3" rx="2" />
+              <path d="M9 3v18" />
+            </svg>
+          </button>
+        )}
       </div>
 
-      <div className={`flex-1 overflow-y-auto ${collapsed ? "px-2 py-3" : "px-3 py-3"}`}>
+      <div className={`flex-1 overflow-y-auto ${collapsed ? "px-2 py-4" : "px-3 py-4"}`}>
         {!collapsed && (
-          <p className="mb-1 px-2 text-[11px] font-semibold uppercase tracking-wider text-text-secondary">
+          <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-wider text-text-muted">
             Main
           </p>
         )}
-        <div className={`space-y-0.5 ${collapsed ? "" : ""}`}>
+        <div className="space-y-1">
           {mainItems.map((item) => (
             <RailLink
               key={item.href}
@@ -239,14 +247,14 @@ export function DrawerContent({
           ))}
         </div>
 
-        <div className={`my-3 border-t border-border-default ${collapsed ? "mx-0" : "mx-1"}`} />
+        <div className={`my-4 border-t border-border-default ${collapsed ? "mx-0" : "mx-2"}`} />
 
         {!collapsed && (
-          <p className="mb-1 px-2 text-[11px] font-semibold uppercase tracking-wider text-text-secondary">
+          <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-wider text-text-muted">
             Utilities
           </p>
         )}
-        <div className="space-y-0.5">
+        <div className="space-y-1">
           {utilityItems.map((item) => (
             <RailLink
               key={item.href}
