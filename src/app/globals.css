@@ -5,11 +5,17 @@
   --surface-panel: #111827;
   --surface-raised: #1a2235;
   --surface-hover: #1f2b3d;
+  --surface-elevated: #21262d;
   --border-default: rgba(255, 255, 255, 0.08);
   --border-subtle: rgba(255, 255, 255, 0.04);
+  --border-focus: rgba(99, 102, 241, 0.5);
 
+  --accent-primary: #6366f1;
+  --accent-secondary: #8b5cf6;
+  --accent-tertiary: #06b6d4;
   --accent-cyan: #06b6d4;
   --accent-cyan-muted: rgba(6, 182, 212, 0.15);
+  --accent-muted: rgba(99, 102, 241, 0.15);
   --accent-gradient: linear-gradient(135deg, #8b5cf6, #06b6d4);
   --accent-gradient-solid: #7c3aed;
 
@@ -21,6 +27,7 @@
   --status-processing: #3b82f6;
   --status-failed: #ef4444;
   --status-completed: #22c55e;
+  --status-warning: #f59e0b;
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -33,10 +40,16 @@
   --color-surface-panel: var(--surface-panel);
   --color-surface-raised: var(--surface-raised);
   --color-surface-hover: var(--surface-hover);
+  --color-surface-elevated: var(--surface-elevated);
   --color-border-default: var(--border-default);
   --color-border-subtle: var(--border-subtle);
+  --color-border-focus: var(--border-focus);
+  --color-accent-primary: var(--accent-primary);
+  --color-accent-secondary: var(--accent-secondary);
+  --color-accent-tertiary: var(--accent-tertiary);
   --color-accent-cyan: var(--accent-cyan);
   --color-accent-cyan-muted: var(--accent-cyan-muted);
+  --color-accent-muted: var(--accent-muted);
   --color-accent-gradient-solid: var(--accent-gradient-solid);
   --color-text-primary: var(--text-primary);
   --color-text-secondary: var(--text-secondary);
@@ -45,6 +58,7 @@
   --color-status-processing: var(--status-processing);
   --color-status-failed: var(--status-failed);
   --color-status-completed: var(--status-completed);
+  --color-status-warning: var(--status-warning);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }

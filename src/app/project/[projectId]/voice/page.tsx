@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { VoiceRecorder } from "@/components/shared/voice-recorder";
+import { Button } from "@/components/ui/button";
 
 export default function VoicePage() {
   const [selectedVoice, setSelectedVoice] = useState<string | null>(null);
@@ -73,12 +74,12 @@ export default function VoicePage() {
             Preview of the first few sentences in the selected voice.
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
-            <button className="rounded-md bg-accent-gradient-solid px-3 py-1.5 text-sm font-medium text-white hover:opacity-90">
+            <Button variant="primary" size="sm">
               Sounds good, continue
-            </button>
-            <button className="rounded-md border border-border-default bg-surface-raised px-3 py-1.5 text-sm text-text-secondary hover:bg-surface-hover">
+            </Button>
+            <Button variant="secondary" size="sm">
               Try a different voice
-            </button>
+            </Button>
           </div>
         </div>
       </section>

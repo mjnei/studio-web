@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { VoiceRecorder } from "@/components/shared/voice-recorder";
+import { Button } from "@/components/ui/button";
 
 export default function VoicesPage() {
   const [tab, setTab] = useState<"my" | "stock">("my");
@@ -42,12 +43,13 @@ export default function VoicesPage() {
               <p className="mb-4 text-sm text-text-muted">
                 Record a sample from your microphone to clone your first voice.
               </p>
-              <button
+              <Button
+                variant="primary"
+                size="md"
                 onClick={() => setShowRecorder(true)}
-                className="rounded-md bg-accent-gradient-solid px-4 py-2 text-sm font-medium text-white hover:opacity-90"
               >
                 Record your voice
-              </button>
+              </Button>
             </>
           )}
         </div>

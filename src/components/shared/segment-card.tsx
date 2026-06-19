@@ -1,5 +1,13 @@
 "use client";
 
+const colorMap = {
+  "accent-cyan": "border-accent-cyan",
+  "accent-primary": "border-accent-primary",
+  "accent-secondary": "border-accent-secondary",
+  "status-processing": "border-status-processing",
+  "status-completed": "border-status-completed",
+} as const;
+
 export function SegmentCard({
   start,
   end,
@@ -9,10 +17,10 @@ export function SegmentCard({
   start: string;
   end: string;
   children: React.ReactNode;
-  color?: string;
+  color?: keyof typeof colorMap;
 }) {
   return (
-    <div className={`rounded-md border-l-2 border-${color} bg-surface-raised p-3`}>
+    <div className={`rounded-md border-l-2 ${colorMap[color]} bg-surface-raised p-3`}>
       <p className="mb-1 font-mono text-xs text-text-muted">
         {start} — {end}
       </p>

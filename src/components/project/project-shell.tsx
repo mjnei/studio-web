@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { DrawerContent } from "@/components/shell/drawer-content";
 import { useSidebar } from "@/components/shell/sidebar-context";
+import { Button } from "@/components/ui/button";
 
 const stages = [
   { step: "source", label: "Source" },
@@ -48,8 +49,8 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
     <div className="flex h-screen overflow-hidden">
       {!isNarrow && (
         <aside
-          className={`flex shrink-0 flex-col border-r border-border-default bg-surface-panel transition-[width] duration-200 ease-in-out ${
-            collapsed ? "w-14" : "w-52"
+          className={`flex shrink-0 flex-col border-r border-border-default bg-surface-panel/80 backdrop-blur-xl transition-[width] duration-300 ease-in-out ${
+            collapsed ? "w-16" : "w-64"
           }`}
         >
           <DrawerContent pathname={pathname} collapsed={collapsed} onToggle={toggle} />
@@ -102,9 +103,9 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
             </span>
             <div className="ml-auto flex items-center gap-2 md:hidden">
               {currentStep === "compose" && (
-                <button className="rounded-md bg-accent-gradient-solid px-3 py-1.5 text-sm font-medium text-white hover:opacity-90">
+                <Button variant="primary" size="sm">
                   Export
-                </button>
+                </Button>
               )}
             </div>
           </div>
@@ -150,28 +151,28 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
               );
             })}
           </nav>
-          <div className="ml-auto hidden items-center gap-2 md:flex">
-            {currentStep === "compose" && (
-              <>
-                <select className="rounded-md border border-border-default bg-surface-raised px-2 py-1 text-xs text-text-secondary">
-                  <option>1080p / 30fps</option>
-                  <option>720p / 30fps</option>
-                  <option>4K / 60fps</option>
-                </select>
-                <button className="rounded-md bg-accent-gradient-solid px-3 py-1.5 text-sm font-medium text-white hover:opacity-90">
-                  Export
-                </button>
-              </>
-            )}
-          </div>
+            <div className="ml-auto hidden items-center gap-2 md:flex">
+              {currentStep === "compose" && (
+                <>
+                  <select className="rounded-md border border-border-default bg-surface-raised px-2 py-1 text-xs text-text-secondary">
+                    <option>1080p / 30fps</option>
+                    <option>720p / 30fps</option>
+                    <option>4K / 60fps</option>
+                  </select>
+                  <Button variant="primary" size="sm">
+                    Export
+                  </Button>
+                </>
+              )}
+            </div>
         </header>
-        <main className="flex-1 overflow-y-auto p-3 md:p-6">{children}</main>
+        <main className="flex-1 overflow-y-auto p-4 md:p-6">{children}</main>
       </div>
 
       {isNarrow && mobileOpen && (
         <div className="fixed inset-0 z-50 flex" role="dialog" aria-modal="true">
-          <div className="absolute inset-0 bg-black/50" onClick={() => setMobileOpen(false)} />
-          <div className="relative w-72 shrink-0 border-r border-border-default bg-surface-panel shadow-xl">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
+          <div className="relative w-80 max-w-[85vw] shrink-0 border-r border-border-default bg-surface-panel shadow-2xl">
             <DrawerContent pathname={pathname} onNavigate={() => setMobileOpen(false)} />
           </div>
         </div>

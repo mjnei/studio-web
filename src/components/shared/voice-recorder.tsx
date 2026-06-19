@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
+import { Button } from "@/components/ui/button";
 
 type RecorderState = "idle" | "requesting" | "recording" | "recorded";
 
@@ -379,18 +380,20 @@ export function VoiceRecorder({ onRecorded }: { onRecorded?: (blob: Blob) => voi
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <button
+            <Button
+              variant="secondary"
+              size="sm"
               onClick={discardRecording}
-              className="rounded-md border border-border-default bg-surface-raised px-3 py-1.5 text-sm text-text-secondary transition hover:bg-surface-hover"
             >
               Discard &amp; re-record
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="primary"
+              size="sm"
               onClick={startRecording}
-              className="rounded-md bg-accent-gradient-solid px-3 py-1.5 text-sm font-medium text-white transition hover:opacity-90"
             >
               Save this voice
-            </button>
+            </Button>
           </div>
         </div>
       )}

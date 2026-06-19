@@ -1,8 +1,10 @@
 "use client";
 
-export default function ScriptPage() {
-  const variants = ["Narrative", "Promotional", "Energetic"];
+import { Button } from "@/components/ui/button";
 
+const variants = ["Narrative", "Promotional", "Energetic"];
+
+export default function ScriptPage() {
   return (
     <div className="flex h-full flex-col gap-4 md:flex-row md:gap-6">
       <div className="w-full shrink-0 rounded-lg border border-border-default bg-surface-panel p-4 md:w-80">
@@ -19,9 +21,9 @@ export default function ScriptPage() {
               <option>Short</option>
               <option>Detailed</option>
             </select>
-            <button className="rounded-md bg-accent-gradient-solid px-3 py-1.5 text-sm font-medium text-white hover:opacity-90">
+            <Button variant="primary" size="sm">
               Regenerate all
-            </button>
+            </Button>
           </div>
         </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -32,9 +34,9 @@ export default function ScriptPage() {
             >
               <div className="mb-3 flex items-center justify-between">
                 <span className="text-sm font-medium text-text-primary">{variant}</span>
-                <button className="rounded-md bg-accent-cyan-muted px-2 py-1 text-xs text-accent-cyan hover:bg-accent-cyan/20">
+                <Button variant="ghost" size="sm" className="text-accent-cyan hover:text-accent-cyan">
                   Use this script
-                </button>
+                </Button>
               </div>
               <div className="space-y-2">
                 {Array.from({ length: 4 }).map((_, i) => (

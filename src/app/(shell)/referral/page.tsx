@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 export default function ReferralPage() {
   const referralCode = "HUAVOI-ABC123";
@@ -34,12 +35,14 @@ export default function ReferralPage() {
               <p className="text-xs text-text-muted">Your referral link</p>
               <p className="truncate text-sm text-text-primary">{referralLink}</p>
             </div>
-            <button
+            <Button
+              variant="primary"
+              size="md"
               onClick={handleCopy}
-              className="shrink-0 rounded-md bg-accent-cyan px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+              className="shrink-0"
             >
               {copied ? "Copied!" : "Copy link"}
-            </button>
+            </Button>
           </div>
           <div className="mt-3 flex items-center gap-2">
             <span className="text-xs text-text-muted">Your code:</span>

@@ -30,7 +30,7 @@ export function TopNav() {
       </button>
 
       <div className="ml-auto flex items-center gap-2 md:gap-3">
-        {/* Search Bar - Hidden on mobile */}
+        {/* Search Bar */}
         <div className="hidden lg:block relative">
           <div className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted">
             <svg
@@ -53,23 +53,6 @@ export function TopNav() {
             className="w-64 rounded-lg border border-border-default bg-surface-raised pl-10 pr-4 py-2 text-sm text-text-primary placeholder-text-muted focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20 focus:outline-none transition-all"
           />
         </div>
-
-        {/* Search Icon - Mobile */}
-        <button className="lg:hidden rounded-lg p-2 text-text-secondary hover:bg-surface-hover transition-all">
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />
-          </svg>
-        </button>
 
         {/* New Project Button */}
         <Button

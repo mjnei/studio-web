@@ -1,5 +1,7 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+
 export default function ComposePage() {
   return (
     <div className="flex h-full flex-col gap-3 md:gap-4">

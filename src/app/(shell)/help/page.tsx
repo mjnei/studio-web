@@ -69,6 +69,8 @@ const helpSections = [
   },
 ];
 
+import { Button } from "@/components/ui/button";
+
 export default function HelpPage() {
   return (
     <div>
@@ -99,9 +101,9 @@ export default function HelpPage() {
         <p className="mb-4 text-sm text-text-muted">
           Can&apos;t find what you&apos;re looking for? Reach out to our support team.
         </p>
-        <button className="rounded-md bg-accent-cyan px-4 py-2 text-sm font-medium text-white hover:opacity-90">
+        <Button variant="primary" size="md">
           Contact support
-        </button>
+        </Button>
       </div>
     </div>
   );
