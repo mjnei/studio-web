@@ -104,18 +104,12 @@ export function Modal({
           <div className="flex items-start justify-between border-b border-border-default p-6 pb-4">
             <div className="flex-1">
               {title && (
-                <h2
-                  id="modal-title"
-                  className="text-xl font-semibold text-text-primary"
-                >
+                <h2 id="modal-title" className="text-xl font-semibold text-text-primary">
                   {title}
                 </h2>
               )}
               {description && (
-                <p
-                  id="modal-description"
-                  className="mt-1 text-sm text-text-secondary"
-                >
+                <p id="modal-description" className="mt-1 text-sm text-text-secondary">
                   {description}
                 </p>
               )}
@@ -133,11 +127,7 @@ export function Modal({
         )}
 
         {/* Content */}
-        {children && (
-          <div className="p-6">
-            {children}
-          </div>
-        )}
+        {children && <div className="p-6">{children}</div>}
 
         {/* Footer */}
         {footer && (
@@ -174,7 +164,8 @@ export function ConfirmModal({
   variant = "default",
   loading = false,
 }: ConfirmModalProps) {
-  const buttonVariant = variant === "danger" ? "danger" : variant === "success" ? "success" : "primary";
+  const buttonVariant =
+    variant === "danger" ? "danger" : variant === "success" ? "success" : "primary";
 
   return (
     <Modal
@@ -186,18 +177,10 @@ export function ConfirmModal({
       variant={variant}
       footer={
         <>
-          <Button
-            variant="secondary"
-            onClick={onClose}
-            disabled={loading}
-          >
+          <Button variant="secondary" onClick={onClose} disabled={loading}>
             {cancelText}
           </Button>
-          <Button
-            variant={buttonVariant}
-            onClick={onConfirm}
-            loading={loading}
-          >
+          <Button variant={buttonVariant} onClick={onConfirm} loading={loading}>
             {confirmText}
           </Button>
         </>
@@ -248,26 +231,16 @@ export function FormModal({
       size={size}
       footer={
         <>
-          <Button
-            variant="secondary"
-            onClick={onClose}
-            disabled={loading}
-          >
+          <Button variant="secondary" onClick={onClose} disabled={loading}>
             {cancelText}
           </Button>
-          <Button
-            variant="primary"
-            onClick={handleSubmit}
-            loading={loading}
-          >
+          <Button variant="primary" onClick={handleSubmit} loading={loading}>
             {submitText}
           </Button>
         </>
       }
     >
-      <form onSubmit={handleSubmit}>
-        {children}
-      </form>
+      <form onSubmit={handleSubmit}>{children}</form>
     </Modal>
   );
 }

@@ -4,7 +4,13 @@ import { CheckCircle, XCircle, AlertCircle, Info, X } from "lucide-react";
 import { createContext, useContext, useState, useCallback, ReactNode } from "react";
 
 export type ToastVariant = "success" | "error" | "warning" | "info";
-export type ToastPosition = "top-right" | "top-center" | "top-left" | "bottom-right" | "bottom-center" | "bottom-left";
+export type ToastPosition =
+  | "top-right"
+  | "top-center"
+  | "top-left"
+  | "bottom-right"
+  | "bottom-center"
+  | "bottom-left";
 
 export interface Toast {
   id: string;
@@ -108,13 +114,9 @@ export function ToastProvider({
   };
 
   return (
-    <ToastContext.Provider
-      value={{ toasts, addToast, removeToast, success, error, warning, info }}
-    >
+    <ToastContext.Provider value={{ toasts, addToast, removeToast, success, error, warning, info }}>
       {children}
-      <div
-        className={`fixed z-50 flex flex-col gap-2 pointer-events-none ${positions[position]}`}
-      >
+      <div className={`fixed z-50 flex flex-col gap-2 pointer-events-none ${positions[position]}`}>
         {toasts.map((toast) => (
           <ToastItem key={toast.id} toast={toast} onClose={() => removeToast(toast.id)} />
         ))}
@@ -175,13 +177,9 @@ function ToastItem({ toast, onClose }: ToastItemProps) {
           {variantStyle.icon}
         </div>
         <div className="flex-1 min-w-0">
-          <p className={`font-semibold text-sm ${variantStyle.textColor}`}>
-            {toast.title}
-          </p>
+          <p className={`font-semibold text-sm ${variantStyle.textColor}`}>{toast.title}</p>
           {toast.description && (
-            <p className="mt-1 text-sm text-text-secondary">
-              {toast.description}
-            </p>
+            <p className="mt-1 text-sm text-text-secondary">{toast.description}</p>
           )}
         </div>
         <button

@@ -47,11 +47,10 @@ export function Select({
 
   const selectedOption = options.find((opt) => opt.value === value);
 
-  const filteredOptions = searchable && searchQuery
-    ? options.filter((opt) =>
-        opt.label.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : options;
+  const filteredOptions =
+    searchable && searchQuery
+      ? options.filter((opt) => opt.label.toLowerCase().includes(searchQuery.toLowerCase()))
+      : options;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -95,9 +94,7 @@ export function Select({
     switch (e.key) {
       case "ArrowDown":
         e.preventDefault();
-        setHighlightedIndex((prev) =>
-          prev < filteredOptions.length - 1 ? prev + 1 : prev
-        );
+        setHighlightedIndex((prev) => (prev < filteredOptions.length - 1 ? prev + 1 : prev));
         break;
       case "ArrowUp":
         e.preventDefault();
@@ -141,11 +138,7 @@ export function Select({
 
   return (
     <div className={`relative ${className}`}>
-      {label && (
-        <label className="mb-2 block text-sm font-medium text-text-primary">
-          {label}
-        </label>
-      )}
+      {label && <label className="mb-2 block text-sm font-medium text-text-primary">{label}</label>}
 
       <div ref={selectRef} className="relative">
         <button
@@ -229,31 +222,23 @@ export function Select({
                       w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg
                       transition-all duration-150 ease-smooth text-left
                       ${dropdownSizes[size]}
-                      ${
-                        option.disabled
-                          ? "cursor-not-allowed opacity-50"
-                          : "cursor-pointer"
-                      }
+                      ${option.disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"}
                       ${
                         option.value === value
                           ? "bg-accent-muted text-accent-primary font-medium"
                           : highlightedIndex === index
-                          ? "bg-surface-hover text-text-primary"
-                          : "text-text-primary hover:bg-surface-hover"
+                            ? "bg-surface-hover text-text-primary"
+                            : "text-text-primary hover:bg-surface-hover"
                       }
                     `}
                     role="option"
                     aria-selected={option.value === value}
                   >
                     <span className="flex items-center gap-2">
-                      {option.icon && (
-                        <span className="text-text-secondary">{option.icon}</span>
-                      )}
+                      {option.icon && <span className="text-text-secondary">{option.icon}</span>}
                       <span>{option.label}</span>
                     </span>
-                    {option.value === value && (
-                      <Check size={16} className="text-accent-primary" />
-                    )}
+                    {option.value === value && <Check size={16} className="text-accent-primary" />}
                   </button>
                 ))
               )}
@@ -262,12 +247,8 @@ export function Select({
         )}
       </div>
 
-      {helperText && !error && (
-        <p className="mt-1.5 text-xs text-text-secondary">{helperText}</p>
-      )}
-      {error && (
-        <p className="mt-1.5 text-xs text-status-error">{error}</p>
-      )}
+      {helperText && !error && <p className="mt-1.5 text-xs text-text-secondary">{helperText}</p>}
+      {error && <p className="mt-1.5 text-xs text-status-error">{error}</p>}
     </div>
   );
 }
@@ -300,11 +281,10 @@ export function MultiSelect({
 
   const selectedOptions = options.filter((opt) => value.includes(opt.value));
 
-  const filteredOptions = searchable && searchQuery
-    ? options.filter((opt) =>
-        opt.label.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    : options;
+  const filteredOptions =
+    searchable && searchQuery
+      ? options.filter((opt) => opt.label.toLowerCase().includes(searchQuery.toLowerCase()))
+      : options;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -326,7 +306,7 @@ export function MultiSelect({
 
   const handleToggle = (optionValue: string) => {
     const isSelected = value.includes(optionValue);
-    
+
     if (isSelected) {
       onChange(value.filter((v) => v !== optionValue));
     } else {
@@ -345,11 +325,7 @@ export function MultiSelect({
 
   return (
     <div className={`relative ${className}`}>
-      {label && (
-        <label className="mb-2 block text-sm font-medium text-text-primary">
-          {label}
-        </label>
-      )}
+      {label && <label className="mb-2 block text-sm font-medium text-text-primary">{label}</label>}
 
       <div ref={selectRef} className="relative">
         <button
@@ -414,7 +390,9 @@ export function MultiSelect({
               ) : (
                 filteredOptions.map((option) => {
                   const isSelected = value.includes(option.value);
-                  const isDisabled = option.disabled || (maxSelections ? !isSelected && value.length >= maxSelections : false);
+                  const isDisabled =
+                    option.disabled ||
+                    (maxSelections ? !isSelected && value.length >= maxSelections : false);
 
                   return (
                     <button
@@ -425,11 +403,7 @@ export function MultiSelect({
                       className={`
                         w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg
                         transition-all duration-150 ease-smooth text-left text-sm
-                        ${
-                          isDisabled
-                            ? "cursor-not-allowed opacity-50"
-                            : "cursor-pointer"
-                        }
+                        ${isDisabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"}
                         ${
                           isSelected
                             ? "bg-accent-muted text-accent-primary font-medium"
@@ -438,14 +412,10 @@ export function MultiSelect({
                       `}
                     >
                       <span className="flex items-center gap-2">
-                        {option.icon && (
-                          <span className="text-text-secondary">{option.icon}</span>
-                        )}
+                        {option.icon && <span className="text-text-secondary">{option.icon}</span>}
                         <span>{option.label}</span>
                       </span>
-                      {isSelected && (
-                        <Check size={16} className="text-accent-primary" />
-                      )}
+                      {isSelected && <Check size={16} className="text-accent-primary" />}
                     </button>
                   );
                 })
@@ -455,12 +425,8 @@ export function MultiSelect({
         )}
       </div>
 
-      {helperText && !error && (
-        <p className="mt-1.5 text-xs text-text-secondary">{helperText}</p>
-      )}
-      {error && (
-        <p className="mt-1.5 text-xs text-status-error">{error}</p>
-      )}
+      {helperText && !error && <p className="mt-1.5 text-xs text-text-secondary">{helperText}</p>}
+      {error && <p className="mt-1.5 text-xs text-status-error">{error}</p>}
     </div>
   );
 }
