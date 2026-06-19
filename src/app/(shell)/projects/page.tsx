@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Folder } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -21,19 +22,7 @@ export default function ProjectsPage() {
         <CardContent>
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-accent-secondary to-accent-tertiary shadow-lg">
-              <svg
-                className="w-10 h-10 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"
-                />
-              </svg>
+              <Folder className="w-10 h-10 text-white" />
             </div>
             <h2 className="text-2xl font-bold text-text-primary mb-2">
               No projects yet

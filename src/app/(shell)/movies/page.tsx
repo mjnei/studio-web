@@ -1,3 +1,5 @@
+import { Star, Search } from "lucide-react";
+
 const movies = [
   {
     id: 4,
@@ -83,14 +85,6 @@ const movies = [
 
 const genres = ["All", "Sci-Fi", "Drama", "Action", "Animation", "Crime", "Comedy", "Thriller"];
 
-function StarIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 20 20" fill="currentColor">
-      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-    </svg>
-  );
-}
-
 export default function MoviesPage() {
   return (
     <div>
@@ -108,19 +102,7 @@ export default function MoviesPage() {
 
       <div className="mb-8 flex flex-wrap items-center gap-3">
         <div className="relative flex-1 sm:max-w-md">
-          <svg
-            className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />
-          </svg>
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
           <input
             type="text"
             placeholder="Search movies..."
@@ -162,7 +144,7 @@ export default function MoviesPage() {
                 </p>
               </div>
               <div className="absolute right-2 top-2 flex items-center gap-1 rounded-md bg-black/70 px-1.5 py-0.5 backdrop-blur-sm">
-                <StarIcon className="h-3 w-3 text-yellow-400" />
+                <Star className="h-3 w-3 text-yellow-400 fill-yellow-400" />
                 <span className="text-[11px] font-semibold text-white">
                   {movie.rating}
                 </span>

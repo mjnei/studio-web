@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Play } from "lucide-react";
 import { VoiceRecorder } from "@/components/shared/voice-recorder";
 import { Button } from "@/components/ui/button";
 
@@ -25,15 +26,7 @@ export default function VoicePage() {
               <div className="mb-2 flex items-center justify-between">
                 <p className="text-sm font-medium text-text-primary">{name}</p>
                 <button className="rounded-md p-1 text-text-muted hover:bg-surface-hover hover:text-text-secondary">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                  >
-                    <polygon points="5 3 19 12 5 21 5 3" />
-                  </svg>
+                  <Play className="w-4 h-4 fill-current" />
                 </button>
               </div>
               <p className="text-xs text-text-muted">
@@ -58,15 +51,7 @@ export default function VoicePage() {
         <div className="rounded-lg border border-border-default bg-surface-panel p-4">
           <div className="flex items-center gap-4">
             <button className="shrink-0 rounded-md p-2 text-text-muted hover:bg-surface-hover hover:text-text-secondary">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <polygon points="5 3 19 12 5 21 5 3" />
-              </svg>
+              <Play className="w-5 h-5 fill-current" />
             </button>
             <div className="h-8 flex-1 rounded bg-surface-raised" />
           </div>
