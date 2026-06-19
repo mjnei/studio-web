@@ -1,20 +1,87 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/lib/auth-context";
+import { updateUser, changePassword, setPassword, type UserResponse } from "@/lib/api-client";
 
 export default function ProfilePage() {
+  const { user, refreshUser, logout, deleteUser } = useAuth();
   const [editing, setEditing] = useState(false);
-  const [name, setName] = useState("Huavoi User");
-  const [email, setEmail] = useState("you@example.com");
-  const [bio, setBio] = useState("");
+  const [name, setName] = useState("");
+  const [givenName, setGivenName] = useState("");
+  const [familyName, setFamilyName] = useState("");
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [socialGoogle, setSocialGoogle] = useState(false);
-  const [socialApple, setSocialApple] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordSuccess, setPasswordSuccess] = useState(false);
+  const [profileError, setProfileError] = useState("");
+  const [profileSuccess, setProfileSuccess] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteText, setDeleteText] = useState("");
+
+  useEffect(() => {
+    if (user) {
+      setName(user.name);
+      setGivenName(user.given_name || "");
+      setFamilyName(user.family_name || "");
+    }
+  }, [user]);
+
+  async function handleSaveProfile() {
+    setProfileError("");
+    setProfileSuccess(false);
+    try {
+      await updateUser({ name, given_name: givenName, family_name: familyName });
+      await refreshUser();
+      setEditing(false);
+      setProfileSuccess(true);
+    } catch (err: unknown) {
+      setProfileError(err instanceof Error ? err.message : "Failed to update profile");
+    }
+  }
+
+  async function handleChangePassword() {
+    setPasswordError("");
+    setPasswordSuccess(false);
+    if (newPassword !== confirmPassword) {
+      setPasswordError("Passwords do not match");
+      return;
+    }
+    if (newPassword.length < 8) {
+      setPasswordError("Password must be at least 8 characters");
+      return;
+    }
+    try {
+      if (user?.has_password) {
+        await changePassword(currentPassword, newPassword);
+      } else {
+        await setPassword(newPassword);
+      }
+      await refreshUser();
+      setShowChangePassword(false);
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setPasswordSuccess(true);
+    } catch (err: unknown) {
+      setPasswordError(err instanceof Error ? err.message : "Failed to change password");
+    }
+  }
+
+  async function handleDeleteAccount() {
+    if (deleteText !== "delete my account") return;
+    try {
+      await deleteUser();
+    } catch (err: unknown) {
+      setProfileError(err instanceof Error ? err.message : "Failed to delete account");
+    }
+  }
+
+  if (!user) return null;
+
+  const initials = (user.given_name?.[0] || user.name?.[0] || user.email[0]).toUpperCase();
 
   return (
     <div>
@@ -22,26 +89,17 @@ export default function ProfilePage() {
       <div className="space-y-6">
         <section className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-6">
           <div className="mb-6 flex flex-col items-center gap-4 sm:flex-row">
-            <div className="relative flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-surface-raised text-2xl font-bold text-text-muted">
-              H
-              <button className="absolute -bottom-0.5 -right-0.5 flex h-6 w-6 items-center justify-center rounded-full border border-border-default bg-surface-panel text-text-muted hover:text-text-secondary">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="12"
-                  height="12"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                  <polyline points="17 8 12 3 7 8" />
-                  <line x1="12" y1="3" x2="12" y2="15" />
-                </svg>
-              </button>
-            </div>
+            {user.picture_url ? (
+              <img
+                src={user.picture_url}
+                alt={user.name}
+                className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full object-cover"
+              />
+            ) : (
+              <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-surface-raised text-2xl font-bold text-text-muted">
+                {initials}
+              </div>
+            )}
             <div className="flex-1 text-center sm:text-left">
               {editing ? (
                 <div className="space-y-2">
@@ -53,20 +111,25 @@ export default function ProfilePage() {
                   />
                 </div>
               ) : (
-                <h2 className="text-lg font-semibold">{name}</h2>
+                <h2 className="text-lg font-semibold">{user.name}</h2>
               )}
-              <p className="text-sm text-text-muted">{email}</p>
+              <p className="text-sm text-text-muted">{user.email}</p>
             </div>
             {editing ? (
               <div className="flex gap-2">
                 <button
-                  onClick={() => setEditing(false)}
+                  onClick={() => {
+                    setEditing(false);
+                    setName(user.name);
+                    setGivenName(user.given_name || "");
+                    setFamilyName(user.family_name || "");
+                  }}
                   className="rounded-md border border-border-default bg-surface-raised px-3 py-1.5 text-sm text-text-secondary hover:bg-surface-hover"
                 >
                   Cancel
                 </button>
                 <button
-                  onClick={() => setEditing(false)}
+                  onClick={handleSaveProfile}
                   className="rounded-md bg-accent-cyan px-3 py-1.5 text-sm font-medium text-white hover:opacity-90"
                 >
                   Save changes
@@ -81,14 +144,24 @@ export default function ProfilePage() {
               </button>
             )}
           </div>
+          {profileError && (
+            <div className="mb-4 rounded-md border border-status-failed/30 bg-status-failed/10 px-3 py-2 text-sm text-status-failed">
+              {profileError}
+            </div>
+          )}
+          {profileSuccess && (
+            <div className="mb-4 rounded-md border border-status-completed/30 bg-status-completed/10 px-3 py-2 text-sm text-status-completed">
+              Profile updated successfully.
+            </div>
+          )}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div className="rounded-md bg-surface-raised p-4">
+              <p className="text-sm text-text-muted">Provider</p>
+              <p className="mt-1 text-xl font-bold capitalize">{user.provider}</p>
+            </div>
             <div className="rounded-md bg-surface-raised p-4">
               <p className="text-sm text-text-muted">Renders this month</p>
               <p className="mt-1 text-xl font-bold">0</p>
-            </div>
-            <div className="rounded-md bg-surface-raised p-4">
-              <p className="text-sm text-text-muted">Storage used</p>
-              <p className="mt-1 text-xl font-bold">0 MB</p>
             </div>
             <div className="rounded-md bg-surface-raised p-4">
               <p className="text-sm text-text-muted">Plan</p>
@@ -105,16 +178,20 @@ export default function ProfilePage() {
                 <label className="mb-1 block text-sm text-text-secondary">First name</label>
                 <input
                   type="text"
-                  defaultValue="Huavoi"
-                  className="w-full rounded-md border border-border-default bg-surface-raised px-3 py-2 text-sm text-text-primary focus:border-accent-cyan focus:outline-none"
+                  value={givenName}
+                  onChange={(e) => setGivenName(e.target.value)}
+                  disabled={!editing}
+                  className="w-full rounded-md border border-border-default bg-surface-raised px-3 py-2 text-sm text-text-primary focus:border-accent-cyan focus:outline-none disabled:opacity-50"
                 />
               </div>
               <div>
                 <label className="mb-1 block text-sm text-text-secondary">Last name</label>
                 <input
                   type="text"
-                  defaultValue="User"
-                  className="w-full rounded-md border border-border-default bg-surface-raised px-3 py-2 text-sm text-text-primary focus:border-accent-cyan focus:outline-none"
+                  value={familyName}
+                  onChange={(e) => setFamilyName(e.target.value)}
+                  disabled={!editing}
+                  className="w-full rounded-md border border-border-default bg-surface-raised px-3 py-2 text-sm text-text-primary focus:border-accent-cyan focus:outline-none disabled:opacity-50"
                 />
               </div>
             </div>
@@ -122,45 +199,16 @@ export default function ProfilePage() {
               <label htmlFor="profile-email" className="mb-1 block text-sm text-text-secondary">
                 Email address
               </label>
-              <div className="flex gap-2">
-                <input
-                  id="profile-email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="flex-1 rounded-md border border-border-default bg-surface-raised px-3 py-2 text-sm text-text-primary focus:border-accent-cyan focus:outline-none"
-                />
-                <button className="shrink-0 rounded-md bg-accent-cyan px-3 py-2 text-sm font-medium text-white hover:opacity-90">
-                  Verify
-                </button>
-              </div>
-              <p className="mt-1 text-xs text-text-muted">
-                Email must be verified to receive notifications.
-              </p>
-            </div>
-            <div>
-              <label htmlFor="profile-bio" className="mb-1 block text-sm text-text-secondary">
-                Bio
-              </label>
-              <textarea
-                id="profile-bio"
-                rows={3}
-                value={bio}
-                onChange={(e) => setBio(e.target.value)}
-                placeholder="Tell us a bit about yourself..."
-                className="w-full rounded-md border border-border-default bg-surface-raised px-3 py-2 text-sm text-text-primary placeholder-text-muted focus:border-accent-cyan focus:outline-none"
+              <input
+                id="profile-email"
+                type="email"
+                value={user.email}
+                disabled
+                className="w-full rounded-md border border-border-default bg-surface-raised px-3 py-2 text-sm text-text-primary opacity-50"
               />
-            </div>
-            <div>
-              <label className="mb-1 block text-sm text-text-secondary">Timezone</label>
-              <select className="w-full rounded-md border border-border-default bg-surface-raised px-3 py-2 text-sm text-text-secondary focus:border-accent-cyan focus:outline-none">
-                <option>UTC-08:00 Pacific Time</option>
-                <option>UTC-07:00 Mountain Time</option>
-                <option>UTC-06:00 Central Time</option>
-                <option>UTC-05:00 Eastern Time</option>
-                <option>UTC+00:00 GMT</option>
-                <option>UTC+08:00 China Standard Time</option>
-              </select>
+              <p className="mt-1 text-xs text-text-muted">
+                Email is managed by your login provider.
+              </p>
             </div>
           </div>
         </section>
@@ -168,28 +216,44 @@ export default function ProfilePage() {
         <section className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-6">
           <h2 className="mb-4 text-lg font-semibold">Password & Security</h2>
           <div className="max-w-lg space-y-4">
+            {passwordError && (
+              <div className="rounded-md border border-status-failed/30 bg-status-failed/10 px-3 py-2 text-sm text-status-failed">
+                {passwordError}
+              </div>
+            )}
+            {passwordSuccess && (
+              <div className="rounded-md border border-status-completed/30 bg-status-completed/10 px-3 py-2 text-sm text-status-completed">
+                Password updated successfully.
+              </div>
+            )}
             <div>
               <button
-                onClick={() => setShowChangePassword(!showChangePassword)}
+                onClick={() => {
+                  setShowChangePassword(!showChangePassword);
+                  setPasswordError("");
+                  setPasswordSuccess(false);
+                }}
                 className="text-sm text-accent-cyan hover:underline"
               >
-                {showChangePassword ? "Cancel" : "Change password"}
+                {showChangePassword ? "Cancel" : user.has_password ? "Change password" : "Set password"}
               </button>
             </div>
             {showChangePassword && (
               <div className="space-y-3 rounded-md border border-border-default bg-surface-raised p-4">
-                <div>
-                  <label htmlFor="current-pw" className="mb-1 block text-sm text-text-secondary">
-                    Current password
-                  </label>
-                  <input
-                    id="current-pw"
-                    type="password"
-                    value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                    className="w-full rounded-md border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary focus:border-accent-cyan focus:outline-none"
-                  />
-                </div>
+                {user.has_password && (
+                  <div>
+                    <label htmlFor="current-pw" className="mb-1 block text-sm text-text-secondary">
+                      Current password
+                    </label>
+                    <input
+                      id="current-pw"
+                      type="password"
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      className="w-full rounded-md border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary focus:border-accent-cyan focus:outline-none"
+                    />
+                  </div>
+                )}
                 <div>
                   <label htmlFor="new-pw" className="mb-1 block text-sm text-text-secondary">
                     New password
@@ -214,27 +278,14 @@ export default function ProfilePage() {
                     className="w-full rounded-md border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary focus:border-accent-cyan focus:outline-none"
                   />
                 </div>
-                <button className="rounded-md bg-accent-cyan px-3 py-1.5 text-sm font-medium text-white hover:opacity-90">
-                  Update password
+                <button
+                  onClick={handleChangePassword}
+                  className="rounded-md bg-accent-cyan px-3 py-1.5 text-sm font-medium text-white hover:opacity-90"
+                >
+                  {user.has_password ? "Update password" : "Set password"}
                 </button>
               </div>
             )}
-            <div>
-              <label className="mb-2 block text-sm text-text-secondary">
-                Two-factor authentication
-              </label>
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between rounded-md border border-border-default bg-surface-raised p-3">
-                <div>
-                  <p className="text-sm text-text-primary">2FA is not enabled</p>
-                  <p className="text-xs text-text-muted">
-                    Add an extra layer of security to your account.
-                  </p>
-                </div>
-                <button className="shrink-0 rounded-md bg-accent-cyan px-3 py-1.5 text-sm font-medium text-white hover:opacity-90">
-                  Enable
-                </button>
-              </div>
-            </div>
           </div>
         </section>
 
@@ -244,34 +295,13 @@ export default function ProfilePage() {
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between rounded-md border border-border-default bg-surface-raised p-3">
               <div className="flex items-center gap-3">
                 <span className="text-sm font-medium text-text-primary">Google</span>
-                {socialGoogle && <span className="text-xs text-status-completed">Connected</span>}
+                {user.provider === "google" && (
+                  <span className="text-xs text-status-completed">Connected</span>
+                )}
               </div>
-              <button
-                onClick={() => setSocialGoogle(!socialGoogle)}
-                className={`shrink-0 rounded-md border px-3 py-1 text-xs font-medium ${
-                  socialGoogle
-                    ? "border-status-failed/40 text-status-failed hover:bg-status-failed/10"
-                    : "border-accent-cyan/40 text-accent-cyan hover:bg-accent-cyan-muted"
-                }`}
-              >
-                {socialGoogle ? "Disconnect" : "Connect"}
-              </button>
-            </div>
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between rounded-md border border-border-default bg-surface-raised p-3">
-              <div className="flex items-center gap-3">
-                <span className="text-sm font-medium text-text-primary">Apple</span>
-                {socialApple && <span className="text-xs text-status-completed">Connected</span>}
-              </div>
-              <button
-                onClick={() => setSocialApple(!socialApple)}
-                className={`shrink-0 rounded-md border px-3 py-1 text-xs font-medium ${
-                  socialApple
-                    ? "border-status-failed/40 text-status-failed hover:bg-status-failed/10"
-                    : "border-accent-cyan/40 text-accent-cyan hover:bg-accent-cyan-muted"
-                }`}
-              >
-                {socialApple ? "Disconnect" : "Connect"}
-              </button>
+              <span className="shrink-0 text-xs text-text-muted">
+                {user.provider === "google" ? "Primary account" : "Not connected"}
+              </span>
             </div>
           </div>
         </section>
@@ -281,12 +311,12 @@ export default function ProfilePage() {
             <h2 className="text-lg font-semibold">Sign out</h2>
             <p className="text-sm text-text-muted">End your current session on this device.</p>
           </div>
-          <Link
-            href="/login"
+          <button
+            onClick={logout}
             className="shrink-0 rounded-md border border-border-default bg-surface-raised px-4 py-2 text-sm text-text-secondary hover:bg-surface-hover"
           >
             Sign out
-          </Link>
+          </button>
         </section>
 
         <section className="rounded-lg border border-status-failed/30 bg-surface-panel p-4 md:p-6">
@@ -302,17 +332,26 @@ export default function ProfilePage() {
               </p>
               <input
                 type="text"
+                value={deleteText}
+                onChange={(e) => setDeleteText(e.target.value)}
                 placeholder="delete my account"
                 className="w-full max-w-sm rounded-md border border-status-failed/40 bg-surface-base px-3 py-2 text-sm text-text-primary placeholder-text-muted focus:border-status-failed focus:outline-none"
               />
               <div className="flex gap-2">
                 <button
-                  onClick={() => setShowDeleteConfirm(false)}
+                  onClick={() => {
+                    setShowDeleteConfirm(false);
+                    setDeleteText("");
+                  }}
                   className="rounded-md border border-border-default bg-surface-raised px-3 py-1.5 text-sm text-text-secondary hover:bg-surface-hover"
                 >
                   Cancel
                 </button>
-                <button className="rounded-md bg-status-failed px-3 py-1.5 text-sm font-medium text-white hover:opacity-90">
+                <button
+                  onClick={handleDeleteAccount}
+                  disabled={deleteText !== "delete my account"}
+                  className="rounded-md bg-status-failed px-3 py-1.5 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
+                >
                   Permanently delete account
                 </button>
               </div>

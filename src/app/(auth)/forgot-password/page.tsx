@@ -58,11 +58,7 @@ export default function ForgotPasswordPage() {
           Send reset link
         </button>
       </form>
-      <p className="mt-4 text-center text-sm text-text-muted">
-        <Link href="/login" className="text-accent-cyan hover:underline">
-          Back to login
-        </Link>
-      </p>
+
     </div>
   );
 }

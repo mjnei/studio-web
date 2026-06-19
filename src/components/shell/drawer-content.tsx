@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useAuth } from "@/lib/auth-context";
 
 const mainItems = [
   {
@@ -122,6 +125,13 @@ function LogoMark({ collapsed }: { collapsed?: boolean }) {
 }
 
 function UserSection({ collapsed, onNavigate }: { collapsed?: boolean; onNavigate?: () => void }) {
+  const { user, logout } = useAuth();
+  const initials = user
+    ? (user.given_name?.[0] || user.name?.[0] || user.email[0]).toUpperCase()
+    : "U";
+  const displayName = user?.name || "User";
+  const displayEmail = user?.email || "";
+
   return (
     <div
       className={`border-t border-border-default p-3 ${collapsed ? "flex flex-col items-center gap-2" : ""}`}
@@ -133,21 +143,35 @@ function UserSection({ collapsed, onNavigate }: { collapsed?: boolean; onNavigat
           collapsed ? "justify-center p-0" : "px-2.5 py-2"
         }`}
       >
-        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent-cyan/20 text-xs font-medium text-accent-cyan">
-          H
-        </span>
+        {user?.picture_url ? (
+          <img
+            src={user.picture_url}
+            alt={displayName}
+            className="h-8 w-8 shrink-0 rounded-full object-cover"
+          />
+        ) : (
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent-cyan/20 text-xs font-medium text-accent-cyan">
+            {initials}
+          </span>
+        )}
         {!collapsed && (
           <div className="flex-1 overflow-hidden">
-            <p className="truncate text-base text-text-primary">Huavoi User</p>
-            <p className="truncate text-sm text-text-secondary">you@example.com</p>
+            <p className="truncate text-base text-text-primary">{displayName}</p>
+            <p className="truncate text-sm text-text-secondary">{displayEmail}</p>
           </div>
         )}
       </Link>
       {!collapsed && (
-        <div className="mt-2 px-2.5">
-          <select className="w-full rounded-md border border-border-default bg-surface-raised px-2 py-1.5 text-sm text-text-secondary focus:border-accent-cyan focus:outline-none">
-            <option>English</option>
-          </select>
+        <div className="mt-2 flex gap-2 px-2.5">
+          <button
+            onClick={() => {
+              onNavigate?.();
+              logout();
+            }}
+            className="flex-1 rounded-md border border-border-default bg-surface-raised px-2 py-1.5 text-sm text-text-secondary hover:bg-surface-hover"
+          >
+            Sign out
+          </button>
         </div>
       )}
     </div>
