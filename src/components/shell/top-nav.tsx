@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { PanelLeft, Search, Plus, Bell, ChevronDown } from "lucide-react";
 import { useSidebar } from "@/components/shell/sidebar-context";
 import { Button } from "@/components/ui/button";
@@ -36,27 +37,26 @@ export function TopNav() {
           </div>
 
           {/* New Project Button */}
-          <Button
-            variant="primary"
-            size="md"
-            className="group hidden sm:inline-flex"
-            icon={
-              <Plus size={18} className="transition-transform group-hover:rotate-90 duration-300" />
-            }
-          >
-            <a href="/projects">New Project</a>
-          </Button>
+          <Link href="/project/new" className="hidden sm:inline-flex">
+            <Button
+              variant="primary"
+              size="md"
+              className="group"
+              icon={
+                <Plus
+                  size={18}
+                  className="transition-transform group-hover:rotate-90 duration-300"
+                />
+              }
+            >
+              New Project
+            </Button>
+          </Link>
 
           {/* Mobile New Project Button */}
-          <Button
-            variant="primary"
-            size="md"
-            iconOnly
-            className="sm:hidden"
-            icon={<Plus size={18} />}
-          >
-            <a href="/projects" />
-          </Button>
+          <Link href="/project/new" className="sm:hidden">
+            <Button variant="primary" size="md" iconOnly icon={<Plus size={18} />} />
+          </Link>
 
           {/* Notifications */}
           <button className="relative rounded-lg p-2 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all focus-ring group">

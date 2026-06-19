@@ -7,14 +7,9 @@ export default function ProjectsPage() {
   return (
     <div className="max-w-7xl mx-auto">
       {/* Header */}
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between fade-in">
-        <div>
-          <h1 className="text-3xl font-bold text-text-primary mb-2">Projects</h1>
-          <p className="text-text-secondary">Create and manage your projects</p>
-        </div>
-        <Button variant="primary" size="lg">
-          <Link href="/project/new">Create New Project</Link>
-        </Button>
+      <div className="mb-8 fade-in">
+        <h1 className="text-3xl font-bold text-text-primary mb-2">Projects</h1>
+        <p className="text-text-secondary">Create and manage your projects</p>
       </div>
 
       {/* Empty State */}
@@ -29,14 +24,11 @@ export default function ProjectsPage() {
               Get started by creating your first project. You can manage all your projects and
               renders from here.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3">
+            <Link href="/project/new">
               <Button variant="primary" size="lg">
-                <Link href="/project/new">Create Your First Project</Link>
+                Create Your First Project
               </Button>
-              <Button variant="secondary" size="lg">
-                <Link href="/dashboard">Back to Dashboard</Link>
-              </Button>
-            </div>
+            </Link>
           </div>
         </CardContent>
       </Card>

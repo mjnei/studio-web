@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Folder, Activity, Mic, Plus, Upload, Settings, Inbox } from "lucide-react";
+import { Folder, Activity, Mic, Upload, Settings, Inbox } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -32,14 +32,9 @@ export default function DashboardPage() {
   return (
     <div className="max-w-7xl mx-auto">
       {/* Header */}
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="fade-in">
-          <h1 className="text-3xl font-bold text-text-primary mb-2">Dashboard</h1>
-          <p className="text-text-secondary">Welcome back! Here's your overview.</p>
-        </div>
-        <Button variant="primary" size="lg" icon={<Plus className="w-5 h-5" />}>
-          <Link href="/projects">New Project</Link>
-        </Button>
+      <div className="mb-8 fade-in">
+        <h1 className="text-3xl font-bold text-text-primary mb-2">Dashboard</h1>
+        <p className="text-text-secondary">Welcome back! Here's your overview.</p>
       </div>
 
       {/* Stats Grid */}
@@ -81,38 +76,36 @@ export default function DashboardPage() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <Button
-              variant="secondary"
-              fullWidth
-              className="justify-start hover:bg-surface-hover transition-all"
-            >
-              <Plus className="w-5 h-5" />
-              New Project
-            </Button>
-            <Button
-              variant="secondary"
-              fullWidth
-              className="justify-start hover:bg-surface-hover transition-all"
-            >
-              <Upload className="w-5 h-5" />
-              Upload Media
-            </Button>
-            <Button
-              variant="secondary"
-              fullWidth
-              className="justify-start hover:bg-surface-hover transition-all"
-            >
-              <Mic className="w-5 h-5" />
-              Add Voice
-            </Button>
-            <Button
-              variant="secondary"
-              fullWidth
-              className="justify-start hover:bg-surface-hover transition-all"
-            >
-              <Settings className="w-5 h-5" />
-              Settings
-            </Button>
+            <Link href="/project/new">
+              <Button
+                variant="secondary"
+                fullWidth
+                className="justify-start hover:bg-surface-hover transition-all"
+              >
+                <Upload className="w-5 h-5" />
+                Upload Media
+              </Button>
+            </Link>
+            <Link href="/voices">
+              <Button
+                variant="secondary"
+                fullWidth
+                className="justify-start hover:bg-surface-hover transition-all"
+              >
+                <Mic className="w-5 h-5" />
+                Add Voice
+              </Button>
+            </Link>
+            <Link href="/settings">
+              <Button
+                variant="secondary"
+                fullWidth
+                className="justify-start hover:bg-surface-hover transition-all"
+              >
+                <Settings className="w-5 h-5" />
+                Settings
+              </Button>
+            </Link>
           </div>
         </CardContent>
       </Card>
@@ -132,9 +125,9 @@ export default function DashboardPage() {
             <p className="text-text-secondary mb-6 max-w-md">
               Start by creating a new project to see your activity here.
             </p>
-            <Button variant="primary">
-              <Link href="/projects">Create Your First Project</Link>
-            </Button>
+            <Link href="/project/new">
+              <Button variant="primary">Create Your First Project</Button>
+            </Link>
           </div>
         </CardContent>
       </Card>
