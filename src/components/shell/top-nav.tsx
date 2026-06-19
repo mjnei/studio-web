@@ -10,8 +10,9 @@ export function TopNav() {
     <header className="flex h-16 shrink-0 items-center gap-3 border-b border-border-default bg-surface-panel/80 backdrop-blur-xl px-4 md:px-6 sticky top-0 z-40">
       <button
         onClick={toggle}
-        className="rounded-lg p-2 text-text-muted hover:bg-surface-hover hover:text-text-secondary transition-all"
+        className="rounded-lg p-2 text-text-muted hover:bg-surface-hover hover:text-text-secondary transition-all active:scale-95"
         aria-label={isNarrow ? "Open navigation" : "Toggle sidebar"}
+        title={isNarrow ? "Open navigation" : "Toggle sidebar"}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

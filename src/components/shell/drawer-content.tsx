@@ -205,11 +205,14 @@ export function DrawerContent({
         }`}
       >
         <LogoMark collapsed={collapsed} />
-        {!collapsed && (
+        {onToggle && (
           <button
             onClick={onToggle}
-            className="ml-auto rounded-lg p-2 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all"
-            aria-label="Toggle sidebar"
+            className={`rounded-lg p-2 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all active:scale-95 ${
+              collapsed ? "" : "ml-auto"
+            }`}
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -221,6 +224,7 @@ export function DrawerContent({
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
+              className={`transition-transform duration-200 ${collapsed ? "rotate-180" : ""}`}
             >
               <rect width="18" height="18" x="3" y="3" rx="2" />
               <path d="M9 3v18" />
