@@ -247,3 +247,103 @@ className="focus-ring"
 | Animation stuttering | Use `transform` instead of positional changes |
 | Focus ring not visible | Verify `--border-focus` color contrast |
 
+
+
+## New Components (June 20, 2026)
+
+### Modal
+```tsx
+import { Modal, ConfirmModal, FormModal } from "@/components/ui";
+
+// Basic Modal
+<Modal open={isOpen} onClose={close} title="Title" size="md">
+  Content
+</Modal>
+
+// Confirmation Modal
+<ConfirmModal 
+  open={isOpen} 
+  onClose={close} 
+  onConfirm={handleDelete} 
+  title="Delete Project?" 
+  variant="danger" 
+/>
+
+// Form Modal
+<FormModal 
+  open={isOpen} 
+  onClose={close} 
+  onSubmit={handleSubmit}
+  title="Create Project"
+  loading={loading}
+>
+  <Input label="Name" />
+</FormModal>
+```
+
+### Select & MultiSelect
+```tsx
+import { Select, MultiSelect } from "@/components/ui";
+
+// Single Select
+<Select 
+  value={value} 
+  onChange={setValue} 
+  options={[
+    { value: "1", label: "Option 1" },
+    { value: "2", label: "Option 2" }
+  ]}
+  searchable 
+/>
+
+// Multi-Select
+<MultiSelect 
+  value={values} 
+  onChange={setValues} 
+  options={options}
+  maxSelections={3}
+  searchable
+/>
+```
+
+### Toast Notifications
+```tsx
+import { useToast, ToastProvider } from "@/components/ui";
+
+// Setup in layout
+<ToastProvider position="top-right">
+  {children}
+</ToastProvider>
+
+// Use in components
+const toast = useToast();
+toast.success("Success!", "Message here");
+toast.error("Error", "Something failed");
+toast.warning("Warning", "Please check");
+toast.info("Info", "FYI");
+```
+
+---
+
+## Complete Component List (11 Total)
+
+1. ✅ **Button** - 6 variants, loading, icons
+2. ✅ **Card** - 4 variants, interactive mode
+3. ✅ **Input** - Labels, icons, validation
+4. ✅ **Badge** - 6 variants, 3 sizes
+5. ✅ **Skeleton** - 4 variants, shimmer
+6. ✅ **Tooltip** - 4 positions, delay
+7. ✅ **Modal** - Dialogs, forms, confirms (NEW!)
+8. ✅ **Select** - Searchable dropdown (NEW!)
+9. ✅ **MultiSelect** - Multiple selection (NEW!)
+10. ✅ **Toast** - Notifications (NEW!)
+11. ✅ **Loading** - Spinner
+
+---
+
+## Documentation
+
+- **DESIGN_GUIDE.md** - Detailed component usage
+- **COMPONENT_EXAMPLES.md** - Real-world examples (NEW!)
+- **DESIGN_SYSTEM.md** - System foundations
+- **NEW_COMPONENTS_SUMMARY.md** - Implementation details (NEW!)
