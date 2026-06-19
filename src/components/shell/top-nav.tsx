@@ -9,28 +9,30 @@ export function TopNav() {
   return (
     <>
       <header className="flex h-16 shrink-0 items-center gap-3 border-b border-border-default bg-surface-panel/80 backdrop-blur-xl px-4 md:px-6 sticky top-0 z-40">
-        {/* Logo - Only on mobile */}
+        {/* Mobile Hamburger Menu - Only on mobile */}
         {isNarrow && (
-          <a href="/dashboard" className="flex items-center">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-accent-secondary via-accent-primary to-accent-tertiary shadow-lg">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="white"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="shrink-0"
-              >
-                <polygon points="12 2 2 7 12 12 22 7 12 2" />
-                <polyline points="2 17 12 22 22 17" />
-                <polyline points="2 12 12 17 22 12" />
-              </svg>
-            </div>
-          </a>
+          <button
+            onClick={toggle}
+            className="rounded-lg p-2 text-text-muted hover:bg-surface-hover hover:text-text-secondary transition-all active:scale-95"
+            aria-label="Open navigation menu"
+            title="Open navigation menu"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
         )}
 
         <div className="ml-auto flex items-center gap-2 md:gap-3">
@@ -106,32 +108,6 @@ export function TopNav() {
         </button>
       </div>
     </header>
-
-      {/* Mobile Floating Menu Button - Only visible on mobile */}
-      {isNarrow && (
-        <button
-          onClick={toggle}
-          className="fixed bottom-6 left-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-accent-secondary via-accent-primary to-accent-tertiary text-white shadow-xl hover:shadow-2xl transition-all active:scale-95 lg:hidden"
-          aria-label="Open navigation menu"
-          title="Open navigation menu"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <line x1="3" y1="12" x2="21" y2="12" />
-            <line x1="3" y1="6" x2="21" y2="6" />
-            <line x1="3" y1="18" x2="21" y2="18" />
-          </svg>
-        </button>
-      )}
     </>
   );
 }

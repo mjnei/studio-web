@@ -191,11 +191,13 @@ export function DrawerContent({
   onNavigate,
   collapsed,
   onToggle,
+  onClose,
 }: {
   pathname: string;
   onNavigate?: () => void;
   collapsed?: boolean;
   onToggle?: () => void;
+  onClose?: () => void;
 }) {
   return (
     <div className="flex h-full flex-col">
@@ -228,6 +230,29 @@ export function DrawerContent({
             >
               <rect width="18" height="18" x="3" y="3" rx="2" />
               <path d="M9 3v18" />
+            </svg>
+          </button>
+        )}
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="ml-auto rounded-lg p-2 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all active:scale-95"
+            aria-label="Close menu"
+            title="Close menu"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
           </button>
         )}
