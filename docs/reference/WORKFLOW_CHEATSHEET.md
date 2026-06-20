@@ -1,15 +1,13 @@
-# 4-Step Workflow Cheat Sheet
+# 4-Step Workflow Quick Reference
 
-**Quick Reference** | **Last Updated:** June 20, 2026
-
-> 📋 **Print this!** One-page reference for the entire workflow
+**Print-Friendly One-Page Reference** | **Last Updated:** June 20, 2026
 
 ---
 
-## Routes Quick Reference
+## Routes
 
 ```
-/project/new              → Creates draft, redirects to Step 1
+/project/new              → Create draft, redirect to Step 1
 /project/[id]/source      → Step 1: Movie Selection
 /project/[id]/script      → Step 2: Script Generation
 /project/[id]/voice       → Step 3: Voice Generation
@@ -18,221 +16,139 @@
 
 ---
 
-## State at a Glance
+## State Structure (Simplified)
 
-### localStorage Key
-```typescript
-localStorage.getItem('huavoi_project_{projectId}')
-```
-
-### ProjectState Interface (Simplified)
 ```typescript
 {
-  id: string
-  movieId?: string              // Step 1
-  scripts: ScriptVersion[]      // Step 2
-  activeScriptId?: string       // Step 2
-  voiceId?: string              // Step 3
-  audioUrl?: string             // Step 3
-  videoUrl?: string             // Step 4
-  videoStatus?: VideoStatus     // Step 4
-  status: "draft" | "in-progress" | "completed"
-  lastStep: "source" | "script" | "voice" | "compose"
+  id: string;
+  movieId?: string;                 // Step 1
+  scripts: ScriptVersion[];         // Step 2
+  activeScriptId?: string;          // Step 2
+  voiceId?: string;                 // Step 3
+  audioUrl?: string;                // Step 3
+  videoUrl?: string;                // Step 4
+  videoStatus?: "idle" | "processing" | "completed" | "failed";
+  status: "draft" | "in-progress" | "completed";
 }
 ```
 
-### useProjectState Hook
+**localStorage Key:** `huavoi_project_{projectId}`
+
+---
+
+## Step Completion Check
+
 ```typescript
-const {
-  state,              // Current state
-  activeScript,       // Active script version
-  updateMovie,        // (id, title, poster, genre, rating)
-  addScript,          // (content, wordCount, duration)
-  setActiveScript,    // (scriptId)
-  updateVoice,        // (id, name, audioUrl, duration)
-  updateVideoStatus,  // (status, progress, jobId)
-} = useProjectState(projectId)
+source: !!state.movieId
+script: state.scripts.length > 0
+voice: !!state.audioUrl
+compose: !!state.videoUrl
 ```
 
 ---
 
-## Step Completion Rules
+## useProjectState Hook
 
 ```typescript
-const isStepComplete = {
-  source: !!state.movieId,
-  script: state.scripts.length > 0,
-  voice: !!state.audioUrl,
-  compose: !!state.videoUrl,
-}
+const {
+  state, isLoading, activeScript,
+  updateMovie(id, title, poster, genre, rating),
+  addScript(content, wordCount, duration),
+  setActiveScript(scriptId),
+  updateVoice(id, name, audioUrl, duration),
+  updateVideoStatus(status, progress, jobId),
+} = useProjectState(projectId)
 ```
 
 ---
 
 ## API Endpoints
 
-### Step 1: Movies
-```
-GET  /api/movies                    // All movies
-GET  /api/movies/search?q={query}   // Search
-```
+| Step | Method | Endpoint | Request | Response |
+|------|--------|----------|---------|----------|
+| 1 | GET | `/api/movies` | - | `Movie[]` |
+| 1 | GET | `/api/movies/search?q={query}` | - | `Movie[]` |
+| 2 | POST | `/api/scripts/generate` | `{movieId, tone?, length?}` | `{id, content, wordCount, duration}` |
+| 3 | GET | `/api/voices` | - | `Voice[]` |
+| 3 | POST | `/api/tts/generate` | `{script, voiceId}` | `{jobId, status}` |
+| 3 | GET | `/api/tts/status/{jobId}` | - | `{status, progress, audioUrl?, duration?}` |
+| 4 | POST | `/api/videos/generate` | `{movieId, audioUrl, scriptId}` | `{jobId, status}` |
+| 4 | GET | `/api/videos/status/{jobId}` | - | `{status, progress, currentStep, steps[], videoUrl?}` |
 
-### Step 2: Scripts
-```
-POST /api/scripts/generate
-Body: { movieId, tone?, length? }
-Response: { id, content, wordCount, duration }
-```
+---
 
-### Step 3: Voice (Async)
-```
-GET  /api/voices                    // All voices
-POST /api/tts/generate
-Body: { script, voiceId }
-Response: { jobId, status }
+## Component Files
 
-GET  /api/tts/status/{jobId}
-Response: { status, progress, audioUrl?, duration? }
 ```
+src/app/project/
+  new/page.tsx
+  [projectId]/
+    source/page.tsx          ← Step 1
+    script/page.tsx          ← Step 2
+    voice/page.tsx           ← Step 3
+    compose/page.tsx         ← Step 4
 
-### Step 4: Video (Async)
-```
-POST /api/videos/generate
-Body: { movieId, audioUrl, scriptId }
-Response: { jobId, status }
-
-GET  /api/videos/status/{jobId}
-Response: {
-  status, progress, currentStep,
-  steps: [{ name, status, progress }],
-  videoUrl?
-}
+src/lib/hooks/
+  use-project-state.ts       ← State management
 ```
 
 ---
 
-## Component Quick Reference
+## Common Code Patterns
 
-### Step 1 Components
-- Movie grid (2/3/4 columns responsive)
-- Search input with debounce
-- Movie cards with hover effects
-- Selection indicator
-
-### Step 2 Components
-- AI generation button
-- Stats cards (words, duration, paragraphs)
-- Script editor with syntax highlighting
-- Version switcher/manager
-- Copy/Edit/Regenerate buttons
-
-### Step 3 Components
-- Voice selection grid
-- TTS generation button
-- Progress bar (0-100%)
-- Audio player with controls
-- Download button
-
-### Step 4 Components
-- Project summary cards
-- Multi-step progress indicator
-- Overall progress bar
-- Video player/preview
-- Download button
-
----
-
-## Common Patterns
-
-### Loading States
+**Get state in a component:**
 ```typescript
-// Short operation
-{isLoading && <Spinner />}
-
-// Long operation (TTS/Video)
-<ProgressBar value={progress} max={100} />
-<StatusText>Step {currentStep}/4: {stepName}</StatusText>
+const { state, activeScript } = useProjectState(projectId);
 ```
 
-### Error Handling
+**Update movie:**
 ```typescript
-{error && (
-  <Alert variant="destructive">
-    <AlertTitle>Error</AlertTitle>
-    <AlertDescription>{error}</AlertDescription>
-    <Button onClick={retry}>Retry</Button>
-  </Alert>
-)}
+updateMovie("movie-123", "Inception", "/poster.jpg", "Sci-Fi", 8.8);
 ```
 
-### Navigation
+**Create script version:**
 ```typescript
-// Disable if previous step incomplete
-<Button
-  disabled={!isStepComplete.source}
-  onClick={() => router.push(`/project/${id}/script`)}
->
-  Continue to Script
-</Button>
+addScript("Script content...", 250, 5);  // 250 words, 5 min read
+```
+
+**Update video status:**
+```typescript
+updateVideoStatus("processing", 75, "job-456");
 ```
 
 ---
 
-## Testing Checklist (One-Liner)
+## Testing Checklist
 
-- [ ] State persists on refresh
-- [ ] Can create/switch/delete script versions
+- [ ] State persists after page refresh
+- [ ] Script versions create/switch/delete correctly
 - [ ] Can navigate back to any completed step
-- [ ] TTS shows progress, can exit/return
-- [ ] Video shows multi-step progress, can exit/return
-- [ ] Works on mobile
+- [ ] TTS shows 0-100% progress
+- [ ] Video shows multi-step progress
+- [ ] Can exit/return during async operations
+- [ ] Mobile responsive
+
+---
+
+## Colors
+
+| Step | Gradient |
+|------|----------|
+| Movie (1) | Blue → Cyan |
+| Script (2) | Purple → Pink |
+| Voice (3) | Green → Emerald |
+| Video (4) | Blue → Cyan |
 
 ---
 
 ## File Locations
 
-```
-Pages:
-src/app/project/new/page.tsx
-src/app/project/[projectId]/source/page.tsx
-src/app/project/[projectId]/script/page.tsx
-src/app/project/[projectId]/voice/page.tsx
-src/app/project/[projectId]/compose/page.tsx
-
-State Hook:
-src/lib/hooks/use-project-state.ts
-
-Components:
-src/components/ui/button.tsx
-src/components/ui/card.tsx
-src/components/ui/input.tsx
-src/components/ui/badge.tsx
-src/components/ui/progress.tsx
-```
+| File | Purpose |
+|------|---------|
+| `WORKFLOW_GUIDE.md` | Complete reference |
+| `NEW_PROJECT_UI_DESIGN.md` | UI layouts |
+| `COMPONENT_EXAMPLES.md` | Component showcase |
 
 ---
 
-## Color Quick Reference
-
-| Step | Primary | Gradient | Usage |
-|------|---------|----------|-------|
-| Movie | `#3b82f6` | Blue → Cyan | Selection phase |
-| Script | `#8b5cf6` | Purple → Pink | Creation phase |
-| Voice | `#10b981` | Green → Emerald | Audio phase |
-| Video | `#3b82f6` | Blue → Cyan | Final phase |
-
----
-
-## Need More Details?
-
-| Topic | Document |
-|-------|----------|
-| Complete workflow | [WORKFLOW_GUIDE.md](../guides/WORKFLOW_GUIDE.md) |
-| UI layouts | [NEW_PROJECT_UI_DESIGN.md](../guides/NEW_PROJECT_UI_DESIGN.md) |
-| Component code | [COMPONENT_EXAMPLES.md](../guides/COMPONENT_EXAMPLES.md) |
-| All CSS/colors | [QUICK_REFERENCE.md](./QUICK_REFERENCE.md) |
-| Main hub | [INDEX.md](../INDEX.md) |
-
----
-
-**🖨️ Print-Friendly** • **💾 Bookmark This** • **🔄 Keep Handy**
+**💾 Bookmark • 🖨️ Print • 🔄 Keep Handy**
