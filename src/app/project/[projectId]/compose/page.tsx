@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useProjectState } from "@/lib/hooks/use-project-state";
-import { WorkflowNavigation } from "@/components/project/workflow-navigation";
+import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import {
   Play,
   Download,
@@ -98,36 +98,28 @@ export default function ComposePage() {
   const isProcessing = !!(state?.videoStatus === "processing" && state?.isRendering);
 
   return (
-    <div className="flex flex-col gap-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-semibold text-text-primary">Video Composition</h2>
-          <p className="mt-1 text-sm text-text-muted">
-            Generate and preview your final video
-          </p>
+    <>
+      <div className="flex flex-col gap-6 pb-24">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-semibold text-text-primary">Video Composition</h2>
+            <p className="mt-1 text-sm text-text-muted">
+              Generate and preview your final video
+            </p>
+          </div>
+          {isCompleted && (
+            <Button
+              variant="secondary"
+              size="md"
+              icon={<Download className="h-4 w-4" />}
+              onClick={handleDownload}
+              className="hidden md:flex"
+            >
+              Download
+            </Button>
+          )}
         </div>
-        <WorkflowNavigation
-          projectId={projectId}
-          currentStep="compose"
-          canGoNext={isCompleted}
-          nextLabel={isCompleted ? "Go to Projects" : undefined}
-          canGoBack={!isProcessing}
-          isProcessing={isProcessing}
-          additionalActions={
-            isCompleted ? (
-              <Button
-                variant="secondary"
-                size="md"
-                icon={<Download className="h-4 w-4" />}
-                onClick={handleDownload}
-              >
-                Download
-              </Button>
-            ) : undefined
-          }
-        />
-      </div>
 
       {/* Project Summary */}
       <Card variant="bordered" padding="md">
@@ -300,5 +292,15 @@ export default function ComposePage() {
         </>
       )}
     </div>
+    
+    <FloatingWorkflowNavigation
+      projectId={projectId}
+      currentStep="compose"
+      canGoNext={isCompleted}
+      nextLabel={isCompleted ? "Go to Projects" : undefined}
+      canGoBack={!isProcessing}
+      isProcessing={isProcessing}
+    />
+  </>
   );
 }

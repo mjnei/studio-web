@@ -5,6 +5,21 @@
 
 ---
 
+## Important Notes
+
+### UI Framework Consistency
+- ✅ **Left sidebar** and **top navbar** remain unchanged
+- ✅ Workflow pages use the existing `ProjectShell` component
+- ✅ Navigation improvements are **additive** - they enhance the existing framework
+- ✅ The floating navigation is **workflow-specific** and doesn't interfere with site-wide navigation
+
+### Scope
+This document covers two types of navigation improvements:
+1. **UI Component Navigation:** New `FloatingWorkflowNavigation` component for workflow steps
+2. **Documentation Navigation:** Markdown file navigation patterns for reading docs
+
+---
+
 ## Summary
 
 Improved navigation for the 4-step workflow documentation to make it easier for developers to find information quickly and understand how all the pieces fit together.
@@ -20,12 +35,21 @@ Improved navigation for the 4-step workflow documentation to make it easier for 
    - Step-by-step implementation paths
    - Quick start paths for different timelines
 
-### 2. **Fixed Position Navigation Bars** ⭐ NEW
-   - Consistent navigation at **top** and **bottom** of every major section
-   - Always in the same position (predictable UX)
+### 2. **Floating Bottom Navigation** ⭐ NEW (UI Component)
+   - Always-visible floating navigation bar at bottom of screen
+   - Auto-hides on scroll down, shows on scroll up
+   - Consistent buttons: Back | Step Indicator | Next/Continue
+   - Sticky position with backdrop blur effect
+   - Responsive design with mobile-optimized labels
+   - Includes "Projects" home button for quick exit
+   - Component: `FloatingWorkflowNavigation`
+   - **Note:** Does NOT affect left sidebar or top navbar - workflow pages remain within the site framework
+
+### 3. **Documentation Navigation** (Markdown Files)
+   - Consistent navigation at top and bottom of major sections in markdown docs
    - Format: `**📍 Navigation:** [← Prev] | [TOC] | [Next →]`
-   - No scrolling needed to find navigation
    - Pattern documented in [NAVIGATION_PATTERN.md](./NAVIGATION_PATTERN.md)
+   - Used for navigating between sections within long documentation files
 
 ### 3. **Workflow Cheat Sheet (NEW)**
    - Created `/docs/reference/WORKFLOW_CHEATSHEET.md`
@@ -96,8 +120,8 @@ Timeline (hours/days) →
 **After:** See workflow at a glance → Pick specific section → Jump to relevant parts
 
 ### "I need to build Step 2 today"
-**Before:** Search through multiple docs  
-**After:** Workflow Hub → "Step 2" section → Get UI layout + implementation + components in one place
+**Before:** Search through multiple docs + inline navigation in header  
+**After:** Workflow Hub → "Step 2" section → Get UI layout + implementation + components + floating navigation always visible at bottom
 
 ### "I need quick reference while coding"
 **Before:** Tab through multiple documents  
@@ -283,6 +307,82 @@ The 4-step workflow documentation is now significantly easier to navigate with:
 
 ---
 
+## ⚡ Update: Floating Bottom Navigation (June 20, 2026)
+
+### Important: Framework Consistency
+**The floating navigation does NOT change:**
+- ❌ Left sidebar (remains as-is from `ProjectShell`)
+- ❌ Top navbar (remains as-is from `ProjectShell`)
+- ❌ Site-wide navigation structure
+- ✅ **Only affects:** Workflow step-to-step navigation (Source → Script → Voice → Compose)
+
+The workflow pages continue to use the existing `ProjectShell` component with its left rail and top navigation bar intact. The floating navigation is an **additional layer** for step progression only.
+
+### What Changed
+Replaced inline header step navigation buttons with an always-visible floating navigation bar at the bottom of the screen **within the workflow pages only**.
+
+### New Component: FloatingWorkflowNavigation
+
+**Key Features:**
+- Fixed position at bottom of viewport
+- Auto-hides on scroll down, shows on scroll up
+- Backdrop blur effect with transparency
+- Three-section layout: Back/Projects | Step Indicator | Next/Continue
+- Smart responsive design (abbreviated labels on mobile)
+- Always includes "Projects" button for quick exit
+- Smooth animations and transitions
+
+### Migration Summary
+
+**Before:**
+```tsx
+<div className="flex flex-col gap-6">
+  <div className="flex items-center justify-between">
+    <h2>Page Title</h2>
+    <WorkflowNavigation ... />
+  </div>
+  {/* Content */}
+</div>
+```
+
+**After:**
+```tsx
+<>
+  <div className="flex flex-col gap-6 pb-24">
+    <div>
+      <h2>Page Title</h2>
+    </div>
+    {/* Content */}
+  </div>
+  
+  <FloatingWorkflowNavigation
+    projectId={projectId}
+    currentStep="source"
+    canGoNext={isValid}
+  />
+</>
+```
+
+### Benefits
+
+1. **Always Accessible:** No scrolling needed to find navigation controls
+2. **Consistent Position:** Same location on all workflow pages
+3. **Better Mobile UX:** Optimized labels and touch targets
+4. **Smart Behavior:** Auto-hides to maximize content space
+5. **Quick Exit:** Projects button always visible for easy navigation out
+6. **Modern Design:** Floating effect with backdrop blur
+
+### Pages Updated
+- ✅ `/project/[projectId]/source/page.tsx`
+- ✅ `/project/[projectId]/script/page.tsx`
+- ✅ `/project/[projectId]/voice/page.tsx`
+- ✅ `/project/[projectId]/compose/page.tsx`
+
+### Documentation
+Full implementation guide: [FLOATING_NAVIGATION_GUIDE.md](./guides/FLOATING_NAVIGATION_GUIDE.md)
+
+---
+
 ## Files Changed
 
 ```
@@ -290,10 +390,16 @@ Modified:
 - docs/INDEX.md (added Workflow Hub)
 - docs/guides/WORKFLOW_GUIDE.md (enhanced navigation)
 - docs/guides/NEW_PROJECT_UI_DESIGN.md (added quick reference)
+- docs/WORKFLOW_NAVIGATION_IMPROVEMENTS.md (this file - updated)
+- src/app/project/[projectId]/source/page.tsx (floating nav)
+- src/app/project/[projectId]/script/page.tsx (floating nav)
+- src/app/project/[projectId]/voice/page.tsx (floating nav)
+- src/app/project/[projectId]/compose/page.tsx (floating nav)
 
 Created:
 - docs/reference/WORKFLOW_CHEATSHEET.md (NEW)
-- docs/WORKFLOW_NAVIGATION_IMPROVEMENTS.md (this file)
+- docs/guides/FLOATING_NAVIGATION_GUIDE.md (NEW)
+- src/components/project/floating-workflow-navigation.tsx (NEW)
 ```
 
 ---

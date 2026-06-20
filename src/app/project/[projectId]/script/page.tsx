@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useProjectState } from "@/lib/hooks/use-project-state";
-import { WorkflowNavigation } from "@/components/project/workflow-navigation";
+import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { Sparkles, Copy, Trash2, Edit2, Check } from "lucide-react";
 
 export default function ScriptPage() {
@@ -82,21 +82,17 @@ This isn't just a movie. It's an experience that will stay with you long after t
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-semibold text-text-primary">Generate Script</h2>
-          <p className="mt-1 text-sm text-text-muted">
-            AI-powered script generation for {state?.movieTitle || "your project"}
-          </p>
+    <>
+      <div className="flex flex-col gap-6 pb-24">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-semibold text-text-primary">Generate Script</h2>
+            <p className="mt-1 text-sm text-text-muted">
+              AI-powered script generation for {state?.movieTitle || "your project"}
+            </p>
+          </div>
         </div>
-        <WorkflowNavigation
-          projectId={projectId}
-          currentStep="script"
-          canGoNext={!!activeScript}
-        />
-      </div>
 
       {/* Movie Info */}
       {state?.moviePoster && (
@@ -289,5 +285,12 @@ This isn't just a movie. It's an experience that will stay with you long after t
         </Card>
       )}
     </div>
+    
+    <FloatingWorkflowNavigation
+      projectId={projectId}
+      currentStep="script"
+      canGoNext={!!activeScript}
+    />
+  </>
   );
 }

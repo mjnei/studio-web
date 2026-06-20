@@ -6,7 +6,7 @@ import { Play, Pause, Download, Sparkles, Volume2, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useProjectState } from "@/lib/hooks/use-project-state";
-import { WorkflowNavigation } from "@/components/project/workflow-navigation";
+import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 
 const mockVoices = [
   { id: "voice-1", name: "Emma", gender: "Female", accent: "US English", description: "Warm and friendly" },
@@ -87,21 +87,17 @@ export default function VoicePage() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-semibold text-text-primary">Generate Voice</h2>
-          <p className="mt-1 text-sm text-text-muted">
-            Convert your script to speech with AI-powered text-to-speech
-          </p>
+    <>
+      <div className="flex flex-col gap-6 pb-24">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-semibold text-text-primary">Generate Voice</h2>
+            <p className="mt-1 text-sm text-text-muted">
+              Convert your script to speech with AI-powered text-to-speech
+            </p>
+          </div>
         </div>
-        <WorkflowNavigation
-          projectId={projectId}
-          currentStep="voice"
-          canGoNext={!!state?.audioUrl}
-        />
-      </div>
 
       {/* Script Summary */}
       {activeScript && (
@@ -272,5 +268,13 @@ export default function VoicePage() {
         </Card>
       )}
     </div>
+    
+    <FloatingWorkflowNavigation
+      projectId={projectId}
+      currentStep="voice"
+      canGoNext={!!state?.audioUrl}
+      isProcessing={isGenerating}
+    />
+  </>
   );
 }

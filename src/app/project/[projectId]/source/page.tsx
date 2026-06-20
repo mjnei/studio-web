@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation";
 import { MovieSelection } from "@/components/project/movie-selection";
 import { useProjectState } from "@/lib/hooks/use-project-state";
-import { WorkflowNavigation } from "@/components/project/workflow-navigation";
+import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 
 export default function SourcePage() {
   const params = useParams();
@@ -41,25 +41,28 @@ export default function SourcePage() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-semibold text-text-primary">Select Source Movie</h2>
-          <p className="mt-1 text-sm text-text-muted">
-            Choose a movie clip to create your dubbed video project
-          </p>
+    <>
+      <div className="flex flex-col gap-6 pb-24">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-semibold text-text-primary">Select Source Movie</h2>
+            <p className="mt-1 text-sm text-text-muted">
+              Choose a movie clip to create your dubbed video project
+            </p>
+          </div>
         </div>
-        <WorkflowNavigation
-          projectId={projectId}
-          currentStep="source"
-          canGoNext={!!state?.movieId}
+
+        <MovieSelection
+          selectedMovie={state?.movieId}
+          onSelect={handleMovieSelect}
         />
       </div>
-
-      <MovieSelection
-        selectedMovie={state?.movieId}
-        onSelect={handleMovieSelect}
+      
+      <FloatingWorkflowNavigation
+        projectId={projectId}
+        currentStep="source"
+        canGoNext={!!state?.movieId}
       />
-    </div>
+    </>
   );
 }
