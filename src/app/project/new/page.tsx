@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { createProject } from "@/lib/project-client";
 
 /**
  * This page redirects to the first step of the new project workflow.
@@ -17,10 +18,8 @@ export default function NewProjectPage() {
   useEffect(() => {
     // Create a new draft project and redirect to the source step
     const createDraftProject = async () => {
-      // In a real implementation, this would call an API to create a draft project
-      // For now, we'll use a temporary ID
-      const draftId = `draft-${Date.now()}`;
-      router.replace(`/project/${draftId}/source`);
+      const project = await createProject();
+      router.replace(`/project/${project.id}/source`);
     };
 
     createDraftProject();

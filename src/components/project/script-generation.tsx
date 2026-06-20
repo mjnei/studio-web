@@ -12,6 +12,19 @@ interface ScriptGenerationProps {
   movieTitle: string;
   script?: string;
   onScriptChange: (script: string) => void;
+  onGenerate: () => void;
+  onRegenerate: () => void;
+  isGenerating?: boolean;
+}
+
+interface ScriptGenerationProps {
+  movieId: string;
+  movieTitle: string;
+  script?: string;
+  onScriptChange: (script: string) => void;
+  onGenerate: () => void;
+  onRegenerate: () => void;
+  isGenerating?: boolean;
 }
 
 export function ScriptGeneration({
@@ -19,38 +32,17 @@ export function ScriptGeneration({
   movieTitle,
   script,
   onScriptChange,
+  onGenerate,
+  onRegenerate,
+  isGenerating = false,
 }: ScriptGenerationProps) {
-  const [generating, setGenerating] = useState(false);
   const [editing, setEditing] = useState(false);
   const [copied, setCopied] = useState(false);
   const toast = useToast();
 
-  const generateScript = async () => {
-    setGenerating(true);
-
-    // Simulate AI generation
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-
-    const mockScript = `Welcome to today's review of "${movieTitle}".
-
-This cinematic masterpiece takes us on an unforgettable journey through compelling storytelling and remarkable performances. From the opening scene to the powerful conclusion, every moment is crafted with precision and care.
-
-The director's vision shines through in every frame, creating a visual experience that stays with you long after the credits roll. The performances are nothing short of extraordinary, bringing depth and authenticity to each character.
-
-The cinematography captures both grand landscapes and intimate moments with equal skill, while the score perfectly complements the emotional beats of the narrative.
-
-In conclusion, "${movieTitle}" is a must-watch that deserves its place among the classics. Whether you're a longtime fan or discovering it for the first time, this film offers something special that resonates on multiple levels.
-
-Thank you for watching, and don't forget to share your thoughts in the comments below.`;
-
-    onScriptChange(mockScript);
-    setGenerating(false);
-    toast.success("Script Generated", "AI has created your script");
-  };
-
   const regenerateScript = async () => {
     if (confirm("Are you sure you want to regenerate? Current changes will be lost.")) {
-      await generateScript();
+      onRegenerate();
     }
   };
 
@@ -99,10 +91,10 @@ Thank you for watching, and don't forget to share your thoughts in the comments 
               variant="primary"
               size="lg"
               icon={<Sparkles className="w-5 h-5" />}
-              onClick={generateScript}
-              loading={generating}
+              onClick={onGenerate}
+              loading={isGenerating}
             >
-              {generating ? "Generating Script..." : "Generate Script with AI"}
+              {isGenerating ? "Generating Script..." : "Generate Script with AI"}
             </Button>
           </div>
         </Card>

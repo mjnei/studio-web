@@ -8,95 +8,47 @@ import { Badge } from "@/components/ui/badge";
 import { Select } from "@/components/ui/select";
 import { useToast } from "@/components/ui/toast";
 
-interface VoiceGenerationProps {
-  script: string;
-  audioUrl?: string;
-  onGenerate: (audioUrl: string, voiceId: string, voiceName: string) => void;
-}
-
-interface Voice {
+export interface Voice {
   id: string;
   name: string;
-  gender: "male" | "female";
-  accent: string;
-  description: string;
-  previewUrl: string;
+  gender?: string;
+  accent?: string;
+  category?: string;
+  provider?: string;
 }
 
-const mockVoices: Voice[] = [
-  {
-    id: "v1",
-    name: "James - Professional",
-    gender: "male",
-    accent: "American",
-    description: "Deep, authoritative voice perfect for narration",
-    previewUrl: "/audio/preview1.mp3",
-  },
-  {
-    id: "v2",
-    name: "Sarah - Friendly",
-    gender: "female",
-    accent: "American",
-    description: "Warm, engaging voice ideal for storytelling",
-    previewUrl: "/audio/preview2.mp3",
-  },
-  {
-    id: "v3",
-    name: "Oliver - British",
-    gender: "male",
-    accent: "British",
-    description: "Sophisticated British accent for documentaries",
-    previewUrl: "/audio/preview3.mp3",
-  },
-  {
-    id: "v4",
-    name: "Emma - Natural",
-    gender: "female",
-    accent: "American",
-    description: "Natural, conversational tone",
-    previewUrl: "/audio/preview4.mp3",
-  },
-];
+interface VoiceGenerationProps {
+  script: string;
+  voices: Voice[];
+  selectedVoiceId?: string;
+  audioUrl?: string;
+  isGenerating?: boolean;
+  progress?: number;
+  onVoiceSelect: (voiceId: string) => void;
+  onGenerate: (voiceId: string) => void;
+  onChangeVoice: () => void;
+}
 
-export function VoiceGeneration({ script, audioUrl, onGenerate }: VoiceGenerationProps) {
-  const [selectedVoice, setSelectedVoice] = useState<string>("");
-  const [generating, setGenerating] = useState(false);
+export function VoiceGeneration({ 
+  script, 
+  voices,
+  selectedVoiceId,
+  audioUrl, 
+  isGenerating = false,
+  progress = 0,
+  onVoiceSelect,
+  onGenerate,
+  onChangeVoice,
+}: VoiceGenerationProps) {
   const [playing, setPlaying] = useState(false);
-  const [progress, setProgress] = useState(0);
   const toast = useToast();
 
-  const generateVoice = async () => {
-    if (!selectedVoice) {
+  const handleGenerate = () => {
+    if (!selectedVoiceId) {
       toast.warning("Select Voice", "Please select a voice before generating");
       return;
     }
-
-    setGenerating(true);
-    setProgress(0);
-
-    // Simulate progress
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 90) {
-          clearInterval(interval);
-          return prev;
-        }
-        return prev + 10;
-      });
-    }, 500);
-
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-
-    clearInterval(interval);
-    setProgress(100);
-
-    const voice = mockVoices.find((v) => v.id === selectedVoice);
-    const mockAudioUrl = `/audio/generated-${selectedVoice}.mp3`;
-
-    onGenerate(mockAudioUrl, selectedVoice, voice?.name || "Unknown");
-    setGenerating(false);
-    toast.success("Voice Generated", "Your audio is ready to preview");
+    onGenerate(selectedVoiceId);
   };
 
   const togglePlayback = () => {
@@ -113,6 +65,8 @@ export function VoiceGeneration({ script, audioUrl, onGenerate }: VoiceGeneratio
 
   const wordCount = script.split(/\s+/).filter(Boolean).length;
   const estimatedDuration = Math.ceil(wordCount / 150);
+  
+  const selectedVoice = voices.find((v) => v.id === selectedVoiceId);
 
   return (
     <div className="space-y-6 fade-in">
@@ -139,7 +93,7 @@ export function VoiceGeneration({ script, audioUrl, onGenerate }: VoiceGeneratio
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {mockVoices.map((voice) => (
+            {voices.map((voice) => (
               <Card
                 key={voice.id}
                 variant="bordered"
@@ -148,12 +102,12 @@ export function VoiceGeneration({ script, audioUrl, onGenerate }: VoiceGeneratio
                 className={`
                   cursor-pointer transition-all
                   ${
-                    selectedVoice === voice.id
+                    selectedVoiceId === voice.id
                       ? "ring-2 ring-accent-primary border-accent-primary"
                       : ""
                   }
                 `}
-                onClick={() => setSelectedVoice(voice.id)}
+                onClick={() => onVoiceSelect(voice.id)}
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-2">
@@ -163,22 +117,28 @@ export function VoiceGeneration({ script, audioUrl, onGenerate }: VoiceGeneratio
                     <div>
                       <p className="font-semibold text-text-primary text-sm">{voice.name}</p>
                       <div className="flex items-center gap-2 mt-1">
-                        <Badge variant="default" size="sm">
-                          {voice.gender}
-                        </Badge>
-                        <Badge variant="default" size="sm">
-                          {voice.accent}
-                        </Badge>
+                        {voice.gender && (
+                          <Badge variant="default" size="sm">
+                            {voice.gender}
+                          </Badge>
+                        )}
+                        {voice.accent && (
+                          <Badge variant="default" size="sm">
+                            {voice.accent}
+                          </Badge>
+                        )}
                       </div>
                     </div>
                   </div>
-                  {selectedVoice === voice.id && (
+                  {selectedVoiceId === voice.id && (
                     <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-primary">
                       <Check className="w-4 h-4 text-white" />
                     </div>
                   )}
                 </div>
-                <p className="text-xs text-text-secondary">{voice.description}</p>
+                {voice.category && (
+                  <p className="text-xs text-text-secondary">{voice.category}</p>
+                )}
               </Card>
             ))}
           </div>
@@ -196,15 +156,15 @@ export function VoiceGeneration({ script, audioUrl, onGenerate }: VoiceGeneratio
             </div>
             <h3 className="text-xl font-bold text-text-primary mb-2">Generate Audio</h3>
             <p className="text-text-secondary mb-2">
-              {selectedVoice
-                ? `Ready to generate with ${mockVoices.find((v) => v.id === selectedVoice)?.name}`
+              {selectedVoiceId && selectedVoice
+                ? `Ready to generate with ${selectedVoice.name}`
                 : "Select a voice to continue"}
             </p>
             <p className="text-sm text-text-muted mb-6">
               Estimated duration: ~{estimatedDuration} minutes ({wordCount} words)
             </p>
 
-            {generating ? (
+            {isGenerating ? (
               <div className="space-y-4">
                 <div className="flex items-center justify-center gap-3">
                   <Loader2 className="w-5 h-5 text-accent-primary animate-spin" />
@@ -224,8 +184,8 @@ export function VoiceGeneration({ script, audioUrl, onGenerate }: VoiceGeneratio
                 variant="primary"
                 size="lg"
                 icon={<Volume2 className="w-5 h-5" />}
-                onClick={generateVoice}
-                disabled={!selectedVoice}
+                onClick={handleGenerate}
+                disabled={!selectedVoiceId}
               >
                 Generate Voice Audio
               </Button>
@@ -243,7 +203,7 @@ export function VoiceGeneration({ script, audioUrl, onGenerate }: VoiceGeneratio
               <div>
                 <p className="font-semibold text-text-primary">Audio Generated Successfully</p>
                 <p className="text-sm text-text-secondary">
-                  Voice: {mockVoices.find((v) => v.id === selectedVoice)?.name}
+                  Voice: {selectedVoice?.name || "Unknown"}
                 </p>
               </div>
             </div>
@@ -296,7 +256,7 @@ export function VoiceGeneration({ script, audioUrl, onGenerate }: VoiceGeneratio
                   <p className="text-xs text-text-secondary">Try a different voice or regenerate</p>
                 </div>
               </div>
-              <Button variant="secondary" size="sm" onClick={() => onGenerate("", "", "")}>
+              <Button variant="secondary" size="sm" onClick={onChangeVoice}>
                 Change Voice
               </Button>
             </div>

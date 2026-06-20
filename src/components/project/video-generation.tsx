@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Video, Play, Download, Loader2, CheckCircle2, Film, Clock } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,15 +13,18 @@ interface VideoGenerationProps {
   script: string;
   audioUrl: string;
   voiceName?: string;
-  onComplete: (videoUrl: string) => void;
+  videoUrl?: string;
+  status?: "idle" | "processing" | "completed" | "failed";
+  progress?: number;
+  steps?: ProcessingStep[];
+  onStartGeneration: () => void;
 }
 
-type GenerationStatus = "idle" | "processing" | "completed" | "failed";
-
-interface ProcessingStep {
+export interface ProcessingStep {
   id: string;
   label: string;
-  status: "pending" | "processing" | "completed";
+  status: "pending" | "processing" | "completed" | "failed";
+  progress?: number;
 }
 
 export function VideoGeneration({
@@ -30,51 +33,14 @@ export function VideoGeneration({
   script,
   audioUrl,
   voiceName,
-  onComplete,
+  videoUrl,
+  status = "idle",
+  progress = 0,
+  steps = [],
+  onStartGeneration,
 }: VideoGenerationProps) {
-  const [status, setStatus] = useState<GenerationStatus>("idle");
-  const [progress, setProgress] = useState(0);
-  const [videoUrl, setVideoUrl] = useState<string>("");
-  const [steps, setSteps] = useState<ProcessingStep[]>([
-    { id: "1", label: "Analyzing audio", status: "pending" },
-    { id: "2", label: "Syncing with visuals", status: "pending" },
-    { id: "3", label: "Rendering video", status: "pending" },
-    { id: "4", label: "Finalizing output", status: "pending" },
-  ]);
+  const [playing, setPlaying] = useState(false);
   const toast = useToast();
-
-  const generateVideo = async () => {
-    setStatus("processing");
-    setProgress(0);
-
-    // Simulate step-by-step processing
-    const stepDurations = [3000, 4000, 5000, 3000];
-
-    for (let i = 0; i < steps.length; i++) {
-      // Update current step to processing
-      setSteps((prev) =>
-        prev.map((step, idx) => (idx === i ? { ...step, status: "processing" } : step))
-      );
-
-      // Simulate processing time
-      await new Promise((resolve) => setTimeout(resolve, stepDurations[i]));
-
-      // Update progress
-      setProgress(((i + 1) / steps.length) * 100);
-
-      // Mark step as completed
-      setSteps((prev) =>
-        prev.map((step, idx) => (idx === i ? { ...step, status: "completed" } : step))
-      );
-    }
-
-    // Complete generation
-    const mockVideoUrl = `/video/generated-${Date.now()}.mp4`;
-    setVideoUrl(mockVideoUrl);
-    setStatus("completed");
-    onComplete(mockVideoUrl);
-    toast.success("Video Generated", "Your video is ready to download");
-  };
 
   const downloadVideo = () => {
     if (videoUrl) {
@@ -171,7 +137,7 @@ export function VideoGeneration({
               variant="primary"
               size="lg"
               icon={<Video className="w-5 h-5" />}
-              onClick={generateVideo}
+              onClick={onStartGeneration}
             >
               Start Video Generation
             </Button>

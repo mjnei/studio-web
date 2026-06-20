@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getPopularMovies, searchMovies, tmdbImageUrl, type MovieResponse } from "@/lib/project-client";
 
 interface Movie {
   id: string;
@@ -22,86 +23,60 @@ interface MovieSelectionProps {
   onSelect: (movie: Movie) => void;
 }
 
-// Mock data - replace with actual API call
-const mockMovies: Movie[] = [
-  {
-    id: "1",
-    title: "The Shawshank Redemption",
-    year: 1994,
-    poster: "/api/placeholder/300/450",
-    rating: 9.3,
-    genre: ["Drama"],
-    duration: "2h 22m",
-  },
-  {
-    id: "2",
-    title: "The Godfather",
-    year: 1972,
-    poster: "/api/placeholder/300/450",
-    rating: 9.2,
-    genre: ["Crime", "Drama"],
-    duration: "2h 55m",
-  },
-  {
-    id: "3",
-    title: "The Dark Knight",
-    year: 2008,
-    poster: "/api/placeholder/300/450",
-    rating: 9.0,
-    genre: ["Action", "Crime"],
-    duration: "2h 32m",
-  },
-  {
-    id: "4",
-    title: "Pulp Fiction",
-    year: 1994,
-    poster: "/api/placeholder/300/450",
-    rating: 8.9,
-    genre: ["Crime", "Drama"],
-    duration: "2h 34m",
-  },
-  {
-    id: "5",
-    title: "Forrest Gump",
-    year: 1994,
-    poster: "/api/placeholder/300/450",
-    rating: 8.8,
-    genre: ["Drama", "Romance"],
-    duration: "2h 22m",
-  },
-  {
-    id: "6",
-    title: "Inception",
-    year: 2010,
-    poster: "/api/placeholder/300/450",
-    rating: 8.8,
-    genre: ["Action", "Sci-Fi"],
-    duration: "2h 28m",
-  },
-];
+function formatRuntime(minutes?: number | null): string {
+  if (!minutes) return "Unknown";
+  return `${Math.floor(minutes / 60)}h ${minutes % 60}m`;
+}
+
+function mapMovie(movie: MovieResponse): Movie {
+  const genres = movie.genres
+    ?.map((genre) => ("name" in genre && typeof genre.name === "string" ? genre.name : undefined))
+    .filter(Boolean) as string[] | undefined;
+
+  return {
+    id: String(movie.id),
+    title: movie.title,
+    year: movie.release_date ? new Date(movie.release_date).getUTCFullYear() : 0,
+    poster: tmdbImageUrl(movie.poster_path) ?? "",
+    rating: movie.vote_average ?? 0,
+    genre: genres?.length ? genres : ["Uncategorized"],
+    duration: formatRuntime(movie.runtime),
+  };
+}
 
 export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Simulate API call
+    const controller = new AbortController();
     const fetchMovies = async () => {
       setLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      setMovies(mockMovies);
-      setLoading(false);
+      setError(null);
+      try {
+        const query = searchQuery.trim();
+        const results = query
+          ? (await searchMovies(query, 20)).movies
+          : await getPopularMovies(20);
+        if (!controller.signal.aborted) setMovies(results.map(mapMovie));
+      } catch (err) {
+        if (!controller.signal.aborted) {
+          setError(err instanceof Error ? err.message : "Unable to load movies");
+          setMovies([]);
+        }
+      } finally {
+        if (!controller.signal.aborted) setLoading(false);
+      }
     };
 
-    fetchMovies();
-  }, []);
-
-  const filteredMovies = movies.filter(
-    (movie) =>
-      movie.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      movie.genre.some((g) => g.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
+    const timeout = window.setTimeout(fetchMovies, searchQuery.trim() ? 250 : 0);
+    return () => {
+      controller.abort();
+      window.clearTimeout(timeout);
+    };
+  }, [searchQuery]);
 
   return (
     <div className="space-y-6 fade-in">
@@ -138,9 +113,16 @@ export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps)
             </Card>
           ))}
         </div>
-      ) : filteredMovies.length > 0 ? (
+      ) : error ? (
+        <Card variant="elevated" padding="lg">
+          <div className="text-center py-12">
+            <Film className="w-12 h-12 text-text-muted mx-auto mb-4" />
+            <p className="text-text-secondary">{error}</p>
+          </div>
+        </Card>
+      ) : movies.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          {filteredMovies.map((movie) => (
+          {movies.map((movie) => (
             <Card
               key={movie.id}
               variant="elevated"

@@ -10,7 +10,7 @@ export default function SourcePage() {
   const projectId = params.projectId as string;
   const { state, updateMovie, isLoading } = useProjectState(projectId);
 
-  const handleMovieSelect = (movie: {
+  const handleMovieSelect = async (movie: {
     id: string;
     title: string;
     year: number;
@@ -19,13 +19,13 @@ export default function SourcePage() {
     genre: string[];
     duration: string;
   }) => {
-    updateMovie({
+    await updateMovie({
       id: movie.id,
       title: movie.title,
       poster: movie.poster,
       genre: movie.genre.join(", "), // Convert array to string
       rating: movie.rating,
-      duration: parseInt(movie.duration), // Parse duration string to number
+      duration: parseInt(movie.duration, 10),
     });
   };
 

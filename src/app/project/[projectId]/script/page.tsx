@@ -6,16 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
-import { Sparkles, Copy, Trash2, Edit2, Check } from "lucide-react";
+import { Copy, Edit2, Check, Save } from "lucide-react";
 
 export default function ScriptPage() {
   const params = useParams();
   const router = useRouter();
   const projectId = params.projectId as string;
-  const { state, addScript, setActiveScript, deleteScript, activeScript, isLoading } =
-    useProjectState(projectId);
+  const { state, addScript, setActiveScript, activeScript, isLoading } = useProjectState(projectId);
 
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState("");
   const [showVersions, setShowVersions] = useState(false);
@@ -26,48 +25,26 @@ export default function ScriptPage() {
     }
   }, [activeScript]);
 
-  // Redirect if no movie selected
   useEffect(() => {
     if (!isLoading && !state?.movieId) {
       router.push(`/project/${projectId}/source`);
     }
   }, [isLoading, state?.movieId, router, projectId]);
 
-  const handleGenerate = async () => {
-    setIsGenerating(true);
-    // Simulate AI generation
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    // Mock generated script
-    const mockScript = `In a world where technology meets humanity, one film stands apart. 
-
-${state?.movieTitle || "This movie"} takes you on an unforgettable journey through time and space. With stunning visuals and a gripping narrative, it challenges everything you thought you knew about cinema.
-
-The story follows a protagonist who must navigate impossible choices, confronting both their past and their future. Each moment is crafted with precision, drawing you deeper into a world you'll never forget.
-
-This isn't just a movie. It's an experience that will stay with you long after the credits roll.`;
-
-    const wordCount = mockScript.split(/\s+/).length;
-    const duration = Math.round((wordCount / 150) * 60); // ~150 words per minute
-
-    addScript(mockScript, wordCount, duration);
-    setIsGenerating(false);
-    setIsEditing(false);
-  };
-
-  const handleSaveEdit = () => {
-    if (editedContent.trim()) {
-      const wordCount = editedContent.split(/\s+/).length;
-      const duration = Math.round((wordCount / 150) * 60);
-      addScript(editedContent, wordCount, duration);
+  const handleSaveScript = async () => {
+    if (!editedContent.trim()) return;
+    setIsSaving(true);
+    try {
+      await addScript(editedContent);
       setIsEditing(false);
+    } finally {
+      setIsSaving(false);
     }
   };
 
   const handleCopyToClipboard = () => {
     if (activeScript) {
       navigator.clipboard.writeText(activeScript.content);
-      // TODO: Show toast notification
     }
   };
 
@@ -85,41 +62,36 @@ This isn't just a movie. It's an experience that will stay with you long after t
   return (
     <>
       <div className="flex flex-col gap-6 pb-24">
-        {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-semibold text-text-primary">Generate Script</h2>
+            <h2 className="text-xl font-semibold text-text-primary">Create Script</h2>
             <p className="mt-1 text-sm text-text-muted">
-              AI-powered script generation for {state?.movieTitle || "your project"}
+              Save script versions for {state?.movieTitle || "your project"}
             </p>
           </div>
         </div>
 
-        {/* Movie Info */}
         {state?.moviePoster && (
           <Card variant="bordered" padding="md">
             <div className="flex items-center gap-4">
               <div className="h-24 w-16 overflow-hidden rounded-md bg-surface-raised">
-                {state.moviePoster && (
-                  <img
-                    src={state.moviePoster}
-                    alt={state.movieTitle}
-                    className="h-full w-full object-cover"
-                  />
-                )}
+                <img
+                  src={state.moviePoster}
+                  alt={state.movieTitle}
+                  className="h-full w-full object-cover"
+                />
               </div>
               <div className="flex-1">
                 <h3 className="font-medium text-text-primary">{state.movieTitle}</h3>
                 <p className="mt-1 text-sm text-text-muted">
                   {state.movieGenre && `${state.movieGenre} • `}
-                  {state.movieRating && `⭐ ${state.movieRating.toFixed(1)}`}
+                  {state.movieRating && `Rating ${state.movieRating.toFixed(1)}`}
                 </p>
               </div>
             </div>
           </Card>
         )}
 
-        {/* Script Versions Sidebar */}
         {state?.scripts && state.scripts.length > 1 && (
           <Card variant="bordered" padding="md">
             <div className="flex items-center justify-between">
@@ -140,7 +112,7 @@ This isn't just a movie. It's an experience that will stay with you long after t
                     padding="sm"
                     className={script.isActive ? "border-accent-cyan" : ""}
                   >
-                    <div className="flex items-start justify-between">
+                    <div className="flex items-start justify-between gap-3">
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
                           <span className="text-sm font-medium text-text-primary">
@@ -156,28 +128,16 @@ This isn't just a movie. It's an experience that will stay with you long after t
                           {new Date(script.createdAt).toLocaleDateString()}
                         </p>
                       </div>
-                      <div className="flex gap-1">
-                        {!script.isActive && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setActiveScript(script.id)}
-                            className="h-7 w-7 p-0"
-                          >
-                            <Check className="h-3 w-3" />
-                          </Button>
-                        )}
-                        {!script.isActive && state.scripts.length > 1 && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => deleteScript(script.id)}
-                            className="h-7 w-7 p-0 text-status-error hover:text-status-error"
-                          >
-                            <Trash2 className="h-3 w-3" />
-                          </Button>
-                        )}
-                      </div>
+                      {!script.isActive && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setActiveScript(script.id)}
+                          className="h-7 w-7 p-0"
+                        >
+                          <Check className="h-3 w-3" />
+                        </Button>
+                      )}
                     </div>
                   </Card>
                 ))}
@@ -186,50 +146,45 @@ This isn't just a movie. It's an experience that will stay with you long after t
           </Card>
         )}
 
-        {/* Main Content */}
-        {!activeScript && !isGenerating ? (
+        {!activeScript ? (
           <Card variant="elevated" padding="lg" className="text-center">
-            <div className="mx-auto max-w-md">
+            <div className="mx-auto max-w-2xl">
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent-cyan-muted">
-                <Sparkles className="h-8 w-8 text-accent-cyan" />
+                <Edit2 className="h-8 w-8 text-accent-cyan" />
               </div>
-              <h3 className="mb-2 text-lg font-semibold text-text-primary">Generate Your Script</h3>
+              <h3 className="mb-2 text-lg font-semibold text-text-primary">Write Your Script</h3>
               <p className="mb-6 text-sm text-text-muted">
-                Let AI create a compelling script for your video project. You can edit and refine it
-                afterwards.
+                Write or paste the voice-over script. It will be stored as the active backend
+                script version.
               </p>
+              <textarea
+                value={editedContent}
+                onChange={(event) => setEditedContent(event.target.value)}
+                className="mb-4 min-h-[260px] w-full rounded-md border border-border-default bg-surface-raised p-4 text-left text-sm text-text-primary placeholder-text-muted focus:border-accent-cyan focus:outline-none"
+                placeholder="Enter your script here..."
+              />
               <Button
                 variant="primary"
                 size="lg"
-                icon={<Sparkles className="h-5 w-5" />}
-                onClick={handleGenerate}
+                icon={<Save className="h-5 w-5" />}
+                onClick={handleSaveScript}
+                loading={isSaving}
+                disabled={!editedContent.trim()}
               >
-                Generate Script with AI
+                Save Script
               </Button>
-            </div>
-          </Card>
-        ) : isGenerating ? (
-          <Card variant="elevated" padding="lg" className="text-center">
-            <div className="mx-auto max-w-md">
-              <div className="mb-4 inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-accent-cyan border-r-transparent" />
-              <h3 className="mb-2 text-lg font-semibold text-text-primary">Generating Script...</h3>
-              <p className="text-sm text-text-muted">
-                AI is crafting your script based on the selected movie
-              </p>
             </div>
           </Card>
         ) : (
           <Card variant="elevated" padding="lg">
-            <div className="mb-4 flex items-center justify-between">
+            <div className="mb-4 flex items-center justify-between gap-4">
               <div>
                 <h3 className="text-lg font-medium text-text-primary">Your Script</h3>
-                {activeScript && (
-                  <p className="mt-1 text-sm text-text-muted">
-                    {activeScript.wordCount} words • Estimated duration:{" "}
-                    {Math.floor(activeScript.duration / 60)}:
-                    {(activeScript.duration % 60).toString().padStart(2, "0")}
-                  </p>
-                )}
+                <p className="mt-1 text-sm text-text-muted">
+                  {activeScript.wordCount} words • Estimated duration:{" "}
+                  {Math.floor(activeScript.duration / 60)}:
+                  {(activeScript.duration % 60).toString().padStart(2, "0")}
+                </p>
               </div>
               <div className="flex items-center gap-2">
                 <Button
@@ -253,35 +208,28 @@ This isn't just a movie. It's an experience that will stay with you long after t
                   <Button
                     variant="primary"
                     size="sm"
-                    icon={<Check className="h-4 w-4" />}
-                    onClick={handleSaveEdit}
+                    icon={<Save className="h-4 w-4" />}
+                    onClick={handleSaveScript}
+                    loading={isSaving}
+                    disabled={!editedContent.trim()}
                   >
                     Save as New Version
                   </Button>
                 )}
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  icon={<Sparkles className="h-4 w-4" />}
-                  onClick={handleGenerate}
-                  disabled={isGenerating}
-                >
-                  Regenerate
-                </Button>
               </div>
             </div>
 
             {isEditing ? (
               <textarea
                 value={editedContent}
-                onChange={(e) => setEditedContent(e.target.value)}
+                onChange={(event) => setEditedContent(event.target.value)}
                 className="min-h-[400px] w-full rounded-md border border-border-default bg-surface-raised p-4 text-sm text-text-primary placeholder-text-muted focus:border-accent-cyan focus:outline-none"
                 placeholder="Enter your script here..."
               />
             ) : (
               <div className="prose prose-sm max-w-none rounded-md border border-border-subtle bg-surface-raised p-6">
-                <div className="whitespace-pre-wrap text-sm text-text-secondary leading-relaxed">
-                  {activeScript?.content}
+                <div className="whitespace-pre-wrap text-sm leading-relaxed text-text-secondary">
+                  {activeScript.content}
                 </div>
               </div>
             )}
