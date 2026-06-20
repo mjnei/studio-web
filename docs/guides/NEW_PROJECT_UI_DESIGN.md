@@ -5,7 +5,31 @@
 
 > ⚠️ **Note:** This is the UI reference document. For complete workflow information including state management, API integration, testing, and user journeys, see **[WORKFLOW_GUIDE.md](./WORKFLOW_GUIDE.md)** instead.
 
-## Page Layout Architecture
+---
+
+## 🎨 Quick UI Reference Card
+
+| Step | Route | Primary Color | Key UI Elements |
+|------|-------|---------------|-----------------|
+| **1. Movie** | `/project/[id]/source` | Blue (#3b82f6) | Search bar, movie grid, selection cards |
+| **2. Script** | `/project/[id]/script` | Purple (#8b5cf6) | AI button, script editor, version switcher, stats |
+| **3. Voice** | `/project/[id]/voice` | Green (#10b981) | Voice cards, TTS button, audio player, progress bar |
+| **4. Video** | `/project/[id]/compose` | Blue (#3b82f6) | Summary cards, multi-step progress, video player |
+
+**Quick Jumps:**
+- [Step 1 UI Layout](#step-1-movie-selection)
+- [Step 2 UI Layout](#step-2-script-generation)
+- [Step 3 UI Layout](#step-3-voice-generation)
+- [Step 4 UI Layout](#step-4-video-generation)
+- [Design Elements](#design-elements)
+- [Mobile Optimizations](#mobile-optimizations)
+
+**Need More?**
+- Implementation details → [WORKFLOW_GUIDE.md](./WORKFLOW_GUIDE.md)
+- Component code → [COMPONENT_EXAMPLES.md](./COMPONENT_EXAMPLES.md)
+- Color values → [QUICK_REFERENCE.md](../reference/QUICK_REFERENCE.md)
+
+---## Page Layout Architecture
 
 The 4-step workflow is now fully integrated into the project shell with consistent navigation and persistent state.
 

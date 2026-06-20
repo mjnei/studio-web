@@ -15,6 +15,10 @@ This directory contains all documentation for the Huavoi Studio frontend, organi
 3. **[DESIGN_SYSTEM.md](./guides/DESIGN_SYSTEM.md)** ← Foundational design principles
 
 #### 🎬 **I'm Working on the 4-Step Project Workflow** - Need workflow implementation info
+
+**→ [Jump to Workflow Navigation Hub](#-4-step-workflow-navigation-hub)** ← Complete workflow roadmap
+
+**Quick Links:**
 1. **[WORKFLOW_GUIDE.md](./guides/WORKFLOW_GUIDE.md)** ← **START HERE** - Complete workflow documentation
 2. **[NEW_PROJECT_UI_DESIGN.md](./guides/NEW_PROJECT_UI_DESIGN.md)** ← UI layouts and visual design
 3. **[COMPONENT_EXAMPLES.md](./guides/COMPONENT_EXAMPLES.md)** ← Component showcase
@@ -44,6 +48,7 @@ This directory contains all documentation for the Huavoi Studio frontend, organi
 | Document | Size | Purpose |
 |----------|------|---------|
 | **[QUICK_REFERENCE.md](./reference/QUICK_REFERENCE.md)** | 5.7KB | 🔍 Fast lookup for colors, components, utilities |
+| **[WORKFLOW_CHEATSHEET.md](./reference/WORKFLOW_CHEATSHEET.md)** | 3KB | 📋 One-page workflow reference (print-friendly) |
 
 ### Implementation Reports (Reference Only)
 
@@ -56,6 +61,142 @@ These documents describe what was built. You typically won't need to read them u
 | **[FRONTEND_UPDATES.md](./implementation/FRONTEND_UPDATES.md)** | Frontend page component updates | ✅ Archived - Reference only |
 | **[IMPLEMENTED_CHANGES.md](./implementation/IMPLEMENTED_CHANGES.md)** | Detailed change list | ✅ Archived - Reference only |
 | **[NEW_COMPONENTS_SUMMARY.md](./implementation/NEW_COMPONENTS_SUMMARY.md)** | New components created | ✅ Archived - Reference only |
+
+---
+
+## 🎬 4-Step Workflow Navigation Hub
+
+> **Building the project creation workflow?** This section is your complete navigation guide.
+
+### 📍 Where Am I? Where Should I Go?
+
+```
+Your Task → Recommended Path → Expected Outcome
+```
+
+#### 🎯 I Need to Understand the Workflow First
+```
+START → WORKFLOW_GUIDE.md
+        ├─ Architecture Overview (5 min)
+        ├─ Complete Workflow Steps (15 min)
+        ├─ State Management (10 min)
+        └─ API Integration (10 min)
+
+OUTCOME: Complete understanding of how workflow works
+```
+
+#### 🎨 I Need to Implement the UI
+```
+START → NEW_PROJECT_UI_DESIGN.md
+        ├─ Step 1: Movie Selection UI (3 min)
+        ├─ Step 2: Script Generation UI (3 min)
+        ├─ Step 3: Voice Generation UI (3 min)
+        ├─ Step 4: Video Composition UI (3 min)
+        └─ Design Elements Reference (5 min)
+
+THEN → COMPONENT_EXAMPLES.md
+       └─ Copy component code examples
+
+OUTCOME: All UI layouts implemented
+```
+
+#### ⚙️ I Need to Implement State Management
+```
+START → WORKFLOW_GUIDE.md → "State Management" section
+        ├─ ProjectState Interface
+        ├─ useProjectState Hook
+        └─ State Persistence Logic
+
+ALSO → Check source: src/lib/hooks/use-project-state.ts
+
+OUTCOME: Working state management across all steps
+```
+
+#### 🔌 I Need to Connect APIs
+```
+START → WORKFLOW_GUIDE.md → "API Integration" section
+        ├─ Movie Selection API
+        ├─ Script Generation API
+        ├─ Voice Generation API (async)
+        └─ Video Generation API (async)
+
+OUTCOME: All API endpoints defined and ready to implement
+```
+
+#### ✅ I Need to Test the Workflow
+```
+START → WORKFLOW_GUIDE.md → "Testing Checklist" section
+        ├─ State Persistence Tests
+        ├─ Navigation Tests
+        ├─ Async Operations Tests
+        └─ UI Consistency Tests
+
+OUTCOME: Complete test coverage checklist
+```
+
+### 📚 Complete Workflow Documentation Suite
+
+| Document | What's Inside | When to Use |
+|----------|---------------|-------------|
+| **[WORKFLOW_GUIDE.md](./guides/WORKFLOW_GUIDE.md)** | • Routes & architecture<br>• All 4 steps detailed<br>• State management<br>• API specs<br>• Testing checklist | **Use first** - Understand complete system |
+| **[NEW_PROJECT_UI_DESIGN.md](./guides/NEW_PROJECT_UI_DESIGN.md)** | • Visual layouts for each step<br>• Design elements<br>• Mobile optimizations<br>• Accessibility features | **Use second** - Build UI components |
+| **[COMPONENT_EXAMPLES.md](./guides/COMPONENT_EXAMPLES.md)** | • All UI components<br>• Code examples<br>• Props & variants | **Use during** - Copy component code |
+| **[WORKFLOW_CHEATSHEET.md](./reference/WORKFLOW_CHEATSHEET.md)** | • One-page reference<br>• Routes, state, APIs<br>• Quick patterns | **Print & keep** - Quick lookups |
+| **[QUICK_REFERENCE.md](./reference/QUICK_REFERENCE.md)** | • CSS variables<br>• Color codes<br>• Common utilities | **Use constantly** - Quick lookups |
+
+### 🗺️ Workflow by Step
+
+Need information about a specific step? Jump directly:
+
+#### Step 1: Movie Selection (Source)
+- **UI Design:** [NEW_PROJECT_UI_DESIGN.md → Step 1](./guides/NEW_PROJECT_UI_DESIGN.md#step-1-movie-selection)
+- **Implementation:** [WORKFLOW_GUIDE.md → Step 1](./guides/WORKFLOW_GUIDE.md#step-1-select-movie-source)
+- **Route:** `/project/[projectId]/source`
+- **Components:** Movie grid, search, selection
+
+#### Step 2: Script Generation
+- **UI Design:** [NEW_PROJECT_UI_DESIGN.md → Step 2](./guides/NEW_PROJECT_UI_DESIGN.md#step-2-script-generation)
+- **Implementation:** [WORKFLOW_GUIDE.md → Step 2](./guides/WORKFLOW_GUIDE.md#step-2-generate--edit-script)
+- **Route:** `/project/[projectId]/script`
+- **Components:** Script editor, version management, stats
+
+#### Step 3: Voice Generation
+- **UI Design:** [NEW_PROJECT_UI_DESIGN.md → Step 3](./guides/NEW_PROJECT_UI_DESIGN.md#step-3-voice-generation)
+- **Implementation:** [WORKFLOW_GUIDE.md → Step 3](./guides/WORKFLOW_GUIDE.md#step-3-generate--preview-voice)
+- **Route:** `/project/[projectId]/voice`
+- **Components:** Voice selection, async TTS, audio player
+
+#### Step 4: Video Composition
+- **UI Design:** [NEW_PROJECT_UI_DESIGN.md → Step 4](./guides/NEW_PROJECT_UI_DESIGN.md#step-4-video-generation)
+- **Implementation:** [WORKFLOW_GUIDE.md → Step 4](./guides/WORKFLOW_GUIDE.md#step-4-generate-video-compose)
+- **Route:** `/project/[projectId]/compose`
+- **Components:** Project summary, async video generation, preview
+
+### 🚀 Quick Start Paths
+
+#### Path A: Full Implementation (2-3 days)
+```
+Day 1: Read WORKFLOW_GUIDE.md → Understand architecture
+Day 2: Follow NEW_PROJECT_UI_DESIGN.md → Build all 4 UIs
+Day 3: Use WORKFLOW_GUIDE.md API section → Connect backend
+       Use Testing Checklist → Verify everything works
+```
+
+#### Path B: Single Step Implementation (4-6 hours)
+```
+Hour 1: Read WORKFLOW_GUIDE.md → Understand your step
+Hour 2: Read NEW_PROJECT_UI_DESIGN.md → Design reference
+Hour 3-4: Build UI using COMPONENT_EXAMPLES.md
+Hour 5-6: Test using checklist, integrate state
+```
+
+#### Path C: API Integration Only (1 day)
+```
+Morning: WORKFLOW_GUIDE.md → API Integration section
+         Copy all endpoint definitions
+Afternoon: Implement endpoints, test with existing UI
+Evening: Test async operations (TTS & video)
+```
 
 ---
 
@@ -101,7 +242,8 @@ docs/
 │   ├── COMPONENT_EXAMPLES.md             🧩 Component showcase
 │   └── NEW_PROJECT_UI_DESIGN.md          🎬 Workflow UI layouts
 ├── reference/
-│   └── QUICK_REFERENCE.md                🔍 Quick lookup reference
+│   ├── QUICK_REFERENCE.md                🔍 Quick lookup reference
+│   └── WORKFLOW_CHEATSHEET.md            📋 One-page workflow reference
 ├── implementation/
 │   ├── COMPLETION_REPORT.md              ✅ Archived reference
 │   ├── FRONTEND_UPDATES.md               📊 Archived reference

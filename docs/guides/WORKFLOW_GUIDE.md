@@ -6,10 +6,68 @@
 
 ---
 
+## 🚀 Workflow at a Glance
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    4-STEP WORKFLOW OVERVIEW                     │
+└─────────────────────────────────────────────────────────────────┘
+
+Step 1: MOVIE SELECTION          Step 2: SCRIPT GENERATION
+🎬 /project/[id]/source         📝 /project/[id]/script
+├─ Search & select movie        ├─ AI-powered generation
+├─ View movie details           ├─ Multiple versions support
+└─ Auto-save selection          ├─ Inline editing
+   ↓                            └─ Version management
+   State: movieId, title           ↓
+                                   State: scripts[], activeScriptId
+
+Step 3: VOICE GENERATION         Step 4: VIDEO COMPOSITION
+🎤 /project/[id]/voice          🎬 /project/[id]/compose
+├─ Select voice profile         ├─ Review project summary
+├─ Async TTS generation         ├─ Multi-step async generation
+├─ Progress tracking            ├─ Real-time progress
+└─ Audio preview & download     └─ Download & share
+   ↓                               ↓
+   State: voiceId, audioUrl        State: videoUrl, videoStatus
+```
+
+**Key Features:**
+- ✅ Persistent state via localStorage
+- ✅ Non-linear navigation (revisit any step)
+- ✅ Multiple script versions
+- ✅ Async operations (TTS & video)
+- ✅ Exit/resume anytime
+- ✅ Mobile responsive
+
+**Related Docs:**
+- 📱 UI Layouts: [NEW_PROJECT_UI_DESIGN.md](./NEW_PROJECT_UI_DESIGN.md)
+- 🧩 Components: [COMPONENT_EXAMPLES.md](./COMPONENT_EXAMPLES.md)
+- 🔍 Quick Reference: [QUICK_REFERENCE.md](../reference/QUICK_REFERENCE.md)
+
+---
+
 ## Table of Contents
+
+### 📍 Quick Jump by Need
+- **New to workflow?** → [Quick Start](#quick-start)
+- **Need architecture overview?** → [Architecture Overview](#architecture-overview)
+- **Building Step 1 (Movie)?** → [Step 1: Select Movie](#step-1-select-movie-source)
+- **Building Step 2 (Script)?** → [Step 2: Generate & Edit Script](#step-2-generate--edit-script)
+- **Building Step 3 (Voice)?** → [Step 3: Generate & Preview Voice](#step-3-generate--preview-voice)
+- **Building Step 4 (Video)?** → [Step 4: Generate Video](#step-4-generate-video-compose)
+- **Need state management?** → [State Management](#state-management)
+- **Connecting APIs?** → [API Integration](#api-integration)
+- **Ready to test?** → [Testing Checklist](#testing-checklist)
+
+### 📚 Complete Contents
 1. [Quick Start](#quick-start)
 2. [Architecture Overview](#architecture-overview)
 3. [Complete Workflow Steps](#complete-workflow-steps)
+   - [Step 1: Select Movie (Source)](#step-1-select-movie-source)
+   - [Step 2: Generate & Edit Script](#step-2-generate--edit-script)
+   - [Step 3: Generate & Preview Voice](#step-3-generate--preview-voice)
+   - [Step 4: Generate Video (Compose)](#step-4-generate-video-compose)
 4. [State Management](#state-management)
 5. [API Integration](#api-integration)
 6. [Testing Checklist](#testing-checklist)
@@ -93,6 +151,10 @@
 
 ### Step 1: Select Movie (Source)
 
+**📍 Navigation:** [← Table of Contents](#table-of-contents) | [Step 2: Script →](#step-2-generate--edit-script)
+
+---
+
 **Route:** `/project/[projectId]/source`  
 **Component:** `MovieSelection`
 
@@ -124,7 +186,15 @@
 
 ---
 
+**📍 Navigation:** [← Table of Contents](#table-of-contents) | [Step 2: Script →](#step-2-generate--edit-script)
+
+---
+
 ### Step 2: Generate & Edit Script
+
+**📍 Navigation:** [← Step 1: Movie](#step-1-select-movie-source) | [Table of Contents](#table-of-contents) | [Step 3: Voice →](#step-3-generate--preview-voice)
+
+---
 
 **Route:** `/project/[projectId]/script`  
 **Component:** Updated script page with version support
@@ -189,7 +259,15 @@ Version List:
 
 ---
 
+**📍 Navigation:** [← Step 1: Movie](#step-1-select-movie-source) | [Table of Contents](#table-of-contents) | [Step 3: Voice →](#step-3-generate--preview-voice)
+
+---
+
 ### Step 3: Generate & Preview Voice
+
+**📍 Navigation:** [← Step 2: Script](#step-2-generate--edit-script) | [Table of Contents](#table-of-contents) | [Step 4: Video →](#step-4-generate-video-compose)
+
+---
 
 **Route:** `/project/[projectId]/voice`  
 **Component:** Updated voice page with async TTS
@@ -245,7 +323,15 @@ Audio URL stored for next step
 
 ---
 
+**📍 Navigation:** [← Step 2: Script](#step-2-generate--edit-script) | [Table of Contents](#table-of-contents) | [Step 4: Video →](#step-4-generate-video-compose)
+
+---
+
 ### Step 4: Generate Video (Compose)
+
+**📍 Navigation:** [← Step 3: Voice](#step-3-generate--preview-voice) | [Table of Contents](#table-of-contents) | [State Management →](#state-management)
+
+---
 
 **Route:** `/project/[projectId]/compose`  
 **Component:** Updated compose page with async video generation
@@ -320,7 +406,15 @@ Video ready to download
 
 ---
 
+**📍 Navigation:** [← Step 3: Voice](#step-3-generate--preview-voice) | [Table of Contents](#table-of-contents) | [State Management →](#state-management)
+
+---
+
 ## State Management
+
+**📍 Navigation:** [← Step 4: Video](#step-4-generate-video-compose) | [Table of Contents](#table-of-contents) | [API Integration →](#api-integration)
+
+---
 
 ### ProjectState Interface
 
@@ -421,7 +515,15 @@ const completedSteps = {
 
 ---
 
+**📍 Navigation:** [← Step 4: Video](#step-4-generate-video-compose) | [Table of Contents](#table-of-contents) | [API Integration →](#api-integration)
+
+---
+
 ## API Integration
+
+**📍 Navigation:** [← State Management](#state-management) | [Table of Contents](#table-of-contents) | [Testing Checklist →](#testing-checklist)
+
+---
 
 Ready for backend implementation. Replace current simulated delays with actual API calls.
 
@@ -529,7 +631,15 @@ Response: {
 
 ---
 
+**📍 Navigation:** [← State Management](#state-management) | [Table of Contents](#table-of-contents) | [Testing Checklist →](#testing-checklist)
+
+---
+
 ## Testing Checklist
+
+**📍 Navigation:** [← API Integration](#api-integration) | [Table of Contents](#table-of-contents) | [User Journeys →](#user-journey-examples)
+
+---
 
 ### State Persistence Tests
 - [ ] Create project, select movie, refresh page → movie still selected
@@ -580,7 +690,15 @@ Response: {
 
 ---
 
+**📍 Navigation:** [← API Integration](#api-integration) | [Table of Contents](#table-of-contents) | [User Journeys →](#user-journey-examples)
+
+---
+
 ## User Journey Examples
+
+**📍 Navigation:** [← Testing Checklist](#testing-checklist) | [Table of Contents](#table-of-contents) | [Bottom ↓](#summary)
+
+---
 
 ### Example 1: Single Session (Traditional)
 
