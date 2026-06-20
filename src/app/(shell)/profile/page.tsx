@@ -53,6 +53,10 @@ export default function ProfilePage() {
       setPasswordError("Password must be at least 8 characters");
       return;
     }
+    if (newPassword.length > 128) {
+      setPasswordError("Password must be no more than 128 characters");
+      return;
+    }
     try {
       if (user?.has_password) {
         await changePassword(currentPassword, newPassword);

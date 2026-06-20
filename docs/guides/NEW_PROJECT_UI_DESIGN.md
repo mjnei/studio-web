@@ -1,26 +1,32 @@
-# New Project Page - UI Design Summary
+# 4-Step Project Creation Workflow - UI Design Reference
 
-## Page Layout
+**Status:** ✅ Fully Implemented & Integrated  
+**Last Updated:** June 20, 2026  
+
+> ⚠️ **Note:** This is the UI reference document. For complete workflow information including state management, API integration, testing, and user journeys, see **[WORKFLOW_GUIDE.md](./WORKFLOW_GUIDE.md)** instead.
+
+## Page Layout Architecture
+
+The 4-step workflow is now fully integrated into the project shell with consistent navigation and persistent state.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│ Header (Sticky)                                             │
-│ ┌──────────┐  Create New Project          Step X of 4      │
-│ │← Back    │  [Step description]                           │
+│ Top Navigation + Project Shell (Persistent)                 │
+│ ┌──────────┐  Studio: Project Name   [Step X of 4]        │
+│ │← Sidebar │  Current Step Description                    │
 │ └──────────┘                                                │
 ├─────────────────────────────────────────────────────────────┤
-│ Progress Bar                                                │
-│ ①━━━━━━━②━━━━━━━③━━━━━━━④                                 │
-│ Movie    Script    Voice    Video                          │
+│ Step Indicator (Visual Progress)                            │
+│ ✓ Source → Script → Voice → Compose                        │
 ├─────────────────────────────────────────────────────────────┤
 │                                                             │
-│                   CONTENT AREA                              │
-│              (Step-specific component)                      │
+│                   STEP CONTENT AREA                         │
+│                 (Dynamic per step)                          │
 │                                                             │
 │                                                             │
 ├─────────────────────────────────────────────────────────────┤
-│ Navigation (Sticky Bottom)                                  │
-│ [← Previous]    Step X of 4    [Next Step →]              │
+│ Navigation Controls (Sticky Bottom)                         │
+│ [← Previous]  Back to Last Step  [Next Step →]            │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -386,4 +392,18 @@
 - `/src/components/ui/input.tsx`
 - `/src/components/ui/badge.tsx`
 - `/src/components/ui/toast.tsx`
+
+---
+
+## Related Documentation
+
+**For comprehensive workflow information, see these complementary documents:**
+
+| Document | Purpose |
+|----------|---------|
+| **[WORKFLOW_GUIDE.md](./WORKFLOW_GUIDE.md)** | Complete workflow, state management, API integration, user journeys |
+| **[DESIGN_GUIDE.md](./DESIGN_GUIDE.md)** | General component usage and patterns across the app |
+| **[COMPONENT_EXAMPLES.md](./COMPONENT_EXAMPLES.md)** | Detailed component showcase with all variants |
+
+**This document focuses exclusively on the 4-step project workflow UI layout and visual design.**
 
