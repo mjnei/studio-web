@@ -63,9 +63,7 @@ export function WorkflowNavigation({
     }
 
     // Navigate to previous step
-    const steps = Object.keys(stepOrder).sort(
-      (a, b) => stepOrder[a] - stepOrder[b]
-    );
+    const steps = Object.keys(stepOrder).sort((a, b) => stepOrder[a] - stepOrder[b]);
     const prevStep = steps[currentStepIndex - 1];
     if (prevStep) {
       router.push(`/project/${projectId}/${stepRoutes[prevStep]}`);
@@ -79,9 +77,7 @@ export function WorkflowNavigation({
     }
 
     // Navigate to next step
-    const steps = Object.keys(stepOrder).sort(
-      (a, b) => stepOrder[a] - stepOrder[b]
-    );
+    const steps = Object.keys(stepOrder).sort((a, b) => stepOrder[a] - stepOrder[b]);
     const nextStep = steps[currentStepIndex + 1];
     if (nextStep) {
       router.push(`/project/${projectId}/${stepRoutes[nextStep]}`);

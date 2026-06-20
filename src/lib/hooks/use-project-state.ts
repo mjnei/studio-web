@@ -14,7 +14,7 @@ export interface ScriptVersion {
 export interface ProjectState {
   id: string;
   title?: string;
-  
+
   // Step 1: Source/Movie Selection
   movieId?: string;
   movieTitle?: string;
@@ -22,24 +22,24 @@ export interface ProjectState {
   movieGenre?: string;
   movieRating?: number;
   movieDuration?: number;
-  
+
   // Step 2: Script Generation (supports multiple versions)
   scripts: ScriptVersion[];
   activeScriptId?: string;
-  
+
   // Step 3: Voice Generation
   voiceId?: string;
   voiceName?: string;
   audioUrl?: string;
   audioDuration?: number;
-  
+
   // Step 4: Video Composition
   videoUrl?: string;
   videoStatus?: "idle" | "queued" | "processing" | "completed" | "failed";
   videoProgress?: number;
   videoJobId?: string;
   isRendering?: boolean;
-  
+
   // Metadata
   status: "draft" | "in-progress" | "completed";
   createdAt: string;
@@ -63,7 +63,7 @@ export function useProjectState(projectId: string) {
       try {
         const key = `${STORAGE_KEY_PREFIX}${projectId}`;
         const stored = localStorage.getItem(key);
-        
+
         if (stored) {
           const parsed = JSON.parse(stored) as ProjectState;
           setState(parsed);
@@ -138,7 +138,7 @@ export function useProjectState(projectId: string) {
   const addScript = useCallback(
     (content: string, wordCount: number, duration: number) => {
       if (!state) return;
-      
+
       const newScript: ScriptVersion = {
         id: `script-${Date.now()}`,
         content,
@@ -149,7 +149,7 @@ export function useProjectState(projectId: string) {
       };
 
       // Deactivate previous active script
-      const updatedScripts = state.scripts.map(s => ({ ...s, isActive: false }));
+      const updatedScripts = state.scripts.map((s) => ({ ...s, isActive: false }));
       updatedScripts.push(newScript);
 
       saveState({
@@ -166,8 +166,8 @@ export function useProjectState(projectId: string) {
   const setActiveScript = useCallback(
     (scriptId: string) => {
       if (!state) return;
-      
-      const updatedScripts = state.scripts.map(s => ({
+
+      const updatedScripts = state.scripts.map((s) => ({
         ...s,
         isActive: s.id === scriptId,
       }));
@@ -183,12 +183,7 @@ export function useProjectState(projectId: string) {
 
   // Update voice generation (Step 3)
   const updateVoice = useCallback(
-    (voice: {
-      id: string;
-      name: string;
-      audioUrl: string;
-      duration?: number;
-    }) => {
+    (voice: { id: string; name: string; audioUrl: string; duration?: number }) => {
       if (!state) return;
       saveState({
         ...state,
@@ -223,15 +218,16 @@ export function useProjectState(projectId: string) {
   );
 
   // Get the active script
-  const activeScript = state?.scripts.find(s => s.isActive) || state?.scripts[state.scripts.length - 1];
+  const activeScript =
+    state?.scripts.find((s) => s.isActive) || state?.scripts[state.scripts.length - 1];
 
   // Delete a script version
   const deleteScript = useCallback(
     (scriptId: string) => {
       if (!state) return;
-      
-      const updatedScripts = state.scripts.filter(s => s.id !== scriptId);
-      
+
+      const updatedScripts = state.scripts.filter((s) => s.id !== scriptId);
+
       // If deleted script was active, make the most recent one active
       if (state.activeScriptId === scriptId && updatedScripts.length > 0) {
         updatedScripts[updatedScripts.length - 1].isActive = true;
@@ -291,8 +287,8 @@ export function getAllProjects(): ProjectState[] {
         }
       }
     }
-    return projects.sort((a, b) => 
-      new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+    return projects.sort(
+      (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
     );
   } catch (error) {
     console.error("Error loading projects:", error);

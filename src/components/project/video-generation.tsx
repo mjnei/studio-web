@@ -49,13 +49,11 @@ export function VideoGeneration({
 
     // Simulate step-by-step processing
     const stepDurations = [3000, 4000, 5000, 3000];
-    
+
     for (let i = 0; i < steps.length; i++) {
       // Update current step to processing
       setSteps((prev) =>
-        prev.map((step, idx) =>
-          idx === i ? { ...step, status: "processing" } : step
-        )
+        prev.map((step, idx) => (idx === i ? { ...step, status: "processing" } : step))
       );
 
       // Simulate processing time
@@ -66,9 +64,7 @@ export function VideoGeneration({
 
       // Mark step as completed
       setSteps((prev) =>
-        prev.map((step, idx) =>
-          idx === i ? { ...step, status: "completed" } : step
-        )
+        prev.map((step, idx) => (idx === i ? { ...step, status: "completed" } : step))
       );
     }
 
@@ -99,9 +95,7 @@ export function VideoGeneration({
             <Video className="w-8 h-8 text-white" />
           </div>
         </div>
-        <h2 className="text-2xl sm:text-3xl font-bold text-text-primary mb-2">
-          Generate Video
-        </h2>
+        <h2 className="text-2xl sm:text-3xl font-bold text-text-primary mb-2">Generate Video</h2>
         <p className="text-text-secondary">
           Create your final video with synchronized audio and visuals
         </p>
@@ -136,9 +130,7 @@ export function VideoGeneration({
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div className="text-center p-3 bg-surface-raised rounded-lg">
-              <p className="text-lg font-bold text-accent-primary">
-                {wordCount}
-              </p>
+              <p className="text-lg font-bold text-accent-primary">{wordCount}</p>
               <p className="text-xs text-text-muted">Words</p>
             </div>
             <div className="text-center p-3 bg-surface-raised rounded-lg">
@@ -168,9 +160,7 @@ export function VideoGeneration({
                 <Video className="w-10 h-10 text-white" />
               </div>
             </div>
-            <h3 className="text-xl font-bold text-text-primary mb-2">
-              Ready to Generate Video
-            </h3>
+            <h3 className="text-xl font-bold text-text-primary mb-2">Ready to Generate Video</h3>
             <p className="text-text-secondary mb-2">
               All components are ready. Click below to start video generation.
             </p>

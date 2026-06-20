@@ -51,7 +51,7 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
 
   // Get project state from persistent storage
   const { state: projectState, isLoading } = useProjectState(projectId);
-  
+
   // Determine which steps are completed based on project state
   const completedSteps = {
     source: !!projectState?.movieId,
@@ -126,8 +126,9 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
             {stages.map((stage, i) => {
               const isActive = stage.step === currentStep;
               const isCompleted = completedSteps[stage.step as keyof typeof completedSteps];
-              const isAccessible = i === 0 || completedSteps[stages[i - 1].step as keyof typeof completedSteps];
-              
+              const isAccessible =
+                i === 0 || completedSteps[stages[i - 1].step as keyof typeof completedSteps];
+
               return (
                 <div key={stage.step} className="flex shrink-0 items-center">
                   {i > 0 && (

@@ -87,13 +87,13 @@ export function VoiceGeneration({ script, audioUrl, onGenerate }: VoiceGeneratio
 
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 5000));
-    
+
     clearInterval(interval);
     setProgress(100);
-    
+
     const voice = mockVoices.find((v) => v.id === selectedVoice);
     const mockAudioUrl = `/audio/generated-${selectedVoice}.mp3`;
-    
+
     onGenerate(mockAudioUrl, selectedVoice, voice?.name || "Unknown");
     setGenerating(false);
     toast.success("Voice Generated", "Your audio is ready to preview");
@@ -123,9 +123,7 @@ export function VoiceGeneration({ script, audioUrl, onGenerate }: VoiceGeneratio
             <Mic className="w-8 h-8 text-white" />
           </div>
         </div>
-        <h2 className="text-2xl sm:text-3xl font-bold text-text-primary mb-2">
-          Generate Voice
-        </h2>
+        <h2 className="text-2xl sm:text-3xl font-bold text-text-primary mb-2">Generate Voice</h2>
         <p className="text-text-secondary">
           Select a voice and generate TTS audio from your script
         </p>
@@ -295,9 +293,7 @@ export function VoiceGeneration({ script, audioUrl, onGenerate }: VoiceGeneratio
                   <p className="text-sm font-medium text-text-primary">
                     Not satisfied with the result?
                   </p>
-                  <p className="text-xs text-text-secondary">
-                    Try a different voice or regenerate
-                  </p>
+                  <p className="text-xs text-text-secondary">Try a different voice or regenerate</p>
                 </div>
               </div>
               <Button variant="secondary" size="sm" onClick={() => onGenerate("", "", "")}>

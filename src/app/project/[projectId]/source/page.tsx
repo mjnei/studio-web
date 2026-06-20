@@ -52,12 +52,9 @@ export default function SourcePage() {
           </div>
         </div>
 
-        <MovieSelection
-          selectedMovie={state?.movieId}
-          onSelect={handleMovieSelect}
-        />
+        <MovieSelection selectedMovie={state?.movieId} onSelect={handleMovieSelect} />
       </div>
-      
+
       <FloatingWorkflowNavigation
         projectId={projectId}
         currentStep="source"

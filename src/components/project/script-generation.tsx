@@ -27,10 +27,10 @@ export function ScriptGeneration({
 
   const generateScript = async () => {
     setGenerating(true);
-    
+
     // Simulate AI generation
     await new Promise((resolve) => setTimeout(resolve, 3000));
-    
+
     const mockScript = `Welcome to today's review of "${movieTitle}".
 
 This cinematic masterpiece takes us on an unforgettable journey through compelling storytelling and remarkable performances. From the opening scene to the powerful conclusion, every moment is crafted with precision and care.
@@ -75,9 +75,7 @@ Thank you for watching, and don't forget to share your thoughts in the comments 
             <FileText className="w-8 h-8 text-white" />
           </div>
         </div>
-        <h2 className="text-2xl sm:text-3xl font-bold text-text-primary mb-2">
-          Generate Script
-        </h2>
+        <h2 className="text-2xl sm:text-3xl font-bold text-text-primary mb-2">Generate Script</h2>
         <p className="text-text-secondary">
           Let AI create a script for {movieTitle}, then review and modify as needed
         </p>
@@ -92,12 +90,10 @@ Thank you for watching, and don't forget to share your thoughts in the comments 
                 <Sparkles className="w-10 h-10 text-white" />
               </div>
             </div>
-            <h3 className="text-xl font-bold text-text-primary mb-2">
-              Ready to Generate Script
-            </h3>
+            <h3 className="text-xl font-bold text-text-primary mb-2">Ready to Generate Script</h3>
             <p className="text-text-secondary mb-8 max-w-md mx-auto">
-              Our AI will analyze {movieTitle} and create a professional voice-over script
-              tailored for your project.
+              Our AI will analyze {movieTitle} and create a professional voice-over script tailored
+              for your project.
             </p>
             <Button
               variant="primary"
@@ -123,9 +119,7 @@ Thank you for watching, and don't forget to share your thoughts in the comments 
             </Card>
             <Card variant="glass" padding="md">
               <div className="text-center">
-                <p className="text-2xl font-bold text-accent-secondary">
-                  ~{estimatedDuration}min
-                </p>
+                <p className="text-2xl font-bold text-accent-secondary">~{estimatedDuration}min</p>
                 <p className="text-xs text-text-muted">Est. Duration</p>
               </div>
             </Card>
@@ -189,10 +183,7 @@ Thank you for watching, and don't forget to share your thoughts in the comments 
               ) : (
                 <div className="p-6 prose prose-invert max-w-none">
                   {script.split("\n\n").map((paragraph, index) => (
-                    <p
-                      key={index}
-                      className="text-text-primary leading-relaxed mb-4 last:mb-0"
-                    >
+                    <p key={index} className="text-text-primary leading-relaxed mb-4 last:mb-0">
                       {paragraph}
                     </p>
                   ))}

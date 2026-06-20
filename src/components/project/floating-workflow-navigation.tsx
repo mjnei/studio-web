@@ -61,7 +61,7 @@ export function FloatingWorkflowNavigation({
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      
+
       if (currentScrollY > lastScrollY && currentScrollY > 100) {
         // Scrolling down & past 100px
         setIsVisible(false);
@@ -69,7 +69,7 @@ export function FloatingWorkflowNavigation({
         // Scrolling up or at top
         setIsVisible(true);
       }
-      
+
       setLastScrollY(currentScrollY);
     };
 
@@ -84,9 +84,7 @@ export function FloatingWorkflowNavigation({
     }
 
     // Navigate to previous step
-    const steps = Object.keys(stepOrder).sort(
-      (a, b) => stepOrder[a] - stepOrder[b]
-    );
+    const steps = Object.keys(stepOrder).sort((a, b) => stepOrder[a] - stepOrder[b]);
     const prevStep = steps[currentStepIndex - 1];
     if (prevStep) {
       router.push(`/project/${projectId}/${stepRoutes[prevStep]}`);
@@ -100,9 +98,7 @@ export function FloatingWorkflowNavigation({
     }
 
     // Navigate to next step
-    const steps = Object.keys(stepOrder).sort(
-      (a, b) => stepOrder[a] - stepOrder[b]
-    );
+    const steps = Object.keys(stepOrder).sort((a, b) => stepOrder[a] - stepOrder[b]);
     const nextStep = steps[currentStepIndex + 1];
     if (nextStep) {
       router.push(`/project/${projectId}/${stepRoutes[nextStep]}`);
@@ -124,7 +120,7 @@ export function FloatingWorkflowNavigation({
     >
       {/* Backdrop blur effect */}
       <div className="absolute inset-0 bg-surface-panel/95 backdrop-blur-xl border-t border-border-default" />
-      
+
       {/* Navigation content */}
       <div className="relative mx-auto max-w-7xl px-4 py-3 md:px-6">
         <div className="flex items-center justify-between gap-4">
@@ -138,12 +134,10 @@ export function FloatingWorkflowNavigation({
                 onClick={handleBack}
                 className="shadow-lg"
               >
-                <span className="hidden sm:inline">
-                  {backLabel || "Back"}
-                </span>
+                <span className="hidden sm:inline">{backLabel || "Back"}</span>
               </Button>
             )}
-            
+
             {/* Projects home button - always visible */}
             <Button
               variant="ghost"
@@ -160,9 +154,7 @@ export function FloatingWorkflowNavigation({
           {/* Center - Step indicator */}
           <div className="flex items-center gap-2 text-sm text-text-muted">
             <span className="hidden sm:inline">Step</span>
-            <span className="font-semibold text-text-primary">
-              {currentStepIndex + 1}
-            </span>
+            <span className="font-semibold text-text-primary">{currentStepIndex + 1}</span>
             <span>/</span>
             <span>{Object.keys(stepOrder).length}</span>
           </div>
@@ -181,12 +173,10 @@ export function FloatingWorkflowNavigation({
                 <span className="hidden sm:inline">
                   {nextLabel || nextStepLabels[currentStep] || "Continue"}
                 </span>
-                <span className="sm:hidden">
-                  {isLastStep ? "Complete" : "Next"}
-                </span>
+                <span className="sm:hidden">{isLastStep ? "Complete" : "Next"}</span>
               </Button>
             )}
-            
+
             {/* Placeholder to maintain layout balance when next button is hidden */}
             {!canGoNext && <div className="w-24 md:w-32" />}
           </div>
