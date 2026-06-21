@@ -6,7 +6,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { getPopularMovies, searchMovies, tmdbImageUrl, type MovieResponse } from "@/lib/project-client";
+import {
+  getPopularMovies,
+  searchMovies,
+  tmdbImageUrl,
+  type MovieResponse,
+} from "@/lib/project-client";
 
 interface Movie {
   id: string;
@@ -57,9 +62,7 @@ export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps)
       setError(null);
       try {
         const query = searchQuery.trim();
-        const results = query
-          ? (await searchMovies(query, 20)).movies
-          : await getPopularMovies(20);
+        const results = query ? (await searchMovies(query, 20)).movies : await getPopularMovies(20);
         if (!controller.signal.aborted) setMovies(results.map(mapMovie));
       } catch (err) {
         if (!controller.signal.aborted) {

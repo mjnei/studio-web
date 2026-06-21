@@ -31,20 +31,54 @@ function getSupportedMimeType(): string {
 
 function generateRandomName(): string {
   const adjectives = [
-    "amber", "azure", "bronze", "coral", "crimson", "cyan", "emerald", "golden",
-    "indigo", "jade", "lavender", "magenta", "navy", "olive", "pearl", "ruby",
-    "sapphire", "silver", "topaz", "violet"
+    "amber",
+    "azure",
+    "bronze",
+    "coral",
+    "crimson",
+    "cyan",
+    "emerald",
+    "golden",
+    "indigo",
+    "jade",
+    "lavender",
+    "magenta",
+    "navy",
+    "olive",
+    "pearl",
+    "ruby",
+    "sapphire",
+    "silver",
+    "topaz",
+    "violet",
   ];
   const nouns = [
-    "dolphin", "eagle", "falcon", "hawk", "lion", "owl", "panther", "phoenix",
-    "raven", "tiger", "wolf", "bear", "fox", "lynx", "otter", "seal",
-    "whale", "cobra", "dragon", "gryphon"
+    "dolphin",
+    "eagle",
+    "falcon",
+    "hawk",
+    "lion",
+    "owl",
+    "panther",
+    "phoenix",
+    "raven",
+    "tiger",
+    "wolf",
+    "bear",
+    "fox",
+    "lynx",
+    "otter",
+    "seal",
+    "whale",
+    "cobra",
+    "dragon",
+    "gryphon",
   ];
-  
+
   const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
   const noun = nouns[Math.floor(Math.random() * nouns.length)];
   const num = Math.floor(Math.random() * 100);
-  
+
   return `${noun}-${adj}-${num}`;
 }
 
@@ -183,7 +217,7 @@ export function VoiceRecorder({
         audioUrlRef.current = URL.createObjectURL(blob);
         setState("recorded");
         onRecorded?.(blob);
-        
+
         // Auto-play the recording
         setTimeout(() => {
           playRecording();
@@ -332,7 +366,7 @@ export function VoiceRecorder({
     if (!blob) return;
 
     const title = voiceName.trim();
-    
+
     // Validate name is not empty
     if (!title) {
       setNameError(true);
@@ -345,10 +379,10 @@ export function VoiceRecorder({
 
     try {
       const { uploadVoiceRecording } = await import("@/lib/api/voice-recording-client");
-      
+
       // Ensure the blob has the correct type from the MIME ref
       const typedBlob = new Blob([blob], { type: mimeRef.current || blob.type || "audio/webm" });
-      
+
       const newRecording = await uploadVoiceRecording(typedBlob, title, undefined, duration);
       onSaved?.(newRecording);
       discardRecording();
@@ -378,7 +412,10 @@ export function VoiceRecorder({
         <div className="flex flex-col items-center gap-4 py-8">
           <div className="relative">
             <div className="h-16 w-16 animate-spin rounded-full border-4 border-accent-cyan/30 border-t-accent-cyan" />
-            <Mic className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-accent-cyan" size={28} />
+            <Mic
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-accent-cyan"
+              size={28}
+            />
           </div>
           <p className="text-sm text-text-secondary">Requesting microphone access…</p>
         </div>
@@ -404,7 +441,8 @@ export function VoiceRecorder({
             <Circle size={32} className="fill-white text-white" />
           </button>
           <p className="text-xs text-center text-text-muted">
-            Maximum {Math.floor(MAX_DURATION_S / 60)}:{(MAX_DURATION_S % 60).toString().padStart(2, "0")}
+            Maximum {Math.floor(MAX_DURATION_S / 60)}:
+            {(MAX_DURATION_S % 60).toString().padStart(2, "0")}
           </p>
         </div>
       )}
@@ -459,16 +497,14 @@ export function VoiceRecorder({
               </p>
             </div>
           )}
-          
+
           <div className="flex flex-col items-center gap-3">
             <div className="rounded-full bg-green-500/10 p-4">
               <Check size={32} className="text-green-400" />
             </div>
             <div className="text-center">
               <h3 className="text-lg font-semibold text-text-primary mb-1">Recording Complete!</h3>
-              <p className="text-sm text-text-muted">
-                {formatTime(duration)} • Tap play to listen
-              </p>
+              <p className="text-sm text-text-muted">{formatTime(duration)} • Tap play to listen</p>
             </div>
           </div>
 
@@ -478,7 +514,11 @@ export function VoiceRecorder({
               className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-accent-cyan to-blue-500 text-white shadow-lg transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent-cyan focus:ring-offset-2 focus:ring-offset-surface-base active:scale-95"
               title={isPlaying ? "Pause" : "Play"}
             >
-              {isPlaying ? <Pause size={20} className="fill-current" /> : <Play size={20} className="ml-0.5 fill-current" />}
+              {isPlaying ? (
+                <Pause size={20} className="fill-current" />
+              ) : (
+                <Play size={20} className="ml-0.5 fill-current" />
+              )}
             </button>
             <button
               onClick={(e) => {
@@ -500,22 +540,22 @@ export function VoiceRecorder({
               </div>
             </button>
           </div>
-          
+
           <div className="flex items-center gap-2">
-            <Button 
-              variant="secondary" 
-              size="md" 
-              onClick={discardRecording} 
+            <Button
+              variant="secondary"
+              size="md"
+              onClick={discardRecording}
               disabled={isSaving}
               className="flex-1"
             >
               <RotateCcw size={16} className="mr-2" />
               Re-record
             </Button>
-            <Button 
-              variant="primary" 
-              size="md" 
-              onClick={proceedToNaming} 
+            <Button
+              variant="primary"
+              size="md"
+              onClick={proceedToNaming}
               disabled={isSaving}
               className="flex-1"
             >
@@ -531,7 +571,7 @@ export function VoiceRecorder({
             <h3 className="text-lg font-semibold text-text-primary mb-1">Name Your Voice</h3>
             <p className="text-sm text-text-muted">Choose a memorable name</p>
           </div>
-          
+
           <div>
             <div className="relative">
               <input
@@ -544,7 +584,9 @@ export function VoiceRecorder({
                 }}
                 placeholder="e.g., Professional Narrator"
                 className={`w-full rounded-xl border ${
-                  nameError ? "border-red-500 bg-red-500/5" : "border-border-default bg-surface-raised"
+                  nameError
+                    ? "border-red-500 bg-red-500/5"
+                    : "border-border-default bg-surface-raised"
                 } px-4 py-3 text-text-primary placeholder-text-muted transition-colors focus:border-accent-cyan focus:outline-none focus:ring-2 focus:ring-accent-cyan/20`}
                 autoFocus
                 onKeyDown={(e) => {
@@ -561,7 +603,7 @@ export function VoiceRecorder({
                 </p>
               )}
             </div>
-            
+
             <button
               onClick={generateName}
               disabled={isSaving}
@@ -571,21 +613,21 @@ export function VoiceRecorder({
               Generate random name
             </button>
           </div>
-          
+
           <div className="flex items-center gap-2">
-            <Button 
-              variant="secondary" 
-              size="md" 
-              onClick={() => setState("recorded")} 
+            <Button
+              variant="secondary"
+              size="md"
+              onClick={() => setState("recorded")}
               disabled={isSaving}
               className="flex-1"
             >
               Back
             </Button>
-            <Button 
-              variant="primary" 
-              size="md" 
-              onClick={saveRecording} 
+            <Button
+              variant="primary"
+              size="md"
+              onClick={saveRecording}
               disabled={isSaving}
               className="flex-1"
             >

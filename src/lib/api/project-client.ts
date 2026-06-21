@@ -72,10 +72,7 @@ export async function deleteProject(projectId: string): Promise<void> {
 // Movie Operations
 // ============================================================================
 
-export async function searchMovies(
-  query: string,
-  limit: number = 20
-): Promise<MovieListResponse> {
+export async function searchMovies(query: string, limit: number = 20): Promise<MovieListResponse> {
   const params = new URLSearchParams({ query, limit: limit.toString() });
   return request(`/movies/search?${params.toString()}`);
 }

@@ -95,7 +95,8 @@ export default function ComposePage() {
   const steps = state?.videoSteps?.length ? state.videoSteps : fallbackSteps;
   const isCompleted = !!(state?.videoStatus === "completed" && state?.videoUrl);
   const isProcessing = !!(state?.videoStatus === "queued" || state?.videoStatus === "processing");
-  const wordCount = state?.scripts?.find((script) => script.id === state.activeScriptId)?.wordCount ?? 0;
+  const wordCount =
+    state?.scripts?.find((script) => script.id === state.activeScriptId)?.wordCount ?? 0;
 
   return (
     <>
@@ -246,7 +247,9 @@ export default function ComposePage() {
                   <h3 className="text-lg font-medium text-text-primary">
                     Video Generated Successfully
                   </h3>
-                  <p className="text-sm text-text-muted">Your video is ready to preview and download</p>
+                  <p className="text-sm text-text-muted">
+                    Your video is ready to preview and download
+                  </p>
                 </div>
               </div>
             </div>

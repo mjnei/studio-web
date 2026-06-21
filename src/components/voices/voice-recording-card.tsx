@@ -36,11 +36,11 @@ export function VoiceRecordingCard({ recording, onDelete }: VoiceRecordingCardPr
 
     if (!audioRef.current) {
       setIsLoading(true);
-      
+
       // Get audio from backend (backend streams the file to avoid CORS issues)
       const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020/api/v1";
       const token = (await import("@/lib/api-client")).getAccessToken();
-      
+
       try {
         // Fetch the audio as a blob from the backend
         const response = await fetch(`${API_BASE}/recordings/${recording.id}/audio`, {
@@ -49,34 +49,34 @@ export function VoiceRecordingCard({ recording, onDelete }: VoiceRecordingCardPr
           },
           credentials: "include",
         });
-        
+
         if (!response.ok) {
           throw new Error("Failed to load audio");
         }
-        
+
         // Create blob URL for playback
         const blob = await response.blob();
         const audioUrl = URL.createObjectURL(blob);
-        
+
         const audio = new Audio(audioUrl);
         audioRef.current = audio;
-        
+
         audio.onended = () => {
           setIsPlaying(false);
           URL.revokeObjectURL(audioUrl);
         };
-        
+
         audio.onerror = () => {
           setIsPlaying(false);
           setIsLoading(false);
           URL.revokeObjectURL(audioUrl);
           alert("Failed to play audio");
         };
-        
+
         audio.oncanplay = () => {
           setIsLoading(false);
         };
-        
+
         await audio.play();
         setIsPlaying(true);
       } catch (error) {

@@ -73,9 +73,7 @@ The primary document for frontend-backend integration. Contains:
 - API Endpoints: `../../studio-backend/API_ENDPOINTS.md`
 - Database Schema: `../../studio-backend/DB_SCHEMA.md`
 - Frontend Integration Status: `../../studio-backend/docs/FRONTEND_INTEGRATION.md`
-
-**Root Level**:
-- Quick Reference: `../../INTEGRATION_README.md`
+- Setup Guides: `../../studio-backend/docs/setup/`
 
 ---
 

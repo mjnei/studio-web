@@ -3,7 +3,12 @@
 import { useEffect, useState } from "react";
 import { Star, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { getPopularMovies, searchMovies, tmdbImageUrl, type MovieResponse } from "@/lib/project-client";
+import {
+  getPopularMovies,
+  searchMovies,
+  tmdbImageUrl,
+  type MovieResponse,
+} from "@/lib/project-client";
 
 export default function MoviesPage() {
   const [searchQuery, setSearchQuery] = useState("");

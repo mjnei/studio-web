@@ -86,7 +86,10 @@ export default function ProjectsPage() {
                 <div className="aspect-video bg-surface-raised">
                   {project.movie?.backdrop_path || project.movie?.poster_path ? (
                     <img
-                      src={tmdbImageUrl(project.movie.backdrop_path ?? project.movie.poster_path, "w780")}
+                      src={tmdbImageUrl(
+                        project.movie.backdrop_path ?? project.movie.poster_path,
+                        "w780"
+                      )}
                       alt={project.movie?.title ?? "Project movie"}
                       className="h-full w-full object-cover"
                     />

@@ -45,7 +45,7 @@ export function VoiceSelectionCard({
 
   const handlePlayPause = (e: React.MouseEvent) => {
     e.stopPropagation();
-    
+
     if (!previewUrl) {
       onPreview?.();
       return;
@@ -84,19 +84,17 @@ export function VoiceSelectionCard({
       <div className="flex items-start gap-3">
         <div
           className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${
-            type === "recording"
-              ? "bg-accent-purple-muted"
-              : "bg-accent-cyan-muted"
+            type === "recording" ? "bg-accent-purple-muted" : "bg-accent-cyan-muted"
           }`}
         >
           {type === "recording" ? (
-            <Mic className={`h-5 w-5 ${
-              type === "recording" ? "text-accent-purple" : "text-accent-cyan"
-            }`} />
+            <Mic
+              className={`h-5 w-5 ${
+                type === "recording" ? "text-accent-purple" : "text-accent-cyan"
+              }`}
+            />
           ) : (
-            <div className="text-sm font-bold text-accent-cyan">
-              {name.charAt(0).toUpperCase()}
-            </div>
+            <div className="text-sm font-bold text-accent-cyan">{name.charAt(0).toUpperCase()}</div>
           )}
         </div>
 
@@ -117,22 +115,16 @@ export function VoiceSelectionCard({
                 </p>
               )}
               {description && (
-                <p className="mt-1 text-xs text-text-secondary line-clamp-2">
-                  {description}
-                </p>
+                <p className="mt-1 text-xs text-text-secondary line-clamp-2">{description}</p>
               )}
             </div>
 
             <div
               className={`h-5 w-5 shrink-0 rounded-full border-2 transition-all ${
-                isSelected
-                  ? "border-accent-cyan bg-accent-cyan"
-                  : "border-border-default"
+                isSelected ? "border-accent-cyan bg-accent-cyan" : "border-border-default"
               }`}
             >
-              {isSelected && (
-                <Check className="h-full w-full scale-50 text-white" />
-              )}
+              {isSelected && <Check className="h-full w-full scale-50 text-white" />}
             </div>
           </div>
 

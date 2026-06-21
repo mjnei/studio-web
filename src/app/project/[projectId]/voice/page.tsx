@@ -54,12 +54,12 @@ export default function VoicePage() {
   // Get first sentence from script for preview
   const previewText = useMemo(() => {
     if (!activeScript?.content) return "This is a preview of the selected voice.";
-    
+
     const sentences = activeScript.content.match(/[^.!?]+[.!?]+/g);
     if (!sentences || sentences.length === 0) {
       return activeScript.content.substring(0, 200);
     }
-    
+
     return sentences[0].trim();
   }, [activeScript]);
 
@@ -120,7 +120,7 @@ export default function VoicePage() {
 
   const handlePreview = async (voice: VoiceOption) => {
     const cacheKey = `${voice.type}-${voice.id}`;
-    
+
     // Return cached preview if available
     if (previewCache[cacheKey]) {
       return;
@@ -283,7 +283,8 @@ export default function VoicePage() {
                 </h3>
                 {selectedVoice && (
                   <div className="text-sm text-text-muted">
-                    Selected: <span className="font-medium text-text-primary">{selectedVoice.name}</span>
+                    Selected:{" "}
+                    <span className="font-medium text-text-primary">{selectedVoice.name}</span>
                   </div>
                 )}
               </div>
@@ -314,7 +315,7 @@ export default function VoicePage() {
                   {displayedVoices.map((voice) => {
                     const cacheKey = `${voice.type}-${voice.id}`;
                     const preview = previewCache[cacheKey];
-                    
+
                     return (
                       <VoiceSelectionCard
                         key={cacheKey}
@@ -323,7 +324,9 @@ export default function VoicePage() {
                         description={voice.description}
                         type={voice.type}
                         metadata={voice.metadata}
-                        isSelected={selectedVoice?.id === voice.id && selectedVoice?.type === voice.type}
+                        isSelected={
+                          selectedVoice?.id === voice.id && selectedVoice?.type === voice.type
+                        }
                         previewUrl={preview?.audio_url || voice.previewUrl}
                         onSelect={() => handleSelectVoice(voice)}
                         onPreview={() => handlePreview(voice)}

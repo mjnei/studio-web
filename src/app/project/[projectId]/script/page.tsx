@@ -154,8 +154,8 @@ export default function ScriptPage() {
               </div>
               <h3 className="mb-2 text-lg font-semibold text-text-primary">Write Your Script</h3>
               <p className="mb-6 text-sm text-text-muted">
-                Write or paste the voice-over script. It will be stored as the active backend
-                script version.
+                Write or paste the voice-over script. It will be stored as the active backend script
+                version.
               </p>
               <textarea
                 value={editedContent}

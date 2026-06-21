@@ -178,7 +178,14 @@ export function useProjectState(projectId: string) {
   }, [refresh]);
 
   const updateMovie = useCallback(
-    async (movie: { id: string; title: string; poster?: string; genre?: string; rating?: number; duration?: number }) => {
+    async (movie: {
+      id: string;
+      title: string;
+      poster?: string;
+      genre?: string;
+      rating?: number;
+      duration?: number;
+    }) => {
       const project = await updateProjectMovie(projectId, Number(movie.id));
       await advanceProjectStep(projectId, "source");
       setState((current) => ({
@@ -254,7 +261,14 @@ export function useProjectState(projectId: string) {
   }, []);
 
   const updateVoice = useCallback(
-    async (voice: { id: string; name: string; audioUrl: string; duration?: number; jobId?: string; progress?: number }) => {
+    async (voice: {
+      id: string;
+      name: string;
+      audioUrl: string;
+      duration?: number;
+      jobId?: string;
+      progress?: number;
+    }) => {
       await advanceProjectStep(projectId, "voice");
       setState((current) =>
         current
@@ -276,7 +290,14 @@ export function useProjectState(projectId: string) {
   );
 
   const updateVideoStatus = useCallback(
-    async (update: Partial<Pick<ProjectState, "videoUrl" | "videoStatus" | "videoProgress" | "videoJobId" | "videoSteps" | "isRendering">>) => {
+    async (
+      update: Partial<
+        Pick<
+          ProjectState,
+          "videoUrl" | "videoStatus" | "videoProgress" | "videoJobId" | "videoSteps" | "isRendering"
+        >
+      >
+    ) => {
       if (update.videoStatus || update.videoUrl) {
         await advanceProjectStep(projectId, "compose");
       }

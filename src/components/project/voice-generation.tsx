@@ -29,11 +29,11 @@ interface VoiceGenerationProps {
   onChangeVoice: () => void;
 }
 
-export function VoiceGeneration({ 
-  script, 
+export function VoiceGeneration({
+  script,
   voices,
   selectedVoiceId,
-  audioUrl, 
+  audioUrl,
   isGenerating = false,
   progress = 0,
   onVoiceSelect,
@@ -65,7 +65,7 @@ export function VoiceGeneration({
 
   const wordCount = script.split(/\s+/).filter(Boolean).length;
   const estimatedDuration = Math.ceil(wordCount / 150);
-  
+
   const selectedVoice = voices.find((v) => v.id === selectedVoiceId);
 
   return (
@@ -136,9 +136,7 @@ export function VoiceGeneration({
                     </div>
                   )}
                 </div>
-                {voice.category && (
-                  <p className="text-xs text-text-secondary">{voice.category}</p>
-                )}
+                {voice.category && <p className="text-xs text-text-secondary">{voice.category}</p>}
               </Card>
             ))}
           </div>

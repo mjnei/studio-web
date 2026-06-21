@@ -49,11 +49,7 @@ export default function VoicesPage() {
             <div className="mb-6">
               <div className="flex items-center justify-between mb-3">
                 <h2 className="text-lg font-medium">Record New Voice</h2>
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => setShowRecorder(false)}
-                >
+                <Button variant="secondary" size="sm" onClick={() => setShowRecorder(false)}>
                   Cancel
                 </Button>
               </div>
