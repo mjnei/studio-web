@@ -27,7 +27,13 @@ function getSupportedMimeType(): string {
   return "";
 }
 
-export function VoiceRecorder({ onRecorded }: { onRecorded?: (blob: Blob) => void }) {
+export function VoiceRecorder({
+  onRecorded,
+  onSaved,
+}: {
+  onRecorded?: (blob: Blob) => void;
+  onSaved?: () => void;
+}) {
   const [state, setState] = useState<RecorderState>("idle");
   const [duration, setDuration] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -35,6 +41,7 @@ export function VoiceRecorder({ onRecorded }: { onRecorded?: (blob: Blob) => voi
   const [playbackTime, setPlaybackTime] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [maxReached, setMaxReached] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const streamRef = useRef<MediaStream | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -275,8 +282,27 @@ export function VoiceRecorder({ onRecorded }: { onRecorded?: (blob: Blob) => voi
     setPlaybackTime(0);
     setIsPlaying(false);
     setMaxReached(false);
+    setIsSaving(false);
     setState("idle");
   }, [stopPlayback, revokeUrl, clearTimer, releaseStream]);
+
+  const saveRecording = useCallback(async () => {
+    const blob = audioBlobRef.current;
+    if (!blob) return;
+
+    setIsSaving(true);
+    setError(null);
+
+    try {
+      const { uploadVoiceRecording } = await import("@/lib/api/voice-recording-client");
+      await uploadVoiceRecording(blob, "My Voice Recording", undefined, duration);
+      onSaved?.();
+      discardRecording();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to save recording");
+      setIsSaving(false);
+    }
+  }, [duration, onSaved, discardRecording]);
 
   const formatTime = (s: number) => {
     const clamped = Math.max(0, Math.floor(s));
@@ -382,11 +408,11 @@ export function VoiceRecorder({ onRecorded }: { onRecorded?: (blob: Blob) => voi
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="secondary" size="sm" onClick={discardRecording}>
+            <Button variant="secondary" size="sm" onClick={discardRecording} disabled={isSaving}>
               Discard &amp; re-record
             </Button>
-            <Button variant="primary" size="sm" onClick={startRecording}>
-              Save this voice
+            <Button variant="primary" size="sm" onClick={saveRecording} disabled={isSaving}>
+              {isSaving ? "Saving..." : "Save this voice"}
             </Button>
           </div>
         </div>

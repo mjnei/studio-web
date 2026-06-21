@@ -79,6 +79,18 @@ export interface VoiceListResponse {
   total: number;
 }
 
+export interface VoiceRecordingResponse {
+  id: string;
+  user_id: string;
+  title: string;
+  description: string | null;
+  file_path: string;
+  duration_seconds: number | null;
+  mime_type: string;
+  created_at: string;
+  updated_at: string;
+}
+
 // ============================================================================
 // Script Types
 // ============================================================================
