@@ -1,14 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { Film, Plus, Upload, Trash2, Edit, AlertCircle, CheckCircle2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Film, Plus, Upload, Trash2, Edit2, AlertCircle, CheckCircle2, Search, Loader } from "lucide-react";
 import {
+  adminGetMovies,
   adminCreateMovie,
   adminUpdateMovie,
   adminDeleteMovie,
   adminBulkImportMovies,
 } from "@/lib/api/admin";
-import type { MovieCreateRequest, MovieUpdateRequest } from "@/lib/types/api";
+import type { MovieResponse, MovieCreateRequest, MovieUpdateRequest } from "@/lib/types/api";
 
 type Toast = {
   id: number;
@@ -16,11 +17,39 @@ type Toast = {
   message: string;
 };
 
+type EditingMovie = {
+  id: string;
+  title: string;
+  overview?: string;
+  release_date?: string;
+  vote_average?: number;
+};
+
 export default function AdminMoviesPage() {
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [movies, setMovies] = useState<MovieResponse[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isCreating, setIsCreating] = useState(false);
   const [isBulkOpen, setIsBulkOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingData, setEditingData] = useState<EditingMovie | null>(null);
   const [toasts, setToasts] = useState<Toast[]>([]);
+
+  useEffect(() => {
+    loadMovies();
+  }, []);
+
+  const loadMovies = async () => {
+    setIsLoading(true);
+    try {
+      const data = await adminGetMovies();
+      setMovies(data.movies);
+    } catch (error: any) {
+      showToast("error", error.message || "Failed to load movies");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const showToast = (type: "success" | "error", message: string) => {
     const id = Date.now();
@@ -32,7 +61,7 @@ export default function AdminMoviesPage() {
 
   const handleCreateMovie = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsLoading(true);
+    setIsCreating(false);
     try {
       const formData = new FormData(e.currentTarget);
       const data: MovieCreateRequest = {
@@ -46,18 +75,46 @@ export default function AdminMoviesPage() {
       };
       await adminCreateMovie(data);
       showToast("success", "Movie created successfully");
-      setIsCreateOpen(false);
+      await loadMovies();
       e.currentTarget.reset();
     } catch (error: any) {
       showToast("error", error.message || "Failed to create movie");
-    } finally {
-      setIsLoading(false);
+      setIsCreating(true);
+    }
+  };
+
+  const handleDeleteMovie = async (movieId: string) => {
+    if (!confirm("Delete this movie? This action cannot be undone.")) return;
+    try {
+      await adminDeleteMovie(parseInt(movieId));
+      showToast("success", "Movie deleted successfully");
+      await loadMovies();
+    } catch (error: any) {
+      showToast("error", error.message || "Failed to delete movie");
+    }
+  };
+
+  const handleUpdateMovie = async () => {
+    if (!editingData) return;
+    try {
+      const updateData: MovieUpdateRequest = {
+        title: editingData.title,
+        overview: editingData.overview,
+        release_date: editingData.release_date,
+        vote_average: editingData.vote_average,
+      };
+      await adminUpdateMovie(parseInt(editingData.id), updateData);
+      showToast("success", "Movie updated successfully");
+      setEditingId(null);
+      setEditingData(null);
+      await loadMovies();
+    } catch (error: any) {
+      showToast("error", error.message || "Failed to update movie");
     }
   };
 
   const handleBulkImport = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsLoading(true);
     try {
       const formData = new FormData(e.currentTarget);
       const jsonText = formData.get("json") as string;
@@ -67,20 +124,20 @@ export default function AdminMoviesPage() {
         "success",
         `Bulk import completed: ${result.success_count} succeeded, ${result.failure_count} failed`
       );
-      if (result.errors.length > 0) {
-        console.error("Bulk import errors:", result.errors);
-      }
       setIsBulkOpen(false);
       e.currentTarget.reset();
+      await loadMovies();
     } catch (error: any) {
       showToast("error", error.message || "Failed to bulk import movies");
-    } finally {
-      setIsLoading(false);
     }
   };
 
+  const filteredMovies = movies.filter((m) =>
+    m.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
-    <div className="mx-auto max-w-6xl">
+    <div className="mx-auto max-w-7xl">
       {/* Toasts */}
       <div className="fixed bottom-4 right-4 z-50 space-y-2">
         {toasts.map((toast) => (
@@ -107,13 +164,13 @@ export default function AdminMoviesPage() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <Film className="h-8 w-8 text-accent-primary" />
-            <h1 className="text-3xl font-bold text-text-primary">Movies Management</h1>
+            <h1 className="text-3xl font-bold text-text-primary">Manage Movies</h1>
           </div>
-          <p className="text-text-secondary">Create, update, and delete movies in the catalog</p>
+          <p className="text-text-secondary">Browse, create, edit, and delete movies</p>
         </div>
         <div className="flex gap-3">
           <button
-            onClick={() => setIsCreateOpen(true)}
+            onClick={() => setIsCreating(true)}
             className="flex items-center gap-2 rounded-lg bg-accent-primary px-4 py-2 text-sm font-medium text-white hover:bg-accent-primary/90 transition-all"
           >
             <Plus className="h-4 w-4" />
@@ -129,10 +186,129 @@ export default function AdminMoviesPage() {
         </div>
       </div>
 
+      {/* Search Bar */}
+      <div className="mb-6 flex items-center gap-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
+        <Search className="h-5 w-5 text-text-muted" />
+        <input
+          type="text"
+          placeholder="Search movies by title..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="flex-1 bg-transparent text-text-primary placeholder-text-muted focus:outline-none"
+        />
+      </div>
+
+      {/* Movies List */}
+      {isLoading ? (
+        <div className="flex h-64 items-center justify-center">
+          <div className="flex flex-col items-center gap-2">
+            <Loader className="h-8 w-8 animate-spin text-accent-primary" />
+            <p className="text-sm text-text-muted">Loading movies...</p>
+          </div>
+        </div>
+      ) : filteredMovies.length === 0 ? (
+        <div className="flex h-64 items-center justify-center rounded-2xl border border-dashed border-border-default">
+          <p className="text-sm text-text-muted">No movies found. Create or import one to get started.</p>
+        </div>
+      ) : (
+        <div className="space-y-2 rounded-2xl border border-border-default bg-surface-panel overflow-hidden">
+          {/* Table Header */}
+          <div className="grid grid-cols-12 gap-4 border-b border-border-default bg-surface-raised/50 px-6 py-3 text-sm font-semibold text-text-secondary">
+            <div className="col-span-4">Title</div>
+            <div className="col-span-2">Release Date</div>
+            <div className="col-span-2">Rating</div>
+            <div className="col-span-4">Actions</div>
+          </div>
+
+          {/* Table Rows */}
+          {filteredMovies.map((movie) => (
+            <div key={movie.id} className="border-b border-border-default last:border-0 hover:bg-surface-raised/50 transition-colors">
+              {editingId === movie.id && editingData ? (
+                <div className="grid grid-cols-12 gap-4 px-6 py-4">
+                  <input
+                    type="text"
+                    value={editingData.title}
+                    onChange={(e) => setEditingData({ ...editingData, title: e.target.value })}
+                    className="col-span-4 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
+                  />
+                  <input
+                    type="date"
+                    value={editingData.release_date || ""}
+                    onChange={(e) => setEditingData({ ...editingData, release_date: e.target.value })}
+                    className="col-span-2 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
+                  />
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={editingData.vote_average || ""}
+                    onChange={(e) => setEditingData({ ...editingData, vote_average: parseFloat(e.target.value) })}
+                    className="col-span-2 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
+                  />
+                  <div className="col-span-4 flex items-center gap-2">
+                    <button
+                      onClick={handleUpdateMovie}
+                      className="rounded-lg bg-green-600 px-3 py-2 text-sm font-medium text-white hover:bg-green-700"
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={() => {
+                        setEditingId(null);
+                        setEditingData(null);
+                      }}
+                      className="rounded-lg border border-border-default px-3 py-2 text-sm font-medium text-text-secondary hover:bg-surface-hover"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-12 gap-4 px-6 py-4 items-center">
+                  <div className="col-span-4">
+                    <p className="text-sm font-medium text-text-primary">{movie.title}</p>
+                  </div>
+                  <div className="col-span-2">
+                    <p className="text-sm text-text-secondary">{movie.release_date || "N/A"}</p>
+                  </div>
+                  <div className="col-span-2">
+                    <p className="text-sm text-text-secondary">{movie.rating?.toString() || "N/A"}</p>
+                  </div>
+                  <div className="col-span-4 flex items-center gap-2">
+                    <button
+                      onClick={() => {
+                        setEditingId(movie.id.toString());
+                        setEditingData({
+                          id: movie.id.toString(),
+                          title: movie.title,
+                          overview: "",
+                          release_date: movie.release_date || undefined,
+                          vote_average: (movie.rating as unknown as number) || undefined,
+                        });
+                      }}
+                      className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm font-medium text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all"
+                    >
+                      <Edit2 className="h-4 w-4" />
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDeleteMovie(movie.id.toString())}
+                      className="flex items-center gap-1 rounded-lg border border-red-500/50 bg-red-500/10 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-500/20 transition-all"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
       {/* Create Movie Modal */}
-      {isCreateOpen && (
+      {isCreating && (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/60 p-4">
-          <div className="w-full max-w-2xl rounded-2xl border border-border-default bg-surface-panel p-6 shadow-2xl">
+          <div className="w-full max-w-2xl rounded-2xl border border-border-default bg-surface-panel p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
             <h2 className="mb-4 text-xl font-semibold text-text-primary">Create Movie</h2>
             <form onSubmit={handleCreateMovie} className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2">
@@ -196,7 +372,6 @@ export default function AdminMoviesPage() {
                 <input
                   type="text"
                   name="poster_path"
-                  placeholder="/path/to/poster.jpg"
                   className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 text-text-primary focus:border-accent-primary focus:outline-none"
                 />
               </div>
@@ -207,24 +382,22 @@ export default function AdminMoviesPage() {
                 <input
                   type="text"
                   name="backdrop_path"
-                  placeholder="/path/to/backdrop.jpg"
                   className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 text-text-primary focus:border-accent-primary focus:outline-none"
                 />
               </div>
               <div className="flex justify-end gap-3 pt-2">
                 <button
                   type="button"
-                  onClick={() => setIsCreateOpen(false)}
+                  onClick={() => setIsCreating(false)}
                   className="rounded-lg border border-border-default px-4 py-2 text-sm font-medium text-text-secondary hover:bg-surface-hover"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  disabled={isLoading}
-                  className="rounded-lg bg-accent-primary px-4 py-2 text-sm font-medium text-white hover:bg-accent-primary/90 disabled:opacity-50"
+                  className="rounded-lg bg-accent-primary px-4 py-2 text-sm font-medium text-white hover:bg-accent-primary/90"
                 >
-                  {isLoading ? "Creating..." : "Create"}
+                  Create
                 </button>
               </div>
             </form>
@@ -245,8 +418,8 @@ export default function AdminMoviesPage() {
                 <textarea
                   name="json"
                   required
-                  rows={15}
-                  placeholder='[{"id": 550, "title": "Fight Club", "overview": "...", "release_date": "1999-10-15"}]'
+                  rows={12}
+                  placeholder='[{"id": 550, "title": "Fight Club", "release_date": "1999-10-15"}]'
                   className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 font-mono text-sm text-text-primary focus:border-accent-primary focus:outline-none"
                 />
               </div>
@@ -260,35 +433,15 @@ export default function AdminMoviesPage() {
                 </button>
                 <button
                   type="submit"
-                  disabled={isLoading}
-                  className="rounded-lg bg-accent-primary px-4 py-2 text-sm font-medium text-white hover:bg-accent-primary/90 disabled:opacity-50"
+                  className="rounded-lg bg-accent-primary px-4 py-2 text-sm font-medium text-white hover:bg-accent-primary/90"
                 >
-                  {isLoading ? "Importing..." : "Import"}
+                  Import
                 </button>
               </div>
             </form>
           </div>
         </div>
       )}
-
-      {/* Info Panel */}
-      <div className="rounded-2xl border border-border-default bg-surface-panel p-6">
-        <h3 className="mb-4 text-lg font-semibold text-text-primary">Usage Guide</h3>
-        <div className="space-y-3 text-sm text-text-secondary">
-          <p>
-            <strong className="text-text-primary">Create Movie:</strong> Add a single movie to the
-            catalog. TMDB ID and Title are required.
-          </p>
-          <p>
-            <strong className="text-text-primary">Bulk Import:</strong> Import multiple movies at
-            once using a JSON array. Each item must have at least an id and title.
-          </p>
-          <p className="text-xs text-text-muted">
-            Note: Additional movie management features (update, delete, list) can be added as
-            needed.
-          </p>
-        </div>
-      </div>
     </div>
   );
 }

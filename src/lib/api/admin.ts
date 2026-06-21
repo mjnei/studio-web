@@ -15,6 +15,10 @@ import type {
 // Admin Movie Management
 // ============================================================================
 
+export async function adminGetMovies(): Promise<{ movies: MovieResponse[]; total: number }> {
+  return request<{ movies: MovieResponse[]; total: number }>("/movies");
+}
+
 export async function adminCreateMovie(data: MovieCreateRequest): Promise<MovieResponse> {
   return request<MovieResponse>("/admin/movies", {
     method: "POST",
@@ -50,6 +54,10 @@ export async function adminBulkImportMovies(
 // ============================================================================
 // Admin Voice Management
 // ============================================================================
+
+export async function adminGetVoices(): Promise<{ voices: VoiceResponse[]; total: number }> {
+  return request<{ voices: VoiceResponse[]; total: number }>("/voices");
+}
 
 export async function adminCreateVoice(data: VoiceCreateRequest): Promise<VoiceResponse> {
   return request<VoiceResponse>("/admin/voices", {
