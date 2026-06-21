@@ -6,13 +6,15 @@ import { VoiceRecorder } from "@/components/shared/voice-recorder";
 import { VoiceRecordingCard } from "@/components/voices/voice-recording-card";
 import { Button } from "@/components/ui/button";
 import { useVoiceRecordings } from "@/lib/hooks/use-voice-recordings";
+import { VoiceRecordingResponse } from "@/lib/types/api";
 
 export default function VoicesPage() {
   const [tab, setTab] = useState<"my" | "stock">("my");
   const [showRecorder, setShowRecorder] = useState(false);
-  const { recordings, loading, error, deleteRecording } = useVoiceRecordings();
+  const { recordings, loading, error, deleteRecording, addRecording } = useVoiceRecordings();
 
-  const handleRecordingSaved = () => {
+  const handleRecordingSaved = (newRecording: VoiceRecordingResponse) => {
+    addRecording(newRecording);
     setShowRecorder(false);
   };
 

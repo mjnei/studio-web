@@ -26,6 +26,10 @@ export function useVoiceRecordings() {
     }
   }, []);
 
+  const addRecording = useCallback((recording: VoiceRecordingResponse) => {
+    setRecordings((prev) => [recording, ...prev]);
+  }, []);
+
   const uploadRecording = useCallback(
     async (file: Blob, title: string, description?: string, duration?: number) => {
       try {
@@ -60,6 +64,7 @@ export function useVoiceRecordings() {
     recordings,
     loading,
     error,
+    addRecording,
     uploadRecording,
     deleteRecording,
     refetch: fetchRecordings,

@@ -12,12 +12,14 @@ import {
   VolumeX,
   RotateCcw,
   Check,
+  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import type { VoiceRecordingResponse } from "@/lib/types/api";
 
-type RecorderState = "idle" | "requesting" | "recording" | "recorded";
+type RecorderState = "idle" | "requesting" | "recording" | "recorded" | "naming";
 
-const MAX_DURATION_S = 15;
+const MAX_DURATION_S = 60;
 
 function getSupportedMimeType(): string {
   const types = ["audio/webm;codecs=opus", "audio/webm", "audio/ogg;codecs=opus", "audio/mp4"];
@@ -27,12 +29,31 @@ function getSupportedMimeType(): string {
   return "";
 }
 
+function generateRandomName(): string {
+  const adjectives = [
+    "amber", "azure", "bronze", "coral", "crimson", "cyan", "emerald", "golden",
+    "indigo", "jade", "lavender", "magenta", "navy", "olive", "pearl", "ruby",
+    "sapphire", "silver", "topaz", "violet"
+  ];
+  const nouns = [
+    "dolphin", "eagle", "falcon", "hawk", "lion", "owl", "panther", "phoenix",
+    "raven", "tiger", "wolf", "bear", "fox", "lynx", "otter", "seal",
+    "whale", "cobra", "dragon", "gryphon"
+  ];
+  
+  const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
+  const noun = nouns[Math.floor(Math.random() * nouns.length)];
+  const num = Math.floor(Math.random() * 100);
+  
+  return `${noun}-${adj}-${num}`;
+}
+
 export function VoiceRecorder({
   onRecorded,
   onSaved,
 }: {
   onRecorded?: (blob: Blob) => void;
-  onSaved?: () => void;
+  onSaved?: (recording: VoiceRecordingResponse) => void;
 }) {
   const [state, setState] = useState<RecorderState>("idle");
   const [duration, setDuration] = useState(0);
@@ -42,6 +63,8 @@ export function VoiceRecorder({
   const [error, setError] = useState<string | null>(null);
   const [maxReached, setMaxReached] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [voiceName, setVoiceName] = useState("");
+  const [nameError, setNameError] = useState(false);
 
   const streamRef = useRef<MediaStream | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -160,6 +183,11 @@ export function VoiceRecorder({
         audioUrlRef.current = URL.createObjectURL(blob);
         setState("recorded");
         onRecorded?.(blob);
+        
+        // Auto-play the recording
+        setTimeout(() => {
+          playRecording();
+        }, 300);
       };
 
       recorder.start();
@@ -283,26 +311,52 @@ export function VoiceRecorder({
     setIsPlaying(false);
     setMaxReached(false);
     setIsSaving(false);
+    setVoiceName("");
     setState("idle");
   }, [stopPlayback, revokeUrl, clearTimer, releaseStream]);
+
+  const proceedToNaming = useCallback(() => {
+    setState("naming");
+    setVoiceName("");
+    setNameError(false);
+    stopPlayback();
+  }, [stopPlayback]);
+
+  const generateName = useCallback(() => {
+    setVoiceName(generateRandomName());
+    setNameError(false);
+  }, []);
 
   const saveRecording = useCallback(async () => {
     const blob = audioBlobRef.current;
     if (!blob) return;
 
+    const title = voiceName.trim();
+    
+    // Validate name is not empty
+    if (!title) {
+      setNameError(true);
+      return;
+    }
+
     setIsSaving(true);
     setError(null);
+    setNameError(false);
 
     try {
       const { uploadVoiceRecording } = await import("@/lib/api/voice-recording-client");
-      await uploadVoiceRecording(blob, "My Voice Recording", undefined, duration);
-      onSaved?.();
+      
+      // Ensure the blob has the correct type from the MIME ref
+      const typedBlob = new Blob([blob], { type: mimeRef.current || blob.type || "audio/webm" });
+      
+      const newRecording = await uploadVoiceRecording(typedBlob, title, undefined, duration);
+      onSaved?.(newRecording);
       discardRecording();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save recording");
       setIsSaving(false);
     }
-  }, [duration, onSaved, discardRecording]);
+  }, [duration, voiceName, onSaved, discardRecording]);
 
   const formatTime = (s: number) => {
     const clamped = Math.max(0, Math.floor(s));
@@ -409,10 +463,46 @@ export function VoiceRecorder({
           </div>
           <div className="flex items-center gap-2">
             <Button variant="secondary" size="sm" onClick={discardRecording} disabled={isSaving}>
-              Discard &amp; re-record
+              Discard
             </Button>
-            <Button variant="primary" size="sm" onClick={saveRecording} disabled={isSaving}>
-              {isSaving ? "Saving..." : "Save this voice"}
+            <Button variant="primary" size="sm" onClick={proceedToNaming} disabled={isSaving}>
+              Continue
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {state === "naming" && (
+        <div className="flex flex-col gap-4 py-2">
+          <div>
+            <label htmlFor="voice-name" className="mb-2 block text-sm font-medium text-text-primary">
+              Name your voice
+            </label>
+            <input
+              id="voice-name"
+              type="text"
+              value={voiceName}
+              onChange={(e) => setVoiceName(e.target.value)}
+              placeholder="e.g., My Voice, Professional Narrator, etc."
+              className="w-full rounded-md border border-border-default bg-surface-raised px-3 py-2 text-text-primary placeholder-text-muted focus:border-accent-cyan focus:outline-none focus:ring-1 focus:ring-accent-cyan"
+              autoFocus
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !isSaving) {
+                  saveRecording();
+                }
+              }}
+              disabled={isSaving}
+            />
+            <p className="mt-1 text-xs text-text-muted">
+              Give your voice a memorable name. You can always change it later.
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="secondary" size="sm" onClick={() => setState("recorded")} disabled={isSaving}>
+              Back
+            </Button>
+            <Button variant="primary" size="sm" onClick={saveRecording} disabled={isSaving} className="flex-1">
+              {isSaving ? "Saving..." : "Save voice"}
             </Button>
           </div>
         </div>

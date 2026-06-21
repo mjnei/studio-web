@@ -8,7 +8,28 @@ export async function uploadVoiceRecording(
   durationSeconds?: number
 ): Promise<VoiceRecordingResponse> {
   const formData = new FormData();
-  formData.append("file", file, "recording.webm");
+  
+  // Determine the file extension based on MIME type
+  const mimeType = file.type || "audio/webm";
+  const extMap: Record<string, string> = {
+    "audio/webm": ".webm",
+    "audio/webm;codecs=opus": ".webm",
+    "audio/ogg": ".ogg",
+    "audio/ogg;codecs=opus": ".ogg",
+    "audio/wav": ".wav",
+    "audio/mp3": ".mp3",
+    "audio/mpeg": ".mp3",
+    "audio/mp4": ".mp4",
+    "audio/x-m4a": ".m4a",
+  };
+  
+  const ext = extMap[mimeType] || extMap[mimeType.split(";")[0]] || ".webm";
+  const filename = `recording${ext}`;
+  
+  // Create a new File object with the correct MIME type
+  const audioFile = new File([file], filename, { type: mimeType });
+  
+  formData.append("file", audioFile);
   formData.append("title", title);
   if (description) {
     formData.append("description", description);
