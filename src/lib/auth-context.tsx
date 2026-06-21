@@ -42,6 +42,7 @@ const PROTECTED_ROUTE_PREFIXES = [
   "/referral",
   "/help",
   "/project",
+  "/admin",
 ];
 
 export function AuthProvider({ children }: { children: ReactNode }) {

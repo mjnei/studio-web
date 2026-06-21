@@ -1,6 +1,26 @@
 // API Response Types for Backend Integration
 
 // ============================================================================
+// User Types
+// ============================================================================
+
+export interface UserResponse {
+  id: string;
+  email: string;
+  name: string;
+  given_name: string | null;
+  family_name: string | null;
+  picture_url: string | null;
+  locale: string | null;
+  provider: string;
+  has_password: boolean;
+  is_active: boolean;
+  role: string;
+  created_at: string;
+  updated_at: string;
+}
+
+// ============================================================================
 // Project Types
 // ============================================================================
 
@@ -157,4 +177,84 @@ export interface VideoJobResponse {
   created_at: string;
   updated_at: string;
   steps?: VideoGenerationStepResponse[];
+}
+
+// ============================================================================
+// Admin Types
+// ============================================================================
+
+export interface GenreInput {
+  id: number;
+  name: string;
+}
+
+export interface MovieCreateRequest {
+  id: number;
+  title: string;
+  original_title?: string | null;
+  overview?: string | null;
+  tagline?: string | null;
+  poster_path?: string | null;
+  backdrop_path?: string | null;
+  genres?: GenreInput[];
+  original_language?: string | null;
+  release_date?: string | null;
+  runtime?: number | null;
+  vote_average?: number | null;
+  vote_count?: number | null;
+  popularity?: number | null;
+}
+
+export interface MovieUpdateRequest {
+  title?: string;
+  original_title?: string | null;
+  overview?: string | null;
+  tagline?: string | null;
+  poster_path?: string | null;
+  backdrop_path?: string | null;
+  genres?: GenreInput[];
+  original_language?: string | null;
+  release_date?: string | null;
+  runtime?: number | null;
+  vote_average?: number | null;
+  vote_count?: number | null;
+  popularity?: number | null;
+}
+
+export interface VoiceCreateRequest {
+  id: string;
+  provider: string;
+  name: string;
+  description?: string | null;
+  preview_url?: string | null;
+  gender?: string | null;
+  accent?: string | null;
+  language?: string | null;
+  category?: string | null;
+  is_available?: boolean;
+}
+
+export interface VoiceUpdateRequest {
+  name?: string;
+  description?: string | null;
+  preview_url?: string | null;
+  gender?: string | null;
+  accent?: string | null;
+  language?: string | null;
+  category?: string | null;
+  is_available?: boolean;
+}
+
+export interface VoiceAvailabilityUpdate {
+  is_available: boolean;
+}
+
+export interface BulkImportRequest<T> {
+  items: T[];
+}
+
+export interface BulkImportResponse {
+  success_count: number;
+  failure_count: number;
+  errors: string[];
 }

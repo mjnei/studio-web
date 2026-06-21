@@ -6,6 +6,10 @@ This directory contains all documentation for the Huavoi Studio frontend, organi
 
 ### ⭐ Quick Navigation by Role
 
+#### 🛡️ **I'm an Admin** - Need to manage movies and voices catalog
+→ **[ADMIN_SETUP_GUIDE.md](./ADMIN_SETUP_GUIDE.md)** ← Quick setup and testing
+→ **[ADMIN_INTERFACE.md](./ADMIN_INTERFACE.md)** ← Complete admin documentation
+
 #### 👤 **I'm a User** - Want to understand how to use the app
 → Not in this documentation folder. Check the main app UI!
 
@@ -34,6 +38,12 @@ This directory contains all documentation for the Huavoi Studio frontend, organi
 ## 📖 All Documentation Files
 
 ### Core Documentation (What You'll Use)
+
+#### Admin Documentation
+| Document | Size | Purpose |
+|----------|------|---------|
+| **[ADMIN_SETUP_GUIDE.md](./ADMIN_SETUP_GUIDE.md)** | 10KB | 🛡️ Quick setup guide for admin interface |
+| **[ADMIN_INTERFACE.md](./ADMIN_INTERFACE.md)** | 14KB | 🛡️ Complete admin documentation with API integration |
 
 #### Guides - Read These
 | Document | Size | Purpose |
@@ -235,6 +245,9 @@ Evening: Test async operations (TTS & video)
 ```
 docs/
 ├── INDEX.md                              ← You are here
+├── ADMIN_SETUP_GUIDE.md                  🛡️ Admin setup guide
+├── ADMIN_INTERFACE.md                    🛡️ Admin documentation
+├── NAVIGATION_PATTERN.md                 📍 Navigation patterns
 ├── guides/
 │   ├── WORKFLOW_GUIDE.md                 ⭐ Complete 4-step workflow
 │   ├── DESIGN_GUIDE.md                   ✨ Component usage guide

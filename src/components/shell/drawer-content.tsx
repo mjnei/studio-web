@@ -14,9 +14,11 @@ import {
   Activity,
   Loader2,
   Search,
+  ShieldCheck,
 } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
+import { useIsAdmin } from "@/lib/hooks/use-admin";
 
 const mainItems = [
   {
@@ -64,6 +66,14 @@ const utilityItems = [
   },
 ];
 
+const adminItems = [
+  {
+    href: "/admin",
+    label: "Admin",
+    icon: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
+  },
+];
+
 function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(href + "/");
 }
@@ -77,6 +87,7 @@ const iconMap: Record<string, React.ReactNode> = {
   "/referral": <User size={20} />,
   "/help": <HelpCircle size={20} />,
   "/settings": <Settings size={20} />,
+  "/admin": <ShieldCheck size={20} />,
 };
 
 function RailLink({
@@ -194,6 +205,8 @@ export function DrawerContent({
   onToggle?: () => void;
   onClose?: () => void;
 }) {
+  const isAdmin = useIsAdmin();
+
   return (
     <div className="flex h-full flex-col">
       <div
@@ -265,6 +278,29 @@ export function DrawerContent({
             />
           ))}
         </div>
+
+        {/* Admin Section - Only for Admin Users */}
+        {isAdmin && (
+          <>
+            <div className={`my-4 border-t border-border-default ${collapsed ? "mx-0" : "mx-2"}`} />
+            {!collapsed && (
+              <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-wider text-text-muted">
+                Admin
+              </p>
+            )}
+            <div className="space-y-1">
+              {adminItems.map((item) => (
+                <RailLink
+                  key={item.href}
+                  item={item}
+                  isActive={isActive(pathname, item.href)}
+                  onClick={onNavigate}
+                  collapsed={collapsed}
+                />
+              ))}
+            </div>
+          </>
+        )}
       </div>
 
       <UserSection collapsed={collapsed} onNavigate={onNavigate} />

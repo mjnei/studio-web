@@ -146,6 +146,7 @@ export interface UserResponse {
   provider: string;
   has_password: boolean;
   is_active: boolean;
+  role: string;
   created_at: string;
   updated_at: string;
 }
