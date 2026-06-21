@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Mic, Plus, Upload, Trash2, Power, AlertCircle, CheckCircle2, Search, Loader, Edit2 } from "lucide-react";
+import { Mic, Plus, Upload, Trash2, Power, AlertCircle, CheckCircle2, Search, Loader, Edit2, User, Database } from "lucide-react";
 import {
   adminGetVoices,
   adminCreateVoice,
@@ -10,7 +10,7 @@ import {
   adminDeleteVoice,
   adminBulkImportVoices,
 } from "@/lib/api/admin";
-import type { VoiceCreateRequest, VoiceResponse, VoiceUpdateRequest } from "@/lib/types/api";
+import type { VoiceCreateRequest, VoiceResponse, VoiceUpdateRequest, VoiceRecordingResponse } from "@/lib/types/api";
 
 type Toast = {
   id: number;
@@ -30,17 +30,26 @@ type EditingVoice = {
 
 export default function AdminVoicesPage() {
   const [voices, setVoices] = useState<VoiceResponse[]>([]);
+  const [recordings, setRecordings] = useState<VoiceRecordingResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isBulkOpen, setIsBulkOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [filterProvider, setFilterProvider] = useState<string>("all");
+  const [filterAvailability, setFilterAvailability] = useState<string>("all");
+  const [filterGender, setFilterGender] = useState<string>("all");
+  const [viewType, setViewType] = useState<"stock" | "recordings">("stock");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingData, setEditingData] = useState<EditingVoice | null>(null);
   const [toasts, setToasts] = useState<Toast[]>([]);
 
   useEffect(() => {
-    loadVoices();
-  }, []);
+    if (viewType === "stock") {
+      loadVoices();
+    } else {
+      loadRecordings();
+    }
+  }, [viewType]);
 
   const loadVoices = async () => {
     setIsLoading(true);
@@ -49,6 +58,24 @@ export default function AdminVoicesPage() {
       setVoices(data);
     } catch (error: any) {
       showToast("error", error.message || "Failed to load voices");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const loadRecordings = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/v1/voice-recordings", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      });
+      if (!response.ok) throw new Error("Failed to load recordings");
+      const data = await response.json();
+      setRecordings(data);
+    } catch (error: any) {
+      showToast("error", error.message || "Failed to load voice recordings");
     } finally {
       setIsLoading(false);
     }
@@ -153,8 +180,56 @@ export default function AdminVoicesPage() {
     }
   };
 
-  const filteredVoices = voices.filter((v) =>
-    v.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const handleDeleteRecording = async (recordingId: string) => {
+    if (!confirm("Delete this voice recording? This action cannot be undone.")) return;
+    try {
+      const response = await fetch(`/api/v1/voice-recordings/${recordingId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      });
+      if (!response.ok) throw new Error("Failed to delete recording");
+      showToast("success", "Voice recording deleted successfully");
+      await loadRecordings();
+    } catch (error: any) {
+      showToast("error", error.message || "Failed to delete voice recording");
+    }
+  };
+
+  const filteredVoices = voices.filter((v) => {
+    const matchesSearch = v.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      v.description?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesProvider = filterProvider === "all" || v.provider === filterProvider;
+    const matchesAvailability = filterAvailability === "all" || 
+      (filterAvailability === "active" && v.is_available) ||
+      (filterAvailability === "disabled" && !v.is_available);
+    const matchesGender = filterGender === "all" || v.gender === filterGender;
+    return matchesSearch && matchesProvider && matchesAvailability && matchesGender;
+  });
+
+  // Get unique providers for filter
+  const providers = Array.from(new Set(voices.map(v => v.provider)));
+  
+  // Calculate statistics
+  const stats = viewType === "stock" ? {
+    total: voices.length,
+    active: voices.filter(v => v.is_available).length,
+    disabled: voices.filter(v => !v.is_available).length,
+    byProvider: providers.map(p => ({
+      name: p,
+      count: voices.filter(v => v.provider === p).length
+    }))
+  } : {
+    total: recordings.length,
+    active: recordings.length,
+    disabled: 0,
+    byProvider: []
+  };
+
+  const filteredRecordings = recordings.filter((r) =>
+    r.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    r.description?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -187,36 +262,170 @@ export default function AdminVoicesPage() {
             <Mic className="h-8 w-8 text-accent-primary" />
             <h1 className="text-3xl font-bold text-text-primary">Manage Voices</h1>
           </div>
-          <p className="text-text-secondary">Create, update, and manage voices in the catalog</p>
+          <p className="text-text-secondary">Manage stock voices from providers and user voice recordings</p>
         </div>
         <div className="flex gap-3">
-          <button
-            onClick={() => setIsCreateOpen(true)}
-            className="flex items-center gap-2 rounded-lg bg-accent-primary px-4 py-2 text-sm font-medium text-white hover:bg-accent-primary/90 transition-all"
-          >
-            <Plus className="h-4 w-4" />
-            Create Voice
-          </button>
-          <button
-            onClick={() => setIsBulkOpen(true)}
-            className="flex items-center gap-2 rounded-lg border border-border-default bg-surface-panel px-4 py-2 text-sm font-medium text-text-primary hover:bg-surface-hover transition-all"
-          >
-            <Upload className="h-4 w-4" />
-            Bulk Import
-          </button>
+          {viewType === "stock" && (
+            <>
+              <button
+                onClick={() => setIsCreateOpen(true)}
+                className="flex items-center gap-2 rounded-lg bg-accent-primary px-4 py-2 text-sm font-medium text-white hover:bg-accent-primary/90 transition-all"
+              >
+                <Plus className="h-4 w-4" />
+                Create Voice
+              </button>
+              <button
+                onClick={() => setIsBulkOpen(true)}
+                className="flex items-center gap-2 rounded-lg border border-border-default bg-surface-panel px-4 py-2 text-sm font-medium text-text-primary hover:bg-surface-hover transition-all"
+              >
+                <Upload className="h-4 w-4" />
+                Bulk Import
+              </button>
+            </>
+          )}
         </div>
       </div>
 
-      {/* Search Bar */}
-      <div className="mb-6 flex items-center gap-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
-        <Search className="h-5 w-5 text-text-muted" />
-        <input
-          type="text"
-          placeholder="Search voices by name..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="flex-1 bg-transparent text-text-primary placeholder-text-muted focus:outline-none"
-        />
+      {/* View Type Toggle */}
+      <div className="mb-6 flex gap-2">
+        <button
+          onClick={() => setViewType("stock")}
+          className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+            viewType === "stock"
+              ? "bg-accent-primary text-white"
+              : "border border-border-default bg-surface-panel text-text-secondary hover:bg-surface-hover"
+          }`}
+        >
+          <Database className="h-4 w-4" />
+          Stock Voices ({voices.length})
+        </button>
+        <button
+          onClick={() => setViewType("recordings")}
+          className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+            viewType === "recordings"
+              ? "bg-accent-primary text-white"
+              : "border border-border-default bg-surface-panel text-text-secondary hover:bg-surface-hover"
+          }`}
+        >
+          <User className="h-4 w-4" />
+          User Recordings ({recordings.length})
+        </button>
+      </div>
+
+      {/* Statistics Cards */}
+      {!isLoading && (
+        <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="rounded-2xl border border-border-default bg-surface-panel p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-text-muted">{viewType === "stock" ? "Total Voices" : "Total Recordings"}</p>
+                <p className="text-2xl font-bold text-text-primary">{stats.total}</p>
+              </div>
+              <Mic className="h-8 w-8 text-accent-primary opacity-50" />
+            </div>
+          </div>
+          {viewType === "stock" && (
+            <>
+              <div className="rounded-2xl border border-border-default bg-surface-panel p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-text-muted">Active</p>
+                    <p className="text-2xl font-bold text-green-600">{stats.active}</p>
+                  </div>
+                  <CheckCircle2 className="h-8 w-8 text-green-600 opacity-50" />
+                </div>
+              </div>
+              <div className="rounded-2xl border border-border-default bg-surface-panel p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-text-muted">Disabled</p>
+                    <p className="text-2xl font-bold text-red-600">{stats.disabled}</p>
+                  </div>
+                  <AlertCircle className="h-8 w-8 text-red-600 opacity-50" />
+                </div>
+              </div>
+              <div className="rounded-2xl border border-border-default bg-surface-panel p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-text-muted">Providers</p>
+                    <p className="text-2xl font-bold text-text-primary">{providers.length}</p>
+                  </div>
+                  <Upload className="h-8 w-8 text-accent-primary opacity-50" />
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
+      {/* Search and Filters */}
+      <div className="mb-6 space-y-4">
+        <div className="flex items-center gap-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
+          <Search className="h-5 w-5 text-text-muted" />
+          <input
+            type="text"
+            placeholder={viewType === "stock" ? "Search voices by name or description..." : "Search recordings by title or description..."}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="flex-1 bg-transparent text-text-primary placeholder-text-muted focus:outline-none"
+          />
+        </div>
+        {viewType === "stock" && (
+          <div className="flex flex-wrap gap-2">
+            <select
+              value={filterProvider}
+              onChange={(e) => setFilterProvider(e.target.value)}
+              className="rounded-lg border border-border-default bg-surface-panel px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
+            >
+              <option value="all">All Providers</option>
+              {providers.map(p => (
+                <option key={p} value={p}>{p}</option>
+              ))}
+            </select>
+            <select
+              value={filterAvailability}
+              onChange={(e) => setFilterAvailability(e.target.value)}
+              className="rounded-lg border border-border-default bg-surface-panel px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
+            >
+              <option value="all">All Status</option>
+              <option value="active">Active Only</option>
+              <option value="disabled">Disabled Only</option>
+            </select>
+            <select
+              value={filterGender}
+              onChange={(e) => setFilterGender(e.target.value)}
+              className="rounded-lg border border-border-default bg-surface-panel px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
+            >
+              <option value="all">All Genders</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="neutral">Neutral</option>
+            </select>
+            {(searchTerm || filterProvider !== "all" || filterAvailability !== "all" || filterGender !== "all") && (
+              <button
+                onClick={() => {
+                  setSearchTerm("");
+                  setFilterProvider("all");
+                  setFilterAvailability("all");
+                  setFilterGender("all");
+                }}
+                className="rounded-lg border border-border-default bg-surface-panel px-3 py-2 text-sm text-text-secondary hover:bg-surface-hover"
+              >
+                Clear Filters
+              </button>
+            )}
+            <div className="ml-auto text-sm text-text-muted flex items-center">
+              Showing {filteredVoices.length} of {voices.length} voices
+            </div>
+          </div>
+        )}
+        {viewType === "recordings" && (
+          <div className="flex justify-between items-center">
+            <div className="text-sm text-text-muted">
+              Showing {filteredRecordings.length} of {recordings.length} recordings
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Voices List */}
@@ -224,20 +433,23 @@ export default function AdminVoicesPage() {
         <div className="flex h-64 items-center justify-center">
           <div className="flex flex-col items-center gap-2">
             <Loader className="h-8 w-8 animate-spin text-accent-primary" />
-            <p className="text-sm text-text-muted">Loading voices...</p>
+            <p className="text-sm text-text-muted">Loading {viewType === "stock" ? "voices" : "recordings"}...</p>
           </div>
         </div>
-      ) : filteredVoices.length === 0 ? (
-        <div className="flex h-64 items-center justify-center rounded-2xl border border-dashed border-border-default">
-          <p className="text-sm text-text-muted">No voices found. Create or import one to get started.</p>
-        </div>
-      ) : (
+      ) : viewType === "stock" ? (
+        /* Stock Voices View */
+        filteredVoices.length === 0 ? (
+          <div className="flex h-64 items-center justify-center rounded-2xl border border-dashed border-border-default">
+            <p className="text-sm text-text-muted">No voices found. Create or import one to get started.</p>
+          </div>
+        ) : (
         <div className="space-y-2 rounded-2xl border border-border-default bg-surface-panel overflow-hidden">
           {/* Table Header */}
           <div className="grid grid-cols-12 gap-4 border-b border-border-default bg-surface-raised/50 px-6 py-3 text-sm font-semibold text-text-secondary">
             <div className="col-span-3">Name</div>
             <div className="col-span-2">Provider</div>
-            <div className="col-span-2">Gender</div>
+            <div className="col-span-1">Gender</div>
+            <div className="col-span-1">Language</div>
             <div className="col-span-1">Status</div>
             <div className="col-span-4">Actions</div>
           </div>
@@ -246,7 +458,7 @@ export default function AdminVoicesPage() {
           {filteredVoices.map((voice) => (
             <div key={voice.id} className="border-b border-border-default last:border-0 hover:bg-surface-raised/50 transition-colors">
               {editingId === voice.id && editingData ? (
-                <div className="grid grid-cols-12 gap-4 px-6 py-4">
+                <div className="grid grid-cols-12 gap-4 px-6 py-4 items-center">
                   <input
                     type="text"
                     value={editingData.name}
@@ -260,7 +472,13 @@ export default function AdminVoicesPage() {
                     type="text"
                     value={editingData.gender || ""}
                     onChange={(e) => setEditingData({ ...editingData, gender: e.target.value })}
-                    className="col-span-2 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
+                    className="col-span-1 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
+                  />
+                  <input
+                    type="text"
+                    value={editingData.language || ""}
+                    onChange={(e) => setEditingData({ ...editingData, language: e.target.value })}
+                    className="col-span-1 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
                   />
                   <div className="col-span-1 flex items-center">
                     <span className={`text-xs font-medium ${voice.is_available ? "text-green-600" : "text-red-600"}`}>
@@ -289,29 +507,51 @@ export default function AdminVoicesPage() {
                 <div className="grid grid-cols-12 gap-4 px-6 py-4 items-center">
                   <div className="col-span-3">
                     <p className="text-sm font-medium text-text-primary">{voice.name}</p>
+                    {voice.description && (
+                      <p className="mt-0.5 text-xs text-text-muted line-clamp-1">{voice.description}</p>
+                    )}
                   </div>
                   <div className="col-span-2">
-                    <p className="text-sm text-text-secondary">{voice.provider}</p>
-                  </div>
-                  <div className="col-span-2">
-                    <p className="text-sm text-text-secondary">{voice.gender || "N/A"}</p>
+                    <p className="text-sm text-text-secondary capitalize">{voice.provider}</p>
                   </div>
                   <div className="col-span-1">
-                    <span className={`text-xs font-medium ${voice.is_available ? "text-green-600" : "text-red-600"}`}>
+                    <p className="text-sm text-text-secondary capitalize">{voice.gender || "N/A"}</p>
+                  </div>
+                  <div className="col-span-1">
+                    <p className="text-sm text-text-secondary uppercase">{voice.language || "N/A"}</p>
+                  </div>
+                  <div className="col-span-1">
+                    <span className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
+                      voice.is_available 
+                        ? "bg-green-500/10 text-green-600" 
+                        : "bg-red-500/10 text-red-600"
+                    }`}>
                       {voice.is_available ? "Active" : "Disabled"}
                     </span>
                   </div>
                   <div className="col-span-4 flex items-center gap-2">
+                    {voice.preview_url && (
+                      <button
+                        onClick={() => {
+                          const audio = new Audio(voice.preview_url!);
+                          audio.play();
+                        }}
+                        className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm font-medium text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all"
+                        title="Play preview"
+                      >
+                        <Mic className="h-4 w-4" />
+                      </button>
+                    )}
                     <button
                       onClick={() => {
                         setEditingId(voice.id);
                         setEditingData({
                           id: voice.id,
                           name: voice.name,
-                          description: undefined,
+                          description: voice.description || undefined,
                           gender: voice.gender || undefined,
                           accent: voice.accent || undefined,
-                          language: undefined,
+                          language: voice.language || undefined,
                           category: voice.category || undefined,
                         });
                       }}
@@ -329,14 +569,12 @@ export default function AdminVoicesPage() {
                       }`}
                     >
                       <Power className="h-4 w-4" />
-                      {voice.is_available ? "Disable" : "Enable"}
                     </button>
                     <button
                       onClick={() => handleDeleteVoice(voice.id)}
                       className="flex items-center gap-1 rounded-lg border border-red-500/50 bg-red-500/10 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-500/20 transition-all"
                     >
                       <Trash2 className="h-4 w-4" />
-                      Delete
                     </button>
                   </div>
                 </div>
@@ -344,6 +582,75 @@ export default function AdminVoicesPage() {
             </div>
           ))}
         </div>
+        )
+      ) : (
+        /* User Recordings View */
+        filteredRecordings.length === 0 ? (
+          <div className="flex h-64 items-center justify-center rounded-2xl border border-dashed border-border-default">
+            <p className="text-sm text-text-muted">No voice recordings found.</p>
+          </div>
+        ) : (
+          <div className="space-y-2 rounded-2xl border border-border-default bg-surface-panel overflow-hidden">
+            {/* Table Header */}
+            <div className="grid grid-cols-12 gap-4 border-b border-border-default bg-surface-raised/50 px-6 py-3 text-sm font-semibold text-text-secondary">
+              <div className="col-span-3">Title</div>
+              <div className="col-span-2">User ID</div>
+              <div className="col-span-2">Duration</div>
+              <div className="col-span-2">Created</div>
+              <div className="col-span-3">Actions</div>
+            </div>
+
+            {/* Table Rows */}
+            {filteredRecordings.map((recording) => (
+              <div key={recording.id} className="border-b border-border-default last:border-0 hover:bg-surface-raised/50 transition-colors">
+                <div className="grid grid-cols-12 gap-4 px-6 py-4 items-center">
+                  <div className="col-span-3">
+                    <p className="text-sm font-medium text-text-primary">{recording.title}</p>
+                    {recording.description && (
+                      <p className="mt-0.5 text-xs text-text-muted line-clamp-1">{recording.description}</p>
+                    )}
+                  </div>
+                  <div className="col-span-2">
+                    <p className="text-sm text-text-secondary font-mono text-xs">{recording.user_id.substring(0, 8)}...</p>
+                  </div>
+                  <div className="col-span-2">
+                    <p className="text-sm text-text-secondary">
+                      {recording.duration_seconds 
+                        ? `${Math.floor(recording.duration_seconds / 60)}:${String(Math.floor(recording.duration_seconds % 60)).padStart(2, '0')}`
+                        : "N/A"
+                      }
+                    </p>
+                  </div>
+                  <div className="col-span-2">
+                    <p className="text-sm text-text-secondary">
+                      {new Date(recording.created_at).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <div className="col-span-3 flex items-center gap-2">
+                    <button
+                      onClick={() => {
+                        const audio = new Audio(recording.file_path);
+                        audio.play();
+                      }}
+                      className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm font-medium text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all"
+                      title="Play recording"
+                    >
+                      <Mic className="h-4 w-4" />
+                      Play
+                    </button>
+                    <button
+                      onClick={() => handleDeleteRecording(recording.id)}
+                      className="flex items-center gap-1 rounded-lg border border-red-500/50 bg-red-500/10 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-500/20 transition-all"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )
       )}
 
       {/* Create Voice Modal */}

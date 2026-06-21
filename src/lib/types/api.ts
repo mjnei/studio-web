@@ -63,10 +63,14 @@ export interface MovieResponse {
   id: string;
   tmdb_id: number;
   title: string;
-  poster_url: string;
+  original_title?: string | null;
+  overview?: string | null;
+  poster_path?: string | null;
+  backdrop_path?: string | null;
+  poster_url?: string;
   genre_ids: number[];
   rating: number;
-  release_date: string;
+  release_date?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -82,14 +86,18 @@ export interface MovieListResponse {
 
 export interface VoiceResponse {
   id: string;
-  provider_id: string;
+  provider_id?: string;
   provider: string;
   name: string;
-  gender?: string;
-  age_group?: string;
-  accent?: string;
-  category?: string;
+  description?: string | null;
+  preview_url?: string | null;
+  gender?: string | null;
+  age_group?: string | null;
+  accent?: string | null;
+  language?: string | null;
+  category?: string | null;
   is_available: boolean;
+  provider_last_synced_at?: string;
   created_at: string;
   updated_at: string;
 }
