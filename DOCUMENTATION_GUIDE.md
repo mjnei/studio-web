@@ -239,8 +239,8 @@ Track progress           Troubleshoot issues
 - Router Guide: `../studio-backend/ROUTERS_GUIDE.md`
 
 ### API Documentation
-- Swagger UI: `http://localhost:8000/docs` (when running)
-- ReDoc: `http://localhost:8000/redoc`
+- Swagger UI: `http://localhost:8020/docs` (when running)
+- ReDoc: `http://localhost:8020/redoc`
 
 ---
 

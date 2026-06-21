@@ -38,7 +38,7 @@ export async function uploadVoiceRecording(
     formData.append("duration_seconds", durationSeconds.toString());
   }
 
-  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020/api/v1";
   const token = (await import("../api-client")).getAccessToken();
 
   const response = await fetch(`${API_BASE}/recordings/upload`, {

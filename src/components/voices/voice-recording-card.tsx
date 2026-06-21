@@ -38,7 +38,7 @@ export function VoiceRecordingCard({ recording, onDelete }: VoiceRecordingCardPr
       setIsLoading(true);
       
       // Get audio from backend (backend streams the file to avoid CORS issues)
-      const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020/api/v1";
       const token = (await import("@/lib/api-client")).getAccessToken();
       
       try {

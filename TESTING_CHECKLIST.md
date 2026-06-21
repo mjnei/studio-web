@@ -4,7 +4,7 @@
 
 ```bash
 npm run dev
-# Open http://localhost:3000
+# Open http://localhost:3020
 ```
 
 ## Core Functionality Tests
@@ -293,7 +293,7 @@ npm run dev
 npm run dev
 
 # 2. Open browser
-open http://localhost:3000
+open http://localhost:3020
 
 # 3. Create new project
 # - Navigate to Projects page

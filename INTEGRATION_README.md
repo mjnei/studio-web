@@ -153,8 +153,8 @@ Backend (Studio Backend)     Frontend (Studio Web)
 - State: `src/lib/hooks/use-project-state.ts`
 
 **Running Services**:
-- Backend API Docs: `http://localhost:8000/docs`
-- Frontend Dev: `http://localhost:3000`
+- Backend API Docs: `http://localhost:8020/docs`
+- Frontend Dev: `http://localhost:3020`
 
 ---
 
