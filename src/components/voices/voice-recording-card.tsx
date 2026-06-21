@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Trash2, Play, Pause } from "lucide-react";
 import { VoiceRecordingResponse } from "@/lib/types/api";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,8 @@ interface VoiceRecordingCardProps {
 export function VoiceRecordingCard({ recording, onDelete }: VoiceRecordingCardProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const handleDelete = async () => {
     if (!confirm(`Delete "${recording.title}"?`)) return;
@@ -24,6 +26,75 @@ export function VoiceRecordingCard({ recording, onDelete }: VoiceRecordingCardPr
       setIsDeleting(false);
     }
   };
+
+  const togglePlayback = async () => {
+    if (isPlaying && audioRef.current) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+      return;
+    }
+
+    if (!audioRef.current) {
+      setIsLoading(true);
+      
+      // Get audio URL from backend (handles presigned URLs for private buckets)
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+      const token = (await import("@/lib/api-client")).getAccessToken();
+      
+      try {
+        // Backend will redirect to presigned URL for S3/MinIO
+        const response = await fetch(`${API_BASE}/recordings/${recording.id}/audio`, {
+          headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          credentials: "include",
+        });
+        
+        if (!response.ok) {
+          throw new Error("Failed to load audio");
+        }
+        
+        // Get the final URL (after redirect)
+        const audioUrl = response.url;
+        
+        const audio = new Audio(audioUrl);
+        audioRef.current = audio;
+        
+        audio.onended = () => {
+          setIsPlaying(false);
+        };
+        
+        audio.onerror = () => {
+          setIsPlaying(false);
+          setIsLoading(false);
+          alert("Failed to play audio");
+        };
+        
+        audio.oncanplay = () => {
+          setIsLoading(false);
+        };
+        
+        await audio.play();
+        setIsPlaying(true);
+      } catch (error) {
+        console.error("Audio playback error:", error);
+        setIsLoading(false);
+        alert("Failed to load audio");
+      }
+    } else {
+      audioRef.current.play();
+      setIsPlaying(true);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
 
   const formatDuration = (seconds: number | null) => {
     if (!seconds) return "Unknown";
@@ -60,19 +131,25 @@ export function VoiceRecordingCard({ recording, onDelete }: VoiceRecordingCardPr
         </button>
       </div>
 
-      <div className="flex items-center justify-between text-xs text-text-muted">
+      <div className="flex items-center justify-between text-xs text-text-muted mb-3">
         <span>{formatDate(recording.created_at)}</span>
         <span>{formatDuration(recording.duration_seconds)}</span>
       </div>
 
-      <div className="mt-3 flex items-center gap-2">
+      <div className="flex items-center gap-2">
         <Button
           variant="secondary"
           size="sm"
           className="flex-1"
-          onClick={() => setIsPlaying(!isPlaying)}
+          onClick={togglePlayback}
+          disabled={isLoading}
         >
-          {isPlaying ? (
+          {isLoading ? (
+            <>
+              <div className="mr-1 h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
+              Loading...
+            </>
+          ) : isPlaying ? (
             <>
               <Pause size={14} className="mr-1" />
               Pause

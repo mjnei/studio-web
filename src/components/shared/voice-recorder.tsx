@@ -366,82 +366,119 @@ export function VoiceRecorder({
   };
 
   return (
-    <div className="rounded-lg border border-border-default bg-surface-panel p-4">
+    <div className="mx-auto max-w-md rounded-2xl border border-border-default bg-gradient-to-b from-surface-panel to-surface-raised p-6 shadow-lg">
       {error && (
-        <div className="mb-3 flex items-start gap-2 rounded-md bg-red-500/10 px-3 py-2">
-          <X size={16} className="mt-0.5 shrink-0 text-red-400" />
+        <div className="mb-4 flex items-start gap-2 rounded-xl bg-red-500/10 px-4 py-3 border border-red-500/20">
+          <X size={18} className="mt-0.5 shrink-0 text-red-400" />
           <p className="text-sm text-red-300">{error}</p>
         </div>
       )}
 
       {state === "requesting" && (
-        <div className="flex flex-col items-center gap-3 py-4">
-          <div className="h-10 w-10 animate-spin rounded-full border-2 border-accent-cyan border-t-transparent" />
+        <div className="flex flex-col items-center gap-4 py-8">
+          <div className="relative">
+            <div className="h-16 w-16 animate-spin rounded-full border-4 border-accent-cyan/30 border-t-accent-cyan" />
+            <Mic className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-accent-cyan" size={28} />
+          </div>
           <p className="text-sm text-text-secondary">Requesting microphone access…</p>
         </div>
       )}
 
       {state === "idle" && (
-        <div className="flex flex-col items-center gap-3 py-2">
+        <div className="flex flex-col items-center gap-6 py-8">
+          <div className="flex flex-col items-center gap-4">
+            <div className="rounded-full bg-surface-raised p-6 shadow-inner">
+              <Mic size={48} className="text-text-muted" />
+            </div>
+            <div className="text-center">
+              <h3 className="text-lg font-semibold text-text-primary mb-1">Ready to Record</h3>
+              <p className="text-sm text-text-muted">Record 30–60s of clear speech</p>
+            </div>
+          </div>
           <button
             onClick={startRecording}
-            className="flex h-14 w-14 items-center justify-center rounded-full bg-red-500 text-white transition hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 focus:ring-offset-surface-panel"
+            className="group relative flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-red-500 to-red-600 shadow-xl transition-all hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-red-400/50 active:scale-95"
             title="Start recording"
           >
-            <Circle size={24} className="fill-current" />
+            <div className="absolute inset-0 rounded-full bg-red-400 opacity-0 group-hover:opacity-20 transition-opacity" />
+            <Circle size={32} className="fill-white text-white" />
           </button>
-          <p className="text-sm text-text-secondary">Click to record from your microphone</p>
-          <p className="text-xs text-text-muted">
-            30–60s recommended · max {formatTime(MAX_DURATION_S)}
+          <p className="text-xs text-center text-text-muted">
+            Maximum {Math.floor(MAX_DURATION_S / 60)}:{(MAX_DURATION_S % 60).toString().padStart(2, "0")}
           </p>
         </div>
       )}
 
       {state === "recording" && (
-        <div className="flex flex-col items-center gap-4 py-2">
-          <div className="flex items-center gap-3">
-            <span className="relative flex h-3 w-3">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75" />
-              <span className="relative inline-flex h-3 w-3 rounded-full bg-red-500" />
-            </span>
-            <span className="text-xl font-mono font-medium text-text-primary">
-              {formatTime(duration)}
-            </span>
-            <span className="text-xs text-text-muted">/ {formatTime(MAX_DURATION_S)}</span>
+        <div className="flex flex-col items-center gap-6 py-8">
+          <div className="flex flex-col items-center gap-4">
+            <div className="relative">
+              <div className="absolute inset-0 animate-ping rounded-full bg-red-400 opacity-30" />
+              <div className="relative rounded-full bg-gradient-to-br from-red-500 to-red-600 p-6 shadow-lg">
+                <Mic size={40} className="text-white" />
+              </div>
+            </div>
+            <div className="text-center">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <span className="relative flex h-3 w-3">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75" />
+                  <span className="relative inline-flex h-3 w-3 rounded-full bg-red-500" />
+                </span>
+                <span className="text-2xl font-mono font-bold text-text-primary tabular-nums">
+                  {formatTime(duration)}
+                </span>
+              </div>
+              <p className="text-xs text-text-muted">of {formatTime(MAX_DURATION_S)}</p>
+            </div>
           </div>
-          <div className="w-full max-w-sm">
-            <div className="h-1.5 rounded-full bg-surface-raised">
+          <div className="w-full max-w-xs">
+            <div className="h-2 rounded-full bg-surface-base overflow-hidden shadow-inner">
               <div
-                className="h-full rounded-full bg-red-500 transition-all"
+                className="h-full rounded-full bg-gradient-to-r from-red-500 to-red-600 transition-all shadow-sm"
                 style={{ width: `${Math.min((duration / MAX_DURATION_S) * 100, 100)}%` }}
               />
             </div>
           </div>
           <button
             onClick={stopRecording}
-            className="flex h-14 w-14 items-center justify-center rounded-full bg-surface-raised text-text-primary transition hover:bg-surface-hover focus:outline-none focus:ring-2 focus:ring-text-muted focus:ring-offset-2 focus:ring-offset-surface-panel"
+            className="flex h-20 w-20 items-center justify-center rounded-2xl bg-surface-raised shadow-xl transition-all hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-text-muted/30 active:scale-95"
             title="Stop recording"
           >
-            <Square size={24} className="fill-current" />
+            <Square size={36} className="fill-red-500 text-red-500" />
           </button>
-          <p className="text-sm text-text-secondary">Recording… click to stop</p>
+          <p className="text-sm text-text-secondary animate-pulse">Recording… tap to stop</p>
         </div>
       )}
 
       {state === "recorded" && (
-        <div className="flex flex-col gap-4 py-2">
+        <div className="flex flex-col gap-5 py-4">
           {maxReached && (
-            <p className="text-xs text-text-muted">
-              Maximum duration reached. Recording stopped automatically.
-            </p>
+            <div className="rounded-lg bg-amber-500/10 border border-amber-500/20 px-3 py-2">
+              <p className="text-xs text-amber-300">
+                Maximum duration reached. Recording stopped automatically.
+              </p>
+            </div>
           )}
-          <div className="flex items-center gap-3">
+          
+          <div className="flex flex-col items-center gap-3">
+            <div className="rounded-full bg-green-500/10 p-4">
+              <Check size={32} className="text-green-400" />
+            </div>
+            <div className="text-center">
+              <h3 className="text-lg font-semibold text-text-primary mb-1">Recording Complete!</h3>
+              <p className="text-sm text-text-muted">
+                {formatTime(duration)} • Tap play to listen
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 rounded-xl bg-surface-base p-3 shadow-inner">
             <button
               onClick={isPlaying ? pausePlayback : playRecording}
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent-cyan text-white transition hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-accent-cyan focus:ring-offset-2 focus:ring-offset-surface-panel"
+              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-accent-cyan to-blue-500 text-white shadow-lg transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent-cyan focus:ring-offset-2 focus:ring-offset-surface-base active:scale-95"
               title={isPlaying ? "Pause" : "Play"}
             >
-              {isPlaying ? <Pause size={18} /> : <Play size={18} />}
+              {isPlaying ? <Pause size={20} className="fill-current" /> : <Play size={20} className="ml-0.5 fill-current" />}
             </button>
             <button
               onClick={(e) => {
@@ -449,23 +486,39 @@ export function VoiceRecorder({
                 const x = e.clientX - rect.left;
                 seekPlayback(x / rect.width);
               }}
-              className="flex h-8 flex-1 cursor-pointer items-center rounded bg-surface-raised px-1"
+              className="relative flex h-10 flex-1 cursor-pointer items-center rounded-full bg-surface-raised px-2 overflow-hidden"
               title="Seek"
             >
               <div
-                className="h-5 rounded bg-accent-cyan/30 transition-all"
-                style={{ width: `${Math.max(playbackProgress * 100, 2)}%` }}
+                className="absolute left-0 top-0 h-full rounded-full bg-gradient-to-r from-accent-cyan to-blue-500 transition-all"
+                style={{ width: `${Math.max(playbackProgress * 100, 0)}%` }}
               />
+              <div className="relative flex items-center justify-end w-full pr-2">
+                <span className="text-xs font-mono text-text-muted tabular-nums">
+                  {formatTime(isPlaying || playbackProgress > 0 ? playbackTime : duration)}
+                </span>
+              </div>
             </button>
-            <span className="shrink-0 text-sm font-mono text-text-muted">
-              {formatTime(isPlaying || playbackProgress > 0 ? playbackTime : duration)}
-            </span>
           </div>
+          
           <div className="flex items-center gap-2">
-            <Button variant="secondary" size="sm" onClick={discardRecording} disabled={isSaving}>
-              Discard
+            <Button 
+              variant="secondary" 
+              size="md" 
+              onClick={discardRecording} 
+              disabled={isSaving}
+              className="flex-1"
+            >
+              <RotateCcw size={16} className="mr-2" />
+              Re-record
             </Button>
-            <Button variant="primary" size="sm" onClick={proceedToNaming} disabled={isSaving}>
+            <Button 
+              variant="primary" 
+              size="md" 
+              onClick={proceedToNaming} 
+              disabled={isSaving}
+              className="flex-1"
+            >
               Continue
             </Button>
           </div>
@@ -473,36 +526,80 @@ export function VoiceRecorder({
       )}
 
       {state === "naming" && (
-        <div className="flex flex-col gap-4 py-2">
-          <div>
-            <label htmlFor="voice-name" className="mb-2 block text-sm font-medium text-text-primary">
-              Name your voice
-            </label>
-            <input
-              id="voice-name"
-              type="text"
-              value={voiceName}
-              onChange={(e) => setVoiceName(e.target.value)}
-              placeholder="e.g., My Voice, Professional Narrator, etc."
-              className="w-full rounded-md border border-border-default bg-surface-raised px-3 py-2 text-text-primary placeholder-text-muted focus:border-accent-cyan focus:outline-none focus:ring-1 focus:ring-accent-cyan"
-              autoFocus
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !isSaving) {
-                  saveRecording();
-                }
-              }}
-              disabled={isSaving}
-            />
-            <p className="mt-1 text-xs text-text-muted">
-              Give your voice a memorable name. You can always change it later.
-            </p>
+        <div className="flex flex-col gap-5 py-4">
+          <div className="text-center">
+            <h3 className="text-lg font-semibold text-text-primary mb-1">Name Your Voice</h3>
+            <p className="text-sm text-text-muted">Choose a memorable name</p>
           </div>
+          
+          <div>
+            <div className="relative">
+              <input
+                id="voice-name"
+                type="text"
+                value={voiceName}
+                onChange={(e) => {
+                  setVoiceName(e.target.value);
+                  if (nameError) setNameError(false);
+                }}
+                placeholder="e.g., Professional Narrator"
+                className={`w-full rounded-xl border ${
+                  nameError ? "border-red-500 bg-red-500/5" : "border-border-default bg-surface-raised"
+                } px-4 py-3 text-text-primary placeholder-text-muted transition-colors focus:border-accent-cyan focus:outline-none focus:ring-2 focus:ring-accent-cyan/20`}
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !isSaving) {
+                    saveRecording();
+                  }
+                }}
+                disabled={isSaving}
+              />
+              {nameError && (
+                <p className="mt-2 text-xs text-red-400 flex items-center gap-1">
+                  <X size={12} />
+                  Voice name is required
+                </p>
+              )}
+            </div>
+            
+            <button
+              onClick={generateName}
+              disabled={isSaving}
+              className="mt-3 flex items-center gap-2 text-sm text-accent-cyan hover:text-accent-cyan/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Sparkles size={16} />
+              Generate random name
+            </button>
+          </div>
+          
           <div className="flex items-center gap-2">
-            <Button variant="secondary" size="sm" onClick={() => setState("recorded")} disabled={isSaving}>
+            <Button 
+              variant="secondary" 
+              size="md" 
+              onClick={() => setState("recorded")} 
+              disabled={isSaving}
+              className="flex-1"
+            >
               Back
             </Button>
-            <Button variant="primary" size="sm" onClick={saveRecording} disabled={isSaving} className="flex-1">
-              {isSaving ? "Saving..." : "Save voice"}
+            <Button 
+              variant="primary" 
+              size="md" 
+              onClick={saveRecording} 
+              disabled={isSaving}
+              className="flex-1"
+            >
+              {isSaving ? (
+                <>
+                  <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Check size={16} className="mr-2" />
+                  Save Voice
+                </>
+              )}
             </Button>
           </div>
         </div>
