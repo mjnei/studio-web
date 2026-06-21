@@ -72,7 +72,12 @@ export async function adminBulkImportMovies(
 // ============================================================================
 
 export async function adminGetVoices(): Promise<VoiceResponse[]> {
-  return request<VoiceResponse[]>("/voices");
+  // Get ALL voices (both available and unavailable) for admin view
+  // Pass is_available=false to bypass the availability filter in the backend
+  const response = await request<{ voices: VoiceResponse[]; total: number }>(
+    "/voices/search?is_available=false"
+  );
+  return response.voices;
 }
 
 export async function adminCreateVoice(data: VoiceCreateRequest): Promise<VoiceResponse> {

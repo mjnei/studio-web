@@ -85,6 +85,10 @@ const adminItems = [
 ];
 
 function isActive(pathname: string, href: string) {
+  // Exact match for /admin dashboard to avoid highlighting when on /admin/movies or /admin/voices
+  if (href === "/admin") {
+    return pathname === "/admin";
+  }
   return pathname === href || pathname.startsWith(href + "/");
 }
 
