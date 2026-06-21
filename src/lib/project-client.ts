@@ -236,6 +236,33 @@ export async function getVideoJob(jobId: string): Promise<VideoJobResponse> {
   return request<VideoJobResponse>(`/video/${jobId}?load_steps=true`);
 }
 
+export interface TTSPreviewResponse {
+  status: string;
+  voice_id: string;
+  voice_name: string;
+  voice_type: string;
+  provider: string;
+  text: string;
+  audio_url: string | null;
+  duration_seconds: number | null;
+  message?: string;
+}
+
+export async function generateTTSPreview(data: {
+  voiceId: string;
+  text: string;
+  voiceType: "stock" | "recording";
+}): Promise<TTSPreviewResponse> {
+  return request<TTSPreviewResponse>("/tts/preview", {
+    method: "POST",
+    body: JSON.stringify({
+      voice_id: data.voiceId,
+      text: data.text,
+      voice_type: data.voiceType,
+    }),
+  });
+}
+
 export function tmdbImageUrl(path?: string | null, size = "w500"): string | undefined {
   if (!path) return undefined;
   if (path.startsWith("http")) return path;
