@@ -80,11 +80,27 @@ export async function adminGetVoices(): Promise<VoiceResponse[]> {
   return response.voices;
 }
 
-export async function adminCreateVoice(data: VoiceCreateRequest): Promise<VoiceResponse> {
-  return request<VoiceResponse>("/admin/voices", {
+export async function adminCreateVoice(formData: FormData): Promise<VoiceResponse> {
+  // Get the access token
+  const accessToken = localStorage.getItem("access_token");
+  if (!accessToken) {
+    throw new Error("Not authenticated");
+  }
+
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/voices`, {
     method: "POST",
-    body: JSON.stringify(data),
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: formData,
   });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ detail: "Failed to create voice" }));
+    throw new Error(error.detail || "Failed to create voice");
+  }
+
+  return response.json();
 }
 
 export async function adminUpdateVoice(
@@ -119,5 +135,20 @@ export async function adminBulkImportVoices(
   return request<BulkImportResponse>("/admin/voices/bulk", {
     method: "POST",
     body: JSON.stringify(data),
+  });
+}
+
+// ============================================================================
+// Admin Voice Recording Management
+// ============================================================================
+
+export async function adminGetVoiceRecordings(): Promise<any[]> {
+  // Get all voice recordings from all users
+  return request<any[]>("/admin/voice-recordings");
+}
+
+export async function adminDeleteVoiceRecording(recordingId: string): Promise<void> {
+  return request<void>(`/admin/voice-recordings/${recordingId}`, {
+    method: "DELETE",
   });
 }

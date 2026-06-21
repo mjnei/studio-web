@@ -9,6 +9,8 @@ import {
   adminToggleVoiceAvailability,
   adminDeleteVoice,
   adminBulkImportVoices,
+  adminGetVoiceRecordings,
+  adminDeleteVoiceRecording,
 } from "@/lib/api/admin";
 import type { VoiceCreateRequest, VoiceResponse, VoiceUpdateRequest, VoiceRecordingResponse } from "@/lib/types/api";
 
@@ -66,13 +68,7 @@ export default function AdminVoicesPage() {
   const loadRecordings = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("/api/v1/voice-recordings", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-        },
-      });
-      if (!response.ok) throw new Error("Failed to load recordings");
-      const data = await response.json();
+      const data = await adminGetVoiceRecordings();
       setRecordings(data);
     } catch (error: any) {
       showToast("error", error.message || "Failed to load voice recordings");
@@ -94,19 +90,7 @@ export default function AdminVoicesPage() {
     setIsCreateOpen(false);
     try {
       const formData = new FormData(e.currentTarget);
-      const data: VoiceCreateRequest = {
-        id: formData.get("id") as string,
-        provider: formData.get("provider") as string,
-        name: formData.get("name") as string,
-        description: formData.get("description") as string,
-        gender: formData.get("gender") as string,
-        accent: formData.get("accent") as string,
-        language: formData.get("language") as string,
-        category: formData.get("category") as string,
-        preview_url: formData.get("preview_url") as string,
-        is_available: true,
-      };
-      await adminCreateVoice(data);
+      await adminCreateVoice(formData as any);
       showToast("success", "Voice created successfully");
       await loadVoices();
       e.currentTarget.reset();
@@ -183,13 +167,7 @@ export default function AdminVoicesPage() {
   const handleDeleteRecording = async (recordingId: string) => {
     if (!confirm("Delete this voice recording? This action cannot be undone.")) return;
     try {
-      const response = await fetch(`/api/v1/voice-recordings/${recordingId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-        },
-      });
-      if (!response.ok) throw new Error("Failed to delete recording");
+      await adminDeleteVoiceRecording(recordingId);
       showToast("success", "Voice recording deleted successfully");
       await loadRecordings();
     } catch (error: any) {
@@ -761,14 +739,15 @@ export default function AdminVoicesPage() {
               </div>
               <div>
                 <label className="mb-1 block text-sm font-medium text-text-secondary">
-                  Preview URL
+                  Preview Audio File
                 </label>
                 <input
-                  type="url"
-                  name="preview_url"
-                  placeholder="https://example.com/preview.mp3"
-                  className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 text-text-primary focus:border-accent-primary focus:outline-none"
+                  type="file"
+                  name="preview_file"
+                  accept="audio/*"
+                  className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 text-text-primary focus:border-accent-primary focus:outline-none file:mr-4 file:rounded-md file:border-0 file:bg-accent-primary/10 file:px-3 file:py-1 file:text-sm file:font-medium file:text-accent-primary hover:file:bg-accent-primary/20"
                 />
+                <p className="mt-1 text-xs text-text-muted">Optional: Upload a sample audio file for voice preview</p>
               </div>
               <div className="flex justify-end gap-3 pt-2">
                 <button
