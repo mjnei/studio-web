@@ -43,7 +43,7 @@ export default function AdminMoviesPage() {
     setIsLoading(true);
     try {
       const data = await adminGetMovies();
-      setMovies(data.movies);
+      setMovies(data);
     } catch (error: any) {
       showToast("error", error.message || "Failed to load movies");
     } finally {

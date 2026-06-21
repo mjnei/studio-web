@@ -69,17 +69,17 @@ const utilityItems = [
 const adminItems = [
   {
     href: "/admin",
-    label: "Admin Dashboard",
+    label: "Admin",
     icon: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
   },
   {
     href: "/admin/movies",
-    label: "Manage Movies",
+    label: "Movies",
     icon: "m22 8-6 4 6 4V8Zm-2 12H2a2 2 0 0 1-2-2V6c0-1.1.9-2 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2ZM10 10l5 2-5 2V10Z",
   },
   {
     href: "/admin/voices",
-    label: "Manage Voices",
+    label: "Voices",
     icon: "M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3zM5 10v2a7 7 0 0 0 14 0v-2M12 19v4M8 23h8",
   },
 ];

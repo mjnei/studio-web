@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Mic, Plus, Upload, Trash2, Edit2, Power, AlertCircle, CheckCircle2, Search, Loader } from "lucide-react";
+import { Mic, Plus, Upload, Trash2, Power, AlertCircle, CheckCircle2, Search, Loader, Edit2 } from "lucide-react";
 import {
   adminGetVoices,
   adminCreateVoice,
@@ -10,7 +10,7 @@ import {
   adminDeleteVoice,
   adminBulkImportVoices,
 } from "@/lib/api/admin";
-import type { VoiceResponse, VoiceCreateRequest, VoiceUpdateRequest } from "@/lib/types/api";
+import type { VoiceCreateRequest, VoiceResponse, VoiceUpdateRequest } from "@/lib/types/api";
 
 type Toast = {
   id: number;
@@ -21,15 +21,17 @@ type Toast = {
 type EditingVoice = {
   id: string;
   name: string;
+  description?: string;
   gender?: string;
   accent?: string;
-  description?: string;
+  language?: string;
+  category?: string;
 };
 
 export default function AdminVoicesPage() {
   const [voices, setVoices] = useState<VoiceResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isCreating, setIsCreating] = useState(false);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isBulkOpen, setIsBulkOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -44,7 +46,7 @@ export default function AdminVoicesPage() {
     setIsLoading(true);
     try {
       const data = await adminGetVoices();
-      setVoices(data.voices);
+      setVoices(data);
     } catch (error: any) {
       showToast("error", error.message || "Failed to load voices");
     } finally {
@@ -62,7 +64,7 @@ export default function AdminVoicesPage() {
 
   const handleCreateVoice = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsCreating(false);
+    setIsCreateOpen(false);
     try {
       const formData = new FormData(e.currentTarget);
       const data: VoiceCreateRequest = {
@@ -83,7 +85,38 @@ export default function AdminVoicesPage() {
       e.currentTarget.reset();
     } catch (error: any) {
       showToast("error", error.message || "Failed to create voice");
-      setIsCreating(true);
+      setIsCreateOpen(true);
+    }
+  };
+
+  const handleUpdateVoice = async () => {
+    if (!editingData) return;
+    try {
+      const updateData: VoiceUpdateRequest = {
+        name: editingData.name,
+        description: editingData.description,
+        gender: editingData.gender,
+        accent: editingData.accent,
+        language: editingData.language,
+        category: editingData.category,
+      };
+      await adminUpdateVoice(editingData.id, updateData);
+      showToast("success", "Voice updated successfully");
+      setEditingId(null);
+      setEditingData(null);
+      await loadVoices();
+    } catch (error: any) {
+      showToast("error", error.message || "Failed to update voice");
+    }
+  };
+
+  const handleToggleAvailability = async (voiceId: string, isAvailable: boolean) => {
+    try {
+      await adminToggleVoiceAvailability(voiceId, { is_available: !isAvailable });
+      showToast("success", `Voice ${!isAvailable ? "enabled" : "disabled"} successfully`);
+      await loadVoices();
+    } catch (error: any) {
+      showToast("error", error.message || "Failed to toggle voice availability");
     }
   };
 
@@ -98,35 +131,6 @@ export default function AdminVoicesPage() {
     }
   };
 
-  const handleToggleAvailability = async (voiceId: string, currentState: boolean) => {
-    try {
-      await adminToggleVoiceAvailability(voiceId, { is_available: !currentState });
-      showToast("success", `Voice ${!currentState ? "enabled" : "disabled"} successfully`);
-      await loadVoices();
-    } catch (error: any) {
-      showToast("error", error.message || "Failed to toggle availability");
-    }
-  };
-
-  const handleUpdateVoice = async () => {
-    if (!editingData) return;
-    try {
-      const updateData: VoiceUpdateRequest = {
-        name: editingData.name,
-        gender: editingData.gender,
-        accent: editingData.accent,
-        description: editingData.description,
-      };
-      await adminUpdateVoice(editingData.id, updateData);
-      showToast("success", "Voice updated successfully");
-      setEditingId(null);
-      setEditingData(null);
-      await loadVoices();
-    } catch (error: any) {
-      showToast("error", error.message || "Failed to update voice");
-    }
-  };
-
   const handleBulkImport = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -138,6 +142,9 @@ export default function AdminVoicesPage() {
         "success",
         `Bulk import completed: ${result.success_count} succeeded, ${result.failure_count} failed`
       );
+      if (result.errors.length > 0) {
+        console.error("Bulk import errors:", result.errors);
+      }
       setIsBulkOpen(false);
       e.currentTarget.reset();
       await loadVoices();
@@ -180,11 +187,11 @@ export default function AdminVoicesPage() {
             <Mic className="h-8 w-8 text-accent-primary" />
             <h1 className="text-3xl font-bold text-text-primary">Manage Voices</h1>
           </div>
-          <p className="text-text-secondary">Browse, create, edit, and delete voices</p>
+          <p className="text-text-secondary">Create, update, and manage voices in the catalog</p>
         </div>
         <div className="flex gap-3">
           <button
-            onClick={() => setIsCreating(true)}
+            onClick={() => setIsCreateOpen(true)}
             className="flex items-center gap-2 rounded-lg bg-accent-primary px-4 py-2 text-sm font-medium text-white hover:bg-accent-primary/90 transition-all"
           >
             <Plus className="h-4 w-4" />
@@ -228,11 +235,11 @@ export default function AdminVoicesPage() {
         <div className="space-y-2 rounded-2xl border border-border-default bg-surface-panel overflow-hidden">
           {/* Table Header */}
           <div className="grid grid-cols-12 gap-4 border-b border-border-default bg-surface-raised/50 px-6 py-3 text-sm font-semibold text-text-secondary">
-            <div className="col-span-2">Name</div>
+            <div className="col-span-3">Name</div>
+            <div className="col-span-2">Provider</div>
             <div className="col-span-2">Gender</div>
-            <div className="col-span-2">Accent</div>
             <div className="col-span-1">Status</div>
-            <div className="col-span-5">Actions</div>
+            <div className="col-span-4">Actions</div>
           </div>
 
           {/* Table Rows */}
@@ -244,26 +251,23 @@ export default function AdminVoicesPage() {
                     type="text"
                     value={editingData.name}
                     onChange={(e) => setEditingData({ ...editingData, name: e.target.value })}
-                    className="col-span-2 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
+                    className="col-span-3 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
                   />
-                  <select
+                  <div className="col-span-2 flex items-center text-sm text-text-secondary">
+                    {voice.provider}
+                  </div>
+                  <input
+                    type="text"
                     value={editingData.gender || ""}
                     onChange={(e) => setEditingData({ ...editingData, gender: e.target.value })}
                     className="col-span-2 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
-                  >
-                    <option value="">Select...</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="neutral">Neutral</option>
-                  </select>
-                  <input
-                    type="text"
-                    value={editingData.accent || ""}
-                    onChange={(e) => setEditingData({ ...editingData, accent: e.target.value })}
-                    className="col-span-2 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
                   />
-                  <div className="col-span-1"></div>
-                  <div className="col-span-5 flex items-center gap-2">
+                  <div className="col-span-1 flex items-center">
+                    <span className={`text-xs font-medium ${voice.is_available ? "text-green-600" : "text-red-600"}`}>
+                      {voice.is_available ? "Active" : "Disabled"}
+                    </span>
+                  </div>
+                  <div className="col-span-4 flex items-center gap-2">
                     <button
                       onClick={handleUpdateVoice}
                       className="rounded-lg bg-green-600 px-3 py-2 text-sm font-medium text-white hover:bg-green-700"
@@ -283,31 +287,41 @@ export default function AdminVoicesPage() {
                 </div>
               ) : (
                 <div className="grid grid-cols-12 gap-4 px-6 py-4 items-center">
-                  <div className="col-span-2">
+                  <div className="col-span-3">
                     <p className="text-sm font-medium text-text-primary">{voice.name}</p>
                   </div>
                   <div className="col-span-2">
-                    <p className="text-sm text-text-secondary capitalize">{voice.gender || "N/A"}</p>
+                    <p className="text-sm text-text-secondary">{voice.provider}</p>
                   </div>
                   <div className="col-span-2">
-                    <p className="text-sm text-text-secondary uppercase">{voice.accent || "N/A"}</p>
+                    <p className="text-sm text-text-secondary">{voice.gender || "N/A"}</p>
                   </div>
                   <div className="col-span-1">
-                    <span
-                      className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                        voice.is_available
-                          ? "bg-green-100/50 text-green-700"
-                          : "bg-gray-100/50 text-gray-600"
-                      }`}
-                    >
-                      {voice.is_available ? "Available" : "Unavailable"}
+                    <span className={`text-xs font-medium ${voice.is_available ? "text-green-600" : "text-red-600"}`}>
+                      {voice.is_available ? "Active" : "Disabled"}
                     </span>
                   </div>
-                  <div className="col-span-5 flex items-center gap-2">
+                  <div className="col-span-4 flex items-center gap-2">
                     <button
-                      onClick={() =>
-                        handleToggleAvailability(voice.id, voice.is_available)
-                      }
+                      onClick={() => {
+                        setEditingId(voice.id);
+                        setEditingData({
+                          id: voice.id,
+                          name: voice.name,
+                          description: undefined,
+                          gender: voice.gender || undefined,
+                          accent: voice.accent || undefined,
+                          language: undefined,
+                          category: voice.category || undefined,
+                        });
+                      }}
+                      className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm font-medium text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all"
+                    >
+                      <Edit2 className="h-4 w-4" />
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleToggleAvailability(voice.id, voice.is_available)}
                       className={`flex items-center gap-1 rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
                         voice.is_available
                           ? "border-yellow-500/50 bg-yellow-500/10 text-yellow-600 hover:bg-yellow-500/20"
@@ -316,22 +330,6 @@ export default function AdminVoicesPage() {
                     >
                       <Power className="h-4 w-4" />
                       {voice.is_available ? "Disable" : "Enable"}
-                    </button>
-                    <button
-                      onClick={() => {
-                        setEditingId(voice.id);
-                        setEditingData({
-                          id: voice.id,
-                          name: voice.name,
-                          gender: voice.gender,
-                          accent: voice.accent,
-                          description: "",
-                        });
-                      }}
-                      className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm font-medium text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all"
-                    >
-                      <Edit2 className="h-4 w-4" />
-                      Edit
                     </button>
                     <button
                       onClick={() => handleDeleteVoice(voice.id)}
@@ -349,7 +347,7 @@ export default function AdminVoicesPage() {
       )}
 
       {/* Create Voice Modal */}
-      {isCreating && (
+      {isCreateOpen && (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/60 p-4">
           <div className="w-full max-w-2xl rounded-2xl border border-border-default bg-surface-panel p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
             <h2 className="mb-4 text-xl font-semibold text-text-primary">Create Voice</h2>
@@ -468,7 +466,7 @@ export default function AdminVoicesPage() {
               <div className="flex justify-end gap-3 pt-2">
                 <button
                   type="button"
-                  onClick={() => setIsCreating(false)}
+                  onClick={() => setIsCreateOpen(false)}
                   className="rounded-lg border border-border-default px-4 py-2 text-sm font-medium text-text-secondary hover:bg-surface-hover"
                 >
                   Cancel
@@ -498,7 +496,7 @@ export default function AdminVoicesPage() {
                 <textarea
                   name="json"
                   required
-                  rows={12}
+                  rows={15}
                   placeholder='[{"id": "voice_123", "provider": "elevenlabs", "name": "Rachel", "gender": "female", "language": "en"}]'
                   className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 font-mono text-sm text-text-primary focus:border-accent-primary focus:outline-none"
                 />

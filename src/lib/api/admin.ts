@@ -15,8 +15,24 @@ import type {
 // Admin Movie Management
 // ============================================================================
 
-export async function adminGetMovies(): Promise<{ movies: MovieResponse[]; total: number }> {
-  return request<{ movies: MovieResponse[]; total: number }>("/movies");
+export async function adminGetMovies(): Promise<MovieResponse[]> {
+  // Fetch all movies by paginating through the results (max page_size is 100)
+  const allMovies: MovieResponse[] = [];
+  let page = 1;
+  let hasMore = true;
+  
+  while (hasMore) {
+    const response = await request<{ movies: MovieResponse[]; total: number }>(
+      `/movies/search?page=${page}&page_size=100`
+    );
+    allMovies.push(...response.movies);
+    
+    // Check if there are more pages
+    hasMore = allMovies.length < response.total;
+    page++;
+  }
+  
+  return allMovies;
 }
 
 export async function adminCreateMovie(data: MovieCreateRequest): Promise<MovieResponse> {
@@ -55,8 +71,8 @@ export async function adminBulkImportMovies(
 // Admin Voice Management
 // ============================================================================
 
-export async function adminGetVoices(): Promise<{ voices: VoiceResponse[]; total: number }> {
-  return request<{ voices: VoiceResponse[]; total: number }>("/voices");
+export async function adminGetVoices(): Promise<VoiceResponse[]> {
+  return request<VoiceResponse[]>("/voices");
 }
 
 export async function adminCreateVoice(data: VoiceCreateRequest): Promise<VoiceResponse> {
