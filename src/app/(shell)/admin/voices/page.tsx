@@ -87,6 +87,26 @@ export default function AdminVoicesPage() {
     }
   };
 
+  const playStockVoiceAudio = async (previewUrl: string) => {
+    try {
+      // Clean up previous audio if exists
+      if (audioObjectUrlRef.current) {
+        URL.revokeObjectURL(audioObjectUrlRef.current);
+        audioObjectUrlRef.current = null;
+      }
+      
+      const audio = new Audio(previewUrl);
+      audio.onerror = () => {
+        showToast("error", "Failed to play audio preview");
+      };
+      
+      await audio.play();
+    } catch (error) {
+      console.error("Audio playback error:", error);
+      showToast("error", "Failed to play audio preview");
+    }
+  };
+
   useEffect(() => {
     return () => {
       if (audioObjectUrlRef.current) {
@@ -97,6 +117,12 @@ export default function AdminVoicesPage() {
 
   const [deleteVoiceModal, setDeleteVoiceModal] = useState<{ open: boolean; voiceId: string | null }>({ open: false, voiceId: null });
   const [deleteRecordingModal, setDeleteRecordingModal] = useState<{ open: boolean; recordingId: string | null }>({ open: false, recordingId: null });
+  const [toggleAvailabilityModal, setToggleAvailabilityModal] = useState<{ 
+    open: boolean; 
+    voiceId: string | null; 
+    voiceName: string | null;
+    currentStatus: boolean;
+  }>({ open: false, voiceId: null, voiceName: null, currentStatus: false });
 
   useEffect(() => {
     if (viewType === "stock") {
@@ -140,9 +166,32 @@ export default function AdminVoicesPage() {
 
   const handleCreateVoice = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    const formData = new FormData(e.currentTarget);
+    const previewFile = formData.get("preview_file") as File;
+    
+    // Validate preview file is provided
+    if (!previewFile || previewFile.size === 0) {
+      showToast("error", "Preview audio file is required");
+      return;
+    }
+    
+    // Validate file format
+    const validAudioTypes = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg', 'audio/webm', 'audio/m4a', 'audio/aac'];
+    if (!validAudioTypes.includes(previewFile.type)) {
+      showToast("error", "Invalid audio format. Please upload MP3, WAV, OGG, WEBM, M4A, or AAC file");
+      return;
+    }
+    
+    // Validate file size (max 10MB)
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (previewFile.size > maxSize) {
+      showToast("error", "Audio file too large. Maximum size is 10MB");
+      return;
+    }
+    
     setIsCreateOpen(false);
     try {
-      const formData = new FormData(e.currentTarget);
       await adminCreateVoice(formData as any);
       showToast("success", "Voice created successfully");
       await loadVoices();
@@ -174,11 +223,23 @@ export default function AdminVoicesPage() {
     }
   };
 
-  const handleToggleAvailability = async (voiceId: string, isAvailable: boolean) => {
+  const handleToggleAvailability = async (voiceId: string, voiceName: string, isAvailable: boolean) => {
+    setToggleAvailabilityModal({ 
+      open: true, 
+      voiceId, 
+      voiceName,
+      currentStatus: isAvailable 
+    });
+  };
+
+  const handleConfirmToggleAvailability = async () => {
+    if (!toggleAvailabilityModal.voiceId) return;
     try {
-      await adminToggleVoiceAvailability(voiceId, { is_available: !isAvailable });
-      showToast("success", `Voice ${!isAvailable ? "enabled" : "disabled"} successfully`);
+      const newStatus = !toggleAvailabilityModal.currentStatus;
+      await adminToggleVoiceAvailability(toggleAvailabilityModal.voiceId, { is_available: newStatus });
+      showToast("success", `Voice ${newStatus ? "enabled" : "disabled"} successfully`);
       await loadVoices();
+      setToggleAvailabilityModal({ open: false, voiceId: null, voiceName: null, currentStatus: false });
     } catch (error: any) {
       showToast("error", error.message || "Failed to toggle voice availability");
     }
@@ -243,8 +304,8 @@ export default function AdminVoicesPage() {
       v.description?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesProvider = filterProvider === "all" || v.provider === filterProvider;
     const matchesAvailability = filterAvailability === "all" || 
-      (filterAvailability === "active" && v.is_available) ||
-      (filterAvailability === "disabled" && !v.is_available);
+      (filterAvailability === "active" && v.is_available === true) ||
+      (filterAvailability === "disabled" && v.is_available === false);
     const matchesGender = filterGender === "all" || v.gender === filterGender;
     return matchesSearch && matchesProvider && matchesAvailability && matchesGender;
   });
@@ -571,17 +632,17 @@ export default function AdminVoicesPage() {
                     </span>
                   </div>
                   <div className="col-span-4 flex items-center gap-2">
-                    {voice.preview_url && (
+                    {voice.preview_url ? (
                       <button
-                        onClick={() => {
-                          const audio = new Audio(voice.preview_url!);
-                          audio.play();
-                        }}
+                        onClick={() => playStockVoiceAudio(voice.preview_url!)}
                         className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm font-medium text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all"
                         title="Play preview"
                       >
                         <Mic className="h-4 w-4" />
+                        Play
                       </button>
+                    ) : (
+                      <span className="text-xs text-text-muted italic">No preview</span>
                     )}
                     <button
                       onClick={() => {
@@ -602,12 +663,13 @@ export default function AdminVoicesPage() {
                       Edit
                     </button>
                     <button
-                      onClick={() => handleToggleAvailability(voice.id, voice.is_available)}
+                      onClick={() => handleToggleAvailability(voice.id, voice.name, voice.is_available)}
                       className={`flex items-center gap-1 rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
                         voice.is_available
                           ? "border-yellow-500/50 bg-yellow-500/10 text-yellow-600 hover:bg-yellow-500/20"
                           : "border-green-500/50 bg-green-500/10 text-green-600 hover:bg-green-500/20"
                       }`}
+                      title={voice.is_available ? "Disable voice" : "Enable voice"}
                     >
                       <Power className="h-4 w-4" />
                     </button>
@@ -799,15 +861,18 @@ export default function AdminVoicesPage() {
               </div>
               <div>
                 <label className="mb-1 block text-sm font-medium text-text-secondary">
-                  Preview Audio File
+                  Preview Audio File *
                 </label>
                 <input
                   type="file"
                   name="preview_file"
-                  accept="audio/*"
+                  required
+                  accept="audio/mpeg,audio/mp3,audio/wav,audio/ogg,audio/webm,audio/m4a,audio/aac"
                   className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 text-text-primary focus:border-accent-primary focus:outline-none file:mr-4 file:rounded-md file:border-0 file:bg-accent-primary/10 file:px-3 file:py-1 file:text-sm file:font-medium file:text-accent-primary hover:file:bg-accent-primary/20"
                 />
-                <p className="mt-1 text-xs text-text-muted">Optional: Upload a sample audio file for voice preview</p>
+                <p className="mt-1 text-xs text-text-muted">
+                  Required: Upload a sample audio file (MP3, WAV, OGG, WEBM, M4A, AAC). Max 10MB
+                </p>
               </div>
               <div className="flex justify-end gap-3 pt-2">
                 <button
@@ -889,6 +954,22 @@ export default function AdminVoicesPage() {
         confirmText="Delete"
         cancelText="Cancel"
         variant="danger"
+      />
+
+      {/* Toggle Availability Confirmation Modal */}
+      <ConfirmModal
+        open={toggleAvailabilityModal.open}
+        onClose={() => setToggleAvailabilityModal({ open: false, voiceId: null, voiceName: null, currentStatus: false })}
+        onConfirm={handleConfirmToggleAvailability}
+        title={toggleAvailabilityModal.currentStatus ? "Disable Voice" : "Enable Voice"}
+        description={
+          toggleAvailabilityModal.currentStatus
+            ? `Are you sure you want to disable "${toggleAvailabilityModal.voiceName}"? Users will no longer be able to select this voice.`
+            : `Are you sure you want to enable "${toggleAvailabilityModal.voiceName}"? This voice will become available for users to select.`
+        }
+        confirmText={toggleAvailabilityModal.currentStatus ? "Disable" : "Enable"}
+        cancelText="Cancel"
+        variant={toggleAvailabilityModal.currentStatus ? "danger" : "success"}
       />
     </div>
   );

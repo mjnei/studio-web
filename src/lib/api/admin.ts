@@ -1,4 +1,4 @@
-import { request } from "@/lib/api-client";
+import { request, getAccessToken } from "@/lib/api-client";
 import type {
   MovieCreateRequest,
   MovieUpdateRequest,
@@ -73,25 +73,24 @@ export async function adminBulkImportMovies(
 
 export async function adminGetVoices(): Promise<VoiceResponse[]> {
   // Get ALL voices (both available and unavailable) for admin view
-  // Pass is_available as null to bypass the availability filter in the backend
-  const response = await request<{ voices: VoiceResponse[]; total: number }>(
-    "/voices/search"
-  );
-  return response.voices;
+  // Use dedicated admin endpoint that returns all voices
+  return request<VoiceResponse[]>("/admin/voices");
 }
 
 export async function adminCreateVoice(formData: FormData): Promise<VoiceResponse> {
-  // Get the access token
-  const accessToken = localStorage.getItem("access_token");
-  if (!accessToken) {
+  // Get the access token from the in-memory store
+  const token = getAccessToken();
+  if (!token) {
     throw new Error("Not authenticated");
   }
 
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/admin/voices`, {
+  const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020/api/v1";
+  const response = await fetch(`${apiBase}/admin/voices`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${token}`,
     },
+    credentials: "include",
     body: formData,
   });
 
