@@ -701,12 +701,10 @@ export default function AdminVoicesPage() {
         ) : (
         <div className="space-y-2 rounded-2xl border border-border-default bg-surface-panel overflow-hidden">
           {/* Table Header */}
-          <div className="grid grid-cols-12 gap-4 border-b border-border-default bg-surface-raised/50 px-6 py-3 text-sm font-semibold text-text-secondary">
-            <div className="col-span-3">Name</div>
+          <div className="hidden lg:grid lg:grid-cols-12 gap-4 border-b border-border-default bg-surface-raised/50 px-6 py-3 text-sm font-semibold text-text-secondary">
+            <div className="col-span-4">Voice Name</div>
             <div className="col-span-2">Provider</div>
-            <div className="col-span-1">Gender</div>
-            <div className="col-span-1">Language</div>
-            <div className="col-span-1">Status</div>
+            <div className="col-span-2">Details</div>
             <div className="col-span-4">Actions</div>
           </div>
 
@@ -714,78 +712,165 @@ export default function AdminVoicesPage() {
           {filteredVoices.map((voice) => (
             <div key={voice.id} className="border-b border-border-default last:border-0 hover:bg-surface-raised/50 transition-colors">
               {editingId === voice.id && editingData ? (
-                <div className="grid grid-cols-12 gap-4 px-6 py-4 items-center">
-                  <input
-                    type="text"
-                    value={editingData.name}
-                    onChange={(e) => setEditingData({ ...editingData, name: e.target.value })}
-                    className="col-span-3 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
-                  />
-                  <div className="col-span-2 flex items-center text-sm text-text-secondary">
-                    {voice.provider}
+                /* Edit Mode */
+                <div className="px-6 py-4 space-y-4">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-medium text-text-muted mb-1">Voice Name *</label>
+                      <input
+                        type="text"
+                        value={editingData.name}
+                        onChange={(e) => setEditingData({ ...editingData, name: e.target.value })}
+                        className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-text-muted mb-1">Provider</label>
+                      <input
+                        type="text"
+                        value={voice.provider}
+                        disabled
+                        className="w-full rounded-lg border border-border-default bg-surface-raised px-3 py-2 text-sm text-text-muted cursor-not-allowed"
+                      />
+                    </div>
                   </div>
-                  <input
-                    type="text"
-                    value={editingData.gender || ""}
-                    onChange={(e) => setEditingData({ ...editingData, gender: e.target.value })}
-                    className="col-span-1 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
-                  />
-                  <input
-                    type="text"
-                    value={editingData.language || ""}
-                    onChange={(e) => setEditingData({ ...editingData, language: e.target.value })}
-                    className="col-span-1 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
-                  />
-                  <div className="col-span-1 flex items-center">
-                    <span className={`text-xs font-medium ${voice.is_available ? "text-green-600" : "text-red-600"}`}>
-                      {voice.is_available ? "Active" : "Disabled"}
-                    </span>
+                  <div>
+                    <label className="block text-xs font-medium text-text-muted mb-1">Description</label>
+                    <textarea
+                      value={editingData.description || ""}
+                      onChange={(e) => setEditingData({ ...editingData, description: e.target.value })}
+                      className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
+                      rows={2}
+                    />
                   </div>
-                  <div className="col-span-4 flex items-center gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div>
+                      <label className="block text-xs font-medium text-text-muted mb-1">Gender</label>
+                      <select
+                        value={editingData.gender || ""}
+                        onChange={(e) => setEditingData({ ...editingData, gender: e.target.value })}
+                        className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
+                      >
+                        <option value="">Select...</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="neutral">Neutral</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-text-muted mb-1">Accent</label>
+                      <select
+                        value={editingData.accent || ""}
+                        onChange={(e) => setEditingData({ ...editingData, accent: e.target.value })}
+                        className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
+                      >
+                        <option value="">Select...</option>
+                        <option value="american">American</option>
+                        <option value="british">British</option>
+                        <option value="australian">Australian</option>
+                        <option value="indian">Indian</option>
+                        <option value="neutral">Neutral</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-text-muted mb-1">Language</label>
+                      <select
+                        value={editingData.language || ""}
+                        onChange={(e) => setEditingData({ ...editingData, language: e.target.value })}
+                        className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
+                      >
+                        <option value="">Select...</option>
+                        <option value="en">English (en)</option>
+                        <option value="es">Spanish (es)</option>
+                        <option value="fr">French (fr)</option>
+                        <option value="de">German (de)</option>
+                        <option value="it">Italian (it)</option>
+                        <option value="pt">Portuguese (pt)</option>
+                        <option value="zh">Chinese (zh)</option>
+                        <option value="ja">Japanese (ja)</option>
+                        <option value="ko">Korean (ko)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-text-muted mb-1">Category</label>
+                      <select
+                        value={editingData.category || ""}
+                        onChange={(e) => setEditingData({ ...editingData, category: e.target.value })}
+                        className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
+                      >
+                        <option value="">Select...</option>
+                        <option value="narration">Narration</option>
+                        <option value="conversational">Conversational</option>
+                        <option value="professional">Professional</option>
+                        <option value="casual">Casual</option>
+                        <option value="storytelling">Storytelling</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 pt-2">
                     <button
                       onClick={handleUpdateVoice}
-                      className="rounded-lg bg-green-600 px-3 py-2 text-sm font-medium text-white hover:bg-green-700"
+                      className="flex items-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 transition-all"
                     >
-                      Save
+                      <CheckCircle2 className="h-4 w-4" />
+                      Save Changes
                     </button>
                     <button
                       onClick={() => {
                         setEditingId(null);
                         setEditingData(null);
                       }}
-                      className="rounded-lg border border-border-default px-3 py-2 text-sm font-medium text-text-secondary hover:bg-surface-hover"
+                      className="rounded-lg border-2 border-border-default px-4 py-2 text-sm font-semibold text-text-secondary hover:bg-surface-hover transition-all"
                     >
                       Cancel
                     </button>
                   </div>
                 </div>
               ) : (
-                <div className="grid grid-cols-12 gap-4 px-6 py-4 items-center">
-                  <div className="col-span-3">
-                    <p className="text-sm font-medium text-text-primary">{voice.name}</p>
-                    {voice.description && (
-                      <p className="mt-0.5 text-xs text-text-muted line-clamp-1">{voice.description}</p>
-                    )}
+                /* Browse Mode */
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 px-6 py-4 items-center">
+                  <div className="col-span-1 lg:col-span-4">
+                    <div className="flex items-start gap-2">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <p className="text-sm font-semibold text-text-primary">{voice.name}</p>
+                          <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-bold ${
+                            voice.is_available 
+                              ? "bg-green-500/10 text-green-600 border border-green-500/30" 
+                              : "bg-red-500/10 text-red-600 border border-red-500/30"
+                          }`}>
+                            {voice.is_available ? "Active" : "Disabled"}
+                          </span>
+                        </div>
+                        {voice.description && (
+                          <p className="mt-1 text-xs text-text-muted line-clamp-2">{voice.description}</p>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <div className="col-span-2">
+                  <div className="col-span-1 lg:col-span-2">
                     <p className="text-sm text-text-secondary capitalize">{voice.provider}</p>
                   </div>
-                  <div className="col-span-1">
-                    <p className="text-sm text-text-secondary capitalize">{voice.gender || "N/A"}</p>
+                  <div className="col-span-1 lg:col-span-2">
+                    <div className="flex flex-wrap gap-1 text-xs">
+                      {voice.gender && (
+                        <span className="inline-flex items-center rounded-md bg-blue-500/10 px-2 py-1 text-blue-600 capitalize">
+                          {voice.gender}
+                        </span>
+                      )}
+                      {voice.language && (
+                        <span className="inline-flex items-center rounded-md bg-purple-500/10 px-2 py-1 text-purple-600 uppercase">
+                          {voice.language}
+                        </span>
+                      )}
+                      {voice.accent && (
+                        <span className="inline-flex items-center rounded-md bg-orange-500/10 px-2 py-1 text-orange-600 capitalize">
+                          {voice.accent}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  <div className="col-span-1">
-                    <p className="text-sm text-text-secondary uppercase">{voice.language || "N/A"}</p>
-                  </div>
-                  <div className="col-span-1">
-                    <span className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
-                      voice.is_available 
-                        ? "bg-green-500/10 text-green-600" 
-                        : "bg-red-500/10 text-red-600"
-                    }`}>
-                      {voice.is_available ? "Active" : "Disabled"}
-                    </span>
-                  </div>
-                  <div className="col-span-4 flex items-center gap-2">
+                  <div className="col-span-1 lg:col-span-4 flex flex-wrap items-center gap-2">
                     {voice.preview_url ? (
                       <button
                         onClick={() => {
@@ -795,7 +880,7 @@ export default function AdminVoicesPage() {
                             playStockVoiceAudio(voice.id, voice.preview_url!);
                           }
                         }}
-                        className={`group relative flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-all shadow-sm ${
+                        className={`group relative flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition-all shadow-sm ${
                           playingVoiceId === voice.id
                             ? "bg-gradient-to-r from-accent-primary to-purple-600 text-white shadow-accent-primary/30"
                             : "border-2 border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:text-accent-primary hover:bg-accent-primary/5"
@@ -805,18 +890,17 @@ export default function AdminVoicesPage() {
                         {playingVoiceId === voice.id ? (
                           <>
                             <Pause className="h-4 w-4" />
-                            <span>Stop</span>
                             <Volume2 className="h-4 w-4 animate-pulse" />
                           </>
                         ) : (
                           <>
                             <Play className="h-4 w-4" />
-                            <span>Preview</span>
+                            <span className="hidden sm:inline">Preview</span>
                           </>
                         )}
                       </button>
                     ) : (
-                      <span className="px-4 py-2 text-xs text-text-muted italic">No preview available</span>
+                      <span className="px-3 py-2 text-xs text-text-muted italic">No preview</span>
                     )}
                     <button
                       onClick={() => {
@@ -832,9 +916,10 @@ export default function AdminVoicesPage() {
                         });
                       }}
                       className="flex items-center gap-1.5 rounded-lg border-2 border-border-default bg-surface-base px-3 py-2 text-sm font-medium text-text-secondary hover:border-blue-500 hover:bg-blue-500/10 hover:text-blue-600 transition-all"
+                      title="Edit voice"
                     >
                       <Edit2 className="h-4 w-4" />
-                      <span>Edit</span>
+                      <span className="hidden sm:inline">Edit</span>
                     </button>
                     <button
                       onClick={() => handleToggleAvailability(voice.id, voice.name, voice.is_available)}
@@ -850,6 +935,7 @@ export default function AdminVoicesPage() {
                     <button
                       onClick={() => handleDeleteVoice(voice.id)}
                       className="flex items-center gap-1.5 rounded-lg border-2 border-red-500/50 bg-red-500/10 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-500/20 transition-all"
+                      title="Delete voice"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
@@ -869,10 +955,9 @@ export default function AdminVoicesPage() {
         ) : (
           <div className="space-y-2 rounded-2xl border border-border-default bg-surface-panel overflow-hidden">
             {/* Table Header */}
-            <div className="grid grid-cols-12 gap-4 border-b border-border-default bg-surface-raised/50 px-6 py-3 text-sm font-semibold text-text-secondary">
-              <div className="col-span-3">Title</div>
-              <div className="col-span-2">User ID</div>
-              <div className="col-span-2">Duration</div>
+            <div className="hidden lg:grid lg:grid-cols-12 gap-4 border-b border-border-default bg-surface-raised/50 px-6 py-3 text-sm font-semibold text-text-secondary">
+              <div className="col-span-4">Title</div>
+              <div className="col-span-3">User ID</div>
               <div className="col-span-2">Created</div>
               <div className="col-span-3">Actions</div>
             </div>
@@ -880,30 +965,27 @@ export default function AdminVoicesPage() {
             {/* Table Rows */}
             {filteredRecordings.map((recording) => (
               <div key={recording.id} className="border-b border-border-default last:border-0 hover:bg-surface-raised/50 transition-colors">
-                <div className="grid grid-cols-12 gap-4 px-6 py-4 items-center">
-                  <div className="col-span-3">
-                    <p className="text-sm font-medium text-text-primary">{recording.title}</p>
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 px-6 py-4 items-center">
+                  <div className="col-span-1 lg:col-span-4">
+                    <p className="text-sm font-semibold text-text-primary">{recording.title}</p>
                     {recording.description && (
-                      <p className="mt-0.5 text-xs text-text-muted line-clamp-1">{recording.description}</p>
+                      <p className="mt-1 text-xs text-text-muted line-clamp-2">{recording.description}</p>
+                    )}
+                    {recording.duration_seconds && (
+                      <p className="mt-1 text-xs text-text-secondary">
+                        Duration: {Math.floor(recording.duration_seconds / 60)}:{String(Math.floor(recording.duration_seconds % 60)).padStart(2, '0')}
+                      </p>
                     )}
                   </div>
-                  <div className="col-span-2">
-                    <p className="text-sm text-text-secondary font-mono text-xs">{recording.user_id.substring(0, 8)}...</p>
+                  <div className="col-span-1 lg:col-span-3">
+                    <p className="text-sm text-text-secondary font-mono text-xs break-all">{recording.user_id}</p>
                   </div>
-                  <div className="col-span-2">
-                    <p className="text-sm text-text-secondary">
-                      {recording.duration_seconds 
-                        ? `${Math.floor(recording.duration_seconds / 60)}:${String(Math.floor(recording.duration_seconds % 60)).padStart(2, '0')}`
-                        : "N/A"
-                      }
-                    </p>
-                  </div>
-                  <div className="col-span-2">
+                  <div className="col-span-1 lg:col-span-2">
                     <p className="text-sm text-text-secondary">
                       {new Date(recording.created_at).toLocaleDateString()}
                     </p>
                   </div>
-                  <div className="col-span-3 flex items-center gap-2">
+                  <div className="col-span-1 lg:col-span-3 flex flex-wrap items-center gap-2">
                     <button
                       onClick={() => {
                         if (playingVoiceId === recording.id) {
@@ -912,7 +994,7 @@ export default function AdminVoicesPage() {
                           playRecordingAudio(recording.id);
                         }
                       }}
-                      className={`group relative flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-all shadow-sm ${
+                      className={`group relative flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition-all shadow-sm ${
                         playingVoiceId === recording.id
                           ? "bg-gradient-to-r from-accent-primary to-purple-600 text-white shadow-accent-primary/30"
                           : "border-2 border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:text-accent-primary hover:bg-accent-primary/5"
@@ -922,22 +1004,22 @@ export default function AdminVoicesPage() {
                       {playingVoiceId === recording.id ? (
                         <>
                           <Pause className="h-4 w-4" />
-                          <span>Stop</span>
                           <Volume2 className="h-4 w-4 animate-pulse" />
                         </>
                       ) : (
                         <>
                           <Play className="h-4 w-4" />
-                          <span>Play</span>
+                          <span className="hidden sm:inline">Play</span>
                         </>
                       )}
                     </button>
                     <button
                       onClick={() => handleDeleteRecording(recording.id)}
                       className="flex items-center gap-1.5 rounded-lg border-2 border-red-500/50 bg-red-500/10 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-500/20 transition-all"
+                      title="Delete recording"
                     >
                       <Trash2 className="h-4 w-4" />
-                      <span>Delete</span>
+                      <span className="hidden sm:inline">Delete</span>
                     </button>
                   </div>
                 </div>
