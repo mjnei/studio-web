@@ -1,6 +1,6 @@
 import { request } from "@/lib/api-client";
 
-export type WorkflowStep = "source" | "script" | "voice" | "compose";
+export type WorkflowStep = "source" | "script" | "details" | "voice" | "preview" | "compose";
 export type ProjectStatus = "draft" | "in-progress" | "completed";
 export type JobStatus = "idle" | "queued" | "processing" | "completed" | "failed";
 

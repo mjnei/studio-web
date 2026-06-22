@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
+import { advanceProjectStep } from "@/lib/project-client";
 
 export default function PreviewPage() {
   const params = useParams();
@@ -16,6 +17,13 @@ export default function PreviewPage() {
   
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Advance step when entering this page
+  useEffect(() => {
+    if (projectId && state?.lastStep && state.lastStep !== "preview") {
+      advanceProjectStep(projectId, "preview").catch(console.error);
+    }
+  }, [projectId, state?.lastStep]);
 
   // Get first sentence from script for preview
   const previewText = useMemo(() => {

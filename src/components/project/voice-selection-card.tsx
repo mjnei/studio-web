@@ -54,8 +54,14 @@ export function VoiceSelectionCard({
     if (!audioRef.current) {
       // For authenticated endpoints, fetch the audio as a blob first
       try {
+        const { getAccessToken } = await import("@/lib/api-client");
+        const token = getAccessToken();
+        
         const response = await fetch(previewUrl, {
           credentials: 'include',
+          headers: token ? {
+            'Authorization': `Bearer ${token}`,
+          } : {},
         });
         
         if (!response.ok) {

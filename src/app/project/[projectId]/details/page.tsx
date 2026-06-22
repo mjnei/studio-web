@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
+import { advanceProjectStep } from "@/lib/project-client";
 
 export default function ProjectDetailsPage() {
   const params = useParams();
@@ -15,6 +16,13 @@ export default function ProjectDetailsPage() {
   const { state, isLoading } = useProjectState(projectId);
 
   const [projectName, setProjectName] = useState("");
+  
+  // Advance step when entering this page
+  useEffect(() => {
+    if (projectId && state?.lastStep && state.lastStep !== "details") {
+      advanceProjectStep(projectId, "details").catch(console.error);
+    }
+  }, [projectId, state?.lastStep]);
   
   // Generate default project name from movie title
   useEffect(() => {

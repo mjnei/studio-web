@@ -62,7 +62,7 @@ export interface ProjectState {
   status: "draft" | "in-progress" | "completed";
   createdAt: string;
   updatedAt: string;
-  lastStep: "source" | "script" | "voice" | "compose";
+  lastStep: "source" | "script" | "details" | "voice" | "preview" | "compose";
 }
 
 function genreNames(movie?: MovieResponse | null): string | undefined {
