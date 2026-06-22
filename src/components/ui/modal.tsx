@@ -1,7 +1,7 @@
 "use client";
 
 import { X } from "lucide-react";
-import { useEffect, useRef, ReactNode } from "react";
+import { useEffect, useRef, ReactNode, useState } from "react";
 import { Button } from "./button";
 
 export interface ModalProps {
@@ -217,8 +217,10 @@ export function FormModal({
   children,
   size = "md",
 }: FormModalProps) {
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (e: React.ChangeEvent<HTMLFormElement> & { preventDefault?: () => void }) => {
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
     onSubmit();
   };
 
@@ -234,13 +236,146 @@ export function FormModal({
           <Button variant="secondary" onClick={onClose} disabled={loading}>
             {cancelText}
           </Button>
-          <Button variant="primary" onClick={handleSubmit} loading={loading}>
+          <Button variant="primary" onClick={onSubmit} loading={loading}>
             {submitText}
           </Button>
         </>
       }
     >
       <form onSubmit={handleSubmit}>{children}</form>
+    </Modal>
+  );
+}
+
+// Alert Modal Preset
+export interface AlertModalProps {
+  open: boolean;
+  onClose: () => void;
+  title: string;
+  message: string;
+  variant?: "info" | "success" | "warning" | "error";
+  actionText?: string;
+  icon?: ReactNode;
+}
+
+export function AlertModal({
+  open,
+  onClose,
+  title,
+  message,
+  variant = "info",
+  actionText = "OK",
+  icon,
+}: AlertModalProps) {
+  const variants = {
+    info: "border-blue-500/30",
+    success: "border-green-500/30",
+    warning: "border-yellow-500/30",
+    error: "border-red-500/30",
+  };
+
+  const iconColors = {
+    info: "text-blue-500",
+    success: "text-green-500",
+    warning: "text-yellow-500",
+    error: "text-red-500",
+  };
+
+  const buttonVariants = {
+    info: "primary" as const,
+    success: "success" as const,
+    warning: "primary" as const,
+    error: "danger" as const,
+  };
+
+  return (
+    <Modal
+      open={open}
+      onClose={onClose}
+      title={title}
+      size="sm"
+      variant={variant === "error" ? "danger" : variant === "success" ? "success" : "default"}
+      footer={
+        <Button variant={buttonVariants[variant]} onClick={onClose} className="w-full">
+          {actionText}
+        </Button>
+      }
+    >
+      <div className="flex gap-4">
+        {icon && <div className={`flex-shrink-0 ${iconColors[variant]}`}>{icon}</div>}
+        <p className="text-text-primary text-sm leading-relaxed">{message}</p>
+      </div>
+    </Modal>
+  );
+}
+
+// Input Modal Preset
+export interface InputModalProps {
+  open: boolean;
+  onClose: () => void;
+  onSubmit: (value: string) => void;
+  title: string;
+  description?: string;
+  placeholder?: string;
+  defaultValue?: string;
+  submitText?: string;
+  cancelText?: string;
+  loading?: boolean;
+  inputType?: string;
+}
+
+export function InputModal({
+  open,
+  onClose,
+  onSubmit,
+  title,
+  description,
+  placeholder = "",
+  defaultValue = "",
+  submitText = "Submit",
+  cancelText = "Cancel",
+  loading = false,
+  inputType = "text",
+}: InputModalProps) {
+  const [value, setValue] = useState(defaultValue);
+
+  useEffect(() => {
+    if (open) {
+      setValue(defaultValue);
+    }
+  }, [open, defaultValue]);
+
+  const handleSubmit = () => {
+    onSubmit(value);
+  };
+
+  return (
+    <Modal
+      open={open}
+      onClose={onClose}
+      title={title}
+      description={description}
+      size="sm"
+      footer={
+        <>
+          <Button variant="secondary" onClick={onClose} disabled={loading}>
+            {cancelText}
+          </Button>
+          <Button variant="primary" onClick={handleSubmit} loading={loading}>
+            {submitText}
+          </Button>
+        </>
+      }
+    >
+      <input
+        type={inputType}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        placeholder={placeholder}
+        disabled={loading}
+        className="w-full rounded-lg border border-border-default bg-surface-base px-4 py-2 text-text-primary placeholder-text-muted focus:border-accent-primary focus:outline-none focus-ring disabled:opacity-50"
+        autoFocus
+      />
     </Modal>
   );
 }

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Mic, Plus, Upload, Trash2, Power, AlertCircle, CheckCircle2, Search, Loader, Edit2, User, Database } from "lucide-react";
+import { ConfirmModal } from "@/components/ui/modal";
 import {
   adminGetVoices,
   adminCreateVoice,
@@ -11,7 +12,9 @@ import {
   adminBulkImportVoices,
   adminGetVoiceRecordings,
   adminDeleteVoiceRecording,
+  getAdminRecordingAudioUrl,
 } from "@/lib/api/admin";
+import { getAccessToken } from "@/lib/api-client";
 import type { VoiceCreateRequest, VoiceResponse, VoiceUpdateRequest, VoiceRecordingResponse } from "@/lib/types/api";
 
 type Toast = {
@@ -44,6 +47,56 @@ export default function AdminVoicesPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingData, setEditingData] = useState<EditingVoice | null>(null);
   const [toasts, setToasts] = useState<Toast[]>([]);
+  const audioObjectUrlRef = useRef<string | null>(null);
+
+  const playRecordingAudio = async (recordingId: string) => {
+    try {
+      // Clean up previous audio if exists
+      if (audioObjectUrlRef.current) {
+        URL.revokeObjectURL(audioObjectUrlRef.current);
+        audioObjectUrlRef.current = null;
+      }
+      
+      const token = getAccessToken();
+      const url = getAdminRecordingAudioUrl(recordingId);
+      const res = await fetch(url, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        credentials: "include",
+      });
+      
+      if (!res.ok) {
+        const errorText = await res.text().catch(() => "Unknown error");
+        throw new Error(`Failed to load audio: ${res.status} ${errorText}`);
+      }
+      
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      audioObjectUrlRef.current = blobUrl;
+      
+      const audio = new Audio(blobUrl);
+      audio.onerror = () => {
+        showToast("error", "Failed to play audio");
+        URL.revokeObjectURL(blobUrl);
+        audioObjectUrlRef.current = null;
+      };
+      
+      await audio.play();
+    } catch (error) {
+      console.error("Audio playback error:", error);
+      showToast("error", "Failed to play recording");
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (audioObjectUrlRef.current) {
+        URL.revokeObjectURL(audioObjectUrlRef.current);
+      }
+    };
+  }, []);
+
+  const [deleteVoiceModal, setDeleteVoiceModal] = useState<{ open: boolean; voiceId: string | null }>({ open: false, voiceId: null });
+  const [deleteRecordingModal, setDeleteRecordingModal] = useState<{ open: boolean; recordingId: string | null }>({ open: false, recordingId: null });
 
   useEffect(() => {
     if (viewType === "stock") {
@@ -132,11 +185,16 @@ export default function AdminVoicesPage() {
   };
 
   const handleDeleteVoice = async (voiceId: string) => {
-    if (!confirm("Delete this voice? This action cannot be undone.")) return;
+    setDeleteVoiceModal({ open: true, voiceId });
+  };
+
+  const handleConfirmDeleteVoice = async () => {
+    if (!deleteVoiceModal.voiceId) return;
     try {
-      await adminDeleteVoice(voiceId);
+      await adminDeleteVoice(deleteVoiceModal.voiceId);
       showToast("success", "Voice deleted successfully");
       await loadVoices();
+      setDeleteVoiceModal({ open: false, voiceId: null });
     } catch (error: any) {
       showToast("error", error.message || "Failed to delete voice");
     }
@@ -165,11 +223,16 @@ export default function AdminVoicesPage() {
   };
 
   const handleDeleteRecording = async (recordingId: string) => {
-    if (!confirm("Delete this voice recording? This action cannot be undone.")) return;
+    setDeleteRecordingModal({ open: true, recordingId });
+  };
+
+  const handleConfirmDeleteRecording = async () => {
+    if (!deleteRecordingModal.recordingId) return;
     try {
-      await adminDeleteVoiceRecording(recordingId);
+      await adminDeleteVoiceRecording(deleteRecordingModal.recordingId);
       showToast("success", "Voice recording deleted successfully");
       await loadRecordings();
+      setDeleteRecordingModal({ open: false, recordingId: null });
     } catch (error: any) {
       showToast("error", error.message || "Failed to delete voice recording");
     }
@@ -606,10 +669,7 @@ export default function AdminVoicesPage() {
                   </div>
                   <div className="col-span-3 flex items-center gap-2">
                     <button
-                      onClick={() => {
-                        const audio = new Audio(recording.file_path);
-                        audio.play();
-                      }}
+                      onClick={() => playRecordingAudio(recording.id)}
                       className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm font-medium text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all"
                       title="Play recording"
                     >
@@ -806,6 +866,30 @@ export default function AdminVoicesPage() {
           </div>
         </div>
       )}
+
+      {/* Delete Voice Confirmation Modal */}
+      <ConfirmModal
+        open={deleteVoiceModal.open}
+        onClose={() => setDeleteVoiceModal({ open: false, voiceId: null })}
+        onConfirm={handleConfirmDeleteVoice}
+        title="Delete Voice"
+        description="Are you sure you want to delete this voice? This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="danger"
+      />
+
+      {/* Delete Recording Confirmation Modal */}
+      <ConfirmModal
+        open={deleteRecordingModal.open}
+        onClose={() => setDeleteRecordingModal({ open: false, recordingId: null })}
+        onConfirm={handleConfirmDeleteRecording}
+        title="Delete Recording"
+        description="Are you sure you want to delete this voice recording? This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="danger"
+      />
     </div>
   );
 }

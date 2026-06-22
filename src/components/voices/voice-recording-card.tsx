@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { Trash2, Play, Pause } from "lucide-react";
 import { VoiceRecordingResponse } from "@/lib/types/api";
 import { Button } from "@/components/ui/button";
+import { ConfirmModal, AlertModal } from "@/components/ui/modal";
 
 interface VoiceRecordingCardProps {
   recording: VoiceRecordingResponse;
@@ -14,15 +15,21 @@ export function VoiceRecordingCard({ recording, onDelete }: VoiceRecordingCardPr
   const [isDeleting, setIsDeleting] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [audioErrorAlert, setAudioErrorAlert] = useState<{ open: boolean; message: string }>({ open: false, message: "" });
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const handleDelete = async () => {
-    if (!confirm(`Delete "${recording.title}"?`)) return;
+  const handleDeleteClick = () => {
+    setDeleteConfirmOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
     setIsDeleting(true);
     try {
       await onDelete(recording.id);
+      setDeleteConfirmOpen(false);
     } catch (error) {
-      alert("Failed to delete recording");
+      setAudioErrorAlert({ open: true, message: "Failed to delete recording" });
       setIsDeleting(false);
     }
   };
@@ -70,7 +77,7 @@ export function VoiceRecordingCard({ recording, onDelete }: VoiceRecordingCardPr
           setIsPlaying(false);
           setIsLoading(false);
           URL.revokeObjectURL(audioUrl);
-          alert("Failed to play audio");
+          setAudioErrorAlert({ open: true, message: "Failed to play audio" });
         };
 
         audio.oncanplay = () => {
@@ -82,7 +89,7 @@ export function VoiceRecordingCard({ recording, onDelete }: VoiceRecordingCardPr
       } catch (error) {
         console.error("Audio playback error:", error);
         setIsLoading(false);
-        alert("Failed to load audio");
+        setAudioErrorAlert({ open: true, message: "Failed to load audio" });
       }
     } else {
       audioRef.current.play();
@@ -129,7 +136,7 @@ export function VoiceRecordingCard({ recording, onDelete }: VoiceRecordingCardPr
           )}
         </div>
         <button
-          onClick={handleDelete}
+          onClick={handleDeleteClick}
           disabled={isDeleting}
           className="shrink-0 p-1.5 text-text-muted hover:text-red-400 transition-colors disabled:opacity-50"
           title="Delete recording"
@@ -172,6 +179,29 @@ export function VoiceRecordingCard({ recording, onDelete }: VoiceRecordingCardPr
           Use Voice
         </Button>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmModal
+        open={deleteConfirmOpen}
+        onClose={() => setDeleteConfirmOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title="Delete Recording"
+        description={`Are you sure you want to delete "${recording.title}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="danger"
+        loading={isDeleting}
+      />
+
+      {/* Error Alert Modal */}
+      <AlertModal
+        open={audioErrorAlert.open}
+        onClose={() => setAudioErrorAlert({ open: false, message: "" })}
+        title="Error"
+        message={audioErrorAlert.message}
+        variant="error"
+        actionText="OK"
+      />
     </div>
   );
 }

@@ -152,3 +152,13 @@ export async function adminDeleteVoiceRecording(recordingId: string): Promise<vo
     method: "DELETE",
   });
 }
+
+/**
+ * Get the audio stream URL for an admin voice recording.
+ * Note: This returns a URL that requires authentication.
+ * For playback, fetch the audio as a blob and create an object URL.
+ */
+export function getAdminRecordingAudioUrl(recordingId: string): string {
+  const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020/api/v1";
+  return `${apiBase}/admin/voice-recordings/${recordingId}/audio`;
+}
