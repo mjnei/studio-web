@@ -46,7 +46,7 @@ export default function AdminPage() {
             </div>
             <h2 className="mb-2 text-xl font-semibold text-text-primary">Voices</h2>
             <p className="text-sm text-text-secondary">
-              Create, update, delete, and bulk import voices to the catalog
+              Manage voices and recordings
             </p>
           </div>
         </Link>
@@ -58,15 +58,11 @@ export default function AdminPage() {
         <ul className="space-y-2 text-sm text-text-secondary">
           <li className="flex items-center gap-2">
             <span className="h-1.5 w-1.5 rounded-full bg-accent-primary" />
-            CRUD operations for movies and voices
+            Manage voices and recordings
           </li>
           <li className="flex items-center gap-2">
             <span className="h-1.5 w-1.5 rounded-full bg-accent-primary" />
-            Bulk import from JSON data
-          </li>
-          <li className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-accent-primary" />
-            Soft enable/disable for voices
+            Enable/disable voices
           </li>
           <li className="flex items-center gap-2">
             <span className="h-1.5 w-1.5 rounded-full bg-accent-primary" />

@@ -9,7 +9,6 @@ import {
   adminUpdateVoice,
   adminToggleVoiceAvailability,
   adminDeleteVoice,
-  adminBulkImportVoices,
   adminGetVoiceRecordings,
   adminDeleteVoiceRecording,
   getAdminRecordingAudioUrl,
@@ -38,7 +37,6 @@ export default function AdminVoicesPage() {
   const [recordings, setRecordings] = useState<VoiceRecordingResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [isBulkOpen, setIsBulkOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterProvider, setFilterProvider] = useState<string>("all");
   const [filterAvailability, setFilterAvailability] = useState<string>("active");
@@ -237,7 +235,7 @@ export default function AdminVoicesPage() {
     
     try {
       await adminCreateVoice(formData as any);
-      showToast("success", "Voice created successfully");
+      showToast("success", "Voice created");
       setIsCreateOpen(false);
       await loadVoices();
     } catch (error: any) {
@@ -257,7 +255,7 @@ export default function AdminVoicesPage() {
         category: editingData.category,
       };
       await adminUpdateVoice(editingData.id, updateData);
-      showToast("success", "Voice updated successfully");
+      showToast("success", "Voice updated");
       setEditingId(null);
       setEditingData(null);
       await loadVoices();
@@ -280,7 +278,7 @@ export default function AdminVoicesPage() {
     try {
       const newStatus = !toggleAvailabilityModal.currentStatus;
       await adminToggleVoiceAvailability(toggleAvailabilityModal.voiceId, { is_available: newStatus });
-      showToast("success", `Voice ${newStatus ? "enabled" : "disabled"} successfully`);
+      showToast("success", `Voice ${newStatus ? "enabled" : "disabled"}`);
       await loadVoices();
       setToggleAvailabilityModal({ open: false, voiceId: null, voiceName: null, currentStatus: false });
     } catch (error: any) {
@@ -296,32 +294,11 @@ export default function AdminVoicesPage() {
     if (!deleteVoiceModal.voiceId) return;
     try {
       await adminDeleteVoice(deleteVoiceModal.voiceId);
-      showToast("success", "Voice deleted successfully");
+      showToast("success", "Voice deleted");
       await loadVoices();
       setDeleteVoiceModal({ open: false, voiceId: null });
     } catch (error: any) {
       showToast("error", error.message || "Failed to delete voice");
-    }
-  };
-
-  const handleBulkImport = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      const formData = new FormData(e.currentTarget);
-      const jsonText = formData.get("json") as string;
-      const items = JSON.parse(jsonText) as VoiceCreateRequest[];
-      const result = await adminBulkImportVoices({ items });
-      showToast(
-        "success",
-        `Bulk import completed: ${result.success_count} succeeded, ${result.failure_count} failed`
-      );
-      if (result.errors.length > 0) {
-        console.error("Bulk import errors:", result.errors);
-      }
-      setIsBulkOpen(false);
-      await loadVoices();
-    } catch (error: any) {
-      showToast("error", error.message || "Failed to bulk import voices");
     }
   };
 
@@ -333,7 +310,7 @@ export default function AdminVoicesPage() {
     if (!deleteRecordingModal.recordingId) return;
     try {
       await adminDeleteVoiceRecording(deleteRecordingModal.recordingId);
-      showToast("success", "Voice recording deleted successfully");
+      showToast("success", "Recording deleted");
       await loadRecordings();
       setDeleteRecordingModal({ open: false, recordingId: null });
     } catch (error: any) {
@@ -407,28 +384,19 @@ export default function AdminVoicesPage() {
               <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-accent-primary to-purple-600 shadow-lg">
                 <Mic className="h-6 w-6 text-white" />
               </div>
-              <h1 className="text-3xl font-bold text-text-primary">Voice Management</h1>
+              <h1 className="text-3xl font-bold text-text-primary">Voices</h1>
             </div>
-            <p className="text-text-secondary">Manage stock voices from providers and user voice recordings</p>
+            <p className="text-text-secondary">Manage stock voices and recordings</p>
           </div>
           <div className="flex gap-3">
             {viewType === "stock" && (
-              <>
-                <button
-                  onClick={() => setIsCreateOpen(true)}
-                  className="flex items-center gap-2 rounded-lg bg-accent-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-accent-primary/90 transition-all shadow-lg shadow-accent-primary/25"
-                >
-                  <Plus className="h-4 w-4" />
-                  Add Voice
-                </button>
-                <button
-                  onClick={() => setIsBulkOpen(true)}
-                  className="flex items-center gap-2 rounded-lg border-2 border-border-default bg-surface-panel px-5 py-2.5 text-sm font-semibold text-text-primary hover:bg-surface-hover transition-all"
-                >
-                  <Upload className="h-4 w-4" />
-                  Bulk Import
-                </button>
-              </>
+              <button
+                onClick={() => setIsCreateOpen(true)}
+                className="flex items-center gap-2 rounded-lg bg-accent-primary px-5 py-2.5 text-sm font-semibold text-white hover:bg-accent-primary/90 transition-all shadow-lg shadow-accent-primary/25"
+              >
+                <Plus className="h-4 w-4" />
+                Add Voice
+              </button>
             )}
           </div>
         </div>
@@ -813,7 +781,7 @@ export default function AdminVoicesPage() {
                       className="flex items-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 transition-all"
                     >
                       <CheckCircle2 className="h-4 w-4" />
-                      Save Changes
+                      Save
                     </button>
                     <button
                       onClick={() => {
@@ -1041,12 +1009,12 @@ export default function AdminVoicesPage() {
       {isCreateOpen && (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/60 p-4">
           <div className="w-full max-w-2xl rounded-2xl border border-border-default bg-surface-panel p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <h2 className="mb-4 text-xl font-semibold text-text-primary">Create Voice</h2>
+            <h2 className="mb-4 text-xl font-semibold text-text-primary">Add Voice</h2>
             <form onSubmit={handleCreateVoice} className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
                   <label className="mb-1 block text-sm font-medium text-text-secondary">
-                    Voice ID *
+                    ID *
                   </label>
                   <input
                     type="text"
@@ -1088,7 +1056,7 @@ export default function AdminVoicesPage() {
                 <textarea
                   name="description"
                   rows={2}
-                  placeholder="A calm and clear American female voice"
+                  placeholder="A calm and clear voice"
                   className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 text-text-primary focus:border-accent-primary focus:outline-none"
                 />
               </div>
@@ -1155,7 +1123,7 @@ export default function AdminVoicesPage() {
                   className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 text-text-primary focus:border-accent-primary focus:outline-none file:mr-4 file:rounded-md file:border-0 file:bg-accent-primary/10 file:px-3 file:py-1 file:text-sm file:font-medium file:text-accent-primary hover:file:bg-accent-primary/20"
                 />
                 <p className="mt-1 text-xs text-text-muted">
-                  Required: Upload a sample audio file (MP3, WAV, OGG, WEBM, M4A, AAC). Max 10MB
+                  Audio preview file. Max 10MB (MP3, WAV, OGG, WEBM, M4A, AAC)
                 </p>
               </div>
               <div className="flex justify-end gap-3 pt-2">
@@ -1170,45 +1138,7 @@ export default function AdminVoicesPage() {
                   type="submit"
                   className="rounded-lg bg-accent-primary px-4 py-2 text-sm font-medium text-white hover:bg-accent-primary/90"
                 >
-                  Create
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Bulk Import Modal */}
-      {isBulkOpen && (
-        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/60 p-4">
-          <div className="w-full max-w-3xl rounded-2xl border border-border-default bg-surface-panel p-6 shadow-2xl">
-            <h2 className="mb-4 text-xl font-semibold text-text-primary">Bulk Import Voices</h2>
-            <form onSubmit={handleBulkImport} className="space-y-4">
-              <div>
-                <label className="mb-1 block text-sm font-medium text-text-secondary">
-                  JSON Array *
-                </label>
-                <textarea
-                  name="json"
-                  required
-                  rows={15}
-                  placeholder='[{"id": "voice_123", "provider": "elevenlabs", "name": "Rachel", "gender": "female", "language": "en"}]'
-                  className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 font-mono text-sm text-text-primary focus:border-accent-primary focus:outline-none"
-                />
-              </div>
-              <div className="flex justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={() => setIsBulkOpen(false)}
-                  className="rounded-lg border border-border-default px-4 py-2 text-sm font-medium text-text-secondary hover:bg-surface-hover"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="rounded-lg bg-accent-primary px-4 py-2 text-sm font-medium text-white hover:bg-accent-primary/90"
-                >
-                  Import
+                  Add
                 </button>
               </div>
             </form>
@@ -1222,7 +1152,7 @@ export default function AdminVoicesPage() {
         onClose={() => setDeleteVoiceModal({ open: false, voiceId: null })}
         onConfirm={handleConfirmDeleteVoice}
         title="Delete Voice"
-        description="Are you sure you want to delete this voice? This action cannot be undone."
+        description="This action cannot be undone."
         confirmText="Delete"
         cancelText="Cancel"
         variant="danger"
@@ -1234,7 +1164,7 @@ export default function AdminVoicesPage() {
         onClose={() => setDeleteRecordingModal({ open: false, recordingId: null })}
         onConfirm={handleConfirmDeleteRecording}
         title="Delete Recording"
-        description="Are you sure you want to delete this voice recording? This action cannot be undone."
+        description="This action cannot be undone."
         confirmText="Delete"
         cancelText="Cancel"
         variant="danger"
@@ -1246,11 +1176,7 @@ export default function AdminVoicesPage() {
         onClose={() => setToggleAvailabilityModal({ open: false, voiceId: null, voiceName: null, currentStatus: false })}
         onConfirm={handleConfirmToggleAvailability}
         title={toggleAvailabilityModal.currentStatus ? "Disable Voice" : "Enable Voice"}
-        description={
-          toggleAvailabilityModal.currentStatus
-            ? `Are you sure you want to disable "${toggleAvailabilityModal.voiceName}"? Users will no longer be able to select this voice.`
-            : `Are you sure you want to enable "${toggleAvailabilityModal.voiceName}"? This voice will become available for users to select.`
-        }
+        description={`${toggleAvailabilityModal.currentStatus ? "Disable" : "Enable"} "${toggleAvailabilityModal.voiceName}"`}
         confirmText={toggleAvailabilityModal.currentStatus ? "Disable" : "Enable"}
         cancelText="Cancel"
         variant={toggleAvailabilityModal.currentStatus ? "danger" : "success"}
