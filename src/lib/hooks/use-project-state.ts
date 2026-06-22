@@ -39,6 +39,10 @@ export interface ProjectState {
   scripts: ScriptVersion[];
   activeScriptId?: string;
 
+  voice?: {
+    id: string;
+    name: string;
+  };
   voiceId?: string;
   voiceName?: string;
   audioUrl?: string;
@@ -264,7 +268,7 @@ export function useProjectState(projectId: string) {
     async (voice: {
       id: string;
       name: string;
-      audioUrl: string;
+      audioUrl?: string | null;
       duration?: number;
       jobId?: string;
       progress?: number;
@@ -274,10 +278,14 @@ export function useProjectState(projectId: string) {
         current
           ? {
               ...current,
+              voice: {
+                id: voice.id,
+                name: voice.name,
+              },
               voiceId: voice.id,
               voiceName: voice.name,
-              audioUrl: voice.audioUrl,
-              audioDuration: voice.duration,
+              audioUrl: voice.audioUrl ?? current.audioUrl,
+              audioDuration: voice.duration ?? current.audioDuration,
               ttsJobId: voice.jobId ?? current.ttsJobId,
               ttsStatus: voice.audioUrl ? "completed" : current.ttsStatus,
               ttsProgress: voice.progress ?? current.ttsProgress,

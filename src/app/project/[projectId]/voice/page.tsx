@@ -1,20 +1,16 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useState, useEffect, useMemo } from "react";
-import { Sparkles, Volume2, Loader2, Mic, Globe } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect, useMemo, useRef } from "react";
+import { Volume2, Mic, Globe } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { VoiceSelectionCard } from "@/components/project/voice-selection-card";
 import { useVoiceRecordings } from "@/lib/hooks/use-voice-recordings";
 import {
-  createTTSJob,
-  getTTSJob,
   listVoices,
   generateTTSPreview,
-  type TTSJobResponse,
   type VoiceResponse,
   type TTSPreviewResponse,
 } from "@/lib/project-client";
@@ -40,15 +36,14 @@ export default function VoicePage() {
   const { state, updateVoice, activeScript, isLoading } = useProjectState(projectId);
   const { recordings, loading: recordingsLoading } = useVoiceRecordings();
 
-  const [tab, setTab] = useState<"my" | "stock">("my");
   const [voices, setVoices] = useState<VoiceResponse[]>([]);
   const [voicesLoading, setVoicesLoading] = useState(true);
   const [voicesError, setVoicesError] = useState<string | null>(null);
   const [selectedVoice, setSelectedVoice] = useState<VoiceOption | null>(null);
   const [previewCache, setPreviewCache] = useState<Record<string, TTSPreviewResponse>>({});
   const [previewLoading, setPreviewLoading] = useState<string | null>(null);
-  const [job, setJob] = useState<TTSJobResponse | null>(null);
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [playingVoice, setPlayingVoice] = useState<string | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Get first sentence from script for preview
   const previewText = useMemo(() => {
@@ -87,31 +82,15 @@ export default function VoicePage() {
     };
   }, []);
 
+  // Cleanup audio on unmount
   useEffect(() => {
-    if (!job || job.status === "completed" || job.status === "failed") return;
-
-    const interval = window.setInterval(async () => {
-      const nextJob = await getTTSJob(job.id);
-      setJob(nextJob);
-      if (nextJob.status === "completed" && nextJob.audio_url) {
-        await updateVoice({
-          id: nextJob.voice_id ?? selectedVoice?.id ?? "",
-          name: nextJob.voice_name ?? selectedVoice?.name ?? "Selected voice",
-          audioUrl: nextJob.audio_url,
-          duration: nextJob.audio_duration ?? activeScript?.duration,
-          jobId: nextJob.id,
-          progress: nextJob.progress,
-        });
-        setIsGenerating(false);
-        // Auto-navigate to preview page when audio is ready
-        router.push(`/project/${projectId}/preview`);
-      } else if (nextJob.status === "failed") {
-        setIsGenerating(false);
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
       }
-    }, 2000);
-
-    return () => window.clearInterval(interval);
-  }, [activeScript?.duration, job, selectedVoice, updateVoice, router, projectId]);
+    };
+  }, []);
 
   const handlePreview = async (voice: VoiceOption) => {
     const cacheKey = `${voice.type}-${voice.id}`;
@@ -140,33 +119,83 @@ export default function VoicePage() {
     }
   };
 
-  const handleSelectVoice = (voice: VoiceOption) => {
-    setSelectedVoice(voice);
+  const playAudio = async (voice: VoiceOption) => {
+    const cacheKey = `${voice.type}-${voice.id}`;
+    
+    // Stop current audio if playing
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+
+    // Get preview URL
+    let audioUrl = voice.previewUrl;
+    
+    // For stock voices, check cache or use existing preview URL
+    if (voice.type === "stock") {
+      const preview = previewCache[cacheKey];
+      if (preview?.audio_url) {
+        audioUrl = preview.audio_url;
+      }
+    }
+
+    if (!audioUrl) {
+      // Generate preview if not available
+      await handlePreview(voice);
+      return;
+    }
+
+    try {
+      setPlayingVoice(cacheKey);
+      
+      // For authenticated endpoints, fetch the audio as a blob first
+      const { getAccessToken } = await import("@/lib/api-client");
+      const token = getAccessToken();
+      
+      const response = await fetch(audioUrl, {
+        credentials: 'include',
+        headers: token ? {
+          'Authorization': `Bearer ${token}`,
+        } : {},
+      });
+      
+      if (!response.ok) {
+        console.error("Failed to fetch audio:", response.statusText);
+        setPlayingVoice(null);
+        return;
+      }
+      
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      
+      audioRef.current = new Audio(blobUrl);
+      audioRef.current.onended = () => setPlayingVoice(null);
+      audioRef.current.onerror = () => {
+        console.error("Audio playback error:", audioRef.current?.error);
+        setPlayingVoice(null);
+      };
+      
+      await audioRef.current.play();
+    } catch (err) {
+      console.error("Failed to load/play audio:", err);
+      setPlayingVoice(null);
+    }
   };
 
-  const handleGenerateVoice = async () => {
-    if (!selectedVoice || !activeScript) return;
-
-    setIsGenerating(true);
-    const nextJob = await createTTSJob({
-      projectId,
-      scriptId: activeScript.id,
-      voiceId: selectedVoice.id,
-      autoActivate: true,
+  const handleSelectVoice = async (voice: VoiceOption) => {
+    // Update selection
+    setSelectedVoice(voice);
+    
+    // Store voice selection in state for later use in preview step
+    await updateVoice({
+      id: voice.id,
+      name: voice.name,
+      audioUrl: null,
+      duration: voice.metadata?.duration,
     });
-    setJob(nextJob);
-
-    if (nextJob.status === "completed" && nextJob.audio_url) {
-      await updateVoice({
-        id: nextJob.voice_id ?? selectedVoice.id,
-        name: nextJob.voice_name ?? selectedVoice.name,
-        audioUrl: nextJob.audio_url,
-        duration: nextJob.audio_duration ?? activeScript.duration,
-        jobId: nextJob.id,
-        progress: nextJob.progress,
-      });
-      setIsGenerating(false);
-    }
+    
+    // Auto-play preview
+    await playAudio(voice);
   };
 
   const myVoiceOptions: VoiceOption[] = useMemo(() => {
@@ -197,9 +226,27 @@ export default function VoicePage() {
     }));
   }, [voices]);
 
-  const displayedVoices = tab === "my" ? myVoiceOptions : stockVoiceOptions;
-  const progress = job?.progress ?? state?.ttsProgress ?? 0;
-  const status = job?.status ?? state?.ttsStatus;
+  // Initialize selectedVoice from state
+  useEffect(() => {
+    if (state?.voiceId && !selectedVoice) {
+      const allVoices = [...myVoiceOptions, ...stockVoiceOptions];
+      const savedVoice = allVoices.find(v => v.id === state.voiceId);
+      if (savedVoice) {
+        setSelectedVoice(savedVoice);
+      }
+    }
+  }, [state?.voiceId, myVoiceOptions, stockVoiceOptions, selectedVoice]);
+
+  // Initialize selectedVoice from state
+  useEffect(() => {
+    if (state?.voice?.id && !selectedVoice) {
+      const allVoices = [...myVoiceOptions, ...stockVoiceOptions];
+      const savedVoice = allVoices.find(v => v.id === state.voice?.id);
+      if (savedVoice) {
+        setSelectedVoice(savedVoice);
+      }
+    }
+  }, [state?.voice, myVoiceOptions, stockVoiceOptions, selectedVoice]);
 
   if (isLoading) {
     return (
@@ -219,9 +266,15 @@ export default function VoicePage() {
           <div>
             <h2 className="text-xl font-semibold text-text-primary">Select Voice</h2>
             <p className="mt-1 text-sm text-text-muted">
-              Choose a voice from your recordings or stock voices
+              Click on a voice to select it and hear a preview
             </p>
           </div>
+          {selectedVoice && (
+            <div className="text-sm text-text-muted">
+              Selected:{" "}
+              <span className="font-medium text-text-primary">{selectedVoice.name}</span>
+            </div>
+          )}
         </div>
 
         {activeScript && (
@@ -245,148 +298,108 @@ export default function VoicePage() {
           </Card>
         )}
 
-        {!state?.audioUrl && (
-          <>
-            <div className="flex gap-1 overflow-x-auto rounded-lg bg-surface-panel p-1">
-              <button
-                onClick={() => setTab("my")}
-                className={`flex shrink-0 items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition ${
-                  tab === "my"
-                    ? "bg-surface-raised text-text-primary"
-                    : "text-text-muted hover:text-text-secondary"
-                }`}
-              >
-                <Mic className="h-4 w-4" />
+        {/* My Voices Section */}
+        {myVoiceOptions.length > 0 && (
+          <div>
+            <div className="mb-3 flex items-center gap-2">
+              <Mic className="h-5 w-5 text-accent-purple" />
+              <h3 className="text-lg font-medium text-text-primary">
                 My Voices ({myVoiceOptions.length})
-              </button>
-              <button
-                onClick={() => setTab("stock")}
-                className={`flex shrink-0 items-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition ${
-                  tab === "stock"
-                    ? "bg-surface-raised text-text-primary"
-                    : "text-text-muted hover:text-text-secondary"
-                }`}
-              >
-                <Globe className="h-4 w-4" />
-                Stock Voices ({stockVoiceOptions.length})
-              </button>
+              </h3>
             </div>
-
-            <Card variant="elevated" padding="lg">
-              <div className="mb-4 flex items-center justify-between">
-                <h3 className="text-lg font-medium text-text-primary">
-                  {tab === "my" ? "My Voice Recordings" : "Stock Voices"}
-                </h3>
-                {selectedVoice && (
-                  <div className="text-sm text-text-muted">
-                    Selected:{" "}
-                    <span className="font-medium text-text-primary">{selectedVoice.name}</span>
-                  </div>
-                )}
+            
+            {recordingsLoading ? (
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="h-32 animate-pulse rounded-lg bg-surface-panel" />
+                ))}
               </div>
-
-              {(tab === "my" && recordingsLoading) || (tab === "stock" && voicesLoading) ? (
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                  {Array.from({ length: 6 }).map((_, i) => (
-                    <div key={i} className="h-32 animate-pulse rounded-lg bg-surface-panel" />
-                  ))}
-                </div>
-              ) : voicesError && tab === "stock" ? (
-                <p className="text-sm text-status-failed">{voicesError}</p>
-              ) : displayedVoices.length === 0 ? (
-                <div className="rounded-lg border border-border-default bg-surface-panel p-8 text-center">
-                  <p className="mb-2 text-text-secondary">
-                    {tab === "my"
-                      ? "You haven't recorded any voices yet."
-                      : "No stock voices available."}
-                  </p>
-                  <p className="text-sm text-text-muted">
-                    {tab === "my"
-                      ? "Go to the Voices page to record your first voice sample."
-                      : "Stock voices will appear here once loaded."}
-                  </p>
-                </div>
-              ) : (
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                  {displayedVoices.map((voice) => {
-                    const cacheKey = `${voice.type}-${voice.id}`;
-                    const preview = previewCache[cacheKey];
-                    
-                    // For recordings, use the previewUrl directly; for stock voices, use cached preview
-                    const audioUrl = voice.type === "recording" 
-                      ? voice.previewUrl 
-                      : (preview?.audio_url || voice.previewUrl);
-
-                    return (
-                      <VoiceSelectionCard
-                        key={cacheKey}
-                        id={voice.id}
-                        name={voice.name}
-                        description={voice.description}
-                        type={voice.type}
-                        metadata={voice.metadata}
-                        isSelected={
-                          selectedVoice?.id === voice.id && selectedVoice?.type === voice.type
-                        }
-                        previewUrl={audioUrl}
-                        onSelect={() => handleSelectVoice(voice)}
-                        onPreview={() => handlePreview(voice)}
-                        isPreviewLoading={previewLoading === cacheKey}
-                      />
-                    );
-                  })}
-                </div>
-              )}
-            </Card>
-
-            {selectedVoice && !isGenerating && (
-              <Card variant="elevated" padding="lg">
-                <div className="text-center">
-                  <p className="mb-6 text-sm text-text-muted">
-                    Ready to generate full audio with{" "}
-                    <span className="font-medium text-text-primary">{selectedVoice.name}</span>
-                  </p>
-                  <Button
-                    variant="primary"
-                    size="lg"
-                    icon={<Sparkles className="h-5 w-5" />}
-                    onClick={handleGenerateVoice}
-                  >
-                    Generate Full Audio
-                  </Button>
-                </div>
-              </Card>
+            ) : (
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {myVoiceOptions.map((voice) => {
+                  const cacheKey = `${voice.type}-${voice.id}`;
+                  return (
+                    <VoiceSelectionCard
+                      key={cacheKey}
+                      id={voice.id}
+                      name={voice.name}
+                      description={voice.description}
+                      type={voice.type}
+                      metadata={voice.metadata}
+                      isSelected={
+                        selectedVoice?.id === voice.id && selectedVoice?.type === voice.type
+                      }
+                      isPlaying={playingVoice === cacheKey}
+                      previewUrl={voice.previewUrl}
+                      onSelect={() => handleSelectVoice(voice)}
+                      onPreview={() => handlePreview(voice)}
+                      isPreviewLoading={previewLoading === cacheKey}
+                    />
+                  );
+                })}
+              </div>
             )}
-          </>
+          </div>
         )}
 
-        {isGenerating && (
-          <Card variant="elevated" padding="lg">
-            <div className="text-center">
-              <Loader2 className="mx-auto mb-4 h-12 w-12 animate-spin text-accent-cyan" />
-              <h3 className="mb-2 text-lg font-semibold text-text-primary">TTS Job {status}</h3>
-              <p className="mb-4 text-sm text-text-muted">
-                Generating audio with {selectedVoice?.name}...
-              </p>
-              <div className="mx-auto max-w-md">
-                <div className="mb-2 h-2 w-full overflow-hidden rounded-full bg-surface-raised">
-                  <div
-                    className="h-full rounded-full bg-accent-cyan transition-all duration-300"
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
-                <p className="text-xs text-text-muted">{progress}% complete</p>
-              </div>
+        {/* Stock Voices Section */}
+        <div>
+          <div className="mb-3 flex items-center gap-2">
+            <Globe className="h-5 w-5 text-accent-cyan" />
+            <h3 className="text-lg font-medium text-text-primary">
+              Stock Voices ({stockVoiceOptions.length})
+            </h3>
+          </div>
+          
+          {voicesLoading ? (
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="h-32 animate-pulse rounded-lg bg-surface-panel" />
+              ))}
             </div>
-          </Card>
-        )}
+          ) : voicesError ? (
+            <p className="text-sm text-status-failed">{voicesError}</p>
+          ) : stockVoiceOptions.length === 0 ? (
+            <div className="rounded-lg border border-border-default bg-surface-panel p-8 text-center">
+              <p className="mb-2 text-text-secondary">No stock voices available.</p>
+              <p className="text-sm text-text-muted">Stock voices will appear here once loaded.</p>
+            </div>
+          ) : (
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {stockVoiceOptions.map((voice) => {
+                const cacheKey = `${voice.type}-${voice.id}`;
+                const preview = previewCache[cacheKey];
+                const audioUrl = preview?.audio_url || voice.previewUrl;
+
+                return (
+                  <VoiceSelectionCard
+                    key={cacheKey}
+                    id={voice.id}
+                    name={voice.name}
+                    description={voice.description}
+                    type={voice.type}
+                    metadata={voice.metadata}
+                    isSelected={
+                      selectedVoice?.id === voice.id && selectedVoice?.type === voice.type
+                    }
+                    isPlaying={playingVoice === cacheKey}
+                    previewUrl={audioUrl}
+                    onSelect={() => handleSelectVoice(voice)}
+                    onPreview={() => handlePreview(voice)}
+                    isPreviewLoading={previewLoading === cacheKey}
+                  />
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
 
       <FloatingWorkflowNavigation
         projectId={projectId}
         currentStep="voice"
-        canGoNext={false}
-        isProcessing={isGenerating}
+        canGoNext={!!selectedVoice}
+        isProcessing={false}
       />
     </>
   );

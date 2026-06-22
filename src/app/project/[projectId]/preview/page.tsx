@@ -7,16 +7,24 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
-import { advanceProjectStep } from "@/lib/project-client";
+import {
+  advanceProjectStep,
+  createTTSJob,
+  getTTSJob,
+  type TTSJobResponse,
+} from "@/lib/project-client";
 
 export default function PreviewPage() {
   const params = useParams();
   const router = useRouter();
   const projectId = params.projectId as string;
-  const { state, activeScript, isLoading } = useProjectState(projectId);
+  const { state, updateVoice, activeScript, isLoading } = useProjectState(projectId);
   
   const [isPlaying, setIsPlaying] = useState(false);
+  const [job, setJob] = useState<TTSJobResponse | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const hasStartedGeneration = useRef(false);
 
   // Advance step when entering this page
   useEffect(() => {
@@ -24,6 +32,83 @@ export default function PreviewPage() {
       advanceProjectStep(projectId, "preview").catch(console.error);
     }
   }, [projectId, state?.lastStep]);
+
+  // Generate TTS audio if not already available
+  useEffect(() => {
+    const generateAudio = async () => {
+      // Don't generate if already has audio, already generating, or missing required data
+      if (
+        state?.audioUrl ||
+        isGenerating ||
+        hasStartedGeneration.current ||
+        !state?.voiceId ||
+        !activeScript?.id
+      ) {
+        return;
+      }
+
+      hasStartedGeneration.current = true;
+      setIsGenerating(true);
+
+      try {
+        const nextJob = await createTTSJob({
+          projectId,
+          scriptId: activeScript.id,
+          voiceId: state.voiceId,
+          autoActivate: true,
+        });
+        setJob(nextJob);
+
+        if (nextJob.status === "completed" && nextJob.audio_url) {
+          await updateVoice({
+            id: nextJob.voice_id ?? state.voiceId,
+            name: nextJob.voice_name ?? state.voiceName ?? "Selected voice",
+            audioUrl: nextJob.audio_url,
+            duration: nextJob.audio_duration ?? activeScript.duration,
+            jobId: nextJob.id,
+            progress: nextJob.progress,
+          });
+          setIsGenerating(false);
+        }
+      } catch (err) {
+        console.error("Failed to generate TTS:", err);
+        setIsGenerating(false);
+        hasStartedGeneration.current = false;
+      }
+    };
+
+    generateAudio();
+  }, [projectId, state?.audioUrl, state?.voiceId, state?.voiceName, activeScript, updateVoice, isGenerating]);
+
+  // Poll TTS job status
+  useEffect(() => {
+    if (!job || job.status === "completed" || job.status === "failed") return;
+
+    const interval = window.setInterval(async () => {
+      try {
+        const nextJob = await getTTSJob(job.id);
+        setJob(nextJob);
+        
+        if (nextJob.status === "completed" && nextJob.audio_url) {
+          await updateVoice({
+            id: nextJob.voice_id ?? state?.voiceId ?? "",
+            name: nextJob.voice_name ?? state?.voiceName ?? "Selected voice",
+            audioUrl: nextJob.audio_url,
+            duration: nextJob.audio_duration ?? activeScript?.duration,
+            jobId: nextJob.id,
+            progress: nextJob.progress,
+          });
+          setIsGenerating(false);
+        } else if (nextJob.status === "failed") {
+          setIsGenerating(false);
+        }
+      } catch (err) {
+        console.error("Failed to poll job status:", err);
+      }
+    }, 2000);
+
+    return () => window.clearInterval(interval);
+  }, [activeScript?.duration, job, state?.voiceId, state?.voiceName, updateVoice]);
 
   // Get first sentence from script for preview
   const previewText = useMemo(() => {
@@ -175,11 +260,22 @@ export default function PreviewPage() {
             <div className="text-center">
               <Loader2 className="mx-auto mb-4 h-12 w-12 animate-spin text-accent-cyan" />
               <h3 className="mb-2 text-lg font-semibold text-text-primary">
-                Generating Audio Preview
+                Generating Full Audio
               </h3>
-              <p className="text-sm text-text-muted">
-                Please wait while we generate your audio preview...
+              <p className="mb-4 text-sm text-text-muted">
+                Creating full audio with {state?.voiceName || "your selected voice"}...
               </p>
+              {job && (
+                <div className="mx-auto max-w-md">
+                  <div className="mb-2 h-2 w-full overflow-hidden rounded-full bg-surface-raised">
+                    <div
+                      className="h-full rounded-full bg-accent-cyan transition-all duration-300"
+                      style={{ width: `${job.progress || 0}%` }}
+                    />
+                  </div>
+                  <p className="text-xs text-text-muted">{job.progress || 0}% complete</p>
+                </div>
+              )}
             </div>
           </Card>
         )}

@@ -1,6 +1,6 @@
 "use client";
 
-import { Play, Pause, Check, Mic } from "lucide-react";
+import { Check, Mic, Volume2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useState, useRef, useEffect } from "react";
 
@@ -16,6 +16,7 @@ interface VoiceSelectionCardProps {
     duration?: number;
   };
   isSelected: boolean;
+  isPlaying: boolean;
   previewUrl?: string | null;
   onSelect: () => void;
   onPreview?: () => void;
@@ -29,73 +30,12 @@ export function VoiceSelectionCard({
   type,
   metadata,
   isSelected,
+  isPlaying,
   previewUrl,
   onSelect,
   onPreview,
   isPreviewLoading = false,
 }: VoiceSelectionCardProps) {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.onended = () => setIsPlaying(false);
-    }
-  }, []);
-
-  const handlePlayPause = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-
-    if (!previewUrl) {
-      onPreview?.();
-      return;
-    }
-
-    if (!audioRef.current) {
-      // For authenticated endpoints, fetch the audio as a blob first
-      try {
-        const { getAccessToken } = await import("@/lib/api-client");
-        const token = getAccessToken();
-        
-        const response = await fetch(previewUrl, {
-          credentials: 'include',
-          headers: token ? {
-            'Authorization': `Bearer ${token}`,
-          } : {},
-        });
-        
-        if (!response.ok) {
-          console.error("Failed to fetch audio:", response.statusText);
-          return;
-        }
-        
-        const blob = await response.blob();
-        const blobUrl = URL.createObjectURL(blob);
-        
-        audioRef.current = new Audio(blobUrl);
-        audioRef.current.onended = () => setIsPlaying(false);
-        audioRef.current.onerror = () => {
-          console.error("Audio playback error:", audioRef.current?.error);
-          setIsPlaying(false);
-        };
-      } catch (err) {
-        console.error("Failed to load audio:", err);
-        return;
-      }
-    }
-
-    if (isPlaying) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-    } else {
-      audioRef.current.play().catch(err => {
-        console.error("Failed to play audio:", err);
-        setIsPlaying(false);
-      });
-      setIsPlaying(true);
-    }
-  };
-
   const formatDuration = (seconds?: number) => {
     if (!seconds) return null;
     const mins = Math.floor(seconds / 60);
@@ -109,21 +49,19 @@ export function VoiceSelectionCard({
       padding="md"
       className={`cursor-pointer transition-all hover:border-accent-cyan/60 ${
         isSelected ? "border-accent-cyan ring-2 ring-accent-cyan/20" : ""
-      }`}
+      } ${isPlaying ? "ring-2 ring-accent-purple/40" : ""}`}
       onClick={onSelect}
     >
       <div className="flex items-start gap-3">
         <div
           className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${
             type === "recording" ? "bg-accent-purple-muted" : "bg-accent-cyan-muted"
-          }`}
+          } ${isPlaying ? "ring-2 ring-accent-purple" : ""}`}
         >
-          {type === "recording" ? (
-            <Mic
-              className={`h-5 w-5 ${
-                type === "recording" ? "text-accent-purple" : "text-accent-cyan"
-              }`}
-            />
+          {isPlaying ? (
+            <Volume2 className="h-5 w-5 text-accent-purple animate-pulse" />
+          ) : type === "recording" ? (
+            <Mic className="h-5 w-5 text-accent-purple" />
           ) : (
             <div className="text-sm font-bold text-accent-cyan">{name.charAt(0).toUpperCase()}</div>
           )}
@@ -148,6 +86,12 @@ export function VoiceSelectionCard({
               {description && (
                 <p className="mt-1 text-xs text-text-secondary line-clamp-2">{description}</p>
               )}
+              {isPreviewLoading && (
+                <p className="mt-2 text-xs text-text-muted flex items-center gap-1">
+                  <div className="h-3 w-3 animate-spin rounded-full border-2 border-accent-cyan border-t-transparent" />
+                  <span>Loading preview...</span>
+                </p>
+              )}
             </div>
 
             <div
@@ -158,29 +102,6 @@ export function VoiceSelectionCard({
               {isSelected && <Check className="h-full w-full scale-50 text-white" />}
             </div>
           </div>
-
-          <button
-            onClick={handlePlayPause}
-            disabled={isPreviewLoading}
-            className="mt-3 flex items-center gap-2 rounded-md bg-surface-raised px-3 py-1.5 text-xs font-medium text-text-secondary transition hover:bg-surface-panel hover:text-text-primary disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isPreviewLoading ? (
-              <>
-                <div className="h-3 w-3 animate-spin rounded-full border-2 border-accent-cyan border-t-transparent" />
-                <span>Generating...</span>
-              </>
-            ) : isPlaying ? (
-              <>
-                <Pause className="h-3 w-3 fill-current" />
-                <span>Pause Preview</span>
-              </>
-            ) : (
-              <>
-                <Play className="h-3 w-3 fill-current" />
-                <span>{previewUrl ? "Play Preview" : "Generate Preview"}</span>
-              </>
-            )}
-          </button>
         </div>
       </div>
     </Card>
