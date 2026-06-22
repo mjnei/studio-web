@@ -701,7 +701,7 @@ export default function AdminVoicesPage() {
         ) : (
         <div className="space-y-2 rounded-2xl border border-border-default bg-surface-panel overflow-hidden">
           {/* Table Header */}
-          <div className="hidden lg:grid lg:grid-cols-12 gap-4 border-b border-border-default bg-surface-raised/50 px-6 py-3 text-sm font-semibold text-text-secondary">
+          <div className="hidden md:grid md:grid-cols-12 gap-4 border-b border-border-default bg-surface-raised/50 px-6 py-3 text-sm font-semibold text-text-secondary">
             <div className="col-span-4">Voice Name</div>
             <div className="col-span-2">Provider</div>
             <div className="col-span-2">Details</div>
@@ -828,8 +828,8 @@ export default function AdminVoicesPage() {
                 </div>
               ) : (
                 /* Browse Mode */
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 px-6 py-4 items-center">
-                  <div className="col-span-1 lg:col-span-4">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-4 items-center">
+                  <div className="col-span-1 md:col-span-4">
                     <div className="flex items-start gap-2">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
@@ -848,10 +848,12 @@ export default function AdminVoicesPage() {
                       </div>
                     </div>
                   </div>
-                  <div className="col-span-1 lg:col-span-2">
+                  <div className="col-span-1 md:col-span-2">
+                    <div className="md:hidden text-xs font-medium text-text-muted mb-1">Provider</div>
                     <p className="text-sm text-text-secondary capitalize">{voice.provider}</p>
                   </div>
-                  <div className="col-span-1 lg:col-span-2">
+                  <div className="col-span-1 md:col-span-2">
+                    <div className="md:hidden text-xs font-medium text-text-muted mb-1">Details</div>
                     <div className="flex flex-wrap gap-1 text-xs">
                       {voice.gender && (
                         <span className="inline-flex items-center rounded-md bg-blue-500/10 px-2 py-1 text-blue-600 capitalize">
@@ -870,7 +872,8 @@ export default function AdminVoicesPage() {
                       )}
                     </div>
                   </div>
-                  <div className="col-span-1 lg:col-span-4 flex flex-wrap items-center gap-2">
+                  <div className="col-span-1 md:col-span-4 flex flex-wrap items-center gap-2">
+                    <div className="md:hidden text-xs font-medium text-text-muted mb-1 w-full">Actions</div>
                     {voice.preview_url ? (
                       <button
                         onClick={() => {
@@ -890,17 +893,18 @@ export default function AdminVoicesPage() {
                         {playingVoiceId === voice.id ? (
                           <>
                             <Pause className="h-4 w-4" />
+                            <span className="hidden md:inline">Stop</span>
                             <Volume2 className="h-4 w-4 animate-pulse" />
                           </>
                         ) : (
                           <>
                             <Play className="h-4 w-4" />
-                            <span className="hidden sm:inline">Preview</span>
+                            <span className="hidden md:inline">Preview</span>
                           </>
                         )}
                       </button>
                     ) : (
-                      <span className="px-3 py-2 text-xs text-text-muted italic">No preview</span>
+                      <span className="px-3 py-2 text-xs text-text-muted italic hidden md:inline">No preview</span>
                     )}
                     <button
                       onClick={() => {
@@ -919,7 +923,7 @@ export default function AdminVoicesPage() {
                       title="Edit voice"
                     >
                       <Edit2 className="h-4 w-4" />
-                      <span className="hidden sm:inline">Edit</span>
+                      <span className="hidden md:inline">Edit</span>
                     </button>
                     <button
                       onClick={() => handleToggleAvailability(voice.id, voice.name, voice.is_available)}
@@ -955,7 +959,7 @@ export default function AdminVoicesPage() {
         ) : (
           <div className="space-y-2 rounded-2xl border border-border-default bg-surface-panel overflow-hidden">
             {/* Table Header */}
-            <div className="hidden lg:grid lg:grid-cols-12 gap-4 border-b border-border-default bg-surface-raised/50 px-6 py-3 text-sm font-semibold text-text-secondary">
+            <div className="hidden md:grid md:grid-cols-12 gap-4 border-b border-border-default bg-surface-raised/50 px-6 py-3 text-sm font-semibold text-text-secondary">
               <div className="col-span-4">Title</div>
               <div className="col-span-3">User ID</div>
               <div className="col-span-2">Created</div>
@@ -965,8 +969,8 @@ export default function AdminVoicesPage() {
             {/* Table Rows */}
             {filteredRecordings.map((recording) => (
               <div key={recording.id} className="border-b border-border-default last:border-0 hover:bg-surface-raised/50 transition-colors">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 px-6 py-4 items-center">
-                  <div className="col-span-1 lg:col-span-4">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-4 items-center">
+                  <div className="col-span-1 md:col-span-4">
                     <p className="text-sm font-semibold text-text-primary">{recording.title}</p>
                     {recording.description && (
                       <p className="mt-1 text-xs text-text-muted line-clamp-2">{recording.description}</p>
@@ -977,15 +981,18 @@ export default function AdminVoicesPage() {
                       </p>
                     )}
                   </div>
-                  <div className="col-span-1 lg:col-span-3">
+                  <div className="col-span-1 md:col-span-3">
+                    <div className="md:hidden text-xs font-medium text-text-muted mb-1">User ID</div>
                     <p className="text-sm text-text-secondary font-mono text-xs break-all">{recording.user_id}</p>
                   </div>
-                  <div className="col-span-1 lg:col-span-2">
+                  <div className="col-span-1 md:col-span-2">
+                    <div className="md:hidden text-xs font-medium text-text-muted mb-1">Created</div>
                     <p className="text-sm text-text-secondary">
                       {new Date(recording.created_at).toLocaleDateString()}
                     </p>
                   </div>
-                  <div className="col-span-1 lg:col-span-3 flex flex-wrap items-center gap-2">
+                  <div className="col-span-1 md:col-span-3 flex flex-wrap items-center gap-2">
+                    <div className="md:hidden text-xs font-medium text-text-muted mb-1 w-full">Actions</div>
                     <button
                       onClick={() => {
                         if (playingVoiceId === recording.id) {
@@ -1004,12 +1011,13 @@ export default function AdminVoicesPage() {
                       {playingVoiceId === recording.id ? (
                         <>
                           <Pause className="h-4 w-4" />
+                          <span className="hidden md:inline">Stop</span>
                           <Volume2 className="h-4 w-4 animate-pulse" />
                         </>
                       ) : (
                         <>
                           <Play className="h-4 w-4" />
-                          <span className="hidden sm:inline">Play</span>
+                          <span className="hidden md:inline">Play</span>
                         </>
                       )}
                     </button>
@@ -1019,7 +1027,7 @@ export default function AdminVoicesPage() {
                       title="Delete recording"
                     >
                       <Trash2 className="h-4 w-4" />
-                      <span className="hidden sm:inline">Delete</span>
+                      <span className="hidden md:inline">Delete</span>
                     </button>
                   </div>
                 </div>
