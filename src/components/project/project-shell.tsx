@@ -10,17 +10,13 @@ import { Button } from "@/components/ui/button";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 
 const stages = [
-  { step: "source", label: "Source" },
-  { step: "script", label: "Script" },
   { step: "voice", label: "Voice" },
   { step: "compose", label: "Compose" },
 ];
 
-type Status = "Draft" | "Script Ready" | "Voice Ready" | "Composing" | "Rendering" | "Completed";
+type Status = "Voice Ready" | "Composing" | "Rendering" | "Completed";
 
 const statusColors: Record<Status, string> = {
-  Draft: "bg-text-muted",
-  "Script Ready": "bg-accent-cyan",
   "Voice Ready": "bg-accent-cyan",
   Composing: "bg-status-processing",
   Rendering: "bg-status-processing animate-pulse",
@@ -28,24 +24,17 @@ const statusColors: Record<Status, string> = {
 };
 
 // Determine project status based on completed steps
-function getProjectStatus(
-  hasMovie: boolean,
-  hasScript: boolean,
-  hasVoice: boolean,
-  hasVideo: boolean,
-  isRendering: boolean
-): Status {
+function getProjectStatus(hasVoice: boolean, hasVideo: boolean, isRendering: boolean): Status {
   if (hasVideo) return "Completed";
   if (isRendering) return "Rendering";
   if (hasVoice) return "Voice Ready";
-  if (hasScript) return "Script Ready";
-  return "Draft";
+  return "Voice Ready"; // New projects start at voice step
 }
 
 export function ProjectShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const projectId = pathname.split("/")[2];
-  const currentStep = pathname.split("/")[3] || "source";
+  const currentStep = pathname.split("/")[3] || "voice"; // Default to voice step
   const activeIndex = stages.findIndex((s) => s.step === currentStep);
   const { collapsed, mobileOpen, setMobileOpen, toggle, isNarrow } = useSidebar();
 
@@ -54,15 +43,11 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
 
   // Determine which steps are completed based on project state
   const completedSteps = {
-    source: !!projectState?.movieId,
-    script: !!projectState?.scripts && projectState.scripts.length > 0,
     voice: !!projectState?.audioUrl,
     compose: !!projectState?.videoUrl,
   };
 
   const projectStatus = getProjectStatus(
-    completedSteps.source,
-    completedSteps.script,
     completedSteps.voice,
     completedSteps.compose,
     projectState?.isRendering || false

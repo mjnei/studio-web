@@ -178,7 +178,8 @@ export async function searchVoices(query?: string): Promise<VoiceListResponse> {
 }
 
 export async function createScript(data: {
-  projectId: string;
+  projectId?: string;
+  movieId?: number;
   content: string;
   wordCount: number;
   estimatedDurationMinutes: number;
@@ -186,10 +187,16 @@ export async function createScript(data: {
   autoActivate?: boolean;
 }): Promise<ProjectScriptResponse> {
   const params = new URLSearchParams({ auto_activate: String(data.autoActivate ?? true) });
+  
+  // Add movie_id if creating a new project with first script
+  if (data.movieId) {
+    params.set("movie_id", String(data.movieId));
+  }
+  
   return request<ProjectScriptResponse>(`/scripts?${params.toString()}`, {
     method: "POST",
     body: JSON.stringify({
-      project_id: data.projectId,
+      project_id: data.projectId ? Number(data.projectId) : null,
       content: data.content,
       word_count: data.wordCount,
       estimated_duration_minutes: data.estimatedDurationMinutes,
