@@ -190,15 +190,13 @@ export default function AdminVoicesPage() {
       return;
     }
     
-    setIsCreateOpen(false);
     try {
       await adminCreateVoice(formData as any);
       showToast("success", "Voice created successfully");
+      setIsCreateOpen(false);
       await loadVoices();
-      e.currentTarget.reset();
     } catch (error: any) {
       showToast("error", error.message || "Failed to create voice");
-      setIsCreateOpen(true);
     }
   };
 
@@ -276,7 +274,6 @@ export default function AdminVoicesPage() {
         console.error("Bulk import errors:", result.errors);
       }
       setIsBulkOpen(false);
-      e.currentTarget.reset();
       await loadVoices();
     } catch (error: any) {
       showToast("error", error.message || "Failed to bulk import voices");
