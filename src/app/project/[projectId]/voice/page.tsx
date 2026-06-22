@@ -18,7 +18,6 @@ import {
   type VoiceResponse,
   type TTSPreviewResponse,
 } from "@/lib/project-client";
-import { VoiceRecordingResponse } from "@/lib/types/api";
 
 type VoiceOption = {
   id: string;
@@ -64,12 +63,6 @@ export default function VoicePage() {
   }, [activeScript]);
 
   useEffect(() => {
-    if (!isLoading && !activeScript) {
-      router.push(`/project/${projectId}/script`);
-    }
-  }, [isLoading, activeScript, router, projectId]);
-
-  useEffect(() => {
     let cancelled = false;
     setVoicesLoading(true);
     listVoices()
@@ -110,13 +103,15 @@ export default function VoicePage() {
           progress: nextJob.progress,
         });
         setIsGenerating(false);
+        // Auto-navigate to preview page when audio is ready
+        router.push(`/project/${projectId}/preview`);
       } else if (nextJob.status === "failed") {
         setIsGenerating(false);
       }
     }, 2000);
 
     return () => window.clearInterval(interval);
-  }, [activeScript?.duration, job, selectedVoice, updateVoice]);
+  }, [activeScript?.duration, job, selectedVoice, updateVoice, router, projectId]);
 
   const handlePreview = async (voice: VoiceOption) => {
     const cacheKey = `${voice.type}-${voice.id}`;
@@ -129,7 +124,7 @@ export default function VoicePage() {
     try {
       setPreviewLoading(cacheKey);
       const preview = await generateTTSPreview({
-        voiceId: voice.id,
+        voiceId: String(voice.id),
         text: previewText,
         voiceType: voice.type,
       });
@@ -176,13 +171,14 @@ export default function VoicePage() {
 
   const myVoiceOptions: VoiceOption[] = useMemo(() => {
     return recordings.map((recording) => ({
-      id: recording.id,
+      id: String(recording.id),
       name: recording.title,
       description: recording.description,
       type: "recording" as const,
       metadata: {
         duration: recording.duration_seconds ?? undefined,
       },
+      previewUrl: recording.audio_url, // Use the audio_url from the recording
     }));
   }, [recordings]);
 
@@ -315,6 +311,11 @@ export default function VoicePage() {
                   {displayedVoices.map((voice) => {
                     const cacheKey = `${voice.type}-${voice.id}`;
                     const preview = previewCache[cacheKey];
+                    
+                    // For recordings, use the previewUrl directly; for stock voices, use cached preview
+                    const audioUrl = voice.type === "recording" 
+                      ? voice.previewUrl 
+                      : (preview?.audio_url || voice.previewUrl);
 
                     return (
                       <VoiceSelectionCard
@@ -327,7 +328,7 @@ export default function VoicePage() {
                         isSelected={
                           selectedVoice?.id === voice.id && selectedVoice?.type === voice.type
                         }
-                        previewUrl={preview?.audio_url || voice.previewUrl}
+                        previewUrl={audioUrl}
                         onSelect={() => handleSelectVoice(voice)}
                         onPreview={() => handlePreview(voice)}
                         isPreviewLoading={previewLoading === cacheKey}
@@ -379,30 +380,12 @@ export default function VoicePage() {
             </div>
           </Card>
         )}
-
-        {state?.audioUrl && (
-          <Card variant="elevated" padding="lg">
-            <div className="mb-4 flex items-center justify-between">
-              <div>
-                <h3 className="text-lg font-medium text-text-primary">Audio Generated</h3>
-                <p className="mt-1 text-sm text-text-muted">
-                  Voice: {state.voiceName} • Duration:{" "}
-                  {state.audioDuration
-                    ? `${Math.floor(state.audioDuration / 60)}:${(Math.round(state.audioDuration) % 60).toString().padStart(2, "0")}`
-                    : "Unknown"}
-                </p>
-              </div>
-            </div>
-
-            <audio controls src={state.audioUrl} className="w-full" />
-          </Card>
-        )}
       </div>
 
       <FloatingWorkflowNavigation
         projectId={projectId}
         currentStep="voice"
-        canGoNext={!!state?.audioUrl}
+        canGoNext={false}
         isProcessing={isGenerating}
       />
     </>

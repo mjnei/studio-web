@@ -108,8 +108,8 @@ export interface VoiceListResponse {
 }
 
 export interface VoiceRecordingResponse {
-  id: string;
-  user_id: string;
+  id: number;
+  user_id: number;
   title: string;
   description: string | null;
   file_path: string;
@@ -117,6 +117,7 @@ export interface VoiceRecordingResponse {
   mime_type: string;
   created_at: string;
   updated_at: string;
+  audio_url?: string; // Computed on frontend
 }
 
 // ============================================================================

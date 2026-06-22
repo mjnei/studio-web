@@ -43,7 +43,7 @@ export function VoiceSelectionCard({
     }
   }, []);
 
-  const handlePlayPause = (e: React.MouseEvent) => {
+  const handlePlayPause = async (e: React.MouseEvent) => {
     e.stopPropagation();
 
     if (!previewUrl) {
@@ -52,15 +52,40 @@ export function VoiceSelectionCard({
     }
 
     if (!audioRef.current) {
-      audioRef.current = new Audio(previewUrl);
-      audioRef.current.onended = () => setIsPlaying(false);
+      // For authenticated endpoints, fetch the audio as a blob first
+      try {
+        const response = await fetch(previewUrl, {
+          credentials: 'include',
+        });
+        
+        if (!response.ok) {
+          console.error("Failed to fetch audio:", response.statusText);
+          return;
+        }
+        
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        
+        audioRef.current = new Audio(blobUrl);
+        audioRef.current.onended = () => setIsPlaying(false);
+        audioRef.current.onerror = () => {
+          console.error("Audio playback error:", audioRef.current?.error);
+          setIsPlaying(false);
+        };
+      } catch (err) {
+        console.error("Failed to load audio:", err);
+        return;
+      }
     }
 
     if (isPlaying) {
       audioRef.current.pause();
       setIsPlaying(false);
     } else {
-      audioRef.current.play();
+      audioRef.current.play().catch(err => {
+        console.error("Failed to play audio:", err);
+        setIsPlaying(false);
+      });
       setIsPlaying(true);
     }
   };

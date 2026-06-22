@@ -84,3 +84,13 @@ export async function deleteVoiceRecording(id: string): Promise<void> {
     method: "DELETE",
   });
 }
+
+/**
+ * Get the audio URL for a voice recording.
+ * This endpoint streams the audio file through the backend with authentication via cookies.
+ * The browser will automatically include credentials (cookies) when making the request.
+ */
+export function getVoiceRecordingAudioUrl(id: number): string {
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020/api/v1";
+  return `${API_BASE}/recordings/${id}/audio`;
+}

@@ -6,6 +6,7 @@ import {
   deleteVoiceRecording,
   listVoiceRecordings,
   uploadVoiceRecording,
+  getVoiceRecordingAudioUrl,
 } from "../api/voice-recording-client";
 
 export function useVoiceRecordings() {
@@ -18,7 +19,12 @@ export function useVoiceRecordings() {
       setLoading(true);
       setError(null);
       const data = await listVoiceRecordings();
-      setRecordings(data);
+      // Add audio URLs to recordings
+      const recordingsWithAudioUrls = data.map(recording => ({
+        ...recording,
+        audio_url: getVoiceRecordingAudioUrl(recording.id),
+      }));
+      setRecordings(recordingsWithAudioUrls);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch recordings");
     } finally {

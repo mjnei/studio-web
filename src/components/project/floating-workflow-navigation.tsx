@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 
 interface FloatingWorkflowNavigationProps {
   projectId: string;
-  currentStep: "source" | "script" | "voice" | "compose";
+  currentStep: "source" | "script" | "details" | "voice" | "preview" | "compose";
   canGoNext?: boolean;
   nextLabel?: string;
   onNext?: () => void;
@@ -20,21 +20,27 @@ interface FloatingWorkflowNavigationProps {
 const stepOrder: Record<string, number> = {
   source: 0,
   script: 1,
-  voice: 2,
-  compose: 3,
+  details: 2,
+  voice: 3,
+  preview: 4,
+  compose: 5,
 };
 
 const stepRoutes: Record<string, string> = {
   source: "source",
   script: "script",
+  details: "details",
   voice: "voice",
+  preview: "preview",
   compose: "compose",
 };
 
 const nextStepLabels: Record<string, string> = {
   source: "Continue to Script",
-  script: "Continue to Voice",
-  voice: "Continue to Compose",
+  script: "Continue to Details",
+  details: "Continue to Voice",
+  voice: "Continue to Preview",
+  preview: "Continue to Compose",
   compose: "Complete Project",
 };
 
