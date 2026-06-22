@@ -141,6 +141,19 @@ export async function advanceProjectStep(
   });
 }
 
+export async function deleteProject(projectId: string, permanent = false): Promise<void> {
+  const params = new URLSearchParams({ permanent: String(permanent) });
+  await request<void>(`/projects/${projectId}?${params.toString()}`, {
+    method: "DELETE",
+  });
+}
+
+export async function restoreProject(projectId: string): Promise<ProjectResponse> {
+  return request<ProjectResponse>(`/projects/${projectId}/restore`, {
+    method: "POST",
+  });
+}
+
 export async function searchMovies(query: string, pageSize = 20): Promise<MovieListResponse> {
   const params = new URLSearchParams({
     page_size: String(pageSize),
