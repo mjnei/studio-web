@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { VoiceResponse } from "../types/api";
-import { listVoices } from "../api/project-client";
+import { request } from "../api-client";
 
 export function useStockVoices() {
   const [voices, setVoices] = useState<VoiceResponse[]>([]);
@@ -12,30 +12,10 @@ export function useStockVoices() {
       setLoading(true);
       setError(null);
       
-      // Fetch all available stock voices
-      let allVoices: VoiceResponse[] = [];
-      let page = 1;
-      let hasMore = true;
+      // The /voices endpoint returns a plain array, not a paginated response
+      const voicesList = await request<VoiceResponse[]>("/voices");
       
-      while (hasMore) {
-        try {
-          const response = await listVoices(page, 100);
-          allVoices.push(...response.voices);
-          
-          // Check if there are more pages
-          hasMore = allVoices.length < response.total;
-          page++;
-        } catch (err) {
-          // If pagination fails, try to return what we have
-          if (allVoices.length > 0) {
-            hasMore = false;
-          } else {
-            throw err;
-          }
-        }
-      }
-      
-      setVoices(allVoices);
+      setVoices(voicesList || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch stock voices");
       setVoices([]);
