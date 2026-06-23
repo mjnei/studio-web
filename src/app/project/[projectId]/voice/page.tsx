@@ -2,11 +2,13 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect, useMemo, useRef } from "react";
-import { Volume2, Mic, Globe } from "lucide-react";
+import { Volume2, Mic, Globe, Plus } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { VoiceSelectionCard } from "@/components/project/voice-selection-card";
+import { VoiceRecorder } from "@/components/shared/voice-recorder";
 import { useVoiceRecordings } from "@/lib/hooks/use-voice-recordings";
 import {
   listVoices,
@@ -14,6 +16,7 @@ import {
   type VoiceResponse,
   type TTSPreviewResponse,
 } from "@/lib/project-client";
+import type { VoiceRecordingResponse } from "@/lib/types/api";
 
 type VoiceOption = {
   id: string;
@@ -34,7 +37,7 @@ export default function VoicePage() {
   const router = useRouter();
   const projectId = params.projectId as string;
   const { state, updateVoice, activeScript, isLoading } = useProjectState(projectId);
-  const { recordings, loading: recordingsLoading } = useVoiceRecordings();
+  const { recordings, loading: recordingsLoading, addRecording } = useVoiceRecordings();
 
   const [voices, setVoices] = useState<VoiceResponse[]>([]);
   const [voicesLoading, setVoicesLoading] = useState(true);
@@ -43,6 +46,7 @@ export default function VoicePage() {
   const [previewCache, setPreviewCache] = useState<Record<string, TTSPreviewResponse>>({});
   const [previewLoading, setPreviewLoading] = useState<string | null>(null);
   const [playingVoice, setPlayingVoice] = useState<string | null>(null);
+  const [showRecorder, setShowRecorder] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Get first sentence from script for preview
@@ -87,6 +91,9 @@ export default function VoicePage() {
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
+        if (audioRef.current.src?.startsWith("blob:")) {
+          URL.revokeObjectURL(audioRef.current.src);
+        }
         audioRef.current = null;
       }
     };
@@ -125,54 +132,78 @@ export default function VoicePage() {
     // Stop current audio if playing
     if (audioRef.current) {
       audioRef.current.pause();
-      audioRef.current = null;
-    }
-
-    // Get preview URL
-    let audioUrl = voice.previewUrl;
-    
-    // For stock voices, check cache or use existing preview URL
-    if (voice.type === "stock") {
-      const preview = previewCache[cacheKey];
-      if (preview?.audio_url) {
-        audioUrl = preview.audio_url;
+      if (audioRef.current.src?.startsWith("blob:")) {
+        URL.revokeObjectURL(audioRef.current.src);
       }
-    }
-
-    if (!audioUrl) {
-      // Generate preview if not available
-      await handlePreview(voice);
-      return;
+      audioRef.current = null;
     }
 
     try {
       setPlayingVoice(cacheKey);
       
-      // For authenticated endpoints, fetch the audio as a blob first
-      const { getAccessToken } = await import("@/lib/api-client");
-      const token = getAccessToken();
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020";
+      const token = localStorage.getItem('accessToken');
       
-      const response = await fetch(audioUrl, {
-        credentials: 'include',
-        headers: token ? {
-          'Authorization': `Bearer ${token}`,
-        } : {},
-      });
+      let audioUrl: string;
       
-      if (!response.ok) {
-        console.error("Failed to fetch audio:", response.statusText);
-        setPlayingVoice(null);
-        return;
+      if (voice.type === "recording") {
+        // For user recordings, use the recordings endpoint (same as VoiceRecordingCard)
+        const response = await fetch(`${API_BASE}/api/v1/recordings/${voice.id}/audio`, {
+          headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          credentials: "include",
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to load recording audio");
+        }
+
+        const blob = await response.blob();
+        audioUrl = URL.createObjectURL(blob);
+      } else {
+        // For stock voices, generate preview if not cached
+        const preview = previewCache[cacheKey];
+        
+        if (!preview?.audio_url) {
+          await handlePreview(voice);
+          // After generating, check cache again
+          const newPreview = previewCache[cacheKey];
+          if (!newPreview?.audio_url) {
+            console.error("Failed to generate preview audio");
+            setPlayingVoice(null);
+            return;
+          }
+          audioUrl = newPreview.audio_url;
+        } else {
+          audioUrl = preview.audio_url;
+        }
+        
+        // Fetch the presigned URL audio as blob to ensure it plays
+        if (audioUrl.startsWith('http://') || audioUrl.startsWith('https://')) {
+          const response = await fetch(audioUrl);
+          if (!response.ok) {
+            throw new Error("Failed to load preview audio");
+          }
+          const blob = await response.blob();
+          audioUrl = URL.createObjectURL(blob);
+        }
       }
       
-      const blob = await response.blob();
-      const blobUrl = URL.createObjectURL(blob);
-      
-      audioRef.current = new Audio(blobUrl);
-      audioRef.current.onended = () => setPlayingVoice(null);
-      audioRef.current.onerror = () => {
-        console.error("Audio playback error:", audioRef.current?.error);
+      // Create and play audio from blob URL
+      audioRef.current = new Audio(audioUrl);
+      audioRef.current.onended = () => {
         setPlayingVoice(null);
+        if (audioUrl.startsWith("blob:")) {
+          URL.revokeObjectURL(audioUrl);
+        }
+      };
+      audioRef.current.onerror = (e) => {
+        console.error("Audio playback error:", audioRef.current?.error, e);
+        setPlayingVoice(null);
+        if (audioUrl.startsWith("blob:")) {
+          URL.revokeObjectURL(audioUrl);
+        }
       };
       
       await audioRef.current.play();
@@ -196,6 +227,25 @@ export default function VoicePage() {
     
     // Auto-play preview
     await playAudio(voice);
+  };
+
+  const handleRecordingSaved = (newRecording: VoiceRecordingResponse) => {
+    addRecording(newRecording);
+    setShowRecorder(false);
+    
+    // Auto-select the newly recorded voice
+    const newVoiceOption: VoiceOption = {
+      id: String(newRecording.id),
+      name: newRecording.title,
+      description: newRecording.description,
+      type: "recording" as const,
+      metadata: {
+        duration: newRecording.duration_seconds ?? undefined,
+      },
+      previewUrl: newRecording.audio_url,
+    };
+    
+    handleSelectVoice(newVoiceOption);
   };
 
   const myVoiceOptions: VoiceOption[] = useMemo(() => {
@@ -298,14 +348,68 @@ export default function VoicePage() {
           </Card>
         )}
 
+        {/* Record Voice CTA */}
+        {!showRecorder && myVoiceOptions.length === 0 && (
+          <Card variant="bordered" padding="md" className="border-accent-purple/30">
+            <div className="flex items-start gap-4">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-purple-muted">
+                <Mic className="h-5 w-5 text-accent-purple" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-medium text-text-primary">Record Your Voice</h3>
+                <p className="mt-1 text-sm text-text-muted">
+                  Create a custom voice clone by recording a sample from your microphone.
+                </p>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={() => setShowRecorder(true)}
+                  className="mt-3 gap-2"
+                >
+                  <Mic size={16} />
+                  Start Recording
+                </Button>
+              </div>
+            </div>
+          </Card>
+        )}
+
+        {/* Voice Recorder Modal */}
+        {showRecorder && (
+          <Card variant="bordered" padding="lg" className="border-accent-purple/30 bg-surface-panel">
+            <div className="mb-4 flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-text-primary">Record New Voice</h3>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => setShowRecorder(false)}
+              >
+                Cancel
+              </Button>
+            </div>
+            <VoiceRecorder onSaved={handleRecordingSaved} />
+          </Card>
+        )}
+
         {/* My Voices Section */}
         {myVoiceOptions.length > 0 && (
           <div>
-            <div className="mb-3 flex items-center gap-2">
-              <Mic className="h-5 w-5 text-accent-purple" />
-              <h3 className="text-lg font-medium text-text-primary">
-                My Voices ({myVoiceOptions.length})
-              </h3>
+            <div className="mb-3 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Mic className="h-5 w-5 text-accent-purple" />
+                <h3 className="text-lg font-medium text-text-primary">
+                  My Voices ({myVoiceOptions.length})
+                </h3>
+              </div>
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => setShowRecorder(true)}
+                className="gap-1"
+              >
+                <Plus size={16} />
+                <span>Record</span>
+              </Button>
             </div>
             
             {recordingsLoading ? (

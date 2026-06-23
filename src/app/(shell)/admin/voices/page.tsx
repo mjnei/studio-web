@@ -212,6 +212,7 @@ export default function AdminVoicesPage() {
     
     const formData = new FormData(e.currentTarget);
     const previewFile = formData.get("preview_file") as File;
+    const voiceName = formData.get("name") as string;
     
     // Validate preview file is provided
     if (!previewFile || previewFile.size === 0) {
@@ -234,7 +235,49 @@ export default function AdminVoicesPage() {
     }
     
     try {
-      await adminCreateVoice(formData as any);
+      // Process audio file: convert WebM to pure audio if needed and use voice name as filename
+      let processedFile = previewFile;
+      
+      if (previewFile.type.includes("webm")) {
+        try {
+          const { convertWebmToAudio } = await import("@/lib/utils/audio-converter");
+          const convertedBlob = await convertWebmToAudio(previewFile, voiceName);
+          // Create a new File with the voice name
+          const sanitizedName = voiceName
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-|-$/g, "");
+          const ext = convertedBlob.type === "audio/wav" ? ".wav" : ".mp3";
+          processedFile = new File([convertedBlob], `${sanitizedName || "voice"}${ext}`, {
+            type: convertedBlob.type
+          });
+        } catch (conversionErr) {
+          console.warn("WebM conversion failed, using original file:", conversionErr);
+          // Proceed with original file if conversion fails
+        }
+      } else {
+        // For non-WebM files, just rename with voice name
+        const sanitizedName = voiceName
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-|-$/g, "");
+        const ext = previewFile.name.split(".").pop() || "audio";
+        processedFile = new File([previewFile], `${sanitizedName || "voice"}.${ext}`, {
+          type: previewFile.type
+        });
+      }
+      
+      // Create new FormData with processed file
+      const newFormData = new FormData();
+      for (const [key, value] of formData.entries()) {
+        if (key === "preview_file") {
+          newFormData.append(key, processedFile);
+        } else {
+          newFormData.append(key, value);
+        }
+      }
+      
+      await adminCreateVoice(newFormData as any);
       showToast("success", "Voice created");
       setIsCreateOpen(false);
       await loadVoices();

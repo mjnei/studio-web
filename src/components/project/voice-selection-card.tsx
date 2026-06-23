@@ -87,10 +87,10 @@ export function VoiceSelectionCard({
                 <p className="mt-1 text-xs text-text-secondary line-clamp-2">{description}</p>
               )}
               {isPreviewLoading && (
-                <p className="mt-2 text-xs text-text-muted flex items-center gap-1">
+                <div className="mt-2 text-xs text-text-muted flex items-center gap-1">
                   <div className="h-3 w-3 animate-spin rounded-full border-2 border-accent-cyan border-t-transparent" />
                   <span>Loading preview...</span>
-                </p>
+                </div>
               )}
             </div>
 

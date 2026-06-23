@@ -3,7 +3,6 @@
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect, useMemo, useRef } from "react";
 import { Volume2, Play, Pause, Loader2, CheckCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
@@ -110,7 +109,7 @@ export default function PreviewPage() {
     return () => window.clearInterval(interval);
   }, [activeScript?.duration, job, state?.voiceId, state?.voiceName, updateVoice]);
 
-  // Get first sentence from script for preview
+  // Get first sentence from script for display
   const previewText = useMemo(() => {
     if (!activeScript?.content) return "This is a preview of your selected voice with the script.";
 
@@ -122,7 +121,7 @@ export default function PreviewPage() {
     return sentences[0].trim();
   }, [activeScript]);
 
-  // Get project name from localStorage
+  // Get project name
   const projectName = useMemo(() => {
     if (typeof window !== "undefined") {
       return localStorage.getItem(`project-${projectId}-name`) || state?.movieTitle || "Your Project";
@@ -135,36 +134,78 @@ export default function PreviewPage() {
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
+        if (audioRef.current.src?.startsWith("blob:")) {
+          URL.revokeObjectURL(audioRef.current.src);
+        }
         audioRef.current = null;
       }
     };
   }, []);
 
-  const handlePlayPause = () => {
-    if (!state?.audioUrl) return;
+  const handlePlayPause = async () => {
+    if (!state?.audioUrl || !state?.ttsJobId) return;
 
-    if (!audioRef.current) {
-      audioRef.current = new Audio(state.audioUrl);
-      audioRef.current.onended = () => setIsPlaying(false);
+    // If audio is already loaded, toggle play/pause
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+        setIsPlaying(false);
+      } else {
+        audioRef.current.play().catch(err => {
+          console.error("Failed to play audio:", err);
+          setIsPlaying(false);
+        });
+        setIsPlaying(true);
+      }
+      return;
+    }
+
+    // Load audio for first time
+    try {
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020";
+      const token = localStorage.getItem('accessToken');
+      const audioSrc = `${API_BASE}/api/v1/tts/${state.ttsJobId}/audio`;
+      
+      // Fetch audio as blob (same pattern as voice selection)
+      const response = await fetch(audioSrc, {
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        credentials: "include",
+      });
+      
+      if (!response.ok) {
+        console.error("Failed to fetch audio:", response.status, response.statusText);
+        return;
+      }
+      
+      // Create blob URL for reliable playback
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      
+      audioRef.current = new Audio(blobUrl);
+      audioRef.current.onended = () => {
+        setIsPlaying(false);
+        URL.revokeObjectURL(blobUrl);
+      };
       audioRef.current.onerror = () => {
         console.error("Audio playback error:", audioRef.current?.error);
         setIsPlaying(false);
+        URL.revokeObjectURL(blobUrl);
       };
-    }
-
-    if (isPlaying) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-    } else {
-      audioRef.current.play().catch(err => {
-        console.error("Failed to play audio:", err);
-        setIsPlaying(false);
-      });
+      
+      await audioRef.current.play();
       setIsPlaying(true);
+    } catch (err) {
+      console.error("Failed to load audio:", err);
     }
   };
 
-  const handleContinue = () => {
+  const handleBack = () => {
+    router.push(`/project/${projectId}/voice`);
+  };
+
+  const handleNext = () => {
     router.push(`/project/${projectId}/compose`);
   };
 
@@ -179,19 +220,21 @@ export default function PreviewPage() {
     );
   }
 
+  const hasAudioReady = !!state?.audioUrl;
+  const isProcessingAudio = isGenerating || (!hasAudioReady && job?.status === "processing");
+
   return (
     <>
       <div className="flex flex-col gap-6 pb-24">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-semibold text-text-primary">Voice Preview</h2>
-            <p className="mt-1 text-sm text-text-muted">
-              Listen to how your voice sounds with the script
-            </p>
-          </div>
+        {/* Page header */}
+        <div>
+          <h2 className="text-xl font-semibold text-text-primary">Voice Preview</h2>
+          <p className="mt-1 text-sm text-text-muted">
+            Listen to your complete script with the selected voice
+          </p>
         </div>
 
-        {/* Project info */}
+        {/* Project info card */}
         <Card variant="bordered" padding="md">
           <div className="flex items-start gap-4">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-purple-muted">
@@ -202,6 +245,12 @@ export default function PreviewPage() {
               <p className="mt-1 text-sm text-text-muted">
                 Voice: {state?.voiceName || "Selected Voice"}
               </p>
+              {activeScript && (
+                <p className="mt-1 text-xs text-text-muted">
+                  {activeScript.wordCount} words • {Math.floor(activeScript.duration / 60)}:
+                  {(activeScript.duration % 60).toString().padStart(2, "0")} duration
+                </p>
+              )}
             </div>
           </div>
         </Card>
@@ -210,28 +259,29 @@ export default function PreviewPage() {
         <Card variant="elevated" padding="lg">
           <div className="mb-4 flex items-center gap-2">
             <Volume2 className="h-5 w-5 text-accent-cyan" />
-            <h3 className="text-lg font-medium text-text-primary">Preview Text</h3>
+            <h3 className="text-lg font-medium text-text-primary">Script Preview</h3>
           </div>
           
           <div className="rounded-lg bg-surface-panel p-4 border border-border-default">
             <p className="text-sm text-text-primary leading-relaxed">
-              "{previewText}"
+              &ldquo;{previewText}&rdquo;
             </p>
           </div>
 
           <p className="mt-3 text-xs text-text-muted">
-            This is the first sentence from your script in the tone of your chosen voice.
+            First sentence from your script
           </p>
         </Card>
 
         {/* Audio player card */}
-        {state?.audioUrl ? (
+        {hasAudioReady ? (
           <Card variant="elevated" padding="lg">
             <div className="text-center">
               <div className="mb-6">
                 <button
                   onClick={handlePlayPause}
-                  className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-accent-cyan text-white transition-transform hover:scale-105 active:scale-95"
+                  className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-accent-cyan text-white transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                  aria-label={isPlaying ? "Pause audio" : "Play audio"}
                 >
                   {isPlaying ? (
                     <Pause className="h-8 w-8 fill-current" />
@@ -246,13 +296,13 @@ export default function PreviewPage() {
               </h3>
               <p className="text-sm text-text-muted">
                 Voice: {state.voiceName}
-                {state.audioDuration && ` • Duration: ${Math.floor(state.audioDuration / 60)}:${(Math.round(state.audioDuration) % 60).toString().padStart(2, "0")}`}
+                {state.audioDuration && (
+                  <> • Duration: {Math.floor(state.audioDuration / 60)}:{(Math.round(state.audioDuration) % 60).toString().padStart(2, "0")}</>
+                )}
               </p>
-
-              {/* Native audio player as fallback */}
-              <div className="mt-6">
-                <audio controls src={state.audioUrl} className="w-full" />
-              </div>
+              <p className="mt-2 text-xs text-text-muted">
+                Click the button to hear your full script
+              </p>
             </div>
           </Card>
         ) : (
@@ -281,13 +331,15 @@ export default function PreviewPage() {
         )}
       </div>
 
+      {/* Navigation */}
       <FloatingWorkflowNavigation
         projectId={projectId}
         currentStep="preview"
-        canGoNext={!!state?.audioUrl}
-        onNext={handleContinue}
+        canGoNext={hasAudioReady}
         canGoBack={true}
-        isProcessing={!state?.audioUrl}
+        onNext={handleNext}
+        onBack={handleBack}
+        isProcessing={isProcessingAudio}
       />
     </>
   );

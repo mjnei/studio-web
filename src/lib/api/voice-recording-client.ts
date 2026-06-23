@@ -24,7 +24,12 @@ export async function uploadVoiceRecording(
   };
 
   const ext = extMap[mimeType] || extMap[mimeType.split(";")[0]] || ".webm";
-  const filename = `recording${ext}`;
+  // Use the voice title as filename, sanitized for filesystem safety
+  const sanitizedTitle = title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+  const filename = `${sanitizedTitle || "recording"}${ext}`;
 
   // Create a new File object with the correct MIME type
   const audioFile = new File([file], filename, { type: mimeType });

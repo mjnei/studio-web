@@ -379,11 +379,25 @@ export function VoiceRecorder({
 
     try {
       const { uploadVoiceRecording } = await import("@/lib/api/voice-recording-client");
+      const { convertWebmToAudio } = await import("@/lib/utils/audio-converter");
 
-      // Ensure the blob has the correct type from the MIME ref
-      const typedBlob = new Blob([blob], { type: mimeRef.current || blob.type || "audio/webm" });
+      // Convert WebM to pure audio format if needed
+      let audioBlob = blob;
+      const mimeType = mimeRef.current || blob.type || "audio/webm";
+      
+      if (mimeType.includes("webm")) {
+        try {
+          audioBlob = await convertWebmToAudio(blob, title);
+        } catch (conversionErr) {
+          // If conversion fails, proceed with original blob
+          console.warn("Audio conversion failed, using original format:", conversionErr);
+          audioBlob = new Blob([blob], { type: mimeType });
+        }
+      } else {
+        audioBlob = new Blob([blob], { type: mimeType });
+      }
 
-      const newRecording = await uploadVoiceRecording(typedBlob, title, undefined, duration);
+      const newRecording = await uploadVoiceRecording(audioBlob, title, undefined, duration);
       onSaved?.(newRecording);
       discardRecording();
     } catch (err) {
