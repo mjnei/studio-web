@@ -18,14 +18,14 @@ This directory contains all documentation for the Huavoi Studio frontend, organi
 2. **[DESIGN_GUIDE.md](./guides/DESIGN_GUIDE.md)** ← Component examples and patterns
 3. **[DESIGN_SYSTEM.md](./guides/DESIGN_SYSTEM.md)** ← Foundational design principles
 
-#### 🎬 **I'm Working on the 4-Step Project Workflow** - Need workflow implementation info
+#### 🎬 **I'm Working on the 6-Step Project Workflow** - Need workflow implementation info
 
-**→ [Jump to Workflow Navigation Hub](#-4-step-workflow-navigation-hub)** ← Complete workflow roadmap
+**→ [Jump to Workflow Navigation Hub](#-6-step-workflow-navigation-hub)** ← Complete workflow roadmap
 
 **Quick Links:**
-1. **[WORKFLOW_GUIDE.md](./guides/WORKFLOW_GUIDE.md)** ← **START HERE** - Complete workflow documentation
-2. **[NEW_PROJECT_UI_DESIGN.md](./guides/NEW_PROJECT_UI_DESIGN.md)** ← UI layouts and visual design
-3. **[COMPONENT_EXAMPLES.md](./guides/COMPONENT_EXAMPLES.md)** ← Component showcase
+1. **[PROJECT_WORKFLOW.md](./guides/PROJECT_WORKFLOW.md)** ← **START HERE** - Complete workflow documentation
+2. **[WORKFLOW_QUICK_REFERENCE.md](./reference/WORKFLOW_QUICK_REFERENCE.md)** ← Quick reference cheat sheet
+3. **[WORKFLOW_FIXES.md](./implementation/WORKFLOW_FIXES.md)** ← Implementation fixes and improvements
 
 #### ✅ **I Need Implementation Details** - Want to understand what was built
 → See **[Implementation Reports](#implementation-reports)** below
