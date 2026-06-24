@@ -230,7 +230,7 @@ export default function PreviewPage() {
         <div>
           <h2 className="text-xl font-semibold text-text-primary">Voice Preview</h2>
           <p className="mt-1 text-sm text-text-muted">
-            Listen to your complete script with the selected voice
+            Generating full audio with your selected voice and script
           </p>
         </div>
 

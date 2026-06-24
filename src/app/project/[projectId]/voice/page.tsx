@@ -12,10 +12,9 @@ import { VoiceRecorder } from "@/components/shared/voice-recorder";
 import { useVoiceRecordings } from "@/lib/hooks/use-voice-recordings";
 import {
   listVoices,
-  generateTTSPreview,
   type VoiceResponse,
-  type TTSPreviewResponse,
 } from "@/lib/project-client";
+import { getVoicePreviewUrl } from "@/lib/hooks/use-stock-voices";
 import type { VoiceRecordingResponse } from "@/lib/types/api";
 
 type VoiceOption = {
@@ -43,24 +42,11 @@ export default function VoicePage() {
   const [voicesLoading, setVoicesLoading] = useState(true);
   const [voicesError, setVoicesError] = useState<string | null>(null);
   const [selectedVoice, setSelectedVoice] = useState<VoiceOption | null>(null);
-  const [previewCache, setPreviewCache] = useState<Record<string, TTSPreviewResponse>>({});
-  const [previewLoading, setPreviewLoading] = useState<string | null>(null);
   const [playingVoice, setPlayingVoice] = useState<string | null>(null);
   const [showRecorder, setShowRecorder] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Get first sentence from script for preview
-  const previewText = useMemo(() => {
-    if (!activeScript?.content) return "This is a preview of the selected voice.";
-
-    const sentences = activeScript.content.match(/[^.!?]+[.!?]+/g);
-    if (!sentences || sentences.length === 0) {
-      return activeScript.content.substring(0, 200);
-    }
-
-    return sentences[0].trim();
-  }, [activeScript]);
-
+  // Fetch voices
   useEffect(() => {
     let cancelled = false;
     setVoicesLoading(true);
@@ -99,33 +85,6 @@ export default function VoicePage() {
     };
   }, []);
 
-  const handlePreview = async (voice: VoiceOption) => {
-    const cacheKey = `${voice.type}-${voice.id}`;
-
-    // Return cached preview if available
-    if (previewCache[cacheKey]) {
-      return;
-    }
-
-    try {
-      setPreviewLoading(cacheKey);
-      const preview = await generateTTSPreview({
-        voiceId: String(voice.id),
-        text: previewText,
-        voiceType: voice.type,
-      });
-
-      setPreviewCache((prev) => ({
-        ...prev,
-        [cacheKey]: preview,
-      }));
-    } catch (err) {
-      console.error("Failed to generate preview:", err);
-    } finally {
-      setPreviewLoading(null);
-    }
-  };
-
   const playAudio = async (voice: VoiceOption) => {
     const cacheKey = `${voice.type}-${voice.id}`;
     
@@ -147,69 +106,61 @@ export default function VoicePage() {
       let audioUrl: string;
       
       if (voice.type === "recording") {
-        // For user recordings, use the recordings endpoint (same as VoiceRecordingCard)
-        const response = await fetch(`${API_BASE}/api/v1/recordings/${voice.id}/audio`, {
-          headers: {
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          },
-          credentials: "include",
-        });
-
+        // For user recordings, use the presigned URL from audio_url
+        const recordingAudioUrl = voice.previewUrl;
+        
+        if (!recordingAudioUrl) {
+          console.error("No audio URL available for recording");
+          setPlayingVoice(null);
+          alert("Audio preview not available for this recording");
+          return;
+        }
+        
+        // Fetch audio as blob for reliable playback
+        const response = await fetch(recordingAudioUrl);
         if (!response.ok) {
           throw new Error("Failed to load recording audio");
         }
-
         const blob = await response.blob();
         audioUrl = URL.createObjectURL(blob);
       } else {
-        // For stock voices, generate preview if not cached
-        const preview = previewCache[cacheKey];
+        // For stock voices, get presigned URL from backend
+        const presignedUrl = await getVoicePreviewUrl(voice.id);
         
-        if (!preview?.audio_url) {
-          await handlePreview(voice);
-          // After generating, check cache again
-          const newPreview = previewCache[cacheKey];
-          if (!newPreview?.audio_url) {
-            console.error("Failed to generate preview audio");
-            setPlayingVoice(null);
-            return;
-          }
-          audioUrl = newPreview.audio_url;
-        } else {
-          audioUrl = preview.audio_url;
+        if (!presignedUrl) {
+          console.error("No preview available for stock voice");
+          setPlayingVoice(null);
+          alert("Preview not available for this voice");
+          return;
         }
         
-        // Fetch the presigned URL audio as blob to ensure it plays
-        if (audioUrl.startsWith('http://') || audioUrl.startsWith('https://')) {
-          const response = await fetch(audioUrl);
-          if (!response.ok) {
-            throw new Error("Failed to load preview audio");
-          }
-          const blob = await response.blob();
-          audioUrl = URL.createObjectURL(blob);
+        // Fetch the presigned URL audio as blob for reliable playback
+        const response = await fetch(presignedUrl);
+        if (!response.ok) {
+          throw new Error("Failed to load voice preview");
         }
+        const blob = await response.blob();
+        audioUrl = URL.createObjectURL(blob);
       }
       
       // Create and play audio from blob URL
       audioRef.current = new Audio(audioUrl);
       audioRef.current.onended = () => {
         setPlayingVoice(null);
-        if (audioUrl.startsWith("blob:")) {
-          URL.revokeObjectURL(audioUrl);
-        }
+        URL.revokeObjectURL(audioUrl);
       };
       audioRef.current.onerror = (e) => {
         console.error("Audio playback error:", audioRef.current?.error, e);
         setPlayingVoice(null);
-        if (audioUrl.startsWith("blob:")) {
-          URL.revokeObjectURL(audioUrl);
-        }
+        alert("Failed to play audio preview");
+        URL.revokeObjectURL(audioUrl);
       };
       
       await audioRef.current.play();
     } catch (err) {
       console.error("Failed to load/play audio:", err);
       setPlayingVoice(null);
+      alert("Failed to load audio preview");
     }
   };
 
@@ -316,7 +267,7 @@ export default function VoicePage() {
           <div>
             <h2 className="text-xl font-semibold text-text-primary">Select Voice</h2>
             <p className="mt-1 text-sm text-text-muted">
-              Click on a voice to select it and hear a preview
+              Choose a voice and listen to its preview. Audio will be generated in the next step.
             </p>
           </div>
           {selectedVoice && (
@@ -436,8 +387,6 @@ export default function VoicePage() {
                       isPlaying={playingVoice === cacheKey}
                       previewUrl={voice.previewUrl}
                       onSelect={() => handleSelectVoice(voice)}
-                      onPreview={() => handlePreview(voice)}
-                      isPreviewLoading={previewLoading === cacheKey}
                     />
                   );
                 })}
@@ -472,8 +421,6 @@ export default function VoicePage() {
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {stockVoiceOptions.map((voice) => {
                 const cacheKey = `${voice.type}-${voice.id}`;
-                const preview = previewCache[cacheKey];
-                const audioUrl = preview?.audio_url || voice.previewUrl;
 
                 return (
                   <VoiceSelectionCard
@@ -487,10 +434,8 @@ export default function VoicePage() {
                       selectedVoice?.id === voice.id && selectedVoice?.type === voice.type
                     }
                     isPlaying={playingVoice === cacheKey}
-                    previewUrl={audioUrl}
+                    previewUrl={voice.previewUrl}
                     onSelect={() => handleSelectVoice(voice)}
-                    onPreview={() => handlePreview(voice)}
-                    isPreviewLoading={previewLoading === cacheKey}
                   />
                 );
               })}
