@@ -19,11 +19,26 @@ export function useVoiceRecordings() {
       setLoading(true);
       setError(null);
       const data = await listVoiceRecordings();
-      // Add audio URLs to recordings
-      const recordingsWithAudioUrls = data.map(recording => ({
-        ...recording,
-        audio_url: getVoiceRecordingAudioUrl(recording.id),
-      }));
+      
+      // Fetch audio URLs for all recordings in parallel
+      const recordingsWithAudioUrls = await Promise.all(
+        data.map(async (recording) => {
+          try {
+            const audioUrlData = await getVoiceRecordingAudioUrl(recording.id);
+            return {
+              ...recording,
+              audio_url: audioUrlData.audio_url,
+              audio_storage_type: audioUrlData.storage_type,
+              audio_expires_in: audioUrlData.expires_in,
+            };
+          } catch (err) {
+            console.error(`Failed to fetch audio URL for recording ${recording.id}:`, err);
+            // Return recording without audio URL if fetching fails
+            return recording;
+          }
+        })
+      );
+      
       setRecordings(recordingsWithAudioUrls);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch recordings");

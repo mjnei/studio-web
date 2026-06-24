@@ -44,47 +44,59 @@ export function VoiceRecordingCard({ recording, onDelete }: VoiceRecordingCardPr
     if (!audioRef.current) {
       setIsLoading(true);
 
-      // Get audio from backend (backend streams the file to avoid CORS issues)
-      const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020/api/v1";
-      const token = (await import("@/lib/api-client")).getAccessToken();
-
       try {
-        // Fetch the audio as a blob from the backend
-        const response = await fetch(`${API_BASE}/recordings/${recording.id}/audio`, {
-          headers: {
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          },
-          credentials: "include",
-        });
+        // Check if we have a direct audio URL (from S3 or backend)
+        const audioUrl = (recording as any).audio_url;
+        
+        if (!audioUrl) {
+          // Fallback: fetch audio URL from backend
+          const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020/api/v1";
+          const token = (await import("@/lib/api-client")).getAccessToken();
+          
+          const response = await fetch(`${API_BASE}/recordings/${recording.id}/audio-url`, {
+            headers: {
+              ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+            credentials: "include",
+          });
 
-        if (!response.ok) {
-          throw new Error("Failed to load audio");
+          if (!response.ok) {
+            throw new Error("Failed to get audio URL");
+          }
+
+          const data = await response.json();
+          const fetchedAudioUrl = data.storage_type === "local" 
+            ? `${API_BASE}${data.audio_url}`
+            : data.audio_url;
+
+          const audio = new Audio(fetchedAudioUrl);
+          audioRef.current = audio;
+        } else {
+          // Check if it's a relative URL (local storage) and needs API base
+          const storageType = (recording as any).audio_storage_type;
+          const finalAudioUrl = storageType === "local" && audioUrl.startsWith("/")
+            ? `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020/api/v1"}${audioUrl}`
+            : audioUrl;
+
+          const audio = new Audio(finalAudioUrl);
+          audioRef.current = audio;
         }
 
-        // Create blob URL for playback
-        const blob = await response.blob();
-        const audioUrl = URL.createObjectURL(blob);
-
-        const audio = new Audio(audioUrl);
-        audioRef.current = audio;
-
-        audio.onended = () => {
+        audioRef.current.onended = () => {
           setIsPlaying(false);
-          URL.revokeObjectURL(audioUrl);
         };
 
-        audio.onerror = () => {
+        audioRef.current.onerror = () => {
           setIsPlaying(false);
           setIsLoading(false);
-          URL.revokeObjectURL(audioUrl);
           setAudioErrorAlert({ open: true, message: "Failed to play audio" });
         };
 
-        audio.oncanplay = () => {
+        audioRef.current.oncanplay = () => {
           setIsLoading(false);
         };
 
-        await audio.play();
+        await audioRef.current.play();
         setIsPlaying(true);
       } catch (error) {
         console.error("Audio playback error:", error);
@@ -101,10 +113,6 @@ export function VoiceRecordingCard({ recording, onDelete }: VoiceRecordingCardPr
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
-        // Revoke object URL if it's a blob URL
-        if (audioRef.current.src?.startsWith("blob:")) {
-          URL.revokeObjectURL(audioRef.current.src);
-        }
         audioRef.current = null;
       }
     };

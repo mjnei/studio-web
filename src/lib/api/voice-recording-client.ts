@@ -92,10 +92,17 @@ export async function deleteVoiceRecording(id: string): Promise<void> {
 
 /**
  * Get the audio URL for a voice recording.
- * This endpoint streams the audio file through the backend with authentication via cookies.
- * The browser will automatically include credentials (cookies) when making the request.
+ * For S3 storage: Returns a presigned URL for direct access.
+ * For local storage: Returns the backend streaming endpoint URL.
  */
-export function getVoiceRecordingAudioUrl(id: number): string {
-  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020/api/v1";
-  return `${API_BASE}/recordings/${id}/audio`;
+export async function getVoiceRecordingAudioUrl(id: number): Promise<{
+  audio_url: string;
+  expires_in: number | null;
+  storage_type: "s3" | "local";
+}> {
+  return request<{
+    audio_url: string;
+    expires_in: number | null;
+    storage_type: "s3" | "local";
+  }>(`/recordings/${id}/audio-url`);
 }

@@ -90,7 +90,7 @@ export interface VoiceResponse {
   provider: string;
   name: string;
   description?: string | null;
-  preview_url?: string | null;
+  preview_path?: string | null;
   gender?: string | null;
   age_group?: string | null;
   accent?: string | null;
@@ -235,7 +235,7 @@ export interface VoiceCreateRequest {
   provider: string;
   name: string;
   description?: string | null;
-  preview_url?: string | null;
+  preview_path?: string | null;
   gender?: string | null;
   accent?: string | null;
   language?: string | null;
@@ -246,7 +246,7 @@ export interface VoiceCreateRequest {
 export interface VoiceUpdateRequest {
   name?: string;
   description?: string | null;
-  preview_url?: string | null;
+  preview_path?: string | null;
   gender?: string | null;
   accent?: string | null;
   language?: string | null;

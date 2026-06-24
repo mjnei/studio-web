@@ -12,8 +12,8 @@ import {
   adminGetVoiceRecordings,
   adminDeleteVoiceRecording,
   getAdminRecordingAudioUrl,
+  getAdminVoiceAudioUrl,
 } from "@/lib/api/admin";
-import { getAccessToken } from "@/lib/api-client";
 import type { VoiceCreateRequest, VoiceResponse, VoiceUpdateRequest, VoiceRecordingResponse } from "@/lib/types/api";
 
 type Toast = {
@@ -65,29 +65,14 @@ export default function AdminVoicesPage() {
       
       setPlayingVoiceId(recordingId);
       
-      const token = getAccessToken();
-      const url = getAdminRecordingAudioUrl(recordingId);
-      const res = await fetch(url, {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-        credentials: "include",
-      });
+      // Get presigned URL from backend
+      const { audio_url } = await getAdminRecordingAudioUrl(recordingId);
       
-      if (!res.ok) {
-        const errorText = await res.text().catch(() => "Unknown error");
-        throw new Error(`Failed to load audio: ${res.status} ${errorText}`);
-      }
-      
-      const blob = await res.blob();
-      const blobUrl = URL.createObjectURL(blob);
-      audioObjectUrlRef.current = blobUrl;
-      
-      const audio = new Audio(blobUrl);
+      const audio = new Audio(audio_url);
       audioRef.current = audio;
       
       audio.onerror = () => {
         showToast("error", "Failed to play audio");
-        URL.revokeObjectURL(blobUrl);
-        audioObjectUrlRef.current = null;
         setPlayingVoiceId(null);
       };
       
@@ -103,7 +88,7 @@ export default function AdminVoicesPage() {
     }
   };
 
-  const playStockVoiceAudio = async (voiceId: string, previewUrl: string) => {
+  const playStockVoiceAudio = async (voiceId: string) => {
     try {
       // Stop currently playing audio if any
       if (audioRef.current) {
@@ -119,7 +104,10 @@ export default function AdminVoicesPage() {
       
       setPlayingVoiceId(voiceId);
       
-      const audio = new Audio(previewUrl);
+      // Get presigned URL from backend
+      const { audio_url } = await getAdminVoiceAudioUrl(voiceId);
+      
+      const audio = new Audio(audio_url);
       audioRef.current = audio;
       
       audio.onerror = () => {
@@ -885,13 +873,13 @@ export default function AdminVoicesPage() {
                   </div>
                   <div className="col-span-1 md:col-span-4 flex flex-wrap items-center gap-2">
                     <div className="md:hidden text-xs font-medium text-text-muted mb-1 w-full">Actions</div>
-                    {voice.preview_url ? (
+                    {voice.preview_path ? (
                       <button
                         onClick={() => {
                           if (playingVoiceId === voice.id) {
                             stopAudio();
                           } else {
-                            playStockVoiceAudio(voice.id, voice.preview_url!);
+                            playStockVoiceAudio(voice.id);
                           }
                         }}
                         className={`group relative flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition-all shadow-sm ${
@@ -1054,32 +1042,6 @@ export default function AdminVoicesPage() {
           <div className="w-full max-w-2xl rounded-2xl border border-border-default bg-surface-panel p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
             <h2 className="mb-4 text-xl font-semibold text-text-primary">Add Voice</h2>
             <form onSubmit={handleCreateVoice} className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2">
-                <div>
-                  <label className="mb-1 block text-sm font-medium text-text-secondary">
-                    ID *
-                  </label>
-                  <input
-                    type="text"
-                    name="id"
-                    required
-                    placeholder="e.g., 21m00Tcm4TlvDq8ikWAM"
-                    className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 text-text-primary focus:border-accent-primary focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-sm font-medium text-text-secondary">
-                    Provider *
-                  </label>
-                  <input
-                    type="text"
-                    name="provider"
-                    required
-                    placeholder="e.g., elevenlabs"
-                    className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 text-text-primary focus:border-accent-primary focus:outline-none"
-                  />
-                </div>
-              </div>
               <div>
                 <label className="mb-1 block text-sm font-medium text-text-secondary">
                   Name *
@@ -1089,6 +1051,18 @@ export default function AdminVoicesPage() {
                   name="name"
                   required
                   placeholder="e.g., Rachel"
+                  className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 text-text-primary focus:border-accent-primary focus:outline-none"
+                />
+              </div>
+              <div>
+                <label className="mb-1 block text-sm font-medium text-text-secondary">
+                  Provider *
+                </label>
+                <input
+                  type="text"
+                  name="provider"
+                  required
+                  placeholder="e.g., elevenlabs"
                   className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 text-text-primary focus:border-accent-primary focus:outline-none"
                 />
               </div>

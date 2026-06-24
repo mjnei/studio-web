@@ -272,7 +272,7 @@ export default function VoicePage() {
         accent: voice.accent ?? undefined,
         language: voice.language ?? undefined,
       },
-      previewUrl: voice.preview_url ?? undefined,
+      previewUrl: voice.preview_path ?? undefined,
     }));
   }, [voices]);
 

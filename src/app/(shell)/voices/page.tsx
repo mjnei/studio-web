@@ -6,7 +6,7 @@ import { VoiceRecorder } from "@/components/shared/voice-recorder";
 import { VoiceRecordingCard } from "@/components/voices/voice-recording-card";
 import { Button } from "@/components/ui/button";
 import { useVoiceRecordings } from "@/lib/hooks/use-voice-recordings";
-import { useStockVoices } from "@/lib/hooks/use-stock-voices";
+import { useStockVoices, getVoicePreviewUrl } from "@/lib/hooks/use-stock-voices";
 import { VoiceRecordingResponse, VoiceResponse } from "@/lib/types/api";
 
 export default function VoicesPage() {
@@ -24,20 +24,23 @@ export default function VoicesPage() {
     setShowRecorder(false);
   };
 
-  const playStockVoiceAudio = async (voiceId: string, previewUrl: string | null | undefined) => {
+  const playStockVoiceAudio = async (voiceId: string) => {
     try {
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current = null;
       }
       
-      if (!previewUrl) {
+      setPlayingVoiceId(voiceId);
+      
+      // Get presigned URL
+      const audioUrl = await getVoicePreviewUrl(voiceId);
+      if (!audioUrl) {
+        setPlayingVoiceId(null);
         return;
       }
       
-      setPlayingVoiceId(voiceId);
-      
-      const audio = new Audio(previewUrl);
+      const audio = new Audio(audioUrl);
       audioRef.current = audio;
       
       audio.onerror = () => {
@@ -327,13 +330,13 @@ export default function VoicesPage() {
                   </div>
                   
                   {/* Preview Button */}
-                  {voice.preview_url ? (
+                  {voice.preview_path ? (
                     <button
                       onClick={() => {
                         if (playingVoiceId === voice.id) {
                           stopAudio();
                         } else {
-                          playStockVoiceAudio(voice.id, voice.preview_url);
+                          playStockVoiceAudio(voice.id);
                         }
                       }}
                       className={`w-full flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-all duration-200 ${

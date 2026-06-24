@@ -22,7 +22,7 @@ export interface VoiceResponse {
   name: string;
   provider: string;
   description?: string | null;
-  preview_url?: string | null;
+  preview_path?: string | null;
   gender?: string | null;
   accent?: string | null;
   language?: string | null;

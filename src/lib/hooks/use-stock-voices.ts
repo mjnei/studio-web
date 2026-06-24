@@ -35,3 +35,18 @@ export function useStockVoices() {
     refresh: fetchVoices,
   };
 }
+
+/**
+ * Get presigned audio URL for a stock voice
+ */
+export async function getVoicePreviewUrl(voiceId: string): Promise<string | null> {
+  try {
+    const response = await request<{ audio_url: string | null; expires_in: number | null }>(
+      `/voices/${voiceId}/preview-url`
+    );
+    return response.audio_url;
+  } catch (error) {
+    console.error("Failed to get voice preview URL:", error);
+    return null;
+  }
+}
