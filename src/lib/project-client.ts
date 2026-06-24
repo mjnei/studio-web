@@ -218,27 +218,6 @@ export async function activateScript(
   });
 }
 
-export async function createTTSJob(data: {
-  projectId: string;
-  scriptId: string;
-  voiceId: string;
-  autoActivate?: boolean;
-}): Promise<TTSJobResponse> {
-  const params = new URLSearchParams({ auto_activate: String(data.autoActivate ?? true) });
-  return request<TTSJobResponse>(`/tts?${params.toString()}`, {
-    method: "POST",
-    body: JSON.stringify({
-      project_id: data.projectId,
-      script_id: data.scriptId,
-      voice_id: data.voiceId,
-    }),
-  });
-}
-
-export async function getTTSJob(jobId: string): Promise<TTSJobResponse> {
-  return request<TTSJobResponse>(`/tts/${jobId}`);
-}
-
 export async function createVideoJob(data: {
   projectId: string;
   ttsJobId: string;
@@ -254,33 +233,6 @@ export async function createVideoJob(data: {
 
 export async function getVideoJob(jobId: string): Promise<VideoJobResponse> {
   return request<VideoJobResponse>(`/video/${jobId}?load_steps=true`);
-}
-
-export interface TTSPreviewResponse {
-  status: string;
-  voice_id: string;
-  voice_name: string;
-  voice_type: string;
-  provider: string;
-  text: string;
-  audio_url: string | null;
-  duration_seconds: number | null;
-  message?: string;
-}
-
-export async function generateTTSPreview(data: {
-  voiceId: string;
-  text: string;
-  voiceType: "stock" | "recording";
-}): Promise<TTSPreviewResponse> {
-  return request<TTSPreviewResponse>("/tts/preview", {
-    method: "POST",
-    body: JSON.stringify({
-      voice_id: data.voiceId,
-      text: data.text,
-      voice_type: data.voiceType,
-    }),
-  });
 }
 
 export function tmdbImageUrl(path?: string | null, size = "w500"): string | undefined {

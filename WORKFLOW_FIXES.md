@@ -46,7 +46,7 @@
 2. **script** - Generate/edit script
 3. **details** - Name the project
 4. **voice** - Select voice and listen to voice preview (no TTS generation)
-5. **preview** - Generate full TTS audio with selected voice and script
+5. **preview** - Review project summary and configuration (placeholder - no audio generation)
 6. **compose** - Generate final video
 
 ---
@@ -63,18 +63,20 @@
 - **No TTS generation** - Only plays existing voice previews
 
 ### Step 5: Preview
-- **Purpose**: Generate full script TTS audio and preview
+- **Purpose**: Review project configuration before video composition
 - **Actions**:
-  - Create TTS job with selected voice and full script
-  - Generate complete audio narration
-  - Display progress and allow playback
-  - Advance to video composition when ready
+  - Display project summary (name, voice, script)
+  - Show script preview
+  - Placeholder: Audio generation will be added in future update
+  - Proceed to video composition when ready
+
+**Note**: TTS audio generation has been removed. This step now serves as a review/confirmation step before proceeding to video composition.
 
 ---
 
 ## Testing Instructions
 
-### Test Audio Playback
+### Test Audio Playback (Step 4)
 1. Go to `/project/{id}/voice`
 2. Click "Play Preview" on any voice recording
 3. ✅ Audio should play without 401 errors
@@ -85,18 +87,24 @@
 3. Click on the project card
 4. ✅ Should open at step 3, not step 1
 
+### Test Preview Step (Step 5)
+1. Complete steps 1-4 to reach the preview page at `/project/{id}/preview`
+2. ✅ Should see project summary with selected voice and script
+3. ✅ Should show placeholder notice about audio generation
+4. ✅ "Next" button should be enabled immediately
+5. ✅ Can proceed to compose step
+
 ---
 
 ## Migration Status
 
 ✅ Migration `e08bed7ae0d0_add_details_and_preview_to_last_step` applied successfully.
 
-
 ---
 
 ### 3. Voice Selection Workflow Separation ✅
 
-**Problem**: Step 4 (Voice Selection) was generating TTS preview audio for the first sentence using `generateTTSPreview()`, which was confusing and unnecessary. TTS should only be generated in Step 5 (Preview) for the full script.
+**Problem**: Step 4 (Voice Selection) was generating TTS preview audio for the first sentence using `generateTTSPreview()`, which was confusing and unnecessary.
 
 **Root Cause**: The voice selection page had complex logic to generate TTS previews on-demand, cache them, and play them back. This was meant for testing voices with script content, but it should just play the voice's own preview audio.
 
@@ -109,33 +117,52 @@
    - For stock voices: Fetch presigned URL from `/voices/{id}/preview-url`
    - For user recordings: Use presigned URL from `audio_url` field
 4. Updated voice selection card to not show TTS loading states
-5. Clarified UI text to indicate audio is generated in the next step
-
-#### Workflow Clarification:
-- **Step 4 (Voice)**: Select voice and play its preview sample
-- **Step 5 (Preview)**: Generate full TTS audio with the selected voice
 
 **Files Modified**:
 - `src/app/project/[projectId]/voice/page.tsx` - Removed TTS preview generation
-- `src/app/project/[projectId]/preview/page.tsx` - Updated description
-- `WORKFLOW_FIXES.md` - Documented workflow separation
+- `src/app/project/[projectId]/preview/page.tsx` - Simplified to placeholder
+- `src/lib/project-client.ts` - Removed TTS API client functions
+- Backend: Removed `app/routers/tts.py`, `app/services/tts.py`, `app/services/tts_provider.py`
 
 ---
 
-## Summary of Changes
+### 4. Step 5 Simplified to Placeholder ✅
 
-### Workflow Now Correctly Separated:
+**Change**: Removed all TTS audio generation from Step 5 (Preview). This step now serves as a simple review/confirmation page.
 
-1. **Step 4 - Voice Selection Page**
-   - Browse stock voices and user recordings
-   - Click to select a voice
-   - Play voice preview audio (pre-recorded samples only)
-   - No TTS generation happens here
+**Reason**: TTS API integration deferred to future update. Step 5 is now a lightweight placeholder.
 
-2. **Step 5 - Preview Page**
-   - Automatically generates TTS audio using:
-     - Selected voice from Step 4
-     - Full script from Step 2
-   - Shows progress bar during generation
-   - Allows playback of full narration
-   - User proceeds to video composition when satisfied
+**Current Implementation**:
+- Shows project summary (name, voice, script preview)
+- Displays placeholder notice about future audio generation
+- "Next" button enabled immediately
+- No API calls or processing
+
+**Files Modified**:
+- Frontend: `src/app/project/[projectId]/preview/page.tsx` - Removed TTS generation logic
+- Frontend: `src/lib/project-client.ts` - Removed `createTTSJob`, `getTTSJob`, `generateTTSPreview`
+- Backend: Removed TTS router from `app/main.py`
+- Backend: Deleted `app/routers/tts.py`
+- Backend: Deleted `app/services/tts.py`
+- Backend: Deleted `app/services/tts_provider.py`
+- Backend: Reverted `app/storage.py` to original (removed async optimizations)
+
+---
+
+## Summary of Current Workflow
+
+### Complete 6-Step Workflow:
+
+1. **Step 1 - Source**: Select movie from TMDB
+2. **Step 2 - Script**: Generate/edit script
+3. **Step 3 - Details**: Name the project
+4. **Step 4 - Voice**: Select voice and play preview samples
+5. **Step 5 - Preview**: Review project summary (placeholder - no audio generation)
+6. **Step 6 - Compose**: Generate final video
+
+### Key Points:
+- No TTS generation in any step
+- Voice preview audio only plays pre-recorded samples
+- Step 5 is a simple confirmation/review page
+- All steps properly persist to database
+- Workflow navigation works correctly
