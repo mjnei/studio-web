@@ -45,58 +45,33 @@ export function VoiceRecordingCard({ recording, onDelete }: VoiceRecordingCardPr
       setIsLoading(true);
 
       try {
-        // Check if we have a direct audio URL (from S3 or backend)
+        // Use presigned URL from S3
         const audioUrl = (recording as any).audio_url;
         
         if (!audioUrl) {
-          // Fallback: fetch audio URL from backend
-          const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020/api/v1";
-          const token = (await import("@/lib/api-client")).getAccessToken();
-          
-          const response = await fetch(`${API_BASE}/recordings/${recording.id}/audio-url`, {
-            headers: {
-              ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            },
-            credentials: "include",
-          });
-
-          if (!response.ok) {
-            throw new Error("Failed to get audio URL");
-          }
-
-          const data = await response.json();
-          const fetchedAudioUrl = data.storage_type === "local" 
-            ? `${API_BASE}${data.audio_url}`
-            : data.audio_url;
-
-          const audio = new Audio(fetchedAudioUrl);
-          audioRef.current = audio;
-        } else {
-          // Check if it's a relative URL (local storage) and needs API base
-          const storageType = (recording as any).audio_storage_type;
-          const finalAudioUrl = storageType === "local" && audioUrl.startsWith("/")
-            ? `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020/api/v1"}${audioUrl}`
-            : audioUrl;
-
-          const audio = new Audio(finalAudioUrl);
-          audioRef.current = audio;
+          setAudioErrorAlert({ open: true, message: "Audio URL not available" });
+          setIsLoading(false);
+          return;
         }
 
-        audioRef.current.onended = () => {
+        const audio = new Audio(audioUrl);
+        audioRef.current = audio;
+
+        audio.onended = () => {
           setIsPlaying(false);
         };
 
-        audioRef.current.onerror = () => {
+        audio.onerror = () => {
           setIsPlaying(false);
           setIsLoading(false);
-          setAudioErrorAlert({ open: true, message: "Failed to play audio" });
+          setAudioErrorAlert({ open: true, message: "Failed to play audio. The file may be unavailable." });
         };
 
-        audioRef.current.oncanplay = () => {
+        audio.oncanplay = () => {
           setIsLoading(false);
         };
 
-        await audioRef.current.play();
+        await audio.play();
         setIsPlaying(true);
       } catch (error) {
         console.error("Audio playback error:", error);
@@ -158,35 +133,30 @@ export function VoiceRecordingCard({ recording, onDelete }: VoiceRecordingCardPr
         <span>{formatDuration(recording.duration_seconds)}</span>
       </div>
 
-      <div className="flex items-center gap-2">
-        <Button
-          variant="secondary"
-          size="sm"
-          className="flex-1"
-          onClick={togglePlayback}
-          disabled={isLoading}
-        >
-          {isLoading ? (
-            <>
-              <div className="mr-1 h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
-              Loading...
-            </>
-          ) : isPlaying ? (
-            <>
-              <Pause size={14} className="mr-1" />
-              Pause
-            </>
-          ) : (
-            <>
-              <Play size={14} className="mr-1" />
-              Play
-            </>
-          )}
-        </Button>
-        <Button variant="primary" size="sm" className="flex-1">
-          Use Voice
-        </Button>
-      </div>
+      <Button
+        variant="secondary"
+        size="sm"
+        className="w-full"
+        onClick={togglePlayback}
+        disabled={isLoading}
+      >
+        {isLoading ? (
+          <>
+            <div className="mr-1 h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
+            Loading...
+          </>
+        ) : isPlaying ? (
+          <>
+            <Pause size={14} className="mr-1" />
+            Pause
+          </>
+        ) : (
+          <>
+            <Play size={14} className="mr-1" />
+            Play
+          </>
+        )}
+      </Button>
 
       {/* Delete Confirmation Modal */}
       <ConfirmModal

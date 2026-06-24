@@ -33,10 +33,11 @@ export default function VoicesPage() {
       
       setPlayingVoiceId(voiceId);
       
-      // Get presigned URL
+      // Get presigned URL from S3
       const audioUrl = await getVoicePreviewUrl(voiceId);
       if (!audioUrl) {
         setPlayingVoiceId(null);
+        alert("Failed to load voice preview. Please try again.");
         return;
       }
       
@@ -45,6 +46,7 @@ export default function VoicesPage() {
       
       audio.onerror = () => {
         setPlayingVoiceId(null);
+        alert("Failed to play audio. The preview file may be unavailable.");
       };
       
       audio.onended = () => {
@@ -55,6 +57,7 @@ export default function VoicesPage() {
     } catch (error) {
       console.error("Audio playback error:", error);
       setPlayingVoiceId(null);
+      alert("Failed to play audio. Please try again.");
     }
   };
 
