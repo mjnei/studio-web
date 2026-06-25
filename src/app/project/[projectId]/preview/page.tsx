@@ -101,11 +101,18 @@ export default function PreviewPage() {
 
   // Get project name
   const projectName = useMemo(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem(`project-${projectId}-name`) || state?.movieTitle || "Your Project";
+    // Use project_name from backend if available
+    if (state?.project?.project_name) {
+      return state.project.project_name;
     }
+    // Fallback to localStorage
+    if (typeof window !== "undefined") {
+      const storedName = localStorage.getItem(`project-${projectId}-name`);
+      if (storedName) return storedName;
+    }
+    // Final fallback
     return state?.movieTitle || "Your Project";
-  }, [projectId, state?.movieTitle]);
+  }, [projectId, state?.project?.project_name, state?.movieTitle]);
 
   const handleBack = async () => {
     await advanceProjectStep(projectId, "voice").catch(console.error);

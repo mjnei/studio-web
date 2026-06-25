@@ -80,6 +80,7 @@ export interface VideoJobResponse {
 export interface ProjectResponse {
   id: string;
   user_id: string;
+  project_name?: string | null;
   movie_id?: number | null;
   active_script_id?: string | null;
   active_tts_job_id?: string | null;
@@ -129,6 +130,16 @@ export async function updateProjectMovie(
   return request<ProjectResponse>(`/projects/${projectId}`, {
     method: "PATCH",
     body: JSON.stringify({ movie_id: movieId, last_step: "source" }),
+  });
+}
+
+export async function updateProjectName(
+  projectId: string,
+  projectName: string
+): Promise<ProjectResponse> {
+  return request<ProjectResponse>(`/projects/${projectId}`, {
+    method: "PATCH",
+    body: JSON.stringify({ project_name: projectName }),
   });
 }
 

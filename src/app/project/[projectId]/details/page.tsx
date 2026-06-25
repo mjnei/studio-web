@@ -2,12 +2,13 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { FileText, Sparkles } from "lucide-react";
+import { FileText, Sparkles, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
-import { advanceProjectStep } from "@/lib/project-client";
+import { advanceProjectStep, updateProjectName } from "@/lib/project-client";
+import { generateProjectNameSuggestions, type NameSuggestion } from "@/lib/llm-client";
 
 export default function ProjectDetailsPage() {
   const params = useParams();
@@ -16,6 +17,9 @@ export default function ProjectDetailsPage() {
   const { state, isLoading } = useProjectState(projectId);
 
   const [projectName, setProjectName] = useState("");
+  const [suggestions, setSuggestions] = useState<NameSuggestion[]>([]);
+  const [loadingSuggestions, setLoadingSuggestions] = useState(false);
+  const [savingName, setSavingName] = useState(false);
   
   // Advance step when entering this page
   useEffect(() => {
@@ -24,22 +28,63 @@ export default function ProjectDetailsPage() {
     }
   }, [projectId, state?.lastStep]);
   
-  // Generate default project name from movie title
+  // Generate default project name and fetch suggestions
   useEffect(() => {
     if (state?.movieTitle) {
-      // Find existing projects with the same movie name to generate sequential number
+      // Use simple default first
       const timestamp = new Date().getTime() % 10000;
       const defaultName = `${state.movieTitle} ${timestamp}`;
       setProjectName(defaultName);
+      
+      // Fetch LLM suggestions in background
+      fetchNameSuggestions();
     }
   }, [state?.movieTitle]);
 
-  // Store project name in localStorage
-  const handleContinue = () => {
-    if (projectName.trim()) {
-      localStorage.setItem(`project-${projectId}-name`, projectName.trim());
+  const fetchNameSuggestions = async () => {
+    if (!state?.movieTitle) return;
+    
+    setLoadingSuggestions(true);
+    try {
+      const movieGenres = state.movieGenre ? [state.movieGenre] : undefined;
+      const response = await generateProjectNameSuggestions(
+        state.movieTitle,
+        undefined, // movie overview not available in state yet
+        movieGenres
+      );
+      setSuggestions(response.suggestions);
+    } catch (error) {
+      console.error("Failed to fetch name suggestions:", error);
+      // Silently fail - user can still use manual input
+    } finally {
+      setLoadingSuggestions(false);
     }
-    router.push(`/project/${projectId}/voice`);
+  };
+
+  const handleSuggestionClick = (suggestion: NameSuggestion) => {
+    setProjectName(suggestion.name);
+  };
+
+  // Save project name and continue
+  const handleContinue = async () => {
+    if (!projectName.trim()) return;
+    
+    setSavingName(true);
+    try {
+      // Save to backend
+      await updateProjectName(projectId, projectName.trim());
+      
+      // Also store in localStorage as fallback
+      localStorage.setItem(`project-${projectId}-name`, projectName.trim());
+      
+      router.push(`/project/${projectId}/voice`);
+    } catch (error) {
+      console.error("Failed to save project name:", error);
+      // Still navigate but show error?
+      router.push(`/project/${projectId}/voice`);
+    } finally {
+      setSavingName(false);
+    }
   };
 
   if (isLoading) {
@@ -132,9 +177,47 @@ export default function ProjectDetailsPage() {
                 className="w-full rounded-md border border-border-default bg-surface-raised px-4 py-2.5 text-text-primary placeholder-text-muted focus:border-accent-cyan focus:outline-none focus:ring-2 focus:ring-accent-cyan/20"
               />
               <p className="mt-2 text-xs text-text-muted">
-                This name will help you identify your project later. By default, we use the movie name with a unique number.
+                Choose a memorable name to identify your project
               </p>
             </div>
+
+            {/* AI Suggestions */}
+            {(loadingSuggestions || suggestions.length > 0) && (
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <Sparkles className="h-4 w-4 text-accent-purple" />
+                  <label className="block text-sm font-medium text-text-primary">
+                    AI Suggestions
+                  </label>
+                  {loadingSuggestions && <Loader2 className="h-4 w-4 animate-spin text-text-muted" />}
+                </div>
+                
+                <div className="grid grid-cols-1 gap-2">
+                  {loadingSuggestions ? (
+                    <div className="flex items-center justify-center py-4 text-text-muted text-sm">
+                      Generating creative names...
+                    </div>
+                  ) : (
+                    suggestions.map((suggestion, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => handleSuggestionClick(suggestion)}
+                        className="group text-left px-4 py-3 rounded-lg border border-border-default bg-surface-base hover:bg-surface-raised hover:border-accent-cyan transition-all duration-200"
+                      >
+                        <div className="font-medium text-text-primary group-hover:text-accent-cyan">
+                          {suggestion.name}
+                        </div>
+                        {suggestion.reason && (
+                          <div className="mt-1 text-xs text-text-muted">
+                            {suggestion.reason}
+                          </div>
+                        )}
+                      </button>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </Card>
       </div>
@@ -145,7 +228,7 @@ export default function ProjectDetailsPage() {
         canGoNext={!!projectName.trim()}
         onNext={handleContinue}
         canGoBack={true}
-        isProcessing={false}
+        isProcessing={savingName}
       />
     </>
   );

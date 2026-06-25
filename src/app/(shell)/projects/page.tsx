@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Folder, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ConfirmModal } from "@/components/ui/modal";
+import { FormModal } from "@/components/ui/modal";
 import { listProjects, deleteProject, tmdbImageUrl, type ProjectResponse } from "@/lib/project-client";
 
 export default function ProjectsPage() {
@@ -133,7 +133,7 @@ export default function ProjectsPage() {
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <h2 className="font-semibold text-text-primary">
-                          {project.movie?.title ?? "Untitled project"}
+                          {project.project_name || project.movie?.title || "Untitled project"}
                         </h2>
                         <p className="mt-1 text-xs text-text-muted">
                           Step: {project.last_step} • Status: {project.status}
@@ -162,16 +162,15 @@ export default function ProjectsPage() {
       )}
 
       {/* Delete Confirmation Modal */}
-      <ConfirmModal
+      <FormModal
         open={deleteModalOpen}
         onClose={() => {
           setDeleteModalOpen(false);
           setProjectToDelete(null);
         }}
-        onConfirm={handleDeleteConfirm}
+        onSubmit={handleDeleteConfirm}
         title="Delete Project?"
-        variant="danger"
-        confirmText={deleteMode === "hard" ? "Delete Permanently" : "Delete"}
+        submitText={deleteMode === "hard" ? "Delete Permanently" : "Delete"}
         cancelText="Cancel"
         loading={deleting}
       >
@@ -179,7 +178,7 @@ export default function ProjectsPage() {
           <p className="text-sm text-text-secondary">
             You are about to delete the project:{" "}
             <span className="font-semibold text-text-primary">
-              {projectToDelete?.movie?.title ?? "Untitled project"}
+              {(projectToDelete?.project_name || projectToDelete?.movie?.title) ?? "Untitled project"}
             </span>
           </p>
 
@@ -232,7 +231,7 @@ export default function ProjectsPage() {
             </div>
           )}
         </div>
-      </ConfirmModal>
+      </FormModal>
     </div>
   );
 }
