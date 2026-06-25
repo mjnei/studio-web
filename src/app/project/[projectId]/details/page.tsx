@@ -188,102 +188,84 @@ export default function ProjectDetailsPage() {
 
         {/* Project name input */}
         <Card variant="elevated" padding="lg">
-          <div className="mb-4 flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-accent-cyan" />
-            <h3 className="text-lg font-medium text-text-primary">Project Name</h3>
+          <div className="mb-6">
+            <label htmlFor="projectName" className="block text-sm font-medium text-text-primary mb-2">
+              Project Name
+            </label>
+            <input
+              id="projectName"
+              type="text"
+              value={projectName}
+              onChange={(e) => setProjectName(e.target.value)}
+              placeholder="Enter project name..."
+              className="w-full rounded-lg border border-border-default bg-surface-raised px-4 py-3 text-base text-text-primary placeholder-text-muted focus:border-accent-cyan focus:outline-none focus:ring-2 focus:ring-accent-cyan/20 transition-all"
+            />
           </div>
 
-          <div className="space-y-4">
+          {/* Unified Suggestions List */}
+          {(loadingFallback || loadingAiSuggestions || aiSuggestions.length > 0 || fallbackSuggestions.length > 0) && (
             <div>
-              <label htmlFor="projectName" className="block text-sm font-medium text-text-primary mb-2">
-                Give your project a name
-              </label>
-              <input
-                id="projectName"
-                type="text"
-                value={projectName}
-                onChange={(e) => setProjectName(e.target.value)}
-                placeholder="Enter project name..."
-                className="w-full rounded-md border border-border-default bg-surface-raised px-4 py-2.5 text-text-primary placeholder-text-muted focus:border-accent-cyan focus:outline-none focus:ring-2 focus:ring-accent-cyan/20"
-              />
-              <p className="mt-2 text-xs text-text-muted">
-                Choose a memorable name to identify your project
-              </p>
-            </div>
+              <div className="flex items-center gap-2 mb-3">
+                <h4 className="text-sm font-medium text-text-secondary">Suggestions</h4>
+                {(loadingFallback || loadingAiSuggestions) && (
+                  <Loader2 className="h-4 w-4 animate-spin text-accent-cyan" />
+                )}
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                {/* Loading State - Only show while AI is loading */}
+                {loadingAiSuggestions && aiSuggestions.length === 0 && activeScript?.content && (
+                  <div className="col-span-1 sm:col-span-2 flex items-center justify-center py-8 text-text-muted text-sm border border-dashed border-border-default rounded-lg bg-surface-base/50">
+                    <Loader2 className="h-5 w-5 animate-spin mr-2 text-accent-cyan" />
+                    Generating AI suggestions...
+                  </div>
+                )}
 
-            {/* AI Suggestions Section - Shows when loading or loaded */}
-            {(aiSuggestions.length > 0 || loadingAiSuggestions) && activeScript?.content && (
-              <div>
-                <div className="flex items-center gap-2 mb-3">
-                  <Sparkles className="h-4 w-4 text-accent-cyan" />
-                  <label className="block text-sm font-medium text-text-primary">
-                    AI-Powered Suggestions
-                  </label>
-                  {loadingAiSuggestions && <Loader2 className="h-4 w-4 animate-spin text-accent-cyan" />}
-                </div>
-                
-                <div className="grid grid-cols-1 gap-2 mb-4">
-                  {loadingAiSuggestions ? (
-                    <div className="flex items-center justify-center py-6 text-text-muted text-sm border border-border-default rounded-lg bg-surface-base">
-                      <Loader2 className="h-5 w-5 animate-spin mr-2 text-accent-cyan" />
-                      Analyzing your script to generate creative names...
-                    </div>
-                  ) : (
-                    aiSuggestions.map((suggestion, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => handleSuggestionClick(suggestion)}
-                        className="group text-left px-4 py-3 rounded-lg border-2 border-accent-cyan bg-accent-cyan/5 hover:bg-accent-cyan/10 hover:border-accent-cyan transition-all duration-200 shadow-sm"
-                      >
-                        <div className="flex items-center gap-2">
-                          <Sparkles className="h-4 w-4 text-accent-cyan flex-shrink-0" />
-                          <div className="font-semibold text-text-primary group-hover:text-accent-cyan">
-                            {suggestion.name}
-                          </div>
+                {/* AI Suggestions - with sparkle icon */}
+                {aiSuggestions.map((suggestion, idx) => (
+                  <button
+                    key={`ai-${idx}`}
+                    onClick={() => handleSuggestionClick(suggestion)}
+                    className="group relative text-left px-4 py-3.5 rounded-lg border-2 border-accent-cyan/30 bg-accent-cyan/5 hover:bg-accent-cyan/10 hover:border-accent-cyan hover:shadow-md transition-all duration-200"
+                  >
+                    <div className="flex items-start gap-2.5">
+                      <Sparkles className="h-4 w-4 text-accent-cyan flex-shrink-0 mt-0.5" />
+                      <div className="flex-1 min-w-0">
+                        <div className="font-semibold text-text-primary group-hover:text-accent-cyan transition-colors break-words">
+                          {suggestion.name}
                         </div>
                         {suggestion.reason && (
-                          <div className="mt-1.5 ml-6 text-xs text-text-secondary">
+                          <div className="mt-1 text-xs text-text-secondary line-clamp-2">
                             {suggestion.reason}
                           </div>
                         )}
-                      </button>
-                    ))
-                  )}
-                </div>
-              </div>
-            )}
+                      </div>
+                    </div>
+                  </button>
+                ))}
 
-            {/* Fallback Suggestions - Always visible when loaded */}
-            {fallbackSuggestions.length > 0 && (
-              <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <label className="block text-sm font-medium text-text-muted">
-                    Quick Suggestions
-                  </label>
-                  {loadingFallback && <Loader2 className="h-4 w-4 animate-spin text-text-muted" />}
-                </div>
-                
-                <div className="grid grid-cols-1 gap-2">
-                  {fallbackSuggestions.map((suggestion, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => handleSuggestionClick(suggestion)}
-                      className="group text-left px-4 py-3 rounded-lg border border-border-default bg-surface-base hover:bg-surface-raised hover:border-border-hover transition-all duration-200"
-                    >
-                      <div className="font-medium text-text-secondary group-hover:text-text-primary">
+                {/* Fallback Suggestions - no icon */}
+                {fallbackSuggestions.map((suggestion, idx) => (
+                  <button
+                    key={`fallback-${idx}`}
+                    onClick={() => handleSuggestionClick(suggestion)}
+                    className="group text-left px-4 py-3.5 rounded-lg border border-border-default bg-surface-base hover:bg-surface-raised hover:border-border-hover hover:shadow-sm transition-all duration-200"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <div className="font-medium text-text-secondary group-hover:text-text-primary transition-colors break-words">
                         {suggestion.name}
                       </div>
                       {suggestion.reason && (
-                        <div className="mt-1 text-xs text-text-muted">
+                        <div className="mt-1 text-xs text-text-muted line-clamp-2">
                           {suggestion.reason}
                         </div>
                       )}
-                    </button>
-                  ))}
-                </div>
+                    </div>
+                  </button>
+                ))}
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </Card>
       </div>
 
