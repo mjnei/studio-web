@@ -53,7 +53,7 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
     projectState?.isRendering || false
   );
 
-  const projectTitle = projectState?.title || projectState?.movieTitle || "Untitled Project";
+  const projectTitle = projectState?.projectName || projectState?.title || projectState?.movieTitle || "Untitled Project";
 
   useEffect(() => {
     setMobileOpen(false);

@@ -28,6 +28,7 @@ export interface ScriptVersion {
 export interface ProjectState {
   id: string;
   title?: string;
+  projectName?: string;
 
   movieId?: string;
   movieTitle?: string;
@@ -128,6 +129,7 @@ function mapProject(project: ProjectResponse, scripts: ProjectScriptResponse[] =
   return {
     id: project.id,
     title: movie?.title,
+    projectName: project.project_name ?? undefined,
     movieId: project.movie_id ? String(project.movie_id) : undefined,
     movieTitle: movie?.title,
     moviePoster: tmdbImageUrl(movie?.poster_path),
@@ -323,9 +325,21 @@ export function useProjectState(projectId: string) {
     [projectId]
   );
 
-  const updateTitle = useCallback((_title: string) => {
-    // Project titles are derived from the selected movie in the backend model.
-  }, []);
+  const updateTitle = useCallback(
+    async (newTitle: string) => {
+      // Update project name in the backend
+      await updateProjectName(projectId, newTitle);
+      setState((current) =>
+        current
+          ? {
+              ...current,
+              projectName: newTitle,
+            }
+          : current
+      );
+    },
+    [projectId]
+  );
 
   const activeScript =
     state?.scripts.find((script) => script.isActive) || state?.scripts[state.scripts.length - 1];

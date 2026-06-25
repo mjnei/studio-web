@@ -61,7 +61,7 @@ export default function NewProjectSourcePage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-xl font-semibold text-text-primary">Create New Project</h1>
-              <p className="mt-1 text-sm text-text-muted">Step 1 of 4: Select a movie</p>
+              <p className="mt-1 text-sm text-text-muted">Step 1 of 5: Select a movie</p>
             </div>
             <Button
               variant="ghost"
@@ -108,7 +108,7 @@ export default function NewProjectSourcePage() {
                 <span className="hidden sm:inline">Step</span>
                 <span className="font-semibold text-text-primary">1</span>
                 <span>/</span>
-                <span>4</span>
+                <span>5</span>
               </div>
 
               <div className="flex items-center gap-2">

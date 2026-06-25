@@ -14,7 +14,7 @@ export default function ProjectDetailsPage() {
   const params = useParams();
   const router = useRouter();
   const projectId = params.projectId as string;
-  const { state, isLoading } = useProjectState(projectId);
+  const { state, isLoading, activeScript } = useProjectState(projectId);
 
   const [projectName, setProjectName] = useState("");
   const [suggestions, setSuggestions] = useState<NameSuggestion[]>([]);
@@ -74,9 +74,7 @@ export default function ProjectDetailsPage() {
       // Save to backend
       await updateProjectName(projectId, projectName.trim());
       
-      // Also store in localStorage as fallback
-      localStorage.setItem(`project-${projectId}-name`, projectName.trim());
-      
+      // Navigate to voice step
       router.push(`/project/${projectId}/voice`);
     } catch (error) {
       console.error("Failed to save project name:", error);
@@ -135,7 +133,7 @@ export default function ProjectDetailsPage() {
         )}
 
         {/* Script summary */}
-        {state?.scriptContent && (
+        {activeScript && (
           <Card variant="bordered" padding="md">
             <div className="flex items-start gap-4">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted">
@@ -144,12 +142,12 @@ export default function ProjectDetailsPage() {
               <div className="flex-1">
                 <h3 className="font-medium text-text-primary">Your Script</h3>
                 <p className="mt-1 text-sm text-text-muted">
-                  {state.scriptWordCount} words • Estimated duration:{" "}
-                  {Math.floor((state.scriptDuration || 0) / 60)}:
-                  {((state.scriptDuration || 0) % 60).toString().padStart(2, "0")}
+                  {activeScript.wordCount} words • Estimated duration:{" "}
+                  {Math.floor(activeScript.duration / 60)}:
+                  {(activeScript.duration % 60).toString().padStart(2, "0")}
                 </p>
                 <p className="mt-2 line-clamp-2 text-sm text-text-secondary">
-                  {state.scriptContent}
+                  {activeScript.content}
                 </p>
               </div>
             </div>

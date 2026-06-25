@@ -82,8 +82,8 @@ export default function NewProjectScriptPage() {
         sessionStorage.removeItem("newProjectMovie");
       }
 
-      // Redirect to the new project's voice step
-      router.push(`/project/${script.project_id}/voice`);
+      // Redirect to the new project's details step (Step 3 - naming)
+      router.push(`/project/${script.project_id}/details`);
     } catch (error) {
       console.error("Failed to create script:", error);
       alert("Failed to create script. Please try again.");
@@ -111,7 +111,7 @@ export default function NewProjectScriptPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-xl font-semibold text-text-primary">Create New Project</h1>
-              <p className="mt-1 text-sm text-text-muted">Step 2 of 4: Write your script</p>
+              <p className="mt-1 text-sm text-text-muted">Step 2 of 5: Write your script</p>
             </div>
             <Button
               variant="ghost"
@@ -223,7 +223,7 @@ export default function NewProjectScriptPage() {
                 <span className="hidden sm:inline">Step</span>
                 <span className="font-semibold text-text-primary">2</span>
                 <span>/</span>
-                <span>4</span>
+                <span>5</span>
               </div>
 
               <div className="flex items-center gap-2">
