@@ -10,8 +10,8 @@
 1. Source    → Select movie from TMDB
 2. Script    → Generate/edit voiceover script
 3. Details   → Name the project
-4. Voice     → Select voice and play preview samples
-5. Preview   → Review project configuration
+4. Voice     → Select voice (plays pre-recorded preview samples)
+5. Preview   → Generate and preview TTS audio with selected voice
 6. Compose   → Generate final video
 ```
 
@@ -58,7 +58,7 @@
 | Script | `script` has content | Details |
 | Details | `title` is set | Voice |
 | Voice | `voice_id` is set | Preview |
-| Preview | User clicks Next | Compose |
+| Preview | TTS audio generated & ready | Compose |
 | Compose | `video_url` is set | Done |
 
 ---
@@ -102,12 +102,23 @@ Body: { "voice_id": "uuid" }
 ```
 
 ### Step 5: Preview
-No API calls - reads existing data
+Generate and preview TTS audio for the selected voice with your script
+
+```http
+POST /api/v1/tts
+Body: { "project_id": "id", "script_id": "id", "voice_id": "id" }
+
+GET /api/v1/tts/{job_id}
+Response: { "status": "completed", "audio_url": "..." }
+```
 
 ### Step 6: Compose
 ```http
 POST /api/v1/projects/{id}/compose
+Body: { "tts_job_id": "job-id" }
+
 GET /api/v1/jobs/{job_id}/status
+Response: { "status": "processing", "progress": 45 }
 ```
 
 ---
@@ -126,8 +137,9 @@ const {
 
 ---
 
-## Voice Playback
+## Voice Playback & TTS Generation
 
+**Step 4: Voice Selection - Plays Pre-recorded Samples**
 ```typescript
 // Stock voice (fetch presigned URL)
 const { url } = await getVoicePreviewUrl(voiceId);
@@ -139,7 +151,23 @@ audio.src = recording.audio_url;
 await audio.play();
 ```
 
-**Important:** Only plays pre-recorded samples. No TTS generation.
+**Step 5: Preview - Generates & Plays TTS Audio**
+```typescript
+// Create TTS job with selected voice and script
+const job = await createTTSJob({
+  projectId,
+  scriptId,
+  voiceId,
+  autoActivate: true
+});
+
+// Poll for completion
+const job = await getTTSJob(job.id);
+if (job.status === "completed") {
+  audio.src = job.audio_url;
+  await audio.play();
+}
+```
 
 ---
 
@@ -185,23 +213,37 @@ src/lib/
 
 **Advance to next step:**
 ```typescript
-await advanceStep("voice");
+await advanceProjectStep(projectId, "voice");
 router.push(`/project/${projectId}/voice`);
 ```
 
-**Play voice preview:**
+**Generate TTS audio (Step 5):**
 ```typescript
-const playVoice = async (voiceId: string) => {
-  const { url } = await getVoicePreviewUrl(voiceId);
-  audioRef.current.src = url;
-  await audioRef.current.play();
+const job = await createTTSJob({
+  projectId,
+  scriptId: activeScript.id,
+  voiceId: selectedVoiceId,
+  autoActivate: true
+});
+
+// Poll for completion
+const pollJob = async () => {
+  const updated = await getTTSJob(job.id);
+  if (updated.status === "completed") {
+    // Ready for compose
+  } else if (updated.status === "processing") {
+    setTimeout(pollJob, 2000);
+  }
 };
 ```
 
-**Update project:**
+**Create video job (Step 6):**
 ```typescript
-await updateProject(projectId, { title: "New Title" });
-await refetch();
+const videoJob = await createVideoJob({
+  projectId,
+  ttsJobId: ttsJob.id,
+  autoActivate: true
+});
 ```
 
 ---
