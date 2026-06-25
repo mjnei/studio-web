@@ -10,11 +10,12 @@ export interface NameSuggestionsResponse {
 }
 
 /**
- * Generate project name suggestions based on movie title and script content
+ * Generate AI-powered project name suggestions using Agnes AI.
+ * Requires script content - fallback suggestions should be generated client-side.
  */
 export async function generateProjectNameSuggestions(
   movieTitle: string,
-  scriptContent?: string
+  scriptContent: string
 ): Promise<NameSuggestionsResponse> {
   return request<NameSuggestionsResponse>("/llm/project-name-suggestions", {
     method: "POST",
