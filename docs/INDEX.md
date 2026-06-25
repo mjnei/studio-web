@@ -48,17 +48,17 @@ This directory contains all documentation for the Huavoi Studio frontend, organi
 #### Guides - Read These
 | Document | Size | Purpose |
 |----------|------|---------|
-| **[WORKFLOW_GUIDE.md](./guides/WORKFLOW_GUIDE.md)** | 14KB | 🎬 Complete 4-step workflow with state management & API integration |
+| **[PROJECT_WORKFLOW.md](./guides/PROJECT_WORKFLOW.md)** | 18KB | 🎬 Complete 6-step workflow with database integration & API endpoints |
 | **[DESIGN_GUIDE.md](./guides/DESIGN_GUIDE.md)** | 11KB | 🎨 Component usage guide with examples and patterns |
 | **[DESIGN_SYSTEM.md](./guides/DESIGN_SYSTEM.md)** | 7KB | 📐 Design system foundations and principles |
 | **[COMPONENT_EXAMPLES.md](./guides/COMPONENT_EXAMPLES.md)** | 8KB | 🧩 All UI components with code examples |
-| **[NEW_PROJECT_UI_DESIGN.md](./guides/NEW_PROJECT_UI_DESIGN.md)** | 6KB | 🎬 UI layouts for the 4-step workflow |
+| **[NEW_PROJECT_UI_DESIGN.md](./guides/NEW_PROJECT_UI_DESIGN.md)** | 6KB | 🎬 UI layouts reference (archived for 4-step workflow) |
 
 #### Reference - Quick Lookup
 | Document | Size | Purpose |
 |----------|------|---------|
 | **[QUICK_REFERENCE.md](./reference/QUICK_REFERENCE.md)** | 5.7KB | 🔍 Fast lookup for colors, components, utilities |
-| **[WORKFLOW_CHEATSHEET.md](./reference/WORKFLOW_CHEATSHEET.md)** | 3KB | 📋 One-page workflow reference (print-friendly) |
+| **[WORKFLOW_QUICK_REFERENCE.md](./reference/WORKFLOW_QUICK_REFERENCE.md)** | 4KB | 📋 One-page workflow reference (print-friendly) |
 
 ### Implementation Reports (Reference Only)
 
@@ -67,6 +67,7 @@ These documents describe what was built. You typically won't need to read them u
 #### Current Status
 | Document | Purpose | Status |
 |----------|---------|--------|
+| **[WORKFLOW_FIXES.md](./implementation/WORKFLOW_FIXES.md)** | Implementation fixes for 6-step workflow | ✅ Current |
 | **[COMPLETION_REPORT.md](./implementation/COMPLETION_REPORT.md)** | Design improvements completion status | ✅ Archived - Reference only |
 | **[FRONTEND_UPDATES.md](./implementation/FRONTEND_UPDATES.md)** | Frontend page component updates | ✅ Archived - Reference only |
 | **[IMPLEMENTED_CHANGES.md](./implementation/IMPLEMENTED_CHANGES.md)** | Detailed change list | ✅ Archived - Reference only |

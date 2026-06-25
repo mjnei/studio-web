@@ -43,10 +43,12 @@ export default function ComposePage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!isLoading && !state?.audioUrl) {
+    // Check if voice is selected (voiceId exists) instead of audioUrl
+    // since we no longer generate audio in the preview step
+    if (!isLoading && !state?.voiceId) {
       router.push(`/project/${projectId}/voice`);
     }
-  }, [isLoading, state?.audioUrl, router, projectId]);
+  }, [isLoading, state?.voiceId, router, projectId]);
 
   useEffect(() => {
     const jobId = job?.id ?? state?.videoJobId;
@@ -63,13 +65,13 @@ export default function ComposePage() {
   }, [job, state?.videoJobId, state?.videoStatus, updateVideoStatus]);
 
   const handleStartGeneration = async () => {
-    if (!state?.ttsJobId) return;
+    // Since we no longer have TTS generation, we can start video directly
+    // The backend will need to handle video generation without TTS job
     setIsStarting(true);
     setError(null);
     try {
       const nextJob = await createVideoJob({
         projectId,
-        ttsJobId: state.ttsJobId,
         autoActivate: true,
       });
       setJob(nextJob);
@@ -156,7 +158,7 @@ export default function ComposePage() {
                 icon={<Sparkles className="h-5 w-5" />}
                 onClick={handleStartGeneration}
                 loading={isStarting}
-                disabled={!state?.ttsJobId}
+                disabled={!state?.voiceId}
               >
                 Start Video Generation
               </Button>

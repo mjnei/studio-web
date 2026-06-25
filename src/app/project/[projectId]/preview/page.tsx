@@ -41,11 +41,13 @@ export default function PreviewPage() {
     return state?.movieTitle || "Your Project";
   }, [projectId, state?.movieTitle]);
 
-  const handleBack = () => {
+  const handleBack = async () => {
+    await advanceProjectStep(projectId, "voice").catch(console.error);
     router.push(`/project/${projectId}/voice`);
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
+    await advanceProjectStep(projectId, "compose").catch(console.error);
     router.push(`/project/${projectId}/compose`);
   };
 

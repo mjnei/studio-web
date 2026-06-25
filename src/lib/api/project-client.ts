@@ -237,13 +237,20 @@ export async function cancelTTSJob(jobId: string): Promise<TTSJobResponse> {
 
 export async function createVideoJob(
   projectId: string,
-  ttsJobId: string,
+  ttsJobId?: string, // Made optional since we no longer require TTS
   autoActivate: boolean = false
 ): Promise<VideoJobResponse> {
-  return request<VideoJobResponse>(
-    `/video?project_id=${projectId}&tts_job_id=${ttsJobId}&auto_activate=${autoActivate}`,
-    { method: "POST" }
-  );
+  const params = new URLSearchParams({
+    project_id: projectId,
+    auto_activate: String(autoActivate),
+  });
+  
+  // Only include tts_job_id if provided
+  if (ttsJobId) {
+    params.set("tts_job_id", ttsJobId);
+  }
+  
+  return request<VideoJobResponse>(`/video?${params.toString()}`, { method: "POST" });
 }
 
 export async function getVideoJob(

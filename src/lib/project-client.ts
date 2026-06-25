@@ -220,14 +220,19 @@ export async function activateScript(
 
 export async function createVideoJob(data: {
   projectId: string;
-  ttsJobId: string;
+  ttsJobId?: string; // Made optional since we no longer require TTS
   autoActivate?: boolean;
 }): Promise<VideoJobResponse> {
   const params = new URLSearchParams({
     project_id: data.projectId,
-    tts_job_id: data.ttsJobId,
     auto_activate: String(data.autoActivate ?? true),
   });
+  
+  // Only include tts_job_id if provided
+  if (data.ttsJobId) {
+    params.set("tts_job_id", data.ttsJobId);
+  }
+  
   return request<VideoJobResponse>(`/video?${params.toString()}`, { method: "POST" });
 }
 
