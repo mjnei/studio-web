@@ -30,23 +30,26 @@ export default function ProjectDetailsPage() {
     }
   }, [projectId, state?.lastStep]);
   
-  // Fetch fallback suggestions first, then AI suggestions if script exists
+  // Fetch both fallback and AI suggestions in parallel
   useEffect(() => {
     if (state?.movieTitle) {
-      // Use simple default first
-      const timestamp = new Date().getTime() % 10000;
-      const defaultName = `${state.movieTitle} ${timestamp}`;
-      setProjectName(defaultName);
-      
-      // Fetch fallback suggestions immediately (without script)
+      // Fetch fallback suggestions immediately
       fetchFallbackSuggestions();
       
-      // Fetch AI suggestions if script exists
+      // Fetch AI suggestions in parallel if script exists
       if (activeScript?.content) {
         fetchAiNameSuggestions();
       }
     }
   }, [state?.movieTitle, activeScript?.content]);
+  
+  // Set default project name when fallback suggestions load
+  useEffect(() => {
+    if (fallbackSuggestions.length > 0 && !projectName) {
+      // Use first fallback suggestion as default
+      setProjectName(fallbackSuggestions[0].name);
+    }
+  }, [fallbackSuggestions]);
 
   const fetchFallbackSuggestions = async () => {
     if (!state?.movieTitle) return;
@@ -63,9 +66,10 @@ export default function ProjectDetailsPage() {
       console.error("Failed to fetch fallback suggestions:", error);
       // If API fails, generate simple local fallback
       const words = state.movieTitle.split(" ");
-      setFallbackSuggestions([
+      const simpleFallback = [
         { name: `${words[0]} Project`, reason: "Simple and direct" }
-      ]);
+      ];
+      setFallbackSuggestions(simpleFallback);
     } finally {
       setLoadingFallback(false);
     }
@@ -207,38 +211,7 @@ export default function ProjectDetailsPage() {
               </p>
             </div>
 
-            {/* Fallback Suggestions - Show first while AI is loading */}
-            {fallbackSuggestions.length > 0 && aiSuggestions.length === 0 && (
-              <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <label className="block text-sm font-medium text-text-muted">
-                    {loadingAiSuggestions ? "Quick Suggestions" : "Suggestions"}
-                  </label>
-                  {loadingFallback && <Loader2 className="h-4 w-4 animate-spin text-text-muted" />}
-                </div>
-                
-                <div className="grid grid-cols-1 gap-2">
-                  {fallbackSuggestions.map((suggestion, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => handleSuggestionClick(suggestion)}
-                      className="group text-left px-4 py-3 rounded-lg border border-border-default bg-surface-base hover:bg-surface-raised hover:border-border-hover transition-all duration-200"
-                    >
-                      <div className="font-medium text-text-secondary group-hover:text-text-primary">
-                        {suggestion.name}
-                      </div>
-                      {suggestion.reason && (
-                        <div className="mt-1 text-xs text-text-muted">
-                          {suggestion.reason}
-                        </div>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* AI Suggestions Section - Replaces fallback when ready */}
+            {/* AI Suggestions Section - Shows when loading or loaded */}
             {(aiSuggestions.length > 0 || loadingAiSuggestions) && activeScript?.content && (
               <div>
                 <div className="flex items-center gap-2 mb-3">
@@ -249,9 +222,9 @@ export default function ProjectDetailsPage() {
                   {loadingAiSuggestions && <Loader2 className="h-4 w-4 animate-spin text-accent-cyan" />}
                 </div>
                 
-                <div className="grid grid-cols-1 gap-2">
+                <div className="grid grid-cols-1 gap-2 mb-4">
                   {loadingAiSuggestions ? (
-                    <div className="flex items-center justify-center py-6 text-text-muted text-sm">
+                    <div className="flex items-center justify-center py-6 text-text-muted text-sm border border-border-default rounded-lg bg-surface-base">
                       <Loader2 className="h-5 w-5 animate-spin mr-2 text-accent-cyan" />
                       Analyzing your script to generate creative names...
                     </div>
@@ -276,6 +249,37 @@ export default function ProjectDetailsPage() {
                       </button>
                     ))
                   )}
+                </div>
+              </div>
+            )}
+
+            {/* Fallback Suggestions - Always visible when loaded */}
+            {fallbackSuggestions.length > 0 && (
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <label className="block text-sm font-medium text-text-muted">
+                    Quick Suggestions
+                  </label>
+                  {loadingFallback && <Loader2 className="h-4 w-4 animate-spin text-text-muted" />}
+                </div>
+                
+                <div className="grid grid-cols-1 gap-2">
+                  {fallbackSuggestions.map((suggestion, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => handleSuggestionClick(suggestion)}
+                      className="group text-left px-4 py-3 rounded-lg border border-border-default bg-surface-base hover:bg-surface-raised hover:border-border-hover transition-all duration-200"
+                    >
+                      <div className="font-medium text-text-secondary group-hover:text-text-primary">
+                        {suggestion.name}
+                      </div>
+                      {suggestion.reason && (
+                        <div className="mt-1 text-xs text-text-muted">
+                          {suggestion.reason}
+                        </div>
+                      )}
+                    </button>
+                  ))}
                 </div>
               </div>
             )}
