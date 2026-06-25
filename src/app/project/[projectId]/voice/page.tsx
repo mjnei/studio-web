@@ -15,6 +15,7 @@ import {
   type VoiceResponse,
 } from "@/lib/project-client";
 import { getVoicePreviewUrl } from "@/lib/hooks/use-stock-voices";
+import { getVoiceRecordingAudioUrl } from "@/lib/api/voice-recording-client";
 import type { VoiceRecordingResponse } from "@/lib/types/api";
 
 type VoiceOption = {
@@ -180,23 +181,37 @@ export default function VoicePage() {
     await playAudio(voice);
   };
 
-  const handleRecordingSaved = (newRecording: VoiceRecordingResponse) => {
-    addRecording(newRecording);
-    setShowRecorder(false);
-    
-    // Auto-select the newly recorded voice
-    const newVoiceOption: VoiceOption = {
-      id: String(newRecording.id),
-      name: newRecording.title,
-      description: newRecording.description,
-      type: "recording" as const,
-      metadata: {
-        duration: newRecording.duration_seconds ?? undefined,
-      },
-      previewUrl: newRecording.audio_url,
-    };
-    
-    handleSelectVoice(newVoiceOption);
+  const handleRecordingSaved = async (newRecording: VoiceRecordingResponse) => {
+    // Fetch the audio URL for the new recording
+    try {
+      const audioUrlData = await getVoiceRecordingAudioUrl(newRecording.id);
+      const recordingWithUrl = {
+        ...newRecording,
+        audio_url: audioUrlData.audio_url,
+      };
+      
+      addRecording(recordingWithUrl);
+      setShowRecorder(false);
+      
+      // Auto-select the newly recorded voice
+      const newVoiceOption: VoiceOption = {
+        id: String(recordingWithUrl.id),
+        name: recordingWithUrl.title,
+        description: recordingWithUrl.description,
+        type: "recording" as const,
+        metadata: {
+          duration: recordingWithUrl.duration_seconds ?? undefined,
+        },
+        previewUrl: recordingWithUrl.audio_url,
+      };
+      
+      handleSelectVoice(newVoiceOption);
+    } catch (error) {
+      console.error("Failed to get audio URL for new recording:", error);
+      // Still add the recording without audio URL
+      addRecording(newRecording);
+      setShowRecorder(false);
+    }
   };
 
   const myVoiceOptions: VoiceOption[] = useMemo(() => {

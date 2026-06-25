@@ -16,7 +16,7 @@ Source → Script → Details → Voice → Preview → Compose
 - ✅ Database-backed persistence
 - ✅ Non-linear navigation (revisit any step)
 - ✅ Step progress tracking via `last_step` field
-- ✅ Voice preview playback (Step 4: pre-recorded samples)
+- ✅ Voice sample playback (Step 4: pre-recorded audio samples)
 - ✅ TTS audio generation (Step 5: full script with voice)
 - ✅ Mobile responsive & accessible
 - ✅ Exit and resume anytime
@@ -336,8 +336,8 @@ The workflow navigation component (`FloatingWorkflowNavigation`) enforces these 
 ### Voice Selection (Step 4)
 - [ ] Browse stock voices
 - [ ] Browse user recordings
-- [ ] Click play on stock voice - preview audio plays
-- [ ] Click play on user recording - preview audio plays
+- [ ] Click play on stock voice - audio sample plays
+- [ ] Click play on user recording - audio sample plays
 - [ ] No 401 errors when playing audio
 - [ ] Select a voice and continue
 
@@ -393,7 +393,7 @@ The workflow navigation component (`FloatingWorkflowNavigation`) enforces these 
    - Advances to Step 4
 
 5. **Step 4 - Selects "Morgan Freeman" voice**
-   - Plays voice preview samples
+   - Plays voice audio samples
    - voice_id = uuid-morgan
    - Advances to Step 5
 
