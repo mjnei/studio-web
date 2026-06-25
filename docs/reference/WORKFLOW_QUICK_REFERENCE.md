@@ -10,7 +10,7 @@
 1. Source    → Select movie from TMDB
 2. Script    → Generate/edit voiceover script
 3. Details   → Name the project
-4. Voice     → Select voice (plays pre-recorded preview samples)
+4. Voice     → Select voice (plays voice samples)
 5. Preview   → Generate and preview TTS audio with selected voice
 6. Compose   → Generate final video
 ```
@@ -101,6 +101,8 @@ PATCH /api/v1/projects/{id}
 Body: { "voice_id": "uuid" }
 ```
 
+**Action:** Select a voice (plays voice samples, no TTS)
+
 ### Step 5: Preview
 Generate and preview TTS audio for the selected voice with your script
 
@@ -139,7 +141,7 @@ const {
 
 ## Voice Playback & TTS Generation
 
-**Step 4: Voice Selection - Plays Pre-recorded Samples**
+**Step 4: Voice Selection - Plays Voice Samples Only**
 ```typescript
 // Stock voice (fetch presigned URL)
 const { url } = await getVoicePreviewUrl(voiceId);

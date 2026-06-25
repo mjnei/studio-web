@@ -76,15 +76,16 @@ Name your project and configure basic settings.
 ### Step 4: Voice Selection
 **Route:** `/project/[projectId]/voice`
 
-Choose a voice for your voiceover narration and listen to previews.
+Choose a voice for your voiceover narration and listen to voice samples.
 
 **Actions:**
 - Browse stock voices from catalog
 - Browse user-uploaded voice recordings
-- Play voice preview audio (pre-recorded samples only)
+- Play voice samples (pre-recorded audio only)
+- Record your own voice
 - Select a voice for the project
 
-**Important:** This step only plays existing voice preview audio. No TTS generation occurs here - only voice samples.
+**Important:** This step only plays existing voice samples. No TTS generation occurs here - only voice samples.
 
 **Completion:** Project has `voice_id` set
 
@@ -310,9 +311,9 @@ The workflow navigation component (`FloatingWorkflowNavigation`) enforces these 
 
 ### Step 4: Voice Selection
 - **Purpose**: Choose a voice actor for your project
-- **Audio**: Plays pre-recorded voice samples (not script-based)
+- **Audio**: Plays voice samples (not script-based)
 - **Action**: Select a voice to proceed
-- **TTS**: None - only preview samples
+- **TTS**: None - only voice samples
 
 ### Step 5: Preview
 - **Purpose**: Hear your full script in the selected voice
