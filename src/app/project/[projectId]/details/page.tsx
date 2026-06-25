@@ -17,8 +17,10 @@ export default function ProjectDetailsPage() {
   const { state, isLoading, activeScript } = useProjectState(projectId);
 
   const [projectName, setProjectName] = useState("");
-  const [suggestions, setSuggestions] = useState<NameSuggestion[]>([]);
-  const [loadingSuggestions, setLoadingSuggestions] = useState(false);
+  const [fallbackSuggestions, setFallbackSuggestions] = useState<NameSuggestion[]>([]);
+  const [aiSuggestions, setAiSuggestions] = useState<NameSuggestion[]>([]);
+  const [loadingFallback, setLoadingFallback] = useState(false);
+  const [loadingAiSuggestions, setLoadingAiSuggestions] = useState(false);
   const [savingName, setSavingName] = useState(false);
   
   // Advance step when entering this page
@@ -28,7 +30,7 @@ export default function ProjectDetailsPage() {
     }
   }, [projectId, state?.lastStep]);
   
-  // Generate default project name and fetch suggestions
+  // Fetch fallback suggestions first, then AI suggestions if script exists
   useEffect(() => {
     if (state?.movieTitle) {
       // Use simple default first
@@ -36,28 +38,54 @@ export default function ProjectDetailsPage() {
       const defaultName = `${state.movieTitle} ${timestamp}`;
       setProjectName(defaultName);
       
-      // Fetch LLM suggestions in background
-      fetchNameSuggestions();
+      // Fetch fallback suggestions immediately (without script)
+      fetchFallbackSuggestions();
+      
+      // Fetch AI suggestions if script exists
+      if (activeScript?.content) {
+        fetchAiNameSuggestions();
+      }
     }
-  }, [state?.movieTitle]);
+  }, [state?.movieTitle, activeScript?.content]);
 
-  const fetchNameSuggestions = async () => {
+  const fetchFallbackSuggestions = async () => {
     if (!state?.movieTitle) return;
     
-    setLoadingSuggestions(true);
+    setLoadingFallback(true);
     try {
-      const movieGenres = state.movieGenre ? [state.movieGenre] : undefined;
+      // Call API without script_content - backend will use fallback logic
       const response = await generateProjectNameSuggestions(
         state.movieTitle,
-        undefined, // movie overview not available in state yet
-        movieGenres
+        undefined // No script content = fallback suggestions
       );
-      setSuggestions(response.suggestions);
+      setFallbackSuggestions(response.suggestions);
     } catch (error) {
-      console.error("Failed to fetch name suggestions:", error);
-      // Silently fail - user can still use manual input
+      console.error("Failed to fetch fallback suggestions:", error);
+      // If API fails, generate simple local fallback
+      const words = state.movieTitle.split(" ");
+      setFallbackSuggestions([
+        { name: `${words[0]} Project`, reason: "Simple and direct" }
+      ]);
     } finally {
-      setLoadingSuggestions(false);
+      setLoadingFallback(false);
+    }
+  };
+
+  const fetchAiNameSuggestions = async () => {
+    if (!state?.movieTitle || !activeScript?.content) return;
+    
+    setLoadingAiSuggestions(true);
+    try {
+      const response = await generateProjectNameSuggestions(
+        state.movieTitle,
+        activeScript.content
+      );
+      setAiSuggestions(response.suggestions);
+    } catch (error) {
+      console.error("Failed to fetch AI name suggestions:", error);
+      // Keep fallback suggestions visible if AI fails
+    } finally {
+      setLoadingAiSuggestions(false);
     }
   };
 
@@ -179,34 +207,69 @@ export default function ProjectDetailsPage() {
               </p>
             </div>
 
-            {/* AI Suggestions */}
-            {(loadingSuggestions || suggestions.length > 0) && (
+            {/* Fallback Suggestions - Show first while AI is loading */}
+            {fallbackSuggestions.length > 0 && aiSuggestions.length === 0 && (
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <Sparkles className="h-4 w-4 text-accent-purple" />
-                  <label className="block text-sm font-medium text-text-primary">
-                    AI Suggestions
+                  <label className="block text-sm font-medium text-text-muted">
+                    {loadingAiSuggestions ? "Quick Suggestions" : "Suggestions"}
                   </label>
-                  {loadingSuggestions && <Loader2 className="h-4 w-4 animate-spin text-text-muted" />}
+                  {loadingFallback && <Loader2 className="h-4 w-4 animate-spin text-text-muted" />}
                 </div>
                 
                 <div className="grid grid-cols-1 gap-2">
-                  {loadingSuggestions ? (
-                    <div className="flex items-center justify-center py-4 text-text-muted text-sm">
-                      Generating creative names...
+                  {fallbackSuggestions.map((suggestion, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => handleSuggestionClick(suggestion)}
+                      className="group text-left px-4 py-3 rounded-lg border border-border-default bg-surface-base hover:bg-surface-raised hover:border-border-hover transition-all duration-200"
+                    >
+                      <div className="font-medium text-text-secondary group-hover:text-text-primary">
+                        {suggestion.name}
+                      </div>
+                      {suggestion.reason && (
+                        <div className="mt-1 text-xs text-text-muted">
+                          {suggestion.reason}
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* AI Suggestions Section - Replaces fallback when ready */}
+            {(aiSuggestions.length > 0 || loadingAiSuggestions) && activeScript?.content && (
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <Sparkles className="h-4 w-4 text-accent-cyan" />
+                  <label className="block text-sm font-medium text-text-primary">
+                    AI-Powered Suggestions
+                  </label>
+                  {loadingAiSuggestions && <Loader2 className="h-4 w-4 animate-spin text-accent-cyan" />}
+                </div>
+                
+                <div className="grid grid-cols-1 gap-2">
+                  {loadingAiSuggestions ? (
+                    <div className="flex items-center justify-center py-6 text-text-muted text-sm">
+                      <Loader2 className="h-5 w-5 animate-spin mr-2 text-accent-cyan" />
+                      Analyzing your script to generate creative names...
                     </div>
                   ) : (
-                    suggestions.map((suggestion, idx) => (
+                    aiSuggestions.map((suggestion, idx) => (
                       <button
                         key={idx}
                         onClick={() => handleSuggestionClick(suggestion)}
-                        className="group text-left px-4 py-3 rounded-lg border border-border-default bg-surface-base hover:bg-surface-raised hover:border-accent-cyan transition-all duration-200"
+                        className="group text-left px-4 py-3 rounded-lg border-2 border-accent-cyan bg-accent-cyan/5 hover:bg-accent-cyan/10 hover:border-accent-cyan transition-all duration-200 shadow-sm"
                       >
-                        <div className="font-medium text-text-primary group-hover:text-accent-cyan">
-                          {suggestion.name}
+                        <div className="flex items-center gap-2">
+                          <Sparkles className="h-4 w-4 text-accent-cyan flex-shrink-0" />
+                          <div className="font-semibold text-text-primary group-hover:text-accent-cyan">
+                            {suggestion.name}
+                          </div>
                         </div>
                         {suggestion.reason && (
-                          <div className="mt-1 text-xs text-text-muted">
+                          <div className="mt-1.5 ml-6 text-xs text-text-secondary">
                             {suggestion.reason}
                           </div>
                         )}

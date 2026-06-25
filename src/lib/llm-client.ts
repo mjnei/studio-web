@@ -10,19 +10,17 @@ export interface NameSuggestionsResponse {
 }
 
 /**
- * Generate project name suggestions based on movie metadata
+ * Generate project name suggestions based on movie title and script content
  */
 export async function generateProjectNameSuggestions(
   movieTitle: string,
-  movieOverview?: string,
-  movieGenres?: string[]
+  scriptContent?: string
 ): Promise<NameSuggestionsResponse> {
   return request<NameSuggestionsResponse>("/llm/project-name-suggestions", {
     method: "POST",
     body: JSON.stringify({
       movie_title: movieTitle,
-      movie_overview: movieOverview,
-      movie_genres: movieGenres,
+      script_content: scriptContent,
     }),
   });
 }
