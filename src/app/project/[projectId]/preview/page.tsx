@@ -1,18 +1,22 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useMemo } from "react";
-import { CheckCircle, Mic2 } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { CheckCircle, Mic2, Loader2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
-import { advanceProjectStep } from "@/lib/project-client";
+import { advanceProjectStep, createTTSJob, getTTSJob, type TTSJobResponse } from "@/lib/project-client";
 
 export default function PreviewPage() {
   const params = useParams();
   const router = useRouter();
   const projectId = params.projectId as string;
-  const { state, activeScript, isLoading } = useProjectState(projectId);
+  const { state, activeScript, isLoading, refetch } = useProjectState(projectId);
+
+  const [isGeneratingTTS, setIsGeneratingTTS] = useState(false);
+  const [ttsJob, setTtsJob] = useState<TTSJobResponse | null>(null);
+  const [ttsError, setTtsError] = useState<string | null>(null);
 
   // Advance step when entering this page
   useEffect(() => {
@@ -20,6 +24,68 @@ export default function PreviewPage() {
       advanceProjectStep(projectId, "preview").catch(console.error);
     }
   }, [projectId, state?.lastStep]);
+
+  // Check if we have an existing TTS job
+  useEffect(() => {
+    if (state?.activeTtsJob) {
+      setTtsJob(state.activeTtsJob);
+    }
+  }, [state?.activeTtsJob]);
+
+  // Generate TTS when page loads if not already generated
+  useEffect(() => {
+    const generateTTS = async () => {
+      // Don't generate if already generating, already have a job, or missing requirements
+      if (isGeneratingTTS || ttsJob || !state?.voiceId || !activeScript?.id || isLoading) {
+        return;
+      }
+
+      setIsGeneratingTTS(true);
+      setTtsError(null);
+
+      try {
+        // Create TTS job
+        const job = await createTTSJob({
+          projectId,
+          scriptId: activeScript.id,
+          voiceId: state.voiceId,
+          autoActivate: true,
+        });
+
+        setTtsJob(job);
+
+        // Poll for completion
+        const pollJob = async () => {
+          const updatedJob = await getTTSJob(job.id);
+          setTtsJob(updatedJob);
+
+          if (updatedJob.status === "completed" || updatedJob.status === "failed") {
+            if (updatedJob.status === "failed") {
+              setTtsError(updatedJob.error_message || "TTS generation failed");
+            }
+            // Refetch project to get updated active_tts_job
+            await refetch();
+          } else if (updatedJob.status === "processing" || updatedJob.status === "queued") {
+            setTimeout(pollJob, 2000);
+          }
+        };
+
+        // Start polling if not already completed
+        if (job.status !== "completed") {
+          setTimeout(pollJob, 2000);
+        } else {
+          await refetch();
+        }
+      } catch (error) {
+        console.error("Failed to create TTS job:", error);
+        setTtsError(error instanceof Error ? error.message : "Failed to generate audio");
+      } finally {
+        setIsGeneratingTTS(false);
+      }
+    };
+
+    generateTTS();
+  }, [projectId, state?.voiceId, activeScript?.id, isLoading, ttsJob, isGeneratingTTS, refetch]);
 
   // Get first sentence from script for display
   const previewText = useMemo(() => {
@@ -50,6 +116,9 @@ export default function PreviewPage() {
     await advanceProjectStep(projectId, "compose").catch(console.error);
     router.push(`/project/${projectId}/compose`);
   };
+
+  const isTTSComplete = ttsJob?.status === "completed";
+  const isTTSProcessing = ttsJob?.status === "processing" || ttsJob?.status === "queued" || isGeneratingTTS;
 
   if (isLoading) {
     return (
@@ -115,15 +184,49 @@ export default function PreviewPage() {
         {/* Placeholder notice */}
         <Card variant="elevated" padding="lg">
           <div className="text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent-cyan/10">
-              <CheckCircle className="h-8 w-8 text-accent-cyan" />
-            </div>
-            <h3 className="mb-2 text-lg font-semibold text-text-primary">
-              Ready to Continue
-            </h3>
-            <p className="text-sm text-text-muted max-w-md mx-auto">
-              Your project is configured with the selected voice. Audio generation will be available in a future update. You can now proceed to the video composition step.
-            </p>
+            {isTTSProcessing ? (
+              <>
+                <Loader2 className="mx-auto mb-4 h-16 w-16 animate-spin text-accent-cyan" />
+                <h3 className="mb-2 text-lg font-semibold text-text-primary">
+                  Generating Audio...
+                </h3>
+                <p className="text-sm text-text-muted max-w-md mx-auto">
+                  Creating voice audio from your script. Progress: {ttsJob?.progress || 0}%
+                </p>
+              </>
+            ) : ttsError ? (
+              <>
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-status-failed/10">
+                  <CheckCircle className="h-8 w-8 text-status-failed" />
+                </div>
+                <h3 className="mb-2 text-lg font-semibold text-text-primary">
+                  Audio Generation Failed
+                </h3>
+                <p className="text-sm text-status-failed max-w-md mx-auto">
+                  {ttsError}
+                </p>
+              </>
+            ) : isTTSComplete ? (
+              <>
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent-cyan/10">
+                  <CheckCircle className="h-8 w-8 text-accent-cyan" />
+                </div>
+                <h3 className="mb-2 text-lg font-semibold text-text-primary">
+                  Audio Ready
+                </h3>
+                <p className="text-sm text-text-muted max-w-md mx-auto">
+                  Your voice audio has been generated successfully. You can now proceed to video composition.
+                </p>
+                {ttsJob?.audioUrl && (
+                  <div className="mt-4">
+                    <audio controls className="mx-auto">
+                      <source src={ttsJob.audioUrl} type="audio/mpeg" />
+                      Your browser does not support the audio element.
+                    </audio>
+                  </div>
+                )}
+              </>
+            ) : null}
           </div>
         </Card>
       </div>
@@ -132,11 +235,11 @@ export default function PreviewPage() {
       <FloatingWorkflowNavigation
         projectId={projectId}
         currentStep="preview"
-        canGoNext={true}
-        canGoBack={true}
+        canGoNext={isTTSComplete}
+        canGoBack={!isTTSProcessing}
         onNext={handleNext}
         onBack={handleBack}
-        isProcessing={false}
+        isProcessing={isTTSProcessing}
       />
     </>
   );

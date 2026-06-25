@@ -218,6 +218,30 @@ export async function activateScript(
   });
 }
 
+export async function createTTSJob(data: {
+  projectId: string;
+  scriptId: string;
+  voiceId: string;
+  autoActivate?: boolean;
+}): Promise<TTSJobResponse> {
+  const params = new URLSearchParams({
+    auto_activate: String(data.autoActivate ?? true),
+  });
+  
+  return request<TTSJobResponse>(`/tts?${params.toString()}`, {
+    method: "POST",
+    body: JSON.stringify({
+      project_id: data.projectId,
+      script_id: data.scriptId,
+      voice_id: data.voiceId,
+    }),
+  });
+}
+
+export async function getTTSJob(jobId: string): Promise<TTSJobResponse> {
+  return request<TTSJobResponse>(`/tts/${jobId}`);
+}
+
 export async function createVideoJob(data: {
   projectId: string;
   ttsJobId?: string; // Made optional since we no longer require TTS
