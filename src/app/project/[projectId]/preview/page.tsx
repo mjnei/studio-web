@@ -2,8 +2,9 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { CheckCircle, Mic2, Loader2 } from "lucide-react";
+import { CheckCircle, Mic2, Loader2, X, FileText, ChevronDown } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { advanceProjectStep, createTTSJob, getTTSJob, type TTSJobResponse } from "@/lib/project-client";
@@ -17,6 +18,7 @@ export default function PreviewPage() {
   const [isGeneratingTTS, setIsGeneratingTTS] = useState(false);
   const [ttsJob, setTtsJob] = useState<TTSJobResponse | null>(null);
   const [ttsError, setTtsError] = useState<string | null>(null);
+  const [showFullScriptModal, setShowFullScriptModal] = useState(false);
 
   // Advance step when entering this page
   useEffect(() => {
@@ -171,20 +173,30 @@ export default function PreviewPage() {
         </Card>
 
         {/* Script preview card */}
-        <Card variant="elevated" padding="lg">
-          <div className="mb-4 flex items-center gap-2">
-            <Mic2 className="h-5 w-5 text-accent-cyan" />
-            <h3 className="text-lg font-medium text-text-primary">Script Preview</h3>
+        <Card 
+          variant="elevated" 
+          padding="lg"
+          className="cursor-pointer hover:border-accent-cyan/30 transition-all group"
+          onClick={() => setShowFullScriptModal(true)}
+        >
+          <div className="mb-4 flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <Mic2 className="h-5 w-5 text-accent-cyan" />
+              <h3 className="text-lg font-medium text-text-primary">Script Preview</h3>
+            </div>
+            <span className="text-xs font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0 group-hover:text-accent-cyan-hover">
+              Click to expand <ChevronDown className="h-3 w-3" />
+            </span>
           </div>
           
           <div className="rounded-lg bg-surface-panel p-4 border border-border-default">
-            <p className="text-sm text-text-primary leading-relaxed">
+            <p className="text-sm text-text-primary leading-relaxed line-clamp-3">
               &ldquo;{previewText}&rdquo;
             </p>
           </div>
 
           <p className="mt-3 text-xs text-text-muted">
-            First sentence from your script
+            First sentence from your script • Click card to view full script
           </p>
         </Card>
 
@@ -237,6 +249,58 @@ export default function PreviewPage() {
           </div>
         </Card>
       </div>
+
+      {/* Full Script Modal */}
+      {showFullScriptModal && activeScript && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+          onClick={() => setShowFullScriptModal(false)}
+        >
+          <div 
+            className="bg-surface-base rounded-xl shadow-2xl max-w-3xl w-full max-h-[80vh] flex flex-col border border-border-default"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-6 border-b border-border-default">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted">
+                  <FileText className="h-5 w-5 text-accent-cyan" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-text-primary">Full Script</h3>
+                  <p className="text-sm text-text-muted">
+                    {activeScript.wordCount} words • {Math.floor(activeScript.duration / 60)}:
+                    {(activeScript.duration % 60).toString().padStart(2, "0")} duration
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowFullScriptModal(false)}
+                className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-surface-raised text-text-muted hover:text-text-primary transition-colors"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Modal Content - Scrollable */}
+            <div className="flex-1 overflow-y-auto p-6">
+              <p className="text-base text-text-primary leading-relaxed whitespace-pre-wrap">
+                {activeScript.content}
+              </p>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex items-center justify-end gap-3 p-6 border-t border-border-default bg-surface-raised/50">
+              <Button
+                variant="ghost"
+                onClick={() => setShowFullScriptModal(false)}
+              >
+                Close
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Navigation */}
       <FloatingWorkflowNavigation

@@ -314,7 +314,7 @@ export default function ProjectDetailsPage() {
 
         {/* Script summary with expand */}
         {activeScript && (
-          <Card variant="bordered" padding="md" className="hover:border-border-hover transition-colors">
+          <Card variant="bordered" padding="md" className="hover:border-border-hover transition-colors cursor-pointer" onClick={() => setShowFullScriptModal(true)}>
             <div className="flex items-start gap-4">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted flex-shrink-0">
                 <FileText className="h-5 w-5 text-accent-cyan" />
@@ -322,37 +322,18 @@ export default function ProjectDetailsPage() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-4 mb-2">
                   <h3 className="font-medium text-text-primary">Your Script</h3>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowFullScriptModal(true)}
-                    className="text-accent-cyan border-accent-cyan/30 hover:bg-accent-cyan/10 hover:border-accent-cyan flex-shrink-0"
-                  >
-                    <FileText className="h-4 w-4 mr-1.5" />
-                    View Full
-                  </Button>
+                  <span className="text-xs font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0">
+                    Click to expand <ChevronDown className="h-3 w-3" />
+                  </span>
                 </div>
                 <p className="text-sm text-text-muted mb-3">
                   {activeScript.wordCount} words • Estimated duration:{" "}
                   {Math.floor(activeScript.duration / 60)}:
                   {(activeScript.duration % 60).toString().padStart(2, "0")}
                 </p>
-                <div className="relative">
-                  <p className="text-sm text-text-secondary line-clamp-3 leading-relaxed">
-                    {activeScript.content}
-                  </p>
-                  {activeScript.content.length > 200 && (
-                    <div className="mt-3 pt-3 border-t border-border-default">
-                      <button
-                        onClick={() => setShowFullScriptModal(true)}
-                        className="text-sm font-medium text-accent-cyan hover:text-accent-cyan-hover flex items-center gap-1.5 group"
-                      >
-                        Read complete script 
-                        <ChevronDown className="h-4 w-4 group-hover:translate-y-0.5 transition-transform" />
-                      </button>
-                    </div>
-                  )}
-                </div>
+                <p className="text-sm text-text-secondary line-clamp-3 leading-relaxed">
+                  {activeScript.content}
+                </p>
               </div>
             </div>
           </Card>
