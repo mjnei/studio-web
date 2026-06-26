@@ -96,11 +96,7 @@ export default function SourcePage() {
             </p>
           </div>
           {!isChanging && state?.movieId && (
-            <Button
-              variant="secondary"
-              size="md"
-              onClick={() => setIsChanging(true)}
-            >
+            <Button variant="secondary" size="md" onClick={() => setIsChanging(true)}>
               Change Movie
             </Button>
           )}
@@ -121,9 +117,7 @@ export default function SourcePage() {
               <div className="flex-1">
                 <div className="mb-4 flex items-center gap-2">
                   <Film className="h-6 w-6 text-accent-cyan" />
-                  <h3 className="text-2xl font-semibold text-text-primary">
-                    {state.movieTitle}
-                  </h3>
+                  <h3 className="text-2xl font-semibold text-text-primary">{state.movieTitle}</h3>
                 </div>
                 {state.movieGenre && (
                   <div className="mb-3">
@@ -150,8 +144,8 @@ export default function SourcePage() {
                     <Info className="h-5 w-5 text-accent-cyan" />
                     <div className="flex-1">
                       <p className="text-sm text-text-secondary">
-                        This is the source movie for your project. You can change it, but this
-                        may require updating your script to match the new content.
+                        This is the source movie for your project. You can change it, but this may
+                        require updating your script to match the new content.
                       </p>
                     </div>
                   </div>

@@ -48,11 +48,11 @@ export function FullScriptModal({
   const seconds = duration % 60;
 
   return (
-    <div 
+    <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4 animate-in fade-in transition-fast"
       onClick={onClose}
     >
-      <div 
+      <div
         className="bg-surface-raised rounded-2xl shadow-2xl max-w-4xl w-full max-h-[85vh] flex flex-col border border-border-strong overflow-hidden animate-in fade-in slide-in-from-bottom-4 transition-base"
         style={{ animationDuration: "300ms" }}
         onClick={(e) => e.stopPropagation()}
@@ -65,9 +65,7 @@ export function FullScriptModal({
                 <FileText className="h-6 w-6 text-white" />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-xl font-bold text-text-primary mb-2">
-                  Full Script
-                </h3>
+                <h3 className="text-xl font-bold text-text-primary mb-2">Full Script</h3>
                 <div className="flex flex-wrap items-center gap-4 text-sm">
                   <div className="flex items-center gap-1.5 text-text-secondary">
                     <FileText className="h-4 w-4 text-accent-cyan" />
@@ -85,7 +83,7 @@ export function FullScriptModal({
                 </div>
               </div>
             </div>
-            
+
             <button
               onClick={onClose}
               className="flex h-9 w-9 items-center justify-center rounded-xl hover:bg-surface-hover text-text-muted hover:text-text-primary transition-all duration-200 flex-shrink-0 group"
@@ -94,7 +92,7 @@ export function FullScriptModal({
               <X className="h-5 w-5 group-hover:scale-110 transition-transform" />
             </button>
           </div>
-          
+
           {/* Subtle bottom gradient line */}
           <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent-cyan/30 to-transparent" />
         </div>
@@ -114,12 +112,16 @@ export function FullScriptModal({
         <div className="relative px-6 py-4 bg-surface-elevated/50 border-t border-border-default backdrop-blur-sm">
           {/* Subtle top gradient line */}
           <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent-cyan/20 to-transparent" />
-          
+
           <div className="flex items-center justify-between gap-4">
             <p className="text-xs text-text-muted">
-              Press <kbd className="px-2 py-1 text-xs font-semibold text-text-secondary bg-surface-raised border border-border-default rounded">ESC</kbd> or click outside to close
+              Press{" "}
+              <kbd className="px-2 py-1 text-xs font-semibold text-text-secondary bg-surface-raised border border-border-default rounded">
+                ESC
+              </kbd>{" "}
+              or click outside to close
             </p>
-            
+
             <button
               onClick={onClose}
               className="px-5 py-2.5 text-sm font-medium text-text-primary bg-surface-raised hover:bg-surface-hover border border-border-default hover:border-accent-cyan/30 rounded-lg transition-all duration-200 hover:shadow-md flex items-center gap-2 group"
@@ -135,17 +137,17 @@ export function FullScriptModal({
         .custom-scrollbar::-webkit-scrollbar {
           width: 8px;
         }
-        
+
         .custom-scrollbar::-webkit-scrollbar-track {
           background: var(--surface-panel);
           border-radius: 4px;
         }
-        
+
         .custom-scrollbar::-webkit-scrollbar-thumb {
           background: var(--border-strong);
           border-radius: 4px;
         }
-        
+
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
           background: var(--accent-cyan);
         }

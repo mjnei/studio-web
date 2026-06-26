@@ -36,7 +36,6 @@ export function TopNav() {
             />
           </div>
 
-          
           {/* Notifications */}
           <button className="relative rounded-lg p-2 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all focus-ring group">
             <Bell size={20} className="group-hover:scale-110 transition-transform duration-200" />

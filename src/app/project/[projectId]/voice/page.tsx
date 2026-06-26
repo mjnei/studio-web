@@ -11,10 +11,7 @@ import { VoiceSelectionCard } from "@/components/project/voice-selection-card";
 import { VoiceRecorder } from "@/components/shared/voice-recorder";
 import { FullScriptModal } from "@/components/project/full-script-modal";
 import { useVoiceRecordings } from "@/lib/hooks/use-voice-recordings";
-import {
-  listVoices,
-  type VoiceResponse,
-} from "@/lib/project-client";
+import { listVoices, type VoiceResponse } from "@/lib/project-client";
 import { getVoicePreviewUrl } from "@/lib/hooks/use-stock-voices";
 import { getVoiceRecordingAudioUrl } from "@/lib/api/voice-recording-client";
 import type { VoiceRecordingResponse } from "@/lib/types/api";
@@ -90,7 +87,7 @@ export default function VoicePage() {
 
   const playAudio = async (voice: VoiceOption) => {
     const cacheKey = `${voice.type}-${voice.id}`;
-    
+
     // Stop current audio if playing
     if (audioRef.current) {
       audioRef.current.pause();
@@ -102,23 +99,23 @@ export default function VoicePage() {
 
     try {
       setPlayingVoice(cacheKey);
-      
+
       const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020";
-      const token = localStorage.getItem('accessToken');
-      
+      const token = localStorage.getItem("accessToken");
+
       let audioUrl: string;
-      
+
       if (voice.type === "recording") {
         // For user recordings, use the presigned URL from audio_url
         const recordingAudioUrl = voice.previewUrl;
-        
+
         if (!recordingAudioUrl) {
           console.error("No audio URL available for recording");
           setPlayingVoice(null);
           alert("Audio preview not available for this recording");
           return;
         }
-        
+
         // Fetch audio as blob for reliable playback
         const response = await fetch(recordingAudioUrl);
         if (!response.ok) {
@@ -129,14 +126,14 @@ export default function VoicePage() {
       } else {
         // For stock voices, get presigned URL from backend
         const presignedUrl = await getVoicePreviewUrl(voice.id);
-        
+
         if (!presignedUrl) {
           console.error("No preview available for stock voice");
           setPlayingVoice(null);
           alert("Preview not available for this voice");
           return;
         }
-        
+
         // Fetch the presigned URL audio as blob for reliable playback
         const response = await fetch(presignedUrl);
         if (!response.ok) {
@@ -145,7 +142,7 @@ export default function VoicePage() {
         const blob = await response.blob();
         audioUrl = URL.createObjectURL(blob);
       }
-      
+
       // Create and play audio from blob URL
       audioRef.current = new Audio(audioUrl);
       audioRef.current.onended = () => {
@@ -158,7 +155,7 @@ export default function VoicePage() {
         alert("Failed to play audio preview");
         URL.revokeObjectURL(audioUrl);
       };
-      
+
       await audioRef.current.play();
     } catch (err) {
       console.error("Failed to load/play audio:", err);
@@ -170,7 +167,7 @@ export default function VoicePage() {
   const handleSelectVoice = async (voice: VoiceOption) => {
     // Update selection
     setSelectedVoice(voice);
-    
+
     // Store voice selection in state for later use in preview step
     await updateVoice({
       id: voice.id,
@@ -178,7 +175,7 @@ export default function VoicePage() {
       audioUrl: null,
       duration: voice.metadata?.duration,
     });
-    
+
     // Auto-play preview
     await playAudio(voice);
   };
@@ -191,10 +188,10 @@ export default function VoicePage() {
         ...newRecording,
         audio_url: audioUrlData.audio_url,
       };
-      
+
       addRecording(recordingWithUrl);
       setShowRecorder(false);
-      
+
       // Auto-select the newly recorded voice
       const newVoiceOption: VoiceOption = {
         id: String(recordingWithUrl.id),
@@ -206,7 +203,7 @@ export default function VoicePage() {
         },
         previewUrl: recordingWithUrl.audio_url,
       };
-      
+
       handleSelectVoice(newVoiceOption);
     } catch (error) {
       console.error("Failed to get audio URL for new recording:", error);
@@ -248,7 +245,7 @@ export default function VoicePage() {
   useEffect(() => {
     if (state?.voiceId && !selectedVoice) {
       const allVoices = [...myVoiceOptions, ...stockVoiceOptions];
-      const savedVoice = allVoices.find(v => v.id === state.voiceId);
+      const savedVoice = allVoices.find((v) => v.id === state.voiceId);
       if (savedVoice) {
         setSelectedVoice(savedVoice);
       }
@@ -259,7 +256,7 @@ export default function VoicePage() {
   useEffect(() => {
     if (state?.voice?.id && !selectedVoice) {
       const allVoices = [...myVoiceOptions, ...stockVoiceOptions];
-      const savedVoice = allVoices.find(v => v.id === state.voice?.id);
+      const savedVoice = allVoices.find((v) => v.id === state.voice?.id);
       if (savedVoice) {
         setSelectedVoice(savedVoice);
       }
@@ -289,16 +286,15 @@ export default function VoicePage() {
           </div>
           {selectedVoice && (
             <div className="text-sm text-text-muted">
-              Selected:{" "}
-              <span className="font-medium text-text-primary">{selectedVoice.name}</span>
+              Selected: <span className="font-medium text-text-primary">{selectedVoice.name}</span>
             </div>
           )}
         </div>
 
         {activeScript && (
-          <Card 
-            variant="bordered" 
-            padding="md" 
+          <Card
+            variant="bordered"
+            padding="md"
             className="cursor-pointer hover:border-accent-cyan/30 hover:bg-surface-raised transition-all group"
             onClick={() => setShowFullScriptModal(true)}
           >
@@ -318,9 +314,7 @@ export default function VoicePage() {
                   {Math.floor(activeScript.duration / 60)}:
                   {(activeScript.duration % 60).toString().padStart(2, "0")}
                 </p>
-                <p className="text-sm text-text-secondary line-clamp-2">
-                  {activeScript.content}
-                </p>
+                <p className="text-sm text-text-secondary line-clamp-2">{activeScript.content}</p>
               </div>
             </div>
           </Card>
@@ -354,14 +348,14 @@ export default function VoicePage() {
 
         {/* Voice Recorder Modal */}
         {showRecorder && (
-          <Card variant="bordered" padding="lg" className="border-accent-purple/30 bg-surface-panel">
+          <Card
+            variant="bordered"
+            padding="lg"
+            className="border-accent-purple/30 bg-surface-panel"
+          >
             <div className="mb-4 flex items-center justify-between">
               <h3 className="text-lg font-semibold text-text-primary">Record New Voice</h3>
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => setShowRecorder(false)}
-              >
+              <Button variant="secondary" size="sm" onClick={() => setShowRecorder(false)}>
                 Cancel
               </Button>
             </div>
@@ -389,7 +383,7 @@ export default function VoicePage() {
                 <span>Record</span>
               </Button>
             </div>
-            
+
             {recordingsLoading ? (
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {Array.from({ length: 3 }).map((_, i) => (
@@ -430,7 +424,7 @@ export default function VoicePage() {
               Stock Voices ({stockVoiceOptions.length})
             </h3>
           </div>
-          
+
           {voicesLoading ? (
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {Array.from({ length: 6 }).map((_, i) => (

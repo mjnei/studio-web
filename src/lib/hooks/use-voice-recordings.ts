@@ -19,7 +19,7 @@ export function useVoiceRecordings() {
       setLoading(true);
       setError(null);
       const data = await listVoiceRecordings();
-      
+
       // Fetch audio URLs for all recordings in parallel
       const recordingsWithAudioUrls = await Promise.all(
         data.map(async (recording) => {
@@ -38,7 +38,7 @@ export function useVoiceRecordings() {
           }
         })
       );
-      
+
       setRecordings(recordingsWithAudioUrls);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch recordings");

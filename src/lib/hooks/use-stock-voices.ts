@@ -11,10 +11,10 @@ export function useStockVoices() {
     try {
       setLoading(true);
       setError(null);
-      
+
       // The /voices endpoint returns a plain array, not a paginated response
       const voicesList = await request<VoiceResponse[]>("/voices");
-      
+
       setVoices(voicesList || []);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to fetch stock voices");

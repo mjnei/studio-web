@@ -8,7 +8,12 @@ import { Card } from "@/components/ui/card";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { FullScriptModal } from "@/components/project/full-script-modal";
-import { advanceProjectStep, updateProjectName, getSuggestedProjectNames, type NameSuggestion } from "@/lib/project-client";
+import {
+  advanceProjectStep,
+  updateProjectName,
+  getSuggestedProjectNames,
+  type NameSuggestion,
+} from "@/lib/project-client";
 
 export default function ProjectDetailsPage() {
   const params = useParams();
@@ -22,27 +27,27 @@ export default function ProjectDetailsPage() {
   const [loadingAiSuggestions, setLoadingAiSuggestions] = useState(false);
   const [savingName, setSavingName] = useState(false);
   const [showFullScriptModal, setShowFullScriptModal] = useState(false);
-  
+
   // Refresh project data when page loads to get latest script from Step 2
   useEffect(() => {
     if (projectId) {
       refresh();
     }
   }, [projectId, refresh]);
-  
+
   // Advance step when entering this page
   useEffect(() => {
     if (projectId && state?.lastStep && state.lastStep !== "details") {
       advanceProjectStep(projectId, "details").catch(console.error);
     }
   }, [projectId, state?.lastStep]);
-  
+
   // Initialize project name from existing state (if already set) or use first fallback
   useEffect(() => {
     if (state?.movieTitle) {
       const suggestions = generateLocalFallbackSuggestions(state.movieTitle);
       setFallbackSuggestions(suggestions);
-      
+
       // Use existing project name if available, otherwise use first suggestion
       if (!projectName) {
         if (state.projectName) {
@@ -53,7 +58,7 @@ export default function ProjectDetailsPage() {
       }
     }
   }, [state?.movieTitle, state?.projectName]);
-  
+
   // Fetch AI suggestions asynchronously (only if script exists)
   useEffect(() => {
     if (projectId && activeScript?.content) {
@@ -64,19 +69,37 @@ export default function ProjectDetailsPage() {
   // Generate fallback suggestions locally without API call
   const generateLocalFallbackSuggestions = (movieTitle: string): NameSuggestion[] => {
     const suggestions: NameSuggestion[] = [];
-    
+
     // Clean title and split into words
     const cleanTitle = movieTitle.trim();
     if (!cleanTitle) return [];
 
-    const getWords = (text: string) => text.split(/\s+/).filter(w => w.length > 0);
+    const getWords = (text: string) => text.split(/\s+/).filter((w) => w.length > 0);
     const words = getWords(cleanTitle);
-    
+
     if (words.length === 0) return [];
 
     // Articles/pronouns to handle specially when leading
     const articles = new Set(["a", "an", "the", "el", "la", "le"]);
-    const stopWords = new Set(["a", "an", "the", "el", "la", "le", "of", "and", "or", "but", "in", "on", "at", "to", "for", "with", "by"]);
+    const stopWords = new Set([
+      "a",
+      "an",
+      "the",
+      "el",
+      "la",
+      "le",
+      "of",
+      "and",
+      "or",
+      "but",
+      "in",
+      "on",
+      "at",
+      "to",
+      "for",
+      "with",
+      "by",
+    ]);
 
     const startsWithArticle = words.length > 1 && articles.has(words[0].toLowerCase());
     const firstSignificantWord = startsWithArticle ? words[1] : words[0];
@@ -109,10 +132,12 @@ export default function ProjectDetailsPage() {
 
     const baseWords = cleanTrailingStopWords(getWords(baseTitle));
     const baseStartsWithArticle = baseWords.length > 1 && articles.has(baseWords[0].toLowerCase());
-    const cleanBaseTitle = baseStartsWithArticle ? baseWords.slice(1).join(" ") : baseWords.join(" ");
+    const cleanBaseTitle = baseStartsWithArticle
+      ? baseWords.slice(1).join(" ")
+      : baseWords.join(" ");
 
     // Significant words list (excluding stop words)
-    const sigWords = words.filter(w => !stopWords.has(w.toLowerCase()));
+    const sigWords = words.filter((w) => !stopWords.has(w.toLowerCase()));
 
     // Strategy 1: Project name suggestion (Direct/Clean name)
     let projName = "";
@@ -124,12 +149,12 @@ export default function ProjectDetailsPage() {
       // If base title is too long, build a smart suggestion using first few words
       const sliceCount = baseStartsWithArticle ? 4 : 3;
       const slicedWords = cleanTrailingStopWords(baseWords.slice(0, sliceCount));
-      
+
       // Fallback if all words were popped (unlikely)
       const finalWords = slicedWords.length > 0 ? slicedWords : baseWords.slice(0, 2);
       projName = `${finalWords.join(" ")} Project`;
     }
-    
+
     suggestions.push({
       name: projName,
       reason: "Simple and direct name based on the title",
@@ -142,9 +167,9 @@ export default function ProjectDetailsPage() {
       if (acronymWords.length === 0) acronymWords = words;
 
       let acronym = acronymWords
-        .map(w => w.replace(/[^a-zA-Z0-9]/g, "")) // clean punctuation
-        .filter(w => w.length > 0)
-        .map(w => w[0].toUpperCase())
+        .map((w) => w.replace(/[^a-zA-Z0-9]/g, "")) // clean punctuation
+        .filter((w) => w.length > 0)
+        .map((w) => w[0].toUpperCase())
         .join("");
 
       // Limit acronym to max 4 chars for readability
@@ -231,7 +256,7 @@ export default function ProjectDetailsPage() {
   // Fetch AI-powered suggestions from backend (uses cached suggestions when available)
   const fetchAiNameSuggestions = async (regenerate = false) => {
     if (!projectId || !activeScript?.content) return;
-    
+
     setLoadingAiSuggestions(true);
     try {
       const response = await getSuggestedProjectNames(projectId, regenerate);
@@ -252,17 +277,19 @@ export default function ProjectDetailsPage() {
   const handleContinue = async () => {
     const trimmedName = projectName.trim();
     if (!trimmedName) return;
-    
+
     setSavingName(true);
     try {
       // Only save if the name has changed from the current state
       if (trimmedName !== state?.projectName) {
         await updateProjectName(projectId, trimmedName);
-        
+
         // Dispatch custom event to update ProjectShell immediately
-        window.dispatchEvent(new CustomEvent("project-updated", { 
-          detail: { projectId, projectName: trimmedName } 
-        }));
+        window.dispatchEvent(
+          new CustomEvent("project-updated", {
+            detail: { projectId, projectName: trimmedName },
+          })
+        );
       }
 
       // Navigate to voice step
@@ -325,7 +352,12 @@ export default function ProjectDetailsPage() {
 
         {/* Script summary with expand */}
         {activeScript && (
-          <Card variant="bordered" padding="md" className="hover:border-border-hover transition-colors cursor-pointer" onClick={() => setShowFullScriptModal(true)}>
+          <Card
+            variant="bordered"
+            padding="md"
+            className="hover:border-border-hover transition-colors cursor-pointer"
+            onClick={() => setShowFullScriptModal(true)}
+          >
             <div className="flex items-start gap-4">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted flex-shrink-0">
                 <FileText className="h-5 w-5 text-accent-cyan" />
@@ -351,23 +383,32 @@ export default function ProjectDetailsPage() {
         )}
 
         {/* Project name input - More prominent */}
-        <Card variant="elevated" padding="lg" className="border-2 border-accent-cyan/30 bg-gradient-to-br from-accent-cyan/8 via-accent-cyan/4 to-transparent shadow-lg">
+        <Card
+          variant="elevated"
+          padding="lg"
+          className="border-2 border-accent-cyan/30 bg-gradient-to-br from-accent-cyan/8 via-accent-cyan/4 to-transparent shadow-lg"
+        >
           <div className="mb-6">
             <div className="flex items-center gap-2.5 mb-4">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-cyan shadow-sm shadow-accent-cyan/50">
                 <Pencil className="h-4 w-4 text-white" />
               </div>
               <div className="flex-1">
-                <label htmlFor="projectName" className="text-lg font-bold text-text-primary flex items-center gap-2">
+                <label
+                  htmlFor="projectName"
+                  className="text-lg font-bold text-text-primary flex items-center gap-2"
+                >
                   Name Your Project
-                  <span className="text-sm font-normal text-accent-cyan bg-accent-cyan/10 px-2 py-0.5 rounded-full">Required</span>
+                  <span className="text-sm font-normal text-accent-cyan bg-accent-cyan/10 px-2 py-0.5 rounded-full">
+                    Required
+                  </span>
                 </label>
                 <p className="text-xs text-text-muted mt-0.5">
                   Choose a name that represents your video project
                 </p>
               </div>
             </div>
-            
+
             <div className="relative">
               <input
                 id="projectName"
@@ -380,18 +421,29 @@ export default function ProjectDetailsPage() {
               {projectName.trim() && (
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
                   <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-500/20">
-                    <svg className="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                    <svg
+                      className="h-4 w-4 text-green-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={3}
+                        d="M5 13l4 4L19 7"
+                      />
                     </svg>
                   </div>
                 </div>
               )}
             </div>
-            
+
             <div className="mt-3 flex items-start gap-2 text-xs text-text-muted bg-accent-cyan/5 rounded-lg p-3 border border-accent-cyan/10">
               <Sparkles className="h-4 w-4 text-accent-cyan flex-shrink-0 mt-0.5" />
               <p>
-                <span className="font-medium text-text-secondary">Tip:</span> Click any AI suggestion below or write your own creative name
+                <span className="font-medium text-text-secondary">Tip:</span> Click any AI
+                suggestion below or write your own creative name
               </p>
             </div>
           </div>
@@ -407,19 +459,23 @@ export default function ProjectDetailsPage() {
                   )}
                 </div>
                 {activeScript?.content && (
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={() => fetchAiNameSuggestions(true)} 
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => fetchAiNameSuggestions(true)}
                     disabled={loadingAiSuggestions}
                     className="text-xs h-8 text-accent-cyan hover:bg-accent-cyan/10"
                   >
-                    {loadingAiSuggestions ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <RefreshCw className="h-3 w-3 mr-1" />}
+                    {loadingAiSuggestions ? (
+                      <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                    ) : (
+                      <RefreshCw className="h-3 w-3 mr-1" />
+                    )}
                     Regenerate AI Ideas
                   </Button>
                 )}
               </div>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {/* Loading State - Only show while AI is loading */}
                 {loadingAiSuggestions && aiSuggestions.length === 0 && activeScript?.content && (
@@ -436,20 +492,26 @@ export default function ProjectDetailsPage() {
                     onClick={() => handleSuggestionClick(suggestion)}
                     className={`group relative text-left px-4 py-3.5 rounded-lg border-2 transition-all duration-200 ${
                       projectName === suggestion.name
-                        ? 'border-accent-cyan bg-accent-cyan/15 shadow-lg ring-2 ring-accent-cyan/30'
-                        : 'border-accent-cyan/30 bg-accent-cyan/5 hover:bg-accent-cyan/10 hover:border-accent-cyan hover:shadow-md'
+                        ? "border-accent-cyan bg-accent-cyan/15 shadow-lg ring-2 ring-accent-cyan/30"
+                        : "border-accent-cyan/30 bg-accent-cyan/5 hover:bg-accent-cyan/10 hover:border-accent-cyan hover:shadow-md"
                     }`}
                   >
                     <div className="flex items-start gap-2.5">
-                      <Sparkles className={`h-4 w-4 flex-shrink-0 mt-0.5 ${
-                        projectName === suggestion.name ? 'text-accent-cyan animate-pulse' : 'text-accent-cyan'
-                      }`} />
+                      <Sparkles
+                        className={`h-4 w-4 flex-shrink-0 mt-0.5 ${
+                          projectName === suggestion.name
+                            ? "text-accent-cyan animate-pulse"
+                            : "text-accent-cyan"
+                        }`}
+                      />
                       <div className="flex-1 min-w-0">
-                        <div className={`font-semibold transition-colors break-words ${
-                          projectName === suggestion.name 
-                            ? 'text-accent-cyan' 
-                            : 'text-text-primary group-hover:text-accent-cyan'
-                        }`}>
+                        <div
+                          className={`font-semibold transition-colors break-words ${
+                            projectName === suggestion.name
+                              ? "text-accent-cyan"
+                              : "text-text-primary group-hover:text-accent-cyan"
+                          }`}
+                        >
                           {suggestion.name}
                         </div>
                         {suggestion.reason && (
@@ -460,8 +522,18 @@ export default function ProjectDetailsPage() {
                       </div>
                       {projectName === suggestion.name && (
                         <div className="flex-shrink-0 h-5 w-5 rounded-full bg-accent-cyan flex items-center justify-center">
-                          <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                          <svg
+                            className="h-3 w-3 text-white"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={3}
+                              d="M5 13l4 4L19 7"
+                            />
                           </svg>
                         </div>
                       )}
@@ -476,17 +548,19 @@ export default function ProjectDetailsPage() {
                     onClick={() => handleSuggestionClick(suggestion)}
                     className={`group text-left px-4 py-3.5 rounded-lg border transition-all duration-200 ${
                       projectName === suggestion.name
-                        ? 'border-accent-cyan bg-accent-cyan/10 shadow-md ring-2 ring-accent-cyan/20'
-                        : 'border-border-default bg-surface-base hover:bg-surface-raised hover:border-border-hover hover:shadow-sm'
+                        ? "border-accent-cyan bg-accent-cyan/10 shadow-md ring-2 ring-accent-cyan/20"
+                        : "border-border-default bg-surface-base hover:bg-surface-raised hover:border-border-hover hover:shadow-sm"
                     }`}
                   >
                     <div className="flex items-start gap-2.5">
                       <div className="flex-1 min-w-0">
-                        <div className={`font-medium transition-colors break-words ${
-                          projectName === suggestion.name 
-                            ? 'text-accent-cyan' 
-                            : 'text-text-secondary group-hover:text-text-primary'
-                        }`}>
+                        <div
+                          className={`font-medium transition-colors break-words ${
+                            projectName === suggestion.name
+                              ? "text-accent-cyan"
+                              : "text-text-secondary group-hover:text-text-primary"
+                          }`}
+                        >
                           {suggestion.name}
                         </div>
                         {suggestion.reason && (
@@ -497,8 +571,18 @@ export default function ProjectDetailsPage() {
                       </div>
                       {projectName === suggestion.name && (
                         <div className="flex-shrink-0 h-5 w-5 rounded-full bg-accent-cyan flex items-center justify-center">
-                          <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                          <svg
+                            className="h-3 w-3 text-white"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={3}
+                              d="M5 13l4 4L19 7"
+                            />
                           </svg>
                         </div>
                       )}

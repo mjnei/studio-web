@@ -8,7 +8,12 @@ import { Button } from "@/components/ui/button";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { FullScriptModal } from "@/components/project/full-script-modal";
-import { advanceProjectStep, createTTSJob, getTTSJob, type TTSJobResponse } from "@/lib/project-client";
+import {
+  advanceProjectStep,
+  createTTSJob,
+  getTTSJob,
+  type TTSJobResponse,
+} from "@/lib/project-client";
 
 export default function PreviewPage() {
   const params = useParams();
@@ -128,7 +133,8 @@ export default function PreviewPage() {
   };
 
   const isTTSComplete = ttsJob?.status === "completed";
-  const isTTSProcessing = ttsJob?.status === "processing" || ttsJob?.status === "queued" || isGeneratingTTS;
+  const isTTSProcessing =
+    ttsJob?.status === "processing" || ttsJob?.status === "queued" || isGeneratingTTS;
 
   if (isLoading) {
     return (
@@ -174,8 +180,8 @@ export default function PreviewPage() {
         </Card>
 
         {/* Script preview card */}
-        <Card 
-          variant="elevated" 
+        <Card
+          variant="elevated"
           padding="lg"
           className="cursor-pointer hover:border-accent-cyan/30 transition-all group"
           onClick={() => setShowFullScriptModal(true)}
@@ -189,7 +195,7 @@ export default function PreviewPage() {
               Click to expand <ChevronDown className="h-3 w-3" />
             </span>
           </div>
-          
+
           <div className="rounded-lg bg-surface-panel p-4 border border-border-default">
             <p className="text-sm text-text-primary leading-relaxed line-clamp-3">
               &ldquo;{previewText}&rdquo;
@@ -222,20 +228,17 @@ export default function PreviewPage() {
                 <h3 className="mb-2 text-lg font-semibold text-text-primary">
                   Audio Generation Failed
                 </h3>
-                <p className="text-sm text-status-failed max-w-md mx-auto">
-                  {ttsError}
-                </p>
+                <p className="text-sm text-status-failed max-w-md mx-auto">{ttsError}</p>
               </>
             ) : isTTSComplete ? (
               <>
                 <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent-cyan/10">
                   <CheckCircle className="h-8 w-8 text-accent-cyan" />
                 </div>
-                <h3 className="mb-2 text-lg font-semibold text-text-primary">
-                  Audio Ready
-                </h3>
+                <h3 className="mb-2 text-lg font-semibold text-text-primary">Audio Ready</h3>
                 <p className="text-sm text-text-muted max-w-md mx-auto">
-                  Your voice audio has been generated successfully. You can now proceed to video composition.
+                  Your voice audio has been generated successfully. You can now proceed to video
+                  composition.
                 </p>
                 {ttsJob?.audioUrl && (
                   <div className="mt-4">

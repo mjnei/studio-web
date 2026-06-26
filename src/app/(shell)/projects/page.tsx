@@ -6,7 +6,12 @@ import { Folder, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { FormModal } from "@/components/ui/modal";
-import { listProjects, deleteProject, tmdbImageUrl, type ProjectResponse } from "@/lib/project-client";
+import {
+  listProjects,
+  deleteProject,
+  tmdbImageUrl,
+  type ProjectResponse,
+} from "@/lib/project-client";
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<ProjectResponse[]>([]);
@@ -146,7 +151,7 @@ export default function ProjectsPage() {
                   </CardContent>
                 </Card>
               </Link>
-              
+
               {/* Delete Button - appears on hover */}
               <button
                 onClick={(e) => handleDeleteClick(e, project)}
@@ -178,7 +183,8 @@ export default function ProjectsPage() {
           <p className="text-sm text-text-secondary">
             You are about to delete the project:{" "}
             <span className="font-semibold text-text-primary">
-              {(projectToDelete?.project_name || projectToDelete?.movie?.title) ?? "Untitled project"}
+              {(projectToDelete?.project_name || projectToDelete?.movie?.title) ??
+                "Untitled project"}
             </span>
           </p>
 

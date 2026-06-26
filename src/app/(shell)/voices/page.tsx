@@ -15,7 +15,7 @@ export default function VoicesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const { recordings, loading, error, deleteRecording, addRecording } = useVoiceRecordings();
   const { voices: stockVoices, loading: stockLoading, error: stockError } = useStockVoices();
-  
+
   const [playingVoiceId, setPlayingVoiceId] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -30,9 +30,9 @@ export default function VoicesPage() {
         audioRef.current.pause();
         audioRef.current = null;
       }
-      
+
       setPlayingVoiceId(voiceId);
-      
+
       // Get presigned URL from S3
       const audioUrl = await getVoicePreviewUrl(voiceId);
       if (!audioUrl) {
@@ -40,19 +40,19 @@ export default function VoicesPage() {
         alert("Failed to load voice preview. Please try again.");
         return;
       }
-      
+
       const audio = new Audio(audioUrl);
       audioRef.current = audio;
-      
+
       audio.onerror = () => {
         setPlayingVoiceId(null);
         alert("Failed to play audio. The preview file may be unavailable.");
       };
-      
+
       audio.onended = () => {
         setPlayingVoiceId(null);
       };
-      
+
       await audio.play();
     } catch (error) {
       console.error("Audio playback error:", error);
@@ -95,7 +95,7 @@ export default function VoicesPage() {
               Create custom voices or choose from our curated collection
             </p>
           </div>
-          
+
           {tab === "my" && !showRecorder && (
             <Button
               variant="primary"
@@ -127,9 +127,11 @@ export default function VoicesPage() {
             <Mic className="h-4 w-4" />
             <span>My Voices</span>
             {recordings.length > 0 && (
-              <span className={`ml-1 rounded-full px-2 py-0.5 text-xs font-bold ${
-                tab === "my" ? "bg-white/20" : "bg-surface-raised"
-              }`}>
+              <span
+                className={`ml-1 rounded-full px-2 py-0.5 text-xs font-bold ${
+                  tab === "my" ? "bg-white/20" : "bg-surface-raised"
+                }`}
+              >
                 {recordings.length}
               </span>
             )}
@@ -148,9 +150,11 @@ export default function VoicesPage() {
             <Sparkles className="h-4 w-4" />
             <span>Stock Voices</span>
             {stockVoices.length > 0 && (
-              <span className={`ml-1 rounded-full px-2 py-0.5 text-xs font-bold ${
-                tab === "stock" ? "bg-white/20" : "bg-surface-raised"
-              }`}>
+              <span
+                className={`ml-1 rounded-full px-2 py-0.5 text-xs font-bold ${
+                  tab === "stock" ? "bg-white/20" : "bg-surface-raised"
+                }`}
+              >
                 {stockVoices.length}
               </span>
             )}
@@ -225,7 +229,8 @@ export default function VoicesPage() {
               </div>
               <h3 className="mb-2 text-lg font-semibold text-text-primary">No voices yet</h3>
               <p className="mb-4 text-sm text-text-muted max-w-md mx-auto">
-                Start by recording a voice sample from your microphone. Your voice will be cloned and ready to use in your projects.
+                Start by recording a voice sample from your microphone. Your voice will be cloned
+                and ready to use in your projects.
               </p>
               {!showRecorder && (
                 <Button
@@ -278,8 +283,8 @@ export default function VoicesPage() {
                 {searchQuery ? "No voices found" : "No stock voices available"}
               </h3>
               <p className="text-sm text-text-muted">
-                {searchQuery 
-                  ? "Try adjusting your search criteria" 
+                {searchQuery
+                  ? "Try adjusting your search criteria"
                   : "Stock voices will appear here once they're added"}
               </p>
               {searchQuery && (
@@ -312,7 +317,7 @@ export default function VoicesPage() {
                       </p>
                     )}
                   </div>
-                  
+
                   {/* Tags */}
                   <div className="flex flex-wrap gap-1.5 mb-4">
                     {voice.gender && (
@@ -331,7 +336,7 @@ export default function VoicesPage() {
                       </span>
                     )}
                   </div>
-                  
+
                   {/* Preview Button */}
                   {voice.preview_path ? (
                     <button

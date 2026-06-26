@@ -20,18 +20,18 @@ export async function adminGetMovies(): Promise<MovieResponse[]> {
   const allMovies: MovieResponse[] = [];
   let page = 1;
   let hasMore = true;
-  
+
   while (hasMore) {
     const response = await request<{ movies: MovieResponse[]; total: number }>(
       `/movies/search?page=${page}&page_size=100`
     );
     allMovies.push(...response.movies);
-    
+
     // Check if there are more pages
     hasMore = allMovies.length < response.total;
     page++;
   }
-  
+
   return allMovies;
 }
 

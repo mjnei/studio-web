@@ -45,9 +45,7 @@ export default function AdminPage() {
               <Mic className="h-6 w-6 text-accent-primary" />
             </div>
             <h2 className="mb-2 text-xl font-semibold text-text-primary">Voices</h2>
-            <p className="text-sm text-text-secondary">
-              Manage voices and recordings
-            </p>
+            <p className="text-sm text-text-secondary">Manage voices and recordings</p>
           </div>
         </Link>
       </div>

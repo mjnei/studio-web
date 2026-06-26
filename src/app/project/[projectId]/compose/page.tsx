@@ -6,7 +6,17 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
-import { Play, Download, CheckCircle, Loader2, Video, Sparkles, X, FileText, ChevronDown } from "lucide-react";
+import {
+  Play,
+  Download,
+  CheckCircle,
+  Loader2,
+  Video,
+  Sparkles,
+  X,
+  FileText,
+  ChevronDown,
+} from "lucide-react";
 import { createVideoJob, getVideoJob, type VideoJobResponse } from "@/lib/project-client";
 
 const fallbackSteps = [
@@ -100,8 +110,7 @@ export default function ComposePage() {
   const isProcessing = !!(state?.videoStatus === "queued" || state?.videoStatus === "processing");
   const wordCount =
     state?.scripts?.find((script) => script.id === state.activeScriptId)?.wordCount ?? 0;
-  const activeScript =
-    state?.scripts?.find((script) => script.id === state.activeScriptId);
+  const activeScript = state?.scripts?.find((script) => script.id === state.activeScriptId);
 
   return (
     <>
@@ -139,8 +148,8 @@ export default function ComposePage() {
 
         {/* Script preview card */}
         {activeScript && (
-          <Card 
-            variant="bordered" 
+          <Card
+            variant="bordered"
             padding="md"
             className="cursor-pointer hover:border-accent-cyan/30 hover:bg-surface-raised transition-all group"
             onClick={() => setShowFullScriptModal(true)}
@@ -160,9 +169,7 @@ export default function ComposePage() {
                   {activeScript.wordCount} words • {Math.floor(activeScript.duration / 60)}:
                   {(activeScript.duration % 60).toString().padStart(2, "0")}
                 </p>
-                <p className="text-sm text-text-secondary line-clamp-2">
-                  {activeScript.content}
-                </p>
+                <p className="text-sm text-text-secondary line-clamp-2">{activeScript.content}</p>
               </div>
             </div>
           </Card>
@@ -317,11 +324,11 @@ export default function ComposePage() {
 
       {/* Full Script Modal */}
       {showFullScriptModal && activeScript && (
-        <div 
+        <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
           onClick={() => setShowFullScriptModal(false)}
         >
-          <div 
+          <div
             className="bg-surface-base rounded-xl shadow-2xl max-w-3xl w-full max-h-[80vh] flex flex-col border border-border-default"
             onClick={(e) => e.stopPropagation()}
           >
@@ -356,10 +363,7 @@ export default function ComposePage() {
 
             {/* Modal Footer */}
             <div className="flex items-center justify-end gap-3 p-6 border-t border-border-default bg-surface-raised/50">
-              <Button
-                variant="ghost"
-                onClick={() => setShowFullScriptModal(false)}
-              >
+              <Button variant="ghost" onClick={() => setShowFullScriptModal(false)}>
                 Close
               </Button>
             </div>

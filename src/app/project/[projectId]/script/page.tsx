@@ -50,10 +50,10 @@ export default function ScriptPage() {
       // Start saving asynchronously
       const savePromise = saveScript();
       savePromiseRef.current = savePromise;
-      
+
       // Navigate immediately without waiting
       router.push(`/project/${projectId}/details`);
-      
+
       // Save continues in background
     } else {
       // No changes, navigate immediately
@@ -90,9 +90,7 @@ export default function ScriptPage() {
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl font-semibold text-text-primary">Script</h2>
-            <p className="mt-1 text-sm text-text-muted">
-              Review and edit your voiceover script
-            </p>
+            <p className="mt-1 text-sm text-text-muted">Review and edit your voiceover script</p>
           </div>
         </div>
 
@@ -146,7 +144,7 @@ export default function ScriptPage() {
                 </div>
               </div>
             </div>
-            
+
             {/* Edit/Cancel buttons */}
             {!isEditing ? (
               <Button
@@ -154,8 +152,7 @@ export default function ScriptPage() {
                 size="md"
                 icon={<Edit2 className="h-4 w-4" />}
                 onClick={() => setIsEditing(true)}
-              >
-              </Button>
+              ></Button>
             ) : (
               <Button
                 variant="ghost"
@@ -175,13 +172,15 @@ export default function ScriptPage() {
             /* Read-only view with in-place expand/collapse */
             <div className="space-y-3">
               <div className="rounded-xl border border-border-default bg-surface-panel p-5">
-                <p className={`text-sm text-text-secondary leading-[1.8] whitespace-pre-wrap transition-all duration-300 ${
-                  isExpanded ? '' : 'line-clamp-6'
-                }`}>
+                <p
+                  className={`text-sm text-text-secondary leading-[1.8] whitespace-pre-wrap transition-all duration-300 ${
+                    isExpanded ? "" : "line-clamp-6"
+                  }`}
+                >
                   {scriptContent}
                 </p>
               </div>
-              
+
               {/* Expand/Collapse button */}
               <div className="flex items-center justify-center">
                 <button
@@ -189,7 +188,7 @@ export default function ScriptPage() {
                   className="group flex items-center gap-2 px-4 py-2.5 rounded-lg bg-surface-raised hover:bg-surface-hover border border-border-default hover:border-accent-cyan/40 text-text-secondary hover:text-accent-cyan transition-all duration-200 shadow-sm hover:shadow-md"
                 >
                   <span className="text-sm font-medium">
-                    {isExpanded ? 'Show Less' : 'Show Full Script'}
+                    {isExpanded ? "Show Less" : "Show Full Script"}
                   </span>
                   {isExpanded ? (
                     <ChevronUp className="h-4 w-4 group-hover:-translate-y-0.5 transition-transform" />
@@ -251,9 +250,7 @@ export default function ScriptPage() {
                           {Math.floor(script.duration / 60)}:
                           {(script.duration % 60).toString().padStart(2, "0")}
                         </span>
-                        <span>
-                          {new Date(script.createdAt).toLocaleDateString()}
-                        </span>
+                        <span>{new Date(script.createdAt).toLocaleDateString()}</span>
                       </div>
                     </div>
                   </div>

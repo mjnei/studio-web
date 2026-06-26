@@ -17,15 +17,12 @@ export function useModal(initialState?: Partial<ModalState>) {
     ...initialState,
   });
 
-  const openModal = useCallback(
-    (config: Omit<ModalState, "open">) => {
-      setModalState({
-        open: true,
-        ...config,
-      });
-    },
-    []
-  );
+  const openModal = useCallback((config: Omit<ModalState, "open">) => {
+    setModalState({
+      open: true,
+      ...config,
+    });
+  }, []);
 
   const closeModal = useCallback(() => {
     setModalState((prev) => ({

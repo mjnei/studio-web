@@ -16,7 +16,10 @@ export function VoiceRecordingCard({ recording, onDelete }: VoiceRecordingCardPr
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-  const [audioErrorAlert, setAudioErrorAlert] = useState<{ open: boolean; message: string }>({ open: false, message: "" });
+  const [audioErrorAlert, setAudioErrorAlert] = useState<{ open: boolean; message: string }>({
+    open: false,
+    message: "",
+  });
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const handleDeleteClick = () => {
@@ -47,7 +50,7 @@ export function VoiceRecordingCard({ recording, onDelete }: VoiceRecordingCardPr
       try {
         // Use presigned URL from S3
         const audioUrl = (recording as any).audio_url;
-        
+
         if (!audioUrl) {
           setAudioErrorAlert({ open: true, message: "Audio URL not available" });
           setIsLoading(false);
@@ -64,7 +67,10 @@ export function VoiceRecordingCard({ recording, onDelete }: VoiceRecordingCardPr
         audio.onerror = () => {
           setIsPlaying(false);
           setIsLoading(false);
-          setAudioErrorAlert({ open: true, message: "Failed to play audio. The file may be unavailable." });
+          setAudioErrorAlert({
+            open: true,
+            message: "Failed to play audio. The file may be unavailable.",
+          });
         };
 
         audio.oncanplay = () => {

@@ -217,7 +217,9 @@ export function FormModal({
   children,
   size = "md",
 }: FormModalProps) {
-  const handleSubmit = (e: React.ChangeEvent<HTMLFormElement> & { preventDefault?: () => void }) => {
+  const handleSubmit = (
+    e: React.ChangeEvent<HTMLFormElement> & { preventDefault?: () => void }
+  ) => {
     if (e.preventDefault) {
       e.preventDefault();
     }

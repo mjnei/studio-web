@@ -63,9 +63,7 @@ export default function NewProjectScriptPage() {
       // Calculate metrics
       const words = scriptContent.trim().split(/\s+/).filter(Boolean).length;
       const estimatedDurationMinutes = Math.round((words / 150) * 100) / 100;
-      const paragraphCount = scriptContent
-        .split(/\n\s*\n/)
-        .filter((p) => p.trim()).length;
+      const paragraphCount = scriptContent.split(/\n\s*\n/).filter((p) => p.trim()).length;
 
       // Create project + script in one call
       const script = await createScript({

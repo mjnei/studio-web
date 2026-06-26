@@ -1,7 +1,21 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Film, Plus, Upload, Trash2, Edit2, AlertCircle, CheckCircle2, Search, Loader, Star, Calendar, Eye, EyeOff } from "lucide-react";
+import {
+  Film,
+  Plus,
+  Upload,
+  Trash2,
+  Edit2,
+  AlertCircle,
+  CheckCircle2,
+  Search,
+  Loader,
+  Star,
+  Calendar,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 import Image from "next/image";
 import {
   adminGetMovies,
@@ -136,7 +150,8 @@ export default function AdminMoviesPage() {
   };
 
   const filteredMovies = movies.filter((m) => {
-    const matchesSearch = m.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesSearch =
+      m.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       m.overview?.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesSearch;
   });
@@ -242,7 +257,9 @@ export default function AdminMoviesPage() {
         </div>
       ) : filteredMovies.length === 0 ? (
         <div className="flex h-64 items-center justify-center rounded-2xl border border-dashed border-border-default">
-          <p className="text-sm text-text-muted">No movies found. Create or import one to get started.</p>
+          <p className="text-sm text-text-muted">
+            No movies found. Create or import one to get started.
+          </p>
         </div>
       ) : viewMode === "grid" ? (
         /* Grid View */
@@ -341,7 +358,10 @@ export default function AdminMoviesPage() {
           {filteredMovies.map((movie) => {
             const posterUrl = getImageUrl(movie.poster_path, "w500");
             return (
-              <div key={movie.id} className="border-b border-border-default last:border-0 hover:bg-surface-raised/50 transition-colors">
+              <div
+                key={movie.id}
+                className="border-b border-border-default last:border-0 hover:bg-surface-raised/50 transition-colors"
+              >
                 {editingId === movie.id && editingData ? (
                   <div className="grid grid-cols-12 gap-4 px-6 py-4 items-center">
                     <div className="col-span-1" />
@@ -354,7 +374,9 @@ export default function AdminMoviesPage() {
                     <input
                       type="date"
                       value={editingData.release_date || ""}
-                      onChange={(e) => setEditingData({ ...editingData, release_date: e.target.value })}
+                      onChange={(e) =>
+                        setEditingData({ ...editingData, release_date: e.target.value })
+                      }
                       className="col-span-2 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
                     />
                     <input
@@ -363,7 +385,9 @@ export default function AdminMoviesPage() {
                       max="10"
                       min="0"
                       value={editingData.vote_average || ""}
-                      onChange={(e) => setEditingData({ ...editingData, vote_average: parseFloat(e.target.value) })}
+                      onChange={(e) =>
+                        setEditingData({ ...editingData, vote_average: parseFloat(e.target.value) })
+                      }
                       className="col-span-1 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
                     />
                     <div className="col-span-4 flex items-center gap-2">
@@ -406,12 +430,16 @@ export default function AdminMoviesPage() {
                     <div className="col-span-4">
                       <p className="text-sm font-medium text-text-primary">{movie.title}</p>
                       {movie.overview && (
-                        <p className="mt-1 line-clamp-1 text-xs text-text-muted">{movie.overview}</p>
+                        <p className="mt-1 line-clamp-1 text-xs text-text-muted">
+                          {movie.overview}
+                        </p>
                       )}
                     </div>
                     <div className="col-span-2">
                       <p className="text-sm text-text-secondary">
-                        {movie.release_date ? new Date(movie.release_date).toLocaleDateString() : "N/A"}
+                        {movie.release_date
+                          ? new Date(movie.release_date).toLocaleDateString()
+                          : "N/A"}
                       </p>
                     </div>
                     <div className="col-span-1">

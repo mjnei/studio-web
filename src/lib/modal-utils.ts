@@ -17,8 +17,11 @@ export function createDeleteConfirmConfig(
 ) {
   return {
     title: options?.title || "Delete",
-    description: options?.description || 
-      (itemName ? `Delete "${itemName}"? This action cannot be undone.` : "This action cannot be undone."),
+    description:
+      options?.description ||
+      (itemName
+        ? `Delete "${itemName}"? This action cannot be undone.`
+        : "This action cannot be undone."),
     confirmText: options?.confirmText || "Delete",
     cancelText: options?.cancelText || "Cancel",
     variant: "danger" as const,
@@ -103,9 +106,12 @@ export function createInfoAlertConfig(
  */
 export function createModalState<T extends string>(
   modalNames: T[]
-): Record<T, boolean> & { openModal: (name: T) => Record<T, boolean>; closeModal: (name: T) => Record<T, boolean> } {
+): Record<T, boolean> & {
+  openModal: (name: T) => Record<T, boolean>;
+  closeModal: (name: T) => Record<T, boolean>;
+} {
   const state = {} as Record<T, boolean>;
-  modalNames.forEach(name => {
+  modalNames.forEach((name) => {
     state[name] = false;
   });
 
@@ -156,15 +162,15 @@ export async function handleDeleteWithConfirmation<T>(
 
 /**
  * Example usage for managing multiple modal states:
- * 
+ *
  * const [modals, setModals] = useState({
  *   deleteConfirm: false,
  *   errorAlert: { open: false, message: "" },
  *   successAlert: false,
  * });
- * 
+ *
  * Then create helper functions:
- * 
+ *
  * const openModal = (key) => {
  *   setModals(prev => ({
  *     ...prev,

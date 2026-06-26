@@ -158,7 +158,9 @@ export async function getSuggestedProjectNames(
   regenerate = false
 ): Promise<SuggestedNamesResponse> {
   const params = new URLSearchParams({ regenerate: String(regenerate) });
-  return request<SuggestedNamesResponse>(`/projects/${projectId}/suggested-names?${params.toString()}`);
+  return request<SuggestedNamesResponse>(
+    `/projects/${projectId}/suggested-names?${params.toString()}`
+  );
 }
 
 export async function advanceProjectStep(
@@ -216,12 +218,12 @@ export async function createScript(data: {
   autoActivate?: boolean;
 }): Promise<ProjectScriptResponse> {
   const params = new URLSearchParams({ auto_activate: String(data.autoActivate ?? true) });
-  
+
   // Add movie_id if creating a new project with first script
   if (data.movieId) {
     params.set("movie_id", String(data.movieId));
   }
-  
+
   return request<ProjectScriptResponse>(`/scripts?${params.toString()}`, {
     method: "POST",
     body: JSON.stringify({
@@ -256,7 +258,7 @@ export async function createTTSJob(data: {
   const params = new URLSearchParams({
     auto_activate: String(data.autoActivate ?? true),
   });
-  
+
   return request<TTSJobResponse>(`/tts?${params.toString()}`, {
     method: "POST",
     body: JSON.stringify({
@@ -280,12 +282,12 @@ export async function createVideoJob(data: {
     project_id: data.projectId,
     auto_activate: String(data.autoActivate ?? true),
   });
-  
+
   // Only include tts_job_id if provided
   if (data.ttsJobId) {
     params.set("tts_job_id", data.ttsJobId);
   }
-  
+
   return request<VideoJobResponse>(`/video?${params.toString()}`, { method: "POST" });
 }
 

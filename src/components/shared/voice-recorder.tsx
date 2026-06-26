@@ -384,7 +384,7 @@ export function VoiceRecorder({
       // Convert WebM to pure audio format if needed
       let audioBlob = blob;
       const mimeType = mimeRef.current || blob.type || "audio/webm";
-      
+
       if (mimeType.includes("webm")) {
         try {
           audioBlob = await convertWebmToAudio(blob, title);

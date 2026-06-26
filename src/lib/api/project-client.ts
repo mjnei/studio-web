@@ -244,12 +244,12 @@ export async function createVideoJob(
     project_id: projectId,
     auto_activate: String(autoActivate),
   });
-  
+
   // Only include tts_job_id if provided
   if (ttsJobId) {
     params.set("tts_job_id", ttsJobId);
   }
-  
+
   return request<VideoJobResponse>(`/video?${params.toString()}`, { method: "POST" });
 }
 

@@ -6,7 +6,7 @@
 /**
  * Convert WebM audio to a pure audio format (WAV preferred, fallback to MP3 if available)
  * This function attempts to extract pure audio from a WebM container.
- * 
+ *
  * @param blob - The WebM blob to convert
  * @param voiceName - The voice name for logging purposes
  * @returns A promise that resolves to an audio blob (WAV or MP3), or the original blob if conversion fails
@@ -17,7 +17,7 @@ export async function convertWebmToAudio(blob: Blob, voiceName: string): Promise
     if (typeof window !== "undefined" && "FFmpeg" in window) {
       return await convertWebmUsingFFmpeg(blob, voiceName);
     }
-    
+
     // Fallback: Try to decode and re-encode using Web Audio API
     return await convertWebmUsingWebAudio(blob, voiceName);
   } catch (error) {
@@ -98,14 +98,14 @@ function audioBufferToWav(audioBuffer: AudioBuffer): Blob {
   // Write audio data
   let offset = 44;
   const frameLength = audioBuffer.length;
-  
+
   if (numberOfChannels === 2) {
     const left = channels[0];
     const right = channels[1];
     for (let i = 0; i < frameLength; i++) {
       const leftSample = Math.max(-1, Math.min(1, left[i]));
       const rightSample = Math.max(-1, Math.min(1, right[i]));
-      
+
       view.setInt16(offset, leftSample < 0 ? leftSample * 0x8000 : leftSample * 0x7fff, true);
       offset += 2;
       view.setInt16(offset, rightSample < 0 ? rightSample * 0x8000 : rightSample * 0x7fff, true);
