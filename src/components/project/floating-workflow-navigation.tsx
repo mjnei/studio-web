@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Home, Check } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useSidebar } from "@/components/shell/sidebar-context";
 
 interface FloatingWorkflowNavigationProps {
   projectId: string;
@@ -49,8 +50,13 @@ export function FloatingWorkflowNavigation({
   isProcessing = false,
 }: FloatingWorkflowNavigationProps) {
   const router = useRouter();
+  const { collapsed, isNarrow } = useSidebar();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+
+  // On large screens, offset the bar to the right of the sidebar so it
+  // doesn't overlap the left rail (mirrors w-64/w-16 in project-shell.tsx).
+  const sidebarOffsetClass = isNarrow ? "left-0" : collapsed ? "left-16" : "left-64";
 
   const currentStepIndex = stepOrder[currentStep];
   const isFirstStep = currentStepIndex === 0;
@@ -104,9 +110,9 @@ export function FloatingWorkflowNavigation({
 
   return (
     <div
-      className={`fixed bottom-0 left-0 right-0 z-40 transition-transform duration-300 ${
+      className={`fixed bottom-0 right-0 z-40 transition-all duration-300 ${
         isVisible ? "translate-y-0" : "translate-y-full"
-      }`}
+      } ${sidebarOffsetClass}`}
     >
       {/* Backdrop blur effect */}
       <div className="absolute inset-0 bg-surface-panel/95 backdrop-blur-xl border-t border-border-default" />
