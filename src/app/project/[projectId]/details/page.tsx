@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { FileText, Sparkles, Loader2, ChevronDown, ChevronUp, X } from "lucide-react";
+import { FileText, Sparkles, Loader2, ChevronDown, X, RefreshCw, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useProjectState } from "@/lib/hooks/use-project-state";
@@ -21,7 +21,6 @@ export default function ProjectDetailsPage() {
   const [aiSuggestions, setAiSuggestions] = useState<NameSuggestion[]>([]);
   const [loadingAiSuggestions, setLoadingAiSuggestions] = useState(false);
   const [savingName, setSavingName] = useState(false);
-  const [scriptExpanded, setScriptExpanded] = useState(false);
   const [showFullScriptModal, setShowFullScriptModal] = useState(false);
   
   // Advance step when entering this page
@@ -54,39 +53,168 @@ export default function ProjectDetailsPage() {
   // Generate fallback suggestions locally without API call
   const generateLocalFallbackSuggestions = (movieTitle: string): NameSuggestion[] => {
     const suggestions: NameSuggestion[] = [];
-    const words = movieTitle.split(" ").filter(w => w.length > 0);
     
-    // Strategy 1: First word + "Project"
-    if (words.length > 0) {
-      suggestions.push({
-        name: `${words[0]} Project`,
-        reason: "Simple and direct",
-      });
+    // Clean title and split into words
+    const cleanTitle = movieTitle.trim();
+    if (!cleanTitle) return [];
+
+    const getWords = (text: string) => text.split(/\s+/).filter(w => w.length > 0);
+    const words = getWords(cleanTitle);
+    
+    if (words.length === 0) return [];
+
+    // Articles/pronouns to handle specially when leading
+    const articles = new Set(["a", "an", "the", "el", "la", "le"]);
+    const stopWords = new Set(["a", "an", "the", "el", "la", "le", "of", "and", "or", "but", "in", "on", "at", "to", "for", "with", "by"]);
+
+    const startsWithArticle = words.length > 1 && articles.has(words[0].toLowerCase());
+    const firstSignificantWord = startsWithArticle ? words[1] : words[0];
+
+    // Determine if title is really short (e.g. <= 8 characters or 1 word)
+    const isReallyShort = cleanTitle.length <= 8 || words.length === 1;
+    // Determine if title is really long (e.g. > 25 characters or > 4 words)
+    const isReallyLong = cleanTitle.length > 25 || words.length > 4;
+
+    // Determine base title (useful for long titles with colon/dash, e.g. "Star Wars: Episode IV" -> "Star Wars")
+    let baseTitle = cleanTitle;
+    if (isReallyLong) {
+      const separatorIndex = cleanTitle.search(/[:\-]/);
+      if (separatorIndex > 2) {
+        const partBefore = cleanTitle.substring(0, separatorIndex).trim();
+        if (partBefore.length >= 3) {
+          baseTitle = partBefore;
+        }
+      }
+    }
+
+    // Helper to remove trailing stop words from a word array
+    const cleanTrailingStopWords = (wordList: string[]) => {
+      const list = [...wordList];
+      while (list.length > 0 && stopWords.has(list[list.length - 1].toLowerCase())) {
+        list.pop();
+      }
+      return list;
+    };
+
+    const baseWords = cleanTrailingStopWords(getWords(baseTitle));
+    const baseStartsWithArticle = baseWords.length > 1 && articles.has(baseWords[0].toLowerCase());
+    const cleanBaseTitle = baseStartsWithArticle ? baseWords.slice(1).join(" ") : baseWords.join(" ");
+
+    // Significant words list (excluding stop words)
+    const sigWords = words.filter(w => !stopWords.has(w.toLowerCase()));
+
+    // Strategy 1: Project name suggestion (Direct/Clean name)
+    let projName = "";
+    if (isReallyShort) {
+      projName = `${cleanTitle} Project`;
+    } else if (baseWords.length <= 3) {
+      projName = `${baseWords.join(" ")} Project`;
+    } else {
+      // If base title is too long, build a smart suggestion using first few words
+      const sliceCount = baseStartsWithArticle ? 4 : 3;
+      const slicedWords = cleanTrailingStopWords(baseWords.slice(0, sliceCount));
+      
+      // Fallback if all words were popped (unlikely)
+      const finalWords = slicedWords.length > 0 ? slicedWords : baseWords.slice(0, 2);
+      projName = `${finalWords.join(" ")} Project`;
     }
     
-    // Strategy 2: Acronym (if multi-word)
-    if (words.length > 1) {
-      const acronym = words.map(word => word[0].toUpperCase()).join("");
+    suggestions.push({
+      name: projName,
+      reason: "Simple and direct name based on the title",
+    });
+
+    // Strategy 2: Acronym / Production name (if not really short)
+    if (!isReallyShort && words.length > 1) {
+      // Use sigWords to build a clean acronym (e.g. "The Lord of the Rings" -> "LOTR")
+      let acronymWords = sigWords;
+      if (acronymWords.length === 0) acronymWords = words;
+
+      let acronym = acronymWords
+        .map(w => w.replace(/[^a-zA-Z0-9]/g, "")) // clean punctuation
+        .filter(w => w.length > 0)
+        .map(w => w[0].toUpperCase())
+        .join("");
+
+      // Limit acronym to max 4 chars for readability
+      if (acronym.length > 4) {
+        acronym = acronym.substring(0, 4);
+      }
+
+      if (acronym.length >= 2) {
+        suggestions.push({
+          name: `${acronym} Production`,
+          reason: "Classic production name using title initials",
+        });
+      } else {
+        suggestions.push({
+          name: `${firstSignificantWord} Production`,
+          reason: "Classic production designation",
+        });
+      }
+    } else {
       suggestions.push({
-        name: `${acronym} Production`,
-        reason: "Based on movie title initials",
+        name: `${cleanTitle} Film`,
+        reason: "Classic film designation",
       });
     }
-    
-    // Strategy 3: Last word + "Story" or "Chronicles"
-    if (words.length > 1) {
+
+    // Strategy 3: Narrative / Chronicles / Story adaptation
+    if (isReallyLong) {
+      // For very long titles, use the clean base title prefix + Chronicles
+      // e.g. "Star Wars: Episode IV" -> "Star Wars Chronicles"
       suggestions.push({
-        name: `${words[words.length - 1]} Story`,
+        name: `${cleanBaseTitle} Chronicles`,
+        reason: "Epic chronicle adaptation",
+      });
+    } else if (words.length > 1) {
+      // e.g. "The Matrix" -> "Matrix Story" (uses significant word or last word)
+      const lastWordClean = words[words.length - 1].replace(/[^a-zA-Z0-9]/g, "");
+      const themeWord = lastWordClean.length > 1 ? lastWordClean : firstSignificantWord;
+      suggestions.push({
+        name: `${themeWord} Story`,
         reason: "Focused on key theme",
       });
-    } else if (words.length === 1) {
+    } else {
       suggestions.push({
-        name: `${words[0]} Chronicles`,
+        name: `${cleanTitle} Chronicles`,
         reason: "Epic and memorable",
       });
     }
-    
-    return suggestions.slice(0, 3);
+
+    // Deduplicate and filter suggestions
+    const seen = new Set<string>();
+    const uniqueSuggestions: NameSuggestion[] = [];
+
+    const addUnique = (s: NameSuggestion) => {
+      const normalized = s.name.trim();
+      if (normalized && !seen.has(normalized.toLowerCase())) {
+        seen.add(normalized.toLowerCase());
+        uniqueSuggestions.push({
+          name: normalized,
+          reason: s.reason,
+        });
+        return true;
+      }
+      return false;
+    };
+
+    suggestions.forEach(addUnique);
+
+    // If we have less than 3, pad with nice fallbacks
+    const fallbacks = [
+      { name: `${cleanBaseTitle} Venture`, reason: "Creative venture" },
+      { name: `${firstSignificantWord} Studio`, reason: "Studio production name" },
+      { name: `Project ${firstSignificantWord}`, reason: "Classic project naming" },
+      { name: `${cleanTitle} Chronicles`, reason: "Epic chronicle adaptation" },
+    ];
+
+    for (const f of fallbacks) {
+      if (uniqueSuggestions.length >= 3) break;
+      addUnique(f);
+    }
+
+    return uniqueSuggestions.slice(0, 3);
   };
 
   // Fetch AI-powered suggestions from Agnes API (requires script content)
@@ -121,6 +249,11 @@ export default function ProjectDetailsPage() {
       // Save to backend
       await updateProjectName(projectId, projectName.trim());
       
+      // Dispatch custom event to update ProjectShell immediately
+      window.dispatchEvent(new CustomEvent("project-updated", { 
+        detail: { projectId, projectName: projectName.trim() } 
+      }));
+
       // Navigate to voice step
       router.push(`/project/${projectId}/voice`);
     } catch (error) {
@@ -181,7 +314,7 @@ export default function ProjectDetailsPage() {
 
         {/* Script summary with expand */}
         {activeScript && (
-          <Card variant="bordered" padding="md">
+          <Card variant="bordered" padding="md" className="hover:border-border-hover transition-colors">
             <div className="flex items-start gap-4">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted flex-shrink-0">
                 <FileText className="h-5 w-5 text-accent-cyan" />
@@ -190,38 +323,34 @@ export default function ProjectDetailsPage() {
                 <div className="flex items-center justify-between gap-4 mb-2">
                   <h3 className="font-medium text-text-primary">Your Script</h3>
                   <Button
-                    variant="ghost"
+                    variant="outline"
                     size="sm"
                     onClick={() => setShowFullScriptModal(true)}
-                    className="text-accent-cyan hover:text-accent-cyan hover:bg-accent-cyan/10 flex-shrink-0"
+                    className="text-accent-cyan border-accent-cyan/30 hover:bg-accent-cyan/10 hover:border-accent-cyan flex-shrink-0"
                   >
-                    View Full Script
+                    <FileText className="h-4 w-4 mr-1.5" />
+                    View Full
                   </Button>
                 </div>
-                <p className="text-sm text-text-muted mb-2">
+                <p className="text-sm text-text-muted mb-3">
                   {activeScript.wordCount} words • Estimated duration:{" "}
                   {Math.floor(activeScript.duration / 60)}:
                   {(activeScript.duration % 60).toString().padStart(2, "0")}
                 </p>
                 <div className="relative">
-                  <p className={`text-sm text-text-secondary ${scriptExpanded ? '' : 'line-clamp-3'}`}>
+                  <p className="text-sm text-text-secondary line-clamp-3 leading-relaxed">
                     {activeScript.content}
                   </p>
                   {activeScript.content.length > 200 && (
-                    <button
-                      onClick={() => setScriptExpanded(!scriptExpanded)}
-                      className="mt-2 text-xs font-medium text-accent-cyan hover:text-accent-cyan-hover flex items-center gap-1"
-                    >
-                      {scriptExpanded ? (
-                        <>
-                          Show less <ChevronUp className="h-3 w-3" />
-                        </>
-                      ) : (
-                        <>
-                          Show more <ChevronDown className="h-3 w-3" />
-                        </>
-                      )}
-                    </button>
+                    <div className="mt-3 pt-3 border-t border-border-default">
+                      <button
+                        onClick={() => setShowFullScriptModal(true)}
+                        className="text-sm font-medium text-accent-cyan hover:text-accent-cyan-hover flex items-center gap-1.5 group"
+                      >
+                        Read complete script 
+                        <ChevronDown className="h-4 w-4 group-hover:translate-y-0.5 transition-transform" />
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>
@@ -230,34 +359,72 @@ export default function ProjectDetailsPage() {
         )}
 
         {/* Project name input - More prominent */}
-        <Card variant="elevated" padding="lg" className="border-2 border-accent-cyan/20 bg-gradient-to-br from-accent-cyan/5 to-transparent">
+        <Card variant="elevated" padding="lg" className="border-2 border-accent-cyan/30 bg-gradient-to-br from-accent-cyan/8 via-accent-cyan/4 to-transparent shadow-lg">
           <div className="mb-6">
-            <div className="flex items-center gap-2 mb-3">
-              <Sparkles className="h-5 w-5 text-accent-cyan" />
-              <label htmlFor="projectName" className="text-base font-semibold text-text-primary">
-                Choose Your Project Name
-              </label>
+            <div className="flex items-center gap-2.5 mb-4">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-cyan shadow-sm shadow-accent-cyan/50">
+                <Pencil className="h-4 w-4 text-white" />
+              </div>
+              <div className="flex-1">
+                <label htmlFor="projectName" className="text-lg font-bold text-text-primary flex items-center gap-2">
+                  Name Your Project
+                  <span className="text-sm font-normal text-accent-cyan bg-accent-cyan/10 px-2 py-0.5 rounded-full">Required</span>
+                </label>
+                <p className="text-xs text-text-muted mt-0.5">
+                  Choose a name that represents your video project
+                </p>
+              </div>
             </div>
-            <input
-              id="projectName"
-              type="text"
-              value={projectName}
-              onChange={(e) => setProjectName(e.target.value)}
-              placeholder="Enter project name..."
-              className="w-full rounded-lg border-2 border-border-default bg-surface-raised px-4 py-3.5 text-lg font-medium text-text-primary placeholder-text-muted focus:border-accent-cyan focus:outline-none focus:ring-4 focus:ring-accent-cyan/20 transition-all"
-            />
-            <p className="mt-2 text-xs text-text-muted">
-              💡 Click any suggestion below to use it, or type your own
-            </p>
+            
+            <div className="relative">
+              <input
+                id="projectName"
+                type="text"
+                value={projectName}
+                onChange={(e) => setProjectName(e.target.value)}
+                placeholder="e.g., Inception Trailer Project"
+                className="w-full rounded-xl border-2 border-accent-cyan/50 bg-surface-base px-5 py-4 text-xl font-semibold text-text-primary placeholder-text-muted/60 focus:border-accent-cyan focus:outline-none focus:ring-4 focus:ring-accent-cyan/25 transition-all shadow-[0_0_20px_rgba(34,211,238,0.12)] hover:shadow-[0_0_25px_rgba(34,211,238,0.2)]"
+              />
+              {projectName.trim() && (
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-500/20">
+                    <svg className="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            <div className="mt-3 flex items-start gap-2 text-xs text-text-muted bg-accent-cyan/5 rounded-lg p-3 border border-accent-cyan/10">
+              <Sparkles className="h-4 w-4 text-accent-cyan flex-shrink-0 mt-0.5" />
+              <p>
+                <span className="font-medium text-text-secondary">Tip:</span> Click any AI suggestion below or write your own creative name
+              </p>
+            </div>
           </div>
 
           {/* Unified Suggestions List */}
           {(loadingAiSuggestions || aiSuggestions.length > 0 || fallbackSuggestions.length > 0) && (
             <div>
-              <div className="flex items-center gap-2 mb-3">
-                <h4 className="text-sm font-medium text-text-secondary">Suggestions</h4>
-                {loadingAiSuggestions && (
-                  <Loader2 className="h-4 w-4 animate-spin text-accent-cyan" />
+              <div className="flex items-center justify-between gap-2 mb-3">
+                <div className="flex items-center gap-2">
+                  <h4 className="text-sm font-medium text-text-secondary">Suggestions</h4>
+                  {loadingAiSuggestions && (
+                    <Loader2 className="h-4 w-4 animate-spin text-accent-cyan" />
+                  )}
+                </div>
+                {activeScript?.content && (
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={fetchAiNameSuggestions} 
+                    disabled={loadingAiSuggestions}
+                    className="text-xs h-8 text-accent-cyan hover:bg-accent-cyan/10"
+                  >
+                    {loadingAiSuggestions ? <Loader2 className="h-3 w-3 mr-1 animate-spin" /> : <RefreshCw className="h-3 w-3 mr-1" />}
+                    Regenerate AI Ideas
+                  </Button>
                 )}
               </div>
               

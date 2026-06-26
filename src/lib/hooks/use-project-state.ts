@@ -183,6 +183,20 @@ export function useProjectState(projectId: string) {
     void refresh();
   }, [refresh]);
 
+  useEffect(() => {
+    const handleProjectUpdate = (e: CustomEvent) => {
+      if (e.detail?.projectId === projectId) {
+        if (e.detail.projectName !== undefined) {
+           setState(s => s ? { ...s, projectName: e.detail.projectName, title: e.detail.projectName } : s);
+        } else {
+           void refresh();
+        }
+      }
+    };
+    window.addEventListener("project-updated", handleProjectUpdate as EventListener);
+    return () => window.removeEventListener("project-updated", handleProjectUpdate as EventListener);
+  }, [projectId, refresh]);
+
   const updateMovie = useCallback(
     async (movie: {
       id: string;
