@@ -2,12 +2,11 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
-import { Edit2, FileText, Clock, Check, X, ChevronDown } from "lucide-react";
+import { Edit2, FileText, Clock, Check, X, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
-import { FullScriptModal } from "@/components/project/full-script-modal";
 
 export default function ScriptPage() {
   const params = useParams();
@@ -18,7 +17,7 @@ export default function ScriptPage() {
   const [scriptContent, setScriptContent] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [showFullScriptModal, setShowFullScriptModal] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
   const savePromiseRef = useRef<Promise<void> | null>(null);
 
   useEffect(() => {
@@ -156,7 +155,6 @@ export default function ScriptPage() {
                 icon={<Edit2 className="h-4 w-4" />}
                 onClick={() => setIsEditing(true)}
               >
-                Edit
               </Button>
             ) : (
               <Button
@@ -174,19 +172,31 @@ export default function ScriptPage() {
           </div>
 
           {!isEditing ? (
-            /* Read-only view with click to expand */
-            <div 
-              className="cursor-pointer rounded-lg border border-border-default bg-surface-panel p-4 hover:border-accent-cyan/30 hover:bg-surface-raised transition-all group"
-              onClick={() => setShowFullScriptModal(true)}
-            >
-              <p className="text-sm text-text-secondary line-clamp-6 leading-relaxed whitespace-pre-wrap">
-                {scriptContent}
-              </p>
-              <div className="mt-3 pt-3 border-t border-border-default flex items-center justify-center">
-                <span className="text-sm font-medium text-accent-cyan group-hover:text-accent-cyan-hover flex items-center gap-1.5">
-                  Click to view full script
-                  <ChevronDown className="h-4 w-4 group-hover:translate-y-0.5 transition-transform" />
-                </span>
+            /* Read-only view with in-place expand/collapse */
+            <div className="space-y-3">
+              <div className="rounded-xl border border-border-default bg-surface-panel p-5">
+                <p className={`text-sm text-text-secondary leading-[1.8] whitespace-pre-wrap transition-all duration-300 ${
+                  isExpanded ? '' : 'line-clamp-6'
+                }`}>
+                  {scriptContent}
+                </p>
+              </div>
+              
+              {/* Expand/Collapse button */}
+              <div className="flex items-center justify-center">
+                <button
+                  onClick={() => setIsExpanded(!isExpanded)}
+                  className="group flex items-center gap-2 px-4 py-2.5 rounded-lg bg-surface-raised hover:bg-surface-hover border border-border-default hover:border-accent-cyan/40 text-text-secondary hover:text-accent-cyan transition-all duration-200 shadow-sm hover:shadow-md"
+                >
+                  <span className="text-sm font-medium">
+                    {isExpanded ? 'Show Less' : 'Show Full Script'}
+                  </span>
+                  {isExpanded ? (
+                    <ChevronUp className="h-4 w-4 group-hover:-translate-y-0.5 transition-transform" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4 group-hover:translate-y-0.5 transition-transform" />
+                  )}
+                </button>
               </div>
             </div>
           ) : (
@@ -253,17 +263,6 @@ export default function ScriptPage() {
           </Card>
         )}
       </div>
-
-      {/* Full Script Modal */}
-      <FullScriptModal
-        isOpen={showFullScriptModal}
-        onClose={() => setShowFullScriptModal(false)}
-        scriptContent={activeScript?.content || scriptContent}
-        wordCount={activeScript?.wordCount || wordCount}
-        duration={activeScript?.duration || estimatedDuration}
-        onEdit={() => setIsEditing(true)}
-        showEditButton={!isEditing}
-      />
 
       <FloatingWorkflowNavigation
         projectId={projectId}
