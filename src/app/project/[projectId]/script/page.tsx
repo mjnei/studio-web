@@ -1,12 +1,13 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import { Edit2, Save, FileText, Clock, Check, X, ChevronDown } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Edit2, FileText, Clock, Check, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
+import { FullScriptModal } from "@/components/project/full-script-modal";
 
 export default function ScriptPage() {
   const params = useParams();
@@ -18,6 +19,7 @@ export default function ScriptPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [showFullScriptModal, setShowFullScriptModal] = useState(false);
+  const savePromiseRef = useRef<Promise<void> | null>(null);
 
   useEffect(() => {
     if (activeScript) {
@@ -26,19 +28,37 @@ export default function ScriptPage() {
     }
   }, [activeScript]);
 
-  const handleSaveScript = async () => {
-    if (!scriptContent.trim()) return;
+  const saveScript = async () => {
+    if (!scriptContent.trim() || scriptContent === activeScript?.content) {
+      return;
+    }
 
     setIsSaving(true);
     try {
-      const newScript = await addScript(scriptContent);
-      setScriptContent(newScript.content);
-      setIsEditing(false);
+      await addScript(scriptContent);
     } catch (error) {
       console.error("Failed to save script:", error);
-      alert("Failed to save script. Please try again.");
+      throw error;
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleNext = async () => {
+    // If there are changes, save them first
+    const hasChanges = activeScript?.content !== scriptContent;
+    if (hasChanges && scriptContent.trim()) {
+      // Start saving asynchronously
+      const savePromise = saveScript();
+      savePromiseRef.current = savePromise;
+      
+      // Navigate immediately without waiting
+      router.push(`/project/${projectId}/details`);
+      
+      // Save continues in background
+    } else {
+      // No changes, navigate immediately
+      router.push(`/project/${projectId}/details`);
     }
   };
 
@@ -128,7 +148,7 @@ export default function ScriptPage() {
               </div>
             </div>
             
-            {/* Edit/Save buttons */}
+            {/* Edit/Cancel buttons */}
             {!isEditing ? (
               <Button
                 variant="secondary"
@@ -139,29 +159,17 @@ export default function ScriptPage() {
                 Edit
               </Button>
             ) : (
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => {
-                    setScriptContent(activeScript?.content || "");
-                    setIsEditing(false);
-                  }}
-                  disabled={isSaving}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="primary"
-                  size="md"
-                  icon={<Save className="h-4 w-4" />}
-                  onClick={handleSaveScript}
-                  loading={isSaving}
-                  disabled={!hasChanges || !scriptContent.trim()}
-                >
-                  Save
-                </Button>
-              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setScriptContent(activeScript?.content || "");
+                  setIsEditing(false);
+                }}
+                disabled={isSaving}
+              >
+                <X className="h-4 w-4" />
+              </Button>
             )}
           </div>
 
@@ -194,7 +202,7 @@ export default function ScriptPage() {
           {isEditing && hasChanges && (
             <div className="mt-3 flex items-center gap-2 text-xs text-accent-cyan bg-accent-cyan/5 rounded-lg p-3 border border-accent-cyan/10">
               <FileText className="h-4 w-4 flex-shrink-0" />
-              <p>You have unsaved changes. Click Save to create a new script version.</p>
+              <p>Your changes will be saved automatically when you continue to the next step.</p>
             </div>
           )}
         </Card>
@@ -247,73 +255,23 @@ export default function ScriptPage() {
       </div>
 
       {/* Full Script Modal */}
-      {showFullScriptModal && activeScript && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
-          onClick={() => setShowFullScriptModal(false)}
-        >
-          <div 
-            className="bg-surface-base rounded-xl shadow-2xl max-w-3xl w-full max-h-[80vh] flex flex-col border border-border-default"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 border-b border-border-default">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted">
-                  <FileText className="h-5 w-5 text-accent-cyan" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-text-primary">Full Script</h3>
-                  <p className="text-sm text-text-muted">
-                    {activeScript.wordCount} words • {Math.floor(activeScript.duration / 60)}:
-                    {(activeScript.duration % 60).toString().padStart(2, "0")} duration
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={() => setShowFullScriptModal(false)}
-                className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-surface-raised text-text-muted hover:text-text-primary transition-colors"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-
-            {/* Modal Content - Scrollable */}
-            <div className="flex-1 overflow-y-auto p-6">
-              <p className="text-base text-text-primary leading-relaxed whitespace-pre-wrap">
-                {activeScript.content}
-              </p>
-            </div>
-
-            {/* Modal Footer */}
-            <div className="flex items-center justify-between gap-3 p-6 border-t border-border-default bg-surface-raised/50">
-              <Button
-                variant="secondary"
-                icon={<Edit2 className="h-4 w-4" />}
-                onClick={() => {
-                  setShowFullScriptModal(false);
-                  setIsEditing(true);
-                }}
-              >
-                Edit Script
-              </Button>
-              <Button
-                variant="ghost"
-                onClick={() => setShowFullScriptModal(false)}
-              >
-                Close
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+      <FullScriptModal
+        isOpen={showFullScriptModal}
+        onClose={() => setShowFullScriptModal(false)}
+        scriptContent={activeScript?.content || scriptContent}
+        wordCount={activeScript?.wordCount || wordCount}
+        duration={activeScript?.duration || estimatedDuration}
+        onEdit={() => setIsEditing(true)}
+        showEditButton={!isEditing}
+      />
 
       <FloatingWorkflowNavigation
         projectId={projectId}
         currentStep="script"
-        canGoNext={!!activeScript}
+        canGoNext={!!activeScript || !!scriptContent.trim()}
+        onNext={handleNext}
         canGoBack={true}
-        isProcessing={isSaving}
+        isProcessing={false}
       />
     </>
   );

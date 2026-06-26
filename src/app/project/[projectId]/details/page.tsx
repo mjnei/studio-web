@@ -7,8 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
-import { advanceProjectStep, updateProjectName } from "@/lib/project-client";
-import { generateProjectNameSuggestions, type NameSuggestion } from "@/lib/llm-client";
+import { advanceProjectStep, updateProjectName, getSuggestedProjectNames, type NameSuggestion } from "@/lib/project-client";
 
 export default function ProjectDetailsPage() {
   const params = useParams();
@@ -20,6 +19,7 @@ export default function ProjectDetailsPage() {
   const [fallbackSuggestions, setFallbackSuggestions] = useState<NameSuggestion[]>([]);
   const [aiSuggestions, setAiSuggestions] = useState<NameSuggestion[]>([]);
   const [loadingAiSuggestions, setLoadingAiSuggestions] = useState(false);
+  const [isCached, setIsCached] = useState(false);
   const [savingName, setSavingName] = useState(false);
   const [showFullScriptModal, setShowFullScriptModal] = useState(false);
   
@@ -30,25 +30,29 @@ export default function ProjectDetailsPage() {
     }
   }, [projectId, state?.lastStep]);
   
-  // Generate fallback suggestions synchronously (client-side, no API call)
+  // Initialize project name from existing state (if already set) or use first fallback
   useEffect(() => {
     if (state?.movieTitle) {
       const suggestions = generateLocalFallbackSuggestions(state.movieTitle);
       setFallbackSuggestions(suggestions);
       
-      // Auto-fill with first suggestion
+      // Use existing project name if available, otherwise use first suggestion
       if (!projectName) {
-        setProjectName(suggestions[0].name);
+        if (state.projectName) {
+          setProjectName(state.projectName);
+        } else if (suggestions.length > 0) {
+          setProjectName(suggestions[0].name);
+        }
       }
     }
-  }, [state?.movieTitle]);
+  }, [state?.movieTitle, state?.projectName]);
   
   // Fetch AI suggestions asynchronously (only if script exists)
   useEffect(() => {
-    if (state?.movieTitle && activeScript?.content) {
+    if (projectId && activeScript?.content) {
       fetchAiNameSuggestions();
     }
-  }, [state?.movieTitle, activeScript?.content]);
+  }, [projectId, activeScript?.content]);
 
   // Generate fallback suggestions locally without API call
   const generateLocalFallbackSuggestions = (movieTitle: string): NameSuggestion[] => {
@@ -217,17 +221,15 @@ export default function ProjectDetailsPage() {
     return uniqueSuggestions.slice(0, 3);
   };
 
-  // Fetch AI-powered suggestions from Agnes API (requires script content)
-  const fetchAiNameSuggestions = async () => {
-    if (!state?.movieTitle || !activeScript?.content) return;
+  // Fetch AI-powered suggestions from backend (uses cached suggestions when available)
+  const fetchAiNameSuggestions = async (regenerate = false) => {
+    if (!projectId || !activeScript?.content) return;
     
     setLoadingAiSuggestions(true);
     try {
-      const response = await generateProjectNameSuggestions(
-        state.movieTitle,
-        activeScript.content // Script content required for Agnes AI
-      );
+      const response = await getSuggestedProjectNames(projectId, regenerate);
       setAiSuggestions(response.suggestions);
+      setIsCached(response.cached);
     } catch (error) {
       console.error("Failed to fetch AI name suggestions:", error);
       // Gracefully fail - fallback suggestions still available
@@ -242,17 +244,20 @@ export default function ProjectDetailsPage() {
 
   // Save project name and continue
   const handleContinue = async () => {
-    if (!projectName.trim()) return;
+    const trimmedName = projectName.trim();
+    if (!trimmedName) return;
     
     setSavingName(true);
     try {
-      // Save to backend
-      await updateProjectName(projectId, projectName.trim());
-      
-      // Dispatch custom event to update ProjectShell immediately
-      window.dispatchEvent(new CustomEvent("project-updated", { 
-        detail: { projectId, projectName: projectName.trim() } 
-      }));
+      // Only save if the name has changed from the current state
+      if (trimmedName !== state?.projectName) {
+        await updateProjectName(projectId, trimmedName);
+        
+        // Dispatch custom event to update ProjectShell immediately
+        window.dispatchEvent(new CustomEvent("project-updated", { 
+          detail: { projectId, projectName: trimmedName } 
+        }));
+      }
 
       // Navigate to voice step
       router.push(`/project/${projectId}/voice`);
@@ -399,7 +404,7 @@ export default function ProjectDetailsPage() {
                   <Button 
                     variant="ghost" 
                     size="sm" 
-                    onClick={fetchAiNameSuggestions} 
+                    onClick={() => fetchAiNameSuggestions(true)} 
                     disabled={loadingAiSuggestions}
                     className="text-xs h-8 text-accent-cyan hover:bg-accent-cyan/10"
                   >

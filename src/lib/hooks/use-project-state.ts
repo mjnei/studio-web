@@ -8,6 +8,7 @@ import {
   getProject,
   listProjectScripts,
   updateProjectMovie,
+  updateProjectName,
   tmdbImageUrl,
   type MovieResponse,
   type ProjectResponse,

@@ -143,6 +143,24 @@ export async function updateProjectName(
   });
 }
 
+export interface NameSuggestion {
+  name: string;
+  reason?: string | null;
+}
+
+export interface SuggestedNamesResponse {
+  suggestions: NameSuggestion[];
+  cached: boolean;
+}
+
+export async function getSuggestedProjectNames(
+  projectId: string,
+  regenerate = false
+): Promise<SuggestedNamesResponse> {
+  const params = new URLSearchParams({ regenerate: String(regenerate) });
+  return request<SuggestedNamesResponse>(`/projects/${projectId}/suggested-names?${params.toString()}`);
+}
+
 export async function advanceProjectStep(
   projectId: string,
   step: WorkflowStep
