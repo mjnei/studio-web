@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, Home } from "lucide-react";
+import { ArrowLeft, ArrowRight, Home, Check } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface FloatingWorkflowNavigationProps {
@@ -17,23 +17,16 @@ interface FloatingWorkflowNavigationProps {
   isProcessing?: boolean;
 }
 
-const stepOrder: Record<string, number> = {
-  source: 0,
-  script: 1,
-  details: 2,
-  voice: 3,
-  preview: 4,
-  compose: 5,
-};
+const steps = [
+  { key: "source", label: "Source" },
+  { key: "script", label: "Script" },
+  { key: "details", label: "Details" },
+  { key: "voice", label: "Voice" },
+  { key: "preview", label: "Preview" },
+  { key: "compose", label: "Compose" },
+] as const;
 
-const stepRoutes: Record<string, string> = {
-  source: "source",
-  script: "script",
-  details: "details",
-  voice: "voice",
-  preview: "preview",
-  compose: "compose",
-};
+const stepOrder: Record<string, number> = Object.fromEntries(steps.map(({ key }, i) => [key, i]));
 
 const nextStepLabels: Record<string, string> = {
   source: "Continue to Script",
@@ -61,7 +54,7 @@ export function FloatingWorkflowNavigation({
 
   const currentStepIndex = stepOrder[currentStep];
   const isFirstStep = currentStepIndex === 0;
-  const isLastStep = currentStepIndex === Object.keys(stepOrder).length - 1;
+  const isLastStep = currentStepIndex === steps.length - 1;
 
   // Auto-hide on scroll down, show on scroll up
   useEffect(() => {
@@ -69,10 +62,8 @@ export function FloatingWorkflowNavigation({
       const currentScrollY = window.scrollY;
 
       if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        // Scrolling down & past 100px
         setIsVisible(false);
       } else {
-        // Scrolling up or at top
         setIsVisible(true);
       }
 
@@ -88,12 +79,9 @@ export function FloatingWorkflowNavigation({
       onBack();
       return;
     }
-
-    // Navigate to previous step
-    const steps = Object.keys(stepOrder).sort((a, b) => stepOrder[a] - stepOrder[b]);
     const prevStep = steps[currentStepIndex - 1];
     if (prevStep) {
-      router.push(`/project/${projectId}/${stepRoutes[prevStep]}`);
+      router.push(`/project/${projectId}/${prevStep.key}`);
     }
   };
 
@@ -102,14 +90,10 @@ export function FloatingWorkflowNavigation({
       onNext();
       return;
     }
-
-    // Navigate to next step
-    const steps = Object.keys(stepOrder).sort((a, b) => stepOrder[a] - stepOrder[b]);
     const nextStep = steps[currentStepIndex + 1];
     if (nextStep) {
-      router.push(`/project/${projectId}/${stepRoutes[nextStep]}`);
+      router.push(`/project/${projectId}/${nextStep.key}`);
     } else if (isLastStep) {
-      // On last step, go to projects
       router.push("/projects");
     }
   };
@@ -128,7 +112,54 @@ export function FloatingWorkflowNavigation({
       <div className="absolute inset-0 bg-surface-panel/95 backdrop-blur-xl border-t border-border-default" />
 
       {/* Navigation content */}
-      <div className="relative mx-auto max-w-7xl px-4 py-3 md:px-6">
+      <div className="relative mx-auto max-w-7xl px-4 pt-3 pb-4 md:px-6">
+        {/* Step indicator bar */}
+        <div className="mb-3 flex items-center justify-center gap-1.5">
+          {steps.map((step, index) => {
+            const isCompleted = index < currentStepIndex;
+            const isCurrent = index === currentStepIndex;
+            const isUpcoming = index > currentStepIndex;
+
+            return (
+              <div key={step.key} className="flex items-center">
+                {/* Circle */}
+                <div
+                  className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-semibold transition-all duration-300 ${
+                    isCompleted
+                      ? "bg-accent-cyan text-white"
+                      : isCurrent
+                        ? "bg-accent-cyan text-white ring-4 ring-accent-cyan/20"
+                        : "bg-surface-raised border border-border-default text-text-muted"
+                  }`}
+                >
+                  {isCompleted ? <Check className="h-3 w-3" strokeWidth={3} /> : index + 1}
+                </div>
+                {/* Label — only on larger screens */}
+                <span
+                  className={`ml-1 hidden sm:inline text-xs transition-colors duration-300 ${
+                    isCurrent
+                      ? "font-medium text-text-primary"
+                      : isCompleted
+                        ? "text-accent-cyan"
+                        : "text-text-muted"
+                  }`}
+                >
+                  {step.label}
+                </span>
+                {/* Connector */}
+                {index < steps.length - 1 && (
+                  <div
+                    className={`mx-1.5 h-px w-4 sm:w-6 transition-colors duration-300 ${
+                      isCompleted ? "bg-accent-cyan" : "bg-border-default"
+                    }`}
+                  />
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Back / Home / Next row */}
         <div className="flex items-center justify-between gap-4">
           {/* Left side - Back button */}
           <div className="flex items-center gap-2">
@@ -144,7 +175,7 @@ export function FloatingWorkflowNavigation({
               </Button>
             )}
 
-            {/* Projects home button - always visible */}
+            {/* Projects home button — always visible */}
             <Button
               variant="ghost"
               size="md"
@@ -155,14 +186,6 @@ export function FloatingWorkflowNavigation({
             >
               <span className="hidden md:inline">Projects</span>
             </Button>
-          </div>
-
-          {/* Center - Step indicator */}
-          <div className="flex items-center gap-2 text-sm text-text-muted">
-            <span className="hidden sm:inline">Step</span>
-            <span className="font-semibold text-text-primary">{currentStepIndex + 1}</span>
-            <span>/</span>
-            <span>{Object.keys(stepOrder).length}</span>
           </div>
 
           {/* Right side - Next button */}

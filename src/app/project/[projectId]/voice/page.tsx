@@ -10,6 +10,7 @@ import { FloatingWorkflowNavigation } from "@/components/project/floating-workfl
 import { VoiceSelectionCard } from "@/components/project/voice-selection-card";
 import { VoiceRecorder } from "@/components/shared/voice-recorder";
 import { FullScriptModal } from "@/components/project/full-script-modal";
+import { useToast } from "@/components/ui/toast";
 import { useVoiceRecordings } from "@/lib/hooks/use-voice-recordings";
 import { listVoices, type VoiceResponse } from "@/lib/project-client";
 import { getVoicePreviewUrl } from "@/lib/hooks/use-stock-voices";
@@ -36,6 +37,7 @@ export default function VoicePage() {
   const projectId = params.projectId as string;
   const { state, updateVoice, activeScript, isLoading } = useProjectState(projectId);
   const { recordings, loading: recordingsLoading, addRecording } = useVoiceRecordings();
+  const { error: toastError } = useToast();
 
   const [voices, setVoices] = useState<VoiceResponse[]>([]);
   const [voicesLoading, setVoicesLoading] = useState(true);
@@ -85,134 +87,6 @@ export default function VoicePage() {
     };
   }, []);
 
-  const playAudio = async (voice: VoiceOption) => {
-    const cacheKey = `${voice.type}-${voice.id}`;
-
-    // Stop current audio if playing
-    if (audioRef.current) {
-      audioRef.current.pause();
-      if (audioRef.current.src?.startsWith("blob:")) {
-        URL.revokeObjectURL(audioRef.current.src);
-      }
-      audioRef.current = null;
-    }
-
-    try {
-      setPlayingVoice(cacheKey);
-
-      const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020";
-      const token = localStorage.getItem("accessToken");
-
-      let audioUrl: string;
-
-      if (voice.type === "recording") {
-        // For user recordings, use the presigned URL from audio_url
-        const recordingAudioUrl = voice.previewUrl;
-
-        if (!recordingAudioUrl) {
-          console.error("No audio URL available for recording");
-          setPlayingVoice(null);
-          alert("Audio preview not available for this recording");
-          return;
-        }
-
-        // Fetch audio as blob for reliable playback
-        const response = await fetch(recordingAudioUrl);
-        if (!response.ok) {
-          throw new Error("Failed to load recording audio");
-        }
-        const blob = await response.blob();
-        audioUrl = URL.createObjectURL(blob);
-      } else {
-        // For stock voices, get presigned URL from backend
-        const presignedUrl = await getVoicePreviewUrl(voice.id);
-
-        if (!presignedUrl) {
-          console.error("No preview available for stock voice");
-          setPlayingVoice(null);
-          alert("Preview not available for this voice");
-          return;
-        }
-
-        // Fetch the presigned URL audio as blob for reliable playback
-        const response = await fetch(presignedUrl);
-        if (!response.ok) {
-          throw new Error("Failed to load voice preview");
-        }
-        const blob = await response.blob();
-        audioUrl = URL.createObjectURL(blob);
-      }
-
-      // Create and play audio from blob URL
-      audioRef.current = new Audio(audioUrl);
-      audioRef.current.onended = () => {
-        setPlayingVoice(null);
-        URL.revokeObjectURL(audioUrl);
-      };
-      audioRef.current.onerror = (e) => {
-        console.error("Audio playback error:", audioRef.current?.error, e);
-        setPlayingVoice(null);
-        alert("Failed to play audio preview");
-        URL.revokeObjectURL(audioUrl);
-      };
-
-      await audioRef.current.play();
-    } catch (err) {
-      console.error("Failed to load/play audio:", err);
-      setPlayingVoice(null);
-      alert("Failed to load audio preview");
-    }
-  };
-
-  const handleSelectVoice = async (voice: VoiceOption) => {
-    // Update selection
-    setSelectedVoice(voice);
-
-    // Store voice selection in state for later use in preview step
-    await updateVoice({
-      id: voice.id,
-      name: voice.name,
-      audioUrl: null,
-      duration: voice.metadata?.duration,
-    });
-
-    // Auto-play preview
-    await playAudio(voice);
-  };
-
-  const handleRecordingSaved = async (newRecording: VoiceRecordingResponse) => {
-    // Fetch the audio URL for the new recording
-    try {
-      const audioUrlData = await getVoiceRecordingAudioUrl(newRecording.id);
-      const recordingWithUrl = {
-        ...newRecording,
-        audio_url: audioUrlData.audio_url,
-      };
-
-      addRecording(recordingWithUrl);
-      setShowRecorder(false);
-
-      // Auto-select the newly recorded voice
-      const newVoiceOption: VoiceOption = {
-        id: String(recordingWithUrl.id),
-        name: recordingWithUrl.title,
-        description: recordingWithUrl.description,
-        type: "recording" as const,
-        metadata: {
-          duration: recordingWithUrl.duration_seconds ?? undefined,
-        },
-        previewUrl: recordingWithUrl.audio_url,
-      };
-
-      handleSelectVoice(newVoiceOption);
-    } catch (error) {
-      console.error("Failed to get audio URL for new recording:", error);
-      // Still add the recording without audio URL
-      addRecording(newRecording);
-      setShowRecorder(false);
-    }
-  };
-
   const myVoiceOptions: VoiceOption[] = useMemo(() => {
     return recordings.map((recording) => ({
       id: String(recording.id),
@@ -222,7 +96,7 @@ export default function VoicePage() {
       metadata: {
         duration: recording.duration_seconds ?? undefined,
       },
-      previewUrl: recording.audio_url, // Use the audio_url from the recording
+      previewUrl: recording.audio_url,
     }));
   }, [recordings]);
 
@@ -241,27 +115,132 @@ export default function VoicePage() {
     }));
   }, [voices]);
 
-  // Initialize selectedVoice from state
+  // Initialize selectedVoice from saved state — merged into a single effect
   useEffect(() => {
-    if (state?.voiceId && !selectedVoice) {
-      const allVoices = [...myVoiceOptions, ...stockVoiceOptions];
-      const savedVoice = allVoices.find((v) => v.id === state.voiceId);
-      if (savedVoice) {
-        setSelectedVoice(savedVoice);
-      }
+    if (selectedVoice) return;
+    const savedId = state?.voiceId ?? state?.voice?.id;
+    if (!savedId) return;
+    const allVoices = [...myVoiceOptions, ...stockVoiceOptions];
+    const savedVoice = allVoices.find((v) => v.id === savedId);
+    if (savedVoice) {
+      setSelectedVoice(savedVoice);
     }
-  }, [state?.voiceId, myVoiceOptions, stockVoiceOptions, selectedVoice]);
+  }, [state?.voiceId, state?.voice, myVoiceOptions, stockVoiceOptions, selectedVoice]);
 
-  // Initialize selectedVoice from state
-  useEffect(() => {
-    if (state?.voice?.id && !selectedVoice) {
-      const allVoices = [...myVoiceOptions, ...stockVoiceOptions];
-      const savedVoice = allVoices.find((v) => v.id === state.voice?.id);
-      if (savedVoice) {
-        setSelectedVoice(savedVoice);
+  const playAudio = async (voice: VoiceOption) => {
+    const cacheKey = `${voice.type}-${voice.id}`;
+
+    // Stop current audio if playing
+    if (audioRef.current) {
+      audioRef.current.pause();
+      if (audioRef.current.src?.startsWith("blob:")) {
+        URL.revokeObjectURL(audioRef.current.src);
       }
+      audioRef.current = null;
     }
-  }, [state?.voice, myVoiceOptions, stockVoiceOptions, selectedVoice]);
+
+    try {
+      setPlayingVoice(cacheKey);
+
+      let audioUrl: string;
+
+      if (voice.type === "recording") {
+        const recordingAudioUrl = voice.previewUrl;
+
+        if (!recordingAudioUrl) {
+          console.error("No audio URL available for recording");
+          setPlayingVoice(null);
+          toastError("Preview unavailable", "Audio preview is not available for this recording.");
+          return;
+        }
+
+        const response = await fetch(recordingAudioUrl);
+        if (!response.ok) {
+          throw new Error("Failed to load recording audio");
+        }
+        const blob = await response.blob();
+        audioUrl = URL.createObjectURL(blob);
+      } else {
+        const presignedUrl = await getVoicePreviewUrl(voice.id);
+
+        if (!presignedUrl) {
+          console.error("No preview available for stock voice");
+          setPlayingVoice(null);
+          toastError("Preview unavailable", "This voice does not have a preview available.");
+          return;
+        }
+
+        const response = await fetch(presignedUrl);
+        if (!response.ok) {
+          throw new Error("Failed to load voice preview");
+        }
+        const blob = await response.blob();
+        audioUrl = URL.createObjectURL(blob);
+      }
+
+      audioRef.current = new Audio(audioUrl);
+      audioRef.current.onended = () => {
+        setPlayingVoice(null);
+        URL.revokeObjectURL(audioUrl);
+      };
+      audioRef.current.onerror = (e) => {
+        console.error("Audio playback error:", audioRef.current?.error, e);
+        setPlayingVoice(null);
+        toastError("Playback failed", "Failed to play the audio preview.");
+        URL.revokeObjectURL(audioUrl);
+      };
+
+      await audioRef.current.play();
+    } catch (err) {
+      console.error("Failed to load/play audio:", err);
+      setPlayingVoice(null);
+      toastError("Playback failed", "Failed to load the audio preview.");
+    }
+  };
+
+  const handleSelectVoice = async (voice: VoiceOption) => {
+    setSelectedVoice(voice);
+
+    await updateVoice({
+      id: voice.id,
+      name: voice.name,
+      audioUrl: null,
+      duration: voice.metadata?.duration,
+    });
+
+    // Auto-play preview
+    await playAudio(voice);
+  };
+
+  const handleRecordingSaved = async (newRecording: VoiceRecordingResponse) => {
+    try {
+      const audioUrlData = await getVoiceRecordingAudioUrl(newRecording.id);
+      const recordingWithUrl = {
+        ...newRecording,
+        audio_url: audioUrlData.audio_url,
+      };
+
+      addRecording(recordingWithUrl);
+      setShowRecorder(false);
+
+      const newVoiceOption: VoiceOption = {
+        id: String(recordingWithUrl.id),
+        name: recordingWithUrl.title,
+        description: recordingWithUrl.description,
+        type: "recording" as const,
+        metadata: {
+          duration: recordingWithUrl.duration_seconds ?? undefined,
+        },
+        previewUrl: recordingWithUrl.audio_url,
+      };
+
+      handleSelectVoice(newVoiceOption);
+    } catch (error) {
+      console.error("Failed to get audio URL for new recording:", error);
+      addRecording(newRecording);
+      setShowRecorder(false);
+    }
+  };
 
   if (isLoading) {
     return (

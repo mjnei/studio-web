@@ -9,9 +9,9 @@ import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { FullScriptModal } from "@/components/project/full-script-modal";
 import {
-  advanceProjectStep,
   updateProjectName,
   getSuggestedProjectNames,
+  advanceProjectStep,
   type NameSuggestion,
 } from "@/lib/project-client";
 
@@ -35,12 +35,7 @@ export default function ProjectDetailsPage() {
     }
   }, [projectId, refresh]);
 
-  // Advance step when entering this page
-  useEffect(() => {
-    if (projectId && state?.lastStep && state.lastStep !== "details") {
-      advanceProjectStep(projectId, "details").catch(console.error);
-    }
-  }, [projectId, state?.lastStep]);
+  // Step advancement happens in handleContinue (user-action-driven, consistent with all other steps)
 
   // Initialize project name from existing state (if already set) or use first fallback
   useEffect(() => {
@@ -292,11 +287,13 @@ export default function ProjectDetailsPage() {
         );
       }
 
+      // Advance last_step on user action (consistent with all other steps)
+      await advanceProjectStep(projectId, "details").catch(console.error);
+
       // Navigate to voice step
       router.push(`/project/${projectId}/voice`);
     } catch (error) {
       console.error("Failed to save project name:", error);
-      // Still navigate but show error?
       router.push(`/project/${projectId}/voice`);
     } finally {
       setSavingName(false);
