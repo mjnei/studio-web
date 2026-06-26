@@ -2,13 +2,14 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect, useMemo, useRef } from "react";
-import { Volume2, Mic, Globe, Plus, X, FileText, ChevronDown } from "lucide-react";
+import { Volume2, Mic, Globe, Plus, FileText, ChevronDown } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { VoiceSelectionCard } from "@/components/project/voice-selection-card";
 import { VoiceRecorder } from "@/components/shared/voice-recorder";
+import { FullScriptModal } from "@/components/project/full-script-modal";
 import { useVoiceRecordings } from "@/lib/hooks/use-voice-recordings";
 import {
   listVoices,
@@ -471,55 +472,14 @@ export default function VoicePage() {
       </div>
 
       {/* Full Script Modal */}
-      {showFullScriptModal && activeScript && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
-          onClick={() => setShowFullScriptModal(false)}
-        >
-          <div 
-            className="bg-surface-base rounded-xl shadow-2xl max-w-3xl w-full max-h-[80vh] flex flex-col border border-border-default"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Modal Header */}
-            <div className="flex items-center justify-between p-6 border-b border-border-default">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted">
-                  <FileText className="h-5 w-5 text-accent-cyan" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-text-primary">Full Script</h3>
-                  <p className="text-sm text-text-muted">
-                    {activeScript.wordCount} words • {Math.floor(activeScript.duration / 60)}:
-                    {(activeScript.duration % 60).toString().padStart(2, "0")} duration
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={() => setShowFullScriptModal(false)}
-                className="flex h-8 w-8 items-center justify-center rounded-lg hover:bg-surface-raised text-text-muted hover:text-text-primary transition-colors"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-
-            {/* Modal Content - Scrollable */}
-            <div className="flex-1 overflow-y-auto p-6">
-              <p className="text-base text-text-primary leading-relaxed whitespace-pre-wrap">
-                {activeScript.content}
-              </p>
-            </div>
-
-            {/* Modal Footer */}
-            <div className="flex items-center justify-end gap-3 p-6 border-t border-border-default bg-surface-raised/50">
-              <Button
-                variant="ghost"
-                onClick={() => setShowFullScriptModal(false)}
-              >
-                Close
-              </Button>
-            </div>
-          </div>
-        </div>
+      {activeScript && (
+        <FullScriptModal
+          isOpen={showFullScriptModal}
+          onClose={() => setShowFullScriptModal(false)}
+          scriptContent={activeScript.content}
+          wordCount={activeScript.wordCount}
+          duration={activeScript.duration}
+        />
       )}
 
       <FloatingWorkflowNavigation
