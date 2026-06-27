@@ -428,7 +428,6 @@ The workflow navigation component (`FloatingWorkflowNavigation`) enforces these 
 
 - **Backend API:** Backend docs/API_ENDPOINTS.md
 - **Database Schema:** Backend docs/DB_SCHEMA.md
-- **Design System:** `/docs/guides/DESIGN_SYSTEM.md`
 - **Quick Reference:** `/docs/reference/WORKFLOW_QUICK_REFERENCE.md`
 
 ---
