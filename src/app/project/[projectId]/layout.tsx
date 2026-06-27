@@ -1,12 +1,11 @@
 "use client";
 
-import { SidebarProvider } from "@/components/shell/sidebar-context";
 import { ProjectShell } from "@/components/project/project-shell";
 
+/**
+ * Layout for existing project routes (/project/[projectId]/*).
+ * SidebarProvider is now in parent /project/layout.tsx.
+ */
 export default function ProjectLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <SidebarProvider>
-      <ProjectShell>{children}</ProjectShell>
-    </SidebarProvider>
-  );
+  return <ProjectShell>{children}</ProjectShell>;
 }

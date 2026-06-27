@@ -6,14 +6,16 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, Home, Save, Edit2 } from "lucide-react";
 import { createScript } from "@/lib/project-client";
+import { useSidebar } from "@/components/shell/sidebar-context";
 
 /**
- * Standalone script creation page (Step 2 of project creation).
+ * Script creation page (Step 2 of project creation).
  * Creates the project + first script when user saves.
- * Redirects to /project/{id}/voice after creation.
+ * Redirects to /project/{id}/details after creation.
  */
 export default function NewProjectScriptPage() {
   const router = useRouter();
+  const { collapsed, isNarrow } = useSidebar();
   const [selectedMovie, setSelectedMovie] = useState<{
     id: string;
     title: string;
@@ -23,6 +25,9 @@ export default function NewProjectScriptPage() {
   } | null>(null);
   const [scriptContent, setScriptContent] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+
+  // Calculate sidebar offset for floating navigation (matches FloatingWorkflowNavigation)
+  const sidebarOffsetClass = isNarrow ? "left-0" : collapsed ? "left-16" : "left-64";
 
   useEffect(() => {
     // Load selected movie from sessionStorage
@@ -102,29 +107,8 @@ export default function NewProjectScriptPage() {
   }
 
   return (
-    <div className="min-h-screen bg-surface-base">
-      {/* Top navigation */}
-      <div className="sticky top-0 z-30 border-b border-border-default bg-surface-panel/95 backdrop-blur-xl">
-        <div className="mx-auto max-w-7xl px-4 py-4 md:px-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-xl font-semibold text-text-primary">Create New Project</h1>
-              <p className="mt-1 text-sm text-text-muted">Step 2 of 5: Write your script</p>
-            </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              icon={<Home className="h-4 w-4" />}
-              onClick={handleGoHome}
-            >
-              Cancel
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      {/* Main content */}
-      <div className="mx-auto max-w-7xl px-4 py-6 pb-24 md:px-6">
+    <>
+      <div className="flex flex-col gap-6 pb-24">
         <div className="mb-6">
           <h2 className="text-xl font-semibold text-text-primary">Create Script</h2>
           <p className="mt-1 text-sm text-text-muted">
@@ -171,77 +155,62 @@ export default function NewProjectScriptPage() {
               className="mb-4 min-h-[300px] w-full rounded-md border border-border-default bg-surface-raised p-4 text-left text-sm text-text-primary placeholder-text-muted focus:border-accent-cyan focus:outline-none"
               placeholder="Enter your script here..."
             />
-            <div className="flex items-center justify-center gap-3">
-              <Button variant="secondary" size="lg" onClick={handleBack}>
-                Back
-              </Button>
-              <Button
-                variant="primary"
-                size="lg"
-                icon={<Save className="h-5 w-5" />}
-                onClick={handleSaveScript}
-                loading={isSaving}
-                disabled={!scriptContent.trim()}
-              >
-                Save & Continue
-              </Button>
-            </div>
           </div>
         </Card>
       </div>
 
-      {/* Floating navigation */}
-      <div className="fixed bottom-0 left-0 right-0 z-40">
-        <div className="bg-surface-panel/95 backdrop-blur-xl border-t border-border-default">
-          <div className="mx-auto max-w-7xl px-4 py-3 md:px-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="secondary"
-                  size="md"
-                  icon={<ArrowLeft className="h-4 w-4" />}
-                  onClick={handleBack}
-                  disabled={isSaving}
-                  className="shadow-lg"
-                >
-                  <span className="hidden sm:inline">Back</span>
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="md"
-                  icon={<Home className="h-4 w-4" />}
-                  onClick={handleGoHome}
-                  title="Go to Projects"
-                >
-                  <span className="hidden md:inline">Projects</span>
-                </Button>
-              </div>
+      {/* Floating navigation with sidebar offset */}
+      <div className={`fixed bottom-0 right-0 z-40 ${sidebarOffsetClass}`}>
+        <div className="absolute inset-0 bg-surface-panel/95 backdrop-blur-xl border-t border-border-default" />
 
-              <div className="flex items-center gap-2 text-sm text-text-muted">
-                <span className="hidden sm:inline">Step</span>
-                <span className="font-semibold text-text-primary">2</span>
-                <span>/</span>
-                <span>5</span>
-              </div>
+        <div className="relative mx-auto max-w-7xl px-4 pt-3 pb-4 md:px-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Button
+                variant="secondary"
+                size="md"
+                icon={<ArrowLeft className="h-4 w-4" />}
+                onClick={handleBack}
+                disabled={isSaving}
+                className="shadow-lg"
+              >
+                <span className="hidden sm:inline">Back</span>
+              </Button>
+              <Button
+                variant="ghost"
+                size="md"
+                icon={<Home className="h-4 w-4" />}
+                onClick={handleGoHome}
+                title="Go to Projects"
+              >
+                <span className="hidden md:inline">Projects</span>
+              </Button>
+            </div>
 
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="primary"
-                  size="md"
-                  icon={<Save className="h-4 w-4" />}
-                  onClick={handleSaveScript}
-                  loading={isSaving}
-                  disabled={!scriptContent.trim()}
-                  className="shadow-lg"
-                >
-                  <span className="hidden sm:inline">Save & Continue</span>
-                  <span className="sm:hidden">Save</span>
-                </Button>
-              </div>
+            <div className="flex items-center gap-2 text-sm text-text-muted">
+              <span className="hidden sm:inline">Step</span>
+              <span className="font-semibold text-text-primary">2</span>
+              <span>/</span>
+              <span>5</span>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Button
+                variant="primary"
+                size="md"
+                icon={<Save className="h-4 w-4" />}
+                onClick={handleSaveScript}
+                loading={isSaving}
+                disabled={!scriptContent.trim()}
+                className="shadow-lg"
+              >
+                <span className="hidden sm:inline">Save & Continue</span>
+                <span className="sm:hidden">Save</span>
+              </Button>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

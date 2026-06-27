@@ -1,0 +1,83 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { PanelLeft, ArrowLeft } from "lucide-react";
+import { DrawerContent } from "@/components/shell/drawer-content";
+import { useSidebar } from "@/components/shell/sidebar-context";
+
+/**
+ * Shell for new project creation flow (/project/new/*).
+ * Similar to ProjectShell but simplified since no project exists yet.
+ */
+export function NewProjectShell({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const { collapsed, mobileOpen, setMobileOpen, toggle, isNarrow } = useSidebar();
+
+  // Determine current step from pathname
+  const currentPath = pathname.split("/").pop();
+  const stepLabel = currentPath === "source" ? "Step 1: Select Movie" : "Step 2: Write Script";
+
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname, setMobileOpen]);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileOpen(false);
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [mobileOpen, setMobileOpen]);
+
+  return (
+    <div className="flex h-screen overflow-hidden">
+      {/* Desktop sidebar */}
+      {!isNarrow && (
+        <aside
+          className={`flex shrink-0 flex-col border-r border-border-default bg-surface-panel/80 backdrop-blur-xl transition-[width] duration-300 ease-in-out ${
+            collapsed ? "w-16" : "w-64"
+          }`}
+        >
+          <DrawerContent pathname={pathname} collapsed={collapsed} onToggle={toggle} />
+        </aside>
+      )}
+
+      <div className="flex flex-1 flex-col overflow-hidden">
+        {/* Header */}
+        <header className="flex h-14 shrink-0 items-center gap-4 border-b border-border-default bg-surface-panel px-4">
+          <button
+            onClick={toggle}
+            className="rounded-md p-1.5 text-text-muted hover:bg-surface-hover hover:text-text-secondary"
+            aria-label={isNarrow ? "Open navigation" : "Toggle sidebar"}
+          >
+            <PanelLeft size={20} />
+          </button>
+          <Link href="/projects" className="text-text-muted hover:text-text-secondary">
+            <ArrowLeft size={20} />
+          </Link>
+          <h1 className="text-base font-semibold text-text-primary">Create New Project</h1>
+          <span className="ml-2 text-sm text-text-muted">{stepLabel}</span>
+        </header>
+
+        {/* Main content */}
+        <main className="flex-1 overflow-y-auto bg-surface-base p-4 md:p-6">{children}</main>
+      </div>
+
+      {/* Mobile drawer */}
+      {isNarrow && mobileOpen && (
+        <div className="fixed inset-0 z-50 flex" role="dialog" aria-modal="true">
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setMobileOpen(false)}
+          />
+          <div className="relative w-80 max-w-[85vw] shrink-0 border-r border-border-default bg-surface-panel shadow-2xl">
+            <DrawerContent pathname={pathname} onNavigate={() => setMobileOpen(false)} />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
