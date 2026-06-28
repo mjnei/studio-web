@@ -210,12 +210,15 @@ export default function VoicePage() {
 
     // Save voice selection to localStorage for preview page
     try {
-      localStorage.setItem(`project_${projectId}_voice`, JSON.stringify({
-        id: voice.id,
-        name: voice.name
-      }));
+      localStorage.setItem(
+        `project_${projectId}_voice`,
+        JSON.stringify({
+          id: voice.id,
+          name: voice.name,
+        })
+      );
     } catch (e) {
-      console.error('Failed to save voice to localStorage:', e);
+      console.error("Failed to save voice to localStorage:", e);
     }
 
     // Auto-play preview
