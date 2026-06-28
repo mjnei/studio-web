@@ -253,6 +253,7 @@ export async function createTTSJob(data: {
   projectId: string;
   scriptId: string;
   voiceId: string;
+  voiceName?: string;
   autoActivate?: boolean;
 }): Promise<TTSJobResponse> {
   const params = new URLSearchParams({
@@ -265,6 +266,7 @@ export async function createTTSJob(data: {
       project_id: data.projectId,
       script_id: data.scriptId,
       voice_id: data.voiceId,
+      voice_name: data.voiceName,
     }),
   });
 }

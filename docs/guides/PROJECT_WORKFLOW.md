@@ -101,11 +101,29 @@ Generate and preview TTS audio for your selected voice with the full script.
 **Actions:**
 - Automatically generate TTS audio job using selected voice and script
 - Display project summary (name, selected voice, script)
-- Show audio player with generated voice audio
+- Real-time progress tracking (queued → processing → completed)
+- Show audio player with generated voice audio when complete
 - Play generated audio preview
 - Review configuration before video composition
 
-**Completion:** TTS audio generated successfully
+**TTS Generation:**
+- Job auto-created when page loads
+- Published to RabbitMQ queue for async processing
+- 3rd party TTS service generates audio
+- Results sent back via RabbitMQ
+- Frontend polls for status updates every 2 seconds
+- Audio player appears when status = "completed"
+
+**Technical Flow:**
+1. Frontend: `POST /api/v1/tts` → Creates job with status "queued"
+2. Backend: Publishes job to `tts_jobs` RabbitMQ queue
+3. TTS Service: Picks up job, generates audio, updates progress
+4. TTS Service: Publishes result to `tts_results` queue
+5. Backend Consumer: Updates database with audio_url and status
+6. Frontend: Polls `GET /api/v1/tts/{job_id}` every 2s
+7. Frontend: Displays audio player when complete
+
+**Completion:** TTS audio generated successfully (status = "completed")
 
 **Advances to:** Video composition
 
@@ -209,20 +227,32 @@ Body: { "voice_id": "voice-uuid" }
 ```
 POST /api/v1/tts
 Body: { 
-  "project_id": "id", 
-  "script_id": "id", 
-  "voice_id": "id",
-  "auto_activate": true 
+  "project_id": 123, 
+  "script_id": 456, 
+  "voice_id": "voice-uuid"
 }
-Response: { "id": "job-id", "status": "queued" }
+Response: { 
+  "id": 789,
+  "status": "queued",
+  "progress": 0,
+  ...
+}
 
 GET /api/v1/tts/{job_id}
 Response: { 
+  "id": 789,
   "status": "completed", 
   "progress": 100,
-  "audio_url": "https://storage.../audio.mp3"
+  "audio_url": "https://storage.../audio.mp3",
+  "audio_duration": 180.5
 }
 ```
+
+**TTS Job Statuses:**
+- `queued` - Job waiting in RabbitMQ queue
+- `processing` - Audio being generated (progress 0-100)
+- `completed` - Audio ready (audio_url available)
+- `failed` - Generation failed (error_message available)
 
 ### Step 6: Compose
 ```
