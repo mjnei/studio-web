@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState, useRef } from "react";
 import { CheckCircle, Mic2, FileText, ChevronDown, Loader2, AlertCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useProjectState } from "@/lib/hooks/use-project-state";
+import { useSSE } from "@/lib/hooks/use-sse";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { FullScriptModal } from "@/components/project/full-script-modal";
 import {
@@ -22,9 +23,104 @@ export default function PreviewPage() {
   const [showFullScriptModal, setShowFullScriptModal] = useState(false);
   const [ttsJob, setTtsJob] = useState<TTSJobResponse | null>(null);
   const [ttsError, setTtsError] = useState<string | null>(null);
-  const [isPolling, setIsPolling] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const ttsJobInitiatedRef = useRef<boolean>(false);
+
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020/api/v1";
+  // Note: NEXT_PUBLIC_API_URL already includes /api/v1
+  const sseUrl = ttsJob ? `${apiUrl}/tts/${ttsJob.id}/stream` : "";
+  const sseEnabled = Boolean(ttsJob && ttsJob.status !== "completed" && ttsJob.status !== "failed");
+
+  // Debug: Log SSE configuration
+  useEffect(() => {
+    console.log("🔧 SSE Configuration Check:", {
+      hasTtsJob: !!ttsJob,
+      jobId: ttsJob?.id,
+      status: ttsJob?.status,
+      sseUrl,
+      sseEnabled,
+      shouldConnect: sseEnabled && !!sseUrl,
+    });
+  }, [ttsJob, sseUrl, sseEnabled]);
+
+  // Use SSE for real-time updates
+  const { isConnected: isStreaming } = useSSE<TTSJobResponse>({
+    url: sseUrl,
+    enabled: sseEnabled,
+    onMessage: (job) => {
+      console.log(`📨 SSE update received:`, {
+        jobId: job.id,
+        status: job.status,
+        progress: job.progress,
+        audioUrl: job.audio_url,
+        timestamp: new Date().toISOString(),
+      });
+      setTtsJob(job);
+    },
+    onError: (error) => {
+      console.error("❌ SSE connection error:", error);
+      setTtsError("Real-time connection failed. Please check your connection and try again.");
+    },
+    shouldClose: (job) => {
+      const shouldClose = job.status === "completed" || job.status === "failed";
+      console.log(`🔌 SSE shouldClose check: ${shouldClose} (status: ${job.status})`);
+      return shouldClose;
+    },
+  });
+
+  // Fallback polling when SSE is not connected and job is not complete
+  useEffect(() => {
+    if (!ttsJob) return;
+    if (ttsJob.status === "completed" || ttsJob.status === "failed") return;
+    if (isStreaming) {
+      console.log("⏭️ Skipping polling - SSE is active");
+      return;
+    }
+
+    console.log("🔄 Starting fallback polling for job", ttsJob.id);
+    const pollInterval = setInterval(async () => {
+      try {
+        console.log("🔄 Polling job status...");
+        const updatedJob = await getTTSJob(String(ttsJob.id));
+        console.log("🔄 Poll result:", {
+          jobId: updatedJob.id,
+          status: updatedJob.status,
+          progress: updatedJob.progress,
+        });
+        setTtsJob(updatedJob);
+
+        // Stop polling if job is complete
+        if (updatedJob.status === "completed" || updatedJob.status === "failed") {
+          console.log("✅ Job complete, stopping polling");
+          clearInterval(pollInterval);
+        }
+      } catch (error) {
+        console.error("❌ Polling error:", error);
+      }
+    }, 2000); // Poll every 2 seconds
+
+    return () => {
+      console.log("🧹 Cleaning up polling interval");
+      clearInterval(pollInterval);
+    };
+  }, [ttsJob?.id, ttsJob?.status, isStreaming]);
+
+  // Debug: Log when isStreaming changes
+  useEffect(() => {
+    console.log(`🔌 SSE streaming status:`, isStreaming);
+  }, [isStreaming]);
+
+  // Debug: Log when ttsJob changes
+  useEffect(() => {
+    if (ttsJob) {
+      console.log(`📋 TTS Job state updated:`, {
+        id: ttsJob.id,
+        status: ttsJob.status,
+        progress: ttsJob.progress,
+        shouldEnableSSE: ttsJob.status !== "completed" && ttsJob.status !== "failed",
+      });
+    }
+  }, [ttsJob]);
 
   // Advance step when entering this page
   useEffect(() => {
@@ -106,44 +202,12 @@ export default function PreviewPage() {
     createNewTTSJob(voiceId, voiceName);
   }, [state?.activeTtsJobId, state?.voiceId, activeScript?.id, isLoading, projectId, ttsJob]);
 
-  // Poll for TTS job status updates
-  useEffect(() => {
-    if (!ttsJob) return;
-
-    // If job is already completed or failed, don't poll
-    if (ttsJob.status === "completed" || ttsJob.status === "failed") {
-      setIsPolling(false);
-      if (pollingIntervalRef.current) {
-        clearInterval(pollingIntervalRef.current);
-        pollingIntervalRef.current = null;
-      }
-      return;
-    }
-
-    // Start polling
-    setIsPolling(true);
-    pollingIntervalRef.current = setInterval(() => {
-      loadTTSJob(String(ttsJob.id));
-    }, 2000); // Poll every 2 seconds
-
-    return () => {
-      if (pollingIntervalRef.current) {
-        clearInterval(pollingIntervalRef.current);
-        pollingIntervalRef.current = null;
-      }
-    };
-  }, [ttsJob?.id, ttsJob?.status]);
-
   // Cleanup audio on unmount
   useEffect(() => {
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current = null;
-      }
-      if (pollingIntervalRef.current) {
-        clearInterval(pollingIntervalRef.current);
-        pollingIntervalRef.current = null;
       }
     };
   }, []);
@@ -191,21 +255,19 @@ export default function PreviewPage() {
 
   const loadTTSJob = async (jobId: string) => {
     try {
+      console.log(`📥 Loading TTS job ${jobId}...`);
       const job = await getTTSJob(jobId);
+      console.log(`📥 Loaded TTS job ${jobId}:`, {
+        status: job.status,
+        progress: job.progress,
+        voiceId: job.voice_id,
+        voiceName: job.voice_name,
+        audioUrl: job.audio_url,
+      });
       setTtsJob(job);
-
-      // Stop polling if completed or failed
-      if (job.status === "completed" || job.status === "failed") {
-        setIsPolling(false);
-        if (pollingIntervalRef.current) {
-          clearInterval(pollingIntervalRef.current);
-          pollingIntervalRef.current = null;
-        }
-      }
     } catch (error) {
       console.error("Failed to load TTS job:", error);
       setTtsError(error instanceof Error ? error.message : "Failed to load TTS job");
-      setIsPolling(false);
     }
   };
 
@@ -232,14 +294,17 @@ export default function PreviewPage() {
     }
 
     // Try localStorage (for newly selected voice not yet in TTS job)
-    try {
-      const storedVoice = localStorage.getItem(`project_${projectId}_voice`);
-      if (storedVoice) {
-        const voice = JSON.parse(storedVoice);
-        if (voice.name) return voice.name;
+    // Only access localStorage on client side
+    if (typeof window !== "undefined") {
+      try {
+        const storedVoice = localStorage.getItem(`project_${projectId}_voice`);
+        if (storedVoice) {
+          const voice = JSON.parse(storedVoice);
+          if (voice.name) return voice.name;
+        }
+      } catch (e) {
+        console.error("Failed to read voice name from localStorage:", e);
       }
-    } catch (e) {
-      console.error("Failed to read voice name from localStorage:", e);
     }
 
     // Fallback to state
@@ -322,7 +387,7 @@ export default function PreviewPage() {
         <Card variant="elevated" padding="lg">
           <div className="flex flex-col items-center gap-4 text-center">
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent-cyan/10">
-              {ttsJob?.status === "processing" || isPolling ? (
+              {ttsJob?.status === "processing" || isStreaming ? (
                 <Loader2 className="h-8 w-8 text-accent-cyan animate-spin" />
               ) : ttsJob?.status === "failed" ? (
                 <AlertCircle className="h-8 w-8 text-status-failed" />
@@ -386,7 +451,7 @@ export default function PreviewPage() {
                   <span>Voice:</span>
                   <span className="font-medium text-text-secondary">{voiceName}</span>
                 </div>
-                <div className="flex items-center justify-between text-xs text-text-muted">
+                <div className="flex items-center justify-between text-xs text-text-muted mb-2">
                   <span>Status:</span>
                   <span
                     className={`font-medium ${
@@ -399,6 +464,10 @@ export default function PreviewPage() {
                   >
                     {ttsJob.status}
                   </span>
+                </div>
+                <div className="flex items-center justify-between text-xs text-text-muted">
+                  <span>Job ID:</span>
+                  <span className="font-mono font-medium text-text-secondary">{ttsJob.id}</span>
                 </div>
               </div>
             )}
@@ -423,7 +492,7 @@ export default function PreviewPage() {
         currentStep="preview"
         canGoNext={canProceed}
         canGoBack={true}
-        isProcessing={isPolling}
+        isProcessing={isStreaming}
       />
     </>
   );
