@@ -25,6 +25,7 @@ export default function PreviewPage() {
   const [isPolling, setIsPolling] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const ttsJobInitiatedRef = useRef<boolean>(false);
 
   // Advance step when entering this page
   useEffect(() => {
@@ -37,9 +38,16 @@ export default function PreviewPage() {
   useEffect(() => {
     if (!state || !activeScript || isLoading) return;
 
-    // If there's already an active TTS job, load it
+    // If there's already an active TTS job, load it (only once)
     if (state.activeTtsJobId) {
-      loadTTSJob(String(state.activeTtsJobId));
+      if (!ttsJob || ttsJob.id !== state.activeTtsJobId) {
+        loadTTSJob(String(state.activeTtsJobId));
+      }
+      return;
+    }
+
+    // If we've already initiated TTS job creation, don't do it again
+    if (ttsJobInitiatedRef.current) {
       return;
     }
 
@@ -64,6 +72,7 @@ export default function PreviewPage() {
 
     if (voiceId && activeScript.id) {
       console.log("Creating TTS job with voice:", { voiceId, voiceName });
+      ttsJobInitiatedRef.current = true; // Mark as initiated to prevent duplicate calls
       createNewTTSJob(voiceId, voiceName);
     } else {
       console.warn("Cannot create TTS job - missing voice info:", {
@@ -74,7 +83,7 @@ export default function PreviewPage() {
       });
       setTtsError("No voice selected. Please go back to Step 4 and select a voice.");
     }
-  }, [state?.activeTtsJobId, state?.voiceId, activeScript?.id, isLoading, projectId]);
+  }, [state?.activeTtsJobId, state?.voiceId, activeScript?.id, isLoading, projectId, ttsJob]);
 
   // Poll for TTS job status updates
   useEffect(() => {

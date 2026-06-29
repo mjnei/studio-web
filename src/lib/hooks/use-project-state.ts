@@ -50,6 +50,7 @@ export interface ProjectState {
   audioUrl?: string;
   audioDuration?: number;
   ttsJobId?: string;
+  activeTtsJobId?: string;
   ttsStatus?: "idle" | "queued" | "processing" | "completed" | "failed";
   ttsProgress?: number;
 
@@ -139,6 +140,7 @@ function mapProject(project: ProjectResponse, scripts: ProjectScriptResponse[] =
     movieDuration: movie?.runtime ?? undefined,
     scripts: mappedScripts,
     activeScriptId: project.active_script_id ?? undefined,
+    activeTtsJobId: project.active_tts_job_id ?? undefined,
     ...mapTTS(project.active_tts_job),
     ...mapVideo(project.active_video_job),
     status: project.status,
