@@ -11,6 +11,8 @@ import { VoiceSelectionCard } from "@/components/project/voice-selection-card";
 import { VoiceRecorder } from "@/components/shared/voice-recorder";
 import { FullScriptModal } from "@/components/project/full-script-modal";
 import { useToast } from "@/components/ui/toast";
+import { EmptyState } from "@/components/ui/empty-state";
+import { LoadingSkeleton, PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { useVoiceRecordings } from "@/lib/hooks/use-voice-recordings";
 import { listVoices, type VoiceResponse } from "@/lib/project-client";
 import { getVoicePreviewUrl } from "@/lib/hooks/use-stock-voices";
@@ -256,14 +258,7 @@ export default function VoicePage() {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex h-full items-center justify-center">
-        <div className="text-center">
-          <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-accent-cyan border-r-transparent" />
-          <p className="text-text-secondary">Loading project...</p>
-        </div>
-      </div>
-    );
+    return <PageLoadingSkeleton message="Loading project..." />;
   }
 
   return (
@@ -314,28 +309,17 @@ export default function VoicePage() {
 
         {/* Record Voice CTA */}
         {!showRecorder && myVoiceOptions.length === 0 && (
-          <Card variant="elevated" padding="md" className="border-accent-purple/30">
-            <div className="flex items-start gap-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-purple-muted">
-                <Mic className="h-5 w-5 text-accent-purple" />
-              </div>
-              <div className="flex-1">
-                <h3 className="font-medium text-text-primary">Record Your Voice</h3>
-                <p className="mt-1 text-sm text-text-muted">
-                  Create a custom voice clone by recording a sample from your microphone.
-                </p>
-                <Button
-                  variant="primary"
-                  size="sm"
-                  onClick={() => setShowRecorder(true)}
-                  className="mt-3 gap-2"
-                >
-                  <Mic size={16} />
-                  Start Recording
-                </Button>
-              </div>
-            </div>
-          </Card>
+          <EmptyState
+            icon={Mic}
+            title="Record Your Voice"
+            description="Create a custom voice clone by recording a sample from your microphone."
+            action={{
+              label: "Start Recording",
+              onClick: () => setShowRecorder(true),
+              icon: <Mic size={16} />,
+            }}
+            variant="accent-purple"
+          />
         )}
 
         {/* Voice Recorder Modal */}
@@ -377,11 +361,7 @@ export default function VoicePage() {
             </div>
 
             {recordingsLoading ? (
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {Array.from({ length: 3 }).map((_, i) => (
-                  <div key={i} className="h-32 animate-pulse rounded-lg bg-surface-panel" />
-                ))}
-              </div>
+              <LoadingSkeleton variant="grid" count={3} />
             ) : (
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {myVoiceOptions.map((voice) => {
@@ -418,11 +398,7 @@ export default function VoicePage() {
           </div>
 
           {voicesLoading ? (
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="h-32 animate-pulse rounded-lg bg-surface-panel" />
-              ))}
-            </div>
+            <LoadingSkeleton variant="grid" count={6} />
           ) : voicesError ? (
             <p className="text-sm text-status-failed">{voicesError}</p>
           ) : stockVoiceOptions.length === 0 ? (

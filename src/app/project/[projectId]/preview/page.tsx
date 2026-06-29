@@ -4,10 +4,12 @@ import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState, useRef } from "react";
 import { CheckCircle, Mic2, FileText, ChevronDown, Loader2, AlertCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { useSSE } from "@/lib/hooks/use-sse";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { FullScriptModal } from "@/components/project/full-script-modal";
+import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import {
   advanceProjectStep,
   createTTSJob,
@@ -24,7 +26,6 @@ export default function PreviewPage() {
   const [ttsJob, setTtsJob] = useState<TTSJobResponse | null>(null);
   const [ttsError, setTtsError] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const ttsJobInitiatedRef = useRef<boolean>(false);
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020/api/v1";
   // Note: NEXT_PUBLIC_API_URL already includes /api/v1
@@ -315,14 +316,7 @@ export default function PreviewPage() {
   const canProceed = ttsJob?.status === "completed" && !!ttsJob.audio_url;
 
   if (isLoading) {
-    return (
-      <div className="flex h-full items-center justify-center">
-        <div className="text-center">
-          <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-accent-cyan border-r-transparent" />
-          <p className="text-text-secondary">Loading project...</p>
-        </div>
-      </div>
-    );
+    return <PageLoadingSkeleton message="Loading project..." />;
   }
 
   return (
@@ -436,9 +430,35 @@ export default function PreviewPage() {
                 </div>
               )}
               {ttsJob?.status === "failed" && (
-                <p className="mt-1 text-sm text-status-failed max-w-md mx-auto">
-                  Failed to generate audio: {ttsJob.error_message || "Unknown error"}
-                </p>
+                <div className="mt-4 space-y-3">
+                  <p className="text-sm text-status-failed max-w-md mx-auto">
+                    Failed to generate audio: {ttsJob.error_message || "Unknown error"}
+                  </p>
+                  <Button
+                    variant="primary"
+                    size="md"
+                    onClick={() => {
+                      // Get voice info from localStorage or state
+                      let voiceId = state?.voiceId;
+                      let voiceName = state?.voiceName;
+                      try {
+                        const storedVoice = localStorage.getItem(`project_${projectId}_voice`);
+                        if (storedVoice) {
+                          const voice = JSON.parse(storedVoice);
+                          if (voice.id) {
+                            voiceId = voice.id;
+                            voiceName = voice.name;
+                          }
+                        }
+                      } catch (e) {
+                        console.error("Failed to read voice from localStorage:", e);
+                      }
+                      createNewTTSJob(voiceId, voiceName);
+                    }}
+                  >
+                    Retry Generation
+                  </Button>
+                </div>
               )}
               {ttsError && !ttsJob && (
                 <p className="mt-1 text-sm text-status-failed max-w-md mx-auto">{ttsError}</p>

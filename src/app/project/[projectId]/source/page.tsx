@@ -8,6 +8,7 @@ import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { MovieSelection } from "@/components/project/movie-selection";
 import { Button } from "@/components/ui/button";
+import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 
 export default function SourcePage() {
   const params = useParams();
@@ -75,14 +76,7 @@ export default function SourcePage() {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex h-full items-center justify-center">
-        <div className="text-center">
-          <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-accent-cyan border-r-transparent" />
-          <p className="text-text-secondary">Loading project...</p>
-        </div>
-      </div>
-    );
+    return <PageLoadingSkeleton message="Loading project..." />;
   }
 
   return (

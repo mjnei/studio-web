@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { FullScriptModal } from "@/components/project/full-script-modal";
+import { PageLoadingSkeleton, InlineLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import {
   updateProjectName,
   getSuggestedProjectNames,
@@ -301,14 +302,7 @@ export default function ProjectDetailsPage() {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex h-full items-center justify-center">
-        <div className="text-center">
-          <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-accent-cyan border-r-transparent" />
-          <p className="text-text-secondary">Loading project...</p>
-        </div>
-      </div>
-    );
+    return <PageLoadingSkeleton message="Loading project..." />;
   }
 
   return (
@@ -476,9 +470,8 @@ export default function ProjectDetailsPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {/* Loading State - Only show while AI is loading */}
                 {loadingAiSuggestions && aiSuggestions.length === 0 && activeScript?.content && (
-                  <div className="col-span-1 sm:col-span-2 flex items-center justify-center py-8 text-text-muted text-sm border border-dashed border-border-default rounded-lg bg-surface-base/50">
-                    <Loader2 className="h-5 w-5 animate-spin mr-2 text-accent-cyan" />
-                    Generating AI suggestions...
+                  <div className="col-span-1 sm:col-span-2">
+                    <InlineLoadingSkeleton message="Generating AI suggestions..." />
                   </div>
                 )}
 

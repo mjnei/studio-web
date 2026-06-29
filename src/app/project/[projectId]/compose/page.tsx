@@ -6,6 +6,8 @@ import { Card } from "@/components/ui/card";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { FullScriptModal } from "@/components/project/full-script-modal";
+import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
+import { CenteredEmptyState } from "@/components/ui/empty-state";
 import { Video, FileText, ChevronDown } from "lucide-react";
 
 export default function ComposePage() {
@@ -16,14 +18,7 @@ export default function ComposePage() {
   const [showFullScriptModal, setShowFullScriptModal] = useState(false);
 
   if (isLoading) {
-    return (
-      <div className="flex h-full items-center justify-center">
-        <div className="text-center">
-          <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-accent-cyan border-r-transparent" />
-          <p className="text-text-secondary">Loading project...</p>
-        </div>
-      </div>
-    );
+    return <PageLoadingSkeleton message="Loading project..." />;
   }
 
   const activeScript = state?.scripts?.find((script) => script.id === state.activeScriptId);
@@ -85,17 +80,12 @@ export default function ComposePage() {
         )}
 
         {/* Video generation — placeholder */}
-        <Card variant="elevated" padding="lg" className="text-center">
-          <div className="mx-auto max-w-md flex flex-col items-center gap-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent-cyan-muted">
-              <Video className="h-10 w-10 text-accent-cyan" />
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-text-primary">Video Generation</h3>
-              <p className="mt-1 text-sm text-text-muted">
-                Video composition and rendering will be available here in a future release.
-              </p>
-            </div>
+        <CenteredEmptyState
+          icon={Video}
+          title="Video Generation"
+          description="Video composition and rendering will be available here in a future release."
+          variant="accent-cyan"
+          details={
             <div className="w-full rounded-lg border border-dashed border-border-default bg-surface-panel p-4 text-left space-y-2">
               <p className="text-xs text-text-muted">
                 Movie:{" "}
@@ -109,8 +99,8 @@ export default function ComposePage() {
                 Script: <span className="font-medium text-text-secondary">{wordCount} words</span>
               </p>
             </div>
-          </div>
-        </Card>
+          }
+        />
       </div>
 
       {/* Full Script Modal — using the shared component */}
