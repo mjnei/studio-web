@@ -19,21 +19,21 @@ export function useSSE<T>({ url, enabled, onMessage, onError, shouldClose }: Use
   const [isConnected, setIsConnected] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);
   const readerRef = useRef<ReadableStreamDefaultReader<Uint8Array> | null>(null);
-  
+
   // Use refs to store callbacks to avoid recreating SSE connection when they change
   const onMessageRef = useRef(onMessage);
   const onErrorRef = useRef(onError);
   const shouldCloseRef = useRef(shouldClose);
-  
+
   // Keep refs up to date
   useEffect(() => {
     onMessageRef.current = onMessage;
   }, [onMessage]);
-  
+
   useEffect(() => {
     onErrorRef.current = onError;
   }, [onError]);
-  
+
   useEffect(() => {
     shouldCloseRef.current = shouldClose;
   }, [shouldClose]);
