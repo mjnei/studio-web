@@ -50,7 +50,10 @@ export default function PreviewPage() {
         if (voice.id) {
           voiceId = voice.id;
           voiceName = voice.name;
-          console.log("📦 Using voice from localStorage (recent selection):", { voiceId, voiceName });
+          console.log("📦 Using voice from localStorage (recent selection):", {
+            voiceId,
+            voiceName,
+          });
         }
       }
     } catch (e) {
