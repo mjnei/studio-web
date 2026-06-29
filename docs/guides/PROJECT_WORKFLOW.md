@@ -99,7 +99,7 @@ Choose a voice for your voiceover narration and listen to voice samples.
 Generate and preview TTS audio for your selected voice with the full script.
 
 **Actions:**
-- Automatically generate TTS audio job using selected voice and script
+- Automatically generate TTS audio job using selected voice and script (if needed)
 - Display project summary (name, selected voice, script)
 - Real-time progress tracking (queued → processing → completed)
 - Show audio player with generated voice audio when complete
@@ -107,7 +107,19 @@ Generate and preview TTS audio for your selected voice with the full script.
 - Review configuration before video composition
 
 **TTS Generation:**
-- Job auto-created when page loads
+- Job auto-created when page loads (if needed)
+- **Advanced Smart Job Management:**
+  - ✅ **Content-based matching**: Compares voice_id + first 2 sentences of script
+  - ✅ **Reuses existing audio**: If same voice + same first 2 sentences, no new job needed
+  - ✅ **Handles script edits**: Edits to later parts of script don't trigger new TTS generation
+  - ✅ **Voice switching intelligence**: Changing voice back to a previous choice reuses old audio
+  - ✅ **Script updates**: Automatically updates job's script_id reference when reusing
+  - ✅ **Prevents duplicates**: No redundant jobs for same voice + preview text combination
+  
+**Example Scenarios:**
+1. Edit middle of script → Reuses audio ✅
+2. Change first sentence → Creates new job ✅
+3. Change voice to A, then back to B → Reuses B's audio ✅
 - Published to RabbitMQ queue for async processing
 - 3rd party TTS service generates audio
 - Results sent back via RabbitMQ

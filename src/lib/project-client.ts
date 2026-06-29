@@ -48,6 +48,7 @@ export interface TTSJobResponse {
   script_id?: string | null;
   voice_id?: string | null;
   voice_name?: string | null;
+  preview_text?: string | null;
   status: JobStatus;
   progress: number;
   audio_url?: string | null;

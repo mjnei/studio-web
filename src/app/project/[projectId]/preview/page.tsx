@@ -25,7 +25,6 @@ export default function PreviewPage() {
   const [isPolling, setIsPolling] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const ttsJobInitiatedRef = useRef<boolean>(false);
 
   // Advance step when entering this page
   useEffect(() => {
@@ -34,55 +33,74 @@ export default function PreviewPage() {
     }
   }, [projectId, state?.lastStep]);
 
-  // Auto-create TTS job when page loads if not already created
+  // Auto-create or reuse TTS job when page loads
+  // Backend handles smart matching based on voice_id + preview_text (first 2 sentences)
   useEffect(() => {
     if (!state || !activeScript || isLoading) return;
 
-    // If there's already an active TTS job, load it (only once)
-    if (state.activeTtsJobId) {
-      if (!ttsJob || ttsJob.id !== state.activeTtsJobId) {
-        loadTTSJob(String(state.activeTtsJobId));
-      }
-      return;
-    }
+    // Get current voice info - ALWAYS check localStorage first (most recent selection)
+    let voiceId = state.voiceId;
+    let voiceName = state.voiceName;
 
-    // If we've already initiated TTS job creation, don't do it again
-    if (ttsJobInitiatedRef.current) {
-      return;
-    }
-
-    // Try to get voice info from multiple sources
-    let voiceId = state.voiceId || state.active_tts_job?.voice_id;
-    let voiceName = state.voiceName || state.active_tts_job?.voice_name;
-
-    // Fallback: check localStorage for voice selection
-    if (!voiceId) {
-      try {
-        const storedVoice = localStorage.getItem(`project_${projectId}_voice`);
-        if (storedVoice) {
-          const voice = JSON.parse(storedVoice);
+    try {
+      const storedVoice = localStorage.getItem(`project_${projectId}_voice`);
+      if (storedVoice) {
+        const voice = JSON.parse(storedVoice);
+        // Use localStorage voice if it exists (overrides state)
+        if (voice.id) {
           voiceId = voice.id;
           voiceName = voice.name;
-          console.log("Using voice from localStorage:", { voiceId, voiceName });
+          console.log("📦 Using voice from localStorage (recent selection):", { voiceId, voiceName });
         }
-      } catch (e) {
-        console.error("Failed to read voice from localStorage:", e);
       }
+    } catch (e) {
+      console.error("Failed to read voice from localStorage:", e);
     }
 
-    if (voiceId && activeScript.id) {
-      console.log("Creating TTS job with voice:", { voiceId, voiceName });
-      ttsJobInitiatedRef.current = true; // Mark as initiated to prevent duplicate calls
-      createNewTTSJob(voiceId, voiceName);
-    } else {
-      console.warn("Cannot create TTS job - missing voice info:", {
-        hasVoiceId: !!voiceId,
-        hasScriptId: !!activeScript.id,
-        stateVoiceId: state.voiceId,
-        activeTtsJobVoiceId: state.active_tts_job?.voice_id,
-      });
+    // No voice info available
+    if (!voiceId) {
+      console.warn("⚠️  No voice selected");
       setTtsError("No voice selected. Please go back to Step 4 and select a voice.");
+      return;
     }
+
+    // Case 1: Active TTS job exists
+    if (state.activeTtsJobId) {
+      // Load the job if not yet loaded
+      if (!ttsJob || ttsJob.id !== state.activeTtsJobId) {
+        console.log("📥 Loading existing TTS job:", state.activeTtsJobId);
+        loadTTSJob(String(state.activeTtsJobId));
+        return;
+      }
+
+      // Job loaded - check if voice has changed
+      if (ttsJob.voice_id !== voiceId) {
+        console.log("🔄 Voice changed, requesting new TTS job:", {
+          oldVoice: ttsJob.voice_id,
+          oldVoiceName: ttsJob.voice_name,
+          newVoice: voiceId,
+          newVoiceName: voiceName,
+        });
+        createNewTTSJob(voiceId, voiceName);
+        return;
+      }
+
+      // Voice matches, job loaded - we're done
+      console.log("✅ TTS job loaded and voice matches:", {
+        voiceId,
+        voiceName,
+        jobId: ttsJob.id,
+      });
+      return;
+    }
+
+    // Case 2: No active TTS job - create/match one
+    console.log("🆕 No active TTS job, requesting one (backend will match or create):", {
+      voiceId,
+      voiceName,
+      scriptId: activeScript.id,
+    });
+    createNewTTSJob(voiceId, voiceName);
   }, [state?.activeTtsJobId, state?.voiceId, activeScript?.id, isLoading, projectId, ttsJob]);
 
   // Poll for TTS job status updates
@@ -203,10 +221,27 @@ export default function PreviewPage() {
     return sentences[0].trim();
   }, [activeScript]);
 
-  // Get voice name
+  // Get voice name (priority: TTS job > localStorage > state)
   const voiceName = useMemo(() => {
+    // If TTS job exists, use its voice name (most accurate)
+    if (ttsJob?.voice_name) {
+      return ttsJob.voice_name;
+    }
+
+    // Try localStorage (for newly selected voice not yet in TTS job)
+    try {
+      const storedVoice = localStorage.getItem(`project_${projectId}_voice`);
+      if (storedVoice) {
+        const voice = JSON.parse(storedVoice);
+        if (voice.name) return voice.name;
+      }
+    } catch (e) {
+      console.error("Failed to read voice name from localStorage:", e);
+    }
+
+    // Fallback to state
     return state?.voiceName || state?.voice?.name || "Selected Voice";
-  }, [state?.voiceName, state?.voice]);
+  }, [ttsJob?.voice_name, state?.voiceName, state?.voice, projectId]);
 
   // Determine if we can proceed to next step
   const canProceed = ttsJob?.status === "completed" && !!ttsJob.audio_url;
