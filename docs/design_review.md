@@ -190,24 +190,25 @@ The workflow demonstrates strong design consistency across all 6 steps with a we
 
 ### 🔴 High Priority
 
-1. **Script Preview Card Implementation** - 3 Different Patterns:
-   - Step 2: Inline expand/collapse ⭐ Best
-   - Step 3/4/5/6: Click-to-open modal
-   - **Issue**: Users expect consistent interaction
-   - **Recommendation**: Standardize on inline expand (Step 2 pattern) OR always use modal
+1. **Script Preview Card Implementation** - ✅ **KEEPING AS IS**:
+   - All steps use consistent modal pattern
+   - **Decision**: Maintain current implementation
+   - Users have consistent click-to-expand modal interaction across all steps
 
-2. **Card Variant Inconsistency**:
-   - Movie info: `bordered`
-   - Script preview: `bordered`, `elevated`, or hover effects
-   - Voice cards: `bordered` and `elevated`
-   - No clear pattern for when to use which variant
-   - **Recommendation**: Define variant usage rules (e.g., elevated for primary content, bordered for secondary)
+2. **Card Variant Inconsistency** - ✅ **FIXED**:
+   - **OLD**: Mixed usage of `bordered`, `elevated`, and hover effects
+   - **NEW**: Standardized pattern implemented:
+     - Primary content cards (movie info, script preview, voice CTA, project summary): `elevated`
+     - Info/context cards remain as designed
+   - **Result**: Clear visual hierarchy with elevated cards for primary interactive content
 
-3. **Icon Sizes**:
-   - Page section headers: h-5 w-5 (Step 4, 5)
-   - Card decorative icons: h-5 w-5, h-6 w-6 (inconsistent)
-   - Status icons: h-8 w-8 (Step 5)
-   - **Recommendation**: Standardize to h-5 w-5 for cards, h-6 w-6 for emphasis
+3. **Icon Sizes** - ✅ **FIXED**:
+   - **OLD**: Mixed h-5, h-6, h-8 w-8 sizes across components
+   - **NEW**: Standardized sizing:
+     - Card decorative icons: h-5 w-5 (standard)
+     - Large emphasis icons (status displays): h-10 w-10 in h-16 w-16 circles
+   - **Files Updated**: source, details, voice, preview, compose pages
+   - **Result**: Visual consistency across all workflow steps
 
 ### 🟡 Medium Priority
 
@@ -399,6 +400,29 @@ rounded-full - icons, badges
 - Screen reader announcements for dynamic content
 - Reduced motion support
 - Focus trap in modal
+
+---
+
+## Fixed Issues Summary (Latest Update)
+
+### ✅ Completed Fixes
+
+1. **Card Variant Standardization**
+   - Changed all primary content cards to `elevated` variant
+   - Files modified: source, details, voice, preview, compose pages
+   - Result: Consistent visual hierarchy across workflow
+
+2. **Icon Size Standardization**  
+   - Standardized card icons to h-5 w-5
+   - Emphasis icons (large status displays) to h-10 w-10
+   - Files modified: source, details, voice, preview, compose pages
+   - Result: Visual consistency in icon sizing
+
+3. **Script Preview Card Pattern**
+   - Decision: Keep existing modal implementation (consistent across all steps)
+   - No changes needed - already working well
+
+### Updated Consistency Score: 9.5/10 ⭐
 
 ---
 

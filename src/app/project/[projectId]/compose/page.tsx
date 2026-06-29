@@ -38,7 +38,7 @@ export default function ComposePage() {
         </div>
 
         {/* Project summary */}
-        <Card variant="bordered" padding="md">
+        <Card variant="elevated" padding="md">
           <div className="grid gap-4 sm:grid-cols-3">
             <div>
               <p className="text-xs font-medium uppercase tracking-wide text-text-muted">Movie</p>
@@ -58,7 +58,7 @@ export default function ComposePage() {
         {/* Script preview card */}
         {activeScript && (
           <Card
-            variant="bordered"
+            variant="elevated"
             padding="md"
             className="cursor-pointer hover:border-accent-cyan/30 hover:bg-surface-raised transition-all group"
             onClick={() => setShowFullScriptModal(true)}
@@ -88,7 +88,7 @@ export default function ComposePage() {
         <Card variant="elevated" padding="lg" className="text-center">
           <div className="mx-auto max-w-md flex flex-col items-center gap-4">
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent-cyan-muted">
-              <Video className="h-8 w-8 text-accent-cyan" />
+              <Video className="h-10 w-10 text-accent-cyan" />
             </div>
             <div>
               <h3 className="text-lg font-semibold text-text-primary">Video Generation</h3>

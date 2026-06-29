@@ -325,7 +325,7 @@ export default function ProjectDetailsPage() {
 
         {/* Movie info card */}
         {state?.movieTitle && (
-          <Card variant="bordered" padding="md">
+          <Card variant="elevated" padding="md">
             <div className="flex items-center gap-4">
               {state.moviePoster && (
                 <div className="h-24 w-16 overflow-hidden rounded-md bg-surface-raised flex-shrink-0">
@@ -350,7 +350,7 @@ export default function ProjectDetailsPage() {
         {/* Script summary with expand */}
         {activeScript && (
           <Card
-            variant="bordered"
+            variant="elevated"
             padding="md"
             className="hover:border-border-hover transition-colors cursor-pointer"
             onClick={() => setShowFullScriptModal(true)}

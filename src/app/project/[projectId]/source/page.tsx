@@ -116,7 +116,7 @@ export default function SourcePage() {
               )}
               <div className="flex-1">
                 <div className="mb-4 flex items-center gap-2">
-                  <Film className="h-6 w-6 text-accent-cyan" />
+                  <Film className="h-5 w-5 text-accent-cyan" />
                   <h3 className="text-2xl font-semibold text-text-primary">{state.movieTitle}</h3>
                 </div>
                 {state.movieGenre && (

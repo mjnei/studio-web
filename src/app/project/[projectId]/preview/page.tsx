@@ -337,7 +337,7 @@ export default function PreviewPage() {
         </div>
 
         {/* Project info card */}
-        <Card variant="bordered" padding="md">
+        <Card variant="elevated" padding="md">
           <div className="flex items-start gap-4">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-purple-muted">
               <CheckCircle className="h-5 w-5 text-accent-purple" />
@@ -388,11 +388,11 @@ export default function PreviewPage() {
           <div className="flex flex-col items-center gap-4 text-center">
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent-cyan/10">
               {ttsJob?.status === "processing" || isStreaming ? (
-                <Loader2 className="h-8 w-8 text-accent-cyan animate-spin" />
+                <Loader2 className="h-10 w-10 text-accent-cyan animate-spin" />
               ) : ttsJob?.status === "failed" ? (
-                <AlertCircle className="h-8 w-8 text-status-failed" />
+                <AlertCircle className="h-10 w-10 text-status-failed" />
               ) : (
-                <Mic2 className="h-8 w-8 text-accent-cyan" />
+                <Mic2 className="h-10 w-10 text-accent-cyan" />
               )}
             </div>
 

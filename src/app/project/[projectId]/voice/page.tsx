@@ -285,7 +285,7 @@ export default function VoicePage() {
 
         {activeScript && (
           <Card
-            variant="bordered"
+            variant="elevated"
             padding="md"
             className="cursor-pointer hover:border-accent-cyan/30 hover:bg-surface-raised transition-all group"
             onClick={() => setShowFullScriptModal(true)}
@@ -314,7 +314,7 @@ export default function VoicePage() {
 
         {/* Record Voice CTA */}
         {!showRecorder && myVoiceOptions.length === 0 && (
-          <Card variant="bordered" padding="md" className="border-accent-purple/30">
+          <Card variant="elevated" padding="md" className="border-accent-purple/30">
             <div className="flex items-start gap-4">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-purple-muted">
                 <Mic className="h-5 w-5 text-accent-purple" />
@@ -341,7 +341,7 @@ export default function VoicePage() {
         {/* Voice Recorder Modal */}
         {showRecorder && (
           <Card
-            variant="bordered"
+            variant="elevated"
             padding="lg"
             className="border-accent-purple/30 bg-surface-panel"
           >
