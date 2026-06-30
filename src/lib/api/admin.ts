@@ -225,16 +225,16 @@ export async function searchTMDBMovies(
   query: string,
   page: number = 1
 ): Promise<TMDBSearchResponse> {
-  return request<TMDBSearchResponse>(`/admin/tmdb/search?query=${encodeURIComponent(query)}&page=${page}`);
+  return request<TMDBSearchResponse>(
+    `/admin/tmdb/search?query=${encodeURIComponent(query)}&page=${page}`
+  );
 }
 
 /**
  * Import a complete movie from TMDB into the local database.
  * Fetches and stores all related data including translations, genres, cast, etc.
  */
-export async function importTMDBMovie(
-  data: TMDBImportRequest
-): Promise<TMDBImportResponse> {
+export async function importTMDBMovie(data: TMDBImportRequest): Promise<TMDBImportResponse> {
   return request<TMDBImportResponse>("/admin/tmdb/import", {
     method: "POST",
     body: JSON.stringify(data),

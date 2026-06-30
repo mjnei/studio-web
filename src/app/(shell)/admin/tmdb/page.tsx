@@ -15,11 +15,7 @@ import {
   Database,
 } from "lucide-react";
 import Image from "next/image";
-import {
-  searchTMDBMovies,
-  importTMDBMovie,
-  type TMDBMovieSearchResult,
-} from "@/lib/api/admin";
+import { searchTMDBMovies, importTMDBMovie, type TMDBMovieSearchResult } from "@/lib/api/admin";
 
 type Toast = {
   id: number;
@@ -157,9 +153,7 @@ export default function AdminTMDBPage() {
       {/* Locale Selection */}
       <div className="mb-6 rounded-2xl border border-border-default bg-surface-panel p-6">
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-text-primary">
-            Translation Locales to Import
-          </h2>
+          <h2 className="text-sm font-semibold text-text-primary">Translation Locales to Import</h2>
           <button
             onClick={toggleAllLocales}
             className="text-xs font-medium text-accent-primary hover:text-accent-primary/80"
