@@ -48,26 +48,6 @@ export default function AdminPage() {
             <p className="text-sm text-text-secondary">Manage voices and recordings</p>
           </div>
         </Link>
-
-        {/* TMDB Import Card - Redirects to Movies Page */}
-        <Link
-          href="/admin/movies"
-          className="group relative overflow-hidden rounded-2xl border border-border-default bg-surface-panel p-6 transition-all hover:border-accent-primary/50 hover:shadow-lg"
-        >
-          <div className="absolute inset-0 bg-gradient-to-br from-accent-primary/5 to-accent-secondary/5 opacity-0 transition-opacity group-hover:opacity-100" />
-          <div className="relative">
-            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-accent-primary/20 to-accent-secondary/20">
-              <Database className="h-6 w-6 text-accent-primary" />
-            </div>
-            <h2 className="mb-2 text-xl font-semibold text-text-primary">TMDB Import</h2>
-            <p className="text-sm text-text-secondary">
-              Search and import movies from TMDB (now part of Movies page)
-            </p>
-            <span className="mt-2 inline-block text-xs text-accent-primary">
-              → Unified with Movies
-            </span>
-          </div>
-        </Link>
       </div>
 
       {/* Quick Stats */}
