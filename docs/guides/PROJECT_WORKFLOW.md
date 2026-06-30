@@ -6,10 +6,10 @@
 
 ## Overview
 
-A streamlined 6-step workflow for creating video projects from movie trailers. Each step can be revisited, and all progress is automatically saved to the database.
+A streamlined 7-step workflow for creating video projects from movie trailers. Each step can be revisited, and all progress is automatically saved to the database.
 
 ```
-Source → Script → Details → Voice → Preview → Compose
+Source → Script → Details → Voice → Preview → Compose → Finalize
 ```
 
 **Key Features:**
@@ -23,7 +23,7 @@ Source → Script → Details → Voice → Preview → Compose
 
 ---
 
-## The 6 Steps
+## The 7 Steps
 
 ### Step 1: Source Selection
 **Route:** `/project/[projectId]/source`
@@ -149,10 +149,26 @@ Generate the final video composition.
 **Actions:**
 - Start video generation job with TTS audio
 - Track async video processing progress
-- Preview completed video
-- Download or publish
+- Preview composed video
 
 **Completion:** Video file generated and available
+
+**Advances to:** Finalize
+
+---
+
+### Step 7: Finalize
+**Route:** `/project/[projectId]/finalize`
+
+Review, publish, or download your completed project.
+
+**Actions:**
+- Review project summary and final video
+- Download video file
+- Publish to platform (YouTube, social media, etc.)
+- Return to projects list
+
+**Completion:** Project published or downloaded
 
 ---
 
@@ -170,7 +186,7 @@ CREATE TABLE projects (
     audio_url VARCHAR(512),
     video_url VARCHAR(512),
     last_step VARCHAR(50) CHECK (
-        last_step IN ('source', 'script', 'details', 'voice', 'preview', 'compose')
+        last_step IN ('source', 'script', 'details', 'voice', 'preview', 'compose', 'finalize')
     ),
     status VARCHAR(50),
     user_id UUID REFERENCES users(id),
@@ -276,6 +292,22 @@ GET /api/v1/jobs/{job_id}/status
 Response: { "status": "processing", "progress": 45 }
 ```
 
+### Step 7: Finalize
+```
+GET /api/v1/projects/{id}
+Response: { 
+  "id": 123,
+  "title": "My Project",
+  "video_url": "https://storage.../video.mp4",
+  "thumbnail_url": "https://storage.../thumbnail.jpg",
+  ...
+}
+
+POST /api/v1/projects/{id}/publish
+Body: { "platform": "youtube", "metadata": {...} }
+Response: { "published": true, "url": "https://youtube.com/..." }
+```
+
 ---
 
 ## Frontend Implementation
@@ -291,6 +323,7 @@ src/app/project/
     voice/page.tsx           # Step 4
     preview/page.tsx         # Step 5
     compose/page.tsx         # Step 6
+    finalize/page.tsx        # Step 7
 
 src/lib/
   project-client.ts          # API client functions
@@ -338,6 +371,7 @@ This updates the `last_step` field in the database.
 | Voice | ❌ No | Details completed |
 | Preview | ❌ No | Voice completed |
 | Compose | ❌ No | Preview completed |
+| Finalize | ❌ No | Compose completed |
 
 ### Navigation Component
 
@@ -395,7 +429,14 @@ The workflow navigation component (`FloatingWorkflowNavigation`) enforces these 
 - [ ] Receives TTS job ID from Step 5
 - [ ] Can start video generation with TTS
 - [ ] Video progress tracks correctly
-- [ ] Can download/preview completed video
+- [ ] Next button enabled when video complete
+
+### Finalize Step (Step 7)
+- [ ] Displays project summary correctly
+- [ ] Shows final video player
+- [ ] Download button works
+- [ ] Publish button works
+- [ ] Can return to projects list
 
 ### Database Persistence
 - [ ] last_step value saves correctly after each step
@@ -449,9 +490,14 @@ The workflow navigation component (`FloatingWorkflowNavigation`) enforces these 
    - Receives TTS job ID
    - Starts video generation
    - Polls progress (1/4, 2/4, 3/4, 4/4)
-   - When complete, plays video
+   - When complete, shows video preview
 
-8. **Download or publish**
+8. **Step 7 - Finalize page**
+   - Reviews project summary
+   - Plays final video
+   - Downloads or publishes
+
+9. **Complete**
 
 ---
 
@@ -474,4 +520,4 @@ The workflow navigation component (`FloatingWorkflowNavigation`) enforces these 
 
 ---
 
-**Version:** 2.0 (6-step workflow with TTS in Step 5) | **Updated:** June 25, 2026
+**Version:** 3.0 (7-step workflow with Finalize step) | **Updated:** July 1, 2026

@@ -117,8 +117,8 @@ export default function ComposePage() {
       <FloatingWorkflowNavigation
         projectId={projectId}
         currentStep="compose"
-        canGoNext={false}
-        nextLabel="Go to Projects"
+        canGoNext={true}
+        nextLabel="Continue to Finalize"
         canGoBack={true}
         isProcessing={false}
       />

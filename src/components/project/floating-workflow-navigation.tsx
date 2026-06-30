@@ -8,7 +8,7 @@ import { useSidebar } from "@/components/shell/sidebar-context";
 
 interface FloatingWorkflowNavigationProps {
   projectId: string;
-  currentStep: "source" | "script" | "details" | "voice" | "preview" | "compose";
+  currentStep: "source" | "script" | "details" | "voice" | "preview" | "compose" | "finalize";
   canGoNext?: boolean;
   nextLabel?: string;
   onNext?: () => void;
@@ -25,6 +25,7 @@ const steps = [
   { key: "voice", label: "Voice" },
   { key: "preview", label: "Preview" },
   { key: "compose", label: "Compose" },
+  { key: "finalize", label: "Finalize" },
 ] as const;
 
 const stepOrder: Record<string, number> = Object.fromEntries(steps.map(({ key }, i) => [key, i]));
@@ -35,7 +36,8 @@ const nextStepLabels: Record<string, string> = {
   details: "Continue to Voice",
   voice: "Continue to Preview",
   preview: "Continue to Compose",
-  compose: "Complete Project",
+  compose: "Continue to Finalize",
+  finalize: "Complete Project",
 };
 
 export function FloatingWorkflowNavigation({
