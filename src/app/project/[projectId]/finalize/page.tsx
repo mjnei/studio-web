@@ -166,12 +166,7 @@ export default function FinalizePage() {
             </Button>
           </div>
           <div className="mt-3">
-            <Button
-              variant="ghost"
-              size="md"
-              onClick={handleGoToProjects}
-              className="w-full"
-            >
+            <Button variant="ghost" size="md" onClick={handleGoToProjects} className="w-full">
               Return to Projects
             </Button>
           </div>
