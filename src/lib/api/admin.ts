@@ -181,3 +181,69 @@ export async function getAdminVoiceAudioUrl(voiceId: string): Promise<{
     expires_in: number | null;
   }>(`/admin/voices/${voiceId}/audio`);
 }
+
+// ============================================================================
+// Admin TMDB Management
+// ============================================================================
+
+export interface TMDBMovieSearchResult {
+  id: number;
+  title: string;
+  original_title: string;
+  release_date?: string;
+  overview?: string;
+  poster_path?: string;
+  backdrop_path?: string;
+  vote_average?: number;
+  vote_count?: number;
+  popularity?: number;
+}
+
+export interface TMDBSearchResponse {
+  page: number;
+  total_results: number;
+  total_pages: number;
+  results: TMDBMovieSearchResult[];
+}
+
+export interface TMDBImportRequest {
+  movie_id: number;
+  locales?: string[];
+}
+
+export interface TMDBImportResponse {
+  success: boolean;
+  movie_id: number;
+  title: string;
+  message: string;
+}
+
+/**
+ * Search for movies on TMDB by title.
+ */
+export async function searchTMDBMovies(
+  query: string,
+  page: number = 1
+): Promise<TMDBSearchResponse> {
+  return request<TMDBSearchResponse>(`/admin/tmdb/search?query=${encodeURIComponent(query)}&page=${page}`);
+}
+
+/**
+ * Import a complete movie from TMDB into the local database.
+ * Fetches and stores all related data including translations, genres, cast, etc.
+ */
+export async function importTMDBMovie(
+  data: TMDBImportRequest
+): Promise<TMDBImportResponse> {
+  return request<TMDBImportResponse>("/admin/tmdb/import", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+/**
+ * Get detailed information about a movie from TMDB (preview without importing).
+ */
+export async function getTMDBMovieDetails(movieId: number): Promise<any> {
+  return request<any>(`/admin/tmdb/movie/${movieId}/details`);
+}
