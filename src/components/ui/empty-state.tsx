@@ -47,19 +47,16 @@ export function EmptyState({
   return (
     <Card variant="elevated" padding="md" className={cn(borderClass, className)}>
       <div className="flex items-start gap-4">
-        <div className={cn("flex h-10 w-10 items-center justify-center rounded-full", iconColorClass)}>
+        <div
+          className={cn("flex h-10 w-10 items-center justify-center rounded-full", iconColorClass)}
+        >
           <Icon className="h-5 w-5" />
         </div>
         <div className="flex-1">
           <h3 className="font-medium text-text-primary">{title}</h3>
           <p className="mt-1 text-sm text-text-muted">{description}</p>
           {action && (
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={action.onClick}
-              className="mt-3 gap-2"
-            >
+            <Button variant="primary" size="sm" onClick={action.onClick} className="mt-3 gap-2">
               {action.icon}
               {action.label}
             </Button>
@@ -99,7 +96,9 @@ export function CenteredEmptyState({
   return (
     <Card variant="elevated" padding="lg" className={cn("text-center", className)}>
       <div className="mx-auto max-w-md flex flex-col items-center gap-4">
-        <div className={cn("flex h-16 w-16 items-center justify-center rounded-full", iconColorClass)}>
+        <div
+          className={cn("flex h-16 w-16 items-center justify-center rounded-full", iconColorClass)}
+        >
           <Icon className="h-10 w-10" />
         </div>
         <div>

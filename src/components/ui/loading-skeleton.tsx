@@ -12,11 +12,7 @@ interface LoadingSkeletonProps {
  * LoadingSkeleton - Standard loading skeleton component
  * Provides consistent loading states across the application
  */
-export function LoadingSkeleton({
-  className,
-  variant = "card",
-  count = 1,
-}: LoadingSkeletonProps) {
+export function LoadingSkeleton({ className, variant = "card", count = 1 }: LoadingSkeletonProps) {
   const skeletons = Array.from({ length: count });
 
   // Base skeleton pulse animation
