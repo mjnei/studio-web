@@ -45,7 +45,7 @@ type EditingMovie = {
   vote_count?: number;
 };
 
-const SUPPORTED_LOCALES = ["en", "zh-CN", "zh-TW", "ja", "ko", "de", "fr", "es"];
+const SUPPORTED_LOCALES = ["en", "de", "fr", "es", "zh-CN", "zh-TW", "ja", "ko"];
 
 export default function AdminMoviesPage() {
   // View mode: library (manage existing) or import (TMDB search)
