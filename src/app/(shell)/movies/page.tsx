@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Star, Search } from "lucide-react";
+import Link from "next/link";
+import { Star, Search, Loader } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   getPopularMovies,
@@ -48,7 +49,7 @@ export default function MoviesPage() {
       <div className="mb-8 flex items-end justify-between">
         <div>
           <h1 className="mb-1 text-2xl font-bold">Movie Library</h1>
-          <p className="text-sm text-text-muted">Discover and explore movies from the backend</p>
+          <p className="text-sm text-text-muted">Discover and explore movies to create projects</p>
         </div>
         <span className="rounded-full bg-accent-cyan-muted px-3 py-1 text-xs font-medium text-accent-cyan">
           {movies.length} movies
@@ -68,8 +69,11 @@ export default function MoviesPage() {
       </div>
 
       {loading ? (
-        <div className="rounded-lg border border-border-default bg-surface-panel p-8 text-center text-text-secondary">
-          Loading movies...
+        <div className="flex h-64 items-center justify-center rounded-lg border border-border-default bg-surface-panel">
+          <div className="flex flex-col items-center gap-2">
+            <Loader className="h-8 w-8 animate-spin text-accent-cyan" />
+            <p className="text-sm text-text-muted">Loading movies...</p>
+          </div>
         </div>
       ) : error ? (
         <div className="rounded-lg border border-border-default bg-surface-panel p-8 text-center text-status-failed">
@@ -82,8 +86,9 @@ export default function MoviesPage() {
       ) : (
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
           {movies.map((movie) => (
-            <div
+            <Link
               key={movie.id}
+              href={`/movies/${movie.id}`}
               className="group overflow-hidden rounded-xl border border-border-default bg-surface-panel transition hover:border-accent-cyan/40 hover:shadow-lg hover:shadow-accent-cyan/5"
             >
               <div className="relative aspect-[2/3] overflow-hidden bg-surface-raised">
@@ -127,7 +132,7 @@ export default function MoviesPage() {
                   ) : null}
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       )}

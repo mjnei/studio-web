@@ -119,9 +119,7 @@ export async function adminListMovies(params?: {
   if (params?.sort_order) queryParams.append("sort_order", params.sort_order);
 
   const queryString = queryParams.toString();
-  return request<AdminMovieListResponse>(
-    `/admin/movies${queryString ? `?${queryString}` : ""}`
-  );
+  return request<AdminMovieListResponse>(`/admin/movies${queryString ? `?${queryString}` : ""}`);
 }
 
 export async function adminGetMovies(): Promise<MovieResponse[]> {

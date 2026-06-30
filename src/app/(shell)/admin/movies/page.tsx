@@ -50,7 +50,7 @@ const SUPPORTED_LOCALES = ["en", "zh-CN", "zh-TW", "ja", "ko", "de", "fr", "es"]
 export default function AdminMoviesPage() {
   // View mode: library (manage existing) or import (TMDB search)
   const [viewMode, setViewMode] = useState<ViewMode>("library");
-  
+
   // Library state
   const [movies, setMovies] = useState<AdminMovieResponse[]>([]);
   const [isLoadingLibrary, setIsLoadingLibrary] = useState(false);
@@ -179,7 +179,12 @@ export default function AdminMoviesPage() {
 
   // Library handlers
   const handleDeleteMovie = async (movieId: number) => {
-    if (!confirm("Delete this movie? This will cascade delete all related data (translations, cast, etc.). This action cannot be undone.")) return;
+    if (
+      !confirm(
+        "Delete this movie? This will cascade delete all related data (translations, cast, etc.). This action cannot be undone."
+      )
+    )
+      return;
     try {
       await adminDeleteMovie(movieId);
       showToast("success", "Movie deleted successfully");
@@ -576,8 +581,8 @@ export default function AdminMoviesPage() {
               ))}
             </div>
             <p className="mt-3 text-xs text-text-muted">
-              Selected locales ({selectedLocales.length}): Movie titles, overviews, genres,
-              person names, and character names will be fetched in these languages
+              Selected locales ({selectedLocales.length}): Movie titles, overviews, genres, person
+              names, and character names will be fetched in these languages
             </p>
           </div>
 

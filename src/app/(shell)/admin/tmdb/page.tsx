@@ -6,7 +6,7 @@ import { Loader, ArrowRight, Database } from "lucide-react";
 
 /**
  * Legacy TMDB Import Page - Redirects to Unified Movies Page
- * 
+ *
  * This page has been merged with the admin movies page.
  * Redirecting to /admin/movies with the import tab active.
  */
@@ -32,25 +32,23 @@ export default function AdminTMDBPage() {
               <Loader className="absolute -right-2 -top-2 h-6 w-6 animate-spin text-accent-primary" />
             </div>
           </div>
-          
-          <h1 className="mb-3 text-2xl font-bold text-text-primary">
-            Page Moved
-          </h1>
-          
+
+          <h1 className="mb-3 text-2xl font-bold text-text-primary">Page Moved</h1>
+
           <p className="mb-2 text-text-secondary">
             TMDB import has been merged with movie management
           </p>
-          
+
           <p className="mb-6 text-sm text-text-muted">
             Redirecting you to the unified movies page...
           </p>
-          
+
           <div className="flex items-center justify-center gap-2 rounded-lg border border-border-default bg-surface-panel px-4 py-2 text-sm text-text-muted">
             <span>/admin/tmdb</span>
             <ArrowRight className="h-4 w-4" />
             <span className="font-medium text-accent-primary">/admin/movies</span>
           </div>
-          
+
           <div className="mt-8">
             <button
               onClick={() => router.push("/admin/movies")}
