@@ -3,8 +3,6 @@
 import { useState, useEffect } from "react";
 import {
   Film,
-  Plus,
-  Upload,
   Trash2,
   Edit2,
   AlertCircle,
@@ -13,62 +11,98 @@ import {
   Loader,
   Star,
   Calendar,
-  Eye,
-  EyeOff,
+  Download,
+  Database,
+  ChevronLeft,
+  ChevronRight,
+  Save,
+  X,
 } from "lucide-react";
 import Image from "next/image";
 import {
-  adminGetMovies,
-  adminCreateMovie,
+  adminListMovies,
   adminUpdateMovie,
   adminDeleteMovie,
-  adminBulkImportMovies,
+  searchTMDBMovies,
+  importTMDBMovie,
+  type TMDBMovieSearchResult,
+  type AdminMovieResponse,
 } from "@/lib/api/admin";
-import type { MovieResponse, MovieCreateRequest, MovieUpdateRequest } from "@/lib/types/api";
 
 type Toast = {
   id: number;
-  type: "success" | "error";
+  type: "success" | "error" | "info";
   message: string;
 };
 
+type ViewMode = "library" | "import";
+
 type EditingMovie = {
-  id: string;
-  title: string;
-  overview?: string;
-  release_date?: string;
+  id: number;
+  douban_id?: string;
+  popularity?: number;
   vote_average?: number;
+  vote_count?: number;
 };
 
+const SUPPORTED_LOCALES = ["en", "zh-CN", "zh-TW", "ja", "ko", "de", "fr", "es"];
+
 export default function AdminMoviesPage() {
-  const [movies, setMovies] = useState<MovieResponse[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isCreating, setIsCreating] = useState(false);
-  const [isBulkOpen, setIsBulkOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filterProvider, setFilterProvider] = useState<string>("all");
-  const [viewMode, setViewMode] = useState<"grid" | "table">("grid");
-  const [editingId, setEditingId] = useState<string | null>(null);
+  // View mode: library (manage existing) or import (TMDB search)
+  const [viewMode, setViewMode] = useState<ViewMode>("library");
+  
+  // Library state
+  const [movies, setMovies] = useState<AdminMovieResponse[]>([]);
+  const [isLoadingLibrary, setIsLoadingLibrary] = useState(false);
+  const [librarySearchTerm, setLibrarySearchTerm] = useState("");
+  const [libraryPage, setLibraryPage] = useState(1);
+  const [libraryTotalPages, setLibraryTotalPages] = useState(1);
+  const [libraryTotal, setLibraryTotal] = useState(0);
+  const [selectedLocale, setSelectedLocale] = useState("en");
+  const [editingId, setEditingId] = useState<number | null>(null);
   const [editingData, setEditingData] = useState<EditingMovie | null>(null);
+
+  // TMDB Import state
+  const [tmdbSearchQuery, setTmdbSearchQuery] = useState("");
+  const [tmdbSearchResults, setTmdbSearchResults] = useState<TMDBMovieSearchResult[]>([]);
+  const [isSearchingTmdb, setIsSearchingTmdb] = useState(false);
+  const [tmdbPage, setTmdbPage] = useState(1);
+  const [tmdbTotalPages, setTmdbTotalPages] = useState(0);
+  const [tmdbTotalResults, setTmdbTotalResults] = useState(0);
+  const [importingIds, setImportingIds] = useState<Set<number>>(new Set());
+  const [selectedLocales, setSelectedLocales] = useState<string[]>(SUPPORTED_LOCALES);
+
+  // Common state
   const [toasts, setToasts] = useState<Toast[]>([]);
 
   useEffect(() => {
-    loadMovies();
-  }, []);
+    if (viewMode === "library") {
+      loadMovies();
+    }
+  }, [viewMode, libraryPage, librarySearchTerm, selectedLocale]);
 
   const loadMovies = async () => {
-    setIsLoading(true);
+    setIsLoadingLibrary(true);
     try {
-      const data = await adminGetMovies();
-      setMovies(data);
+      const response = await adminListMovies({
+        query: librarySearchTerm || undefined,
+        locale: selectedLocale,
+        page: libraryPage,
+        page_size: 24,
+        sort_by: "popularity",
+        sort_order: "desc",
+      });
+      setMovies(response.movies);
+      setLibraryTotal(response.total);
+      setLibraryTotalPages(Math.ceil(response.total / response.page_size));
     } catch (error: any) {
       showToast("error", error.message || "Failed to load movies");
     } finally {
-      setIsLoading(false);
+      setIsLoadingLibrary(false);
     }
   };
 
-  const showToast = (type: "success" | "error", message: string) => {
+  const showToast = (type: "success" | "error" | "info", message: string) => {
     const id = Date.now();
     setToasts((prev) => [...prev, { id, type, message }]);
     setTimeout(() => {
@@ -76,34 +110,78 @@ export default function AdminMoviesPage() {
     }, 5000);
   };
 
-  const handleCreateMovie = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsCreating(false);
+  // TMDB Search handlers
+  const handleTmdbSearch = async (page: number = 1) => {
+    if (!tmdbSearchQuery.trim()) {
+      showToast("error", "Please enter a search query");
+      return;
+    }
+
+    setIsSearchingTmdb(true);
     try {
-      const formData = new FormData(e.currentTarget);
-      const data: MovieCreateRequest = {
-        id: parseInt(formData.get("id") as string),
-        title: formData.get("title") as string,
-        original_title: formData.get("original_title") as string,
-        overview: formData.get("overview") as string,
-        release_date: formData.get("release_date") as string,
-        poster_path: formData.get("poster_path") as string,
-        backdrop_path: formData.get("backdrop_path") as string,
-      };
-      await adminCreateMovie(data);
-      showToast("success", "Movie created successfully");
-      await loadMovies();
-      e.currentTarget.reset();
+      const response = await searchTMDBMovies(tmdbSearchQuery, page);
+      setTmdbSearchResults(response.results);
+      setTmdbPage(response.page);
+      setTmdbTotalPages(response.total_pages);
+      setTmdbTotalResults(response.total_results);
+
+      if (response.results.length === 0) {
+        showToast("info", "No movies found. Try a different search query.");
+      }
     } catch (error: any) {
-      showToast("error", error.message || "Failed to create movie");
-      setIsCreating(true);
+      showToast("error", error.message || "Failed to search movies");
+      setTmdbSearchResults([]);
+    } finally {
+      setIsSearchingTmdb(false);
     }
   };
 
-  const handleDeleteMovie = async (movieId: string) => {
-    if (!confirm("Delete this movie? This action cannot be undone.")) return;
+  const handleImport = async (movie: TMDBMovieSearchResult) => {
+    setImportingIds((prev) => new Set(prev).add(movie.id));
     try {
-      await adminDeleteMovie(parseInt(movieId));
+      const response = await importTMDBMovie({
+        movie_id: movie.id,
+        locales: selectedLocales.length > 0 ? selectedLocales : undefined,
+      });
+      showToast("success", response.message);
+      // Reload library if in library mode
+      if (viewMode === "library") {
+        loadMovies();
+      }
+    } catch (error: any) {
+      showToast("error", error.message || "Failed to import movie");
+    } finally {
+      setImportingIds((prev) => {
+        const next = new Set(prev);
+        next.delete(movie.id);
+        return next;
+      });
+    }
+  };
+
+  const handleTmdbKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleTmdbSearch(1);
+    }
+  };
+
+  const toggleLocale = (locale: string) => {
+    setSelectedLocales((prev) =>
+      prev.includes(locale) ? prev.filter((l) => l !== locale) : [...prev, locale]
+    );
+  };
+
+  const toggleAllLocales = () => {
+    setSelectedLocales((prev) =>
+      prev.length === SUPPORTED_LOCALES.length ? [] : [...SUPPORTED_LOCALES]
+    );
+  };
+
+  // Library handlers
+  const handleDeleteMovie = async (movieId: number) => {
+    if (!confirm("Delete this movie? This will cascade delete all related data (translations, cast, etc.). This action cannot be undone.")) return;
+    try {
+      await adminDeleteMovie(movieId);
       showToast("success", "Movie deleted successfully");
       await loadMovies();
     } catch (error: any) {
@@ -114,13 +192,16 @@ export default function AdminMoviesPage() {
   const handleUpdateMovie = async () => {
     if (!editingData) return;
     try {
-      const updateData: MovieUpdateRequest = {
-        title: editingData.title,
-        overview: editingData.overview,
-        release_date: editingData.release_date,
-        vote_average: editingData.vote_average,
-      };
-      await adminUpdateMovie(parseInt(editingData.id), updateData);
+      await adminUpdateMovie(
+        editingData.id,
+        {
+          douban_id: editingData.douban_id,
+          popularity: editingData.popularity,
+          vote_average: editingData.vote_average,
+          vote_count: editingData.vote_count,
+        },
+        selectedLocale
+      );
       showToast("success", "Movie updated successfully");
       setEditingId(null);
       setEditingData(null);
@@ -130,31 +211,16 @@ export default function AdminMoviesPage() {
     }
   };
 
-  const handleBulkImport = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    try {
-      const formData = new FormData(e.currentTarget);
-      const jsonText = formData.get("json") as string;
-      const items = JSON.parse(jsonText) as MovieCreateRequest[];
-      const result = await adminBulkImportMovies({ items });
-      showToast(
-        "success",
-        `Bulk import completed: ${result.success_count} succeeded, ${result.failure_count} failed`
-      );
-      setIsBulkOpen(false);
-      e.currentTarget.reset();
-      await loadMovies();
-    } catch (error: any) {
-      showToast("error", error.message || "Failed to bulk import movies");
-    }
+  const handleLibrarySearch = () => {
+    setLibraryPage(1);
+    loadMovies();
   };
 
-  const filteredMovies = movies.filter((m) => {
-    const matchesSearch =
-      m.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      m.overview?.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesSearch;
-  });
+  const handleLibraryKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleLibrarySearch();
+    }
+  };
 
   const getImageUrl = (path: string | null | undefined, size: "w500" | "w780" = "w500") => {
     if (!path) return null;
@@ -171,11 +237,15 @@ export default function AdminMoviesPage() {
             className={`flex items-center gap-3 rounded-lg border px-4 py-3 shadow-lg ${
               toast.type === "success"
                 ? "border-green-500/50 bg-green-500/10 text-green-600"
-                : "border-red-500/50 bg-red-500/10 text-red-600"
+                : toast.type === "error"
+                  ? "border-red-500/50 bg-red-500/10 text-red-600"
+                  : "border-blue-500/50 bg-blue-500/10 text-blue-600"
             }`}
           >
             {toast.type === "success" ? (
               <CheckCircle2 className="h-5 w-5" />
+            ) : toast.type === "error" ? (
+              <AlertCircle className="h-5 w-5" />
             ) : (
               <AlertCircle className="h-5 w-5" />
             )}
@@ -185,438 +255,545 @@ export default function AdminMoviesPage() {
       </div>
 
       {/* Header */}
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <div className="flex items-center gap-3 mb-2">
-            <Film className="h-8 w-8 text-accent-primary" />
-            <h1 className="text-3xl font-bold text-text-primary">Manage Movies</h1>
-          </div>
-          <p className="text-text-secondary">Browse, create, edit, and delete movies</p>
+      <div className="mb-8">
+        <div className="flex items-center gap-3 mb-2">
+          <Film className="h-8 w-8 text-accent-primary" />
+          <h1 className="text-3xl font-bold text-text-primary">Movie Management</h1>
         </div>
-        <div className="flex gap-3">
-          <button
-            onClick={() => setIsCreating(true)}
-            className="flex items-center gap-2 rounded-lg bg-accent-primary px-4 py-2 text-sm font-medium text-white hover:bg-accent-primary/90 transition-all"
-          >
-            <Plus className="h-4 w-4" />
-            Create Movie
-          </button>
-          <button
-            onClick={() => setIsBulkOpen(true)}
-            className="flex items-center gap-2 rounded-lg border border-border-default bg-surface-panel px-4 py-2 text-sm font-medium text-text-primary hover:bg-surface-hover transition-all"
-          >
-            <Upload className="h-4 w-4" />
-            Bulk Import
-          </button>
-        </div>
+        <p className="text-text-secondary">
+          Import movies from TMDB or manage your existing movie library
+        </p>
       </div>
 
-      {/* Search and Filter Bar */}
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-1 items-center gap-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
-          <Search className="h-5 w-5 text-text-muted" />
-          <input
-            type="text"
-            placeholder="Search movies by title or overview..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="flex-1 bg-transparent text-text-primary placeholder-text-muted focus:outline-none"
-          />
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setViewMode("grid")}
-            className={`rounded-lg px-3 py-2 text-sm font-medium transition-all ${
-              viewMode === "grid"
-                ? "bg-accent-primary text-white"
-                : "border border-border-default bg-surface-panel text-text-secondary hover:bg-surface-hover"
-            }`}
-          >
-            Grid
-          </button>
-          <button
-            onClick={() => setViewMode("table")}
-            className={`rounded-lg px-3 py-2 text-sm font-medium transition-all ${
-              viewMode === "table"
-                ? "bg-accent-primary text-white"
-                : "border border-border-default bg-surface-panel text-text-secondary hover:bg-surface-hover"
-            }`}
-          >
-            Table
-          </button>
-        </div>
+      {/* View Mode Tabs */}
+      <div className="mb-6 flex gap-2">
+        <button
+          onClick={() => setViewMode("library")}
+          className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+            viewMode === "library"
+              ? "bg-accent-primary text-white"
+              : "border border-border-default bg-surface-panel text-text-secondary hover:bg-surface-hover"
+          }`}
+        >
+          <Database className="h-4 w-4" />
+          Movie Library
+          {libraryTotal > 0 && <span className="text-xs opacity-80">({libraryTotal})</span>}
+        </button>
+        <button
+          onClick={() => setViewMode("import")}
+          className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+            viewMode === "import"
+              ? "bg-accent-primary text-white"
+              : "border border-border-default bg-surface-panel text-text-secondary hover:bg-surface-hover"
+          }`}
+        >
+          <Download className="h-4 w-4" />
+          Import from TMDB
+        </button>
       </div>
 
-      {/* Movies List */}
-      {isLoading ? (
-        <div className="flex h-64 items-center justify-center">
-          <div className="flex flex-col items-center gap-2">
-            <Loader className="h-8 w-8 animate-spin text-accent-primary" />
-            <p className="text-sm text-text-muted">Loading movies...</p>
-          </div>
-        </div>
-      ) : filteredMovies.length === 0 ? (
-        <div className="flex h-64 items-center justify-center rounded-2xl border border-dashed border-border-default">
-          <p className="text-sm text-text-muted">
-            No movies found. Create or import one to get started.
-          </p>
-        </div>
-      ) : viewMode === "grid" ? (
-        /* Grid View */
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {filteredMovies.map((movie) => {
-            const posterUrl = getImageUrl(movie.poster_path);
-            return (
-              <div
-                key={movie.id}
-                className="group relative overflow-hidden rounded-2xl border border-border-default bg-surface-panel transition-all hover:border-accent-primary/50 hover:shadow-lg"
+      {/* LIBRARY VIEW */}
+      {viewMode === "library" && (
+        <>
+          {/* Search and Filter Bar */}
+          <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-1 items-center gap-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
+              <Search className="h-5 w-5 text-text-muted" />
+              <input
+                type="text"
+                placeholder="Search movies by title..."
+                value={librarySearchTerm}
+                onChange={(e) => setLibrarySearchTerm(e.target.value)}
+                onKeyPress={handleLibraryKeyPress}
+                className="flex-1 bg-transparent text-text-primary placeholder-text-muted focus:outline-none"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-text-muted">Locale:</span>
+              <select
+                value={selectedLocale}
+                onChange={(e) => setSelectedLocale(e.target.value)}
+                className="rounded-lg border border-border-default bg-surface-panel px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
               >
-                {/* Poster Image */}
-                <div className="relative aspect-[2/3] w-full overflow-hidden bg-surface-raised">
-                  {posterUrl ? (
-                    <Image
-                      src={posterUrl}
-                      alt={movie.title}
-                      fill
-                      className="object-cover transition-transform group-hover:scale-105"
-                      unoptimized
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center">
-                      <Film className="h-16 w-16 text-text-muted opacity-50" />
-                    </div>
-                  )}
-                  {/* Rating Badge */}
-                  {movie.rating && (
-                    <div className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-black/70 px-2 py-1 backdrop-blur-sm">
-                      <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                      <span className="text-xs font-semibold text-white">{movie.rating}</span>
-                    </div>
-                  )}
-                </div>
+                {SUPPORTED_LOCALES.map((locale) => (
+                  <option key={locale} value={locale}>
+                    {locale}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
 
-                {/* Movie Info */}
-                <div className="p-4">
-                  <h3 className="mb-1 line-clamp-2 text-sm font-semibold text-text-primary">
-                    {movie.title}
-                  </h3>
-                  {movie.release_date && (
-                    <div className="mb-2 flex items-center gap-1 text-xs text-text-muted">
-                      <Calendar className="h-3 w-3" />
-                      <span>{new Date(movie.release_date).getFullYear()}</span>
-                    </div>
-                  )}
-                  {movie.overview && (
-                    <p className="mb-3 line-clamp-2 text-xs text-text-secondary">
-                      {movie.overview}
-                    </p>
-                  )}
-
-                  {/* Actions */}
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => {
-                        setEditingId(movie.id.toString());
-                        setEditingData({
-                          id: movie.id.toString(),
-                          title: movie.title,
-                          overview: movie.overview || "",
-                          release_date: movie.release_date || undefined,
-                          vote_average: (movie.rating as unknown as number) || undefined,
-                        });
-                      }}
-                      className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-border-default bg-surface-base px-2 py-1.5 text-xs font-medium text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all"
-                    >
-                      <Edit2 className="h-3 w-3" />
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDeleteMovie(movie.id.toString())}
-                      className="flex items-center justify-center gap-1 rounded-lg border border-red-500/50 bg-red-500/10 px-2 py-1.5 text-xs font-medium text-red-600 hover:bg-red-500/20 transition-all"
-                    >
-                      <Trash2 className="h-3 w-3" />
-                    </button>
-                  </div>
-                </div>
+          {/* Movies Grid */}
+          {isLoadingLibrary ? (
+            <div className="flex h-64 items-center justify-center">
+              <div className="flex flex-col items-center gap-2">
+                <Loader className="h-8 w-8 animate-spin text-accent-primary" />
+                <p className="text-sm text-text-muted">Loading movies...</p>
               </div>
-            );
-          })}
-        </div>
-      ) : (
-        /* Table View */
-        <div className="space-y-2 rounded-2xl border border-border-default bg-surface-panel overflow-hidden">
-          {/* Table Header */}
-          <div className="grid grid-cols-12 gap-4 border-b border-border-default bg-surface-raised/50 px-6 py-3 text-sm font-semibold text-text-secondary">
-            <div className="col-span-1">Poster</div>
-            <div className="col-span-4">Title</div>
-            <div className="col-span-2">Release Date</div>
-            <div className="col-span-1">Rating</div>
-            <div className="col-span-4">Actions</div>
+            </div>
+          ) : movies.length === 0 ? (
+            <div className="flex h-64 items-center justify-center rounded-2xl border border-dashed border-border-default">
+              <div className="text-center">
+                <Film className="mx-auto h-12 w-12 text-text-muted opacity-50 mb-3" />
+                <p className="text-sm text-text-primary font-medium mb-1">No movies found</p>
+                <p className="text-sm text-text-muted mb-3">
+                  {librarySearchTerm
+                    ? "Try a different search query"
+                    : "Import movies from TMDB to get started"}
+                </p>
+                {!librarySearchTerm && (
+                  <button
+                    onClick={() => setViewMode("import")}
+                    className="mx-auto flex items-center gap-2 rounded-lg bg-accent-primary px-4 py-2 text-sm font-medium text-white hover:bg-accent-primary/90"
+                  >
+                    <Download className="h-4 w-4" />
+                    Import from TMDB
+                  </button>
+                )}
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-6">
+                {movies.map((movie) => {
+                  const posterUrl = getImageUrl(movie.poster_path);
+                  const isEditing = editingId === movie.id;
+
+                  return (
+                    <div
+                      key={movie.id}
+                      className="group relative overflow-hidden rounded-2xl border border-border-default bg-surface-panel transition-all hover:border-accent-primary/50 hover:shadow-lg"
+                    >
+                      {/* Poster Image */}
+                      <div className="relative aspect-[2/3] w-full overflow-hidden bg-surface-raised">
+                        {posterUrl ? (
+                          <Image
+                            src={posterUrl}
+                            alt={movie.title || movie.original_title}
+                            fill
+                            className="object-cover transition-transform group-hover:scale-105"
+                            unoptimized
+                          />
+                        ) : (
+                          <div className="flex h-full items-center justify-center">
+                            <Film className="h-16 w-16 text-text-muted opacity-50" />
+                          </div>
+                        )}
+                        {/* Rating Badge */}
+                        {movie.vote_average && movie.vote_average > 0 && (
+                          <div className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-black/70 px-2 py-1 backdrop-blur-sm">
+                            <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                            <span className="text-xs font-semibold text-white">
+                              {movie.vote_average.toFixed(1)}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Movie Info */}
+                      <div className="p-4">
+                        <h3 className="mb-1 line-clamp-2 text-sm font-semibold text-text-primary">
+                          {movie.title || movie.original_title}
+                        </h3>
+                        {movie.original_title !== movie.title && (
+                          <p className="mb-1 text-xs text-text-muted line-clamp-1">
+                            {movie.original_title}
+                          </p>
+                        )}
+                        {movie.release_date && (
+                          <div className="mb-2 flex items-center gap-1 text-xs text-text-muted">
+                            <Calendar className="h-3 w-3" />
+                            <span>{new Date(movie.release_date).getFullYear()}</span>
+                          </div>
+                        )}
+                        {movie.overview && (
+                          <p className="mb-3 line-clamp-2 text-xs text-text-secondary">
+                            {movie.overview}
+                          </p>
+                        )}
+
+                        {/* Edit Mode */}
+                        {isEditing && editingData ? (
+                          <div className="space-y-2">
+                            <div>
+                              <label className="text-xs text-text-muted">Douban ID</label>
+                              <input
+                                type="text"
+                                value={editingData.douban_id || ""}
+                                onChange={(e) =>
+                                  setEditingData({ ...editingData, douban_id: e.target.value })
+                                }
+                                className="w-full rounded border border-border-default bg-surface-base px-2 py-1 text-xs text-text-primary focus:border-accent-primary focus:outline-none"
+                                placeholder="Optional"
+                              />
+                            </div>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={handleUpdateMovie}
+                                className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-green-600 px-2 py-1.5 text-xs font-medium text-white hover:bg-green-700"
+                              >
+                                <Save className="h-3 w-3" />
+                                Save
+                              </button>
+                              <button
+                                onClick={() => {
+                                  setEditingId(null);
+                                  setEditingData(null);
+                                }}
+                                className="flex items-center justify-center gap-1 rounded-lg border border-border-default bg-surface-base px-2 py-1.5 text-xs font-medium text-text-secondary hover:bg-surface-hover"
+                              >
+                                <X className="h-3 w-3" />
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          /* Actions */
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => {
+                                setEditingId(movie.id);
+                                setEditingData({
+                                  id: movie.id,
+                                  douban_id: movie.douban_id || undefined,
+                                  popularity: movie.popularity || undefined,
+                                  vote_average: movie.vote_average || undefined,
+                                  vote_count: movie.vote_count || undefined,
+                                });
+                              }}
+                              className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-border-default bg-surface-base px-2 py-1.5 text-xs font-medium text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all"
+                            >
+                              <Edit2 className="h-3 w-3" />
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDeleteMovie(movie.id)}
+                              className="flex items-center justify-center gap-1 rounded-lg border border-red-500/50 bg-red-500/10 px-2 py-1.5 text-xs font-medium text-red-600 hover:bg-red-500/20 transition-all"
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </button>
+                          </div>
+                        )}
+
+                        {/* Metadata */}
+                        <div className="mt-2 flex items-center justify-between text-xs text-text-muted">
+                          <span>ID: {movie.id}</span>
+                          {movie.douban_id && <span>Douban: {movie.douban_id}</span>}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Pagination */}
+              {libraryTotalPages > 1 && (
+                <div className="flex items-center justify-center gap-2 pb-8">
+                  <button
+                    onClick={() => setLibraryPage((p) => Math.max(1, p - 1))}
+                    disabled={libraryPage === 1}
+                    className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-panel px-3 py-2 text-sm font-medium text-text-secondary hover:bg-surface-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                    Previous
+                  </button>
+
+                  <div className="flex items-center gap-1">
+                    {Array.from({ length: Math.min(5, libraryTotalPages) }, (_, i) => {
+                      let pageNum;
+                      if (libraryTotalPages <= 5) {
+                        pageNum = i + 1;
+                      } else if (libraryPage <= 3) {
+                        pageNum = i + 1;
+                      } else if (libraryPage >= libraryTotalPages - 2) {
+                        pageNum = libraryTotalPages - 4 + i;
+                      } else {
+                        pageNum = libraryPage - 2 + i;
+                      }
+
+                      return (
+                        <button
+                          key={pageNum}
+                          onClick={() => setLibraryPage(pageNum)}
+                          className={`h-9 w-9 rounded-lg text-sm font-medium transition-all ${
+                            pageNum === libraryPage
+                              ? "bg-accent-primary text-white"
+                              : "border border-border-default bg-surface-panel text-text-secondary hover:bg-surface-hover"
+                          }`}
+                        >
+                          {pageNum}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <button
+                    onClick={() => setLibraryPage((p) => Math.min(libraryTotalPages, p + 1))}
+                    disabled={libraryPage === libraryTotalPages}
+                    className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-panel px-3 py-2 text-sm font-medium text-text-secondary hover:bg-surface-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  >
+                    Next
+                    <ChevronRight className="h-4 w-4" />
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+        </>
+      )}
+
+      {/* TMDB IMPORT VIEW */}
+      {viewMode === "import" && (
+        <>
+          {/* Locale Selection */}
+          <div className="mb-6 rounded-2xl border border-border-default bg-surface-panel p-6">
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="text-sm font-semibold text-text-primary">
+                Translation Locales to Import
+              </h2>
+              <button
+                onClick={toggleAllLocales}
+                className="text-xs font-medium text-accent-primary hover:text-accent-primary/80"
+              >
+                {selectedLocales.length === SUPPORTED_LOCALES.length
+                  ? "Deselect All"
+                  : "Select All"}
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {SUPPORTED_LOCALES.map((locale) => (
+                <button
+                  key={locale}
+                  onClick={() => toggleLocale(locale)}
+                  className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-all ${
+                    selectedLocales.includes(locale)
+                      ? "bg-accent-primary text-white"
+                      : "border border-border-default bg-surface-base text-text-secondary hover:bg-surface-hover"
+                  }`}
+                >
+                  {locale}
+                </button>
+              ))}
+            </div>
+            <p className="mt-3 text-xs text-text-muted">
+              Selected locales ({selectedLocales.length}): Movie titles, overviews, genres,
+              person names, and character names will be fetched in these languages
+            </p>
           </div>
 
-          {/* Table Rows */}
-          {filteredMovies.map((movie) => {
-            const posterUrl = getImageUrl(movie.poster_path, "w500");
-            return (
-              <div
-                key={movie.id}
-                className="border-b border-border-default last:border-0 hover:bg-surface-raised/50 transition-colors"
+          {/* Search Bar */}
+          <div className="mb-6 rounded-2xl border border-border-default bg-surface-panel p-6">
+            <div className="flex gap-3">
+              <div className="flex flex-1 items-center gap-3 rounded-lg border border-border-default bg-surface-base px-4 py-3">
+                <Search className="h-5 w-5 text-text-muted" />
+                <input
+                  type="text"
+                  placeholder="Search for a movie by title on TMDB..."
+                  value={tmdbSearchQuery}
+                  onChange={(e) => setTmdbSearchQuery(e.target.value)}
+                  onKeyPress={handleTmdbKeyPress}
+                  className="flex-1 bg-transparent text-text-primary placeholder-text-muted focus:outline-none"
+                />
+              </div>
+              <button
+                onClick={() => handleTmdbSearch(1)}
+                disabled={isSearchingTmdb || !tmdbSearchQuery.trim()}
+                className="flex items-center gap-2 rounded-lg bg-accent-primary px-6 py-3 text-sm font-medium text-white hover:bg-accent-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
-                {editingId === movie.id && editingData ? (
-                  <div className="grid grid-cols-12 gap-4 px-6 py-4 items-center">
-                    <div className="col-span-1" />
-                    <input
-                      type="text"
-                      value={editingData.title}
-                      onChange={(e) => setEditingData({ ...editingData, title: e.target.value })}
-                      className="col-span-4 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
-                    />
-                    <input
-                      type="date"
-                      value={editingData.release_date || ""}
-                      onChange={(e) =>
-                        setEditingData({ ...editingData, release_date: e.target.value })
-                      }
-                      className="col-span-2 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
-                    />
-                    <input
-                      type="number"
-                      step="0.1"
-                      max="10"
-                      min="0"
-                      value={editingData.vote_average || ""}
-                      onChange={(e) =>
-                        setEditingData({ ...editingData, vote_average: parseFloat(e.target.value) })
-                      }
-                      className="col-span-1 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
-                    />
-                    <div className="col-span-4 flex items-center gap-2">
-                      <button
-                        onClick={handleUpdateMovie}
-                        className="rounded-lg bg-green-600 px-3 py-2 text-sm font-medium text-white hover:bg-green-700"
-                      >
-                        Save
-                      </button>
-                      <button
-                        onClick={() => {
-                          setEditingId(null);
-                          setEditingData(null);
-                        }}
-                        className="rounded-lg border border-border-default px-3 py-2 text-sm font-medium text-text-secondary hover:bg-surface-hover"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
+                {isSearchingTmdb ? (
+                  <>
+                    <Loader className="h-4 w-4 animate-spin" />
+                    Searching...
+                  </>
                 ) : (
-                  <div className="grid grid-cols-12 gap-4 px-6 py-4 items-center">
-                    <div className="col-span-1">
-                      <div className="relative h-16 w-12 overflow-hidden rounded bg-surface-raised">
+                  <>
+                    <Search className="h-4 w-4" />
+                    Search
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Search Results */}
+          {tmdbSearchResults.length > 0 && (
+            <>
+              {/* Results Info */}
+              <div className="mb-4 flex items-center justify-between">
+                <p className="text-sm text-text-secondary">
+                  Found {tmdbTotalResults.toLocaleString()} results • Page {tmdbPage} of{" "}
+                  {tmdbTotalPages}
+                </p>
+              </div>
+
+              {/* Results Grid */}
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-6">
+                {tmdbSearchResults.map((movie) => {
+                  const posterUrl = getImageUrl(movie.poster_path);
+                  const isImporting = importingIds.has(movie.id);
+
+                  return (
+                    <div
+                      key={movie.id}
+                      className="group relative overflow-hidden rounded-2xl border border-border-default bg-surface-panel transition-all hover:border-accent-primary/50 hover:shadow-lg"
+                    >
+                      {/* Poster Image */}
+                      <div className="relative aspect-[2/3] w-full overflow-hidden bg-surface-raised">
                         {posterUrl ? (
                           <Image
                             src={posterUrl}
                             alt={movie.title}
                             fill
-                            className="object-cover"
+                            className="object-cover transition-transform group-hover:scale-105"
                             unoptimized
                           />
                         ) : (
                           <div className="flex h-full items-center justify-center">
-                            <Film className="h-6 w-6 text-text-muted opacity-50" />
+                            <Film className="h-16 w-16 text-text-muted opacity-50" />
+                          </div>
+                        )}
+                        {/* Rating Badge */}
+                        {movie.vote_average && movie.vote_average > 0 && (
+                          <div className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-black/70 px-2 py-1 backdrop-blur-sm">
+                            <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                            <span className="text-xs font-semibold text-white">
+                              {movie.vote_average.toFixed(1)}
+                            </span>
                           </div>
                         )}
                       </div>
-                    </div>
-                    <div className="col-span-4">
-                      <p className="text-sm font-medium text-text-primary">{movie.title}</p>
-                      {movie.overview && (
-                        <p className="mt-1 line-clamp-1 text-xs text-text-muted">
-                          {movie.overview}
+
+                      {/* Movie Info */}
+                      <div className="p-4">
+                        <h3 className="mb-1 line-clamp-2 text-sm font-semibold text-text-primary">
+                          {movie.title}
+                        </h3>
+                        {movie.original_title !== movie.title && (
+                          <p className="mb-1 text-xs text-text-muted line-clamp-1">
+                            {movie.original_title}
+                          </p>
+                        )}
+                        {movie.release_date && (
+                          <div className="mb-2 flex items-center gap-1 text-xs text-text-muted">
+                            <Calendar className="h-3 w-3" />
+                            <span>{new Date(movie.release_date).getFullYear()}</span>
+                          </div>
+                        )}
+                        {movie.overview && (
+                          <p className="mb-3 line-clamp-2 text-xs text-text-secondary">
+                            {movie.overview}
+                          </p>
+                        )}
+
+                        {/* Import Button */}
+                        <button
+                          onClick={() => handleImport(movie)}
+                          disabled={isImporting}
+                          className="flex w-full items-center justify-center gap-2 rounded-lg bg-accent-primary px-3 py-2 text-sm font-medium text-white hover:bg-accent-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                        >
+                          {isImporting ? (
+                            <>
+                              <Loader className="h-4 w-4 animate-spin" />
+                              Importing...
+                            </>
+                          ) : (
+                            <>
+                              <Download className="h-4 w-4" />
+                              Import to Database
+                            </>
+                          )}
+                        </button>
+
+                        {/* TMDB ID */}
+                        <p className="mt-2 text-center text-xs text-text-muted">
+                          TMDB ID: {movie.id}
                         </p>
-                      )}
-                    </div>
-                    <div className="col-span-2">
-                      <p className="text-sm text-text-secondary">
-                        {movie.release_date
-                          ? new Date(movie.release_date).toLocaleDateString()
-                          : "N/A"}
-                      </p>
-                    </div>
-                    <div className="col-span-1">
-                      <div className="flex items-center gap-1">
-                        <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                        <span className="text-sm text-text-secondary">{movie.rating || "N/A"}</span>
                       </div>
                     </div>
-                    <div className="col-span-4 flex items-center gap-2">
-                      <button
-                        onClick={() => {
-                          setEditingId(movie.id.toString());
-                          setEditingData({
-                            id: movie.id.toString(),
-                            title: movie.title,
-                            overview: movie.overview || "",
-                            release_date: movie.release_date || undefined,
-                            vote_average: (movie.rating as unknown as number) || undefined,
-                          });
-                        }}
-                        className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm font-medium text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all"
-                      >
-                        <Edit2 className="h-4 w-4" />
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDeleteMovie(movie.id.toString())}
-                        className="flex items-center gap-1 rounded-lg border border-red-500/50 bg-red-500/10 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-500/20 transition-all"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                        Delete
-                      </button>
-                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Pagination */}
+              {tmdbTotalPages > 1 && (
+                <div className="flex items-center justify-center gap-2 pb-8">
+                  <button
+                    onClick={() => handleTmdbSearch(tmdbPage - 1)}
+                    disabled={tmdbPage === 1 || isSearchingTmdb}
+                    className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-panel px-3 py-2 text-sm font-medium text-text-secondary hover:bg-surface-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                    Previous
+                  </button>
+
+                  <div className="flex items-center gap-1">
+                    {Array.from({ length: Math.min(5, tmdbTotalPages) }, (_, i) => {
+                      let pageNum;
+                      if (tmdbTotalPages <= 5) {
+                        pageNum = i + 1;
+                      } else if (tmdbPage <= 3) {
+                        pageNum = i + 1;
+                      } else if (tmdbPage >= tmdbTotalPages - 2) {
+                        pageNum = tmdbTotalPages - 4 + i;
+                      } else {
+                        pageNum = tmdbPage - 2 + i;
+                      }
+
+                      return (
+                        <button
+                          key={pageNum}
+                          onClick={() => handleTmdbSearch(pageNum)}
+                          disabled={isSearchingTmdb}
+                          className={`h-9 w-9 rounded-lg text-sm font-medium transition-all ${
+                            pageNum === tmdbPage
+                              ? "bg-accent-primary text-white"
+                              : "border border-border-default bg-surface-panel text-text-secondary hover:bg-surface-hover"
+                          } disabled:opacity-50 disabled:cursor-not-allowed`}
+                        >
+                          {pageNum}
+                        </button>
+                      );
+                    })}
                   </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
 
-      {/* Create Movie Modal */}
-      {isCreating && (
-        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/60 p-4">
-          <div className="w-full max-w-2xl rounded-2xl border border-border-default bg-surface-panel p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <h2 className="mb-4 text-xl font-semibold text-text-primary">Create Movie</h2>
-            <form onSubmit={handleCreateMovie} className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-2">
-                <div>
-                  <label className="mb-1 block text-sm font-medium text-text-secondary">
-                    TMDB ID *
-                  </label>
-                  <input
-                    type="number"
-                    name="id"
-                    required
-                    className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 text-text-primary focus:border-accent-primary focus:outline-none"
-                  />
+                  <button
+                    onClick={() => handleTmdbSearch(tmdbPage + 1)}
+                    disabled={tmdbPage === tmdbTotalPages || isSearchingTmdb}
+                    className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-panel px-3 py-2 text-sm font-medium text-text-secondary hover:bg-surface-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  >
+                    Next
+                    <ChevronRight className="h-4 w-4" />
+                  </button>
                 </div>
-                <div>
-                  <label className="mb-1 block text-sm font-medium text-text-secondary">
-                    Release Date
-                  </label>
-                  <input
-                    type="date"
-                    name="release_date"
-                    className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 text-text-primary focus:border-accent-primary focus:outline-none"
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="mb-1 block text-sm font-medium text-text-secondary">
-                  Title *
-                </label>
-                <input
-                  type="text"
-                  name="title"
-                  required
-                  className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 text-text-primary focus:border-accent-primary focus:outline-none"
-                />
-              </div>
-              <div>
-                <label className="mb-1 block text-sm font-medium text-text-secondary">
-                  Original Title
-                </label>
-                <input
-                  type="text"
-                  name="original_title"
-                  className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 text-text-primary focus:border-accent-primary focus:outline-none"
-                />
-              </div>
-              <div>
-                <label className="mb-1 block text-sm font-medium text-text-secondary">
-                  Overview
-                </label>
-                <textarea
-                  name="overview"
-                  rows={3}
-                  className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 text-text-primary focus:border-accent-primary focus:outline-none"
-                />
-              </div>
-              <div>
-                <label className="mb-1 block text-sm font-medium text-text-secondary">
-                  Poster Path
-                </label>
-                <input
-                  type="text"
-                  name="poster_path"
-                  className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 text-text-primary focus:border-accent-primary focus:outline-none"
-                />
-              </div>
-              <div>
-                <label className="mb-1 block text-sm font-medium text-text-secondary">
-                  Backdrop Path
-                </label>
-                <input
-                  type="text"
-                  name="backdrop_path"
-                  className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 text-text-primary focus:border-accent-primary focus:outline-none"
-                />
-              </div>
-              <div className="flex justify-end gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setIsCreating(false)}
-                  className="rounded-lg border border-border-default px-4 py-2 text-sm font-medium text-text-secondary hover:bg-surface-hover"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="rounded-lg bg-accent-primary px-4 py-2 text-sm font-medium text-white hover:bg-accent-primary/90"
-                >
-                  Create
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+              )}
+            </>
+          )}
 
-      {/* Bulk Import Modal */}
-      {isBulkOpen && (
-        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/60 p-4">
-          <div className="w-full max-w-3xl rounded-2xl border border-border-default bg-surface-panel p-6 shadow-2xl">
-            <h2 className="mb-4 text-xl font-semibold text-text-primary">Bulk Import Movies</h2>
-            <form onSubmit={handleBulkImport} className="space-y-4">
-              <div>
-                <label className="mb-1 block text-sm font-medium text-text-secondary">
-                  JSON Array *
-                </label>
-                <textarea
-                  name="json"
-                  required
-                  rows={12}
-                  placeholder='[{"id": 550, "title": "Fight Club", "release_date": "1999-10-15"}]'
-                  className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 font-mono text-sm text-text-primary focus:border-accent-primary focus:outline-none"
-                />
+          {/* Empty State */}
+          {!isSearchingTmdb && tmdbSearchResults.length === 0 && tmdbSearchQuery && (
+            <div className="flex h-64 items-center justify-center rounded-2xl border border-dashed border-border-default">
+              <div className="text-center">
+                <Film className="mx-auto h-12 w-12 text-text-muted opacity-50 mb-3" />
+                <p className="text-sm text-text-muted">
+                  No movies found. Try a different search query.
+                </p>
               </div>
-              <div className="flex justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={() => setIsBulkOpen(false)}
-                  className="rounded-lg border border-border-default px-4 py-2 text-sm font-medium text-text-secondary hover:bg-surface-hover"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="rounded-lg bg-accent-primary px-4 py-2 text-sm font-medium text-white hover:bg-accent-primary/90"
-                >
-                  Import
-                </button>
+            </div>
+          )}
+
+          {/* Initial State */}
+          {!isSearchingTmdb && tmdbSearchResults.length === 0 && !tmdbSearchQuery && (
+            <div className="flex h-64 items-center justify-center rounded-2xl border border-dashed border-border-default">
+              <div className="text-center">
+                <Database className="mx-auto h-12 w-12 text-text-muted opacity-50 mb-3" />
+                <p className="text-sm text-text-primary font-medium mb-1">Search TMDB</p>
+                <p className="text-sm text-text-muted">
+                  Enter a movie title above to search The Movie Database
+                </p>
               </div>
-            </form>
-          </div>
-        </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

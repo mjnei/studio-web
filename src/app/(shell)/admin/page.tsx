@@ -29,7 +29,7 @@ export default function AdminPage() {
             </div>
             <h2 className="mb-2 text-xl font-semibold text-text-primary">Movies</h2>
             <p className="text-sm text-text-secondary">
-              Create, update, delete, and bulk import movies to the catalog
+              Import from TMDB or manage your existing movie library with full metadata
             </p>
           </div>
         </Link>
@@ -49,9 +49,9 @@ export default function AdminPage() {
           </div>
         </Link>
 
-        {/* TMDB Import Card */}
+        {/* TMDB Import Card - Redirects to Movies Page */}
         <Link
-          href="/admin/tmdb"
+          href="/admin/movies"
           className="group relative overflow-hidden rounded-2xl border border-border-default bg-surface-panel p-6 transition-all hover:border-accent-primary/50 hover:shadow-lg"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-accent-primary/5 to-accent-secondary/5 opacity-0 transition-opacity group-hover:opacity-100" />
@@ -61,8 +61,11 @@ export default function AdminPage() {
             </div>
             <h2 className="mb-2 text-xl font-semibold text-text-primary">TMDB Import</h2>
             <p className="text-sm text-text-secondary">
-              Search and import movies from The Movie Database with full metadata
+              Search and import movies from TMDB (now part of Movies page)
             </p>
+            <span className="mt-2 inline-block text-xs text-accent-primary">
+              → Unified with Movies
+            </span>
           </div>
         </Link>
       </div>

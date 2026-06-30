@@ -1,7 +1,5 @@
 import { request, getAccessToken } from "@/lib/api-client";
 import type {
-  MovieCreateRequest,
-  MovieUpdateRequest,
   MovieResponse,
   VoiceCreateRequest,
   VoiceUpdateRequest,
@@ -12,19 +10,128 @@ import type {
 } from "@/lib/types/api";
 
 // ============================================================================
-// Admin Movie Management
+// Admin Movie Management (Unified TMDB + CRUD)
 // ============================================================================
+
+export interface TMDBMovieSearchResult {
+  id: number;
+  title: string;
+  original_title: string;
+  release_date?: string;
+  overview?: string;
+  poster_path?: string;
+  backdrop_path?: string;
+  vote_average?: number;
+  vote_count?: number;
+  popularity?: number;
+}
+
+export interface TMDBSearchResponse {
+  page: number;
+  total_results: number;
+  total_pages: number;
+  results: TMDBMovieSearchResult[];
+}
+
+export interface TMDBImportRequest {
+  movie_id: number;
+  locales?: string[];
+}
+
+export interface TMDBImportResponse {
+  success: boolean;
+  movie_id: number;
+  title: string;
+  message: string;
+}
+
+export interface AdminMovieResponse {
+  id: number;
+  original_title: string;
+  original_language?: string;
+  release_date?: string;
+  runtime?: number;
+  popularity?: number;
+  vote_average?: number;
+  vote_count?: number;
+  poster_path?: string;
+  backdrop_path?: string;
+  imdb_id?: string;
+  douban_id?: string;
+  title?: string;
+  overview?: string;
+  tagline?: string;
+}
+
+export interface AdminMovieListResponse {
+  movies: AdminMovieResponse[];
+  total: number;
+  page: number;
+  page_size: number;
+}
+
+/**
+ * Search for movies on TMDB by title.
+ */
+export async function searchTMDBMovies(
+  query: string,
+  page: number = 1
+): Promise<TMDBSearchResponse> {
+  return request<TMDBSearchResponse>(
+    `/admin/movies/tmdb/search?query=${encodeURIComponent(query)}&page=${page}`
+  );
+}
+
+/**
+ * Import a complete movie from TMDB into the local database.
+ */
+export async function importTMDBMovie(data: TMDBImportRequest): Promise<TMDBImportResponse> {
+  return request<TMDBImportResponse>("/admin/movies/tmdb/import", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+}
+
+/**
+ * Get detailed information about a movie from TMDB (preview without importing).
+ */
+export async function getTMDBMoviePreview(movieId: number): Promise<any> {
+  return request<any>(`/admin/movies/tmdb/preview/${movieId}`);
+}
+
+/**
+ * List all movies in the database with optional search and pagination.
+ */
+export async function adminListMovies(params?: {
+  query?: string;
+  locale?: string;
+  page?: number;
+  page_size?: number;
+  sort_by?: string;
+  sort_order?: string;
+}): Promise<AdminMovieListResponse> {
+  const queryParams = new URLSearchParams();
+  if (params?.query) queryParams.append("query", params.query);
+  if (params?.locale) queryParams.append("locale", params.locale);
+  if (params?.page) queryParams.append("page", params.page.toString());
+  if (params?.page_size) queryParams.append("page_size", params.page_size.toString());
+  if (params?.sort_by) queryParams.append("sort_by", params.sort_by);
+  if (params?.sort_order) queryParams.append("sort_order", params.sort_order);
+
+  const queryString = queryParams.toString();
+  return request<AdminMovieListResponse>(
+    `/admin/movies${queryString ? `?${queryString}` : ""}`
+  );
+}
 
 export async function adminGetMovies(): Promise<MovieResponse[]> {
   // Fetch all movies by paginating through the results (max page_size is 100)
-  const allMovies: MovieResponse[] = [];
+  const allMovies: AdminMovieResponse[] = [];
   let page = 1;
   let hasMore = true;
 
   while (hasMore) {
-    const response = await request<{ movies: MovieResponse[]; total: number }>(
-      `/movies/search?page=${page}&page_size=100`
-    );
+    const response = await adminListMovies({ page, page_size: 100 });
     allMovies.push(...response.movies);
 
     // Check if there are more pages
@@ -32,38 +139,51 @@ export async function adminGetMovies(): Promise<MovieResponse[]> {
     page++;
   }
 
-  return allMovies;
+  // Convert to MovieResponse format for backward compatibility
+  return allMovies.map((m) => ({
+    id: m.id,
+    title: m.title || m.original_title,
+    original_title: m.original_title,
+    overview: m.overview || null,
+    poster_path: m.poster_path || null,
+    backdrop_path: m.backdrop_path || null,
+    release_date: m.release_date || null,
+    runtime: m.runtime || null,
+    vote_average: m.vote_average || null,
+    rating: m.vote_average?.toString() || null,
+  }));
 }
 
-export async function adminCreateMovie(data: MovieCreateRequest): Promise<MovieResponse> {
-  return request<MovieResponse>("/admin/movies", {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
+/**
+ * Get a single movie by ID.
+ */
+export async function adminGetMovie(
+  movieId: number,
+  locale: string = "en"
+): Promise<AdminMovieResponse> {
+  return request<AdminMovieResponse>(`/admin/movies/${movieId}?locale=${locale}`);
 }
 
+/**
+ * Update limited movie fields (mainly for Douban ID linkage).
+ */
 export async function adminUpdateMovie(
   movieId: number,
-  data: MovieUpdateRequest
-): Promise<MovieResponse> {
-  return request<MovieResponse>(`/admin/movies/${movieId}`, {
-    method: "PUT",
+  data: { douban_id?: string; popularity?: number; vote_average?: number; vote_count?: number },
+  locale: string = "en"
+): Promise<AdminMovieResponse> {
+  return request<AdminMovieResponse>(`/admin/movies/${movieId}?locale=${locale}`, {
+    method: "PATCH",
     body: JSON.stringify(data),
   });
 }
 
+/**
+ * Delete a movie from the database (cascade deletes all related data).
+ */
 export async function adminDeleteMovie(movieId: number): Promise<void> {
   return request<void>(`/admin/movies/${movieId}`, {
     method: "DELETE",
-  });
-}
-
-export async function adminBulkImportMovies(
-  data: BulkImportRequest<MovieCreateRequest>
-): Promise<BulkImportResponse> {
-  return request<BulkImportResponse>("/admin/movies/bulk", {
-    method: "POST",
-    body: JSON.stringify(data),
   });
 }
 
@@ -180,70 +300,4 @@ export async function getAdminVoiceAudioUrl(voiceId: string): Promise<{
     audio_url: string;
     expires_in: number | null;
   }>(`/admin/voices/${voiceId}/audio`);
-}
-
-// ============================================================================
-// Admin TMDB Management
-// ============================================================================
-
-export interface TMDBMovieSearchResult {
-  id: number;
-  title: string;
-  original_title: string;
-  release_date?: string;
-  overview?: string;
-  poster_path?: string;
-  backdrop_path?: string;
-  vote_average?: number;
-  vote_count?: number;
-  popularity?: number;
-}
-
-export interface TMDBSearchResponse {
-  page: number;
-  total_results: number;
-  total_pages: number;
-  results: TMDBMovieSearchResult[];
-}
-
-export interface TMDBImportRequest {
-  movie_id: number;
-  locales?: string[];
-}
-
-export interface TMDBImportResponse {
-  success: boolean;
-  movie_id: number;
-  title: string;
-  message: string;
-}
-
-/**
- * Search for movies on TMDB by title.
- */
-export async function searchTMDBMovies(
-  query: string,
-  page: number = 1
-): Promise<TMDBSearchResponse> {
-  return request<TMDBSearchResponse>(
-    `/admin/tmdb/search?query=${encodeURIComponent(query)}&page=${page}`
-  );
-}
-
-/**
- * Import a complete movie from TMDB into the local database.
- * Fetches and stores all related data including translations, genres, cast, etc.
- */
-export async function importTMDBMovie(data: TMDBImportRequest): Promise<TMDBImportResponse> {
-  return request<TMDBImportResponse>("/admin/tmdb/import", {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
-}
-
-/**
- * Get detailed information about a movie from TMDB (preview without importing).
- */
-export async function getTMDBMovieDetails(movieId: number): Promise<any> {
-  return request<any>(`/admin/tmdb/movie/${movieId}/details`);
 }
