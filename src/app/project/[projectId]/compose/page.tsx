@@ -32,6 +32,25 @@ export default function ComposePage() {
           <p className="mt-1 text-sm text-text-muted">Generate and preview your final video</p>
         </div>
 
+        {/* Project Thumbnail (if available) */}
+        {state?.thumbnailUrl && state?.thumbnailStatus === "completed" && (
+          <Card variant="elevated" padding="md">
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-2">
+                <Video className="h-4 w-4 text-accent-cyan" />
+                <h3 className="text-sm font-medium text-text-primary">Project Thumbnail</h3>
+              </div>
+              <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default">
+                <img
+                  src={state.thumbnailUrl}
+                  alt="Project thumbnail"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+          </Card>
+        )}
+
         {/* Project summary */}
         <Card variant="elevated" padding="md">
           <div className="grid gap-4 sm:grid-cols-3">

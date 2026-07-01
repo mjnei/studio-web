@@ -317,6 +317,42 @@ export default function ProjectDetailsPage() {
           </div>
         </div>
 
+        {/* Project Thumbnail Preview (if available) */}
+        {state?.thumbnailUrl && state?.thumbnailStatus === "completed" && (
+          <Card variant="elevated" padding="md">
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-accent-cyan" />
+                <h3 className="text-sm font-medium text-text-primary">AI-Generated Thumbnail</h3>
+              </div>
+              <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default">
+                <img
+                  src={state.thumbnailUrl}
+                  alt="Project thumbnail"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+          </Card>
+        )}
+
+        {/* Thumbnail Generating Indicator */}
+        {state?.thumbnailStatus === "generating" && (
+          <Card variant="elevated" padding="md" className="border-accent-cyan/30">
+            <div className="flex items-center gap-3">
+              <Loader2 className="h-5 w-5 text-accent-cyan animate-spin flex-shrink-0" />
+              <div className="flex-1">
+                <h3 className="text-sm font-medium text-text-primary">
+                  Generating AI Thumbnail...
+                </h3>
+                <p className="mt-1 text-xs text-text-muted">
+                  Your custom thumbnail is being created
+                </p>
+              </div>
+            </div>
+          </Card>
+        )}
+
         {/* Movie info card */}
         {state?.movieTitle && (
           <Card variant="elevated" padding="md">

@@ -61,11 +61,19 @@ Generate and edit the voiceover script for your video.
 ### Step 3: Project Details
 **Route:** `/project/[projectId]/details`
 
-Name your project and configure basic settings.
+Name your project and configure basic settings. AI-generated thumbnails become available at this step.
 
 **Actions:**
 - Enter project name/title
 - Auto-save on input
+- View AI-generated thumbnail (if completed)
+- See thumbnail generation status
+
+**Thumbnail Generation:**
+- Automatically triggered when entering Step 3 (details)
+- Generated using project name + script summary
+- Displayed once status = "completed"
+- Shows "Generating..." indicator while in progress
 
 **Completion:** Project has a name/title
 
@@ -96,11 +104,12 @@ Choose a voice for your voiceover narration and listen to voice samples.
 ### Step 5: Preview
 **Route:** `/project/[projectId]/preview`
 
-Generate and preview TTS audio for your selected voice with the full script.
+Generate and preview TTS audio for your selected voice with the full script. View project thumbnail.
 
 **Actions:**
 - Automatically generate TTS audio job using selected voice and script (if needed)
 - Display project summary (name, selected voice, script)
+- View AI-generated project thumbnail
 - Real-time progress tracking (queued → processing → completed)
 - Show audio player with generated voice audio when complete
 - Play generated audio preview
@@ -144,9 +153,10 @@ Generate and preview TTS audio for your selected voice with the full script.
 ### Step 6: Compose
 **Route:** `/project/[projectId]/compose`
 
-Generate the final video composition.
+Generate the final video composition. View project thumbnail.
 
 **Actions:**
+- View AI-generated project thumbnail
 - Start video generation job with TTS audio
 - Track async video processing progress
 - Preview composed video
@@ -160,13 +170,18 @@ Generate the final video composition.
 ### Step 7: Finalize
 **Route:** `/project/[projectId]/finalize`
 
-Review, publish, or download your completed project.
+Review, publish, or download your completed project. Thumbnail is used as video poster.
 
 **Actions:**
+- View AI-generated project thumbnail
 - Review project summary and final video
 - Download video file
 - Publish to platform (YouTube, social media, etc.)
 - Return to projects list
+
+**Video Player:**
+- Uses AI-generated thumbnail as video poster image
+- Provides professional preview before playback
 
 **Completion:** Project published or downloaded
 
@@ -185,6 +200,10 @@ CREATE TABLE projects (
     voice_id UUID,
     audio_url VARCHAR(512),
     video_url VARCHAR(512),
+    thumbnail_url VARCHAR(512),
+    thumbnail_status VARCHAR(50) CHECK (
+        thumbnail_status IN ('pending', 'generating', 'completed', 'failed')
+    ),
     last_step VARCHAR(50) CHECK (
         last_step IN ('source', 'script', 'details', 'voice', 'preview', 'compose', 'finalize')
     ),
@@ -200,6 +219,8 @@ CREATE TABLE projects (
 - `movie_id`: TMDB movie ID selected in Step 1
 - `script`: Generated/edited script content from Step 2
 - `title`: Project name from Step 3
+- `thumbnail_url`: AI-generated thumbnail URL (available from Step 3+)
+- `thumbnail_status`: Thumbnail generation status (pending, generating, completed, failed)
 - `voice_id`: Selected voice ID from Step 4
 - `audio_url`: Generated TTS audio URL from Step 5
 - `video_url`: Final video URL from Step 6
@@ -319,16 +340,16 @@ src/app/project/
   [projectId]/
     source/page.tsx          # Step 1
     script/page.tsx          # Step 2
-    details/page.tsx         # Step 3
+    details/page.tsx         # Step 3 - Shows AI thumbnail
     voice/page.tsx           # Step 4
-    preview/page.tsx         # Step 5
-    compose/page.tsx         # Step 6
-    finalize/page.tsx        # Step 7
+    preview/page.tsx         # Step 5 - Shows AI thumbnail
+    compose/page.tsx         # Step 6 - Shows AI thumbnail
+    finalize/page.tsx        # Step 7 - Shows AI thumbnail + uses as video poster
 
 src/lib/
-  project-client.ts          # API client functions
+  project-client.ts          # API client functions (includes thumbnail fields)
   hooks/
-    use-project-state.ts     # Project state management hook
+    use-project-state.ts     # Project state management hook (includes thumbnail fields)
 ```
 
 ### State Management Hook

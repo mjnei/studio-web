@@ -38,6 +38,9 @@ export interface ProjectState {
   movieRating?: number;
   movieDuration?: number;
 
+  thumbnailUrl?: string;
+  thumbnailStatus?: "pending" | "generating" | "completed" | "failed";
+
   scripts: ScriptVersion[];
   activeScriptId?: string;
 
@@ -138,6 +141,8 @@ function mapProject(project: ProjectResponse, scripts: ProjectScriptResponse[] =
     movieGenre: genreNames(movie),
     movieRating: movie?.vote_average ?? undefined,
     movieDuration: movie?.runtime ?? undefined,
+    thumbnailUrl: project.thumbnail_url ?? undefined,
+    thumbnailStatus: project.thumbnail_status ?? undefined,
     scripts: mappedScripts,
     activeScriptId: project.active_script_id ?? undefined,
     activeTtsJobId: project.active_tts_job_id ?? undefined,
