@@ -16,6 +16,8 @@ export interface UserResponse {
   has_password: boolean;
   is_active: boolean;
   role: string;
+  onboarding_completed: boolean;
+  onboarding_completed_at: string | null;
   created_at: string;
   updated_at: string;
 }

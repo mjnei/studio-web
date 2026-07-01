@@ -31,6 +31,7 @@ type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 const AUTH_ROUTES = ["/login", "/signup", "/forgot-password"];
+const ONBOARDING_ROUTE = "/onboarding";
 const PROTECTED_ROUTE_PREFIXES = [
   "/dashboard",
   "/projects",
@@ -76,38 +77,76 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (isLoading) return;
     const isAuthRoute = AUTH_ROUTES.some((r) => pathname.startsWith(r));
+    const isOnboardingRoute = pathname === ONBOARDING_ROUTE;
     const isProtectedRoute = PROTECTED_ROUTE_PREFIXES.some((p) => pathname.startsWith(p));
+
+    // User not authenticated and trying to access protected route → redirect to login
     if (isProtectedRoute && !isAuthenticated) {
       router.replace("/login");
-    } else if (isAuthRoute && isAuthenticated) {
+    }
+    // User authenticated but at auth route → redirect based on onboarding status
+    else if (isAuthRoute && isAuthenticated) {
+      if (!user?.onboarding_completed) {
+        router.replace(ONBOARDING_ROUTE);
+      } else {
+        router.replace("/dashboard");
+      }
+    }
+    // User authenticated, onboarding not complete, trying to access protected route → redirect to onboarding
+    else if (isAuthenticated && !user?.onboarding_completed && isProtectedRoute) {
+      router.replace(ONBOARDING_ROUTE);
+    }
+    // User authenticated, onboarding complete, at onboarding route → redirect to dashboard
+    else if (isAuthenticated && user?.onboarding_completed && isOnboardingRoute) {
       router.replace("/dashboard");
     }
-  }, [isLoading, isAuthenticated, pathname, router]);
+  }, [isLoading, isAuthenticated, user, pathname, router]);
 
   const loginWithGoogle = useCallback(async () => {
     const credential = await signInWithPopup(auth, googleProvider);
     const idToken = await credential.user.getIdToken();
     await loginWithFirebase(idToken);
-    await refreshUser();
-    router.push("/dashboard");
-  }, [refreshUser, router]);
+    const me = await getMe();
+    setUser(me);
+
+    // Redirect based on onboarding status
+    if (!me.onboarding_completed) {
+      router.push(ONBOARDING_ROUTE);
+    } else {
+      router.push("/dashboard");
+    }
+  }, [router]);
 
   const loginWithPassword = useCallback(
     async (email: string, password: string) => {
       await apiLoginWithPassword(email, password);
-      await refreshUser();
-      router.push("/dashboard");
+      const me = await getMe();
+      setUser(me);
+
+      // Redirect based on onboarding status
+      if (!me.onboarding_completed) {
+        router.push(ONBOARDING_ROUTE);
+      } else {
+        router.push("/dashboard");
+      }
     },
-    [refreshUser, router]
+    [router]
   );
 
   const signupWithPassword = useCallback(
     async (email: string, password: string, name: string) => {
       await apiSignupWithPassword(email, password, name);
-      await refreshUser();
-      router.push("/dashboard");
+      const me = await getMe();
+      setUser(me);
+
+      // New users should go to onboarding
+      if (!me.onboarding_completed) {
+        router.push(ONBOARDING_ROUTE);
+      } else {
+        router.push("/dashboard");
+      }
     },
-    [refreshUser, router]
+    [router]
   );
 
   const logout = useCallback(async () => {

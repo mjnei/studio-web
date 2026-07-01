@@ -218,6 +218,8 @@ export interface UserResponse {
   has_password: boolean;
   is_active: boolean;
   role: string;
+  onboarding_completed: boolean;
+  onboarding_completed_at: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -259,4 +261,10 @@ export async function changePassword(
 export async function deleteUser(): Promise<void> {
   await request<void>("/users/me", { method: "DELETE" });
   setAccessToken(null);
+}
+
+export async function completeOnboarding(): Promise<UserResponse> {
+  return request<UserResponse>("/users/me/onboarding", {
+    method: "PATCH",
+  });
 }
