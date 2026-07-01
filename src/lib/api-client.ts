@@ -25,7 +25,7 @@ function scheduleTokenRefresh() {
 
   const now = Date.now();
   const timeUntilExpiry = tokenExpiresAt - now;
-  
+
   // Refresh 2 minutes before expiration (or immediately if less than 2 minutes remain)
   const refreshBuffer = 2 * 60 * 1000; // 2 minutes in milliseconds
   const refreshIn = Math.max(0, timeUntilExpiry - refreshBuffer);
@@ -42,7 +42,7 @@ function scheduleTokenRefresh() {
 
 export function setAccessToken(token: string | null) {
   accessToken = token;
-  
+
   if (token) {
     tokenExpiresAt = parseJwtExpiration(token);
     scheduleTokenRefresh();
@@ -72,7 +72,7 @@ export async function request<T>(path: string, options: RequestInit = {}): Promi
     headers,
     credentials: "include",
   });
-  
+
   // Handle 401 Unauthorized - attempt token refresh
   if (res.status === 401 && !path.includes("/auth/")) {
     const refreshed = await refreshSession();
@@ -85,13 +85,13 @@ export async function request<T>(path: string, options: RequestInit = {}): Promi
       if (accessToken) {
         retryHeaders["Authorization"] = `Bearer ${accessToken}`;
       }
-      
+
       const retry = await fetch(`${API_BASE}${path}`, {
         ...options,
         headers: retryHeaders,
         credentials: "include",
       });
-      
+
       if (!retry.ok) {
         const errorText = await retry.text();
         if (retry.status === 401) {
@@ -101,16 +101,16 @@ export async function request<T>(path: string, options: RequestInit = {}): Promi
         }
         throw new ApiError(retry.status, errorText);
       }
-      
+
       if (retry.status === 204) return undefined as T;
       return retry.json();
     }
-    
+
     // Refresh failed - clear session
     setAccessToken(null);
     throw new ApiError(401, "Session expired. Please log in again.");
   }
-  
+
   if (!res.ok) {
     const errorText = await res.text();
     // Try to parse JSON error response
@@ -121,7 +121,7 @@ export async function request<T>(path: string, options: RequestInit = {}): Promi
       throw new ApiError(res.status, errorText);
     }
   }
-  
+
   if (res.status === 204) return undefined as T;
   return res.json();
 }
