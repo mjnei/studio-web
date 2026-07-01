@@ -61,17 +61,26 @@ Generate and edit the voiceover script for your video.
 ### Step 3: Project Details
 **Route:** `/project/[projectId]/details`
 
-Name your project and configure basic settings. AI-generated thumbnails become available at this step.
+Name your project and configure basic settings. AI-generated thumbnails and script tagline become available at this step.
 
 **Actions:**
 - Enter project name/title
 - Auto-save on input
 - View AI-generated thumbnail (if completed)
+- View AI-generated script tagline/summary (60 chars max)
 - See thumbnail generation status
+
+**Script Tagline:**
+- Automatically generated using Agnes AI when entering Step 3
+- Short, punchy phrase (max 60 characters) optimized for social media
+- Captures the core hook/theme of the script
+- Examples: "Enter the dream", "Reality is malleable", "Time runs out"
+- Used as input for thumbnail generation
+- Designed to be overlay text for video thumbnails
 
 **Thumbnail Generation:**
 - Automatically triggered when entering Step 3 (details)
-- Generated using project name + script summary
+- Generated using project name + script tagline
 - Displayed once status = "completed"
 - Shows "Generating..." indicator while in progress
 
@@ -84,14 +93,19 @@ Name your project and configure basic settings. AI-generated thumbnails become a
 ### Step 4: Voice Selection
 **Route:** `/project/[projectId]/voice`
 
-Choose a voice for your voiceover narration and listen to voice samples.
+Choose a voice for your voiceover narration and listen to voice samples. View your script tagline to help match voice tone.
 
 **Actions:**
+- View script tagline (helps choose voice that matches tone)
 - Browse stock voices from catalog
 - Browse user-uploaded voice recordings
 - Play voice samples (pre-recorded audio only)
 - Record your own voice
 - Select a voice for the project
+
+**Display:**
+- Script tagline prominently shown to guide voice selection
+- Full script available via expandable card
 
 **Important:** This step only plays existing voice samples. No TTS generation occurs here - only voice samples.
 
@@ -104,16 +118,22 @@ Choose a voice for your voiceover narration and listen to voice samples.
 ### Step 5: Preview
 **Route:** `/project/[projectId]/preview`
 
-Generate and preview TTS audio for your selected voice with the full script. View project thumbnail.
+Generate and preview TTS audio for your selected voice with the full script. View project tagline and thumbnail.
 
 **Actions:**
 - Automatically generate TTS audio job using selected voice and script (if needed)
 - Display project summary (name, selected voice, script)
-- View AI-generated project thumbnail
+- View script tagline and AI-generated project thumbnail
 - Real-time progress tracking (queued → processing → completed)
 - Show audio player with generated voice audio when complete
 - Play generated audio preview
 - Review configuration before video composition
+
+**Display:**
+- Script tagline prominently displayed
+- Project thumbnail shown below tagline
+- Full script available via expandable card
+- TTS generation progress
 
 **TTS Generation:**
 - Job auto-created when page loads (if needed)
@@ -153,13 +173,18 @@ Generate and preview TTS audio for your selected voice with the full script. Vie
 ### Step 6: Compose
 **Route:** `/project/[projectId]/compose`
 
-Generate the final video composition. View project thumbnail.
+Generate the final video composition. View script tagline that will guide the composition.
 
 **Actions:**
-- View AI-generated project thumbnail
+- View script tagline (the core message for video composition)
 - Start video generation job with TTS audio
 - Track async video processing progress
 - Preview composed video
+
+**Display:**
+- Script tagline prominently displayed
+- Full script available via expandable card
+- Video generation placeholder/progress
 
 **Completion:** Video file generated and available
 
@@ -170,14 +195,20 @@ Generate the final video composition. View project thumbnail.
 ### Step 7: Finalize
 **Route:** `/project/[projectId]/finalize`
 
-Review, publish, or download your completed project. Thumbnail is used as video poster.
+Review, publish, or download your completed project. Both thumbnail and tagline are displayed as final project assets.
 
 **Actions:**
-- View AI-generated project thumbnail
 - Review project summary and final video
+- View script tagline and AI-generated thumbnail together
 - Download video file
 - Publish to platform (YouTube, social media, etc.)
 - Return to projects list
+
+**Display:**
+- Script tagline prominently shown as project's core message
+- AI-generated thumbnail displayed with tagline
+- Full script available via expandable card
+- Video player with thumbnail as poster
 
 **Video Player:**
 - Uses AI-generated thumbnail as video poster image

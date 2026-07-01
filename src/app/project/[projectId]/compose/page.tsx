@@ -8,7 +8,7 @@ import { FloatingWorkflowNavigation } from "@/components/project/floating-workfl
 import { FullScriptModal } from "@/components/project/full-script-modal";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { CenteredEmptyState } from "@/components/ui/empty-state";
-import { Video, FileText, ChevronDown } from "lucide-react";
+import { Video, FileText, ChevronDown, Sparkles } from "lucide-react";
 
 export default function ComposePage() {
   const params = useParams();
@@ -32,25 +32,23 @@ export default function ComposePage() {
           <p className="mt-1 text-sm text-text-muted">Generate and preview your final video</p>
         </div>
 
-        {/* Project Thumbnail (if available) */}
-        {state?.thumbnailUrl && state?.thumbnailStatus === "completed" && (
-          <Card variant="elevated" padding="md">
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-2">
-                <Video className="h-4 w-4 text-accent-cyan" />
-                <h3 className="text-sm font-medium text-text-primary">Project Thumbnail</h3>
+        {/* Script Tagline - Highlight what's being composed */}
+        {state?.scriptSummary && (
+          <Card variant="elevated" padding="md" className="bg-gradient-to-br from-accent-cyan/5 to-transparent border-accent-cyan/20">
+            <div className="flex items-start gap-4">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted flex-shrink-0">
+                <Sparkles className="h-5 w-5 text-accent-cyan" />
               </div>
-              <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default">
-                <img
-                  src={state.thumbnailUrl}
-                  alt="Project thumbnail"
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    // Hide image on error
-                    const img = e.target as HTMLImageElement;
-                    img.style.display = "none";
-                  }}
-                />
+              <div className="flex-1 min-w-0">
+                <h3 className="text-sm font-medium text-text-secondary uppercase tracking-wide mb-2">
+                  Script Tagline
+                </h3>
+                <p className="text-xl font-semibold text-accent-cyan mb-2">
+                  "{state.scriptSummary}"
+                </p>
+                <p className="text-xs text-text-muted">
+                  Your video will be composed around this core message
+                </p>
               </div>
             </div>
           </Card>

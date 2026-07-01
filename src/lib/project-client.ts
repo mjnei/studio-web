@@ -88,6 +88,8 @@ export interface ProjectResponse {
   active_video_job_id?: string | null;
   status: ProjectStatus;
   last_step: WorkflowStep;
+  suggested_names?: Array<{ name: string; reason?: string }> | null;
+  script_summary?: string | null;
   thumbnail_url?: string | null;
   thumbnail_status?: "pending" | "generating" | "completed" | "failed" | null;
   created_at: string;

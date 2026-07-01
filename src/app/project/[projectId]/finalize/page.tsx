@@ -87,29 +87,55 @@ export default function FinalizePage() {
           </div>
         </Card>
 
-        {/* Project Thumbnail */}
-        {state?.thumbnailUrl && state?.thumbnailStatus === "completed" && (
-          <Card variant="elevated" padding="md">
-            <div className="flex flex-col gap-3">
+        {/* Project Thumbnail & Tagline - Final showcase */}
+        {(state?.thumbnailUrl && state?.thumbnailStatus === "completed") || state?.scriptSummary ? (
+          <Card variant="elevated" padding="lg">
+            <div className="flex flex-col gap-4">
               <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-accent-cyan" />
-                <h3 className="text-sm font-medium text-text-primary">Project Thumbnail</h3>
+                <Sparkles className="h-5 w-5 text-accent-cyan" />
+                <h3 className="text-lg font-medium text-text-primary">Your Project Assets</h3>
               </div>
-              <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default">
-                <img
-                  src={state.thumbnailUrl}
-                  alt="Project thumbnail"
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    // Hide image on error
-                    const img = e.target as HTMLImageElement;
-                    img.style.display = "none";
-                  }}
-                />
-              </div>
+              
+              {/* Script Tagline */}
+              {state.scriptSummary && (
+                <div className="rounded-lg bg-accent-cyan/10 border border-accent-cyan/30 px-5 py-4">
+                  <p className="text-xs font-medium text-text-secondary uppercase tracking-wide mb-2">
+                    Script Tagline
+                  </p>
+                  <p className="text-2xl font-bold text-accent-cyan">
+                    "{state.scriptSummary}"
+                  </p>
+                  <p className="text-xs text-text-muted mt-3">
+                    This catchy hook represents your video's core message
+                  </p>
+                </div>
+              )}
+              
+              {/* Thumbnail */}
+              {state.thumbnailUrl && state.thumbnailStatus === "completed" && (
+                <div className="flex flex-col gap-2">
+                  <p className="text-sm font-medium text-text-secondary">
+                    AI-Generated Thumbnail
+                  </p>
+                  <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default">
+                    <img
+                      src={state.thumbnailUrl}
+                      alt="Project thumbnail"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const img = e.target as HTMLImageElement;
+                        img.style.display = "none";
+                      }}
+                    />
+                  </div>
+                  <p className="text-xs text-text-muted">
+                    Generated based on your movie and tagline
+                  </p>
+                </div>
+              )}
             </div>
           </Card>
-        )}
+        ) : null}
 
         {/* Script preview card */}
         {activeScript && (

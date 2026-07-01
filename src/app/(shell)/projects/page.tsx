@@ -128,7 +128,8 @@ export default function ProjectsPage() {
                         onError={(e) => {
                           // Fallback to TMDB image if thumbnail fails to load
                           const img = e.target as HTMLImageElement;
-                          const backdropOrPoster = project.movie?.backdrop_path ?? project.movie?.poster_path;
+                          const backdropOrPoster =
+                            project.movie?.backdrop_path ?? project.movie?.poster_path;
                           if (backdropOrPoster) {
                             const fallbackUrl = tmdbImageUrl(backdropOrPoster, "w780");
                             if (fallbackUrl) {

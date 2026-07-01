@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState, useRef } from "react";
-import { CheckCircle, Mic2, FileText, ChevronDown, Loader2, AlertCircle } from "lucide-react";
+import { Sparkles, CheckCircle, Mic2, FileText, ChevronDown, Loader2, AlertCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useProjectState } from "@/lib/hooks/use-project-state";
@@ -330,30 +330,49 @@ export default function PreviewPage() {
           </p>
         </div>
 
-        {/* Project Thumbnail (if available) */}
-        {state?.thumbnailUrl && state?.thumbnailStatus === "completed" && (
+        {/* Script Tagline & Thumbnail */}
+        {(state?.scriptSummary || (state?.thumbnailUrl && state?.thumbnailStatus === "completed")) && (
           <Card variant="elevated" padding="md">
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-accent-cyan" />
-                <h3 className="text-sm font-medium text-text-primary">Project Thumbnail</h3>
-              </div>
-              <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default">
-                <img
-                  src={state.thumbnailUrl}
-                  alt="Project thumbnail"
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    // Hide image on error
-                    const img = e.target as HTMLImageElement;
-                    img.style.display = "none";
-                  }}
-                />
-              </div>
+            <div className="flex flex-col gap-4">
+              {/* Script Tagline */}
+              {state.scriptSummary && (
+                <div className="rounded-lg bg-accent-cyan/10 border border-accent-cyan/30 px-4 py-3">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Sparkles className="h-4 w-4 text-accent-cyan" />
+                    <p className="text-xs font-medium text-text-secondary uppercase tracking-wide">
+                      Script Tagline
+                    </p>
+                  </div>
+                  <p className="text-lg font-semibold text-accent-cyan">
+                    "{state.scriptSummary}"
+                  </p>
+                </div>
+              )}
+              
+              {/* Thumbnail */}
+              {state.thumbnailUrl && state.thumbnailStatus === "completed" && (
+                <div className="flex flex-col gap-2">
+                  <p className="text-xs font-medium text-text-secondary uppercase tracking-wide">
+                    Project Thumbnail
+                  </p>
+                  <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default">
+                    <img
+                      src={state.thumbnailUrl}
+                      alt="Project thumbnail"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const img = e.target as HTMLImageElement;
+                        img.style.display = "none";
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           </Card>
         )}
 
+        {/* Thumbnail Generating Indicator */}
         {state?.thumbnailStatus === "generating" && (
           <Card variant="elevated" padding="md" className="border-accent-cyan/30">
             <div className="flex items-center gap-3">

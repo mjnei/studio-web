@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect, useMemo, useRef } from "react";
-import { Volume2, Mic, Globe, Plus, FileText, ChevronDown } from "lucide-react";
+import { Sparkles, Mic, Globe, Plus, FileText, ChevronDown } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useProjectState } from "@/lib/hooks/use-project-state";
@@ -278,6 +278,29 @@ export default function VoicePage() {
           )}
         </div>
 
+        {/* Script Summary Card - Highlight the tagline */}
+        {state?.scriptSummary && (
+          <Card variant="elevated" padding="md" className="bg-gradient-to-br from-accent-cyan/5 to-transparent border-accent-cyan/20">
+            <div className="flex items-start gap-4">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted flex-shrink-0">
+                <Sparkles className="h-5 w-5 text-accent-cyan" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-sm font-medium text-text-secondary uppercase tracking-wide mb-2">
+                  Script Tagline
+                </h3>
+                <p className="text-xl font-semibold text-accent-cyan mb-2">
+                  "{state.scriptSummary}"
+                </p>
+                <p className="text-xs text-text-muted">
+                  This hook will be used in your video's thumbnail. Now choose a voice that matches this tone.
+                </p>
+              </div>
+            </div>
+          </Card>
+        )}
+
+        {/* Expandable full script */}
         {activeScript && (
           <Card
             variant="elevated"
