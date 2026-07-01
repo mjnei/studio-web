@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Folder, Film, Mic, Plus, ArrowRight, Sparkles } from "lucide-react";
+import { Folder, Film, Mic, Plus, ArrowRight, Sparkles, X } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,13 +13,37 @@ import {
   type MovieResponse,
 } from "@/lib/project-client";
 import { useVoiceRecordings } from "@/lib/hooks/use-voice-recordings";
+import { useAuth } from "@/lib/auth-context";
 
 export default function DashboardPage() {
+  const { user } = useAuth();
   const [projects, setProjects] = useState<ProjectResponse[]>([]);
   const [popularMovies, setPopularMovies] = useState<MovieResponse[]>([]);
   const [loadingProjects, setLoadingProjects] = useState(true);
   const [loadingMovies, setLoadingMovies] = useState(true);
+  const [showWelcomeBanner, setShowWelcomeBanner] = useState(false);
   const { recordings } = useVoiceRecordings();
+
+  // Check if user just completed onboarding (within last 5 minutes)
+  useEffect(() => {
+    const dismissedKey = "welcome-banner-dismissed";
+    const dismissed = localStorage.getItem(dismissedKey);
+
+    if (user?.onboarding_completed_at && !dismissed) {
+      const completedAt = new Date(user.onboarding_completed_at).getTime();
+      const now = Date.now();
+      const fiveMinutes = 5 * 60 * 1000;
+
+      if (now - completedAt < fiveMinutes) {
+        setShowWelcomeBanner(true);
+      }
+    }
+  }, [user]);
+
+  const dismissWelcomeBanner = () => {
+    localStorage.setItem("welcome-banner-dismissed", "true");
+    setShowWelcomeBanner(false);
+  };
 
   useEffect(() => {
     // Load projects
@@ -77,6 +101,42 @@ export default function DashboardPage() {
 
   return (
     <div className="max-w-7xl mx-auto">
+      {/* Welcome Banner for New Users */}
+      {showWelcomeBanner && (
+        <Card
+          variant="elevated"
+          padding="md"
+          className="mb-6 fade-in bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-blue-500/20"
+        >
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-2">
+                <Sparkles className="w-5 h-5 text-blue-500" />
+                <h3 className="text-lg font-semibold text-text-primary">
+                  Welcome to Huavoi Studio!
+                </h3>
+              </div>
+              <p className="text-text-secondary mb-4">
+                Ready to create your first project? Click &quot;New Project&quot; to get started and bring your ideas to life.
+              </p>
+              <Link href="/project/new">
+                <Button variant="primary" size="sm">
+                  <Plus className="w-4 h-4" />
+                  Create Your First Project
+                </Button>
+              </Link>
+            </div>
+            <button
+              onClick={dismissWelcomeBanner}
+              className="text-text-muted hover:text-text-primary transition-colors p-1"
+              aria-label="Dismiss welcome banner"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        </Card>
+      )}
+
       {/* Header */}
       <div className="mb-8 fade-in">
         <h1 className="text-3xl font-bold text-text-primary mb-2">Dashboard</h1>

@@ -268,3 +268,10 @@ export async function completeOnboarding(): Promise<UserResponse> {
     method: "PATCH",
   });
 }
+
+export async function setUserPassword(password: string): Promise<UserResponse> {
+  return request<UserResponse>("/users/me/password", {
+    method: "PATCH",
+    body: JSON.stringify({ password }),
+  });
+}
