@@ -330,6 +330,11 @@ export default function ProjectDetailsPage() {
                   src={state.thumbnailUrl}
                   alt="Project thumbnail"
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    // Hide image on error
+                    const img = e.target as HTMLImageElement;
+                    img.style.display = "none";
+                  }}
                 />
               </div>
             </div>

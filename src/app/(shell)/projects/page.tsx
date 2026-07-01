@@ -125,15 +125,38 @@ export default function ProjectsPage() {
                         src={project.thumbnail_url}
                         alt={project.project_name || project.movie?.title || "Project thumbnail"}
                         className="h-full w-full object-cover"
+                        onError={(e) => {
+                          // Fallback to TMDB image if thumbnail fails to load
+                          const img = e.target as HTMLImageElement;
+                          const backdropOrPoster = project.movie?.backdrop_path ?? project.movie?.poster_path;
+                          if (backdropOrPoster) {
+                            const fallbackUrl = tmdbImageUrl(backdropOrPoster, "w780");
+                            if (fallbackUrl) {
+                              img.src = fallbackUrl;
+                            } else {
+                              img.style.display = "none";
+                            }
+                          } else {
+                            // Hide image on error, will show placeholder
+                            img.style.display = "none";
+                          }
+                        }}
                       />
                     ) : project.movie?.backdrop_path || project.movie?.poster_path ? (
                       <img
-                        src={tmdbImageUrl(
-                          project.movie.backdrop_path ?? project.movie.poster_path,
-                          "w780"
-                        )}
+                        src={
+                          tmdbImageUrl(
+                            project.movie.backdrop_path ?? project.movie.poster_path,
+                            "w780"
+                          ) || ""
+                        }
                         alt={project.movie?.title ?? "Project movie"}
                         className="h-full w-full object-cover"
+                        onError={(e) => {
+                          // Hide image on error, will show placeholder
+                          const img = e.target as HTMLImageElement;
+                          img.style.display = "none";
+                        }}
                       />
                     ) : (
                       <div className="flex h-full items-center justify-center">
