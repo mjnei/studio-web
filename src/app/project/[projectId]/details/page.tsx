@@ -325,7 +325,7 @@ export default function ProjectDetailsPage() {
                 <Sparkles className="h-4 w-4 text-accent-cyan" />
                 <h3 className="text-sm font-medium text-text-primary">AI-Generated Assets</h3>
               </div>
-              
+
               {/* Thumbnail */}
               <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default">
                 <img
@@ -339,16 +339,14 @@ export default function ProjectDetailsPage() {
                   }}
                 />
               </div>
-              
+
               {/* Script Tagline */}
               {state.scriptSummary && (
                 <div className="rounded-lg bg-accent-cyan/10 border border-accent-cyan/30 px-4 py-3">
                   <p className="text-sm font-medium text-text-secondary uppercase tracking-wide mb-1">
                     Script Tagline
                   </p>
-                  <p className="text-lg font-semibold text-accent-cyan">
-                    "{state.scriptSummary}"
-                  </p>
+                  <p className="text-lg font-semibold text-accent-cyan">"{state.scriptSummary}"</p>
                   <p className="text-xs text-text-muted mt-2">
                     This catchy tagline captures your script's hook and can be used in thumbnails
                   </p>

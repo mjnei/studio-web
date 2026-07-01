@@ -280,7 +280,11 @@ export default function VoicePage() {
 
         {/* Script Summary Card - Highlight the tagline */}
         {state?.scriptSummary && (
-          <Card variant="elevated" padding="md" className="bg-gradient-to-br from-accent-cyan/5 to-transparent border-accent-cyan/20">
+          <Card
+            variant="elevated"
+            padding="md"
+            className="bg-gradient-to-br from-accent-cyan/5 to-transparent border-accent-cyan/20"
+          >
             <div className="flex items-start gap-4">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted flex-shrink-0">
                 <Sparkles className="h-5 w-5 text-accent-cyan" />
@@ -293,7 +297,8 @@ export default function VoicePage() {
                   "{state.scriptSummary}"
                 </p>
                 <p className="text-xs text-text-muted">
-                  This hook will be used in your video's thumbnail. Now choose a voice that matches this tone.
+                  This hook will be used in your video's thumbnail. Now choose a voice that matches
+                  this tone.
                 </p>
               </div>
             </div>

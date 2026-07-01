@@ -34,7 +34,11 @@ export default function ComposePage() {
 
         {/* Script Tagline - Highlight what's being composed */}
         {state?.scriptSummary && (
-          <Card variant="elevated" padding="md" className="bg-gradient-to-br from-accent-cyan/5 to-transparent border-accent-cyan/20">
+          <Card
+            variant="elevated"
+            padding="md"
+            className="bg-gradient-to-br from-accent-cyan/5 to-transparent border-accent-cyan/20"
+          >
             <div className="flex items-start gap-4">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted flex-shrink-0">
                 <Sparkles className="h-5 w-5 text-accent-cyan" />

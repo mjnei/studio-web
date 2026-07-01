@@ -2,7 +2,15 @@
 
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState, useRef } from "react";
-import { Sparkles, CheckCircle, Mic2, FileText, ChevronDown, Loader2, AlertCircle } from "lucide-react";
+import {
+  Sparkles,
+  CheckCircle,
+  Mic2,
+  FileText,
+  ChevronDown,
+  Loader2,
+  AlertCircle,
+} from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useProjectState } from "@/lib/hooks/use-project-state";
@@ -331,7 +339,8 @@ export default function PreviewPage() {
         </div>
 
         {/* Script Tagline & Thumbnail */}
-        {(state?.scriptSummary || (state?.thumbnailUrl && state?.thumbnailStatus === "completed")) && (
+        {(state?.scriptSummary ||
+          (state?.thumbnailUrl && state?.thumbnailStatus === "completed")) && (
           <Card variant="elevated" padding="md">
             <div className="flex flex-col gap-4">
               {/* Script Tagline */}
@@ -343,12 +352,10 @@ export default function PreviewPage() {
                       Script Tagline
                     </p>
                   </div>
-                  <p className="text-lg font-semibold text-accent-cyan">
-                    "{state.scriptSummary}"
-                  </p>
+                  <p className="text-lg font-semibold text-accent-cyan">"{state.scriptSummary}"</p>
                 </div>
               )}
-              
+
               {/* Thumbnail */}
               {state.thumbnailUrl && state.thumbnailStatus === "completed" && (
                 <div className="flex flex-col gap-2">

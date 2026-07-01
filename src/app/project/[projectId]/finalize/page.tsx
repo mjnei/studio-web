@@ -95,28 +95,24 @@ export default function FinalizePage() {
                 <Sparkles className="h-5 w-5 text-accent-cyan" />
                 <h3 className="text-lg font-medium text-text-primary">Your Project Assets</h3>
               </div>
-              
+
               {/* Script Tagline */}
               {state.scriptSummary && (
                 <div className="rounded-lg bg-accent-cyan/10 border border-accent-cyan/30 px-5 py-4">
                   <p className="text-xs font-medium text-text-secondary uppercase tracking-wide mb-2">
                     Script Tagline
                   </p>
-                  <p className="text-2xl font-bold text-accent-cyan">
-                    "{state.scriptSummary}"
-                  </p>
+                  <p className="text-2xl font-bold text-accent-cyan">"{state.scriptSummary}"</p>
                   <p className="text-xs text-text-muted mt-3">
                     This catchy hook represents your video's core message
                   </p>
                 </div>
               )}
-              
+
               {/* Thumbnail */}
               {state.thumbnailUrl && state.thumbnailStatus === "completed" && (
                 <div className="flex flex-col gap-2">
-                  <p className="text-sm font-medium text-text-secondary">
-                    AI-Generated Thumbnail
-                  </p>
+                  <p className="text-sm font-medium text-text-secondary">AI-Generated Thumbnail</p>
                   <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default">
                     <img
                       src={state.thumbnailUrl}
