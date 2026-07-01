@@ -1,9 +1,58 @@
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020/api/v1";
 
 let accessToken: string | null = null;
+let tokenExpiresAt: number | null = null;
+let refreshTimer: NodeJS.Timeout | null = null;
+
+// Parse JWT to extract expiration time
+function parseJwtExpiration(token: string): number | null {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload.exp ? payload.exp * 1000 : null; // Convert to milliseconds
+  } catch {
+    return null;
+  }
+}
+
+// Schedule proactive token refresh before expiration
+function scheduleTokenRefresh() {
+  if (refreshTimer) {
+    clearTimeout(refreshTimer);
+    refreshTimer = null;
+  }
+
+  if (!tokenExpiresAt) return;
+
+  const now = Date.now();
+  const timeUntilExpiry = tokenExpiresAt - now;
+  
+  // Refresh 2 minutes before expiration (or immediately if less than 2 minutes remain)
+  const refreshBuffer = 2 * 60 * 1000; // 2 minutes in milliseconds
+  const refreshIn = Math.max(0, timeUntilExpiry - refreshBuffer);
+
+  if (refreshIn > 0) {
+    refreshTimer = setTimeout(async () => {
+      const refreshed = await refreshSession();
+      if (!refreshed) {
+        console.warn("Proactive token refresh failed");
+      }
+    }, refreshIn);
+  }
+}
 
 export function setAccessToken(token: string | null) {
   accessToken = token;
+  
+  if (token) {
+    tokenExpiresAt = parseJwtExpiration(token);
+    scheduleTokenRefresh();
+  } else {
+    tokenExpiresAt = null;
+    if (refreshTimer) {
+      clearTimeout(refreshTimer);
+      refreshTimer = null;
+    }
+  }
 }
 
 export function getAccessToken(): string | null {
@@ -23,24 +72,45 @@ export async function request<T>(path: string, options: RequestInit = {}): Promi
     headers,
     credentials: "include",
   });
-  if (res.status === 401 && !path.includes("/auth/") && !path.includes("/login")) {
+  
+  // Handle 401 Unauthorized - attempt token refresh
+  if (res.status === 401 && !path.includes("/auth/")) {
     const refreshed = await refreshSession();
     if (refreshed) {
-      headers["Authorization"] = `Bearer ${accessToken}`;
+      // Update headers with new token
+      const retryHeaders: Record<string, string> = {
+        "Content-Type": "application/json",
+        ...(options.headers as Record<string, string>),
+      };
+      if (accessToken) {
+        retryHeaders["Authorization"] = `Bearer ${accessToken}`;
+      }
+      
       const retry = await fetch(`${API_BASE}${path}`, {
         ...options,
-        headers,
+        headers: retryHeaders,
         credentials: "include",
       });
+      
       if (!retry.ok) {
         const errorText = await retry.text();
+        if (retry.status === 401) {
+          // Even after refresh, still unauthorized - clear session
+          setAccessToken(null);
+          throw new ApiError(401, "Session expired. Please log in again.");
+        }
         throw new ApiError(retry.status, errorText);
       }
+      
+      if (retry.status === 204) return undefined as T;
       return retry.json();
     }
+    
+    // Refresh failed - clear session
     setAccessToken(null);
-    throw new ApiError(401, "Session expired");
+    throw new ApiError(401, "Session expired. Please log in again.");
   }
+  
   if (!res.ok) {
     const errorText = await res.text();
     // Try to parse JSON error response
@@ -51,6 +121,7 @@ export async function request<T>(path: string, options: RequestInit = {}): Promi
       throw new ApiError(res.status, errorText);
     }
   }
+  
   if (res.status === 204) return undefined as T;
   return res.json();
 }
