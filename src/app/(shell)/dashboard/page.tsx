@@ -183,9 +183,7 @@ export default function DashboardPage() {
                       {project.thumbnail_url && project.thumbnail_status === "completed" ? (
                         <img
                           src={project.thumbnail_url}
-                          alt={
-                            project.project_name || project.movie?.title || "Project thumbnail"
-                          }
+                          alt={project.project_name || project.movie?.title || "Project thumbnail"}
                           className="h-full w-full object-cover"
                           onError={(e) => {
                             const img = e.target as HTMLImageElement;
@@ -290,26 +288,29 @@ export default function DashboardPage() {
       )}
 
       {/* Empty State - Only show if no projects AND no movies */}
-      {!loadingProjects && !loadingMovies && projects.length === 0 && popularMovies.length === 0 && (
-        <Card variant="elevated" padding="lg" className="fade-in">
-          <CardContent>
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-surface-hover border border-border-default">
-                <Folder className="w-8 h-8 text-text-muted" />
+      {!loadingProjects &&
+        !loadingMovies &&
+        projects.length === 0 &&
+        popularMovies.length === 0 && (
+          <Card variant="elevated" padding="lg" className="fade-in">
+            <CardContent>
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-surface-hover border border-border-default">
+                  <Folder className="w-8 h-8 text-text-muted" />
+                </div>
+                <p className="text-lg font-medium text-text-primary mb-2">
+                  Welcome to Huavoi Studio
+                </p>
+                <p className="text-text-secondary mb-6 max-w-md">
+                  Start by creating a new project to see your activity here.
+                </p>
+                <Link href="/project/new">
+                  <Button variant="primary">Create Your First Project</Button>
+                </Link>
               </div>
-              <p className="text-lg font-medium text-text-primary mb-2">
-                Welcome to Huavoi Studio
-              </p>
-              <p className="text-text-secondary mb-6 max-w-md">
-                Start by creating a new project to see your activity here.
-              </p>
-              <Link href="/project/new">
-                <Button variant="primary">Create Your First Project</Button>
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+            </CardContent>
+          </Card>
+        )}
     </div>
   );
 }
