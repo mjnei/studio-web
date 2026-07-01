@@ -61,26 +61,25 @@ Generate and edit the voiceover script for your video.
 ### Step 3: Project Details
 **Route:** `/project/[projectId]/details`
 
-Name your project and configure basic settings. AI-generated thumbnails and script tagline become available at this step.
+Name your project and configure basic settings. AI-generated thumbnails become available at this step.
 
 **Actions:**
 - Enter project name/title
 - Auto-save on input
 - View AI-generated thumbnail (if completed)
-- View AI-generated script tagline/summary (60 chars max)
 - See thumbnail generation status
 
-**Script Tagline:**
+**Script Summary Generation (Internal):**
 - Automatically generated using Agnes AI when entering Step 3
-- Short, punchy phrase (max 60 characters) optimized for social media
-- Captures the core hook/theme of the script
+- Short, punchy tagline (max 60 characters) captures script essence
+- Used internally as prompt for thumbnail generation
+- NOT displayed to users - for internal AI use only
 - Examples: "Enter the dream", "Reality is malleable", "Time runs out"
-- Used as input for thumbnail generation
-- Designed to be overlay text for video thumbnails
 
 **Thumbnail Generation:**
 - Automatically triggered when entering Step 3 (details)
-- Generated using project name + script tagline
+- Generated using movie title + script summary/tagline
+- **NO TEXT IN IMAGES**: AI instructed to create purely visual thumbnails
 - Displayed once status = "completed"
 - Shows "Generating..." indicator while in progress
 
@@ -93,10 +92,9 @@ Name your project and configure basic settings. AI-generated thumbnails and scri
 ### Step 4: Voice Selection
 **Route:** `/project/[projectId]/voice`
 
-Choose a voice for your voiceover narration and listen to voice samples. View your script tagline to help match voice tone.
+Choose a voice for your voiceover narration and listen to voice samples.
 
 **Actions:**
-- View script tagline (helps choose voice that matches tone)
 - Browse stock voices from catalog
 - Browse user-uploaded voice recordings
 - Play voice samples (pre-recorded audio only)
@@ -104,7 +102,6 @@ Choose a voice for your voiceover narration and listen to voice samples. View yo
 - Select a voice for the project
 
 **Display:**
-- Script tagline prominently shown to guide voice selection
 - Full script available via expandable card
 
 **Important:** This step only plays existing voice samples. No TTS generation occurs here - only voice samples.
@@ -118,20 +115,19 @@ Choose a voice for your voiceover narration and listen to voice samples. View yo
 ### Step 5: Preview
 **Route:** `/project/[projectId]/preview`
 
-Generate and preview TTS audio for your selected voice with the full script. View project tagline and thumbnail.
+Generate and preview TTS audio for your selected voice with the full script. View project thumbnail.
 
 **Actions:**
 - Automatically generate TTS audio job using selected voice and script (if needed)
 - Display project summary (name, selected voice, script)
-- View script tagline and AI-generated project thumbnail
+- View AI-generated project thumbnail
 - Real-time progress tracking (queued → processing → completed)
 - Show audio player with generated voice audio when complete
 - Play generated audio preview
 - Review configuration before video composition
 
 **Display:**
-- Script tagline prominently displayed
-- Project thumbnail shown below tagline
+- Project thumbnail displayed
 - Full script available via expandable card
 - TTS generation progress
 
@@ -195,18 +191,17 @@ Generate the final video composition. View script tagline that will guide the co
 ### Step 7: Finalize
 **Route:** `/project/[projectId]/finalize`
 
-Review, publish, or download your completed project. Both thumbnail and tagline are displayed as final project assets.
+Review, publish, or download your completed project. Thumbnail is used as video poster.
 
 **Actions:**
+- View AI-generated project thumbnail
 - Review project summary and final video
-- View script tagline and AI-generated thumbnail together
 - Download video file
 - Publish to platform (YouTube, social media, etc.)
 - Return to projects list
 
 **Display:**
-- Script tagline prominently shown as project's core message
-- AI-generated thumbnail displayed with tagline
+- Project thumbnail displayed
 - Full script available via expandable card
 - Video player with thumbnail as poster
 
@@ -231,6 +226,7 @@ CREATE TABLE projects (
     voice_id UUID,
     audio_url VARCHAR(512),
     video_url VARCHAR(512),
+    script_summary VARCHAR(500), -- AI-generated tagline for thumbnail prompts (internal use only)
     thumbnail_url VARCHAR(512),
     thumbnail_status VARCHAR(50) CHECK (
         thumbnail_status IN ('pending', 'generating', 'completed', 'failed')
@@ -250,6 +246,7 @@ CREATE TABLE projects (
 - `movie_id`: TMDB movie ID selected in Step 1
 - `script`: Generated/edited script content from Step 2
 - `title`: Project name from Step 3
+- `script_summary`: AI-generated tagline used internally for thumbnail prompts (max 60 chars)
 - `thumbnail_url`: AI-generated thumbnail URL (available from Step 3+)
 - `thumbnail_status`: Thumbnail generation status (pending, generating, completed, failed)
 - `voice_id`: Selected voice ID from Step 4
