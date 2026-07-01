@@ -9,7 +9,7 @@ import {
   Mic,
   Briefcase,
   User,
-  ChevronDown,
+  PanelLeft,
   X,
   Activity,
   Loader2,
@@ -240,10 +240,7 @@ export function DrawerContent({
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
             title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
-            <ChevronDown
-              size={18}
-              className={`transition-transform duration-200 ${collapsed ? "rotate-180" : ""}`}
-            />
+            <PanelLeft size={18} />
           </button>
         )}
         {onClose && (
