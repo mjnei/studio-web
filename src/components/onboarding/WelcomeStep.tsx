@@ -1,4 +1,4 @@
-import { Film } from "lucide-react";
+import { Film, Sparkles, Video, Wand2 } from "lucide-react";
 
 interface WelcomeStepProps {
   onNext: () => void;
@@ -11,33 +11,84 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
     }
   };
 
+  const features = [
+    { icon: Film, text: "Professional Templates" },
+    { icon: Wand2, text: "AI-Powered Tools" },
+    { icon: Video, text: "One-Click Publishing" },
+  ];
+
   return (
     <div className="text-center" onKeyDown={handleKeyDown}>
-      {/* Logo/Icon */}
-      <div className="mb-8 flex justify-center">
-        <div className="w-20 h-20 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
-          <Film className="w-10 h-10 text-blue-600 dark:text-blue-400" aria-hidden="true" />
+      {/* Logo/Icon with Animation */}
+      <div className="mb-8 sm:mb-10 flex justify-center">
+        <div className="relative">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-blue-500 to-purple-600 dark:from-blue-600 dark:to-purple-700 rounded-3xl flex items-center justify-center shadow-xl shadow-blue-500/30 animate-float">
+            <Film className="w-10 h-10 sm:w-12 sm:h-12 text-white" aria-hidden="true" />
+          </div>
+          <div className="absolute -top-2 -right-2">
+            <Sparkles className="w-6 h-6 text-yellow-400 animate-pulse" aria-hidden="true" />
+          </div>
         </div>
       </div>
 
       {/* Headline */}
-      <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+      <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-4 sm:mb-6 leading-tight">
         Welcome to Huavoi Studio
       </h1>
 
       {/* Body Text */}
-      <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-md mx-auto">
-        Create stunning videos with AI-powered tools. Let&apos;s get you started.
+      <p className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-300 mb-8 sm:mb-10 max-w-lg mx-auto px-4 leading-relaxed">
+        Transform your ideas into stunning videos with AI-powered creativity. 
+        Professional results in minutes, not hours.
       </p>
+
+      {/* Feature Pills */}
+      <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-8 sm:mb-10 px-4">
+        {features.map((feature, idx) => {
+          const Icon = feature.icon;
+          return (
+            <div
+              key={idx}
+              className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-gray-700/50 rounded-full border border-gray-200 dark:border-gray-600 text-sm sm:text-base"
+            >
+              <Icon className="w-4 h-4 text-blue-600 dark:text-blue-400" aria-hidden="true" />
+              <span className="text-gray-700 dark:text-gray-300 font-medium whitespace-nowrap">
+                {feature.text}
+              </span>
+            </div>
+          );
+        })}
+      </div>
 
       {/* Get Started Button */}
       <button
         onClick={onNext}
-        className="px-8 py-3 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
+        className="group relative px-8 sm:px-10 py-3.5 sm:py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 dark:from-blue-500 dark:to-purple-500 dark:hover:from-blue-600 dark:hover:to-purple-600 text-white font-semibold rounded-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/50 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:-translate-y-0.5 text-base sm:text-lg"
         aria-label="Get started with onboarding"
       >
-        Get Started
+        <span className="flex items-center gap-2 justify-center">
+          Get Started
+          <svg
+            className="w-5 h-5 group-hover:translate-x-1 transition-transform"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M13 7l5 5m0 0l-5 5m5-5H6"
+            />
+          </svg>
+        </span>
       </button>
+
+      {/* Subtext */}
+      <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-6 px-4">
+        Takes less than 2 minutes to complete
+      </p>
     </div>
   );
 }
