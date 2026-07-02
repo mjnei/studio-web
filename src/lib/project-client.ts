@@ -95,6 +95,10 @@ export interface ProjectResponse {
   script_summary?: string | null;
   thumbnail_url?: string | null;
   thumbnail_status?: "pending" | "generating" | "completed" | "failed" | null;
+  custom_thumbnail_url?: string | null;
+  thumbnail_text?: string | null;
+  final_thumbnail_url?: string | null;
+  thumbnail_confirmed?: boolean;
   created_at: string;
   updated_at: string;
   movie?: MovieResponse | null;

@@ -334,76 +334,138 @@ export default function PreviewPage() {
         <div>
           <h2 className="text-xl font-semibold text-text-primary">Voice Preview</h2>
           <p className="mt-1 text-sm text-text-muted">
-            Review your project details and listen to the generated audio
+            Listen to your script with the selected voice
           </p>
         </div>
 
-        {/* Script Tagline & Thumbnail */}
-        {(state?.scriptSummary ||
-          (state?.thumbnailUrl && state?.thumbnailStatus === "completed")) && (
-          <Card variant="elevated" padding="md">
-            <div className="flex flex-col gap-4">
-              {/* Script Tagline */}
-              {state.scriptSummary && (
-                <div className="rounded-lg bg-accent-cyan/10 border border-accent-cyan/30 px-4 py-3">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Sparkles className="h-4 w-4 text-accent-cyan" />
-                    <p className="text-xs font-medium text-text-secondary uppercase tracking-wide">
-                      Script Tagline
-                    </p>
-                  </div>
-                  <p className="text-lg font-semibold text-accent-cyan">"{state.scriptSummary}"</p>
-                </div>
-              )}
-
-              {/* Thumbnail */}
-              {state.thumbnailUrl && state.thumbnailStatus === "completed" && (
-                <div className="flex flex-col gap-2">
-                  <p className="text-xs font-medium text-text-secondary uppercase tracking-wide">
-                    Project Thumbnail
-                  </p>
-                  <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default">
-                    <img
-                      src={state.thumbnailUrl}
-                      alt="Project thumbnail"
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        const img = e.target as HTMLImageElement;
-                        img.style.display = "none";
-                      }}
-                    />
-                  </div>
-                </div>
+        {/* TTS Audio Generation & Playback - Priority #1 (first viewport) */}
+        <Card variant="elevated" padding="lg">
+          <div className="flex flex-col items-center gap-4 text-center">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent-cyan/10">
+              {ttsJob?.status === "processing" || isStreaming ? (
+                <Loader2 className="h-10 w-10 text-accent-cyan animate-spin" />
+              ) : ttsJob?.status === "failed" ? (
+                <AlertCircle className="h-10 w-10 text-status-failed" />
+              ) : (
+                <Mic2 className="h-10 w-10 text-accent-cyan" />
               )}
             </div>
-          </Card>
-        )}
 
-        {/* Thumbnail Generating Indicator */}
-        {state?.thumbnailStatus === "generating" && (
-          <Card variant="elevated" padding="md" className="border-accent-cyan/30">
-            <div className="flex items-center gap-3">
-              <Loader2 className="h-5 w-5 text-accent-cyan animate-spin flex-shrink-0" />
-              <div className="flex-1">
-                <h3 className="text-sm font-medium text-text-primary">
-                  Generating AI Thumbnail...
-                </h3>
-                <p className="mt-1 text-xs text-text-muted">
-                  Your custom thumbnail is being created
+            <div>
+              <h3 className="text-lg font-semibold text-text-primary">Audio Preview</h3>
+              {!ttsJob && !ttsError && (
+                <p className="mt-1 text-sm text-text-muted max-w-md mx-auto">
+                  Creating TTS audio job...
                 </p>
-              </div>
+              )}
+              {ttsJob?.status === "queued" && (
+                <p className="mt-1 text-sm text-text-muted max-w-md mx-auto">
+                  Your audio is queued for generation...
+                </p>
+              )}
+              {ttsJob?.status === "processing" && (
+                <p className="mt-1 text-sm text-text-muted max-w-md mx-auto">
+                  Generating audio with {voiceName}... {ttsJob.progress}%
+                </p>
+              )}
+              {ttsJob?.status === "completed" && ttsJob.audio_url && (
+                <div className="mt-4 w-full max-w-md mx-auto space-y-3">
+                  <p className="text-sm text-status-success">✓ Audio generation complete!</p>
+                  <audio
+                    ref={audioRef}
+                    controls
+                    src={ttsJob.audio_url}
+                    className="w-full"
+                    preload="metadata"
+                  >
+                    Your browser does not support the audio element.
+                  </audio>
+                  {ttsJob.audio_duration && (
+                    <p className="text-xs text-text-muted">
+                      Duration: {Math.floor(ttsJob.audio_duration / 60)}:
+                      {Math.round(ttsJob.audio_duration % 60)
+                        .toString()
+                        .padStart(2, "0")}
+                    </p>
+                  )}
+                </div>
+              )}
+              {ttsJob?.status === "failed" && (
+                <div className="mt-4 space-y-3">
+                  <p className="text-sm text-status-failed max-w-md mx-auto">
+                    Failed to generate audio: {ttsJob.error_message || "Unknown error"}
+                  </p>
+                  <Button
+                    variant="primary"
+                    size="md"
+                    onClick={() => {
+                      // Get voice info from localStorage or state
+                      let voiceId = state?.voiceId;
+                      let voiceName = state?.voiceName;
+                      try {
+                        const storedVoice = localStorage.getItem(`project_${projectId}_voice`);
+                        if (storedVoice) {
+                          const voice = JSON.parse(storedVoice);
+                          if (voice.id) {
+                            voiceId = voice.id;
+                            voiceName = voice.name;
+                          }
+                        }
+                      } catch (e) {
+                        console.error("Failed to read voice from localStorage:", e);
+                      }
+                      createNewTTSJob(voiceId, voiceName);
+                    }}
+                  >
+                    Retry Generation
+                  </Button>
+                </div>
+              )}
+              {ttsError && !ttsJob && (
+                <p className="mt-1 text-sm text-status-failed max-w-md mx-auto">{ttsError}</p>
+              )}
             </div>
-          </Card>
-        )}
 
-        {/* Project info card */}
+            {ttsJob && (
+              <div className="w-full max-w-sm rounded-lg border border-dashed border-border-default bg-surface-panel p-4">
+                <div className="flex items-center justify-between text-xs text-text-muted mb-2">
+                  <span>Voice:</span>
+                  <span className="font-medium text-text-secondary">{voiceName}</span>
+                </div>
+                <div className="flex items-center justify-between text-xs text-text-muted mb-2">
+                  <span>Status:</span>
+                  <span
+                    className={`font-medium ${
+                      ttsJob.status === "completed"
+                        ? "text-status-success"
+                        : ttsJob.status === "failed"
+                          ? "text-status-failed"
+                          : "text-text-secondary"
+                    }`}
+                  >
+                    {ttsJob.status}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-xs text-text-muted">
+                  <span>Job ID:</span>
+                  <span className="font-mono font-medium text-text-secondary">{ttsJob.id}</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </Card>
+
+        {/* Project info card - Priority #2 */}
         <Card variant="elevated" padding="md">
+          <h3 className="text-sm font-medium text-text-secondary uppercase tracking-wide mb-3">
+            Project Summary
+          </h3>
           <div className="flex items-start gap-4">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-purple-muted">
               <CheckCircle className="h-5 w-5 text-accent-purple" />
             </div>
             <div className="flex-1">
-              <h3 className="font-medium text-text-primary">{projectName}</h3>
+              <h4 className="font-medium text-text-primary">{projectName}</h4>
               <p className="mt-1 text-sm text-text-muted">Voice: {voiceName}</p>
               {activeScript && (
                 <p className="mt-1 text-xs text-text-muted">
