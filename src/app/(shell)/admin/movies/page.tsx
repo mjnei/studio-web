@@ -23,8 +23,10 @@ import {
   List,
   ChevronDown,
   ChevronUp,
+  Eye,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import {
   adminListMovies,
   adminUpdateMovie,
@@ -58,7 +60,7 @@ const SUPPORTED_LOCALES = ["en", "de", "fr", "es", "zh-CN", "zh-TW", "ja", "ko"]
 export default function AdminMoviesPage() {
   // View mode: library (manage existing) or import (TMDB search)
   const [viewMode, setViewMode] = useState<ViewMode>("library");
-  const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid-lg");
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid-md");
   const [localesExpanded, setLocalesExpanded] = useState(false);
 
   // Refs for auto-focus
@@ -570,6 +572,13 @@ export default function AdminMoviesPage() {
                               </div>
                             ) : (
                               <div className="flex gap-2">
+                                <Link
+                                  href={`/admin/movies/${movie.id}`}
+                                  className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-base px-3 py-1.5 text-sm font-medium text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all"
+                                >
+                                  <Eye className="h-3.5 w-3.5" />
+                                  View
+                                </Link>
                                 <button
                                   onClick={() => {
                                     setEditingId(movie.id);
@@ -724,6 +733,13 @@ export default function AdminMoviesPage() {
                         ) : (
                           /* Actions */
                           <div className="mt-3 pt-3 border-t border-border-default flex gap-2">
+                            <Link
+                              href={`/admin/movies/${movie.id}`}
+                              className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-border-default bg-surface-base px-2 py-1.5 text-xs font-medium text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all"
+                            >
+                              <Eye className="h-3 w-3" />
+                              View
+                            </Link>
                             <button
                               onClick={() => {
                                 setEditingId(movie.id);
@@ -735,10 +751,9 @@ export default function AdminMoviesPage() {
                                   vote_count: movie.vote_count || undefined,
                                 });
                               }}
-                              className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-border-default bg-surface-base px-2 py-1.5 text-xs font-medium text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all"
+                              className="flex items-center justify-center gap-1 rounded-lg border border-border-default bg-surface-base px-2 py-1.5 text-xs font-medium text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all"
                             >
                               <Edit2 className="h-3 w-3" />
-                              Edit
                             </button>
                             <button
                               onClick={() => handleDeleteMovie(movie.id)}

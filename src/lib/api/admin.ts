@@ -163,6 +163,43 @@ export async function adminGetMovie(
   return request<AdminMovieResponse>(`/admin/movies/${movieId}?locale=${locale}`);
 }
 
+export interface GenreResponse {
+  id: number;
+  name: string;
+}
+
+export interface PersonResponse {
+  id: number;
+  canonical_name: string;
+  display_name: string;
+  gender: number | null;
+  profile_path: string | null;
+  popularity: number | null;
+}
+
+export interface CastResponse {
+  id: number;
+  person: PersonResponse;
+  role: "actor" | "actress" | "director" | "producer" | "writer";
+  character: string | null;
+  credit_order: number | null;
+}
+
+export interface MovieDetailsResponse extends AdminMovieResponse {
+  genres: GenreResponse[];
+  cast: CastResponse[];
+}
+
+/**
+ * Get detailed movie information including genres and cast.
+ */
+export async function adminGetMovieDetails(
+  movieId: number,
+  locale: string = "en"
+): Promise<MovieDetailsResponse> {
+  return request<MovieDetailsResponse>(`/admin/movies/${movieId}/details?locale=${locale}`);
+}
+
 /**
  * Update limited movie fields (mainly for Douban ID linkage).
  */
