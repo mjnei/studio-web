@@ -99,11 +99,7 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
   const handleUpdate = async () => {
     if (!editingData || !movieId) return;
     try {
-      await adminUpdateMovie(
-        editingData.id,
-        { douban_id: editingData.douban_id },
-        selectedLocale
-      );
+      await adminUpdateMovie(editingData.id, { douban_id: editingData.douban_id }, selectedLocale);
       showToast("success", "Movie updated successfully");
       setIsEditing(false);
       setEditingData(null);
@@ -133,7 +129,10 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
     }
   };
 
-  const getImageUrl = (path: string | null | undefined, size: "w500" | "w780" | "h632" = "w780") => {
+  const getImageUrl = (
+    path: string | null | undefined,
+    size: "w500" | "w780" | "h632" = "w780"
+  ) => {
     if (!path) return null;
     return `https://image.tmdb.org/t/p/${size}${path}`;
   };
@@ -279,7 +278,9 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                   {movie.popularity && (
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-medium text-text-muted">Popularity:</span>
-                      <span className="text-sm text-text-primary">{movie.popularity.toFixed(1)}</span>
+                      <span className="text-sm text-text-primary">
+                        {movie.popularity.toFixed(1)}
+                      </span>
                     </div>
                   )}
                 </div>
