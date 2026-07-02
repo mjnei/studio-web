@@ -355,101 +355,116 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                 {/* Cast & Crew */}
                 {(directors.length > 0 || producers.length > 0 || writers.length > 0) && (
                   <div className="rounded-xl border border-border-default bg-surface-panel p-6">
-                    <h2 className="mb-5 text-lg font-bold text-text-primary">Crew</h2>
-                    <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
-                      {/* Directors */}
-                      {directors.length > 0 && (
-                        <div>
-                          <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-text-muted">
-                            Director{directors.length > 1 ? "s" : ""}
-                          </h3>
-                          <div className="space-y-2">
-                            {directors.map((director) => (
-                              <div key={director.id} className="flex items-center gap-3">
-                                {director.person.profile_path ? (
-                                  <img
-                                    src={`https://image.tmdb.org/t/p/w185${director.person.profile_path}`}
-                                    alt={director.person.display_name}
-                                    className="h-12 w-12 rounded-lg object-cover ring-2 ring-border-default"
-                                  />
-                                ) : (
-                                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-surface-raised ring-2 ring-border-default">
-                                    <User className="h-5 w-5 text-text-muted" />
-                                  </div>
-                                )}
-                                <div className="min-w-0 flex-1">
-                                  <p className="truncate text-sm font-semibold text-text-primary">
-                                    {director.person.display_name}
-                                  </p>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Producers */}
-                      {producers.length > 0 && (
-                        <div>
-                          <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-text-muted">
-                            Producer{producers.length > 1 ? "s" : ""}
-                          </h3>
-                          <div className="space-y-2">
-                            {producers.slice(0, 3).map((producer) => (
-                              <div key={producer.id} className="flex items-center gap-3">
-                                {producer.person.profile_path ? (
-                                  <img
-                                    src={`https://image.tmdb.org/t/p/w185${producer.person.profile_path}`}
-                                    alt={producer.person.display_name}
-                                    className="h-12 w-12 rounded-lg object-cover ring-2 ring-border-default"
-                                  />
-                                ) : (
-                                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-surface-raised ring-2 ring-border-default">
-                                    <User className="h-5 w-5 text-text-muted" />
-                                  </div>
-                                )}
-                                <div className="min-w-0 flex-1">
-                                  <p className="truncate text-sm font-semibold text-text-primary">
-                                    {producer.person.display_name}
-                                  </p>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Writers */}
-                      {writers.length > 0 && (
-                        <div>
-                          <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-text-muted">
-                            Writer{writers.length > 1 ? "s" : ""}
-                          </h3>
-                          <div className="space-y-2">
-                            {writers.slice(0, 3).map((writer) => (
-                              <div key={writer.id} className="flex items-center gap-3">
-                                {writer.person.profile_path ? (
-                                  <img
-                                    src={`https://image.tmdb.org/t/p/w185${writer.person.profile_path}`}
-                                    alt={writer.person.display_name}
-                                    className="h-12 w-12 rounded-lg object-cover ring-2 ring-border-default"
-                                  />
-                                ) : (
-                                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-surface-raised ring-2 ring-border-default">
-                                    <User className="h-5 w-5 text-text-muted" />
-                                  </div>
-                                )}
-                                <div className="min-w-0 flex-1">
-                                  <p className="truncate text-sm font-semibold text-text-primary">
-                                    {writer.person.display_name}
-                                  </p>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
+                    <div className="flex items-center justify-between mb-5">
+                      <h2 className="text-lg font-bold text-text-primary">Crew</h2>
+                      <button
+                        onClick={() => setIsCrewExpanded(!isCrewExpanded)}
+                        className="p-1.5 rounded-lg hover:bg-surface-raised transition-colors text-text-secondary hover:text-text-primary"
+                        aria-label={isCrewExpanded ? "Collapse crew" : "Expand crew"}
+                      >
+                        {isCrewExpanded ? (
+                          <ChevronUp className="h-5 w-5" />
+                        ) : (
+                          <ChevronDown className="h-5 w-5" />
+                        )}
+                      </button>
                     </div>
+                    {isCrewExpanded && (
+                      <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
+                        {/* Directors */}
+                        {directors.length > 0 && (
+                          <div>
+                            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-text-muted">
+                              Director{directors.length > 1 ? "s" : ""}
+                            </h3>
+                            <div className="space-y-2">
+                              {directors.map((director) => (
+                                <div key={director.id} className="flex items-center gap-3">
+                                  {director.person.profile_path ? (
+                                    <img
+                                      src={`https://image.tmdb.org/t/p/w185${director.person.profile_path}`}
+                                      alt={director.person.display_name}
+                                      className="h-12 w-12 rounded-lg object-cover ring-2 ring-border-default"
+                                    />
+                                  ) : (
+                                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-surface-raised ring-2 ring-border-default">
+                                      <User className="h-5 w-5 text-text-muted" />
+                                    </div>
+                                  )}
+                                  <div className="min-w-0 flex-1">
+                                    <p className="truncate text-sm font-semibold text-text-primary">
+                                      {director.person.display_name}
+                                    </p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Producers */}
+                        {producers.length > 0 && (
+                          <div>
+                            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-text-muted">
+                              Producer{producers.length > 1 ? "s" : ""}
+                            </h3>
+                            <div className="space-y-2">
+                              {producers.slice(0, 3).map((producer) => (
+                                <div key={producer.id} className="flex items-center gap-3">
+                                  {producer.person.profile_path ? (
+                                    <img
+                                      src={`https://image.tmdb.org/t/p/w185${producer.person.profile_path}`}
+                                      alt={producer.person.display_name}
+                                      className="h-12 w-12 rounded-lg object-cover ring-2 ring-border-default"
+                                    />
+                                  ) : (
+                                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-surface-raised ring-2 ring-border-default">
+                                      <User className="h-5 w-5 text-text-muted" />
+                                    </div>
+                                  )}
+                                  <div className="min-w-0 flex-1">
+                                    <p className="truncate text-sm font-semibold text-text-primary">
+                                      {producer.person.display_name}
+                                    </p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Writers */}
+                        {writers.length > 0 && (
+                          <div>
+                            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-text-muted">
+                              Writer{writers.length > 1 ? "s" : ""}
+                            </h3>
+                            <div className="space-y-2">
+                              {writers.slice(0, 3).map((writer) => (
+                                <div key={writer.id} className="flex items-center gap-3">
+                                  {writer.person.profile_path ? (
+                                    <img
+                                      src={`https://image.tmdb.org/t/p/w185${writer.person.profile_path}`}
+                                      alt={writer.person.display_name}
+                                      className="h-12 w-12 rounded-lg object-cover ring-2 ring-border-default"
+                                    />
+                                  ) : (
+                                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-surface-raised ring-2 ring-border-default">
+                                      <User className="h-5 w-5 text-text-muted" />
+                                    </div>
+                                  )}
+                                  <div className="min-w-0 flex-1">
+                                    <p className="truncate text-sm font-semibold text-text-primary">
+                                      {writer.person.display_name}
+                                    </p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -498,7 +513,9 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                                   {actor.person.display_name}
                                 </p>
                                 {actor.character && (
-                                  <p className="truncate text-xs text-text-muted">{actor.character}</p>
+                                  <p className="truncate text-xs text-text-muted">
+                                    {actor.character}
+                                  </p>
                                 )}
                               </div>
                             </div>
