@@ -36,7 +36,7 @@ export default function CompletionStep() {
         // Auto-redirect after 5 seconds
         redirectTimer = setTimeout(() => {
           refreshUser().then(() => {
-            router.push("/projects");
+            router.push("/dashboard");
           });
         }, 5000);
       } catch (err) {
@@ -55,7 +55,7 @@ export default function CompletionStep() {
 
   const handleManualRedirect = () => {
     refreshUser().then(() => {
-      router.push("/projects");
+      router.push("/dashboard");
     });
   };
 
@@ -78,7 +78,7 @@ export default function CompletionStep() {
         }, 1000);
 
         setTimeout(() => {
-          refreshUser().then(() => router.push("/projects"));
+          refreshUser().then(() => router.push("/dashboard"));
         }, 5000);
       })
       .catch((err) => {
