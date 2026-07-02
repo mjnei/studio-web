@@ -15,6 +15,8 @@ import {
   User,
   Globe,
   TrendingUp,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import Link from "next/link";
 import { createProject } from "@/lib/project-client";
@@ -35,6 +37,8 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
   const [error, setError] = useState<string | null>(null);
   const [isCreatingProject, setIsCreatingProject] = useState(false);
   const [toasts, setToasts] = useState<Toast[]>([]);
+  const [isTopCastExpanded, setIsTopCastExpanded] = useState(true);
+  const [isCrewExpanded, setIsCrewExpanded] = useState(true);
 
   useEffect(() => {
     (async () => {
@@ -178,9 +182,9 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
 
           {/* Content */}
           <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8 -mt-20 sm:-mt-24 relative z-10">
-            <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
+            <div className="grid gap-6 md:grid-cols-[280px_1fr] lg:grid-cols-[320px_1fr]">
               {/* Left Sidebar - Poster & Actions */}
-              <div className="flex flex-col gap-4 lg:sticky lg:top-4 lg:self-start">
+              <div className="flex flex-col gap-4 md:sticky md:top-4 md:self-start">
                 {/* Poster */}
                 {posterUrl ? (
                   <img
@@ -352,7 +356,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                 {(directors.length > 0 || producers.length > 0 || writers.length > 0) && (
                   <div className="rounded-xl border border-border-default bg-surface-panel p-6">
                     <h2 className="mb-5 text-lg font-bold text-text-primary">Crew</h2>
-                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
                       {/* Directors */}
                       {directors.length > 0 && (
                         <div>
@@ -452,73 +456,90 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                 {/* Cast */}
                 {actors.length > 0 && (
                   <div className="rounded-xl border border-border-default bg-surface-panel p-6">
-                    <h2 className="mb-5 text-lg font-bold text-text-primary">Top Cast</h2>
-
-                    {/* Desktop: Grid Layout */}
-                    <div className="hidden sm:grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                      {actors.map((actor) => (
-                        <div
-                          key={actor.id}
-                          className="group overflow-hidden rounded-xl border border-border-default bg-surface-raised transition-all hover:border-accent-cyan/40 hover:shadow-lg"
-                        >
-                          <div className="relative aspect-square overflow-hidden bg-surface-base">
-                            {actor.person.profile_path ? (
-                              <img
-                                src={`https://image.tmdb.org/t/p/w342${actor.person.profile_path}`}
-                                alt={actor.person.display_name}
-                                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                              />
-                            ) : (
-                              <div className="flex h-full items-center justify-center">
-                                <User className="h-16 w-16 text-text-muted opacity-30" />
-                              </div>
-                            )}
-                          </div>
-                          <div className="p-3">
-                            <p className="mb-1 truncate text-sm font-bold text-text-primary">
-                              {actor.person.display_name}
-                            </p>
-                            {actor.character && (
-                              <p className="truncate text-xs text-text-muted">{actor.character}</p>
-                            )}
-                          </div>
-                        </div>
-                      ))}
+                    <div className="flex items-center justify-between mb-5">
+                      <h2 className="text-lg font-bold text-text-primary">Top Cast</h2>
+                      <button
+                        onClick={() => setIsTopCastExpanded(!isTopCastExpanded)}
+                        className="p-1.5 rounded-lg hover:bg-surface-raised transition-colors text-text-secondary hover:text-text-primary"
+                        aria-label={isTopCastExpanded ? "Collapse cast" : "Expand cast"}
+                      >
+                        {isTopCastExpanded ? (
+                          <ChevronUp className="h-5 w-5" />
+                        ) : (
+                          <ChevronDown className="h-5 w-5" />
+                        )}
+                      </button>
                     </div>
 
-                    {/* Mobile: 2-Column Grid */}
-                    <div className="grid grid-cols-2 gap-3 sm:hidden">
-                      {actors.map((actor) => (
-                        <div
-                          key={actor.id}
-                          className="group overflow-hidden rounded-xl border border-border-default bg-surface-raised transition-all hover:border-accent-cyan/40"
-                        >
-                          <div className="relative aspect-square overflow-hidden bg-surface-base">
-                            {actor.person.profile_path ? (
-                              <img
-                                src={`https://image.tmdb.org/t/p/w342${actor.person.profile_path}`}
-                                alt={actor.person.display_name}
-                                className="h-full w-full object-cover"
-                              />
-                            ) : (
-                              <div className="flex h-full items-center justify-center">
-                                <User className="h-12 w-12 text-text-muted opacity-30" />
+                    {isTopCastExpanded && (
+                      <>
+                        {/* Desktop: Grid Layout */}
+                        <div className="hidden sm:grid gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                          {actors.map((actor) => (
+                            <div
+                              key={actor.id}
+                              className="group overflow-hidden rounded-xl border border-border-default bg-surface-raised transition-all hover:border-accent-cyan/40 hover:shadow-lg"
+                            >
+                              <div className="relative aspect-square overflow-hidden bg-surface-base">
+                                {actor.person.profile_path ? (
+                                  <img
+                                    src={`https://image.tmdb.org/t/p/w342${actor.person.profile_path}`}
+                                    alt={actor.person.display_name}
+                                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                  />
+                                ) : (
+                                  <div className="flex h-full items-center justify-center">
+                                    <User className="h-16 w-16 text-text-muted opacity-30" />
+                                  </div>
+                                )}
                               </div>
-                            )}
-                          </div>
-                          <div className="p-2.5">
-                            <p className="mb-1 truncate text-xs font-bold text-text-primary">
-                              {actor.person.display_name}
-                            </p>
-                            {actor.character && (
-                              <p className="truncate text-[10px] leading-tight text-text-muted">
-                                {actor.character}
-                              </p>
-                            )}
-                          </div>
+                              <div className="p-3">
+                                <p className="mb-1 truncate text-sm font-bold text-text-primary">
+                                  {actor.person.display_name}
+                                </p>
+                                {actor.character && (
+                                  <p className="truncate text-xs text-text-muted">{actor.character}</p>
+                                )}
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                      ))}
-                    </div>
+
+                        {/* Mobile: 2-Column Grid */}
+                        <div className="grid grid-cols-2 gap-3 sm:hidden">
+                          {actors.map((actor) => (
+                            <div
+                              key={actor.id}
+                              className="group overflow-hidden rounded-xl border border-border-default bg-surface-raised transition-all hover:border-accent-cyan/40"
+                            >
+                              <div className="relative aspect-square overflow-hidden bg-surface-base">
+                                {actor.person.profile_path ? (
+                                  <img
+                                    src={`https://image.tmdb.org/t/p/w342${actor.person.profile_path}`}
+                                    alt={actor.person.display_name}
+                                    className="h-full w-full object-cover"
+                                  />
+                                ) : (
+                                  <div className="flex h-full items-center justify-center">
+                                    <User className="h-12 w-12 text-text-muted opacity-30" />
+                                  </div>
+                                )}
+                              </div>
+                              <div className="p-2.5">
+                                <p className="mb-1 truncate text-xs font-bold text-text-primary">
+                                  {actor.person.display_name}
+                                </p>
+                                {actor.character && (
+                                  <p className="truncate text-[10px] leading-tight text-text-muted">
+                                    {actor.character}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    )}
                   </div>
                 )}
               </div>
