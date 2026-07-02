@@ -28,7 +28,7 @@ export default function OnboardingPage() {
   const totalSteps = steps.length;
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-blue-950 flex items-center justify-center p-4 sm:p-6 lg:p-8 relative overflow-hidden">
+    <div className="min-h-screen w-full bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-blue-950 flex items-center justify-center p-3 sm:p-4 lg:p-6 relative overflow-hidden">
       {/* Decorative Background Elements */}
       <div className="absolute top-20 left-10 w-72 h-72 bg-blue-300 dark:bg-blue-900 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-3xl opacity-20 animate-blob pointer-events-none" />
       <div className="absolute top-40 right-10 w-72 h-72 bg-purple-300 dark:bg-purple-900 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-3xl opacity-20 animate-blob animation-delay-2000 pointer-events-none" />
@@ -38,7 +38,7 @@ export default function OnboardingPage() {
       <div className="w-full max-w-6xl mx-auto relative z-10">
         {/* Progress Indicator */}
         <div
-          className="mb-6 sm:mb-8"
+          className="mb-4 sm:mb-6"
           role="status"
           aria-label={`Step ${currentStep + 1} of ${totalSteps}`}
         >
@@ -99,7 +99,7 @@ export default function OnboardingPage() {
         </div>
 
         {/* Content Container */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 sm:p-8 lg:p-12 border border-gray-100 dark:border-gray-700 backdrop-blur-sm max-h-[calc(100vh-12rem)] overflow-y-auto">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8 border border-gray-100 dark:border-gray-700 backdrop-blur-sm">
           <div className="animate-fadeIn">{steps[currentStep]}</div>
         </div>
       </div>
