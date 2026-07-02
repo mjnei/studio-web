@@ -7,7 +7,6 @@ import {
   Search,
   Loader,
   Grid3x3,
-  Grid2x2,
   LayoutGrid,
   List,
   Calendar,
@@ -28,7 +27,7 @@ import {
   type CastResponse,
 } from "@/lib/api/admin";
 
-type LayoutMode = "grid-sm" | "grid-md" | "grid-lg" | "list";
+type LayoutMode = "grid-sm" | "grid-md" | "list";
 
 interface EnrichedMovie extends MovieResponse {
   directors?: string[];
@@ -120,9 +119,6 @@ export default function MoviesPage() {
       case "grid-md":
         // Medium cards: 1 col (base), 2 cols (sm), 3 cols (md), 4 cols (lg), 5 cols (xl)
         return "grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5";
-      case "grid-lg":
-        // Large cards: 1 col (base), 2 cols (sm), 2 cols (md), 3 cols (lg), 4 cols (xl)
-        return "grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
       case "list":
         return "space-y-3";
       default:
@@ -150,20 +146,9 @@ export default function MoviesPage() {
             ? "bg-accent-primary text-white"
             : "text-text-muted hover:text-text-primary"
         }`}
-        title="Medium grid (4-6 columns)"
+        title="Medium grid (4-5 columns)"
       >
         <LayoutGrid className="h-4 w-4" />
-      </button>
-      <button
-        onClick={() => setLayoutMode("grid-lg")}
-        className={`rounded p-1.5 transition-all ${
-          layoutMode === "grid-lg"
-            ? "bg-accent-primary text-white"
-            : "text-text-muted hover:text-text-primary"
-        }`}
-        title="Large grid (2-4 columns)"
-      >
-        <Grid2x2 className="h-4 w-4" />
       </button>
       <button
         onClick={() => setLayoutMode("list")}

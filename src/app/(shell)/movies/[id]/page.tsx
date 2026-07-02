@@ -18,10 +18,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { createProject } from "@/lib/project-client";
-import {
-  adminGetMovieDetails,
-  type MovieDetailsResponse,
-} from "@/lib/api/admin";
+import { adminGetMovieDetails, type MovieDetailsResponse } from "@/lib/api/admin";
 
 type Toast = {
   id: number;
@@ -183,7 +180,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
           <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8 -mt-20 sm:-mt-24 relative z-10">
             <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
               {/* Left Sidebar - Poster & Actions */}
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-4 lg:sticky lg:top-4 lg:self-start">
                 {/* Poster */}
                 {posterUrl ? (
                   <img
@@ -456,7 +453,9 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                 {actors.length > 0 && (
                   <div className="rounded-xl border border-border-default bg-surface-panel p-6">
                     <h2 className="mb-5 text-lg font-bold text-text-primary">Top Cast</h2>
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    
+                    {/* Desktop: Grid Layout */}
+                    <div className="hidden sm:grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                       {actors.map((actor) => (
                         <div
                           key={actor.id}
@@ -477,6 +476,33 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                           </div>
                           <div className="p-3">
                             <p className="mb-1 truncate text-sm font-bold text-text-primary">
+                              {actor.person.display_name}
+                            </p>
+                            {actor.character && (
+                              <p className="truncate text-xs text-text-muted">{actor.character}</p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Mobile: List Layout (matches crew style) */}
+                    <div className="space-y-3 sm:hidden">
+                      {actors.map((actor) => (
+                        <div key={actor.id} className="flex items-center gap-3">
+                          {actor.person.profile_path ? (
+                            <img
+                              src={`https://image.tmdb.org/t/p/w185${actor.person.profile_path}`}
+                              alt={actor.person.display_name}
+                              className="h-16 w-16 rounded-lg object-cover ring-2 ring-border-default"
+                            />
+                          ) : (
+                            <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-surface-raised ring-2 ring-border-default">
+                              <User className="h-6 w-6 text-text-muted" />
+                            </div>
+                          )}
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate text-sm font-semibold text-text-primary">
                               {actor.person.display_name}
                             </p>
                             {actor.character && (
