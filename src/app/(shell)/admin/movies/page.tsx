@@ -1085,7 +1085,7 @@ export default function AdminMoviesPage() {
                             ) : (
                               <>
                                 <Download className="h-4 w-4" />
-                                Import 
+                                Import
                               </>
                             )}
                           </button>

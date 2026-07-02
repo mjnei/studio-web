@@ -219,39 +219,60 @@ Review, publish, or download your completed project. Thumbnail is used as video 
 
 ```sql
 CREATE TABLE projects (
-    id UUID PRIMARY KEY,
-    title VARCHAR(255),
-    movie_id INTEGER,
-    script TEXT,
-    voice_id UUID,
-    audio_url VARCHAR(512),
-    video_url VARCHAR(512),
-    script_summary VARCHAR(500), -- AI-generated tagline for thumbnail prompts (internal use only)
-    thumbnail_url VARCHAR(512),
-    thumbnail_status VARCHAR(50) CHECK (
-        thumbnail_status IN ('pending', 'generating', 'completed', 'failed')
-    ),
-    last_step VARCHAR(50) CHECK (
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
+    project_name VARCHAR(255),
+    status VARCHAR(50) DEFAULT 'draft' CHECK (status IN ('draft', 'in-progress', 'completed')),
+    last_step VARCHAR(50) DEFAULT 'source' CHECK (
         last_step IN ('source', 'script', 'details', 'voice', 'preview', 'compose', 'finalize')
     ),
-    status VARCHAR(50),
-    user_id UUID REFERENCES users(id),
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP
+    
+    -- AI-generated suggestions (cached)
+    suggested_names JSON,
+    script_summary VARCHAR(500),
+    
+    -- AI-generated thumbnail
+    thumbnail_url VARCHAR(512),
+    thumbnail_status VARCHAR(50) DEFAULT 'pending' CHECK (
+        thumbnail_status IN ('pending', 'generating', 'completed', 'failed')
+    ),
+    thumbnail_error VARCHAR(1000),
+    
+    -- Step 1: Movie selection
+    movie_id INTEGER REFERENCES tmdb.movies(id) ON DELETE SET NULL,
+    
+    -- Step 2: Script (active version pointer)
+    active_script_id BIGINT REFERENCES project_scripts(id) ON DELETE SET NULL,
+    
+    -- Step 4-5: Voice/TTS (active job pointer)
+    active_tts_job_id BIGINT REFERENCES tts_jobs(id) ON DELETE SET NULL,
+    
+    -- Step 6: Video (active job pointer)
+    active_video_job_id BIGINT REFERENCES video_jobs(id) ON DELETE SET NULL,
+    
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    is_deleted BOOLEAN DEFAULT FALSE,
+    deleted_at TIMESTAMP WITH TIME ZONE
 );
+
+CREATE INDEX idx_projects_user_id ON projects(user_id);
+CREATE INDEX idx_projects_status ON projects(status);
+CREATE INDEX idx_projects_movie_id ON projects(movie_id);
 ```
 
 **Key Fields:**
-- `last_step`: Tracks user's current position in workflow
+- `last_step`: Tracks user's current position in workflow (7 steps)
 - `movie_id`: TMDB movie ID selected in Step 1
-- `script`: Generated/edited script content from Step 2
-- `title`: Project name from Step 3
-- `script_summary`: AI-generated tagline used internally for thumbnail prompts (max 60 chars)
+- `active_script_id`: Pointer to active script version (Step 2)
+- `project_name`: Custom project name from Step 3
+- `suggested_names`: Cached AI name suggestions
+- `script_summary`: AI-generated tagline for thumbnail prompts (internal use)
 - `thumbnail_url`: AI-generated thumbnail URL (available from Step 3+)
-- `thumbnail_status`: Thumbnail generation status (pending, generating, completed, failed)
-- `voice_id`: Selected voice ID from Step 4
-- `audio_url`: Generated TTS audio URL from Step 5
-- `video_url`: Final video URL from Step 6
+- `thumbnail_status`: Thumbnail generation status
+- `active_tts_job_id`: Pointer to active TTS job (Steps 4-5)
+- `active_video_job_id`: Pointer to active video job (Step 6)
+- `is_deleted`: Soft delete flag
 
 ---
 
@@ -282,7 +303,7 @@ Body: { "script": "Updated script content..." }
 ### Step 3: Project Details
 ```
 PATCH /api/v1/projects/{id}
-Body: { "title": "My Awesome Project" }
+Body: { "project_name": "My Awesome Project" }
 ```
 
 ### Step 4: Voice Selection

@@ -303,9 +303,9 @@ Potential improvements:
 
 ## Related Documentation
 
-- [TMDB Import Guide](../studio-backend/docs/TMDB_IMPORT_GUIDE.md)
-- [TMDB Feature Summary](../studio-backend/TMDB_FEATURE_SUMMARY.md)
-- [Admin API Guide](../studio-backend/docs/ADMIN_API_GUIDE.md)
+- [TMDB Import Guide](../../studio-backend/docs/TMDB_IMPORT_GUIDE.md)
+- [TMDB Feature Summary](../../studio-backend/docs/TMDB_FEATURE_SUMMARY.md)
+- [Admin API Guide](../../studio-backend/docs/ADMIN_API_GUIDE.md)
 
 ---
 
