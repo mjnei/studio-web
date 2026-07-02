@@ -61,27 +61,30 @@ Generate and edit the voiceover script for your video.
 ### Step 3: Project Details
 **Route:** `/project/[projectId]/details`
 
-Name your project and configure basic settings. AI-generated thumbnails become available at this step.
+Name your project and configure basic settings. AI-generated thumbnails are generated at this step but displayed later in the workflow.
 
 **Actions:**
 - Enter project name/title
 - Auto-save on input
-- View AI-generated thumbnail (if completed)
-- See thumbnail generation status
 
 **Script Summary Generation (Internal):**
 - Automatically generated using Agnes AI when entering Step 3
 - Short, punchy tagline (max 60 characters) captures script essence
 - Used internally as prompt for thumbnail generation
-- NOT displayed to users - for internal AI use only
+- Displayed to users at Step 6 for thumbnail customization
 - Examples: "Enter the dream", "Reality is malleable", "Time runs out"
 
-**Thumbnail Generation:**
+**Thumbnail Generation (Background):**
 - Automatically triggered when entering Step 3 (details)
 - Generated using movie title + script summary/tagline
 - **NO TEXT IN IMAGES**: AI instructed to create purely visual thumbnails
-- Displayed once status = "completed"
-- Shows "Generating..." indicator while in progress
+- Generation happens in background while user continues workflow
+- Displayed and customizable at Step 6 (Compose)
+
+**Display:**
+- Project name input field (prominent)
+- AI-generated thumbnail in smaller container (md+ screens, below the fold)
+- Generation status indicator if still in progress
 
 **Completion:** Project has a name/title
 
@@ -115,21 +118,18 @@ Choose a voice for your voiceover narration and listen to voice samples.
 ### Step 5: Preview
 **Route:** `/project/[projectId]/preview`
 
-Generate and preview TTS audio for your selected voice with the full script. View project thumbnail.
+Generate and preview TTS audio for your selected voice with the full script.
 
 **Actions:**
 - Automatically generate TTS audio job using selected voice and script (if needed)
-- Display project summary (name, selected voice, script)
-- View AI-generated project thumbnail
 - Real-time progress tracking (queued → processing → completed)
-- Show audio player with generated voice audio when complete
 - Play generated audio preview
-- Review configuration before video composition
+- Review audio quality before proceeding
 
-**Display:**
-- Project thumbnail displayed
-- Full script available via expandable card
-- TTS generation progress
+**Display Priority (Top to Bottom):**
+1. **Audio Preview** (first viewport) - Audio player and controls
+2. **Project Summary** - Name, selected voice
+3. **Full Script** - Expandable card
 
 **TTS Generation:**
 - Job auto-created when page loads (if needed)
@@ -169,20 +169,63 @@ Generate and preview TTS audio for your selected voice with the full script. Vie
 ### Step 6: Compose
 **Route:** `/project/[projectId]/compose`
 
-Generate the final video composition. View script tagline that will guide the composition.
+Generate the final video composition and customize the project thumbnail.
 
 **Actions:**
-- View script tagline (the core message for video composition)
-- Start video generation job with TTS audio
-- Track async video processing progress
-- Preview composed video
+- **Thumbnail Customization** (before video generation):
+  - View AI-generated thumbnail (generated in Step 3)
+  - Re-generate thumbnail using AI (same prompt or modified)
+  - Upload custom thumbnail image
+  - Add/edit overlay text (defaults to script tagline)
+  - Preview thumbnail with text overlay
+  - Finalize thumbnail design
+- **Video Generation**:
+  - Review final configuration (thumbnail + audio)
+  - Start video generation job with TTS audio
+  - Track async video processing progress
+  - Preview composed video
+
+**Thumbnail Customization Details:**
+- **Base Image**: AI-generated (no text) OR user-uploaded
+- **Text Overlay**: Script tagline by default, fully customizable
+- **Re-generate AI Thumbnail**: 
+  - Uses original prompt (movie title + script summary)
+  - Can be regenerated multiple times
+  - Shows generation progress
+- **Upload Custom Thumbnail**:
+  - Accepts image files (JPG, PNG, WEBP)
+  - Replaces AI-generated base image
+  - Text overlay still applies
+- **Text Customization**:
+  - Edit overlay text content
+  - Adjust font size, position, color (future enhancement)
+  - Preview changes in real-time
+- **Final Output**: Base image + text overlay = Project Thumbnail
 
 **Display:**
-- Script tagline prominently displayed
-- Full script available via expandable card
-- Video generation placeholder/progress
+- **Thumbnail Editor Section** (prominent, above video generation)
+  - Thumbnail preview with text overlay
+  - Re-generate AI button
+  - Upload custom image button
+  - Text input field (with tagline default)
+  - Confirm/Save button
+- **Video Generation Section** (below thumbnail editor)
+  - Script tagline display (read-only reference)
+  - Full script (expandable card)
+  - Start video generation button (disabled until thumbnail confirmed)
+  - Video generation progress/preview
 
-**Completion:** Video file generated and available
+**Technical Flow:**
+1. User lands on page → Shows AI-generated thumbnail (if ready) or generation status
+2. User can:
+   - Keep AI-generated thumbnail + customize text
+   - Re-generate AI thumbnail (POST `/api/v1/projects/{id}/thumbnail/regenerate`)
+   - Upload custom image (POST `/api/v1/projects/{id}/thumbnail/upload`)
+3. User edits overlay text (defaults to script tagline)
+4. User confirms thumbnail → Enables "Start Video Generation" button
+5. User starts video generation → Uses confirmed thumbnail in video metadata
+
+**Completion:** Thumbnail finalized AND video file generated
 
 **Advances to:** Finalize
 
@@ -191,23 +234,25 @@ Generate the final video composition. View script tagline that will guide the co
 ### Step 7: Finalize
 **Route:** `/project/[projectId]/finalize`
 
-Review, publish, or download your completed project. Thumbnail is used as video poster.
+Review, publish, or download your completed project. Thumbnail is finalized and used as video poster.
 
 **Actions:**
-- View AI-generated project thumbnail
+- View finalized project thumbnail (confirmed in Step 6)
 - Review project summary and final video
 - Download video file
 - Publish to platform (YouTube, social media, etc.)
 - Return to projects list
 
 **Display:**
-- Project thumbnail displayed
+- Finalized project thumbnail (with text overlay)
 - Full script available via expandable card
 - Video player with thumbnail as poster
 
 **Video Player:**
-- Uses AI-generated thumbnail as video poster image
+- Uses finalized thumbnail as video poster image
 - Provides professional preview before playback
+
+**Note:** Thumbnail is read-only at this step. All customization happens in Step 6.
 
 **Completion:** Project published or downloaded
 
@@ -231,12 +276,22 @@ CREATE TABLE projects (
     suggested_names JSON,
     script_summary VARCHAR(500),
     
-    -- AI-generated thumbnail
+    -- AI-generated thumbnail (base image, no text)
     thumbnail_url VARCHAR(512),
     thumbnail_status VARCHAR(50) DEFAULT 'pending' CHECK (
         thumbnail_status IN ('pending', 'generating', 'completed', 'failed')
     ),
     thumbnail_error VARCHAR(1000),
+    
+    -- Custom/uploaded thumbnail (optional)
+    custom_thumbnail_url VARCHAR(512),
+    
+    -- Thumbnail text overlay
+    thumbnail_text VARCHAR(200),  -- Defaults to script_summary, customizable in Step 6
+    
+    -- Final thumbnail (used in video metadata)
+    final_thumbnail_url VARCHAR(512),  -- Base image + text overlay composite
+    thumbnail_confirmed BOOLEAN DEFAULT FALSE,  -- Set to true when user confirms in Step 6
     
     -- Step 1: Movie selection
     movie_id INTEGER REFERENCES tmdb.movies(id) ON DELETE SET NULL,
@@ -267,9 +322,13 @@ CREATE INDEX idx_projects_movie_id ON projects(movie_id);
 - `active_script_id`: Pointer to active script version (Step 2)
 - `project_name`: Custom project name from Step 3
 - `suggested_names`: Cached AI name suggestions
-- `script_summary`: AI-generated tagline for thumbnail prompts (internal use)
-- `thumbnail_url`: AI-generated thumbnail URL (available from Step 3+)
+- `script_summary`: AI-generated tagline for thumbnail prompts and default overlay text
+- `thumbnail_url`: AI-generated base thumbnail URL (no text, generated in Step 3)
 - `thumbnail_status`: Thumbnail generation status
+- `custom_thumbnail_url`: User-uploaded thumbnail (optional, Step 6)
+- `thumbnail_text`: Overlay text for thumbnail (defaults to script_summary, customizable in Step 6)
+- `final_thumbnail_url`: Composite thumbnail (base + text overlay, created in Step 6)
+- `thumbnail_confirmed`: Whether user confirmed thumbnail in Step 6
 - `active_tts_job_id`: Pointer to active TTS job (Steps 4-5)
 - `active_video_job_id`: Pointer to active video job (Step 6)
 - `is_deleted`: Soft delete flag
@@ -304,6 +363,9 @@ Body: { "script": "Updated script content..." }
 ```
 PATCH /api/v1/projects/{id}
 Body: { "project_name": "My Awesome Project" }
+
+# AI thumbnail generation happens automatically in background
+# No explicit API call needed - triggered by Step 3 entry
 ```
 
 ### Step 4: Voice Selection
@@ -354,6 +416,32 @@ Response: {
 
 ### Step 6: Compose
 ```
+# Thumbnail Management
+POST /api/v1/projects/{id}/thumbnail/regenerate
+Body: { "prompt": "movie title + script summary" }
+Response: { "thumbnail_url": "https://...", "status": "generating" }
+
+POST /api/v1/projects/{id}/thumbnail/upload
+Body: FormData with image file
+Response: { "custom_thumbnail_url": "https://..." }
+
+PATCH /api/v1/projects/{id}/thumbnail
+Body: { 
+  "thumbnail_text": "Custom overlay text",
+  "use_custom": true  // Use custom_thumbnail_url instead of AI-generated
+}
+
+POST /api/v1/projects/{id}/thumbnail/finalize
+Body: { 
+  "thumbnail_text": "Final overlay text",
+  "base_image_url": "https://..."  // AI-generated OR custom
+}
+Response: { 
+  "final_thumbnail_url": "https://...",  // Composite image (base + text)
+  "thumbnail_confirmed": true 
+}
+
+# Video Generation (requires confirmed thumbnail)
 POST /api/v1/projects/{id}/compose
 Body: { "tts_job_id": "job-id" }
 Response: { "job_id": "job-123", "status": "queued" }
@@ -369,7 +457,8 @@ Response: {
   "id": 123,
   "title": "My Project",
   "video_url": "https://storage.../video.mp4",
-  "thumbnail_url": "https://storage.../thumbnail.jpg",
+  "final_thumbnail_url": "https://storage.../final_thumbnail.jpg",  // Composite with text
+  "thumbnail_confirmed": true,
   ...
 }
 
@@ -389,11 +478,14 @@ src/app/project/
   [projectId]/
     source/page.tsx          # Step 1
     script/page.tsx          # Step 2
-    details/page.tsx         # Step 3 - Shows AI thumbnail
+    details/page.tsx         # Step 3 - Shows small AI thumbnail preview (md+ screens)
     voice/page.tsx           # Step 4
-    preview/page.tsx         # Step 5 - Shows AI thumbnail
-    compose/page.tsx         # Step 6 - Shows AI thumbnail
-    finalize/page.tsx        # Step 7 - Shows AI thumbnail + uses as video poster
+    preview/page.tsx         # Step 5 - Audio preview (no thumbnail)
+    compose/page.tsx         # Step 6 - Thumbnail editor + video generation
+    finalize/page.tsx        # Step 7 - Shows final thumbnail as video poster
+
+src/components/project/
+  ThumbnailEditor.tsx        # Step 6 thumbnail customization component
 
 src/lib/
   project-client.ts          # API client functions (includes thumbnail fields)
@@ -418,10 +510,17 @@ const {
 Each step page calls `advanceStep()` when the user completes the step's requirements:
 
 ```typescript
-// Example from preview page
-const handleContinue = async () => {
-  await advanceProjectStep(projectId, "compose");
-  router.push(`/project/${projectId}/compose`);
+// Example from compose page - only advance after thumbnail is confirmed
+const handleStartVideoGeneration = async () => {
+  if (!project.thumbnail_confirmed) {
+    toast.error("Please finalize your thumbnail first");
+    return;
+  }
+  
+  await createVideoJob(projectId, ttsJobId);
+  // Wait for video completion...
+  await advanceProjectStep(projectId, "finalize");
+  router.push(`/project/${projectId}/finalize`);
 };
 ```
 
@@ -496,14 +595,24 @@ The workflow navigation component (`FloatingWorkflowNavigation`) enforces these 
 - [ ] Back button disabled during TTS generation
 
 ### Compose Step (Step 6)
+- [ ] AI-generated thumbnail displays correctly
+- [ ] Re-generate thumbnail button works
+- [ ] Upload custom thumbnail works
+- [ ] Text overlay input shows script tagline by default
+- [ ] Can edit overlay text
+- [ ] Preview shows thumbnail + text overlay in real-time
+- [ ] Finalize thumbnail button creates composite image
+- [ ] Video generation button disabled until thumbnail confirmed
 - [ ] Receives TTS job ID from Step 5
-- [ ] Can start video generation with TTS
+- [ ] Can start video generation with confirmed thumbnail
 - [ ] Video progress tracks correctly
 - [ ] Next button enabled when video complete
 
 ### Finalize Step (Step 7)
-- [ ] Displays project summary correctly
+- [ ] Displays finalized thumbnail (with text overlay)
+- [ ] Thumbnail is read-only (no edit buttons)
 - [ ] Shows final video player
+- [ ] Video uses finalized thumbnail as poster
 - [ ] Download button works
 - [ ] Publish button works
 - [ ] Can return to projects list
@@ -557,6 +666,9 @@ The workflow navigation component (`FloatingWorkflowNavigation`) enforces these 
    - Next button enabled
 
 7. **Step 6 - Compose page**
+   - Views AI-generated thumbnail (from Step 3)
+   - Edits overlay text: "A mind-bending heist"
+   - Finalizes thumbnail → Creates composite image
    - Receives TTS job ID
    - Starts video generation
    - Polls progress (1/4, 2/4, 3/4, 4/4)
@@ -564,7 +676,8 @@ The workflow navigation component (`FloatingWorkflowNavigation`) enforces these 
 
 8. **Step 7 - Finalize page**
    - Reviews project summary
-   - Plays final video
+   - Views finalized thumbnail with text overlay
+   - Plays final video (thumbnail as poster)
    - Downloads or publishes
 
 9. **Complete**
@@ -573,6 +686,9 @@ The workflow navigation component (`FloatingWorkflowNavigation`) enforces these 
 
 ## Future Enhancements
 
+- [ ] Advanced thumbnail text styling (font, color, position, shadow)
+- [ ] Thumbnail templates library
+- [ ] Multiple thumbnail variants A/B testing
 - [ ] Multiple voice actors per project
 - [ ] Background music selection
 - [ ] Video template customization
