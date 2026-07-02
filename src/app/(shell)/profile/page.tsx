@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
-import { updateUser, changePassword, setPassword, type UserResponse } from "@/lib/api-client";
+import { updateUser, changePassword, setPassword, resetOnboarding, type UserResponse } from "@/lib/api-client";
 
 export default function ProfilePage() {
+  const router = useRouter();
   const { user, refreshUser, logout, deleteUser } = useAuth();
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState("");
@@ -20,6 +22,8 @@ export default function ProfilePage() {
   const [profileSuccess, setProfileSuccess] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteText, setDeleteText] = useState("");
+  const [copyFeedback, setCopyFeedback] = useState(false);
+  const [resettingOnboarding, setResettingOnboarding] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -83,6 +87,27 @@ export default function ProfilePage() {
     }
   }
 
+  async function handleCopyEmail() {
+    try {
+      await navigator.clipboard.writeText(user.email);
+      setCopyFeedback(true);
+      setTimeout(() => setCopyFeedback(false), 2000);
+    } catch (err: unknown) {
+      console.error("Failed to copy email:", err);
+    }
+  }
+
+  async function handleResetOnboarding() {
+    setResettingOnboarding(true);
+    try {
+      await resetOnboarding();
+      router.push("/onboarding");
+    } catch (err: unknown) {
+      setProfileError(err instanceof Error ? err.message : "Failed to reset onboarding");
+      setResettingOnboarding(false);
+    }
+  }
+
   if (!user) return null;
 
   const initials = (user.given_name?.[0] || user.name?.[0] || user.email[0]).toUpperCase();
@@ -118,7 +143,24 @@ export default function ProfilePage() {
               ) : (
                 <h3 className="text-lg font-semibold">{user.name}</h3>
               )}
-              <p className="text-sm text-text-muted">{user.email}</p>
+              <div className="flex items-center justify-center sm:justify-start gap-2 text-sm text-text-muted">
+                <span>{user.email}</span>
+                <button
+                  onClick={handleCopyEmail}
+                  className="rounded p-1 hover:bg-surface-hover"
+                  title="Copy email address"
+                >
+                  {copyFeedback ? (
+                    <svg className="h-4 w-4 text-status-completed" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  ) : (
+                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                  )}
+                </button>
+              </div>
             </div>
             {editing ? (
               <div className="flex gap-2">
@@ -199,21 +241,6 @@ export default function ProfilePage() {
                   className="w-full rounded-md border border-border-default bg-surface-raised px-3 py-2 text-sm text-text-primary focus:border-accent-cyan focus:outline-none disabled:opacity-50"
                 />
               </div>
-            </div>
-            <div>
-              <label htmlFor="profile-email" className="mb-1 block text-sm text-text-secondary">
-                Email address
-              </label>
-              <input
-                id="profile-email"
-                type="email"
-                value={user.email}
-                disabled
-                className="w-full rounded-md border border-border-default bg-surface-raised px-3 py-2 text-sm text-text-primary opacity-50"
-              />
-              <p className="mt-1 text-xs text-text-muted">
-                Email is managed by your login provider.
-              </p>
             </div>
           </div>
         </section>
@@ -316,15 +343,39 @@ export default function ProfilePage() {
         </section>
 
         <section className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-6">
-          <h2 className="mb-4 text-lg font-semibold">Sign out</h2>
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm text-text-muted">End your current session on this device.</p>
-            <button
-              onClick={logout}
-              className="shrink-0 rounded-md border border-border-default bg-surface-raised px-4 py-2 text-sm text-text-secondary hover:bg-surface-hover"
-            >
-              Sign out
-            </button>
+          <h2 className="mb-4 text-lg font-semibold">Session & Onboarding</h2>
+          <div className="space-y-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-sm font-medium text-text-primary">Sign out</p>
+                <p className="text-sm text-text-muted">End your current session on this device.</p>
+              </div>
+              <button
+                onClick={logout}
+                className="shrink-0 rounded-md border border-border-default bg-surface-raised px-4 py-2 text-sm text-text-secondary hover:bg-surface-hover"
+              >
+                Sign out
+              </button>
+            </div>
+            <div className="border-t border-border-default pt-4">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="text-sm font-medium text-text-primary">Reset onboarding</p>
+                  <p className="text-xs text-text-muted mt-1">
+                    Password: <span className={user.has_password ? "text-status-completed" : "text-text-muted"}>
+                      {user.has_password ? "Already Set" : "Not set"}
+                    </span>
+                  </p>
+                </div>
+                <button
+                  onClick={handleResetOnboarding}
+                  disabled={resettingOnboarding}
+                  className="shrink-0 rounded-md border border-border-default bg-surface-raised px-4 py-2 text-sm text-text-secondary hover:bg-surface-hover disabled:opacity-50"
+                >
+                  {resettingOnboarding ? "Resetting..." : "Reset"}
+                </button>
+              </div>
+            </div>
           </div>
         </section>
 

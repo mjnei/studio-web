@@ -117,7 +117,8 @@ export default function DashboardPage() {
                 </h3>
               </div>
               <p className="text-text-secondary mb-4">
-                Ready to create your first project? Click &quot;New Project&quot; to get started and bring your ideas to life.
+                Ready to create your first project? Click &quot;New Project&quot; to get started and
+                bring your ideas to life.
               </p>
               <Link href="/project/new">
                 <Button variant="primary" size="sm">

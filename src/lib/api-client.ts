@@ -275,3 +275,9 @@ export async function setUserPassword(password: string): Promise<UserResponse> {
     body: JSON.stringify({ password }),
   });
 }
+
+export async function resetOnboarding(): Promise<UserResponse> {
+  return request<UserResponse>("/users/me/onboarding", {
+    method: "DELETE",
+  });
+}
