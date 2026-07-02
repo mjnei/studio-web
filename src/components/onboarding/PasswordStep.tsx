@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { Eye, EyeOff, Lock } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Eye, EyeOff, Lock, CheckCircle2 } from "lucide-react";
 import { setUserPassword } from "@/lib/api-client";
+import { useAuth } from "@/lib/auth-context";
 
 interface PasswordStepProps {
   onNext: () => void;
@@ -11,12 +12,14 @@ interface PasswordStepProps {
 }
 
 export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepProps) {
+  const { user } = useAuth();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const hasExistingPassword = user?.has_password ?? false;
 
   const validatePassword = (): boolean => {
     setError("");
@@ -64,14 +67,26 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
           </div>
         </div>
         <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          Set Up Alternative Login
+          {hasExistingPassword ? "Update Your Password" : "Set Up Alternative Login"}
         </h2>
         <p className="text-gray-600 dark:text-gray-300 mb-2">
-          You signed in with Google. Want to add a password for email login too?
+          {hasExistingPassword ? (
+            <>You already have a password set. You can update it here if you&apos;d like.</>
+          ) : (
+            <>You signed in with Google. Want to add a password for email login too?</>
+          )}
         </p>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          With a password, you can log in even if Google is unavailable.
-        </p>
+        {!hasExistingPassword && (
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            With a password, you can log in even if Google is unavailable.
+          </p>
+        )}
+        {hasExistingPassword && (
+          <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded-full text-sm">
+            <CheckCircle2 className="w-4 h-4" aria-hidden="true" />
+            <span>Password already configured</span>
+          </div>
+        )}
       </div>
 
       {/* Form */}
@@ -160,7 +175,13 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
           disabled={loading}
           className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {loading ? "Setting Password..." : "Set Password"}
+          {loading
+            ? hasExistingPassword
+              ? "Updating Password..."
+              : "Setting Password..."
+            : hasExistingPassword
+              ? "Update Password"
+              : "Set Password"}
         </button>
       </form>
 

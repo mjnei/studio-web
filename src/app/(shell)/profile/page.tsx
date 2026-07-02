@@ -3,7 +3,13 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
-import { updateUser, changePassword, setPassword, resetOnboarding, type UserResponse } from "@/lib/api-client";
+import {
+  updateUser,
+  changePassword,
+  setPassword,
+  resetOnboarding,
+  type UserResponse,
+} from "@/lib/api-client";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -101,7 +107,10 @@ export default function ProfilePage() {
     setResettingOnboarding(true);
     try {
       await resetOnboarding();
-      router.push("/onboarding");
+      // Refresh user state to update onboarding_completed flag
+      await refreshUser();
+      // Now navigate to onboarding
+      await router.push("/onboarding");
     } catch (err: unknown) {
       setProfileError(err instanceof Error ? err.message : "Failed to reset onboarding");
       setResettingOnboarding(false);
@@ -151,12 +160,27 @@ export default function ProfilePage() {
                   title="Copy email address"
                 >
                   {copyFeedback ? (
-                    <svg className="h-4 w-4 text-status-completed" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    <svg
+                      className="h-4 w-4 text-status-completed"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M5 13l4 4L19 7"
+                      />
                     </svg>
                   ) : (
                     <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                      />
                     </svg>
                   )}
                 </button>
@@ -362,7 +386,10 @@ export default function ProfilePage() {
                 <div>
                   <p className="text-sm font-medium text-text-primary">Reset onboarding</p>
                   <p className="text-xs text-text-muted mt-1">
-                    Password: <span className={user.has_password ? "text-status-completed" : "text-text-muted"}>
+                    Password:{" "}
+                    <span
+                      className={user.has_password ? "text-status-completed" : "text-text-muted"}
+                    >
                       {user.has_password ? "Already Set" : "Not set"}
                     </span>
                   </p>
