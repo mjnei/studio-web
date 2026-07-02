@@ -18,13 +18,15 @@ export default function CompletionStep() {
     const complete = async () => {
       try {
         await completeOnboarding();
-        await refreshUser();
         setIsCompleting(false);
 
-        // Auto-redirect after 2 seconds
+        // Auto-redirect after 5 seconds to allow user to see success message
         redirectTimer = setTimeout(() => {
-          router.push("/projects");
-        }, 2000);
+          // Refresh user data and navigate
+          refreshUser().then(() => {
+            router.push("/projects");
+          });
+        }, 5000);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to complete onboarding");
         setIsCompleting(false);
@@ -41,7 +43,9 @@ export default function CompletionStep() {
   }, [router, refreshUser]);
 
   const handleManualRedirect = () => {
-    router.push("/projects");
+    refreshUser().then(() => {
+      router.push("/projects");
+    });
   };
 
   const handleRetry = () => {
@@ -49,10 +53,11 @@ export default function CompletionStep() {
     setIsCompleting(true);
 
     completeOnboarding()
-      .then(() => refreshUser())
       .then(() => {
         setIsCompleting(false);
-        setTimeout(() => router.push("/projects"), 2000);
+        setTimeout(() => {
+          refreshUser().then(() => router.push("/projects"));
+        }, 5000);
       })
       .catch((err) => {
         setError(err instanceof Error ? err.message : "Failed to complete onboarding");
@@ -148,7 +153,7 @@ export default function CompletionStep() {
       </button>
 
       <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">
-        Redirecting automatically in a moment...
+        Redirecting automatically in 5 seconds...
       </p>
     </div>
   );
