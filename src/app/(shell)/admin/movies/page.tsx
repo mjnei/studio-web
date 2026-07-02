@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Film,
   Trash2,
@@ -17,6 +17,10 @@ import {
   ChevronRight,
   Save,
   X,
+  Grid3x3,
+  List,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import Image from "next/image";
 import {
@@ -37,6 +41,8 @@ type Toast = {
 
 type ViewMode = "library" | "import";
 
+type LayoutMode = "grid-2" | "grid-3" | "grid-4" | "list";
+
 type EditingMovie = {
   id: number;
   douban_id?: string;
@@ -50,6 +56,11 @@ const SUPPORTED_LOCALES = ["en", "de", "fr", "es", "zh-CN", "zh-TW", "ja", "ko"]
 export default function AdminMoviesPage() {
   // View mode: library (manage existing) or import (TMDB search)
   const [viewMode, setViewMode] = useState<ViewMode>("library");
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid-4");
+  const [localesExpanded, setLocalesExpanded] = useState(false);
+  
+  // Refs for auto-focus
+  const tmdbSearchInputRef = useRef<HTMLInputElement>(null);
 
   // Library state
   const [movies, setMovies] = useState<AdminMovieResponse[]>([]);
@@ -71,6 +82,7 @@ export default function AdminMoviesPage() {
   const [tmdbTotalResults, setTmdbTotalResults] = useState(0);
   const [importingIds, setImportingIds] = useState<Set<number>>(new Set());
   const [selectedLocales, setSelectedLocales] = useState<string[]>(SUPPORTED_LOCALES);
+  const [importedMovieIds, setImportedMovieIds] = useState<Set<number>>(new Set()); // Track newly imported movies
 
   // Common state
   const [toasts, setToasts] = useState<Toast[]>([]);
@@ -78,6 +90,11 @@ export default function AdminMoviesPage() {
   useEffect(() => {
     if (viewMode === "library") {
       loadMovies();
+    } else if (viewMode === "import") {
+      // Auto-focus on search input when switching to import tab
+      setTimeout(() => {
+        tmdbSearchInputRef.current?.focus();
+      }, 100);
     }
   }, [viewMode, libraryPage, librarySearchTerm, selectedLocale]);
 
@@ -117,6 +134,9 @@ export default function AdminMoviesPage() {
       return;
     }
 
+    // Blur the input after search
+    tmdbSearchInputRef.current?.blur();
+
     setIsSearchingTmdb(true);
     try {
       const response = await searchTMDBMovies(tmdbSearchQuery, page);
@@ -127,6 +147,36 @@ export default function AdminMoviesPage() {
 
       if (response.results.length === 0) {
         showToast("info", "No movies found. Try a different search query.");
+      } else {
+        // Check which of the search results are already in the database
+        // We'll fetch all library movies in batches (max 100 per request)
+        const allExistingIds = new Set<number>();
+        let libraryPage = 1;
+        let hasMore = true;
+        
+        while (hasMore && libraryPage <= 10) { // Limit to 1000 movies max for performance
+          try {
+            const libraryResponse = await adminListMovies({ 
+              page: libraryPage, 
+              page_size: 100 
+            });
+            libraryResponse.movies.forEach((m) => allExistingIds.add(m.id));
+            hasMore = libraryResponse.movies.length === 100;
+            libraryPage++;
+          } catch (error) {
+            console.error("Error fetching library for comparison:", error);
+            break;
+          }
+        }
+        
+        // Initialize imported set with existing movies from search results
+        const initialImported = new Set(importedMovieIds);
+        response.results.forEach((movie) => {
+          if (allExistingIds.has(movie.id)) {
+            initialImported.add(movie.id);
+          }
+        });
+        setImportedMovieIds(initialImported);
       }
     } catch (error: any) {
       showToast("error", error.message || "Failed to search movies");
@@ -144,6 +194,10 @@ export default function AdminMoviesPage() {
         locales: selectedLocales.length > 0 ? selectedLocales : undefined,
       });
       showToast("success", response.message);
+
+      // Track this movie as imported (whether new or existing)
+      setImportedMovieIds((prev) => new Set(prev).add(movie.id));
+
       // Reload library if in library mode
       if (viewMode === "library") {
         loadMovies();
@@ -232,6 +286,21 @@ export default function AdminMoviesPage() {
     return `https://image.tmdb.org/t/p/${size}${path}`;
   };
 
+  const getGridClass = () => {
+    switch (layoutMode) {
+      case "grid-2":
+        return "grid gap-6 sm:grid-cols-2";
+      case "grid-3":
+        return "grid gap-6 sm:grid-cols-2 lg:grid-cols-3";
+      case "grid-4":
+        return "grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
+      case "list":
+        return "space-y-4";
+      default:
+        return "grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
+    }
+  };
+
   return (
     <div className="mx-auto max-w-7xl">
       {/* Toasts */}
@@ -314,6 +383,53 @@ export default function AdminMoviesPage() {
               />
             </div>
             <div className="flex items-center gap-2">
+              {/* Layout Mode Toggle */}
+              <div className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-panel p-1">
+                <button
+                  onClick={() => setLayoutMode("grid-2")}
+                  className={`rounded p-1.5 transition-all ${
+                    layoutMode === "grid-2"
+                      ? "bg-accent-primary text-white"
+                      : "text-text-muted hover:text-text-primary"
+                  }`}
+                  title="2 columns"
+                >
+                  <Grid3x3 className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={() => setLayoutMode("grid-3")}
+                  className={`rounded p-1.5 transition-all ${
+                    layoutMode === "grid-3"
+                      ? "bg-accent-primary text-white"
+                      : "text-text-muted hover:text-text-primary"
+                  }`}
+                  title="3 columns"
+                >
+                  <Grid3x3 className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={() => setLayoutMode("grid-4")}
+                  className={`rounded p-1.5 transition-all ${
+                    layoutMode === "grid-4"
+                      ? "bg-accent-primary text-white"
+                      : "text-text-muted hover:text-text-primary"
+                  }`}
+                  title="4 columns"
+                >
+                  <Grid3x3 className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={() => setLayoutMode("list")}
+                  className={`rounded p-1.5 transition-all ${
+                    layoutMode === "list"
+                      ? "bg-accent-primary text-white"
+                      : "text-text-muted hover:text-text-primary"
+                  }`}
+                  title="List view"
+                >
+                  <List className="h-4 w-4" />
+                </button>
+              </div>
               <span className="text-sm text-text-muted">Locale:</span>
               <select
                 value={selectedLocale}
@@ -360,11 +476,145 @@ export default function AdminMoviesPage() {
             </div>
           ) : (
             <>
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-6">
+              <div className={getGridClass() + " mb-6"}>
                 {movies.map((movie) => {
                   const posterUrl = getImageUrl(movie.poster_path);
                   const isEditing = editingId === movie.id;
 
+                  if (layoutMode === "list") {
+                    // List view layout
+                    return (
+                      <div
+                        key={movie.id}
+                        className="group flex gap-4 overflow-hidden rounded-2xl border border-border-default bg-surface-panel p-4 transition-all hover:border-accent-primary/50 hover:shadow-lg"
+                      >
+                        {/* Poster Thumbnail */}
+                        <div className="relative h-32 w-24 flex-shrink-0 overflow-hidden rounded-lg bg-surface-raised">
+                          {posterUrl ? (
+                            <Image
+                              src={posterUrl}
+                              alt={movie.title || movie.original_title}
+                              fill
+                              className="object-cover"
+                              unoptimized
+                            />
+                          ) : (
+                            <div className="flex h-full items-center justify-center">
+                              <Film className="h-8 w-8 text-text-muted opacity-50" />
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Movie Info */}
+                        <div className="flex flex-1 flex-col">
+                          <div className="mb-2 flex items-start justify-between gap-4">
+                            <div className="flex-1">
+                              <h3 className="mb-1 text-base font-semibold text-text-primary">
+                                {movie.title || movie.original_title}
+                              </h3>
+                              {movie.original_title !== movie.title && (
+                                <p className="mb-1 text-sm text-text-muted">
+                                  {movie.original_title}
+                                </p>
+                              )}
+                              <div className="flex items-center gap-3 text-sm text-text-muted">
+                                {movie.release_date && (
+                                  <div className="flex items-center gap-1">
+                                    <Calendar className="h-3.5 w-3.5" />
+                                    <span>{new Date(movie.release_date).getFullYear()}</span>
+                                  </div>
+                                )}
+                                {movie.vote_average && movie.vote_average > 0 && (
+                                  <div className="flex items-center gap-1">
+                                    <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
+                                    <span>{movie.vote_average.toFixed(1)}</span>
+                                  </div>
+                                )}
+                                <span className="text-xs">ID: {movie.id}</span>
+                                {movie.douban_id && (
+                                  <span className="text-xs">Douban: {movie.douban_id}</span>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Actions */}
+                            {isEditing && editingData ? (
+                              <div className="flex gap-2">
+                                <button
+                                  onClick={handleUpdateMovie}
+                                  className="flex items-center gap-1 rounded-lg bg-green-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-green-700"
+                                >
+                                  <Save className="h-3.5 w-3.5" />
+                                  Save
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    setEditingId(null);
+                                    setEditingData(null);
+                                  }}
+                                  className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-base px-3 py-1.5 text-sm font-medium text-text-secondary hover:bg-surface-hover"
+                                >
+                                  <X className="h-3.5 w-3.5" />
+                                </button>
+                              </div>
+                            ) : (
+                              <div className="flex gap-2">
+                                <button
+                                  onClick={() => {
+                                    setEditingId(movie.id);
+                                    setEditingData({
+                                      id: movie.id,
+                                      douban_id: movie.douban_id || undefined,
+                                      popularity: movie.popularity || undefined,
+                                      vote_average: movie.vote_average || undefined,
+                                      vote_count: movie.vote_count || undefined,
+                                    });
+                                  }}
+                                  className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-base px-3 py-1.5 text-sm font-medium text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all"
+                                >
+                                  <Edit2 className="h-3.5 w-3.5" />
+                                  Edit
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteMovie(movie.id)}
+                                  className="flex items-center gap-1 rounded-lg border border-red-500/50 bg-red-500/10 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-500/20 transition-all"
+                                >
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                </button>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Overview */}
+                          {movie.overview && (
+                            <p className="mb-2 line-clamp-2 text-sm text-text-secondary">
+                              {movie.overview}
+                            </p>
+                          )}
+
+                          {/* Edit Form */}
+                          {isEditing && editingData && (
+                            <div className="mt-2 rounded-lg border border-border-default bg-surface-base p-3">
+                              <div>
+                                <label className="text-xs text-text-muted">Douban ID</label>
+                                <input
+                                  type="text"
+                                  value={editingData.douban_id || ""}
+                                  onChange={(e) =>
+                                    setEditingData({ ...editingData, douban_id: e.target.value })
+                                  }
+                                  className="w-full rounded border border-border-default bg-surface-panel px-2 py-1 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
+                                  placeholder="Optional"
+                                />
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  // Grid view layout
                   return (
                     <div
                       key={movie.id}
@@ -551,39 +801,59 @@ export default function AdminMoviesPage() {
       {viewMode === "import" && (
         <>
           {/* Locale Selection */}
-          <div className="mb-6 rounded-2xl border border-border-default bg-surface-panel p-6">
-            <div className="mb-3 flex items-center justify-between">
-              <h2 className="text-sm font-semibold text-text-primary">
-                Translation Locales to Import
-              </h2>
-              <button
-                onClick={toggleAllLocales}
-                className="text-xs font-medium text-accent-primary hover:text-accent-primary/80"
-              >
-                {selectedLocales.length === SUPPORTED_LOCALES.length
-                  ? "Deselect All"
-                  : "Select All"}
-              </button>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {SUPPORTED_LOCALES.map((locale) => (
-                <button
-                  key={locale}
-                  onClick={() => toggleLocale(locale)}
-                  className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-all ${
-                    selectedLocales.includes(locale)
-                      ? "bg-accent-primary text-white"
-                      : "border border-border-default bg-surface-base text-text-secondary hover:bg-surface-hover"
-                  }`}
-                >
-                  {locale}
-                </button>
-              ))}
-            </div>
-            <p className="mt-3 text-xs text-text-muted">
-              Selected locales ({selectedLocales.length}): Movie titles, overviews, genres, person
-              names, and character names will be fetched in these languages
-            </p>
+          <div className="mb-6 rounded-2xl border border-border-default bg-surface-panel">
+            <button
+              onClick={() => setLocalesExpanded(!localesExpanded)}
+              className="flex w-full items-center justify-between p-6 text-left transition-colors hover:bg-surface-hover"
+            >
+              <div>
+                <h2 className="text-sm font-semibold text-text-primary">
+                  Translation Locales to Import
+                </h2>
+                <p className="mt-1 text-xs text-text-muted">
+                  {selectedLocales.length} of {SUPPORTED_LOCALES.length} locales selected
+                </p>
+              </div>
+              {localesExpanded ? (
+                <ChevronUp className="h-5 w-5 text-text-muted" />
+              ) : (
+                <ChevronDown className="h-5 w-5 text-text-muted" />
+              )}
+            </button>
+
+            {localesExpanded && (
+              <div className="border-t border-border-default p-6 pt-4">
+                <div className="mb-3 flex items-center justify-between">
+                  <button
+                    onClick={toggleAllLocales}
+                    className="text-xs font-medium text-accent-primary hover:text-accent-primary/80"
+                  >
+                    {selectedLocales.length === SUPPORTED_LOCALES.length
+                      ? "Deselect All"
+                      : "Select All"}
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {SUPPORTED_LOCALES.map((locale) => (
+                    <button
+                      key={locale}
+                      onClick={() => toggleLocale(locale)}
+                      className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-all ${
+                        selectedLocales.includes(locale)
+                          ? "bg-accent-primary text-white"
+                          : "border border-border-default bg-surface-base text-text-secondary hover:bg-surface-hover"
+                      }`}
+                    >
+                      {locale}
+                    </button>
+                  ))}
+                </div>
+                <p className="mt-3 text-xs text-text-muted">
+                  Movie titles, overviews, genres, person names, and character names will be
+                  fetched in selected languages
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Search Bar */}
@@ -592,6 +862,7 @@ export default function AdminMoviesPage() {
               <div className="flex flex-1 items-center gap-3 rounded-lg border border-border-default bg-surface-base px-4 py-3">
                 <Search className="h-5 w-5 text-text-muted" />
                 <input
+                  ref={tmdbSearchInputRef}
                   type="text"
                   placeholder="Search for a movie by title on TMDB..."
                   value={tmdbSearchQuery}
@@ -690,24 +961,31 @@ export default function AdminMoviesPage() {
                           </p>
                         )}
 
-                        {/* Import Button */}
-                        <button
-                          onClick={() => handleImport(movie)}
-                          disabled={isImporting}
-                          className="flex w-full items-center justify-center gap-2 rounded-lg bg-accent-primary px-3 py-2 text-sm font-medium text-white hover:bg-accent-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                        >
-                          {isImporting ? (
-                            <>
-                              <Loader className="h-4 w-4 animate-spin" />
-                              Importing...
-                            </>
-                          ) : (
-                            <>
-                              <Download className="h-4 w-4" />
-                              Import to Database
-                            </>
-                          )}
-                        </button>
+                        {/* Import Button or Already Imported State */}
+                        {importedMovieIds.has(movie.id) ? (
+                          <div className="flex w-full items-center justify-center gap-2 rounded-lg bg-green-500/10 border border-green-500/50 px-3 py-2 text-sm font-medium text-green-600">
+                            <CheckCircle2 className="h-4 w-4" />
+                            Already in Database
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => handleImport(movie)}
+                            disabled={importingIds.has(movie.id)}
+                            className="flex w-full items-center justify-center gap-2 rounded-lg bg-accent-primary px-3 py-2 text-sm font-medium text-white hover:bg-accent-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                          >
+                            {importingIds.has(movie.id) ? (
+                              <>
+                                <Loader className="h-4 w-4 animate-spin" />
+                                Importing...
+                              </>
+                            ) : (
+                              <>
+                                <Download className="h-4 w-4" />
+                                Import to Database
+                              </>
+                            )}
+                          </button>
+                        )}
 
                         {/* TMDB ID */}
                         <p className="mt-2 text-center text-xs text-text-muted">

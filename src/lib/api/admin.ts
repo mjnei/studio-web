@@ -43,6 +43,7 @@ export interface TMDBImportResponse {
   movie_id: number;
   title: string;
   message: string;
+  is_new: boolean;
 }
 
 export interface AdminMovieResponse {
