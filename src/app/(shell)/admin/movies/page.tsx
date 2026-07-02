@@ -294,36 +294,36 @@ export default function AdminMoviesPage() {
     <div className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-panel p-1">
       <button
         onClick={() => setLayoutMode("grid-sm")}
-        className={`rounded px-2 py-1.5 text-xs font-medium transition-all ${
+        className={`rounded p-1.5 transition-all ${
           layoutMode === "grid-sm"
             ? "bg-accent-primary text-white"
             : "text-text-muted hover:text-text-primary"
         }`}
         title="Small grid (up to 6 columns)"
       >
-        6×
+        <Grid3x3 className="h-4 w-4" />
       </button>
       <button
         onClick={() => setLayoutMode("grid-md")}
-        className={`rounded px-2 py-1.5 text-xs font-medium transition-all ${
+        className={`rounded p-1.5 transition-all ${
           layoutMode === "grid-md"
             ? "bg-accent-primary text-white"
             : "text-text-muted hover:text-text-primary"
         }`}
-        title="Medium grid (up to 4 columns)"
+        title="Medium grid (4 columns)"
       >
-        4×
+        <LayoutGrid className="h-4 w-4" />
       </button>
       <button
         onClick={() => setLayoutMode("grid-lg")}
-        className={`rounded px-2 py-1.5 text-xs font-medium transition-all ${
+        className={`rounded p-1.5 transition-all ${
           layoutMode === "grid-lg"
             ? "bg-accent-primary text-white"
             : "text-text-muted hover:text-text-primary"
         }`}
-        title="Large grid (up to 3 columns)"
+        title="Large grid (3 columns)"
       >
-        3×
+        <Grid2x2 className="h-4 w-4" />
       </button>
       <button
         onClick={() => setLayoutMode("list")}
@@ -342,15 +342,18 @@ export default function AdminMoviesPage() {
   const getGridClass = () => {
     switch (layoutMode) {
       case "grid-sm":
-        return "grid gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6";
+        // Small cards: 3 cols (sm), 4 cols (md), 5 cols (lg), 6 cols (xl)
+        return "grid gap-6 grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6";
       case "grid-md":
+        // Medium cards: 2 cols (base), 3 cols (md), 4 cols (lg)
         return "grid gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4";
       case "grid-lg":
-        return "grid gap-6 grid-cols-2 lg:grid-cols-3";
+        // Large cards: 2 cols (base), 2 cols (md), 3 cols (lg)
+        return "grid gap-6 grid-cols-2 md:grid-cols-2 lg:grid-cols-3";
       case "list":
         return "space-y-4";
       default:
-        return "grid gap-6 grid-cols-2 lg:grid-cols-3";
+        return "grid gap-6 grid-cols-2 md:grid-cols-2 lg:grid-cols-3";
     }
   };
 
