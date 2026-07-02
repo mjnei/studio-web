@@ -15,6 +15,9 @@ export interface MovieResponse {
   release_date?: string | null;
   runtime?: number | null;
   vote_average?: number | null;
+  // External identifiers exposed to authenticated users
+  imdb_id?: string | null;
+  douban_id?: string | null;
 }
 
 export interface VoiceResponse {

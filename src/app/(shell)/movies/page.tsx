@@ -32,7 +32,7 @@ type LayoutMode = "grid-sm" | "grid-md" | "list";
 interface EnrichedMovie extends MovieResponse {
   directors?: string[];
   topCast?: string[];
-  genres?: string[];
+  genres?: string[] | Array<{ id?: number; name?: string } | Record<string, unknown>> | null;
 }
 
 export default function MoviesPage() {
