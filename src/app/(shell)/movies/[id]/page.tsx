@@ -127,11 +127,11 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
       </div>
 
       {/* Back Button */}
-      <div className="sticky top-0 z-40 border-b border-border-default bg-surface-panel/95 backdrop-blur-sm">
+      <div className="sticky top-0 z-40">
         <div className="mx-auto max-w-4xl px-4 py-3 sm:px-6">
           <Link
             href="/movies"
-            className="inline-flex items-center gap-2 text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
+            className="inline-flex items-center gap-2 rounded-lg bg-surface-panel/80 backdrop-blur-md border border-border-default/50 px-3 py-2 text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-surface-panel/90 transition-all shadow-lg"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to Movies
@@ -453,7 +453,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                 {actors.length > 0 && (
                   <div className="rounded-xl border border-border-default bg-surface-panel p-6">
                     <h2 className="mb-5 text-lg font-bold text-text-primary">Top Cast</h2>
-                    
+
                     {/* Desktop: Grid Layout */}
                     <div className="hidden sm:grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                       {actors.map((actor) => (
@@ -486,27 +486,34 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                       ))}
                     </div>
 
-                    {/* Mobile: List Layout (matches crew style) */}
-                    <div className="space-y-3 sm:hidden">
+                    {/* Mobile: 2-Column Grid */}
+                    <div className="grid grid-cols-2 gap-3 sm:hidden">
                       {actors.map((actor) => (
-                        <div key={actor.id} className="flex items-center gap-3">
-                          {actor.person.profile_path ? (
-                            <img
-                              src={`https://image.tmdb.org/t/p/w185${actor.person.profile_path}`}
-                              alt={actor.person.display_name}
-                              className="h-16 w-16 rounded-lg object-cover ring-2 ring-border-default"
-                            />
-                          ) : (
-                            <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-surface-raised ring-2 ring-border-default">
-                              <User className="h-6 w-6 text-text-muted" />
-                            </div>
-                          )}
-                          <div className="min-w-0 flex-1">
-                            <p className="truncate text-sm font-semibold text-text-primary">
+                        <div
+                          key={actor.id}
+                          className="group overflow-hidden rounded-xl border border-border-default bg-surface-raised transition-all hover:border-accent-cyan/40"
+                        >
+                          <div className="relative aspect-square overflow-hidden bg-surface-base">
+                            {actor.person.profile_path ? (
+                              <img
+                                src={`https://image.tmdb.org/t/p/w342${actor.person.profile_path}`}
+                                alt={actor.person.display_name}
+                                className="h-full w-full object-cover"
+                              />
+                            ) : (
+                              <div className="flex h-full items-center justify-center">
+                                <User className="h-12 w-12 text-text-muted opacity-30" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="p-2.5">
+                            <p className="mb-1 truncate text-xs font-bold text-text-primary">
                               {actor.person.display_name}
                             </p>
                             {actor.character && (
-                              <p className="truncate text-xs text-text-muted">{actor.character}</p>
+                              <p className="truncate text-[10px] leading-tight text-text-muted">
+                                {actor.character}
+                              </p>
                             )}
                           </div>
                         </div>
