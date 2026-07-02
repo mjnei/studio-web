@@ -18,6 +18,8 @@ import {
   Save,
   X,
   Grid3x3,
+  Grid2x2,
+  LayoutGrid,
   List,
   ChevronDown,
   ChevronUp,
@@ -41,7 +43,7 @@ type Toast = {
 
 type ViewMode = "library" | "import";
 
-type LayoutMode = "grid-2" | "grid-3" | "grid-4" | "list";
+type LayoutMode = "grid-sm" | "grid-md" | "grid-lg" | "list";
 
 type EditingMovie = {
   id: number;
@@ -56,9 +58,9 @@ const SUPPORTED_LOCALES = ["en", "de", "fr", "es", "zh-CN", "zh-TW", "ja", "ko"]
 export default function AdminMoviesPage() {
   // View mode: library (manage existing) or import (TMDB search)
   const [viewMode, setViewMode] = useState<ViewMode>("library");
-  const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid-4");
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid-lg");
   const [localesExpanded, setLocalesExpanded] = useState(false);
-  
+
   // Refs for auto-focus
   const tmdbSearchInputRef = useRef<HTMLInputElement>(null);
 
@@ -153,12 +155,13 @@ export default function AdminMoviesPage() {
         const allExistingIds = new Set<number>();
         let libraryPage = 1;
         let hasMore = true;
-        
-        while (hasMore && libraryPage <= 10) { // Limit to 1000 movies max for performance
+
+        while (hasMore && libraryPage <= 10) {
+          // Limit to 1000 movies max for performance
           try {
-            const libraryResponse = await adminListMovies({ 
-              page: libraryPage, 
-              page_size: 100 
+            const libraryResponse = await adminListMovies({
+              page: libraryPage,
+              page_size: 100,
             });
             libraryResponse.movies.forEach((m) => allExistingIds.add(m.id));
             hasMore = libraryResponse.movies.length === 100;
@@ -168,7 +171,7 @@ export default function AdminMoviesPage() {
             break;
           }
         }
-        
+
         // Initialize imported set with existing movies from search results
         const initialImported = new Set(importedMovieIds);
         response.results.forEach((movie) => {
@@ -286,18 +289,68 @@ export default function AdminMoviesPage() {
     return `https://image.tmdb.org/t/p/${size}${path}`;
   };
 
+  // Layout toggle component (reused in both library and TMDB sections)
+  const LayoutToggle = () => (
+    <div className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-panel p-1">
+      <button
+        onClick={() => setLayoutMode("grid-sm")}
+        className={`rounded px-2 py-1.5 text-xs font-medium transition-all ${
+          layoutMode === "grid-sm"
+            ? "bg-accent-primary text-white"
+            : "text-text-muted hover:text-text-primary"
+        }`}
+        title="Small grid (up to 6 columns)"
+      >
+        6×
+      </button>
+      <button
+        onClick={() => setLayoutMode("grid-md")}
+        className={`rounded px-2 py-1.5 text-xs font-medium transition-all ${
+          layoutMode === "grid-md"
+            ? "bg-accent-primary text-white"
+            : "text-text-muted hover:text-text-primary"
+        }`}
+        title="Medium grid (up to 4 columns)"
+      >
+        4×
+      </button>
+      <button
+        onClick={() => setLayoutMode("grid-lg")}
+        className={`rounded px-2 py-1.5 text-xs font-medium transition-all ${
+          layoutMode === "grid-lg"
+            ? "bg-accent-primary text-white"
+            : "text-text-muted hover:text-text-primary"
+        }`}
+        title="Large grid (up to 3 columns)"
+      >
+        3×
+      </button>
+      <button
+        onClick={() => setLayoutMode("list")}
+        className={`rounded p-1.5 transition-all ${
+          layoutMode === "list"
+            ? "bg-accent-primary text-white"
+            : "text-text-muted hover:text-text-primary"
+        }`}
+        title="List view"
+      >
+        <List className="h-4 w-4" />
+      </button>
+    </div>
+  );
+
   const getGridClass = () => {
     switch (layoutMode) {
-      case "grid-2":
-        return "grid gap-6 sm:grid-cols-2";
-      case "grid-3":
-        return "grid gap-6 sm:grid-cols-2 lg:grid-cols-3";
-      case "grid-4":
-        return "grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
+      case "grid-sm":
+        return "grid gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6";
+      case "grid-md":
+        return "grid gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4";
+      case "grid-lg":
+        return "grid gap-6 grid-cols-2 lg:grid-cols-3";
       case "list":
         return "space-y-4";
       default:
-        return "grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
+        return "grid gap-6 grid-cols-2 lg:grid-cols-3";
     }
   };
 
@@ -384,52 +437,7 @@ export default function AdminMoviesPage() {
             </div>
             <div className="flex items-center gap-2">
               {/* Layout Mode Toggle */}
-              <div className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-panel p-1">
-                <button
-                  onClick={() => setLayoutMode("grid-2")}
-                  className={`rounded p-1.5 transition-all ${
-                    layoutMode === "grid-2"
-                      ? "bg-accent-primary text-white"
-                      : "text-text-muted hover:text-text-primary"
-                  }`}
-                  title="2 columns"
-                >
-                  <Grid3x3 className="h-4 w-4" />
-                </button>
-                <button
-                  onClick={() => setLayoutMode("grid-3")}
-                  className={`rounded p-1.5 transition-all ${
-                    layoutMode === "grid-3"
-                      ? "bg-accent-primary text-white"
-                      : "text-text-muted hover:text-text-primary"
-                  }`}
-                  title="3 columns"
-                >
-                  <Grid3x3 className="h-4 w-4" />
-                </button>
-                <button
-                  onClick={() => setLayoutMode("grid-4")}
-                  className={`rounded p-1.5 transition-all ${
-                    layoutMode === "grid-4"
-                      ? "bg-accent-primary text-white"
-                      : "text-text-muted hover:text-text-primary"
-                  }`}
-                  title="4 columns"
-                >
-                  <Grid3x3 className="h-4 w-4" />
-                </button>
-                <button
-                  onClick={() => setLayoutMode("list")}
-                  className={`rounded p-1.5 transition-all ${
-                    layoutMode === "list"
-                      ? "bg-accent-primary text-white"
-                      : "text-text-muted hover:text-text-primary"
-                  }`}
-                  title="List view"
-                >
-                  <List className="h-4 w-4" />
-                </button>
-              </div>
+              <LayoutToggle />
               <span className="text-sm text-text-muted">Locale:</span>
               <select
                 value={selectedLocale}
@@ -849,8 +857,8 @@ export default function AdminMoviesPage() {
                   ))}
                 </div>
                 <p className="mt-3 text-xs text-text-muted">
-                  Movie titles, overviews, genres, person names, and character names will be
-                  fetched in selected languages
+                  Movie titles, overviews, genres, person names, and character names will be fetched
+                  in selected languages
                 </p>
               </div>
             )}
@@ -894,20 +902,113 @@ export default function AdminMoviesPage() {
           {/* Search Results */}
           {tmdbSearchResults.length > 0 && (
             <>
-              {/* Results Info */}
+              {/* Results Info and Layout Toggle */}
               <div className="mb-4 flex items-center justify-between">
                 <p className="text-sm text-text-secondary">
                   Found {tmdbTotalResults.toLocaleString()} results • Page {tmdbPage} of{" "}
                   {tmdbTotalPages}
                 </p>
+                <LayoutToggle />
               </div>
 
               {/* Results Grid */}
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-6">
+              <div className={getGridClass() + " mb-6"}>
                 {tmdbSearchResults.map((movie) => {
                   const posterUrl = getImageUrl(movie.poster_path);
                   const isImporting = importingIds.has(movie.id);
 
+                  if (layoutMode === "list") {
+                    // List view layout for TMDB results
+                    return (
+                      <div
+                        key={movie.id}
+                        className="group flex gap-4 overflow-hidden rounded-2xl border border-border-default bg-surface-panel p-4 transition-all hover:border-accent-primary/50 hover:shadow-lg"
+                      >
+                        {/* Poster Thumbnail */}
+                        <div className="relative h-32 w-24 flex-shrink-0 overflow-hidden rounded-lg bg-surface-raised">
+                          {posterUrl ? (
+                            <Image
+                              src={posterUrl}
+                              alt={movie.title}
+                              fill
+                              className="object-cover"
+                              unoptimized
+                            />
+                          ) : (
+                            <div className="flex h-full items-center justify-center">
+                              <Film className="h-8 w-8 text-text-muted opacity-50" />
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Movie Info */}
+                        <div className="flex flex-1 flex-col">
+                          <div className="mb-2 flex items-start justify-between gap-4">
+                            <div className="flex-1">
+                              <h3 className="mb-1 text-base font-semibold text-text-primary">
+                                {movie.title}
+                              </h3>
+                              {movie.original_title !== movie.title && (
+                                <p className="mb-1 text-sm text-text-muted">
+                                  {movie.original_title}
+                                </p>
+                              )}
+                              <div className="flex items-center gap-3 text-sm text-text-muted">
+                                {movie.release_date && (
+                                  <div className="flex items-center gap-1">
+                                    <Calendar className="h-3.5 w-3.5" />
+                                    <span>{new Date(movie.release_date).getFullYear()}</span>
+                                  </div>
+                                )}
+                                {movie.vote_average && movie.vote_average > 0 && (
+                                  <div className="flex items-center gap-1">
+                                    <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
+                                    <span>{movie.vote_average.toFixed(1)}</span>
+                                  </div>
+                                )}
+                                <span className="text-xs">TMDB ID: {movie.id}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Overview */}
+                          {movie.overview && (
+                            <p className="mb-3 line-clamp-2 text-sm text-text-secondary">
+                              {movie.overview}
+                            </p>
+                          )}
+
+                          {/* Import Button or Already Imported State */}
+                          {importedMovieIds.has(movie.id) ? (
+                            <div className="flex w-full items-center justify-center gap-2 rounded-lg border border-green-500/50 bg-green-500/10 px-3 py-2 text-sm font-medium text-green-600">
+                              <CheckCircle2 className="h-4 w-4" />
+                              Already in Database
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => handleImport(movie)}
+                              disabled={importingIds.has(movie.id)}
+                              className="flex items-center justify-center gap-2 rounded-lg bg-accent-primary px-3 py-2 text-sm font-medium text-white hover:bg-accent-primary/90 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
+                            >
+                              {importingIds.has(movie.id) ? (
+                                <>
+                                  <Loader className="h-4 w-4 animate-spin" />
+                                  Importing...
+                                </>
+                              ) : (
+                                <>
+                                  <Download className="h-4 w-4" />
+                                  Import to Database
+                                </>
+                              )}
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  // Grid view layout for TMDB results
                   return (
                     <div
                       key={movie.id}
@@ -945,7 +1046,7 @@ export default function AdminMoviesPage() {
                           {movie.title}
                         </h3>
                         {movie.original_title !== movie.title && (
-                          <p className="mb-1 text-xs text-text-muted line-clamp-1">
+                          <p className="mb-1 line-clamp-1 text-xs text-text-muted">
                             {movie.original_title}
                           </p>
                         )}
@@ -963,7 +1064,7 @@ export default function AdminMoviesPage() {
 
                         {/* Import Button or Already Imported State */}
                         {importedMovieIds.has(movie.id) ? (
-                          <div className="flex w-full items-center justify-center gap-2 rounded-lg bg-green-500/10 border border-green-500/50 px-3 py-2 text-sm font-medium text-green-600">
+                          <div className="flex w-full items-center justify-center gap-2 rounded-lg border border-green-500/50 bg-green-500/10 px-3 py-2 text-sm font-medium text-green-600">
                             <CheckCircle2 className="h-4 w-4" />
                             Already in Database
                           </div>
@@ -971,7 +1072,7 @@ export default function AdminMoviesPage() {
                           <button
                             onClick={() => handleImport(movie)}
                             disabled={importingIds.has(movie.id)}
-                            className="flex w-full items-center justify-center gap-2 rounded-lg bg-accent-primary px-3 py-2 text-sm font-medium text-white hover:bg-accent-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                            className="flex w-full items-center justify-center gap-2 rounded-lg bg-accent-primary px-3 py-2 text-sm font-medium text-white hover:bg-accent-primary/90 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
                           >
                             {importingIds.has(movie.id) ? (
                               <>
