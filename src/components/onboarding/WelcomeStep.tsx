@@ -38,8 +38,8 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
 
       {/* Body Text */}
       <p className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-300 mb-8 sm:mb-10 max-w-lg mx-auto px-4 leading-relaxed">
-        Transform your ideas into stunning videos with AI-powered creativity. 
-        Professional results in minutes, not hours.
+        Transform your ideas into stunning videos with AI-powered creativity. Professional results
+        in minutes, not hours.
       </p>
 
       {/* Feature Pills */}

@@ -1,4 +1,17 @@
+"use client";
+
+import { usePathname } from "next/navigation";
+
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const isOnboardingPage = pathname === "/onboarding";
+
+  // For onboarding page, render children directly without wrapper
+  if (isOnboardingPage) {
+    return <>{children}</>;
+  }
+
+  // For other auth pages (login, signup), show the header
   return (
     <div className="relative flex min-h-screen items-center justify-center bg-surface-base px-4 py-12 overflow-hidden">
       {/* Animated Background Gradient */}

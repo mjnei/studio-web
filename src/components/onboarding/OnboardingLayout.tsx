@@ -13,9 +13,9 @@ export default function OnboardingLayout({
     <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-blue-950 flex items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
       <div className="w-full max-w-4xl mx-auto">
         {/* Progress Indicator */}
-        <div 
-          className="mb-6 sm:mb-8 lg:mb-10" 
-          role="status" 
+        <div
+          className="mb-6 sm:mb-8 lg:mb-10"
+          role="status"
           aria-label={`Step ${currentStep + 1} of ${totalSteps}`}
         >
           {/* Step Dots for Desktop */}

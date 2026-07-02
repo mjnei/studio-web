@@ -92,16 +92,19 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
             </div>
             {hasExistingPassword && (
               <div className="absolute -top-1 -right-1">
-                <CheckCircle2 className="w-7 h-7 text-green-500 bg-white dark:bg-gray-800 rounded-full" aria-hidden="true" />
+                <CheckCircle2
+                  className="w-7 h-7 text-green-500 bg-white dark:bg-gray-800 rounded-full"
+                  aria-hidden="true"
+                />
               </div>
             )}
           </div>
         </div>
-        
+
         <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">
           {hasExistingPassword ? "Update Your Password" : "Set Up Alternative Login"}
         </h2>
-        
+
         <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 mb-3 px-4">
           {hasExistingPassword ? (
             <>You already have a password set. You can update it here if you&apos;d like.</>
@@ -109,14 +112,14 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
             <>You signed in with Google. Want to add a password for email login too?</>
           )}
         </p>
-        
+
         {!hasExistingPassword && (
           <div className="flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400 px-4">
             <Shield className="w-4 h-4" aria-hidden="true" />
             <span>Access your account even if Google is unavailable</span>
           </div>
         )}
-        
+
         {hasExistingPassword && (
           <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded-xl text-sm font-medium border border-green-200 dark:border-green-800">
             <CheckCircle2 className="w-5 h-5" aria-hidden="true" />
@@ -160,7 +163,7 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
               )}
             </button>
           </div>
-          
+
           {/* Password Strength Indicator */}
           {password && !hasExistingPassword && (
             <div className="mt-3">
@@ -168,12 +171,17 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
                 <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
                   Password Strength
                 </span>
-                <span className={`text-xs font-semibold ${
-                  passwordStrength.strength <= 2 ? "text-red-600 dark:text-red-400" :
-                  passwordStrength.strength <= 3 ? "text-yellow-600 dark:text-yellow-400" :
-                  passwordStrength.strength <= 4 ? "text-blue-600 dark:text-blue-400" :
-                  "text-green-600 dark:text-green-400"
-                }`}>
+                <span
+                  className={`text-xs font-semibold ${
+                    passwordStrength.strength <= 2
+                      ? "text-red-600 dark:text-red-400"
+                      : passwordStrength.strength <= 3
+                        ? "text-yellow-600 dark:text-yellow-400"
+                        : passwordStrength.strength <= 4
+                          ? "text-blue-600 dark:text-blue-400"
+                          : "text-green-600 dark:text-green-400"
+                  }`}
+                >
                   {passwordStrength.label}
                 </span>
               </div>
@@ -226,20 +234,26 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
               )}
             </button>
           </div>
-          
+
           {/* Match Indicator */}
           {confirmPassword && password && (
             <div className="mt-2 flex items-center gap-2">
               {password === confirmPassword ? (
                 <>
-                  <CheckCircle2 className="w-4 h-4 text-green-600 dark:text-green-400" aria-hidden="true" />
+                  <CheckCircle2
+                    className="w-4 h-4 text-green-600 dark:text-green-400"
+                    aria-hidden="true"
+                  />
                   <span className="text-xs text-green-600 dark:text-green-400 font-medium">
                     Passwords match
                   </span>
                 </>
               ) : (
                 <>
-                  <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400" aria-hidden="true" />
+                  <AlertCircle
+                    className="w-4 h-4 text-red-600 dark:text-red-400"
+                    aria-hidden="true"
+                  />
                   <span className="text-xs text-red-600 dark:text-red-400 font-medium">
                     Passwords do not match
                   </span>

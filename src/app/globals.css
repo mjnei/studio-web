@@ -196,7 +196,8 @@ body {
 
   /* Onboarding-specific animations */
   @keyframes float {
-    0%, 100% {
+    0%,
+    100% {
       transform: translateY(0px);
     }
     50% {
@@ -205,7 +206,8 @@ body {
   }
 
   @keyframes blob {
-    0%, 100% {
+    0%,
+    100% {
       transform: translate(0px, 0px) scale(1);
     }
     33% {

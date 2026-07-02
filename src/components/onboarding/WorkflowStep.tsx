@@ -71,11 +71,13 @@ export default function WorkflowStep({ onNext, onBack }: WorkflowStepProps) {
               <div className="flex sm:flex-col items-start sm:items-center gap-4 sm:gap-3 w-full">
                 {/* Icon with Number Badge */}
                 <div className="relative flex-shrink-0">
-                  <div className={`
+                  <div
+                    className={`
                     w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center
                     bg-gradient-to-br ${step.color} shadow-lg
                     group-hover:scale-110 transition-transform duration-300
-                  `}>
+                  `}
+                  >
                     <Icon className="w-7 h-7 sm:w-8 sm:h-8 text-white" aria-hidden="true" />
                   </div>
                   <span
@@ -100,40 +102,15 @@ export default function WorkflowStep({ onNext, onBack }: WorkflowStepProps) {
               {/* Arrow Indicator for Desktop */}
               {index < workflowSteps.length - 1 && (
                 <div className="hidden lg:block absolute -right-8 top-1/2 -translate-y-1/2 z-10">
-                  <ArrowRight className="w-6 h-6 text-gray-400 dark:text-gray-600" aria-hidden="true" />
+                  <ArrowRight
+                    className="w-6 h-6 text-gray-400 dark:text-gray-600"
+                    aria-hidden="true"
+                  />
                 </div>
               )}
             </div>
           );
         })}
-      </div>
-
-      {/* Info Box */}
-      <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4 sm:p-5 mb-8 sm:mb-10">
-        <div className="flex items-start gap-3">
-          <svg
-            className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          <div>
-            <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300 font-medium mb-1">
-              Switch between steps anytime
-            </p>
-            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-              Work at your own pace. Your progress is automatically saved.
-            </p>
-          </div>
-        </div>
       </div>
 
       {/* Navigation Buttons */}
