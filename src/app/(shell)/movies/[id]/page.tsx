@@ -11,10 +11,17 @@ import {
   Loader,
   AlertCircle,
   CheckCircle2,
+  Film,
+  User,
+  Globe,
+  TrendingUp,
 } from "lucide-react";
 import Link from "next/link";
-import { createProject, tmdbImageUrl, type MovieResponse } from "@/lib/project-client";
-import { adminGetMovie, type AdminMovieResponse } from "@/lib/api/admin";
+import { createProject } from "@/lib/project-client";
+import {
+  adminGetMovieDetails,
+  type MovieDetailsResponse,
+} from "@/lib/api/admin";
 
 type Toast = {
   id: number;
@@ -26,7 +33,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
   const router = useRouter();
   const [movieId, setMovieId] = useState<number | null>(null);
 
-  const [movie, setMovie] = useState<AdminMovieResponse | null>(null);
+  const [movie, setMovie] = useState<MovieDetailsResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isCreatingProject, setIsCreatingProject] = useState(false);
@@ -49,7 +56,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
     setLoading(true);
     setError(null);
     try {
-      const data = await adminGetMovie(movieId, "en");
+      const data = await adminGetMovieDetails(movieId!, "en");
       setMovie(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load movie details");
@@ -69,7 +76,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
   const handleCreateProject = async () => {
     setIsCreatingProject(true);
     try {
-      const project = await createProject(movieId);
+      await createProject(movieId);
       showToast("success", "Project created! Redirecting...");
       setTimeout(() => {
         router.push(`/dashboard`);
@@ -88,6 +95,16 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
   const backdropUrl = movie?.backdrop_path
     ? `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`
     : null;
+
+  // Extract cast and crew
+  const directors = movie?.cast?.filter((c) => c.role === "director") || [];
+  const producers = movie?.cast?.filter((c) => c.role === "producer") || [];
+  const writers = movie?.cast?.filter((c) => c.role === "writer") || [];
+  const actors =
+    movie?.cast
+      ?.filter((c) => c.role === "actor" || c.role === "actress")
+      .sort((a, b) => (a.credit_order || 999) - (b.credit_order || 999))
+      .slice(0, 12) || [];
 
   return (
     <div className="min-h-screen bg-surface-base">
@@ -163,19 +180,20 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
           )}
 
           {/* Content */}
-          <div className="mx-auto max-w-4xl px-4 sm:px-6 py-8 -mt-20 sm:-mt-24 relative z-10">
-            <div className="grid gap-6 sm:grid-cols-[300px_1fr]">
-              {/* Poster */}
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8 -mt-20 sm:-mt-24 relative z-10">
+            <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
+              {/* Left Sidebar - Poster & Actions */}
               <div className="flex flex-col gap-4">
+                {/* Poster */}
                 {posterUrl ? (
                   <img
                     src={posterUrl}
                     alt={movie.title || movie.original_title}
-                    className="w-full rounded-xl border border-border-default shadow-xl"
+                    className="w-full rounded-2xl border border-border-default shadow-2xl"
                   />
                 ) : (
-                  <div className="aspect-[2/3] rounded-xl border border-border-default bg-surface-panel flex items-center justify-center">
-                    <span className="text-text-muted">No poster available</span>
+                  <div className="aspect-[2/3] rounded-2xl border border-border-default bg-surface-panel flex items-center justify-center">
+                    <Film className="h-20 w-20 text-text-muted opacity-30" />
                   </div>
                 )}
 
@@ -183,117 +201,291 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                 <button
                   onClick={handleCreateProject}
                   disabled={isCreatingProject}
-                  className="flex w-full items-center justify-center gap-2 rounded-lg bg-accent-cyan px-4 py-3 text-sm font-medium text-white hover:bg-accent-cyan/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-accent-cyan px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-accent-cyan/20 hover:bg-accent-cyan/90 hover:shadow-xl hover:shadow-accent-cyan/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
                 >
                   {isCreatingProject ? (
                     <>
-                      <Loader className="h-4 w-4 animate-spin" />
+                      <Loader className="h-5 w-5 animate-spin" />
                       Creating Project...
                     </>
                   ) : (
                     <>
-                      <Play className="h-4 w-4" />
+                      <Play className="h-5 w-5" />
                       Create Project
                     </>
                   )}
                 </button>
 
-                {/* Stats */}
-                <div className="space-y-2 rounded-lg border border-border-default bg-surface-panel p-4">
+                {/* Stats Card */}
+                <div className="space-y-3 rounded-xl border border-border-default bg-surface-panel p-4">
+                  <h3 className="text-xs font-semibold uppercase tracking-wide text-text-muted">
+                    Statistics
+                  </h3>
                   {movie.vote_average && movie.vote_average > 0 && (
-                    <div className="flex items-center gap-2">
-                      <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
-                      <span className="text-sm text-text-primary">
-                        {movie.vote_average.toFixed(1)}
-                      </span>
-                      {movie.vote_count && (
-                        <span className="text-xs text-text-muted">
-                          ({movie.vote_count.toLocaleString()} votes)
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
+                        <span className="text-sm font-medium text-text-muted">Rating</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg font-bold text-text-primary">
+                          {movie.vote_average.toFixed(1)}
                         </span>
-                      )}
+                        {movie.vote_count && (
+                          <span className="text-xs text-text-muted">
+                            ({movie.vote_count.toLocaleString()})
+                          </span>
+                        )}
+                      </div>
                     </div>
                   )}
                   {movie.popularity && (
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-medium text-text-muted">Popularity:</span>
-                      <span className="text-sm text-text-primary">
-                        {movie.popularity.toFixed(1)}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <TrendingUp className="h-4 w-4 text-accent-cyan" />
+                        <span className="text-sm font-medium text-text-muted">Popularity</span>
+                      </div>
+                      <span className="text-lg font-bold text-text-primary">
+                        {movie.popularity.toFixed(0)}
                       </span>
                     </div>
                   )}
                 </div>
-              </div>
 
-              {/* Movie Info */}
-              <div className="space-y-6">
-                {/* Title & Release */}
-                <div>
-                  <h1 className="text-3xl font-bold text-text-primary mb-2">
-                    {movie.title || movie.original_title}
-                  </h1>
-                  {movie.original_title && movie.original_title !== movie.title && (
-                    <p className="text-sm text-text-muted mb-3">{movie.original_title}</p>
-                  )}
-
-                  <div className="flex flex-wrap gap-3 items-center text-sm text-text-secondary">
-                    {movie.release_date && (
-                      <>
-                        <div className="flex items-center gap-1">
-                          <Calendar className="h-4 w-4" />
-                          <span>{new Date(movie.release_date).toLocaleDateString()}</span>
-                        </div>
-                        <span className="text-text-muted">•</span>
-                      </>
+                {/* External IDs */}
+                {(movie.imdb_id || movie.douban_id) && (
+                  <div className="space-y-3 rounded-xl border border-border-default bg-surface-panel p-4">
+                    <h3 className="text-xs font-semibold uppercase tracking-wide text-text-muted">
+                      External IDs
+                    </h3>
+                    {movie.imdb_id && (
+                      <div>
+                        <p className="mb-1 text-xs font-medium text-text-muted">IMDb</p>
+                        <p className="text-sm font-mono text-text-primary">{movie.imdb_id}</p>
+                      </div>
                     )}
-                    {movie.runtime && (
-                      <div className="flex items-center gap-1">
-                        <Clock className="h-4 w-4" />
-                        <span>{movie.runtime} minutes</span>
+                    {movie.douban_id && (
+                      <div>
+                        <p className="mb-1 text-xs font-medium text-text-muted">Douban</p>
+                        <p className="text-sm font-mono text-text-primary">{movie.douban_id}</p>
                       </div>
                     )}
                   </div>
-                </div>
+                )}
+              </div>
 
-                {/* Metadata Grid */}
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                  {movie.imdb_id && (
-                    <div className="rounded-lg border border-border-default bg-surface-panel p-3">
-                      <p className="text-xs text-text-muted mb-1">IMDb ID</p>
-                      <p className="text-sm font-medium text-text-primary break-all">
-                        {movie.imdb_id}
-                      </p>
-                    </div>
+              {/* Main Content */}
+              <div className="space-y-8">
+                {/* Title Section */}
+                <div>
+                  <h1 className="mb-2 text-3xl font-bold text-text-primary sm:text-4xl">
+                    {movie.title || movie.original_title}
+                  </h1>
+                  {movie.original_title && movie.original_title !== movie.title && (
+                    <p className="mb-4 text-base text-text-muted italic">{movie.original_title}</p>
                   )}
-                  {movie.douban_id && (
-                    <div className="rounded-lg border border-border-default bg-surface-panel p-3">
-                      <p className="text-xs text-text-muted mb-1">Douban ID</p>
-                      <p className="text-sm font-medium text-text-primary break-all">
-                        {movie.douban_id}
-                      </p>
-                    </div>
-                  )}
-                  {movie.original_language && (
-                    <div className="rounded-lg border border-border-default bg-surface-panel p-3">
-                      <p className="text-xs text-text-muted mb-1">Language</p>
-                      <p className="text-sm font-medium text-text-primary uppercase">
-                        {movie.original_language}
-                      </p>
+
+                  {/* Metadata Row */}
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-text-secondary">
+                    {movie.release_date && (
+                      <div className="flex items-center gap-1.5">
+                        <Calendar className="h-4 w-4 text-accent-cyan" />
+                        <span className="font-medium">
+                          {new Date(movie.release_date).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}
+                        </span>
+                      </div>
+                    )}
+                    {movie.runtime && (
+                      <>
+                        <span className="text-text-muted">•</span>
+                        <div className="flex items-center gap-1.5">
+                          <Clock className="h-4 w-4 text-accent-cyan" />
+                          <span className="font-medium">{movie.runtime} minutes</span>
+                        </div>
+                      </>
+                    )}
+                    {movie.original_language && (
+                      <>
+                        <span className="text-text-muted">•</span>
+                        <div className="flex items-center gap-1.5">
+                          <Globe className="h-4 w-4 text-accent-cyan" />
+                          <span className="font-medium uppercase">{movie.original_language}</span>
+                        </div>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Genres */}
+                  {movie.genres && movie.genres.length > 0 && (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {movie.genres.map((genre) => (
+                        <span
+                          key={genre.id}
+                          className="rounded-lg bg-accent-cyan/10 px-3 py-1.5 text-xs font-semibold text-accent-cyan ring-1 ring-accent-cyan/20"
+                        >
+                          {genre.name}
+                        </span>
+                      ))}
                     </div>
                   )}
                 </div>
 
                 {/* Tagline */}
                 {movie.tagline && (
-                  <div className="rounded-lg border border-border-default bg-surface-panel p-4 italic text-text-secondary">
-                    "{movie.tagline}"
+                  <div className="rounded-xl border border-accent-cyan/30 bg-accent-cyan/5 p-5">
+                    <p className="text-base italic text-text-primary leading-relaxed">
+                      "{movie.tagline}"
+                    </p>
                   </div>
                 )}
 
                 {/* Overview */}
                 {movie.overview && (
-                  <div>
-                    <h2 className="text-lg font-semibold text-text-primary mb-3">Overview</h2>
-                    <p className="text-sm leading-relaxed text-text-secondary">{movie.overview}</p>
+                  <div className="rounded-xl border border-border-default bg-surface-panel p-6">
+                    <h2 className="mb-3 text-lg font-bold text-text-primary">Overview</h2>
+                    <p className="text-sm leading-loose text-text-secondary">{movie.overview}</p>
+                  </div>
+                )}
+
+                {/* Cast & Crew */}
+                {(directors.length > 0 || producers.length > 0 || writers.length > 0) && (
+                  <div className="rounded-xl border border-border-default bg-surface-panel p-6">
+                    <h2 className="mb-5 text-lg font-bold text-text-primary">Crew</h2>
+                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                      {/* Directors */}
+                      {directors.length > 0 && (
+                        <div>
+                          <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-text-muted">
+                            Director{directors.length > 1 ? "s" : ""}
+                          </h3>
+                          <div className="space-y-2">
+                            {directors.map((director) => (
+                              <div key={director.id} className="flex items-center gap-3">
+                                {director.person.profile_path ? (
+                                  <img
+                                    src={`https://image.tmdb.org/t/p/w185${director.person.profile_path}`}
+                                    alt={director.person.display_name}
+                                    className="h-12 w-12 rounded-lg object-cover ring-2 ring-border-default"
+                                  />
+                                ) : (
+                                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-surface-raised ring-2 ring-border-default">
+                                    <User className="h-5 w-5 text-text-muted" />
+                                  </div>
+                                )}
+                                <div className="min-w-0 flex-1">
+                                  <p className="truncate text-sm font-semibold text-text-primary">
+                                    {director.person.display_name}
+                                  </p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Producers */}
+                      {producers.length > 0 && (
+                        <div>
+                          <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-text-muted">
+                            Producer{producers.length > 1 ? "s" : ""}
+                          </h3>
+                          <div className="space-y-2">
+                            {producers.slice(0, 3).map((producer) => (
+                              <div key={producer.id} className="flex items-center gap-3">
+                                {producer.person.profile_path ? (
+                                  <img
+                                    src={`https://image.tmdb.org/t/p/w185${producer.person.profile_path}`}
+                                    alt={producer.person.display_name}
+                                    className="h-12 w-12 rounded-lg object-cover ring-2 ring-border-default"
+                                  />
+                                ) : (
+                                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-surface-raised ring-2 ring-border-default">
+                                    <User className="h-5 w-5 text-text-muted" />
+                                  </div>
+                                )}
+                                <div className="min-w-0 flex-1">
+                                  <p className="truncate text-sm font-semibold text-text-primary">
+                                    {producer.person.display_name}
+                                  </p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Writers */}
+                      {writers.length > 0 && (
+                        <div>
+                          <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-text-muted">
+                            Writer{writers.length > 1 ? "s" : ""}
+                          </h3>
+                          <div className="space-y-2">
+                            {writers.slice(0, 3).map((writer) => (
+                              <div key={writer.id} className="flex items-center gap-3">
+                                {writer.person.profile_path ? (
+                                  <img
+                                    src={`https://image.tmdb.org/t/p/w185${writer.person.profile_path}`}
+                                    alt={writer.person.display_name}
+                                    className="h-12 w-12 rounded-lg object-cover ring-2 ring-border-default"
+                                  />
+                                ) : (
+                                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-surface-raised ring-2 ring-border-default">
+                                    <User className="h-5 w-5 text-text-muted" />
+                                  </div>
+                                )}
+                                <div className="min-w-0 flex-1">
+                                  <p className="truncate text-sm font-semibold text-text-primary">
+                                    {writer.person.display_name}
+                                  </p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Cast */}
+                {actors.length > 0 && (
+                  <div className="rounded-xl border border-border-default bg-surface-panel p-6">
+                    <h2 className="mb-5 text-lg font-bold text-text-primary">Top Cast</h2>
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                      {actors.map((actor) => (
+                        <div
+                          key={actor.id}
+                          className="group overflow-hidden rounded-xl border border-border-default bg-surface-raised transition-all hover:border-accent-cyan/40 hover:shadow-lg"
+                        >
+                          <div className="relative aspect-square overflow-hidden bg-surface-base">
+                            {actor.person.profile_path ? (
+                              <img
+                                src={`https://image.tmdb.org/t/p/w342${actor.person.profile_path}`}
+                                alt={actor.person.display_name}
+                                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                              />
+                            ) : (
+                              <div className="flex h-full items-center justify-center">
+                                <User className="h-16 w-16 text-text-muted opacity-30" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="p-3">
+                            <p className="mb-1 truncate text-sm font-bold text-text-primary">
+                              {actor.person.display_name}
+                            </p>
+                            {actor.character && (
+                              <p className="truncate text-xs text-text-muted">{actor.character}</p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>

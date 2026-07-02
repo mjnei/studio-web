@@ -41,7 +41,7 @@ export default function MoviesPage() {
   const [movies, setMovies] = useState<EnrichedMovie[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid-md");
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid-sm");
   const [enrichmentProgress, setEnrichmentProgress] = useState(0);
 
   useEffect(() => {
@@ -54,40 +54,40 @@ export default function MoviesPage() {
       try {
         const query = searchQuery.trim();
         const data = query ? (await searchMovies(query, 30)).movies : await getPopularMovies(30);
-        
+
         if (controller.signal.aborted) return;
-        
+
         // Set initial movies without enrichment
         setMovies(data);
         setLoading(false);
-        
+
         // Enrich movies with cast/director info in the background
         const enrichedMovies: EnrichedMovie[] = [];
         for (let i = 0; i < data.length; i++) {
           if (controller.signal.aborted) break;
-          
+
           try {
             const details = await adminGetMovieDetails(data[i].id);
             const directors = details.cast
               ?.filter((c) => c.role === "director")
               .map((c) => c.person.display_name)
               .slice(0, 2);
-            
+
             const topCast = details.cast
               ?.filter((c) => c.role === "actor" || c.role === "actress")
               .sort((a, b) => (a.credit_order || 999) - (b.credit_order || 999))
               .map((c) => c.person.display_name)
               .slice(0, 3);
-            
+
             const genres = details.genres?.map((g) => g.name).slice(0, 3);
-            
+
             enrichedMovies.push({
               ...data[i],
               directors,
               topCast,
               genres,
             });
-            
+
             setEnrichmentProgress(Math.round(((i + 1) / data.length) * 100));
             setMovies([...enrichedMovies, ...data.slice(i + 1)]);
           } catch (err) {
@@ -282,7 +282,7 @@ export default function MoviesPage() {
                   <h3 className="mb-1.5 text-base font-bold text-text-primary transition-colors group-hover:text-accent-cyan">
                     {movie.title}
                   </h3>
-                  
+
                   {/* Metadata Row */}
                   <div className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-text-muted">
                     {movie.release_date && (
@@ -405,14 +405,12 @@ export default function MoviesPage() {
                   {movie.topCast && movie.topCast.length > 0 && (
                     <div className="text-[11px] leading-tight text-white">
                       <span className="font-semibold">Cast: </span>
-                      <span className="line-clamp-2 text-gray-200">
-                        {movie.topCast.join(", ")}
-                      </span>
+                      <span className="line-clamp-2 text-gray-200">{movie.topCast.join(", ")}</span>
                     </div>
                   )}
 
                   {/* Overview fallback if no cast data yet */}
-                  {(!movie.directors && !movie.topCast) && movie.overview && (
+                  {!movie.directors && !movie.topCast && movie.overview && (
                     <p className="line-clamp-3 text-[11px] leading-relaxed text-gray-200">
                       {movie.overview}
                     </p>
