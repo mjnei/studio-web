@@ -629,7 +629,7 @@ export default function AdminMoviesPage() {
                   return (
                     <div
                       key={movie.id}
-                      className="group relative overflow-hidden rounded-2xl border border-border-default bg-surface-panel transition-all hover:border-accent-primary/50 hover:shadow-lg"
+                      className="group relative flex flex-col overflow-hidden rounded-2xl border border-border-default bg-surface-panel transition-all hover:border-accent-primary/50 hover:shadow-lg"
                     >
                       {/* Poster Image */}
                       <div className="relative aspect-[2/3] w-full overflow-hidden bg-surface-raised">
@@ -657,31 +657,39 @@ export default function AdminMoviesPage() {
                         )}
                       </div>
 
-                      {/* Movie Info */}
-                      <div className="p-4">
-                        <h3 className="mb-1 line-clamp-2 text-sm font-semibold text-text-primary">
-                          {movie.title || movie.original_title}
-                        </h3>
-                        {movie.original_title !== movie.title && (
-                          <p className="mb-1 text-xs text-text-muted line-clamp-1">
-                            {movie.original_title}
-                          </p>
-                        )}
-                        {movie.release_date && (
-                          <div className="mb-2 flex items-center gap-1 text-xs text-text-muted">
-                            <Calendar className="h-3 w-3" />
-                            <span>{new Date(movie.release_date).getFullYear()}</span>
+                      {/* Movie Info - Flex grow to push button to bottom */}
+                      <div className="flex flex-1 flex-col p-4">
+                        <div className="flex-1">
+                          <h3 className="mb-1 line-clamp-2 text-sm font-semibold text-text-primary">
+                            {movie.title || movie.original_title}
+                          </h3>
+                          {movie.original_title !== movie.title && (
+                            <p className="mb-1 text-xs text-text-muted line-clamp-1">
+                              {movie.original_title}
+                            </p>
+                          )}
+                          <div className="mb-2 flex flex-col gap-1">
+                            {movie.release_date && (
+                              <div className="flex items-center gap-1 text-xs text-text-muted">
+                                <Calendar className="h-3 w-3" />
+                                <span>{new Date(movie.release_date).getFullYear()}</span>
+                              </div>
+                            )}
+                            <div className="flex items-center gap-2 text-xs text-text-muted">
+                              <span>ID: {movie.id}</span>
+                              {movie.douban_id && <span>Douban: {movie.douban_id}</span>}
+                            </div>
                           </div>
-                        )}
-                        {movie.overview && (
-                          <p className="mb-3 line-clamp-2 text-xs text-text-secondary">
-                            {movie.overview}
-                          </p>
-                        )}
+                          {movie.overview && (
+                            <p className="mb-3 line-clamp-2 text-xs text-text-secondary">
+                              {movie.overview}
+                            </p>
+                          )}
+                        </div>
 
                         {/* Edit Mode */}
                         {isEditing && editingData ? (
-                          <div className="space-y-2">
+                          <div className="mt-3 pt-3 border-t border-border-default space-y-2">
                             <div>
                               <label className="text-xs text-text-muted">Douban ID</label>
                               <input
@@ -715,7 +723,7 @@ export default function AdminMoviesPage() {
                           </div>
                         ) : (
                           /* Actions */
-                          <div className="flex gap-2">
+                          <div className="mt-3 pt-3 border-t border-border-default flex gap-2">
                             <button
                               onClick={() => {
                                 setEditingId(movie.id);
@@ -740,12 +748,6 @@ export default function AdminMoviesPage() {
                             </button>
                           </div>
                         )}
-
-                        {/* Metadata */}
-                        <div className="mt-2 flex items-center justify-between text-xs text-text-muted">
-                          <span>ID: {movie.id}</span>
-                          {movie.douban_id && <span>Douban: {movie.douban_id}</span>}
-                        </div>
                       </div>
                     </div>
                   );
@@ -1015,7 +1017,7 @@ export default function AdminMoviesPage() {
                   return (
                     <div
                       key={movie.id}
-                      className="group relative overflow-hidden rounded-2xl border border-border-default bg-surface-panel transition-all hover:border-accent-primary/50 hover:shadow-lg"
+                      className="group relative flex flex-col overflow-hidden rounded-2xl border border-border-default bg-surface-panel transition-all hover:border-accent-primary/50 hover:shadow-lg"
                     >
                       {/* Poster Image */}
                       <div className="relative aspect-[2/3] w-full overflow-hidden bg-surface-raised">
@@ -1043,58 +1045,60 @@ export default function AdminMoviesPage() {
                         )}
                       </div>
 
-                      {/* Movie Info */}
-                      <div className="p-4">
-                        <h3 className="mb-1 line-clamp-2 text-sm font-semibold text-text-primary">
-                          {movie.title}
-                        </h3>
-                        {movie.original_title !== movie.title && (
-                          <p className="mb-1 line-clamp-1 text-xs text-text-muted">
-                            {movie.original_title}
-                          </p>
-                        )}
-                        {movie.release_date && (
-                          <div className="mb-2 flex items-center gap-1 text-xs text-text-muted">
-                            <Calendar className="h-3 w-3" />
-                            <span>{new Date(movie.release_date).getFullYear()}</span>
-                          </div>
-                        )}
-                        {movie.overview && (
-                          <p className="mb-3 line-clamp-2 text-xs text-text-secondary">
-                            {movie.overview}
-                          </p>
-                        )}
-
-                        {/* Import Button or Already Imported State */}
-                        {importedMovieIds.has(movie.id) ? (
-                          <div className="flex w-full items-center justify-center gap-2 rounded-lg border border-green-500/50 bg-green-500/10 px-3 py-2 text-sm font-medium text-green-600">
-                            <CheckCircle2 className="h-4 w-4" />
-                            Already in Database
-                          </div>
-                        ) : (
-                          <button
-                            onClick={() => handleImport(movie)}
-                            disabled={importingIds.has(movie.id)}
-                            className="flex w-full items-center justify-center gap-2 rounded-lg bg-accent-primary px-3 py-2 text-sm font-medium text-white hover:bg-accent-primary/90 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
-                          >
-                            {importingIds.has(movie.id) ? (
-                              <>
-                                <Loader className="h-4 w-4 animate-spin" />
-                                Importing...
-                              </>
-                            ) : (
-                              <>
-                                <Download className="h-4 w-4" />
-                                Import
-                              </>
+                      {/* Movie Info - Flex grow to push button to bottom */}
+                      <div className="flex flex-1 flex-col p-4">
+                        <div className="flex-1">
+                          <h3 className="mb-1 line-clamp-2 text-sm font-semibold text-text-primary">
+                            {movie.title}
+                          </h3>
+                          {movie.original_title !== movie.title && (
+                            <p className="mb-1 line-clamp-1 text-xs text-text-muted">
+                              {movie.original_title}
+                            </p>
+                          )}
+                          <div className="mb-2 flex flex-col gap-1">
+                            {movie.release_date && (
+                              <div className="flex items-center gap-1 text-xs text-text-muted">
+                                <Calendar className="h-3 w-3" />
+                                <span>{new Date(movie.release_date).getFullYear()}</span>
+                              </div>
                             )}
-                          </button>
-                        )}
+                            <p className="text-xs text-text-muted">TMDB ID: {movie.id}</p>
+                          </div>
+                          {movie.overview && (
+                            <p className="mb-3 line-clamp-2 text-xs text-text-secondary">
+                              {movie.overview}
+                            </p>
+                          )}
+                        </div>
 
-                        {/* TMDB ID */}
-                        <p className="mt-2 text-center text-xs text-text-muted">
-                          TMDB ID: {movie.id}
-                        </p>
+                        {/* Import Button or Already Imported State - Always at bottom */}
+                        <div className="mt-3 pt-3 border-t border-border-default">
+                          {importedMovieIds.has(movie.id) ? (
+                            <div className="flex w-full items-center justify-center gap-2 rounded-lg border border-green-500/50 bg-green-500/10 px-3 py-2 text-sm font-medium text-green-600">
+                              <CheckCircle2 className="h-4 w-4" />
+                              in Database
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => handleImport(movie)}
+                              disabled={importingIds.has(movie.id)}
+                              className="flex w-full items-center justify-center gap-2 rounded-lg bg-accent-primary px-3 py-2 text-sm font-medium text-white hover:bg-accent-primary/90 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
+                            >
+                              {importingIds.has(movie.id) ? (
+                                <>
+                                  <Loader className="h-4 w-4 animate-spin" />
+                                  Importing...
+                                </>
+                              ) : (
+                                <>
+                                  <Download className="h-4 w-4" />
+                                  Import
+                                </>
+                              )}
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   );
