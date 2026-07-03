@@ -45,7 +45,7 @@ export interface ProjectState {
   customThumbnailUrl?: string;
   thumbnailText?: string;
   finalThumbnailUrl?: string;
-  thumbnail_confirmed?: boolean;
+  thumbnailConfirmed?: boolean;
 
   scripts: ScriptVersion[];
   activeScriptId?: string;
@@ -154,7 +154,7 @@ function mapProject(project: ProjectResponse, scripts: ProjectScriptResponse[] =
     customThumbnailUrl: project.custom_thumbnail_url ?? undefined,
     thumbnailText: project.thumbnail_text ?? undefined,
     finalThumbnailUrl: project.final_thumbnail_url ?? undefined,
-    thumbnail_confirmed: project.thumbnail_confirmed ?? undefined,
+    thumbnailConfirmed: project.thumbnail_confirmed ?? undefined,
     scripts: mappedScripts,
     activeScriptId: project.active_script_id ?? undefined,
     activeTtsJobId: project.active_tts_job_id ?? undefined,

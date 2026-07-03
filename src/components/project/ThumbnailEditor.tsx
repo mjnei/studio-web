@@ -8,30 +8,30 @@ import {
   regenerateThumbnail,
   uploadCustomThumbnail,
   finalizeThumbnail,
-  type ProjectResponse,
 } from "@/lib/project-client";
+import type { ProjectState } from "@/lib/hooks/use-project-state";
 
 interface ThumbnailEditorProps {
-  project: ProjectResponse;
+  project: ProjectState;
   onThumbnailFinalized: () => void;
 }
 
 export function ThumbnailEditor({ project, onThumbnailFinalized }: ThumbnailEditorProps) {
   const [thumbnailText, setThumbnailText] = useState(
-    project.thumbnail_text || project.script_summary || ""
+    project.thumbnailText || project.scriptSummary || ""
   );
   const [isRegenerating, setIsRegenerating] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [isFinalizing, setIsFinalizing] = useState(false);
-  const [useCustom, setUseCustom] = useState(!!project.custom_thumbnail_url);
+  const [useCustom, setUseCustom] = useState(!!project.customThumbnailUrl);
   const [customPreviewUrl, setCustomPreviewUrl] = useState<string | null>(
-    project.custom_thumbnail_url || null
+    project.customThumbnailUrl || null
   );
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const currentThumbnailUrl = useCustom
-    ? customPreviewUrl || project.custom_thumbnail_url
-    : project.thumbnail_url;
+    ? customPreviewUrl || project.customThumbnailUrl
+    : project.thumbnailUrl;
 
   const handleRegenerateAI = async () => {
     if (!project.id) return;
@@ -105,8 +105,7 @@ export function ThumbnailEditor({ project, onThumbnailFinalized }: ThumbnailEdit
   };
 
   const hasThumbnail =
-    (project.thumbnail_status === "completed" && project.thumbnail_url) ||
-    project.custom_thumbnail_url;
+    (project.thumbnailStatus === "completed" && project.thumbnailUrl) || project.customThumbnailUrl;
 
   return (
     <Card variant="elevated" padding="lg" className="space-y-6">
@@ -149,7 +148,7 @@ export function ThumbnailEditor({ project, onThumbnailFinalized }: ThumbnailEdit
             </div>
           )}
 
-          {project.thumbnail_status === "generating" && !useCustom && !isRegenerating && (
+          {project.thumbnailStatus === "generating" && !useCustom && !isRegenerating && (
             <div className="absolute inset-0 flex items-center justify-center bg-surface-base/80 z-10">
               <div className="text-center">
                 <Loader2 className="h-8 w-8 text-accent-cyan animate-spin mx-auto mb-2" />
@@ -248,14 +247,14 @@ export function ThumbnailEditor({ project, onThumbnailFinalized }: ThumbnailEdit
         <Button
           variant="primary"
           size="lg"
-          icon={project.thumbnail_confirmed ? <Check className="h-4 w-4" /> : undefined}
+          icon={project.thumbnailConfirmed ? <Check className="h-4 w-4" /> : undefined}
           onClick={handleFinalize}
           disabled={!hasThumbnail || isFinalizing}
           className="w-full"
         >
           {isFinalizing
             ? "Finalizing..."
-            : project.thumbnail_confirmed
+            : project.thumbnailConfirmed
               ? "Thumbnail Confirmed"
               : "Confirm Thumbnail"}
         </Button>
@@ -266,7 +265,7 @@ export function ThumbnailEditor({ project, onThumbnailFinalized }: ThumbnailEdit
           </p>
         )}
 
-        {project.thumbnail_confirmed && (
+        {project.thumbnailConfirmed && (
           <p className="mt-2 text-xs text-center text-status-success">
             ✓ Thumbnail confirmed and ready for video generation
           </p>
