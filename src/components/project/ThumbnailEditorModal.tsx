@@ -252,7 +252,7 @@ export function ThumbnailEditorModal({
                             className={`text-center font-${textFont === "bold" ? "bold" : textFont === "elegant" ? "serif" : "sans"} leading-tight`}
                             style={{
                               color: textColor,
-                              fontSize: "clamp(1rem, 3vw, 2rem)",
+                              fontSize: `clamp(${textSize}rem, ${textSize * 3}vw, ${textSize * 2}rem)`,
                               textShadow: "2px 2px 4px rgba(0,0,0,0.8)",
                             }}
                           >
