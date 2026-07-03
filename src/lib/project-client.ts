@@ -98,6 +98,10 @@ export interface ProjectResponse {
   thumbnail_status?: "pending" | "generating" | "completed" | "failed" | null;
   custom_thumbnail_url?: string | null;
   thumbnail_text?: string | null;
+  thumbnail_text_position?: string | null;
+  thumbnail_text_font?: string | null;
+  thumbnail_text_color?: string | null;
+  thumbnail_custom_prompt?: string | null;
   final_thumbnail_url?: string | null;
   thumbnail_confirmed?: boolean;
   created_at: string;
@@ -317,16 +321,20 @@ export function tmdbImageUrl(path?: string | null, size = "w500"): string | unde
 }
 
 // Thumbnail operations
-export async function regenerateThumbnail(projectId: string): Promise<ProjectResponse> {
+export async function regenerateThumbnail(
+  projectId: string,
+  customPrompt?: string | null
+): Promise<ProjectResponse> {
   return request<ProjectResponse>(`/projects/${projectId}/thumbnail/regenerate`, {
     method: "POST",
+    body: JSON.stringify({ custom_prompt: customPrompt }),
   });
 }
 
 export async function uploadCustomThumbnail(
   projectId: string,
   file: File
-): Promise<{ custom_thumbnail_url: string }> {
+): Promise<{ custom_thumbnail_url: string; width?: number; height?: number; warning?: string }> {
   const formData = new FormData();
   formData.append("file", file);
 
@@ -357,6 +365,9 @@ export async function finalizeThumbnail(
   projectId: string,
   data: {
     thumbnailText?: string | null;
+    thumbnailTextPosition?: string;
+    thumbnailTextFont?: string;
+    thumbnailTextColor?: string;
     useCustom?: boolean;
   }
 ): Promise<ProjectResponse> {
@@ -364,6 +375,9 @@ export async function finalizeThumbnail(
     method: "POST",
     body: JSON.stringify({
       thumbnail_text: data.thumbnailText,
+      thumbnail_text_position: data.thumbnailTextPosition || "left",
+      thumbnail_text_font: data.thumbnailTextFont || "bold",
+      thumbnail_text_color: data.thumbnailTextColor || "#FFFFFF",
       use_custom: data.useCustom ?? false,
     }),
   });

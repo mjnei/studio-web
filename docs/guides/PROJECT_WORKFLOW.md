@@ -174,56 +174,106 @@ Generate the final video composition and customize the project thumbnail.
 **Actions:**
 - **Thumbnail Customization** (before video generation):
   - View AI-generated thumbnail (generated in Step 3)
-  - Re-generate thumbnail using AI (same prompt or modified)
-  - Upload custom thumbnail image
-  - Add/edit overlay text (defaults to script tagline)
-  - Preview thumbnail with text overlay
-  - Finalize thumbnail design
+  - Open dedicated thumbnail editor (modal/page)
+  - Re-generate thumbnail with custom AI prompt
+  - Upload custom thumbnail image (with quality validation)
+  - Add/edit overlay text with positioning (left/right half)
+  - Choose text color and font
+  - Preview thumbnail with text overlay in real-time
+  - Generate composite image (JPG/PNG) with text baked in
+  - Save final thumbnail to S3
 - **Video Generation**:
   - Review final configuration (thumbnail + audio)
   - Start video generation job with TTS audio
   - Track async video processing progress
   - Preview composed video
 
-**Thumbnail Customization Details:**
-- **Base Image**: AI-generated (no text) OR user-uploaded
-- **Text Overlay**: Script tagline by default, fully customizable
-- **Re-generate AI Thumbnail**: 
-  - Uses original prompt (movie title + script summary)
-  - Can be regenerated multiple times
-  - Shows generation progress
-- **Upload Custom Thumbnail**:
-  - Accepts image files (JPG, PNG, WEBP)
-  - Replaces AI-generated base image
-  - Text overlay still applies
-- **Text Customization**:
-  - Edit overlay text content
-  - Adjust font size, position, color (future enhancement)
-  - Preview changes in real-time
-- **Final Output**: Base image + text overlay = Project Thumbnail
+**Thumbnail Editor Details:**
+
+**Editor Mode:** Dedicated modal OR separate page (`/project/[projectId]/compose/thumbnail`)
+- **Advantage of Modal:** Quick access, no navigation away from compose page
+- **Advantage of Separate Page:** More space for advanced controls, better for complex edits
+
+**Base Image Management:**
+- **AI-generated (default)**: NO TEXT in base image, purely visual
+- **Re-generate with Custom Prompt**: User can modify the AI generation prompt (not just click regenerate)
+  - Default prompt uses movie title + script_summary
+  - User can customize prompt for different visual styles
+- **Upload Custom Image**:
+  - File types: JPG, PNG, WEBP
+  - Size limit: 5MB max
+  - **Image Quality Validation**:
+    - Check aspect ratio (recommended 16:9 for video thumbnails)
+    - Minimum resolution: 1280x720px (HD ready)
+    - Warn if image is too small or wrong aspect ratio
+    - Allow user to crop/adjust if needed
+
+**Text Overlay Configuration:**
+- **Content**: Defaults to script_summary, fully editable (max 200 chars)
+- **Position**: Left half OR right half of image
+  - User selects which side (50% width of image)
+  - Maintains margin gaps (e.g., 5% padding from edges)
+- **Font Selection**: 
+  - Choose from predefined fonts (3-5 options)
+  - Examples: Bold/Impact style, Elegant/Serif, Modern/Sans-serif
+- **Color Selection**:
+  - Color picker OR preset colors
+  - High contrast options for readability
+  - Preview updates in real-time
+- **Text Styling**:
+  - Automatic text size based on content length
+  - Semi-transparent background for readability (optional)
+  - Text shadow for better visibility (optional)
+
+**Image Compositing (Server-side):**
+- Backend uses PIL/Pillow to composite base image + text overlay
+- Generates final image as JPG or PNG (user preference)
+- Uploads composite image to S3 storage
+- Returns final_thumbnail_url to frontend
+- Sets thumbnail_confirmed = true
+
+**Final Output:** 
+- Composite image (base + text overlay) saved to S3
+- Available as `final_thumbnail_url` in project
+- Used as video poster in Step 7
 
 **Display:**
-- **Thumbnail Editor Section** (prominent, above video generation)
-  - Thumbnail preview with text overlay
-  - Re-generate AI button
-  - Upload custom image button
-  - Text input field (with tagline default)
-  - Confirm/Save button
-- **Video Generation Section** (below thumbnail editor)
-  - Script tagline display (read-only reference)
-  - Full script (expandable card)
-  - Start video generation button (disabled until thumbnail confirmed)
-  - Video generation progress/preview
+- **Main Compose Page:**
+  - Thumbnail preview card with "Edit Thumbnail" button
+  - Opens dedicated thumbnail editor (modal or separate page)
+  - Video generation section (disabled until thumbnail confirmed)
+  - "Next" button (enabled only after thumbnail confirmed)
+
+- **Thumbnail Editor (Modal/Page):**
+  - Large preview area showing base image + text overlay
+  - Base image controls:
+    - Regenerate with custom prompt input
+    - Upload custom image with validation feedback
+  - Text overlay controls:
+    - Text input field (max 200 chars)
+    - Position selector (left half / right half)
+    - Font selector dropdown (3-5 options)
+    - Color picker with presets
+  - Real-time preview updates as user makes changes
+  - "Save & Finalize" button generates composite and saves to S3
+  - "Cancel" button to discard changes
 
 **Technical Flow:**
-1. User lands on page → Shows AI-generated thumbnail (if ready) or generation status
-2. User can:
-   - Keep AI-generated thumbnail + customize text
-   - Re-generate AI thumbnail (POST `/api/v1/projects/{id}/thumbnail/regenerate`)
-   - Upload custom image (POST `/api/v1/projects/{id}/thumbnail/upload`)
-3. User edits overlay text (defaults to script tagline)
-4. User confirms thumbnail → Enables "Start Video Generation" button
-5. User starts video generation → Uses confirmed thumbnail in video metadata
+1. User lands on compose page → Shows thumbnail preview card
+2. User clicks "Edit Thumbnail" → Opens thumbnail editor
+3. In editor:
+   - View current base image (AI or custom)
+   - Optional: Regenerate with custom prompt (POST `/api/v1/projects/{id}/thumbnail/regenerate-custom`)
+   - Optional: Upload new image with validation (POST `/api/v1/projects/{id}/thumbnail/upload`)
+   - Configure text: content, position, font, color
+   - Preview updates in real-time (client-side)
+4. User clicks "Save & Finalize":
+   - POST `/api/v1/projects/{id}/thumbnail/finalize` with all settings
+   - Backend composites image using PIL/Pillow
+   - Uploads final image to S3
+   - Returns final_thumbnail_url and sets thumbnail_confirmed = true
+5. User returns to compose page
+6. "Next" button now enabled → Can advance to finalize step
 
 **Completion:** Thumbnail finalized AND video file generated
 

@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { FullScriptModal } from "@/components/project/full-script-modal";
-import { ThumbnailEditor } from "@/components/project/ThumbnailEditor";
+import { ThumbnailEditorModal } from "@/components/project/ThumbnailEditorModal";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { CenteredEmptyState } from "@/components/ui/empty-state";
 import { Video, FileText, ChevronDown, Sparkles } from "lucide-react";
@@ -21,11 +21,14 @@ export default function ComposePage() {
   const { toast } = useToast();
 
   const [showFullScriptModal, setShowFullScriptModal] = useState(false);
+  const [showThumbnailEditor, setShowThumbnailEditor] = useState(false);
   const [isAdvancing, setIsAdvancing] = useState(false);
 
   const handleThumbnailFinalized = async () => {
     // Refresh project state to get latest thumbnail data
     await refresh();
+    // Close modal after finalization
+    setShowThumbnailEditor(false);
   };
 
   const handleContinue = async () => {
@@ -71,9 +74,57 @@ export default function ComposePage() {
           </p>
         </div>
 
-        {/* Thumbnail Editor - Priority #1 */}
+        {/* Thumbnail Preview Card - Click to edit */}
         {state && (
-          <ThumbnailEditor project={state} onThumbnailFinalized={handleThumbnailFinalized} />
+          <Card
+            variant="elevated"
+            padding="md"
+            className="cursor-pointer hover:border-accent-cyan/30 hover:bg-surface-raised transition-all group"
+            onClick={() => setShowThumbnailEditor(true)}
+          >
+            <div className="flex flex-col gap-4">
+              <div className="flex items-start gap-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted flex-shrink-0">
+                  <Sparkles className="h-5 w-5 text-accent-cyan" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-4 mb-2">
+                    <h3 className="font-medium text-text-primary">Project Thumbnail</h3>
+                    {state.thumbnail_confirmed ? (
+                      <span className="text-xs font-medium text-status-success flex items-center gap-1 flex-shrink-0">
+                        <Check className="h-3 w-3" /> Confirmed
+                      </span>
+                    ) : (
+                      <span className="text-xs font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0 group-hover:text-accent-cyan-hover">
+                        Click to customize
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm text-text-muted mb-3">
+                    {state.thumbnail_confirmed
+                      ? "Your thumbnail is ready for video generation"
+                      : "Customize your thumbnail before generating video"}
+                  </p>
+                  
+                  {/* Thumbnail Preview */}
+                  {(state.thumbnailUrl || state.customThumbnailUrl || state.finalThumbnailUrl) && (
+                    <div className="relative aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default">
+                      <img
+                        src={
+                          state.finalThumbnailUrl ||
+                          state.customThumbnailUrl ||
+                          state.thumbnailUrl ||
+                          ""
+                        }
+                        alt="Project thumbnail"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </Card>
         )}
 
         {/* Script Tagline - Highlight what's being composed */}
@@ -172,6 +223,16 @@ export default function ComposePage() {
           }
         />
       </div>
+
+      {/* Thumbnail Editor Modal */}
+      {state && (
+        <ThumbnailEditorModal
+          isOpen={showThumbnailEditor}
+          onClose={() => setShowThumbnailEditor(false)}
+          project={state}
+          onThumbnailFinalized={handleThumbnailFinalized}
+        />
+      )}
 
       {/* Full Script Modal — using the shared component */}
       {activeScript && (

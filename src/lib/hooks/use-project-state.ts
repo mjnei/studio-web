@@ -44,6 +44,10 @@ export interface ProjectState {
   thumbnailError?: string;
   customThumbnailUrl?: string;
   thumbnailText?: string;
+  thumbnailTextPosition?: string;
+  thumbnailTextFont?: string;
+  thumbnailTextColor?: string;
+  thumbnailCustomPrompt?: string;
   finalThumbnailUrl?: string;
   thumbnailConfirmed?: boolean;
 
@@ -150,9 +154,12 @@ function mapProject(project: ProjectResponse, scripts: ProjectScriptResponse[] =
     scriptSummary: project.script_summary ?? undefined,
     thumbnailUrl: project.thumbnail_url ?? undefined,
     thumbnailStatus: project.thumbnail_status ?? undefined,
-    thumbnailError: project.thumbnail_error ?? undefined,
     customThumbnailUrl: project.custom_thumbnail_url ?? undefined,
     thumbnailText: project.thumbnail_text ?? undefined,
+    thumbnailTextPosition: project.thumbnail_text_position ?? undefined,
+    thumbnailTextFont: project.thumbnail_text_font ?? undefined,
+    thumbnailTextColor: project.thumbnail_text_color ?? undefined,
+    thumbnailCustomPrompt: project.thumbnail_custom_prompt ?? undefined,
     finalThumbnailUrl: project.final_thumbnail_url ?? undefined,
     thumbnailConfirmed: project.thumbnail_confirmed ?? undefined,
     scripts: mappedScripts,
