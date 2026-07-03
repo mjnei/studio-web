@@ -320,24 +320,39 @@ export default function ProjectDetailsPage() {
         {/* Project Thumbnail Preview (if available) */}
         {state?.thumbnailUrl && state?.thumbnailStatus === "completed" && (
           <Card variant="elevated" padding="md">
-            <div className="flex flex-col gap-3">
-              <div className="flex items-center gap-2">
+            <div className="flex flex-col md:grid md:grid-cols-2 md:gap-6">
+              <div className="flex items-center gap-2 mb-3 md:col-span-2">
                 <Sparkles className="h-4 w-4 text-accent-cyan" />
                 <h3 className="text-sm font-medium text-text-primary">AI-Generated Thumbnail</h3>
               </div>
 
-              {/* Thumbnail */}
-              <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default md:max-w-lg lg:max-w-md mx-auto md:p-4 md:bg-surface-panel">
+              {/* Thumbnail - Half width on medium+ screens */}
+              <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default md:rounded-xl">
                 <img
                   src={state.thumbnailUrl}
                   alt="Project thumbnail"
-                  className="w-full h-full object-cover rounded"
+                  className="w-full h-full object-cover"
                   onError={(e) => {
                     // Hide image on error
                     const img = e.target as HTMLImageElement;
                     img.style.display = "none";
                   }}
                 />
+              </div>
+
+              {/* Explanatory content - Half width on medium+ screens */}
+              <div className="mt-3 md:mt-0 flex flex-col justify-center">
+                <h4 className="text-sm font-medium text-text-primary mb-2">About Your Thumbnail</h4>
+                <p className="text-sm text-text-muted mb-3">
+                  This AI-generated thumbnail is created based on your movie selection and script.
+                  It will be used as the visual preview for your final video project.
+                </p>
+                <div className="text-xs text-text-muted space-y-1">
+                  <p>• Created using movie theme and script content</p>
+                  <p>• No text overlay - purely visual design</p>
+                  <p>• Can be customized in later steps</p>
+                  <p>• Optimized for video thumbnails</p>
+                </div>
               </div>
             </div>
           </Card>

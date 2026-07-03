@@ -32,7 +32,7 @@ export default function ComposePage() {
   };
 
   const handleContinue = async () => {
-    if (!state?.thumbnail_confirmed) {
+    if (!state?.thumbnailConfirmed) {
       toast({
         title: "Thumbnail not finalized",
         description: "Please finalize your thumbnail before continuing",
@@ -90,7 +90,7 @@ export default function ComposePage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-4 mb-2">
                     <h3 className="font-medium text-text-primary">Project Thumbnail</h3>
-                    {state.thumbnail_confirmed ? (
+                    {state.thumbnailConfirmed ? (
                       <span className="text-xs font-medium text-status-success flex items-center gap-1 flex-shrink-0">
                         <Check className="h-3 w-3" /> Confirmed
                       </span>
@@ -101,24 +101,62 @@ export default function ComposePage() {
                     )}
                   </div>
                   <p className="text-sm text-text-muted mb-3">
-                    {state.thumbnail_confirmed
+                    {state.thumbnailConfirmed
                       ? "Your thumbnail is ready for video generation"
                       : "Customize your thumbnail before generating video"}
                   </p>
 
-                  {/* Thumbnail Preview */}
+                  {/* Thumbnail Preview with side-by-side layout on medium+ screens */}
                   {(state.thumbnailUrl || state.customThumbnailUrl || state.finalThumbnailUrl) && (
-                    <div className="relative aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default md:max-w-lg lg:max-w-md mx-auto md:p-4 md:bg-surface-panel">
-                      <img
-                        src={
-                          state.finalThumbnailUrl ||
-                          state.customThumbnailUrl ||
-                          state.thumbnailUrl ||
-                          ""
-                        }
-                        alt="Project thumbnail"
-                        className="w-full h-full object-cover rounded"
-                      />
+                    <div className="flex flex-col md:grid md:grid-cols-2 md:gap-6">
+                      {/* Thumbnail - Half width on medium+ screens */}
+                      <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default md:rounded-xl">
+                        <img
+                          src={
+                            state.finalThumbnailUrl ||
+                            state.customThumbnailUrl ||
+                            state.thumbnailUrl ||
+                            ""
+                          }
+                          alt="Project thumbnail"
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+
+                      {/* Action/Info section - Half width on medium+ screens */}
+                      <div className="mt-3 md:mt-0 flex flex-col justify-center">
+                        <h4 className="text-sm font-medium text-text-primary mb-2">
+                          {state.thumbnailConfirmed ? "Thumbnail Ready" : "Customization Options"}
+                        </h4>
+                        {state.thumbnailConfirmed ? (
+                          <>
+                            <p className="text-sm text-text-muted mb-3">
+                              Your thumbnail has been finalized and is ready for video generation.
+                            </p>
+                            <div className="text-xs text-text-muted space-y-1">
+                              <p>• Text overlay: {state.thumbnailText || "None"}</p>
+                              <p>
+                                • Base image:{" "}
+                                {state.customThumbnailUrl ? "Custom upload" : "AI-generated"}
+                              </p>
+                              <p>• Status: Confirmed and ready</p>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <p className="text-sm text-text-muted mb-3">
+                              Click to open the thumbnail editor where you can:
+                            </p>
+                            <div className="text-xs text-text-muted space-y-1">
+                              <p>• Upload a custom image</p>
+                              <p>• Regenerate with different AI prompts</p>
+                              <p>• Add/edit text overlay</p>
+                              <p>• Adjust font, color, and position</p>
+                              <p>• Preview and finalize</p>
+                            </div>
+                          </>
+                        )}
+                      </div>
                     </div>
                   )}
                 </div>
