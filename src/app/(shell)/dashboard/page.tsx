@@ -241,10 +241,10 @@ export default function DashboardPage() {
                 <Link key={project.id} href={`/project/${project.id}/${project.last_step}`}>
                   <Card variant="elevated" padding="none" interactive className="overflow-hidden">
                     <div className="aspect-video bg-surface-raised relative">
-                      {(project.thumbnail?.final_url ||
-                        project.thumbnail?.custom_image_url ||
-                        (project.thumbnail?.base_image_url &&
-                          project.thumbnail?.base_image_status === "completed")) ? (
+                      {project.thumbnail?.final_url ||
+                      project.thumbnail?.custom_image_url ||
+                      (project.thumbnail?.base_image_url &&
+                        project.thumbnail?.base_image_status === "completed") ? (
                         <img
                           src={
                             project.thumbnail?.final_url ||

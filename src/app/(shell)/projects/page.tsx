@@ -120,10 +120,10 @@ export default function ProjectsPage() {
                 <Card variant="elevated" padding="none" interactive className="overflow-hidden">
                   <div className="aspect-video bg-surface-raised relative">
                     {/* Priority: 1. Final composed thumbnail, 2. Custom, 3. AI base, 4. TMDB backdrop, 5. TMDB poster, 6. Placeholder */}
-                    {(project.thumbnail?.final_url ||
-                      project.thumbnail?.custom_image_url ||
-                      (project.thumbnail?.base_image_url &&
-                        project.thumbnail?.base_image_status === "completed")) ? (
+                    {project.thumbnail?.final_url ||
+                    project.thumbnail?.custom_image_url ||
+                    (project.thumbnail?.base_image_url &&
+                      project.thumbnail?.base_image_status === "completed") ? (
                       <img
                         src={
                           project.thumbnail?.final_url ||

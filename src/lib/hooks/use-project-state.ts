@@ -228,6 +228,17 @@ export function useProjectState(projectId: string) {
     }
   }, [state?.thumbnailStatus, refresh]);
 
+  // Poll for thumbnail composition status
+  useEffect(() => {
+    if (state?.thumbnailCompositionStatus === "processing") {
+      const pollInterval = setInterval(() => {
+        void refresh();
+      }, 5000); // Poll every 5 seconds
+
+      return () => clearInterval(pollInterval);
+    }
+  }, [state?.thumbnailCompositionStatus, refresh]);
+
   useEffect(() => {
     const handleProjectUpdate = (e: CustomEvent) => {
       if (e.detail?.projectId === projectId) {
