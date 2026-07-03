@@ -88,7 +88,7 @@ export default function FinalizePage() {
         </Card>
 
         {/* Final Thumbnail Display - Read-only */}
-        {state?.final_thumbnail_url && (
+        {state?.finalThumbnailUrl && (
           <Card variant="elevated" padding="lg">
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-2">
@@ -99,7 +99,7 @@ export default function FinalizePage() {
               {/* Final Thumbnail with Text Overlay */}
               <div className="relative aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default">
                 <img
-                  src={state.final_thumbnail_url}
+                  src={state.finalThumbnailUrl}
                   alt="Project thumbnail"
                   className="w-full h-full object-cover"
                   onError={(e) => {
@@ -108,11 +108,11 @@ export default function FinalizePage() {
                   }}
                 />
                 {/* Text Overlay Preview (if text exists) */}
-                {state.thumbnail_text && (
+                {state.thumbnailText && (
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                     <div className="bg-black/60 backdrop-blur-sm px-6 py-3 rounded-lg">
                       <p className="text-white text-2xl font-bold text-center">
-                        {state.thumbnail_text}
+                        {state.thumbnailText}
                       </p>
                     </div>
                   </div>
@@ -121,7 +121,7 @@ export default function FinalizePage() {
 
               <p className="text-xs text-text-muted">
                 This is your finalized project thumbnail
-                {state.thumbnail_text && " with text overlay"}
+                {state.thumbnailText && " with text overlay"}
               </p>
             </div>
           </Card>
@@ -165,7 +165,7 @@ export default function FinalizePage() {
                 src={state.videoUrl}
                 controls
                 className="w-full h-full object-contain"
-                poster={state.final_thumbnail_url || undefined}
+                poster={state.finalThumbnailUrl || undefined}
               >
                 Your browser does not support the video tag.
               </video>

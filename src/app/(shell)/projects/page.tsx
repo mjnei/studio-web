@@ -119,10 +119,18 @@ export default function ProjectsPage() {
               <Link href={`/project/${project.id}/${project.last_step}`}>
                 <Card variant="elevated" padding="none" interactive className="overflow-hidden">
                   <div className="aspect-video bg-surface-raised relative">
-                    {/* Priority: 1. AI Thumbnail, 2. TMDB backdrop, 3. TMDB poster, 4. Placeholder */}
-                    {project.thumbnail_url && project.thumbnail_status === "completed" ? (
+                    {/* Priority: 1. Final composed thumbnail, 2. Custom, 3. AI base, 4. TMDB backdrop, 5. TMDB poster, 6. Placeholder */}
+                    {(project.thumbnail?.final_url ||
+                      project.thumbnail?.custom_image_url ||
+                      (project.thumbnail?.base_image_url &&
+                        project.thumbnail?.base_image_status === "completed")) ? (
                       <img
-                        src={project.thumbnail_url}
+                        src={
+                          project.thumbnail?.final_url ||
+                          project.thumbnail?.custom_image_url ||
+                          project.thumbnail?.base_image_url ||
+                          ""
+                        }
                         alt={project.project_name || project.movie?.title || "Project thumbnail"}
                         className="h-full w-full object-cover"
                         onError={(e) => {
@@ -165,7 +173,7 @@ export default function ProjectsPage() {
                       </div>
                     )}
                     {/* Show generating indicator if thumbnail is in progress */}
-                    {project.thumbnail_status === "generating" && (
+                    {project.thumbnail?.base_image_status === "generating" && (
                       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center">
                         <div className="flex flex-col items-center gap-2 text-white">
                           <svg

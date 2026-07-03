@@ -53,8 +53,6 @@ export interface ProjectState {
   thumbnailConfirmed?: boolean;
   thumbnailCompositionStatus?: "idle" | "processing" | "completed" | "failed";
   thumbnailCompositionError?: string;
-  thumbnailCompositionStatus?: "idle" | "processing" | "completed" | "failed";
-  thumbnailCompositionError?: string;
 
   scripts: ScriptVersion[];
   activeScriptId?: string;
@@ -157,19 +155,20 @@ function mapProject(project: ProjectResponse, scripts: ProjectScriptResponse[] =
     movieRating: movie?.vote_average ?? undefined,
     movieDuration: movie?.runtime ?? undefined,
     scriptSummary: project.script_summary ?? undefined,
-    thumbnailUrl: project.thumbnail_url ?? undefined,
-    thumbnailStatus: project.thumbnail_status ?? undefined,
-    customThumbnailUrl: project.custom_thumbnail_url ?? undefined,
-    thumbnailText: project.thumbnail_text ?? undefined,
-    thumbnailTextPosition: project.thumbnail_text_position ?? undefined,
-    thumbnailTextFont: project.thumbnail_text_font ?? undefined,
-    thumbnailTextColor: project.thumbnail_text_color ?? undefined,
-    thumbnailTextSize: project.thumbnail_text_size ?? undefined,
-    thumbnailCustomPrompt: project.thumbnail_custom_prompt ?? undefined,
-    finalThumbnailUrl: project.final_thumbnail_url ?? undefined,
-    thumbnailConfirmed: project.thumbnail_confirmed ?? undefined,
-    thumbnailCompositionStatus: project.thumbnail_composition_status ?? undefined,
-    thumbnailCompositionError: project.thumbnail_composition_error ?? undefined,
+    thumbnailUrl: project.thumbnail?.base_image_url ?? undefined,
+    thumbnailStatus: project.thumbnail?.base_image_status ?? undefined,
+    thumbnailError: project.thumbnail?.base_image_error ?? undefined,
+    customThumbnailUrl: project.thumbnail?.custom_image_url ?? undefined,
+    thumbnailText: project.thumbnail?.overlay_text ?? undefined,
+    thumbnailTextPosition: project.thumbnail?.overlay_position ?? undefined,
+    thumbnailTextFont: project.thumbnail?.overlay_font ?? undefined,
+    thumbnailTextColor: project.thumbnail?.overlay_color ?? undefined,
+    thumbnailTextSize: project.thumbnail?.overlay_size ?? undefined,
+    thumbnailCustomPrompt: project.thumbnail?.custom_prompt ?? undefined,
+    finalThumbnailUrl: project.thumbnail?.final_url ?? undefined,
+    thumbnailConfirmed: project.thumbnail?.confirmed ?? undefined,
+    thumbnailCompositionStatus: project.thumbnail?.composition_status ?? undefined,
+    thumbnailCompositionError: project.thumbnail?.composition_error ?? undefined,
     scripts: mappedScripts,
     activeScriptId: project.active_script_id ?? undefined,
     activeTtsJobId: project.active_tts_job_id ?? undefined,

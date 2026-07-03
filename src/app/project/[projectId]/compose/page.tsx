@@ -32,29 +32,29 @@ export default function ComposePage() {
       setIsPollingComposition(true);
 
       const pollInterval = setInterval(async () => {
-        const freshState = await refresh();
+        await refresh();
 
-        // Check if completed or failed
-        if (freshState?.thumbnailCompositionStatus === "completed") {
+        // Check current state for completion or failure
+        if (state?.thumbnailCompositionStatus === "completed") {
           clearInterval(pollInterval);
           setIsPollingComposition(false);
           toast.success(
             "Thumbnail ready!",
             "Your thumbnail has been finalized and is ready for video generation"
           );
-        } else if (freshState?.thumbnailCompositionStatus === "failed") {
+        } else if (state?.thumbnailCompositionStatus === "failed") {
           clearInterval(pollInterval);
           setIsPollingComposition(false);
           toast.error(
             "Composition failed",
-            freshState?.thumbnailCompositionError || "Failed to composite thumbnail"
+            state?.thumbnailCompositionError || "Failed to composite thumbnail"
           );
         }
       }, 2000); // Poll every 2 seconds
 
       return () => clearInterval(pollInterval);
     }
-  }, [state?.thumbnailCompositionStatus, isPollingComposition, refresh, toast]);
+  }, [state?.thumbnailCompositionStatus, isPollingComposition, refresh, toast, state]);
 
   const handleThumbnailFinalized = async () => {
     // Start polling for completion

@@ -82,6 +82,27 @@ export interface VideoJobResponse {
   steps: VideoGenerationStepResponse[];
 }
 
+export interface ProjectThumbnail {
+  id: number;
+  project_id: number;
+  base_image_url?: string | null;
+  base_image_status: "pending" | "generating" | "completed" | "failed";
+  base_image_error?: string | null;
+  custom_image_url?: string | null;
+  custom_prompt?: string | null;
+  overlay_text?: string | null;
+  overlay_position: "left" | "right";
+  overlay_font: "bold" | "elegant" | "modern";
+  overlay_color: string;
+  overlay_size: number;
+  final_url?: string | null;
+  confirmed: boolean;
+  composition_status: "idle" | "processing" | "completed" | "failed";
+  composition_error?: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface ProjectResponse {
   id: string;
   user_id: string;
@@ -94,19 +115,7 @@ export interface ProjectResponse {
   last_step: WorkflowStep;
   suggested_names?: Array<{ name: string; reason?: string }> | null;
   script_summary?: string | null;
-  thumbnail_url?: string | null;
-  thumbnail_status?: "pending" | "generating" | "completed" | "failed" | null;
-  custom_thumbnail_url?: string | null;
-  thumbnail_text?: string | null;
-  thumbnail_text_position?: string | null;
-  thumbnail_text_font?: string | null;
-  thumbnail_text_color?: string | null;
-  thumbnail_text_size?: number | null;
-  thumbnail_custom_prompt?: string | null;
-  final_thumbnail_url?: string | null;
-  thumbnail_confirmed?: boolean;
-  thumbnail_composition_status?: "idle" | "processing" | "completed" | "failed" | null;
-  thumbnail_composition_error?: string | null;
+  thumbnail?: ProjectThumbnail | null;
   created_at: string;
   updated_at: string;
   movie?: MovieResponse | null;
