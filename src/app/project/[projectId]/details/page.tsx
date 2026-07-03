@@ -327,11 +327,11 @@ export default function ProjectDetailsPage() {
               </div>
 
               {/* Thumbnail */}
-              <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default">
+              <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default md:max-w-lg lg:max-w-md mx-auto md:p-4 md:bg-surface-panel">
                 <img
                   src={state.thumbnailUrl}
                   alt="Project thumbnail"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover rounded"
                   onError={(e) => {
                     // Hide image on error
                     const img = e.target as HTMLImageElement;

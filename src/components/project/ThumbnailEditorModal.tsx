@@ -1,7 +1,18 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { X, Upload, RefreshCw, Loader2, Check, Type, Palette, AlignLeft, AlignRight, Sparkles } from "lucide-react";
+import {
+  X,
+  Upload,
+  RefreshCw,
+  Loader2,
+  Check,
+  Type,
+  Palette,
+  AlignLeft,
+  AlignRight,
+  Sparkles,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -53,7 +64,7 @@ export function ThumbnailEditorModal({
   const [textColor, setTextColor] = useState(project.thumbnailTextColor || "#FFFFFF");
   const [customPrompt, setCustomPrompt] = useState("");
   const [showPromptInput, setShowPromptInput] = useState(false);
-  
+
   const [isRegenerating, setIsRegenerating] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [isFinalizing, setIsFinalizing] = useState(false);
@@ -62,7 +73,7 @@ export function ThumbnailEditorModal({
     project.customThumbnailUrl || null
   );
   const [uploadWarning, setUploadWarning] = useState<string | null>(null);
-  
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Close modal when user clicks outside
@@ -119,7 +130,7 @@ export function ThumbnailEditorModal({
 
     setIsUploading(true);
     setUploadWarning(null);
-    
+
     try {
       const response = await uploadCustomThumbnail(String(project.id), file);
 
@@ -285,7 +296,7 @@ export function ThumbnailEditorModal({
                   >
                     Regenerate with AI
                   </Button>
-                  
+
                   {showPromptInput && (
                     <div className="space-y-2">
                       <textarea
@@ -433,7 +444,7 @@ export function ThumbnailEditorModal({
             <Button variant="ghost" size="md" onClick={onClose} className="flex-shrink-0">
               Cancel
             </Button>
-            
+
             <Button
               variant="primary"
               size="lg"

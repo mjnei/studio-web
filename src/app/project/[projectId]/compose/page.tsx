@@ -9,7 +9,7 @@ import { FullScriptModal } from "@/components/project/full-script-modal";
 import { ThumbnailEditorModal } from "@/components/project/ThumbnailEditorModal";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { CenteredEmptyState } from "@/components/ui/empty-state";
-import { Video, FileText, ChevronDown, Sparkles } from "lucide-react";
+import { Video, FileText, ChevronDown, Sparkles, Check } from "lucide-react";
 import { advanceProjectStep } from "@/lib/project-client";
 import { useToast } from "@/components/ui/toast";
 
@@ -105,10 +105,10 @@ export default function ComposePage() {
                       ? "Your thumbnail is ready for video generation"
                       : "Customize your thumbnail before generating video"}
                   </p>
-                  
+
                   {/* Thumbnail Preview */}
                   {(state.thumbnailUrl || state.customThumbnailUrl || state.finalThumbnailUrl) && (
-                    <div className="relative aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default">
+                    <div className="relative aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default md:max-w-lg lg:max-w-md mx-auto md:p-4 md:bg-surface-panel">
                       <img
                         src={
                           state.finalThumbnailUrl ||
@@ -117,7 +117,7 @@ export default function ComposePage() {
                           ""
                         }
                         alt="Project thumbnail"
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover rounded"
                       />
                     </div>
                   )}
