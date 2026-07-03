@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useAuth } from "@/lib/auth-context";
 import {
   activateScript,
   advanceProjectStep,
@@ -191,6 +192,7 @@ function scriptMetrics(content: string) {
 }
 
 export function useProjectState(projectId: string) {
+  const { isLoading: isAuthLoading } = useAuth();
   const [state, setState] = useState<ProjectState | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -214,8 +216,11 @@ export function useProjectState(projectId: string) {
   }, [projectId]);
 
   useEffect(() => {
-    void refresh();
-  }, [refresh]);
+    // Wait for auth to initialize before fetching project data
+    if (!isAuthLoading) {
+      void refresh();
+    }
+  }, [refresh, isAuthLoading]);
 
   // Poll for thumbnail generation status
   useEffect(() => {
