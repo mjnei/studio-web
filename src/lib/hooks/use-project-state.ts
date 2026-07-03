@@ -47,9 +47,14 @@ export interface ProjectState {
   thumbnailTextPosition?: string;
   thumbnailTextFont?: string;
   thumbnailTextColor?: string;
+  thumbnailTextSize?: number;
   thumbnailCustomPrompt?: string;
   finalThumbnailUrl?: string;
   thumbnailConfirmed?: boolean;
+  thumbnailCompositionStatus?: "idle" | "processing" | "completed" | "failed";
+  thumbnailCompositionError?: string;
+  thumbnailCompositionStatus?: "idle" | "processing" | "completed" | "failed";
+  thumbnailCompositionError?: string;
 
   scripts: ScriptVersion[];
   activeScriptId?: string;
@@ -159,9 +164,12 @@ function mapProject(project: ProjectResponse, scripts: ProjectScriptResponse[] =
     thumbnailTextPosition: project.thumbnail_text_position ?? undefined,
     thumbnailTextFont: project.thumbnail_text_font ?? undefined,
     thumbnailTextColor: project.thumbnail_text_color ?? undefined,
+    thumbnailTextSize: project.thumbnail_text_size ?? undefined,
     thumbnailCustomPrompt: project.thumbnail_custom_prompt ?? undefined,
     finalThumbnailUrl: project.final_thumbnail_url ?? undefined,
     thumbnailConfirmed: project.thumbnail_confirmed ?? undefined,
+    thumbnailCompositionStatus: project.thumbnail_composition_status ?? undefined,
+    thumbnailCompositionError: project.thumbnail_composition_error ?? undefined,
     scripts: mappedScripts,
     activeScriptId: project.active_script_id ?? undefined,
     activeTtsJobId: project.active_tts_job_id ?? undefined,

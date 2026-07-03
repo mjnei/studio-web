@@ -158,6 +158,7 @@ export function ThumbnailEditorModal({
 
     setIsFinalizing(true);
     try {
+      // Queue the composition job (returns immediately with status='processing')
       await finalizeThumbnail(String(project.id), {
         thumbnailText,
         thumbnailTextPosition: textPosition,
@@ -166,12 +167,14 @@ export function ThumbnailEditorModal({
         useCustom,
       });
 
-      onThumbnailFinalized();
+      // Close modal immediately - composition happens in background
       onClose();
+      
+      // Trigger callback to start polling
+      onThumbnailFinalized();
     } catch (error) {
-      console.error("Failed to finalize thumbnail:", error);
-      alert("Failed to finalize thumbnail. Please try again.");
-    } finally {
+      console.error("Failed to queue thumbnail composition:", error);
+      alert("Failed to start thumbnail composition. Please try again.");
       setIsFinalizing(false);
     }
   };

@@ -101,9 +101,12 @@ export interface ProjectResponse {
   thumbnail_text_position?: string | null;
   thumbnail_text_font?: string | null;
   thumbnail_text_color?: string | null;
+  thumbnail_text_size?: number | null;
   thumbnail_custom_prompt?: string | null;
   final_thumbnail_url?: string | null;
   thumbnail_confirmed?: boolean;
+  thumbnail_composition_status?: "idle" | "processing" | "completed" | "failed" | null;
+  thumbnail_composition_error?: string | null;
   created_at: string;
   updated_at: string;
   movie?: MovieResponse | null;
@@ -368,6 +371,7 @@ export async function finalizeThumbnail(
     thumbnailTextPosition?: string;
     thumbnailTextFont?: string;
     thumbnailTextColor?: string;
+    thumbnailTextSize?: number;
     useCustom?: boolean;
   }
 ): Promise<ProjectResponse> {
@@ -378,6 +382,7 @@ export async function finalizeThumbnail(
       thumbnail_text_position: data.thumbnailTextPosition || "left",
       thumbnail_text_font: data.thumbnailTextFont || "bold",
       thumbnail_text_color: data.thumbnailTextColor || "#FFFFFF",
+      thumbnail_text_size: data.thumbnailTextSize ?? 1.0,
       use_custom: data.useCustom ?? false,
     }),
   });

@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
@@ -9,7 +10,7 @@ import { FullScriptModal } from "@/components/project/full-script-modal";
 import { ThumbnailEditorModal } from "@/components/project/ThumbnailEditorModal";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { CenteredEmptyState } from "@/components/ui/empty-state";
-import { Video, FileText, ChevronDown, Sparkles, Check } from "lucide-react";
+import { Video, FileText, ChevronDown, Sparkles, Check, Loader2 } from "lucide-react";
 import { advanceProjectStep } from "@/lib/project-client";
 import { useToast } from "@/components/ui/toast";
 
@@ -18,26 +19,60 @@ export default function ComposePage() {
   const router = useRouter();
   const projectId = params.projectId as string;
   const { state, isLoading, refresh } = useProjectState(projectId);
-  const { toast } = useToast();
+  const toast = useToast();
 
   const [showFullScriptModal, setShowFullScriptModal] = useState(false);
   const [showThumbnailEditor, setShowThumbnailEditor] = useState(false);
   const [isAdvancing, setIsAdvancing] = useState(false);
+  const [isPollingComposition, setIsPollingComposition] = useState(false);
+
+  // Poll for composition status when processing
+  React.useEffect(() => {
+    if (state?.thumbnailCompositionStatus === "processing" && !isPollingComposition) {
+      setIsPollingComposition(true);
+      
+      const pollInterval = setInterval(async () => {
+        await refresh();
+        
+        // Check if completed or failed
+        if (state?.thumbnailCompositionStatus === "completed") {
+          clearInterval(pollInterval);
+          setIsPollingComposition(false);
+          toast.success(
+            "Thumbnail ready!",
+            "Your thumbnail has been finalized and is ready for video generation"
+          );
+        } else if (state?.thumbnailCompositionStatus === "failed") {
+          clearInterval(pollInterval);
+          setIsPollingComposition(false);
+          toast.error(
+            "Composition failed",
+            state?.thumbnailCompositionError || "Failed to composite thumbnail"
+          );
+        }
+      }, 2000); // Poll every 2 seconds
+
+      return () => clearInterval(pollInterval);
+    }
+  }, [state?.thumbnailCompositionStatus, isPollingComposition, refresh, toast]);
 
   const handleThumbnailFinalized = async () => {
-    // Refresh project state to get latest thumbnail data
+    // Start polling for completion
     await refresh();
-    // Close modal after finalization
     setShowThumbnailEditor(false);
+    
+    toast.info(
+      "Processing thumbnail",
+      "Your thumbnail is being composed. This will take a few moments..."
+    );
   };
 
   const handleContinue = async () => {
     if (!state?.thumbnailConfirmed) {
-      toast({
-        title: "Thumbnail not finalized",
-        description: "Please finalize your thumbnail before continuing",
-        variant: "destructive",
-      });
+      toast.error(
+        "Thumbnail not finalized",
+        "Please finalize your thumbnail before continuing"
+      );
       return;
     }
 
@@ -47,11 +82,10 @@ export default function ComposePage() {
       router.push(`/project/${projectId}/finalize`);
     } catch (error) {
       console.error("Failed to advance step:", error);
-      toast({
-        title: "Failed to advance",
-        description: "Failed to advance to next step",
-        variant: "destructive",
-      });
+      toast.error(
+        "Failed to advance",
+        "Failed to advance to next step"
+      );
     } finally {
       setIsAdvancing(false);
     }
@@ -90,7 +124,11 @@ export default function ComposePage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-4 mb-2">
                     <h3 className="font-medium text-text-primary">Project Thumbnail</h3>
-                    {state.thumbnailConfirmed ? (
+                    {state.thumbnailCompositionStatus === "processing" ? (
+                      <span className="text-xs font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0">
+                        <Loader2 className="h-3 w-3 animate-spin" /> Processing...
+                      </span>
+                    ) : state.thumbnailConfirmed ? (
                       <span className="text-xs font-medium text-status-success flex items-center gap-1 flex-shrink-0">
                         <Check className="h-3 w-3" /> Confirmed
                       </span>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Image, Upload, RefreshCw, Loader2, Check, Type } from "lucide-react";
+import { Image, Upload, RefreshCw, Loader2, Check, Type, Minus, Plus } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +19,12 @@ interface ThumbnailEditorProps {
 export function ThumbnailEditor({ project, onThumbnailFinalized }: ThumbnailEditorProps) {
   const [thumbnailText, setThumbnailText] = useState(
     project.thumbnailText || project.scriptSummary || ""
+  );
+  const [thumbnailFont, setThumbnailFont] = useState(
+    project.thumbnailTextFont || "bold"
+  );
+  const [thumbnailSize, setThumbnailSize] = useState(
+    project.thumbnailTextSize ?? 1.0
   );
   const [isRegenerating, setIsRegenerating] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -69,7 +75,7 @@ export function ThumbnailEditor({ project, onThumbnailFinalized }: ThumbnailEdit
 
     setIsUploading(true);
     try {
-      const response = await uploadCustomThumbnail(String(project.id), file);
+      await uploadCustomThumbnail(String(project.id), file);
 
       // Create local preview URL
       const previewUrl = URL.createObjectURL(file);
@@ -92,6 +98,8 @@ export function ThumbnailEditor({ project, onThumbnailFinalized }: ThumbnailEdit
     try {
       await finalizeThumbnail(String(project.id), {
         thumbnailText,
+        thumbnailTextFont: thumbnailFont,
+        thumbnailTextSize: thumbnailSize,
         useCustom,
       });
 
@@ -102,6 +110,14 @@ export function ThumbnailEditor({ project, onThumbnailFinalized }: ThumbnailEdit
     } finally {
       setIsFinalizing(false);
     }
+  };
+
+  const handleIncreaseFontSize = () => {
+    setThumbnailSize((prev) => Math.min(2.0, prev + 0.1));
+  };
+
+  const handleDecreaseFontSize = () => {
+    setThumbnailSize((prev) => Math.max(0.5, prev - 0.1));
   };
 
   const hasThumbnail =
@@ -240,6 +256,97 @@ export function ThumbnailEditor({ project, onThumbnailFinalized }: ThumbnailEdit
         <p className="text-xs text-text-muted">
           {thumbnailText.length}/200 characters • This text will overlay on your thumbnail
         </p>
+
+        {/* Font Selector */}
+        <div className="mt-4">
+          <label className="text-sm font-medium text-text-secondary mb-2 block">
+            Font Style
+          </label>
+          <div className="grid grid-cols-3 gap-2">
+            <button
+              type="button"
+              onClick={() => setThumbnailFont("bold")}
+              className={`px-4 py-3 rounded-lg border-2 transition-all ${
+                thumbnailFont === "bold"
+                  ? "border-accent-cyan bg-accent-cyan/10 text-accent-cyan"
+                  : "border-border-default bg-surface-base text-text-secondary hover:border-border-hover"
+              }`}
+            >
+              <span className="font-bold text-base">Bold</span>
+              <p className="text-xs mt-1 opacity-70">Strong & Clear</p>
+            </button>
+            <button
+              type="button"
+              onClick={() => setThumbnailFont("elegant")}
+              className={`px-4 py-3 rounded-lg border-2 transition-all ${
+                thumbnailFont === "elegant"
+                  ? "border-accent-cyan bg-accent-cyan/10 text-accent-cyan"
+                  : "border-border-default bg-surface-base text-text-secondary hover:border-border-hover"
+              }`}
+            >
+              <span className="font-serif text-base">Elegant</span>
+              <p className="text-xs mt-1 opacity-70">Classic & Refined</p>
+            </button>
+            <button
+              type="button"
+              onClick={() => setThumbnailFont("modern")}
+              className={`px-4 py-3 rounded-lg border-2 transition-all ${
+                thumbnailFont === "modern"
+                  ? "border-accent-cyan bg-accent-cyan/10 text-accent-cyan"
+                  : "border-border-default bg-surface-base text-text-secondary hover:border-border-hover"
+              }`}
+            >
+              <span className="font-sans text-base">Modern</span>
+              <p className="text-xs mt-1 opacity-70">Clean & Simple</p>
+            </button>
+          </div>
+        </div>
+
+        {/* Font Size Control */}
+        <div className="mt-4">
+          <label className="text-sm font-medium text-text-secondary mb-2 block">
+            Font Size
+          </label>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={handleDecreaseFontSize}
+              disabled={thumbnailSize <= 0.5}
+              className="flex h-10 w-10 items-center justify-center rounded-lg border-2 border-border-default bg-surface-base text-text-secondary hover:border-accent-cyan hover:text-accent-cyan disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-border-default disabled:hover:text-text-secondary transition-all"
+              aria-label="Decrease font size"
+            >
+              <Minus className="h-5 w-5" />
+            </button>
+            
+            <div className="flex-1 flex items-center gap-3">
+              <input
+                type="range"
+                min="0.5"
+                max="2.0"
+                step="0.1"
+                value={thumbnailSize}
+                onChange={(e) => setThumbnailSize(parseFloat(e.target.value))}
+                className="flex-1 h-2 bg-surface-raised rounded-lg appearance-none cursor-pointer accent-accent-cyan"
+              />
+              <span className="text-sm font-medium text-text-primary min-w-[3rem] text-right">
+                {Math.round(thumbnailSize * 100)}%
+              </span>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleIncreaseFontSize}
+              disabled={thumbnailSize >= 2.0}
+              className="flex h-10 w-10 items-center justify-center rounded-lg border-2 border-border-default bg-surface-base text-text-secondary hover:border-accent-cyan hover:text-accent-cyan disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-border-default disabled:hover:text-text-secondary transition-all"
+              aria-label="Increase font size"
+            >
+              <Plus className="h-5 w-5" />
+            </button>
+          </div>
+          <p className="text-xs text-text-muted mt-2">
+            Adjust the size of your text overlay (50% to 200%)
+          </p>
+        </div>
       </div>
 
       {/* Finalize Button */}
