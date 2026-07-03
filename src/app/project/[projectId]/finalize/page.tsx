@@ -87,51 +87,45 @@ export default function FinalizePage() {
           </div>
         </Card>
 
-        {/* Project Thumbnail & Tagline - Final showcase */}
-        {(state?.thumbnailUrl && state?.thumbnailStatus === "completed") || state?.scriptSummary ? (
+        {/* Final Thumbnail Display - Read-only */}
+        {state?.final_thumbnail_url && (
           <Card variant="elevated" padding="lg">
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-accent-cyan" />
-                <h3 className="text-lg font-medium text-text-primary">Your Project Assets</h3>
+                <h3 className="text-lg font-medium text-text-primary">Project Thumbnail</h3>
               </div>
 
-              {/* Script Tagline */}
-              {state.scriptSummary && (
-                <div className="rounded-lg bg-accent-cyan/10 border border-accent-cyan/30 px-5 py-4">
-                  <p className="text-xs font-medium text-text-secondary uppercase tracking-wide mb-2">
-                    Script Tagline
-                  </p>
-                  <p className="text-2xl font-bold text-accent-cyan">"{state.scriptSummary}"</p>
-                  <p className="text-xs text-text-muted mt-3">
-                    This catchy hook represents your video's core message
-                  </p>
-                </div>
-              )}
-
-              {/* Thumbnail */}
-              {state.thumbnailUrl && state.thumbnailStatus === "completed" && (
-                <div className="flex flex-col gap-2">
-                  <p className="text-sm font-medium text-text-secondary">AI-Generated Thumbnail</p>
-                  <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default">
-                    <img
-                      src={state.thumbnailUrl}
-                      alt="Project thumbnail"
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        const img = e.target as HTMLImageElement;
-                        img.style.display = "none";
-                      }}
-                    />
+              {/* Final Thumbnail with Text Overlay */}
+              <div className="relative aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default">
+                <img
+                  src={state.final_thumbnail_url}
+                  alt="Project thumbnail"
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    const img = e.target as HTMLImageElement;
+                    img.style.display = "none";
+                  }}
+                />
+                {/* Text Overlay Preview (if text exists) */}
+                {state.thumbnail_text && (
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div className="bg-black/60 backdrop-blur-sm px-6 py-3 rounded-lg">
+                      <p className="text-white text-2xl font-bold text-center">
+                        {state.thumbnail_text}
+                      </p>
+                    </div>
                   </div>
-                  <p className="text-xs text-text-muted">
-                    Generated based on your movie and tagline
-                  </p>
-                </div>
-              )}
+                )}
+              </div>
+
+              <p className="text-xs text-text-muted">
+                This is your finalized project thumbnail
+                {state.thumbnail_text && " with text overlay"}
+              </p>
             </div>
           </Card>
-        ) : null}
+        )}
 
         {/* Script preview card */}
         {activeScript && (
@@ -162,7 +156,7 @@ export default function FinalizePage() {
           </Card>
         )}
 
-        {/* Video preview */}
+        {/* Video preview with finalized thumbnail as poster */}
         {state?.videoUrl ? (
           <Card variant="elevated" padding="md">
             <h3 className="text-sm font-medium text-text-primary mb-4">Your Video</h3>
@@ -171,7 +165,7 @@ export default function FinalizePage() {
                 src={state.videoUrl}
                 controls
                 className="w-full h-full object-contain"
-                poster={state?.thumbnailUrl || undefined}
+                poster={state.final_thumbnail_url || undefined}
               >
                 Your browser does not support the video tag.
               </video>

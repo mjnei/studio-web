@@ -1,21 +1,58 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { FullScriptModal } from "@/components/project/full-script-modal";
+import { ThumbnailEditor } from "@/components/project/ThumbnailEditor";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { CenteredEmptyState } from "@/components/ui/empty-state";
 import { Video, FileText, ChevronDown, Sparkles } from "lucide-react";
+import { advanceProjectStep } from "@/lib/project-client";
+import { useToast } from "@/components/ui/toast";
 
 export default function ComposePage() {
   const params = useParams();
+  const router = useRouter();
   const projectId = params.projectId as string;
-  const { state, isLoading } = useProjectState(projectId);
+  const { state, isLoading, refresh } = useProjectState(projectId);
+  const { toast } = useToast();
 
   const [showFullScriptModal, setShowFullScriptModal] = useState(false);
+  const [isAdvancing, setIsAdvancing] = useState(false);
+
+  const handleThumbnailFinalized = async () => {
+    // Refresh project state to get latest thumbnail data
+    await refresh();
+  };
+
+  const handleContinue = async () => {
+    if (!state?.thumbnail_confirmed) {
+      toast({
+        title: "Thumbnail not finalized",
+        description: "Please finalize your thumbnail before continuing",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsAdvancing(true);
+    try {
+      await advanceProjectStep(projectId, "compose");
+      router.push(`/project/${projectId}/finalize`);
+    } catch (error) {
+      console.error("Failed to advance step:", error);
+      toast({
+        title: "Failed to advance",
+        description: "Failed to advance to next step",
+        variant: "destructive",
+      });
+    } finally {
+      setIsAdvancing(false);
+    }
+  };
 
   if (isLoading) {
     return <PageLoadingSkeleton message="Loading project..." />;
@@ -29,8 +66,15 @@ export default function ComposePage() {
       <div className="flex flex-col gap-6 pb-24">
         <div>
           <h2 className="text-xl font-semibold text-text-primary">Video Composition</h2>
-          <p className="mt-1 text-sm text-text-muted">Generate and preview your final video</p>
+          <p className="mt-1 text-sm text-text-muted">
+            Customize your thumbnail and prepare for video generation
+          </p>
         </div>
+
+        {/* Thumbnail Editor - Priority #1 */}
+        {state && (
+          <ThumbnailEditor project={state} onThumbnailFinalized={handleThumbnailFinalized} />
+        )}
 
         {/* Script Tagline - Highlight what's being composed */}
         {state?.scriptSummary && (
@@ -143,10 +187,11 @@ export default function ComposePage() {
       <FloatingWorkflowNavigation
         projectId={projectId}
         currentStep="compose"
-        canGoNext={true}
+        canGoNext={!!state?.thumbnail_confirmed}
         nextLabel="Continue to Finalize"
         canGoBack={true}
-        isProcessing={false}
+        isProcessing={isAdvancing}
+        onNext={handleContinue}
       />
     </>
   );
