@@ -30,24 +30,24 @@ export default function ComposePage() {
   React.useEffect(() => {
     if (state?.thumbnailCompositionStatus === "processing" && !isPollingComposition) {
       setIsPollingComposition(true);
-      
+
       const pollInterval = setInterval(async () => {
-        await refresh();
-        
+        const freshState = await refresh();
+
         // Check if completed or failed
-        if (state?.thumbnailCompositionStatus === "completed") {
+        if (freshState?.thumbnailCompositionStatus === "completed") {
           clearInterval(pollInterval);
           setIsPollingComposition(false);
           toast.success(
             "Thumbnail ready!",
             "Your thumbnail has been finalized and is ready for video generation"
           );
-        } else if (state?.thumbnailCompositionStatus === "failed") {
+        } else if (freshState?.thumbnailCompositionStatus === "failed") {
           clearInterval(pollInterval);
           setIsPollingComposition(false);
           toast.error(
             "Composition failed",
-            state?.thumbnailCompositionError || "Failed to composite thumbnail"
+            freshState?.thumbnailCompositionError || "Failed to composite thumbnail"
           );
         }
       }, 2000); // Poll every 2 seconds
@@ -60,7 +60,7 @@ export default function ComposePage() {
     // Start polling for completion
     await refresh();
     setShowThumbnailEditor(false);
-    
+
     toast.info(
       "Processing thumbnail",
       "Your thumbnail is being composed. This will take a few moments..."
@@ -69,10 +69,7 @@ export default function ComposePage() {
 
   const handleContinue = async () => {
     if (!state?.thumbnailConfirmed) {
-      toast.error(
-        "Thumbnail not finalized",
-        "Please finalize your thumbnail before continuing"
-      );
+      toast.error("Thumbnail not finalized", "Please finalize your thumbnail before continuing");
       return;
     }
 
@@ -82,10 +79,7 @@ export default function ComposePage() {
       router.push(`/project/${projectId}/finalize`);
     } catch (error) {
       console.error("Failed to advance step:", error);
-      toast.error(
-        "Failed to advance",
-        "Failed to advance to next step"
-      );
+      toast.error("Failed to advance", "Failed to advance to next step");
     } finally {
       setIsAdvancing(false);
     }
@@ -113,8 +107,12 @@ export default function ComposePage() {
           <Card
             variant="elevated"
             padding="md"
-            className="cursor-pointer hover:border-accent-cyan/30 hover:bg-surface-raised transition-all group"
-            onClick={() => setShowThumbnailEditor(true)}
+            className={
+              state.thumbnailConfirmed
+                ? "border-status-success/30 bg-surface-raised"
+                : "cursor-pointer hover:border-accent-cyan/30 hover:bg-surface-raised transition-all group"
+            }
+            onClick={state.thumbnailConfirmed ? undefined : () => setShowThumbnailEditor(true)}
           >
             <div className="flex flex-col gap-4">
               <div className="flex items-start gap-4">
@@ -138,50 +136,63 @@ export default function ComposePage() {
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-text-muted mb-3">
-                    {state.thumbnailConfirmed
-                      ? "Your thumbnail is ready for video generation"
-                      : "Customize your thumbnail before generating video"}
-                  </p>
 
-                  {/* Thumbnail Preview with side-by-side layout on medium+ screens */}
-                  {(state.thumbnailUrl || state.customThumbnailUrl || state.finalThumbnailUrl) && (
-                    <div className="flex flex-col md:grid md:grid-cols-2 md:gap-6">
-                      {/* Thumbnail - Half width on medium+ screens */}
-                      <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default md:rounded-xl">
-                        <img
-                          src={
-                            state.finalThumbnailUrl ||
-                            state.customThumbnailUrl ||
-                            state.thumbnailUrl ||
-                            ""
-                          }
-                          alt="Project thumbnail"
-                          className="w-full h-full object-cover"
-                        />
+                  {/* Collapsed view when confirmed */}
+                  {state.thumbnailConfirmed ? (
+                    <div className="space-y-2">
+                      <p className="text-sm text-text-muted">
+                        Your thumbnail is ready for video generation
+                      </p>
+                      <div className="text-xs text-text-muted space-y-1">
+                        <p>• Text overlay: {state.thumbnailText || "None"}</p>
+                        <p>
+                          • Base image:{" "}
+                          {state.customThumbnailUrl ? "Custom upload" : "AI-generated"}
+                        </p>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowThumbnailEditor(true);
+                          }}
+                          className="mt-2 text-xs text-accent-cyan hover:text-accent-cyan-hover underline"
+                        >
+                          Re-customize thumbnail
+                        </button>
                       </div>
+                    </div>
+                  ) : (
+                    <>
+                      {/* Full view when not confirmed */}
+                      <p className="text-sm text-text-muted mb-3">
+                        {state.thumbnailConfirmed
+                          ? "Your thumbnail is ready for video generation"
+                          : "Customize your thumbnail before generating video"}
+                      </p>
 
-                      {/* Action/Info section - Half width on medium+ screens */}
-                      <div className="mt-3 md:mt-0 flex flex-col justify-center">
-                        <h4 className="text-sm font-medium text-text-primary mb-2">
-                          {state.thumbnailConfirmed ? "Thumbnail Ready" : "Customization Options"}
-                        </h4>
-                        {state.thumbnailConfirmed ? (
-                          <>
-                            <p className="text-sm text-text-muted mb-3">
-                              Your thumbnail has been finalized and is ready for video generation.
-                            </p>
-                            <div className="text-xs text-text-muted space-y-1">
-                              <p>• Text overlay: {state.thumbnailText || "None"}</p>
-                              <p>
-                                • Base image:{" "}
-                                {state.customThumbnailUrl ? "Custom upload" : "AI-generated"}
-                              </p>
-                              <p>• Status: Confirmed and ready</p>
-                            </div>
-                          </>
-                        ) : (
-                          <>
+                      {/* Thumbnail Preview with side-by-side layout on medium+ screens */}
+                      {(state.thumbnailUrl ||
+                        state.customThumbnailUrl ||
+                        state.finalThumbnailUrl) && (
+                        <div className="flex flex-col md:grid md:grid-cols-2 md:gap-6">
+                          {/* Thumbnail - Half width on medium+ screens */}
+                          <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default md:rounded-xl">
+                            <img
+                              src={
+                                state.finalThumbnailUrl ||
+                                state.customThumbnailUrl ||
+                                state.thumbnailUrl ||
+                                ""
+                              }
+                              alt="Project thumbnail"
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+
+                          {/* Action/Info section - Half width on medium+ screens */}
+                          <div className="mt-3 md:mt-0 flex flex-col justify-center">
+                            <h4 className="text-sm font-medium text-text-primary mb-2">
+                              Customization Options
+                            </h4>
                             <p className="text-sm text-text-muted mb-3">
                               Click to open the thumbnail editor where you can:
                             </p>
@@ -192,10 +203,10 @@ export default function ComposePage() {
                               <p>• Adjust font, color, and position</p>
                               <p>• Preview and finalize</p>
                             </div>
-                          </>
-                        )}
-                      </div>
-                    </div>
+                          </div>
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
               </div>
@@ -283,18 +294,44 @@ export default function ComposePage() {
           description="Video composition and rendering will be available here in a future release."
           variant="accent-cyan"
           details={
-            <div className="w-full rounded-lg border border-dashed border-border-default bg-surface-panel p-4 text-left space-y-2">
-              <p className="text-xs text-text-muted">
-                Movie:{" "}
-                <span className="font-medium text-text-secondary">{state?.movieTitle || "—"}</span>
-              </p>
-              <p className="text-xs text-text-muted">
-                Voice:{" "}
-                <span className="font-medium text-text-secondary">{state?.voiceName || "—"}</span>
-              </p>
-              <p className="text-xs text-text-muted">
-                Script: <span className="font-medium text-text-secondary">{wordCount} words</span>
-              </p>
+            <div className="w-full space-y-4">
+              {/* Show confirmed thumbnail if available */}
+              {state?.thumbnailConfirmed && state?.finalThumbnailUrl && (
+                <div className="w-full">
+                  <p className="text-xs font-medium text-text-secondary mb-2">
+                    Confirmed Thumbnail:
+                  </p>
+                  <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default">
+                    <img
+                      src={state.finalThumbnailUrl}
+                      alt="Final project thumbnail"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Project details */}
+              <div className="w-full rounded-lg border border-dashed border-border-default bg-surface-panel p-4 text-left space-y-2">
+                <p className="text-xs text-text-muted">
+                  Movie:{" "}
+                  <span className="font-medium text-text-secondary">
+                    {state?.movieTitle || "—"}
+                  </span>
+                </p>
+                <p className="text-xs text-text-muted">
+                  Voice:{" "}
+                  <span className="font-medium text-text-secondary">{state?.voiceName || "—"}</span>
+                </p>
+                <p className="text-xs text-text-muted">
+                  Script: <span className="font-medium text-text-secondary">{wordCount} words</span>
+                </p>
+                {state?.thumbnailConfirmed && (
+                  <p className="text-xs text-text-muted">
+                    Thumbnail: <span className="font-medium text-status-success">✓ Ready</span>
+                  </p>
+                )}
+              </div>
             </div>
           }
         />
@@ -324,7 +361,7 @@ export default function ComposePage() {
       <FloatingWorkflowNavigation
         projectId={projectId}
         currentStep="compose"
-        canGoNext={!!state?.thumbnail_confirmed}
+        canGoNext={!!state?.thumbnailConfirmed}
         nextLabel="Continue to Finalize"
         canGoBack={true}
         isProcessing={isAdvancing}

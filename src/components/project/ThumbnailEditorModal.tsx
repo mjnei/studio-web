@@ -62,6 +62,7 @@ export function ThumbnailEditorModal({
   );
   const [textFont, setTextFont] = useState(project.thumbnailTextFont || "bold");
   const [textColor, setTextColor] = useState(project.thumbnailTextColor || "#FFFFFF");
+  const [textSize, setTextSize] = useState(project.thumbnailTextSize ?? 1.0);
   const [customPrompt, setCustomPrompt] = useState("");
   const [showPromptInput, setShowPromptInput] = useState(false);
 
@@ -164,12 +165,13 @@ export function ThumbnailEditorModal({
         thumbnailTextPosition: textPosition,
         thumbnailTextFont: textFont,
         thumbnailTextColor: textColor,
+        thumbnailTextSize: textSize,
         useCustom,
       });
 
       // Close modal immediately - composition happens in background
       onClose();
-      
+
       // Trigger callback to start polling
       onThumbnailFinalized();
     } catch (error) {
@@ -437,6 +439,37 @@ export function ThumbnailEditorModal({
                       ))}
                     </select>
                   </div>
+                </div>
+              </div>
+
+              {/* Font Size Control */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-text-secondary">Font Size</label>
+                <div className="grid grid-cols-3 gap-2">
+                  <Button
+                    variant={textSize === 0.8 ? "primary" : "secondary"}
+                    size="sm"
+                    onClick={() => setTextSize(0.8)}
+                    className="w-full"
+                  >
+                    Small
+                  </Button>
+                  <Button
+                    variant={textSize === 1.0 ? "primary" : "secondary"}
+                    size="sm"
+                    onClick={() => setTextSize(1.0)}
+                    className="w-full"
+                  >
+                    Medium
+                  </Button>
+                  <Button
+                    variant={textSize === 1.5 ? "primary" : "secondary"}
+                    size="sm"
+                    onClick={() => setTextSize(1.5)}
+                    className="w-full"
+                  >
+                    Large
+                  </Button>
                 </div>
               </div>
             </div>
