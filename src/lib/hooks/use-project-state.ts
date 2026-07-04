@@ -49,6 +49,7 @@ export interface ProjectState {
   thumbnailTextFont?: string;
   thumbnailTextColor?: string;
   thumbnailTextSize?: number;
+  thumbnailTextBackgroundBlur?: boolean;
   thumbnailCustomPrompt?: string;
   finalThumbnailUrl?: string;
   thumbnailConfirmed?: boolean;
@@ -165,6 +166,7 @@ function mapProject(project: ProjectResponse, scripts: ProjectScriptResponse[] =
     thumbnailTextFont: project.thumbnail?.overlay_font ?? undefined,
     thumbnailTextColor: project.thumbnail?.overlay_color ?? undefined,
     thumbnailTextSize: project.thumbnail?.overlay_size ?? undefined,
+    thumbnailTextBackgroundBlur: project.thumbnail?.overlay_background_blur ?? undefined,
     thumbnailCustomPrompt: project.thumbnail?.custom_prompt ?? undefined,
     finalThumbnailUrl: project.thumbnail?.final_url ?? undefined,
     thumbnailConfirmed: project.thumbnail?.confirmed ?? undefined,

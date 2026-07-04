@@ -95,6 +95,7 @@ export interface ProjectThumbnail {
   overlay_font: "bold" | "elegant" | "modern";
   overlay_color: string;
   overlay_size: number;
+  overlay_background_blur: boolean;
   final_url?: string | null;
   confirmed: boolean;
   composition_status: "idle" | "processing" | "completed" | "failed";
@@ -381,17 +382,19 @@ export async function finalizeThumbnail(
     thumbnailTextFont?: string;
     thumbnailTextColor?: string;
     thumbnailTextSize?: number;
+    thumbnailTextBackgroundBlur?: boolean;
     useCustom?: boolean;
   }
 ): Promise<ProjectResponse> {
   return request<ProjectResponse>(`/projects/${projectId}/thumbnail/finalize`, {
     method: "POST",
     body: JSON.stringify({
-      thumbnail_text: data.thumbnailText,
-      thumbnail_text_position: data.thumbnailTextPosition || "left",
-      thumbnail_text_font: data.thumbnailTextFont || "bold",
-      thumbnail_text_color: data.thumbnailTextColor || "#FFFFFF",
-      thumbnail_text_size: data.thumbnailTextSize ?? 1.0,
+      overlay_text: data.thumbnailText,
+      overlay_position: data.thumbnailTextPosition || "left",
+      overlay_font: data.thumbnailTextFont || "bold",
+      overlay_color: data.thumbnailTextColor || "#FFFFFF",
+      overlay_size: data.thumbnailTextSize ?? 1.0,
+      overlay_background_blur: data.thumbnailTextBackgroundBlur ?? true,
       use_custom: data.useCustom ?? false,
     }),
   });

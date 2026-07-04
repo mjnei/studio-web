@@ -12,6 +12,7 @@ import {
   Sparkles,
   Minus,
   Plus,
+  Droplets,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -63,6 +64,9 @@ export function ThumbnailEditorModal({
   const [textFont, setTextFont] = useState(project.thumbnailTextFont || "bold");
   const [textColor, setTextColor] = useState(project.thumbnailTextColor || "#FFFFFF");
   const [textSize, setTextSize] = useState(project.thumbnailTextSize ?? 1.0);
+  const [textBackgroundBlur, setTextBackgroundBlur] = useState(
+    project.thumbnailTextBackgroundBlur ?? true
+  );
   const [customPrompt, setCustomPrompt] = useState("");
   const [showPromptInput, setShowPromptInput] = useState(false);
 
@@ -166,6 +170,7 @@ export function ThumbnailEditorModal({
         thumbnailTextFont: textFont,
         thumbnailTextColor: textColor,
         thumbnailTextSize: textSize,
+        thumbnailTextBackgroundBlur: textBackgroundBlur,
         useCustom,
       });
 
@@ -186,7 +191,10 @@ export function ThumbnailEditorModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-      <div className="relative w-full max-h-[90vh] overflow-y-auto mx-4" style={{ maxWidth: "788px" }}>
+      <div
+        className="relative w-full max-h-[90vh] overflow-y-auto mx-4"
+        style={{ maxWidth: "788px" }}
+      >
         <Card variant="elevated" padding="none" className="bg-surface-base">
           {/* Header */}
           <div className="sticky top-0 z-10 flex items-center justify-between px-4 sm:px-6 py-3 border-b border-border-default bg-surface-base">
@@ -309,6 +317,19 @@ export function ThumbnailEditorModal({
                 </select>
               </div>
 
+              {/* Background Blur Toggle */}
+              <button
+                onClick={() => setTextBackgroundBlur(!textBackgroundBlur)}
+                className={`p-2 rounded-lg border transition-colors ${
+                  textBackgroundBlur
+                    ? "border-accent-cyan bg-accent-cyan text-white"
+                    : "border-border-default bg-surface-raised text-text-muted hover:bg-surface-base"
+                }`}
+                title={textBackgroundBlur ? "Blur Enabled" : "Blur Disabled"}
+              >
+                <Droplets className="h-4 w-4" />
+              </button>
+
               {/* Spacer */}
               <div className="flex-1 min-w-[1rem]" />
 
@@ -404,7 +425,13 @@ export function ThumbnailEditorModal({
                           textPosition === "left" ? "justify-start pl-[5%]" : "justify-end pr-[5%]"
                         } pointer-events-none`}
                       >
-                        <div className="w-[45%] px-4 py-3 bg-black/40 backdrop-blur-sm rounded-lg">
+                        <div
+                          className={`w-[45%] px-4 py-3 rounded-lg ${
+                            textBackgroundBlur
+                              ? "bg-black/40 backdrop-blur-sm"
+                              : "bg-transparent"
+                          }`}
+                        >
                           <p
                             className={`text-center font-${textFont === "bold" ? "bold" : textFont === "elegant" ? "serif" : "sans"} leading-tight`}
                             style={{
