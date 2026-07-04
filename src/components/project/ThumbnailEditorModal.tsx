@@ -12,6 +12,8 @@ import {
   AlignLeft,
   AlignRight,
   Sparkles,
+  AArrowUp,
+  AArrowDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -186,7 +188,7 @@ export function ThumbnailEditorModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-      <div className="relative w-full max-w-5xl max-h-[90vh] overflow-y-auto mx-4">
+      <div className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto mx-4">
         <Card variant="elevated" padding="none" className="bg-surface-base">
           {/* Header */}
           <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 border-b border-border-default bg-surface-base">
@@ -445,31 +447,28 @@ export function ThumbnailEditorModal({
               {/* Font Size Control */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-text-secondary">Font Size</label>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="flex items-center gap-3">
                   <Button
-                    variant={textSize === 0.8 ? "primary" : "secondary"}
+                    variant="secondary"
                     size="sm"
-                    onClick={() => setTextSize(0.8)}
-                    className="w-full"
-                  >
-                    Small
-                  </Button>
+                    icon={<AArrowDown className="h-4 w-4" />}
+                    onClick={() => setTextSize(Math.max(0.8, textSize - 0.1))}
+                    disabled={textSize <= 0.8}
+                    className="w-10 h-10 p-0 flex items-center justify-center"
+                  />
+                  <div className="flex-1 text-center">
+                    <span className="text-sm font-medium text-text-primary">
+                      {textSize.toFixed(1)}x
+                    </span>
+                  </div>
                   <Button
-                    variant={textSize === 1.0 ? "primary" : "secondary"}
+                    variant="secondary"
                     size="sm"
-                    onClick={() => setTextSize(1.0)}
-                    className="w-full"
-                  >
-                    Medium
-                  </Button>
-                  <Button
-                    variant={textSize === 1.5 ? "primary" : "secondary"}
-                    size="sm"
-                    onClick={() => setTextSize(1.5)}
-                    className="w-full"
-                  >
-                    Large
-                  </Button>
+                    icon={<AArrowUp className="h-4 w-4" />}
+                    onClick={() => setTextSize(Math.min(2.0, textSize + 0.1))}
+                    disabled={textSize >= 2.0}
+                    className="w-10 h-10 p-0 flex items-center justify-center"
+                  />
                 </div>
               </div>
             </div>
