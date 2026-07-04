@@ -427,9 +427,7 @@ export function ThumbnailEditorModal({
                       >
                         <div
                           className={`w-[45%] px-4 py-3 rounded-lg ${
-                            textBackgroundBlur
-                              ? "bg-black/40 backdrop-blur-sm"
-                              : "bg-transparent"
+                            textBackgroundBlur ? "bg-black/40 backdrop-blur-sm" : "bg-transparent"
                           }`}
                         >
                           <p
