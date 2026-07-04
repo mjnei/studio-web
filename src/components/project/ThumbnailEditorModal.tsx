@@ -186,7 +186,7 @@ export function ThumbnailEditorModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-      <div className="relative w-full max-w-5xl max-h-[90vh] overflow-y-auto mx-4">
+      <div className="relative w-full max-h-[90vh] overflow-y-auto mx-4" style={{ maxWidth: "788px" }}>
         <Card variant="elevated" padding="none" className="bg-surface-base">
           {/* Header */}
           <div className="sticky top-0 z-10 flex items-center justify-between px-4 sm:px-6 py-3 border-b border-border-default bg-surface-base">
