@@ -222,7 +222,7 @@ export default function ProjectsPage() {
                             variant={
                               project.status === "completed"
                                 ? "success"
-                                : project.status === "in_progress"
+                                : project.status === "in-progress"
                                   ? "info"
                                   : "default"
                             }

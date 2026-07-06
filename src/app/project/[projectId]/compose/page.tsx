@@ -74,7 +74,7 @@ export default function ComposePage() {
 
     setIsAdvancing(true);
     try {
-      await advanceProjectStep(projectId, "compose");
+      await advanceProjectStep(projectId, "finalize");
       router.push(`/project/${projectId}/finalize`);
     } catch (error) {
       console.error("Failed to advance step:", error);
