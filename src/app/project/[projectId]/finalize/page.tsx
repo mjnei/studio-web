@@ -162,7 +162,7 @@ export default function FinalizePage() {
     try {
       const freshStatus = await getCreditStatus();
       setCreditStatus(freshStatus);
-      
+
       if (freshStatus.credits_remaining < 1) {
         setShowInsufficientCreditsModal(true);
         return;
