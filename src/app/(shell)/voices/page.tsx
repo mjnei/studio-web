@@ -1,10 +1,16 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Plus, Play, Pause, Volume2, Mic, Sparkles, Search, X } from "lucide-react";
+import { Plus, Play, Pause, Volume2, Mic, Sparkles, Search, X, Globe, User } from "lucide-react";
 import { VoiceRecorder } from "@/components/shared/voice-recorder";
 import { VoiceRecordingCard } from "@/components/voices/voice-recording-card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Badge } from "@/components/ui/badge";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { Grid } from "@/components/ui/Grid";
 import { useVoiceRecordings } from "@/lib/hooks/use-voice-recordings";
 import { useStockVoices, getVoicePreviewUrl } from "@/lib/hooks/use-stock-voices";
 import { VoiceRecordingResponse, VoiceResponse } from "@/lib/types/api";
@@ -33,7 +39,6 @@ export default function VoicesPage() {
 
       setPlayingVoiceId(voiceId);
 
-      // Get presigned URL from S3
       const audioUrl = await getVoicePreviewUrl(voiceId);
       if (!audioUrl) {
         setPlayingVoiceId(null);
@@ -69,7 +74,6 @@ export default function VoicesPage() {
     setPlayingVoiceId(null);
   };
 
-  // Filter stock voices based on search query
   const filteredStockVoices = stockVoices.filter((voice) => {
     if (!searchQuery) return true;
     const query = searchQuery.toLowerCase();
@@ -83,22 +87,14 @@ export default function VoicesPage() {
   });
 
   return (
-    <div className="min-h-screen pb-8">
-      {/* Header */}
-      <div className="mb-8">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-text-primary to-text-secondary bg-clip-text text-transparent">
-              Voice Library
-            </h1>
-            <p className="mt-2 text-sm text-text-muted">
-              Create custom voices or choose from our curated collection
-            </p>
-          </div>
-
-          {tab === "my" && !showRecorder && (
-            <Button
-              variant="primary"
+    <div className="max-w-7xl mx-auto">
+      <PageHeader
+        title="Voice Library"
+        description="Create custom voices or choose from our curated collection"
+        action={
+          tab === "my" && !showRecorder ? (
+            <Button 
+              variant="primary" 
               size="md"
               onClick={() => setShowRecorder(true)}
               className="w-full sm:w-auto shadow-lg shadow-accent-primary/20"

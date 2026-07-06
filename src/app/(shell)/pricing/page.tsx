@@ -141,35 +141,40 @@ export default function PricingPage() {
   };
 
   return (
-    <div className="py-8">
+    <div className="max-w-7xl mx-auto">
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto mb-12">
-        <h1 className="text-3xl font-bold text-text-primary mb-4">Simple, Transparent Pricing</h1>
-        <p className="text-lg text-text-muted mb-6">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-muted text-accent-primary text-sm font-medium mb-4">
+          <Sparkles className="w-4 h-4" />
+          Special Launch Pricing
+        </div>
+        <h1 className="text-4xl font-bold text-text-primary mb-4">Simple, Transparent Pricing</h1>
+        <p className="text-lg text-text-secondary mb-8">
           1 credit = 1 video generation. Choose the plan that fits your needs.
         </p>
 
         {/* Billing Toggle */}
-        <div className="inline-flex items-center gap-4 p-1.5 rounded-lg bg-surface-raised border border-border-default">
+        <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-surface-raised border border-border-default shadow-sm">
           <button
             onClick={() => setBillingCycle("monthly")}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+            className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
               billingCycle === "monthly"
-                ? "bg-surface-panel text-text-primary shadow-sm"
-                : "text-text-muted hover:text-text-secondary"
+                ? "bg-accent-primary text-white shadow-glow"
+                : "text-text-muted hover:text-text-primary"
             }`}
           >
             Monthly
           </button>
           <button
             onClick={() => setBillingCycle("annual")}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+            className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
               billingCycle === "annual"
-                ? "bg-surface-panel text-text-primary shadow-sm"
-                : "text-text-muted hover:text-text-secondary"
+                ? "bg-accent-primary text-white shadow-glow"
+                : "text-text-muted hover:text-text-primary"
             }`}
           >
-            Annual (Save 20%)
+            <span>Annual</span>
+            <span className="ml-2 text-xs opacity-75">Save 20%</span>
           </button>
         </div>
       </div>

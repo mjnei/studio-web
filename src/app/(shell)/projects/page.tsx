@@ -2,10 +2,13 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Folder, Plus, Trash2 } from "lucide-react";
+import { Folder, Plus, Trash2, Clock, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { FormModal } from "@/components/ui/modal";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Badge } from "@/components/ui/badge";
+import { LoadingState } from "@/components/ui/LoadingSpinner";
 import {
   listProjects,
   deleteProject,
@@ -69,28 +72,29 @@ export default function ProjectsPage() {
 
   return (
     <div className="max-w-7xl mx-auto">
-      <div className="mb-8 flex items-start justify-between gap-4 fade-in">
-        <div>
-          <h1 className="text-3xl font-bold text-text-primary mb-2">Projects</h1>
-          <p className="text-text-secondary">Create and manage your projects</p>
-        </div>
-        <Link href="/project/new">
-          <Button variant="primary" size="md" icon={<Plus className="h-4 w-4" />}>
-            New Project
-          </Button>
-        </Link>
-      </div>
+      <PageHeader
+        title="Projects"
+        description="Create and manage your video projects"
+        action={
+          <Link href="/project/new">
+            <Button variant="primary" size="md" leftIcon={<Plus className="h-4 w-4" />}>
+              New Project
+            </Button>
+          </Link>
+        }
+      />
 
       {loading ? (
-        <Card variant="elevated" padding="lg" className="fade-in">
-          <CardContent>
-            <div className="py-12 text-center text-text-secondary">Loading projects...</div>
-          </CardContent>
-        </Card>
+        <LoadingState title="Loading projects..." description="Please wait while we fetch your projects" />
       ) : error ? (
-        <Card variant="elevated" padding="lg" className="fade-in">
+        <Card variant="elevated" padding="lg" className="fade-in border-status-error/30">
           <CardContent>
-            <div className="py-12 text-center text-status-failed">{error}</div>
+            <div className="py-12 text-center">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-status-error/10 flex items-center justify-center">
+                <Folder className="w-8 h-8 text-status-error" />
+              </div>
+              <p className="text-status-error font-medium">{error}</p>
+            </div>
           </CardContent>
         </Card>
       ) : projects.length === 0 ? (
@@ -203,17 +207,31 @@ export default function ProjectsPage() {
                   </div>
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <h2 className="font-semibold text-text-primary">
+                      <div className="flex-1 min-w-0">
+                        <h2 className="font-semibold text-text-primary truncate">
                           {project.project_name || project.movie?.title || "Untitled project"}
                         </h2>
-                        <p className="mt-1 text-xs text-text-muted">
-                          Step: {project.last_step} • Status: {project.status}
-                        </p>
+                        <div className="flex items-center gap-2 mt-2 flex-wrap">
+                          <Badge variant="info" size="sm">
+                            {project.last_step}
+                          </Badge>
+                          <Badge 
+                            variant={
+                              project.status === "completed" ? "success" :
+                              project.status === "in_progress" ? "info" :
+                              "default"
+                            } 
+                            size="sm"
+                          >
+                            {project.status === "completed" && <CheckCircle2 className="w-3 h-3" />}
+                            {project.status}
+                          </Badge>
+                        </div>
                       </div>
-                      <span className="rounded-full bg-surface-raised px-2 py-1 text-xs text-text-secondary">
+                      <div className="flex items-center gap-1 text-xs text-text-muted flex-shrink-0">
+                        <Clock className="w-3 h-3" />
                         {new Date(project.updated_at).toLocaleDateString()}
-                      </span>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
