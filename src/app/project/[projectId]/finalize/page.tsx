@@ -234,25 +234,6 @@ export default function FinalizePage() {
         {/* Section A: Current Video Hero */}
         {latestVideo ? (
           <>
-            <Card
-              variant="elevated"
-              padding="md"
-              className="bg-success-bg/10 border-success-border"
-            >
-              <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-success-bg flex-shrink-0">
-                  <CheckCircle className="h-5 w-5 text-success-text" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-medium text-success-text">Video Complete!</h3>
-                  <p className="mt-1 text-sm text-text-muted">
-                    Your video has been successfully generated and is ready for download or
-                    publishing.
-                  </p>
-                </div>
-              </div>
-            </Card>
-
             {/* Video Player */}
             <Card variant="elevated" padding="md">
               <h3 className="text-sm font-medium text-text-primary mb-4">Your Latest Video</h3>
@@ -370,10 +351,6 @@ export default function FinalizePage() {
               <h3 className="text-lg font-semibold text-text-primary mb-2">
                 Ready to Generate Your Video
               </h3>
-              <p className="text-sm text-text-muted mb-6">
-                Your thumbnail is finalized and everything is ready. Generate your first video for 1
-                credit.
-              </p>
 
               {/* Credit indicator */}
               {creditStatus && (

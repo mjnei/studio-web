@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import { AlertTriangle, Coins } from "lucide-react";
@@ -30,7 +29,7 @@ export function CreditConfirmationModal({
   const hasInsufficientCredits = creditsRemaining < creditCost;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={title} size="sm">
+    <Modal open={isOpen} onClose={onClose} title={title} size="sm">
       <div className="space-y-4">
         {/* Message */}
         <p className="text-sm text-text-secondary">{message}</p>
