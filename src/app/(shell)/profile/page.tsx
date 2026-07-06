@@ -412,7 +412,11 @@ export default function ProfilePage() {
                     </Button>
                   </Link>
                   <Link href="/dashboard/billing" className="flex-1">
-                    <Button variant="secondary" fullWidth leftIcon={<CreditCard className="w-4 h-4" />}>
+                    <Button
+                      variant="secondary"
+                      fullWidth
+                      leftIcon={<CreditCard className="w-4 h-4" />}
+                    >
                       Manage Billing
                     </Button>
                   </Link>
@@ -552,7 +556,11 @@ export default function ProfilePage() {
                       End your current session on this device
                     </p>
                   </div>
-                  <Button variant="secondary" onClick={logout} leftIcon={<LogOut className="w-4 h-4" />}>
+                  <Button
+                    variant="secondary"
+                    onClick={logout}
+                    leftIcon={<LogOut className="w-4 h-4" />}
+                  >
                     Sign out
                   </Button>
                 </div>
@@ -563,7 +571,9 @@ export default function ProfilePage() {
                       <p className="text-xs text-text-muted mt-1">
                         Password:{" "}
                         <span
-                          className={user.has_password ? "text-status-completed" : "text-text-muted"}
+                          className={
+                            user.has_password ? "text-status-completed" : "text-text-muted"
+                          }
                         >
                           {user.has_password ? "Already Set" : "Not set"}
                         </span>

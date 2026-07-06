@@ -1,19 +1,14 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Plus, Play, Pause, Volume2, Mic, Sparkles, Search, X, Globe, User } from "lucide-react";
+import { Plus, Play, Pause, Volume2, Mic, Sparkles, Search, X } from "lucide-react";
 import { VoiceRecorder } from "@/components/shared/voice-recorder";
 import { VoiceRecordingCard } from "@/components/voices/voice-recording-card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { Badge } from "@/components/ui/badge";
-import { EmptyState } from "@/components/ui/EmptyState";
-import { Grid } from "@/components/ui/Grid";
 import { useVoiceRecordings } from "@/lib/hooks/use-voice-recordings";
 import { useStockVoices, getVoicePreviewUrl } from "@/lib/hooks/use-stock-voices";
-import { VoiceRecordingResponse, VoiceResponse } from "@/lib/types/api";
+import { VoiceRecordingResponse } from "@/lib/types/api";
 
 export default function VoicesPage() {
   const [tab, setTab] = useState<"my" | "stock">("my");
@@ -109,6 +104,7 @@ export default function VoicesPage() {
       {/* Tab Navigation */}
       <div className="mb-8">
         <div className="inline-flex items-center gap-2 rounded-xl bg-surface-panel p-1.5 shadow-sm border border-border-default">
+          {/* My Voices Tab */}
           <button
             onClick={() => {
               setTab("my");
@@ -132,6 +128,8 @@ export default function VoicesPage() {
               </span>
             )}
           </button>
+
+          {/* Stock Voices Tab */}
           <button
             onClick={() => {
               setTab("stock");
