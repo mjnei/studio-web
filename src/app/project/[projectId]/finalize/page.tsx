@@ -10,7 +10,6 @@ import { FloatingWorkflowNavigation } from "@/components/project/floating-workfl
 import { FullScriptModal } from "@/components/project/full-script-modal";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import {
-  CheckCircle,
   FileText,
   ChevronDown,
   ChevronRight,
@@ -18,7 +17,6 @@ import {
   Share2,
   Video,
   Trash2,
-  Clock,
   Loader2,
   RefreshCw,
   Info,
@@ -53,7 +51,6 @@ export default function FinalizePage() {
   const [showCreditConfirmationModal, setShowCreditConfirmationModal] = useState(false);
   const [isRegenerating, setIsRegenerating] = useState(false);
   const [processingVideoJob, setProcessingVideoJob] = useState<VideoJobResponse | null>(null);
-  const [showProjectSummary, setShowProjectSummary] = useState(false);
 
   React.useEffect(() => {
     if (projectId) {
@@ -399,13 +396,13 @@ export default function FinalizePage() {
           </Card>
         )}
 
-        {/* Section B: Video History with Regeneration */}
-        <Card variant="elevated" padding="md">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-medium text-text-primary">Video History</h3>
+        {/* Section B: Video History with Regeneration - Only show if there are videos */}
+        {videos && videos.length > 0 && (
+          <Card variant="elevated" padding="md">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-medium text-text-primary">Video History</h3>
 
-            {/* Inline Regeneration Button - Only show if we have at least one video */}
-            {videos && videos.length > 0 && (
+              {/* Inline Regeneration Button */}
               <div className="flex items-center gap-2">
                 {creditStatus && (
                   <div className="text-xs text-text-muted">
@@ -440,15 +437,8 @@ export default function FinalizePage() {
                   {isRegenerating ? "Generating..." : "Regenerate"}
                 </Button>
               </div>
-            )}
-          </div>
-
-          {!videos || videos.length === 0 ? (
-            <div className="py-8 text-center text-sm text-text-muted">
-              <Clock className="h-10 w-10 mx-auto mb-3 text-text-muted opacity-50" />
-              <p>No video history yet</p>
             </div>
-          ) : (
+
             <div className="space-y-3">
               {videos.map((video, index) => (
                 <div
@@ -543,81 +533,65 @@ export default function FinalizePage() {
                 </div>
               ))}
             </div>
-          )}
-        </Card>
-
-        {/* Project Summary - Collapsible */}
-        <Card
-          variant="elevated"
-          padding="md"
-          className="cursor-pointer hover:border-accent-cyan/30 transition-all"
-          onClick={() => setShowProjectSummary(!showProjectSummary)}
-        >
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-medium text-text-primary">Project Summary</h3>
-            <ChevronRight
-              className={`h-4 w-4 text-text-muted transition-transform ${
-                showProjectSummary ? "rotate-90" : ""
-              }`}
-            />
-          </div>
-
-          {showProjectSummary && (
-            <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-text-muted">Title</p>
-                <p className="mt-1 text-sm text-text-primary">
-                  {state?.title || "Untitled Project"}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-text-muted">Movie</p>
-                <p className="mt-1 text-sm text-text-primary">{state?.movieTitle || "Unknown"}</p>
-              </div>
-              <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-text-muted">Voice</p>
-                <p className="mt-1 text-sm text-text-primary">
-                  {state?.voiceName || "Not selected"}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
-                  Script
-                </p>
-                <p className="mt-1 text-sm text-text-primary">{wordCount} words</p>
-              </div>
-            </div>
-          )}
-        </Card>
-
-        {/* Script preview card */}
-        {activeScript && (
-          <Card
-            variant="elevated"
-            padding="md"
-            className="cursor-pointer hover:border-accent-cyan/30 hover:bg-surface-raised transition-all group"
-            onClick={() => setShowFullScriptModal(true)}
-          >
-            <div className="flex items-start gap-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted flex-shrink-0">
-                <FileText className="h-5 w-5 text-accent-cyan" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-4 mb-2">
-                  <h3 className="font-medium text-text-primary">Script</h3>
-                  <span className="text-xs font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0 group-hover:text-accent-cyan-hover">
-                    Click to expand <ChevronDown className="h-3 w-3" />
-                  </span>
-                </div>
-                <p className="text-sm text-text-muted mb-2">
-                  {activeScript.wordCount} words • {Math.floor(activeScript.duration / 60)}:
-                  {(activeScript.duration % 60).toString().padStart(2, "0")}
-                </p>
-                <p className="text-sm text-text-secondary line-clamp-2">{activeScript.content}</p>
-              </div>
-            </div>
           </Card>
         )}
+
+        {/* Project Summary - Always visible with merged script content */}
+        <Card variant="elevated" padding="md">
+          <h3 className="text-sm font-medium text-text-primary mb-4">Project Summary</h3>
+          
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wide text-text-muted">Title</p>
+              <p className="mt-1 text-sm text-text-primary">
+                {state?.title || "Untitled Project"}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wide text-text-muted">Movie</p>
+              <p className="mt-1 text-sm text-text-primary">{state?.movieTitle || "Unknown"}</p>
+            </div>
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wide text-text-muted">Voice</p>
+              <p className="mt-1 text-sm text-text-primary">
+                {state?.voiceName || "Not selected"}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
+                Script
+              </p>
+              <p className="mt-1 text-sm text-text-primary">{wordCount} words</p>
+            </div>
+          </div>
+
+          {/* Script preview - merged into this section */}
+          {activeScript && (
+            <div className="pt-4 border-t border-border-default">
+              <div
+                className="flex items-start gap-4 cursor-pointer hover:bg-surface-raised p-2 -m-2 rounded transition-colors group"
+                onClick={() => setShowFullScriptModal(true)}
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted flex-shrink-0">
+                  <FileText className="h-5 w-5 text-accent-cyan" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-4 mb-2">
+                    <h4 className="font-medium text-text-primary">Script Preview</h4>
+                    <span className="text-xs font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0 group-hover:text-accent-cyan-hover">
+                      Click to expand <ChevronDown className="h-3 w-3" />
+                    </span>
+                  </div>
+                  <p className="text-sm text-text-muted mb-2">
+                    {Math.floor(activeScript.duration / 60)}:
+                    {(activeScript.duration % 60).toString().padStart(2, "0")}
+                  </p>
+                  <p className="text-sm text-text-secondary line-clamp-2">{activeScript.content}</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </Card>
 
         {/* Return to Projects */}
         <div className="flex justify-center">
