@@ -4,6 +4,7 @@ import Link from "next/link";
 import { PanelLeft, Search, Plus, Bell, ChevronDown } from "lucide-react";
 import { useSidebar } from "@/components/shell/sidebar-context";
 import { Button } from "@/components/ui/button";
+import { CreditStatus } from "@/components/credits/CreditStatus";
 
 export function TopNav() {
   const { toggle, isNarrow } = useSidebar();
@@ -24,6 +25,9 @@ export function TopNav() {
         )}
 
         <div className="ml-auto flex items-center gap-2 md:gap-3">
+          {/* Credit Status */}
+          <CreditStatus />
+
           {/* Search Bar */}
           <div className="hidden lg:block relative">
             <div className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted">

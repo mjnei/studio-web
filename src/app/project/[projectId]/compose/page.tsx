@@ -10,9 +10,12 @@ import { FullScriptModal } from "@/components/project/full-script-modal";
 import { ThumbnailEditorModal } from "@/components/project/ThumbnailEditorModal";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { CenteredEmptyState } from "@/components/ui/empty-state";
-import { Video, FileText, ChevronDown, Sparkles, Check, Loader2 } from "lucide-react";
-import { advanceProjectStep } from "@/lib/project-client";
+import { Video, FileText, ChevronDown, Sparkles, Check, Loader2, Coins } from "lucide-react";
+import { advanceProjectStep, createVideoJob } from "@/lib/project-client";
 import { useToast } from "@/components/ui/toast";
+import { getCreditStatus, type CreditStatus } from "@/lib/credit-client";
+import { CreditUsageIndicator } from "@/components/credits/CreditUsageIndicator";
+import { InsufficientCreditsModal } from "@/components/credits/InsufficientCreditsModal";
 
 export default function ComposePage() {
   const params = useParams();
@@ -25,6 +28,23 @@ export default function ComposePage() {
   const [showThumbnailEditor, setShowThumbnailEditor] = useState(false);
   const [isAdvancing, setIsAdvancing] = useState(false);
   const [isPollingComposition, setIsPollingComposition] = useState(false);
+  const [creditStatus, setCreditStatus] = useState<CreditStatus | null>(null);
+  const [showInsufficientCreditsModal, setShowInsufficientCreditsModal] = useState(false);
+  const [isGeneratingVideo, setIsGeneratingVideo] = useState(false);
+
+  // Load credit status
+  React.useEffect(() => {
+    loadCreditStatus();
+  }, []);
+
+  const loadCreditStatus = async () => {
+    try {
+      const status = await getCreditStatus();
+      setCreditStatus(status);
+    } catch (error) {
+      console.error("Failed to load credit status:", error);
+    }
+  };
 
   // Poll for composition status when processing
   React.useEffect(() => {
@@ -82,6 +102,55 @@ export default function ComposePage() {
       toast.error("Failed to advance", "Failed to advance to next step");
     } finally {
       setIsAdvancing(false);
+    }
+  };
+
+  const handleGenerateVideo = async () => {
+    // Check credits
+    if (!creditStatus || creditStatus.credits_remaining < 1) {
+      setShowInsufficientCreditsModal(true);
+      return;
+    }
+
+    if (!state?.thumbnailConfirmed) {
+      toast.error("Thumbnail not finalized", "Please finalize your thumbnail before generating video");
+      return;
+    }
+
+    setIsGeneratingVideo(true);
+    try {
+      await createVideoJob({
+        projectId,
+        ttsJobId: state.activeTtsJobId || undefined,
+        autoActivate: true,
+      });
+
+      toast.success(
+        "Video generation started",
+        "Your video is being generated. This may take a few minutes."
+      );
+
+      // Refresh credit status
+      await loadCreditStatus();
+
+      // Continue to finalize page
+      await advanceProjectStep(projectId, "compose");
+      router.push(`/project/${projectId}/finalize`);
+    } catch (error: any) {
+      console.error("Failed to generate video:", error);
+      
+      // Check for 402 Payment Required (insufficient credits)
+      if (error.status === 402) {
+        await loadCreditStatus(); // Refresh credits
+        setShowInsufficientCreditsModal(true);
+      } else {
+        toast.error(
+          "Video generation failed",
+          error.message || "Failed to start video generation"
+        );
+      }
+    } finally {
+      setIsGeneratingVideo(false);
     }
   };
 
@@ -291,10 +360,20 @@ export default function ComposePage() {
         <CenteredEmptyState
           icon={Video}
           title="Video Generation"
-          description="Video composition and rendering will be available here in a future release."
+          description="Generate your final video with the confirmed thumbnail, script, and voice narration."
           variant="accent-cyan"
           details={
             <div className="w-full space-y-4">
+              {/* Credit Cost Indicator */}
+              {creditStatus && (
+                <div className="flex justify-center">
+                  <CreditUsageIndicator
+                    cost={1}
+                    remainingCredits={creditStatus.credits_remaining}
+                  />
+                </div>
+              )}
+
               {/* Show confirmed thumbnail if available */}
               {state?.thumbnailConfirmed && state?.finalThumbnailUrl && (
                 <div className="w-full">
@@ -332,6 +411,31 @@ export default function ComposePage() {
                   </p>
                 )}
               </div>
+
+              {/* Generate Video Button */}
+              <button
+                onClick={handleGenerateVideo}
+                disabled={!state?.thumbnailConfirmed || isGeneratingVideo || (creditStatus && creditStatus.credits_remaining < 1)}
+                className="w-full py-3 px-4 rounded-lg bg-accent-cyan text-white font-medium hover:bg-accent-cyan-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+              >
+                {isGeneratingVideo ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Generating Video...
+                  </>
+                ) : (
+                  <>
+                    <Video className="h-4 w-4" />
+                    Generate Video
+                  </>
+                )}
+              </button>
+              
+              {!state?.thumbnailConfirmed && (
+                <p className="text-xs text-warning-text text-center">
+                  Please finalize your thumbnail before generating video
+                </p>
+              )}
             </div>
           }
         />
@@ -366,6 +470,14 @@ export default function ComposePage() {
         canGoBack={true}
         isProcessing={isAdvancing}
         onNext={handleContinue}
+      />
+
+      {/* Insufficient Credits Modal */}
+      <InsufficientCreditsModal
+        isOpen={showInsufficientCreditsModal}
+        onClose={() => setShowInsufficientCreditsModal(false)}
+        creditStatus={creditStatus}
+        requiredCredits={1}
       />
     </>
   );
