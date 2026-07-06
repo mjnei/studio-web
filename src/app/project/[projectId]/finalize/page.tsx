@@ -54,74 +54,7 @@ export default function FinalizePage() {
   const [selectedVideoId, setSelectedVideoId] = useState<string | null>(null);
   const [showPublishModal, setShowPublishModal] = useState(false);
 
-  React.useEffect(() => {
-    if (projectId) {
-      loadVideos();
-      loadCreditStatus();
-    }
-  }, [projectId]);
-
-  // Poll for video status updates if there's a processing video
-  React.useEffect(() => {
-    const hasProcessingVideo = videos?.some(
-      (v) => v.status === "processing" || v.status === "queued"
-    );
-
-    if (!hasProcessingVideo) {
-      setProcessingVideoJob(null);
-      return;
-    }
-
-    // Load the full video job with steps
-    const processingVideo = videos?.find((v) => v.status === "processing" || v.status === "queued");
-
-    if (processingVideo) {
-      loadVideoJobWithSteps(processingVideo.id);
-    }
-
-    const pollInterval = setInterval(() => {
-      if (processingVideo) {
-        loadVideoJobWithSteps(processingVideo.id);
-      }
-      loadVideos();
-      loadCreditStatus(); // Also refresh credits
-    }, 3000); // Poll every 3 seconds for better responsiveness
-
-    return () => clearInterval(pollInterval);
-  }, [videos, projectId]);
-
-  const loadVideoJobWithSteps = async (videoId: string) => {
-    try {
-      const job = await getVideoJob(videoId);
-
-      // Check if status changed to completed
-      const wasProcessing =
-        processingVideoJob?.status === "processing" || processingVideoJob?.status === "queued";
-      const nowCompleted = job.status === "completed";
-
-      setProcessingVideoJob(job);
-
-      // Show success toast when video completes
-      if (wasProcessing && nowCompleted) {
-        toast.success(
-          "Video complete!",
-          "Your video has been generated successfully and is ready to download"
-        );
-      }
-
-      // Show error toast if failed
-      if (job.status === "failed" && wasProcessing) {
-        toast.error(
-          "Video generation failed",
-          job.error_message || "An error occurred during generation"
-        );
-      }
-    } catch (error) {
-      console.error("Failed to load video job with steps:", error);
-    }
-  };
-
-  const loadVideos = async () => {
+  const loadVideos = React.useCallback(async () => {
     setIsLoadingVideos(true);
     try {
       const response = await getProjectVideos(projectId);
@@ -140,25 +73,107 @@ export default function FinalizePage() {
     } finally {
       setIsLoadingVideos(false);
     }
-  };
+  }, [projectId, selectedVideoId, toast]);
 
-  const loadCreditStatus = async () => {
+  const loadCreditStatus = React.useCallback(async () => {
     try {
       const status = await getCreditStatus();
       setCreditStatus(status);
     } catch (error) {
       console.error("Failed to load credit status:", error);
     }
-  };
+  }, []);
 
-  const handleRegenerate = async () => {
-    if (!creditStatus || creditStatus.credits_remaining < 1) {
-      setShowInsufficientCreditsModal(true);
+  const loadVideoJobWithSteps = React.useCallback(
+    async (videoId: string) => {
+      try {
+        const job = await getVideoJob(videoId);
+
+        // Check if status changed to completed
+        const wasProcessing =
+          processingVideoJob?.status === "processing" || processingVideoJob?.status === "queued";
+        const nowCompleted = job.status === "completed";
+
+        setProcessingVideoJob(job);
+
+        // Show success toast when video completes
+        if (wasProcessing && nowCompleted) {
+          toast.success(
+            "Video complete!",
+            "Your video has been generated successfully and is ready to download"
+          );
+        }
+
+        // Show error toast if failed
+        if (job.status === "failed" && wasProcessing) {
+          toast.error(
+            "Video generation failed",
+            job.error_message || "An error occurred during generation"
+          );
+        }
+      } catch (error) {
+        console.error("Failed to load video job with steps:", error);
+      }
+    },
+    [processingVideoJob, toast]
+  );
+
+  React.useEffect(() => {
+    if (projectId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      void loadVideos();
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      void loadCreditStatus();
+    }
+  }, [projectId, loadVideos, loadCreditStatus]);
+
+  // Poll for video status updates if there's a processing video
+  React.useEffect(() => {
+    const hasProcessingVideo = videos?.some(
+      (v) => v.status === "processing" || v.status === "queued"
+    );
+
+    if (!hasProcessingVideo) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setProcessingVideoJob(null);
       return;
     }
 
-    // Show confirmation modal before proceeding
-    setShowCreditConfirmationModal(true);
+    // Load the full video job with steps
+    const processingVideo = videos?.find((v) => v.status === "processing" || v.status === "queued");
+
+    if (processingVideo) {
+      void loadVideoJobWithSteps(processingVideo.id);
+    }
+
+    const pollInterval = setInterval(() => {
+      if (processingVideo) {
+        void loadVideoJobWithSteps(processingVideo.id);
+      }
+      void loadVideos();
+      void loadCreditStatus(); // Also refresh credits
+    }, 3000); // Poll every 3 seconds for better responsiveness
+
+    return () => clearInterval(pollInterval);
+  }, [videos, projectId, loadVideoJobWithSteps, loadVideos, loadCreditStatus]);
+
+  const handleRegenerate = async () => {
+    // Always load fresh credit status before checking
+    try {
+      const freshStatus = await getCreditStatus();
+      setCreditStatus(freshStatus);
+      
+      if (freshStatus.credits_remaining < 1) {
+        setShowInsufficientCreditsModal(true);
+        return;
+      }
+
+      // Show confirmation modal before proceeding
+      setShowCreditConfirmationModal(true);
+    } catch (error) {
+      console.error("Failed to load credit status:", error);
+      toast.error("Failed to check credits", "Could not verify your credit balance");
+    }
   };
 
   const handleConfirmRegenerate = async () => {
@@ -169,13 +184,14 @@ export default function FinalizePage() {
       toast.success("Video regeneration started", "Your new video is being generated");
       await loadVideos();
       await loadCreditStatus();
-    } catch (error: any) {
+    } catch (error) {
       console.error("Failed to regenerate video:", error);
-      if (error.status === 402) {
+      const err = error as { status?: number; message?: string };
+      if (err.status === 402) {
         await loadCreditStatus();
         setShowInsufficientCreditsModal(true);
       } else {
-        toast.error("Regeneration failed", error.message || "Failed to start video regeneration");
+        toast.error("Regeneration failed", err.message || "Failed to start video regeneration");
       }
     } finally {
       setIsRegenerating(false);
@@ -246,7 +262,7 @@ export default function FinalizePage() {
             <Card variant="elevated" padding="md">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-sm font-medium text-text-primary">Your Video</h3>
-                
+
                 {/* Regeneration Button */}
                 <div className="flex items-center gap-2">
                   {creditStatus && (
@@ -266,17 +282,11 @@ export default function FinalizePage() {
                       )
                     }
                     onClick={handleRegenerate}
-                    disabled={
-                      isRegenerating ||
-                      !state?.thumbnailConfirmed ||
-                      (!!creditStatus && creditStatus.credits_remaining < 1)
-                    }
+                    disabled={isRegenerating || !state?.thumbnailConfirmed}
                     title={
                       !state?.thumbnailConfirmed
                         ? "Complete compose step first"
-                        : creditStatus && creditStatus.credits_remaining < 1
-                          ? "Insufficient credits"
-                          : "Generate a new video variation (1 credit)"
+                        : "Generate a new video variation (1 credit)"
                     }
                   >
                     {isRegenerating ? "Generating..." : "Regenerate"}
@@ -308,7 +318,7 @@ export default function FinalizePage() {
                 <div className="mt-4 p-3 rounded-lg bg-surface-base border border-border-default">
                   <p className="text-xs font-medium text-text-muted mb-2">Select Version:</p>
                   <div className="flex gap-2 overflow-x-auto">
-                    {completedVideos.map((video, index) => (
+                    {completedVideos.map((video) => (
                       <button
                         key={video.id}
                         onClick={() => setSelectedVideoId(video.id)}
@@ -318,7 +328,7 @@ export default function FinalizePage() {
                             : "bg-surface-raised text-text-secondary hover:bg-surface-raised-hover border border-border-default"
                         }`}
                       >
-                        Version #{video.generation_attempt}
+                        Version {video.generation_attempt}
                       </button>
                     ))}
                   </div>
@@ -331,22 +341,30 @@ export default function FinalizePage() {
                   <ChevronRight className="h-3 w-3 group-open:rotate-90 transition-transform" />
                   <span>View details</span>
                 </summary>
-                <div className="mt-3 grid gap-3 sm:grid-cols-3 text-xs text-text-muted pl-5">
+                <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4 text-xs pl-5">
                   <div>
-                    <span className="font-medium text-text-secondary">Generated:</span>{" "}
-                    {new Date(displayVideo.created_at).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    })}
-                  </div>
-                  <div>
-                    <span className="font-medium text-text-secondary">Cost:</span>{" "}
-                    {displayVideo.credit_cost} credit{displayVideo.credit_cost !== 1 ? "s" : ""}
+                    <span className="font-medium text-text-secondary">Version:</span>{" "}
+                    <span className="text-text-primary">#{displayVideo.generation_attempt}</span>
                   </div>
                   <div>
                     <span className="font-medium text-text-secondary">Voice:</span>{" "}
-                    {displayVideo.voice_name || "N/A"}
+                    <span className="text-text-primary">{displayVideo.voice_name || "N/A"}</span>
+                  </div>
+                  <div>
+                    <span className="font-medium text-text-secondary">Cost:</span>{" "}
+                    <span className="text-text-primary">
+                      {displayVideo.credit_cost} credit{displayVideo.credit_cost !== 1 ? "s" : ""}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="font-medium text-text-secondary">Generated:</span>{" "}
+                    <span className="text-text-primary">
+                      {new Date(displayVideo.created_at).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </span>
                   </div>
                 </div>
               </details>
@@ -385,7 +403,7 @@ export default function FinalizePage() {
                     <span>View all videos ({videos.length})</span>
                   </summary>
                   <div className="mt-3 space-y-2 pl-5">
-                    {videos.map((video, index) => (
+                    {videos.map((video) => (
                       <div
                         key={video.id}
                         className="flex items-center justify-between p-2 rounded bg-surface-raised border border-border-default"
@@ -396,7 +414,7 @@ export default function FinalizePage() {
                             {video.thumbnail_url ? (
                               <img
                                 src={video.thumbnail_url}
-                                alt={`Video ${index + 1}`}
+                                alt={`Video ${video.generation_attempt}`}
                                 className="w-full h-full object-cover"
                               />
                             ) : (
@@ -410,7 +428,7 @@ export default function FinalizePage() {
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2">
                               <p className="text-xs font-medium text-text-primary">
-                                Video #{video.generation_attempt}
+                                Version {video.generation_attempt}
                               </p>
                               {(video.status === "processing" || video.status === "queued") && (
                                 <Loader2 className="h-3 w-3 text-accent-cyan animate-spin" />
@@ -528,11 +546,7 @@ export default function FinalizePage() {
                   )
                 }
                 onClick={handleRegenerate}
-                disabled={
-                  isRegenerating ||
-                  !state?.thumbnailConfirmed ||
-                  (!!creditStatus && creditStatus.credits_remaining < 1)
-                }
+                disabled={isRegenerating || !state?.thumbnailConfirmed}
                 className="w-full max-w-xs"
               >
                 {isRegenerating ? "Generating..." : "Generate Video"}
@@ -546,7 +560,7 @@ export default function FinalizePage() {
 
               {creditStatus && creditStatus.credits_remaining < 1 && (
                 <p className="mt-3 text-xs text-error-text">
-                  Insufficient credits. Please purchase more credits to continue.
+                  Insufficient credits. Click Generate to view upgrade options.
                 </p>
               )}
             </div>
@@ -663,19 +677,12 @@ export default function FinalizePage() {
           >
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-text-primary">
-                  Publish to Social Media
-                </h3>
+                <h3 className="text-lg font-semibold text-text-primary">Publish to Social Media</h3>
                 <button
                   onClick={() => setShowPublishModal(false)}
                   className="text-text-muted hover:text-text-primary transition-colors"
                 >
-                  <svg
-                    className="h-5 w-5"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
+                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -686,9 +693,7 @@ export default function FinalizePage() {
                 </button>
               </div>
 
-              <p className="text-sm text-text-muted mb-6">
-                Choose a platform to share your video
-              </p>
+              <p className="text-sm text-text-muted mb-6">Choose a platform to share your video</p>
 
               <div className="space-y-3">
                 {/* X.com (Twitter) */}
@@ -708,11 +713,7 @@ export default function FinalizePage() {
                   className="w-full flex items-center gap-4 p-4 rounded-lg border border-border-default bg-surface-raised hover:bg-surface-raised-hover hover:border-accent-cyan/30 transition-all group"
                 >
                   <div className="flex h-12 w-12 items-center justify-center rounded-full bg-black flex-shrink-0">
-                    <svg
-                      className="h-6 w-6 text-white"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
+                    <svg className="h-6 w-6 text-white" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                     </svg>
                   </div>
@@ -720,9 +721,7 @@ export default function FinalizePage() {
                     <h4 className="font-medium text-text-primary group-hover:text-accent-cyan transition-colors">
                       X (Twitter)
                     </h4>
-                    <p className="text-xs text-text-muted mt-0.5">
-                      Share to your X timeline
-                    </p>
+                    <p className="text-xs text-text-muted mt-0.5">Share to your X timeline</p>
                   </div>
                   <ChevronRight className="h-5 w-5 text-text-muted group-hover:text-accent-cyan transition-colors" />
                 </button>
@@ -742,11 +741,7 @@ export default function FinalizePage() {
                   className="w-full flex items-center gap-4 p-4 rounded-lg border border-border-default bg-surface-raised hover:bg-surface-raised-hover hover:border-accent-cyan/30 transition-all group"
                 >
                   <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#07C160] flex-shrink-0">
-                    <svg
-                      className="h-7 w-7 text-white"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
+                    <svg className="h-7 w-7 text-white" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 0 0 .167-.054l1.903-1.114a.864.864 0 0 1 .717-.098 10.16 10.16 0 0 0 2.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-4.196-6.348-8.596-6.348zM5.785 5.991c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178A1.17 1.17 0 0 1 4.623 7.17c0-.651.52-1.18 1.162-1.18zm5.813 0c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178 1.17 1.17 0 0 1-1.162-1.178c0-.651.52-1.18 1.162-1.18zm5.34 2.867c-1.797-.052-3.746.512-5.28 1.786-1.72 1.428-2.687 3.72-1.78 6.22.942 2.453 3.666 4.229 6.884 4.229.826 0 1.622-.12 2.361-.336a.722.722 0 0 1 .598.082l1.584.926a.272.272 0 0 0 .14.047c.134 0 .24-.111.24-.247 0-.06-.023-.12-.038-.177l-.327-1.233a.582.582 0 0 1-.023-.156.49.49 0 0 1 .201-.398C23.024 18.48 24 16.82 24 14.98c0-3.21-2.931-5.837-6.656-6.088V8.89c-.135-.01-.27-.027-.407-.03zm-2.53 3.274c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 0 1-.970-.983c0-.542.434-.982.97-.982zm4.844 0c.535 0 .97.44.97.982a.976.976 0 0 1-.97.983.976.976 0 0 1-.969-.983c0-.542.434-.982.97-.982z" />
                     </svg>
                   </div>
@@ -754,18 +749,14 @@ export default function FinalizePage() {
                     <h4 className="font-medium text-text-primary group-hover:text-accent-cyan transition-colors">
                       WeChat
                     </h4>
-                    <p className="text-xs text-text-muted mt-0.5">
-                      Share to WeChat moments
-                    </p>
+                    <p className="text-xs text-text-muted mt-0.5">Share to WeChat moments</p>
                   </div>
                   <ChevronRight className="h-5 w-5 text-text-muted group-hover:text-accent-cyan transition-colors" />
                 </button>
               </div>
 
               <div className="mt-6 pt-4 border-t border-border-default">
-                <p className="text-xs text-text-muted text-center">
-                  More platforms coming soon
-                </p>
+                <p className="text-xs text-text-muted text-center">More platforms coming soon</p>
               </div>
             </div>
           </div>

@@ -36,7 +36,7 @@ export function InsufficientCreditsModal({
   const upgradeTiers = currentTier === "free" ? ["pro", "premium"] : ["premium"];
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Insufficient Credits">
+    <Modal open={isOpen} onClose={onClose} title="Insufficient Credits">
       <div className="space-y-6">
         {/* Alert Message */}
         <div className="flex items-start gap-3 p-4 rounded-lg bg-warning-bg/10 border border-warning-border">
