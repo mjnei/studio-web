@@ -220,6 +220,12 @@ export interface UserResponse {
   role: string;
   onboarding_completed: boolean;
   onboarding_completed_at: string | null;
+  membership_tier: "free" | "pro" | "premium";
+  subscription_status: "active" | "canceled" | "expired" | null;
+  stripe_customer_id: string | null;
+  stripe_subscription_id: string | null;
+  subscription_start_date: string | null;
+  subscription_end_date: string | null;
   created_at: string;
   updated_at: string;
 }

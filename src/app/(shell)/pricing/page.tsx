@@ -133,7 +133,9 @@ export default function PricingPage() {
   };
 
   const handleSubscribe = (tier: string) => {
-    alert(`Subscribing to ${tier} tier... (Integration with Stripe will be implemented in Phase 5)`);
+    alert(
+      `Subscribing to ${tier} tier... (Integration with Stripe will be implemented in Phase 5)`
+    );
   };
 
   return (
@@ -174,8 +176,7 @@ export default function PricingPage() {
       <div className="grid gap-6 md:grid-cols-3 max-w-6xl mx-auto">
         {pricingTiers.map((tier) => {
           const Icon = tier.icon;
-          const currentPrice =
-            billingCycle === "annual" ? tier.annualPrice : tier.monthlyPrice;
+          const currentPrice = billingCycle === "annual" ? tier.annualPrice : tier.monthlyPrice;
           const isAnnual = billingCycle === "annual";
 
           return (
@@ -283,8 +284,8 @@ export default function PricingPage() {
           <Card variant="elevated" padding="md">
             <h3 className="font-medium text-text-primary mb-2">How does credit rollover work?</h3>
             <p className="text-sm text-text-secondary">
-              Unused credits roll over to the next month, up to the maximum rollover limit for
-              your tier (Free: 10, Pro: 50, Premium: unlimited). Credits expire after 6 months of
+              Unused credits roll over to the next month, up to the maximum rollover limit for your
+              tier (Free: 10, Pro: 50, Premium: unlimited). Credits expire after 6 months of
               inactivity.
             </p>
           </Card>
@@ -300,8 +301,8 @@ export default function PricingPage() {
           <Card variant="elevated" padding="md">
             <h3 className="font-medium text-text-primary mb-2">Do you offer team plans?</h3>
             <p className="text-sm text-text-secondary">
-              Team plans with shared credits and collaborative features are available for
-              Premium tier subscribers. Contact us for custom pricing.
+              Team plans with shared credits and collaborative features are available for Premium
+              tier subscribers. Contact us for custom pricing.
             </p>
           </Card>
         </div>

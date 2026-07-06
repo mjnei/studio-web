@@ -61,10 +61,7 @@ export async function getCreditStatus(): Promise<CreditStatus> {
   return request<CreditStatus>("/users/me/credits");
 }
 
-export async function getCreditHistory(
-  page = 1,
-  pageSize = 20
-): Promise<CreditHistoryResponse> {
+export async function getCreditHistory(page = 1, pageSize = 20): Promise<CreditHistoryResponse> {
   const params = new URLSearchParams({
     page: String(page),
     page_size: String(pageSize),

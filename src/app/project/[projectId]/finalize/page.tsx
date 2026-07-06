@@ -154,7 +154,11 @@ export default function FinalizePage() {
         {/* Section A: Current Video Hero */}
         {latestVideo ? (
           <>
-            <Card variant="elevated" padding="md" className="bg-success-bg/10 border-success-border">
+            <Card
+              variant="elevated"
+              padding="md"
+              className="bg-success-bg/10 border-success-border"
+            >
               <div className="flex items-start gap-4">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-success-bg flex-shrink-0">
                   <CheckCircle className="h-5 w-5 text-success-text" />
@@ -162,7 +166,8 @@ export default function FinalizePage() {
                 <div className="flex-1">
                   <h3 className="font-medium text-success-text">Video Complete!</h3>
                   <p className="mt-1 text-sm text-text-muted">
-                    Your video has been successfully generated and is ready for download or publishing.
+                    Your video has been successfully generated and is ready for download or
+                    publishing.
                   </p>
                 </div>
               </div>
@@ -248,7 +253,10 @@ export default function FinalizePage() {
                   page and come back later.
                 </p>
                 <div className="mt-3 text-xs text-text-muted">
-                  Status: <span className="font-medium text-accent-cyan capitalize">{processingVideo.status}</span>
+                  Status:{" "}
+                  <span className="font-medium text-accent-cyan capitalize">
+                    {processingVideo.status}
+                  </span>
                 </div>
               </div>
             </div>
@@ -319,8 +327,8 @@ export default function FinalizePage() {
                           video.status === "completed"
                             ? "bg-success-bg text-success-text"
                             : video.status === "failed"
-                            ? "bg-error-bg text-error-text"
-                            : "bg-accent-cyan/10 text-accent-cyan"
+                              ? "bg-error-bg text-error-text"
+                              : "bg-accent-cyan/10 text-accent-cyan"
                         }`}
                       >
                         {video.status}
@@ -365,8 +373,8 @@ export default function FinalizePage() {
         <Card variant="elevated" padding="md">
           <h3 className="text-sm font-medium text-text-primary mb-4">Generate New Video</h3>
           <p className="text-sm text-text-muted mb-4">
-            Create a new version of your video with the current project settings (script, voice,
-            and thumbnail).
+            Create a new version of your video with the current project settings (script, voice, and
+            thumbnail).
           </p>
 
           {/* Credit Cost */}
@@ -383,7 +391,10 @@ export default function FinalizePage() {
               Script: <span className="font-medium text-text-primary">{wordCount} words</span>
             </p>
             <p className="text-text-muted">
-              Voice: <span className="font-medium text-text-primary">{state?.voiceName || "Not selected"}</span>
+              Voice:{" "}
+              <span className="font-medium text-text-primary">
+                {state?.voiceName || "Not selected"}
+              </span>
             </p>
             <p className="text-text-muted">
               Thumbnail:{" "}
@@ -396,9 +407,19 @@ export default function FinalizePage() {
           <Button
             variant="primary"
             size="lg"
-            icon={isRegenerating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Video className="h-4 w-4" />}
+            icon={
+              isRegenerating ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Video className="h-4 w-4" />
+              )
+            }
             onClick={handleRegenerate}
-            disabled={isRegenerating || !state?.thumbnailConfirmed || (creditStatus && creditStatus.credits_remaining < 1)}
+            disabled={
+              isRegenerating ||
+              !state?.thumbnailConfirmed ||
+              (creditStatus && creditStatus.credits_remaining < 1)
+            }
             className="w-full"
           >
             {isRegenerating ? "Generating..." : "Generate New Video"}

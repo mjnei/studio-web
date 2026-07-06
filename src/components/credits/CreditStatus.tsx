@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { Coins, TrendingUp } from "lucide-react";
 import { getCreditStatus, type CreditStatus as CreditStatusType } from "@/lib/credit-client";
 
@@ -40,7 +41,11 @@ export function CreditStatus() {
   };
 
   return (
-    <div className="flex items-center gap-3 px-3 py-2 rounded-lg bg-surface-raised border border-border-default">
+    <Link
+      href="/dashboard/billing"
+      className="flex items-center gap-3 px-3 py-2 rounded-lg bg-surface-raised border border-border-default hover:bg-surface-hover hover:border-accent-primary/30 transition-all cursor-pointer"
+      title="View billing & credits"
+    >
       <div className="flex items-center gap-2">
         <Coins className={`h-4 w-4 ${tierColors[creditStatus.membership_tier]}`} />
         <div className="flex flex-col">
@@ -48,20 +53,17 @@ export function CreditStatus() {
             <span className="text-sm font-semibold text-text-primary">
               {creditStatus.credits_remaining}
             </span>
-            <span className="text-xs text-text-muted">credits</span>
+            <span className="text-xs text-text-muted hidden sm:inline">Credits</span>
           </div>
-          <span className={`text-xs font-medium ${tierColors[creditStatus.membership_tier]}`}>
-            {tierLabels[creditStatus.membership_tier]}
-          </span>
         </div>
       </div>
-      
+
       {creditStatus.bonus_credits > 0 && (
         <div className="flex items-center gap-1 text-xs text-accent-cyan">
           <TrendingUp className="h-3 w-3" />
           <span>+{creditStatus.bonus_credits} bonus</span>
         </div>
       )}
-    </div>
+    </Link>
   );
 }

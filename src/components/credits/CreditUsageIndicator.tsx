@@ -25,14 +25,10 @@ export function CreditUsageIndicator({
           : "bg-warning-bg/10 border border-warning-border"
       } ${className}`}
     >
-      <Coins
-        className={`h-4 w-4 ${hasEnough ? "text-accent-cyan" : "text-warning-text"}`}
-      />
+      <Coins className={`h-4 w-4 ${hasEnough ? "text-accent-cyan" : "text-warning-text"}`} />
       <div className="flex items-center gap-1.5">
         <span
-          className={`text-sm font-medium ${
-            hasEnough ? "text-accent-cyan" : "text-warning-text"
-          }`}
+          className={`text-sm font-medium ${hasEnough ? "text-accent-cyan" : "text-warning-text"}`}
         >
           {cost} credit{cost !== 1 ? "s" : ""}
         </span>

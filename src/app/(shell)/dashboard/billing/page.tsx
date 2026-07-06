@@ -16,7 +16,12 @@ import {
   ChevronRight,
   Coins,
 } from "lucide-react";
-import { getCreditStatus, getCreditHistory, type CreditStatus, type CreditTransaction } from "@/lib/credit-client";
+import {
+  getCreditStatus,
+  getCreditHistory,
+  type CreditStatus,
+  type CreditTransaction,
+} from "@/lib/credit-client";
 
 interface BillingHistory {
   id: string;
@@ -40,10 +45,7 @@ export default function BillingPage() {
   const loadData = async () => {
     setIsLoading(true);
     try {
-      const [status, history] = await Promise.all([
-        getCreditStatus(),
-        getCreditHistory(1, 10),
-      ]);
+      const [status, history] = await Promise.all([getCreditStatus(), getCreditHistory(1, 10)]);
       setCreditStatus(status);
       setTransactions(history.transactions);
     } catch (error) {
@@ -63,7 +65,9 @@ export default function BillingPage() {
   };
 
   const handleDownloadInvoice = (invoiceId: string) => {
-    alert(`Downloading invoice ${invoiceId}... (Stripe integration will be implemented in Phase 5)`);
+    alert(
+      `Downloading invoice ${invoiceId}... (Stripe integration will be implemented in Phase 5)`
+    );
   };
 
   const formatDate = (dateString: string) => {
@@ -192,9 +196,7 @@ export default function BillingPage() {
                     </p>
                   </div>
                 </div>
-                <p className="text-xs text-text-muted">
-                  Next allocation reset date
-                </p>
+                <p className="text-xs text-text-muted">Next allocation reset date</p>
               </div>
             </div>
 
@@ -208,8 +210,8 @@ export default function BillingPage() {
                     <span className="font-medium text-text-secondary">
                       {formatDate(creditStatus.cycle_end_date)}
                     </span>
-                    . Unused credits will roll over up to{" "}
-                    {creditStatus.max_rollover || "unlimited"} credits.
+                    . Unused credits will roll over up to {creditStatus.max_rollover || "unlimited"}{" "}
+                    credits.
                   </p>
                 </div>
               </div>
@@ -220,11 +222,20 @@ export default function BillingPage() {
           <Card variant="elevated" padding="lg">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-lg font-semibold text-text-primary mb-1">Billing Information</h2>
-                <p className="text-sm text-text-muted">Manage your payment method and subscription</p>
+                <h2 className="text-lg font-semibold text-text-primary mb-1">
+                  Billing Information
+                </h2>
+                <p className="text-sm text-text-muted">
+                  Manage your payment method and subscription
+                </p>
               </div>
               <div className="flex gap-2">
-                <Button variant="ghost" size="sm" icon={<Settings className="h-4 w-4" />} onClick={handleUpdatePayment}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  icon={<Settings className="h-4 w-4" />}
+                  onClick={handleUpdatePayment}
+                >
                   Update Payment
                 </Button>
                 <Button variant="primary" size="sm" icon={<CreditCard className="h-4 w-4" />}>
@@ -237,7 +248,9 @@ export default function BillingPage() {
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="font-medium text-text-primary">Current Plan</h3>
-                  <p className="text-sm text-text-secondary capitalize">{creditStatus.membership_tier}</p>
+                  <p className="text-sm text-text-secondary capitalize">
+                    {creditStatus.membership_tier}
+                  </p>
                 </div>
                 <Button variant="ghost" size="sm" onClick={() => router.push("/pricing")}>
                   Change Plan
@@ -259,7 +272,9 @@ export default function BillingPage() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-text-muted">Next Billing Date</span>
-                  <span className="font-medium text-text-primary">{formatDate(creditStatus.cycle_end_date)}</span>
+                  <span className="font-medium text-text-primary">
+                    {formatDate(creditStatus.cycle_end_date)}
+                  </span>
                 </div>
               </div>
             </div>
@@ -270,7 +285,9 @@ export default function BillingPage() {
       {activeTab === "history" && (
         <Card variant="elevated" padding="lg">
           <div className="mb-6">
-            <h2 className="text-lg font-semibold text-text-primary mb-1">Credit Transaction History</h2>
+            <h2 className="text-lg font-semibold text-text-primary mb-1">
+              Credit Transaction History
+            </h2>
             <p className="text-sm text-text-muted">Track your credit usage and allocations</p>
           </div>
 
@@ -308,7 +325,9 @@ export default function BillingPage() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className={`text-sm font-semibold ${getTransactionColor(transaction.amount)}`}>
+                    <p
+                      className={`text-sm font-semibold ${getTransactionColor(transaction.amount)}`}
+                    >
                       {formatAmount(transaction.amount)} credits
                     </p>
                     <p className="text-xs text-text-muted">Balance: {transaction.balance_after}</p>
@@ -329,9 +348,12 @@ export default function BillingPage() {
 
           <div className="py-12 text-center">
             <Receipt className="h-16 w-16 text-text-muted mx-auto mb-4 opacity-30" />
-            <h3 className="text-lg font-medium text-text-primary mb-2">Stripe Integration Coming Soon</h3>
+            <h3 className="text-lg font-medium text-text-primary mb-2">
+              Stripe Integration Coming Soon
+            </h3>
             <p className="text-text-muted max-w-md mx-auto mb-6">
-              Invoice management and payment processing will be available in Phase 5 with Stripe integration.
+              Invoice management and payment processing will be available in Phase 5 with Stripe
+              integration.
             </p>
             <div className="flex gap-3 justify-center">
               <Button variant="ghost" size="lg" icon={<Download className="h-4 w-4" />}>

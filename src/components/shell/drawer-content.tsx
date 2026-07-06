@@ -15,6 +15,8 @@ import {
   Loader2,
   Search,
   ShieldCheck,
+  DollarSign,
+  CreditCard,
 } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
@@ -49,6 +51,16 @@ const mainItems = [
 ];
 
 const utilityItems = [
+  {
+    href: "/pricing",
+    label: "Pricing",
+    icon: "M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6",
+  },
+  {
+    href: "/dashboard/billing",
+    label: "Billing",
+    icon: "M19 7H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2zM3 11h18",
+  },
   {
     href: "/referral",
     label: "Referral",
@@ -98,6 +110,8 @@ const iconMap: Record<string, React.ReactNode> = {
   "/movies": <Film size={20} />,
   "/voices": <Mic size={20} />,
   "/jobs": <Briefcase size={20} />,
+  "/pricing": <DollarSign size={20} />,
+  "/dashboard/billing": <CreditCard size={20} />,
   "/referral": <User size={20} />,
   "/help": <HelpCircle size={20} />,
   "/settings": <Settings size={20} />,

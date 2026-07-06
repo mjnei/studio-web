@@ -113,7 +113,10 @@ export default function ComposePage() {
     }
 
     if (!state?.thumbnailConfirmed) {
-      toast.error("Thumbnail not finalized", "Please finalize your thumbnail before generating video");
+      toast.error(
+        "Thumbnail not finalized",
+        "Please finalize your thumbnail before generating video"
+      );
       return;
     }
 
@@ -138,16 +141,13 @@ export default function ComposePage() {
       router.push(`/project/${projectId}/finalize`);
     } catch (error: any) {
       console.error("Failed to generate video:", error);
-      
+
       // Check for 402 Payment Required (insufficient credits)
       if (error.status === 402) {
         await loadCreditStatus(); // Refresh credits
         setShowInsufficientCreditsModal(true);
       } else {
-        toast.error(
-          "Video generation failed",
-          error.message || "Failed to start video generation"
-        );
+        toast.error("Video generation failed", error.message || "Failed to start video generation");
       }
     } finally {
       setIsGeneratingVideo(false);
@@ -415,7 +415,11 @@ export default function ComposePage() {
               {/* Generate Video Button */}
               <button
                 onClick={handleGenerateVideo}
-                disabled={!state?.thumbnailConfirmed || isGeneratingVideo || (creditStatus && creditStatus.credits_remaining < 1)}
+                disabled={
+                  !state?.thumbnailConfirmed ||
+                  isGeneratingVideo ||
+                  (creditStatus && creditStatus.credits_remaining < 1)
+                }
                 className="w-full py-3 px-4 rounded-lg bg-accent-cyan text-white font-medium hover:bg-accent-cyan-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
               >
                 {isGeneratingVideo ? (
@@ -430,7 +434,7 @@ export default function ComposePage() {
                   </>
                 )}
               </button>
-              
+
               {!state?.thumbnailConfirmed && (
                 <p className="text-xs text-warning-text text-center">
                   Please finalize your thumbnail before generating video
