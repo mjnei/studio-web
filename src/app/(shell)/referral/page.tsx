@@ -27,13 +27,14 @@ export default function ReferralPage() {
 
   return (
     <div className="max-w-5xl mx-auto">
-      <PageHeader
-        title="Referral Program"
-        description="Invite friends and earn credits together"
-      />
+      <PageHeader title="Referral Program" description="Invite friends and earn credits together" />
 
       {/* Referral Link Card */}
-      <Card variant="elevated" padding="lg" className="mb-6 border-accent-cyan/20 bg-gradient-to-br from-accent-cyan/10 via-accent-primary/10 to-accent-secondary/10 overflow-hidden relative">
+      <Card
+        variant="elevated"
+        padding="lg"
+        className="mb-6 border-accent-cyan/20 bg-gradient-to-br from-accent-cyan/10 via-accent-primary/10 to-accent-secondary/10 overflow-hidden relative"
+      >
         <div className="absolute inset-0 bg-gradient-to-br from-accent-cyan/5 to-transparent" />
         <div className="relative">
           <CardHeader>
@@ -47,7 +48,8 @@ export default function ReferralPage() {
                   <Gift className="w-5 h-5 text-accent-cyan" />
                 </CardTitle>
                 <CardDescription>
-                  Share your referral link. When someone signs up using your link, you both earn free render credits.
+                  Share your referral link. When someone signs up using your link, you both earn
+                  free render credits.
                 </CardDescription>
               </div>
             </div>
@@ -59,9 +61,9 @@ export default function ReferralPage() {
                   <p className="text-xs font-medium text-text-muted mb-1">Your referral link</p>
                   <p className="truncate text-sm text-text-primary font-mono">{referralLink}</p>
                 </div>
-                <Button 
-                  variant="primary" 
-                  size="lg" 
+                <Button
+                  variant="primary"
+                  size="lg"
                   onClick={handleCopy}
                   leftIcon={copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                   className="shrink-0"
@@ -82,7 +84,11 @@ export default function ReferralPage() {
 
       {/* Stats Grid */}
       <Grid cols={3} gap="md" className="mb-6">
-        <Card variant="elevated" padding="md" className="group hover:border-accent-cyan/40 transition-all">
+        <Card
+          variant="elevated"
+          padding="md"
+          className="group hover:border-accent-cyan/40 transition-all"
+        >
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-text-muted mb-1">Total Referrals</p>
@@ -94,7 +100,11 @@ export default function ReferralPage() {
           </div>
         </Card>
 
-        <Card variant="elevated" padding="md" className="group hover:border-accent-cyan/40 transition-all">
+        <Card
+          variant="elevated"
+          padding="md"
+          className="group hover:border-accent-cyan/40 transition-all"
+        >
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-text-muted mb-1">Credits Earned</p>
@@ -106,7 +116,11 @@ export default function ReferralPage() {
           </div>
         </Card>
 
-        <Card variant="elevated" padding="md" className="group hover:border-accent-cyan/40 transition-all">
+        <Card
+          variant="elevated"
+          padding="md"
+          className="group hover:border-accent-cyan/40 transition-all"
+        >
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-text-muted mb-1">Pending</p>
@@ -130,15 +144,26 @@ export default function ReferralPage() {
             <table className="w-full min-w-[420px] text-sm">
               <thead>
                 <tr className="border-b border-border-default text-left">
-                  <th className="pb-3 text-xs font-semibold text-text-secondary uppercase tracking-wider">Referred</th>
-                  <th className="pb-3 text-xs font-semibold text-text-secondary uppercase tracking-wider">Date</th>
-                  <th className="pb-3 text-xs font-semibold text-text-secondary uppercase tracking-wider">Status</th>
-                  <th className="pb-3 text-xs font-semibold text-text-secondary uppercase tracking-wider text-right">Credits</th>
+                  <th className="pb-3 text-xs font-semibold text-text-secondary uppercase tracking-wider">
+                    Referred
+                  </th>
+                  <th className="pb-3 text-xs font-semibold text-text-secondary uppercase tracking-wider">
+                    Date
+                  </th>
+                  <th className="pb-3 text-xs font-semibold text-text-secondary uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="pb-3 text-xs font-semibold text-text-secondary uppercase tracking-wider text-right">
+                    Credits
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {history.map((row, i) => (
-                  <tr key={i} className="border-b border-border-subtle hover:bg-surface-hover transition-colors">
+                  <tr
+                    key={i}
+                    className="border-b border-border-subtle hover:bg-surface-hover transition-colors"
+                  >
                     <td className="py-3 text-text-primary font-medium">{row.email}</td>
                     <td className="py-3 text-text-muted">{row.date}</td>
                     <td className="py-3">

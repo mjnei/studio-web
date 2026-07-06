@@ -93,8 +93,8 @@ export default function VoicesPage() {
         description="Create custom voices or choose from our curated collection"
         action={
           tab === "my" && !showRecorder ? (
-            <Button 
-              variant="primary" 
+            <Button
+              variant="primary"
               size="md"
               onClick={() => setShowRecorder(true)}
               className="w-full sm:w-auto shadow-lg shadow-accent-primary/20"
@@ -102,9 +102,9 @@ export default function VoicesPage() {
               <Plus size={18} className="mr-2" />
               Record New Voice
             </Button>
-          )}
-        </div>
-      </div>
+          ) : undefined
+        }
+      />
 
       {/* Tab Navigation */}
       <div className="mb-8">

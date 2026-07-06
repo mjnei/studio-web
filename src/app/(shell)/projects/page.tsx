@@ -85,7 +85,10 @@ export default function ProjectsPage() {
       />
 
       {loading ? (
-        <LoadingState title="Loading projects..." description="Please wait while we fetch your projects" />
+        <LoadingState
+          title="Loading projects..."
+          description="Please wait while we fetch your projects"
+        />
       ) : error ? (
         <Card variant="elevated" padding="lg" className="fade-in border-status-error/30">
           <CardContent>
@@ -215,12 +218,14 @@ export default function ProjectsPage() {
                           <Badge variant="info" size="sm">
                             {project.last_step}
                           </Badge>
-                          <Badge 
+                          <Badge
                             variant={
-                              project.status === "completed" ? "success" :
-                              project.status === "in_progress" ? "info" :
-                              "default"
-                            } 
+                              project.status === "completed"
+                                ? "success"
+                                : project.status === "in_progress"
+                                  ? "info"
+                                  : "default"
+                            }
                             size="sm"
                           >
                             {project.status === "completed" && <CheckCircle2 className="w-3 h-3" />}

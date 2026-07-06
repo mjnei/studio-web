@@ -1,7 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { Film, Mic, ShieldCheck, Database, Users, Settings, BarChart3, TrendingUp } from "lucide-react";
+import {
+  Film,
+  Mic,
+  ShieldCheck,
+  Database,
+  Users,
+  Settings,
+  BarChart3,
+  TrendingUp,
+} from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Grid } from "@/components/ui/Grid";
@@ -73,13 +82,20 @@ export default function AdminPage() {
         {stats.map((stat) => {
           const Icon = stat.icon;
           return (
-            <Card key={stat.label} variant="elevated" padding="md" className="group hover:border-accent-primary/40 transition-all">
+            <Card
+              key={stat.label}
+              variant="elevated"
+              padding="md"
+              className="group hover:border-accent-primary/40 transition-all"
+            >
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-text-muted mb-1">{stat.label}</p>
                   <p className="text-2xl font-bold text-text-primary">{stat.value}</p>
                 </div>
-                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                <div
+                  className={`w-10 h-10 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center group-hover:scale-110 transition-transform`}
+                >
                   <Icon className="w-5 h-5 text-white" />
                 </div>
               </div>
@@ -94,10 +110,16 @@ export default function AdminPage() {
           const Icon = section.icon;
           return (
             <Link key={section.title} href={section.href}>
-              <Card variant="interactive" padding="lg" className="group h-full hover:border-accent-primary/50 hover:shadow-xl transition-all">
+              <Card
+                variant="interactive"
+                padding="lg"
+                className="group h-full hover:border-accent-primary/50 hover:shadow-xl transition-all"
+              >
                 <div className="flex flex-col h-full">
                   <div className="flex items-start justify-between mb-4">
-                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${section.gradient} flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                    <div
+                      className={`w-12 h-12 rounded-xl bg-gradient-to-br ${section.gradient} flex items-center justify-center group-hover:scale-110 transition-transform`}
+                    >
                       <Icon className="w-6 h-6 text-white" />
                     </div>
                     <span className="text-xs font-medium text-accent-primary bg-accent-muted px-2 py-1 rounded-full">
@@ -107,9 +129,7 @@ export default function AdminPage() {
                   <h2 className="text-xl font-semibold text-text-primary mb-2 group-hover:text-accent-primary transition-colors">
                     {section.title}
                   </h2>
-                  <p className="text-sm text-text-secondary flex-1">
-                    {section.description}
-                  </p>
+                  <p className="text-sm text-text-secondary flex-1">{section.description}</p>
                 </div>
               </Card>
             </Link>

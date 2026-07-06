@@ -48,7 +48,12 @@ export default function JobsPage() {
       ) : (
         <div className="space-y-4">
           {jobs.map((job) => (
-            <Card key={job.id} variant="elevated" padding="md" className="hover:border-accent-cyan/40 transition-all">
+            <Card
+              key={job.id}
+              variant="elevated"
+              padding="md"
+              className="hover:border-accent-cyan/40 transition-all"
+            >
               <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                 <div className="flex-shrink-0">
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center">
@@ -56,13 +61,19 @@ export default function JobsPage() {
                   </div>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-base font-semibold text-text-primary truncate">
-                    {job.name}
-                  </h3>
+                  <h3 className="text-base font-semibold text-text-primary truncate">{job.name}</h3>
                   <p className="text-sm text-text-muted">{job.createdAt}</p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Badge variant={job.status === "completed" ? "success" : job.status === "failed" ? "error" : "info"}>
+                  <Badge
+                    variant={
+                      job.status === "completed"
+                        ? "success"
+                        : job.status === "failed"
+                          ? "error"
+                          : "info"
+                    }
+                  >
                     {job.status === "processing" && <Loader2 className="w-3 h-3 animate-spin" />}
                     {job.status === "completed" && <CheckCircle2 className="w-3 h-3" />}
                     {job.status === "failed" && <XCircle className="w-3 h-3" />}
