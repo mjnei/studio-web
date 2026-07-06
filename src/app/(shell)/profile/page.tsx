@@ -55,6 +55,7 @@ export default function ProfilePage() {
   const [resettingOnboarding, setResettingOnboarding] = useState(false);
   const [addingCredits, setAddingCredits] = useState(false);
   const [creditsSuccess, setCreditsSuccess] = useState(false);
+  const [showCreditsConfirm, setShowCreditsConfirm] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -152,6 +153,7 @@ export default function ProfilePage() {
       // Refresh user state to show updated credits
       await refreshUser();
       setCreditsSuccess(true);
+      setShowCreditsConfirm(false);
       // Clear success message after 3 seconds
       setTimeout(() => setCreditsSuccess(false), 3000);
     } catch (err: unknown) {
@@ -626,7 +628,7 @@ export default function ProfilePage() {
                     </div>
                     <Button
                       variant="primary"
-                      onClick={handleGimmeCredits}
+                      onClick={() => setShowCreditsConfirm(true)}
                       disabled={addingCredits}
                       leftIcon={<Sparkles className="w-4 h-4" />}
                     >
@@ -700,6 +702,53 @@ export default function ProfilePage() {
               )}
             </CardContent>
           </Card>
+
+          {/* Credits Confirmation Modal */}
+          {showCreditsConfirm && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+              <Card
+                variant="elevated"
+                padding="lg"
+                className="max-w-sm w-full animate-in fade-in zoom-in-95"
+              >
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-cyan to-accent-primary flex items-center justify-center">
+                      <Sparkles className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <CardTitle>Add Bonus Credits?</CardTitle>
+                      <CardDescription>Get 5 bonus credits now</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-text-secondary mb-6">
+                    You're about to add 5 bonus credits to your account. This is a one-time offer for
+                    testing and development purposes.
+                  </p>
+                  <div className="flex gap-3">
+                    <Button
+                      variant="ghost"
+                      onClick={() => setShowCreditsConfirm(false)}
+                      fullWidth
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      variant="primary"
+                      onClick={handleGimmeCredits}
+                      disabled={addingCredits}
+                      fullWidth
+                      leftIcon={<Sparkles className="w-4 h-4" />}
+                    >
+                      {addingCredits ? "Adding..." : "Add Credits"}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </div>
       </div>
     </div>
