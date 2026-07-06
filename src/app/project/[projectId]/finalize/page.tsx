@@ -35,6 +35,7 @@ import {
 import { getVideoJob, type VideoJobResponse } from "@/lib/project-client";
 import { CreditUsageIndicator } from "@/components/credits/CreditUsageIndicator";
 import { InsufficientCreditsModal } from "@/components/credits/InsufficientCreditsModal";
+import { CreditConfirmationModal } from "@/components/credits/CreditConfirmationModal";
 import { VideoGenerationProgress } from "@/components/project/VideoGenerationProgress";
 
 export default function FinalizePage() {
@@ -49,6 +50,7 @@ export default function FinalizePage() {
   const [isLoadingVideos, setIsLoadingVideos] = useState(true);
   const [creditStatus, setCreditStatus] = useState<CreditStatus | null>(null);
   const [showInsufficientCreditsModal, setShowInsufficientCreditsModal] = useState(false);
+  const [showCreditConfirmationModal, setShowCreditConfirmationModal] = useState(false);
   const [isRegenerating, setIsRegenerating] = useState(false);
   const [processingVideoJob, setProcessingVideoJob] = useState<VideoJobResponse | null>(null);
   const [showProjectSummary, setShowProjectSummary] = useState(false);
@@ -148,6 +150,12 @@ export default function FinalizePage() {
       return;
     }
 
+    // Show confirmation modal before proceeding
+    setShowCreditConfirmationModal(true);
+  };
+
+  const handleConfirmRegenerate = async () => {
+    setShowCreditConfirmationModal(false);
     setIsRegenerating(true);
     try {
       await regenerateVideo(projectId);
@@ -418,13 +426,14 @@ export default function FinalizePage() {
         <Card variant="elevated" padding="md">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-medium text-text-primary">Video History</h3>
-            
+
             {/* Inline Regeneration Button - Only show if we have at least one video */}
             {videos && videos.length > 0 && (
               <div className="flex items-center gap-2">
                 {creditStatus && (
                   <div className="text-xs text-text-muted">
-                    {creditStatus.credits_remaining} credit{creditStatus.credits_remaining !== 1 ? "s" : ""}
+                    {creditStatus.credits_remaining} credit
+                    {creditStatus.credits_remaining !== 1 ? "s" : ""}
                   </div>
                 )}
                 <Button
@@ -579,23 +588,17 @@ export default function FinalizePage() {
           {showProjectSummary && (
             <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
-                  Title
-                </p>
+                <p className="text-xs font-medium uppercase tracking-wide text-text-muted">Title</p>
                 <p className="mt-1 text-sm text-text-primary">
                   {state?.title || "Untitled Project"}
                 </p>
               </div>
               <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
-                  Movie
-                </p>
+                <p className="text-xs font-medium uppercase tracking-wide text-text-muted">Movie</p>
                 <p className="mt-1 text-sm text-text-primary">{state?.movieTitle || "Unknown"}</p>
               </div>
               <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
-                  Voice
-                </p>
+                <p className="text-xs font-medium uppercase tracking-wide text-text-muted">Voice</p>
                 <p className="mt-1 text-sm text-text-primary">
                   {state?.voiceName || "Not selected"}
                 </p>
@@ -672,6 +675,18 @@ export default function FinalizePage() {
         onClose={() => setShowInsufficientCreditsModal(false)}
         creditStatus={creditStatus}
         requiredCredits={1}
+      />
+
+      {/* Credit Confirmation Modal */}
+      <CreditConfirmationModal
+        isOpen={showCreditConfirmationModal}
+        onClose={() => setShowCreditConfirmationModal(false)}
+        onConfirm={handleConfirmRegenerate}
+        title="Generate Video?"
+        message="This will generate a new video using your selected voice and script. You can generate multiple versions to compare."
+        creditCost={1}
+        creditsRemaining={creditStatus?.credits_remaining ?? 0}
+        isProcessing={isRegenerating}
       />
     </>
   );

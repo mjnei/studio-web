@@ -238,8 +238,13 @@ Generate video (if not yet generated), review completed videos, browse generatio
 - Prominent "Generate Video" card with:
   - Credit cost indicator (1 credit)
   - Large "Generate Video" button
-  - Credit confirmation modal when clicked
-  - Starts video generation and shows progress
+  - **Credit confirmation modal** when clicked:
+    - Shows credit cost (1 credit)
+    - Shows current balance
+    - Shows balance after generation
+    - Warning if balance will be low
+    - Must confirm before generation starts
+  - Starts video generation after confirmation and shows progress
 
 **B. If video is PROCESSING:**
 - Video generation progress component showing:
@@ -283,7 +288,11 @@ Each step tracks progress (0-100%) and status (queued → processing → complet
 3. **Video History with Inline Regeneration**
    - Header with "Regenerate" button (appears when history exists)
    - Shows remaining credits in header
-   - Regenerate button (small, inline) - Creates new video attempt with same settings
+   - **Regenerate button** (small, inline):
+     - Shows credit confirmation modal when clicked
+     - Displays credit cost, current balance, and post-generation balance
+     - Must confirm before creating new video attempt
+     - Creates new video attempt with same settings after confirmation
    - List of all videos (completed, processing, failed)
    - For each video:
      - Thumbnail preview (smaller on mobile, 16:9 aspect)
