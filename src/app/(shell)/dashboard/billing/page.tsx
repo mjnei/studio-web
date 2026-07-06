@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
@@ -15,6 +16,7 @@ import {
   TrendingUp,
   ChevronRight,
   Coins,
+  ArrowRight,
 } from "lucide-react";
 import {
   getCreditStatus,
@@ -32,6 +34,7 @@ interface BillingHistory {
 }
 
 export default function BillingPage() {
+  const router = useRouter();
   const [creditStatus, setCreditStatus] = React.useState<CreditStatus | null>(null);
   const [transactions, setTransactions] = React.useState<CreditTransaction[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
@@ -134,41 +137,86 @@ export default function BillingPage() {
 
       {activeTab === "overview" && creditStatus && (
         <div className="space-y-6">
-          {/* Credit Status */}
-          <Card variant="elevated" padding="lg">
-            <div className="flex items-start justify-between mb-6">
-              <div>
-                <h2 className="text-lg font-semibold text-text-primary mb-1">Credit Balance</h2>
-                <p className="text-sm text-text-muted">Your current credit allocation and usage</p>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                icon={<ChevronRight className="h-4 w-4" />}
-                onClick={() => router.push("/pricing")}
-              >
-                Upgrade Plan
-              </Button>
-            </div>
-
-            <div className="grid gap-6 md:grid-cols-3 mb-6">
-              <div className="p-4 rounded-lg bg-surface-raised border border-border-default">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="p-2 rounded-lg bg-accent-cyan/10">
-                    <Coins className="h-5 w-5 text-accent-cyan" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-text-muted">Credits Remaining</p>
-                    <p className="text-2xl font-bold text-text-primary">
+          {/* Prominent Credit Balance Card */}
+          <Card variant="elevated" padding="none" className="overflow-hidden">
+            <div className="bg-gradient-to-br from-accent-cyan/10 via-accent-purple/5 to-surface-raised p-8">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <p className="text-sm text-text-muted mb-2 uppercase tracking-wide font-medium">
+                    Current Balance
+                  </p>
+                  <div className="flex items-baseline gap-3">
+                    <h2 className="text-5xl font-bold text-text-primary">
                       {creditStatus.credits_remaining}
+                    </h2>
+                    <span className="text-2xl text-text-muted">credits</span>
+                  </div>
+                  <p className="text-sm text-text-secondary mt-2">
+                    {creditStatus.credits_used} of {creditStatus.monthly_allocation} used this month
+                  </p>
+                </div>
+                <div className="p-4 rounded-full bg-accent-cyan/20 border-2 border-accent-cyan/30">
+                  <Coins className="h-12 w-12 text-accent-cyan" />
+                </div>
+              </div>
+
+              {/* Progress Bar */}
+              <div className="mb-6">
+                <div className="h-3 bg-surface-raised rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-accent-cyan to-accent-purple transition-all duration-500"
+                    style={{
+                      width: `${Math.min(
+                        (creditStatus.credits_used / creditStatus.monthly_allocation) * 100,
+                        100
+                      )}%`,
+                    }}
+                  />
+                </div>
+                <div className="flex justify-between mt-2 text-xs text-text-muted">
+                  <span>
+                    {Math.round(
+                      (creditStatus.credits_used / creditStatus.monthly_allocation) * 100
+                    )}
+                    % used
+                  </span>
+                  <span>Resets {formatDate(creditStatus.cycle_end_date)}</span>
+                </div>
+              </div>
+
+              {/* Upgrade CTA */}
+              <div className="flex items-center justify-between p-4 bg-surface-panel rounded-lg border border-border-default">
+                <div className="flex items-center gap-3">
+                  <TrendingUp className="h-5 w-5 text-accent-cyan" />
+                  <div>
+                    <p className="text-sm font-medium text-text-primary">Need more credits?</p>
+                    <p className="text-xs text-text-muted">
+                      Upgrade to get up to 100 credits/month
                     </p>
                   </div>
                 </div>
-                <p className="text-xs text-text-muted">
-                  {creditStatus.monthly_allocation - creditStatus.credits_used} used this month
-                </p>
+                <Button
+                  variant="primary"
+                  size="md"
+                  icon={<ArrowRight className="h-4 w-4" />}
+                  onClick={() => router.push("/pricing")}
+                >
+                  Upgrade Plan
+                </Button>
               </div>
+            </div>
+          </Card>
 
+          {/* Credit Status Details */}
+          <Card variant="elevated" padding="lg">
+            <div className="flex items-start justify-between mb-6">
+              <div>
+                <h2 className="text-lg font-semibold text-text-primary mb-1">Credit Details</h2>
+                <p className="text-sm text-text-muted">Your current credit allocation and usage</p>
+              </div>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-3 mb-6">
               <div className="p-4 rounded-lg bg-surface-raised border border-border-default">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="p-2 rounded-lg bg-accent-cyan/10">
@@ -182,6 +230,21 @@ export default function BillingPage() {
                   </div>
                 </div>
                 <p className="text-xs text-text-muted">Credits allocated per month</p>
+              </div>
+
+              <div className="p-4 rounded-lg bg-surface-raised border border-border-default">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="p-2 rounded-lg bg-accent-cyan/10">
+                    <Coins className="h-5 w-5 text-accent-cyan" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-text-muted">Credits Used</p>
+                    <p className="text-2xl font-bold text-text-primary">
+                      {creditStatus.credits_used}
+                    </p>
+                  </div>
+                </div>
+                <p className="text-xs text-text-muted">Used this billing cycle</p>
               </div>
 
               <div className="p-4 rounded-lg bg-surface-raised border border-border-default">

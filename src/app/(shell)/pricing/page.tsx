@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Check, Sparkles, Zap, Crown, Coins, TrendingUp } from "lucide-react";
@@ -78,6 +79,7 @@ const pricingTiers: PricingTier[] = [
 ];
 
 export default function PricingPage() {
+  const router = useRouter();
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
 
   const getColorClasses = (color: PricingTier["color"]) => {

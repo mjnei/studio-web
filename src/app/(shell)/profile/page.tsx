@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import {
   updateUser,
@@ -94,6 +95,7 @@ export default function ProfilePage() {
   }
 
   async function handleCopyEmail() {
+    if (!user) return;
     try {
       await navigator.clipboard.writeText(user.email);
       setCopyFeedback(true);
@@ -120,10 +122,45 @@ export default function ProfilePage() {
   if (!user) return null;
 
   const initials = (user.given_name?.[0] || user.name?.[0] || user.email[0]).toUpperCase();
+  
+  // Normalize membership_tier to handle null/undefined cases
+  const membershipTier = user.membership_tier || "free";
+  const isFreeUser = membershipTier === "free";
 
   return (
     <div>
       <h1 className="mb-6 text-2xl font-bold">Profile</h1>
+
+      {/* Upgrade Banner for Free Tier Users */}
+      {isFreeUser && (
+        <div className="mb-6 rounded-lg border border-accent-cyan/30 bg-gradient-to-r from-accent-cyan/10 to-accent-purple/10 p-6">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div>
+              <h2 className="text-lg font-semibold text-text-primary mb-1">
+                Unlock More with Pro or Premium
+              </h2>
+              <p className="text-sm text-text-muted">
+                Get more credits, priority support, and advanced features to create more videos.
+              </p>
+            </div>
+            <div className="flex gap-3 shrink-0">
+              <Link
+                href="/pricing"
+                className="rounded-md bg-gradient-to-r from-accent-cyan to-accent-primary px-6 py-2.5 text-sm font-semibold text-white hover:opacity-90 transition-all shadow-md hover:shadow-lg"
+              >
+                View Plans
+              </Link>
+              <Link
+                href="/dashboard/billing"
+                className="rounded-md border border-border-default bg-surface-raised px-6 py-2.5 text-sm font-medium text-text-secondary hover:bg-surface-hover transition-all"
+              >
+                Billing
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="space-y-6">
         <section className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-6">
           <h2 className="mb-4 text-lg font-semibold">Account Overview</h2>
@@ -235,8 +272,21 @@ export default function ProfilePage() {
               <p className="mt-1 text-xl font-bold">0</p>
             </div>
             <div className="rounded-md bg-surface-raised p-4">
-              <p className="text-sm text-text-muted">Plan</p>
-              <p className="mt-1 text-xl font-bold">Free</p>
+              <p className="text-sm text-text-muted">Membership Tier</p>
+              <div className="flex items-center justify-between mt-1">
+                <p className="text-xl font-bold capitalize">{membershipTier}</p>
+                <Link
+                  href="/dashboard/billing"
+                  className="text-xs text-accent-cyan hover:underline"
+                >
+                  Manage
+                </Link>
+              </div>
+              {user.subscription_status && user.subscription_status !== "active" && (
+                <p className="text-xs text-status-failed mt-1 capitalize">
+                  {user.subscription_status}
+                </p>
+              )}
             </div>
           </div>
         </section>
@@ -265,6 +315,70 @@ export default function ProfilePage() {
                   className="w-full rounded-md border border-border-default bg-surface-raised px-3 py-2 text-sm text-text-primary focus:border-accent-cyan focus:outline-none disabled:opacity-50"
                 />
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-6">
+          <h2 className="mb-4 text-lg font-semibold">Membership & Billing</h2>
+          <div className="space-y-4">
+            <div className="rounded-md bg-surface-raised p-4">
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <p className="text-sm text-text-muted">Current Plan</p>
+                  <p className="text-xl font-bold capitalize mt-1">
+                    {membershipTier}
+                  </p>
+                </div>
+                {user.subscription_status && (
+                  <span
+                    className={`px-3 py-1 text-xs font-medium rounded-full ${
+                      user.subscription_status === "active"
+                        ? "bg-status-completed/20 text-status-completed"
+                        : user.subscription_status === "canceled"
+                          ? "bg-status-warning/20 text-status-warning"
+                          : "bg-status-failed/20 text-status-failed"
+                    }`}
+                  >
+                    {user.subscription_status.charAt(0).toUpperCase() +
+                      user.subscription_status.slice(1)}
+                  </span>
+                )}
+              </div>
+              {user.subscription_start_date && (
+                <p className="text-xs text-text-muted">
+                  Active since:{" "}
+                  {new Date(user.subscription_start_date).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </p>
+              )}
+              {user.subscription_end_date && (
+                <p className="text-xs text-text-muted mt-1">
+                  {user.subscription_status === "canceled" ? "Expires" : "Renews"} on:{" "}
+                  {new Date(user.subscription_end_date).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </p>
+              )}
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Link
+                href="/pricing"
+                className="flex-1 text-center rounded-md border border-accent-cyan bg-accent-cyan/10 px-4 py-2.5 text-sm font-medium text-accent-cyan hover:bg-accent-cyan/20 transition-all"
+              >
+                {isFreeUser ? "Upgrade Plan" : "View All Plans"}
+              </Link>
+              <Link
+                href="/dashboard/billing"
+                className="flex-1 text-center rounded-md border border-border-default bg-surface-raised px-4 py-2.5 text-sm font-medium text-text-secondary hover:bg-surface-hover transition-all"
+              >
+                Manage Billing
+              </Link>
             </div>
           </div>
         </section>
