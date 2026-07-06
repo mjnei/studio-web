@@ -347,256 +347,304 @@ export default function ProfilePage() {
             </CardContent>
           </Card>
 
-          <section className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-6">
-            <h2 className="mb-4 text-lg font-semibold">Membership & Billing</h2>
-            <div className="space-y-4">
-              <div className="rounded-md bg-surface-raised p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div>
-                    <p className="text-sm text-text-muted">Current Plan</p>
-                    <p className="text-xl font-bold capitalize mt-1">{membershipTier}</p>
+          {/* Membership & Billing */}
+          <Card variant="elevated" padding="lg">
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-cyan to-accent-primary flex items-center justify-center">
+                  <Crown className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <CardTitle>Membership & Billing</CardTitle>
+                  <CardDescription>Manage your subscription and billing</CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="rounded-lg border border-border-default bg-surface-raised p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div>
+                      <p className="text-sm text-text-muted">Current Plan</p>
+                      <p className="text-xl font-bold capitalize mt-1">{membershipTier}</p>
+                    </div>
+                    {user.subscription_status && (
+                      <Badge
+                        variant={
+                          user.subscription_status === "active"
+                            ? "success"
+                            : user.subscription_status === "canceled"
+                              ? "warning"
+                              : "error"
+                        }
+                        size="md"
+                      >
+                        {user.subscription_status.charAt(0).toUpperCase() +
+                          user.subscription_status.slice(1)}
+                      </Badge>
+                    )}
                   </div>
-                  {user.subscription_status && (
-                    <span
-                      className={`px-3 py-1 text-xs font-medium rounded-full ${
-                        user.subscription_status === "active"
-                          ? "bg-status-completed/20 text-status-completed"
-                          : user.subscription_status === "canceled"
-                            ? "bg-status-warning/20 text-status-warning"
-                            : "bg-status-failed/20 text-status-failed"
-                      }`}
-                    >
-                      {user.subscription_status.charAt(0).toUpperCase() +
-                        user.subscription_status.slice(1)}
-                    </span>
+                  {user.subscription_start_date && (
+                    <p className="text-xs text-text-muted">
+                      Active since:{" "}
+                      {new Date(user.subscription_start_date).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </p>
+                  )}
+                  {user.subscription_end_date && (
+                    <p className="text-xs text-text-muted mt-1">
+                      {user.subscription_status === "canceled" ? "Expires" : "Renews"} on:{" "}
+                      {new Date(user.subscription_end_date).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </p>
                   )}
                 </div>
-                {user.subscription_start_date && (
-                  <p className="text-xs text-text-muted">
-                    Active since:{" "}
-                    {new Date(user.subscription_start_date).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </p>
-                )}
-                {user.subscription_end_date && (
-                  <p className="text-xs text-text-muted mt-1">
-                    {user.subscription_status === "canceled" ? "Expires" : "Renews"} on:{" "}
-                    {new Date(user.subscription_end_date).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </p>
-                )}
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Link href="/pricing" className="flex-1">
+                    <Button variant="primary" fullWidth>
+                      {isFreeUser ? "Upgrade Plan" : "View All Plans"}
+                    </Button>
+                  </Link>
+                  <Link href="/dashboard/billing" className="flex-1">
+                    <Button variant="secondary" fullWidth leftIcon={<CreditCard className="w-4 h-4" />}>
+                      Manage Billing
+                    </Button>
+                  </Link>
+                </div>
               </div>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Link
-                  href="/pricing"
-                  className="flex-1 text-center rounded-md border border-accent-cyan bg-accent-cyan/10 px-4 py-2.5 text-sm font-medium text-accent-cyan hover:bg-accent-cyan/20 transition-all"
-                >
-                  {isFreeUser ? "Upgrade Plan" : "View All Plans"}
-                </Link>
-                <Link
-                  href="/dashboard/billing"
-                  className="flex-1 text-center rounded-md border border-border-default bg-surface-raised px-4 py-2.5 text-sm font-medium text-text-secondary hover:bg-surface-hover transition-all"
-                >
-                  Manage Billing
-                </Link>
-              </div>
-            </div>
-          </section>
+            </CardContent>
+          </Card>
 
-          <section className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-6">
-            <h2 className="mb-4 text-lg font-semibold">Password & Security</h2>
-            <div className="max-w-lg space-y-4">
-              {passwordError && (
-                <div className="rounded-md border border-status-failed/30 bg-status-failed/10 px-3 py-2 text-sm text-status-failed">
-                  {passwordError}
+          {/* Password & Security */}
+          <Card variant="elevated" padding="lg">
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
+                  <Shield className="w-5 h-5 text-white" />
                 </div>
-              )}
-              {passwordSuccess && (
-                <div className="rounded-md border border-status-completed/30 bg-status-completed/10 px-3 py-2 text-sm text-status-completed">
-                  Password updated successfully.
+                <div>
+                  <CardTitle>Password & Security</CardTitle>
+                  <CardDescription>Manage your password and security settings</CardDescription>
                 </div>
-              )}
-              <div>
-                <button
-                  onClick={() => {
-                    setShowChangePassword(!showChangePassword);
-                    setPasswordError("");
-                    setPasswordSuccess(false);
-                  }}
-                  className="text-sm text-accent-cyan hover:underline"
-                >
-                  {showChangePassword
-                    ? "Cancel"
-                    : user.has_password
-                      ? "Change password"
-                      : "Set password"}
-                </button>
               </div>
-              {showChangePassword && (
-                <div className="space-y-3 rounded-md border border-border-default bg-surface-raised p-4">
-                  {user.has_password && (
-                    <div>
-                      <label
-                        htmlFor="current-pw"
-                        className="mb-1 block text-sm text-text-secondary"
-                      >
-                        Current password
-                      </label>
-                      <input
-                        id="current-pw"
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {passwordError && (
+                  <div className="rounded-lg border border-status-failed/30 bg-status-failed/10 px-4 py-3 text-sm text-status-failed flex items-start gap-2">
+                    <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                    <span>{passwordError}</span>
+                  </div>
+                )}
+                {passwordSuccess && (
+                  <div className="rounded-lg border border-status-completed/30 bg-status-completed/10 px-4 py-3 text-sm text-status-completed flex items-start gap-2">
+                    <Check className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                    <span>Password updated successfully.</span>
+                  </div>
+                )}
+                <div>
+                  <button
+                    onClick={() => {
+                      setShowChangePassword(!showChangePassword);
+                      setPasswordError("");
+                      setPasswordSuccess(false);
+                    }}
+                    className="text-sm text-accent-cyan hover:underline font-medium"
+                  >
+                    {showChangePassword
+                      ? "Cancel"
+                      : user.has_password
+                        ? "Change password"
+                        : "Set password"}
+                  </button>
+                </div>
+                {showChangePassword && (
+                  <div className="space-y-4 rounded-lg border border-border-default bg-surface-raised p-4">
+                    {user.has_password && (
+                      <Input
                         type="password"
                         value={currentPassword}
                         onChange={(e) => setCurrentPassword(e.target.value)}
-                        className="w-full rounded-md border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary focus:border-accent-cyan focus:outline-none"
+                        label="Current password"
                       />
-                    </div>
-                  )}
-                  <div>
-                    <label htmlFor="new-pw" className="mb-1 block text-sm text-text-secondary">
-                      New password
-                    </label>
-                    <input
-                      id="new-pw"
+                    )}
+                    <Input
                       type="password"
                       value={newPassword}
                       onChange={(e) => setNewPassword(e.target.value)}
-                      className="w-full rounded-md border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary focus:border-accent-cyan focus:outline-none"
+                      label="New password"
                     />
-                  </div>
-                  <div>
-                    <label htmlFor="confirm-pw" className="mb-1 block text-sm text-text-secondary">
-                      Confirm new password
-                    </label>
-                    <input
-                      id="confirm-pw"
+                    <Input
                       type="password"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="w-full rounded-md border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary focus:border-accent-cyan focus:outline-none"
+                      label="Confirm new password"
                     />
+                    <Button variant="primary" onClick={handleChangePassword}>
+                      {user.has_password ? "Update password" : "Set password"}
+                    </Button>
                   </div>
-                  <button
-                    onClick={handleChangePassword}
-                    className="rounded-md bg-accent-cyan px-3 py-1.5 text-sm font-medium text-white hover:opacity-90"
-                  >
-                    {user.has_password ? "Update password" : "Set password"}
-                  </button>
-                </div>
-              )}
-            </div>
-          </section>
-
-          <section className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-6">
-            <h2 className="mb-4 text-lg font-semibold">Connected Accounts</h2>
-            <div className="max-w-lg space-y-3">
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between rounded-md border border-border-default bg-surface-raised p-3">
-                <div className="flex items-center gap-3">
-                  <span className="text-sm font-medium text-text-primary">Google</span>
-                  {user.provider === "google" && (
-                    <span className="text-xs text-status-completed">Connected</span>
-                  )}
-                </div>
-                <span className="shrink-0 text-xs text-text-muted">
-                  {user.provider === "google" ? "Primary account" : "Not connected"}
-                </span>
+                )}
               </div>
-            </div>
-          </section>
+            </CardContent>
+          </Card>
 
-          <section className="rounded-lg border border-border-default bg-surface-panel p-4 md:p-6">
-            <h2 className="mb-4 text-lg font-semibold">Session & Onboarding</h2>
-            <div className="space-y-4">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          {/* Connected Accounts */}
+          <Card variant="elevated" padding="lg">
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                  <Link2 className="w-5 h-5 text-white" />
+                </div>
                 <div>
-                  <p className="text-sm font-medium text-text-primary">Sign out</p>
-                  <p className="text-sm text-text-muted">
-                    End your current session on this device.
-                  </p>
+                  <CardTitle>Connected Accounts</CardTitle>
+                  <CardDescription>Manage your linked accounts</CardDescription>
                 </div>
-                <button
-                  onClick={logout}
-                  className="shrink-0 rounded-md border border-border-default bg-surface-raised px-4 py-2 text-sm text-text-secondary hover:bg-surface-hover"
-                >
-                  Sign out
-                </button>
               </div>
-              <div className="border-t border-border-default pt-4">
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-4 rounded-lg border border-border-default bg-surface-raised">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center">
+                      <Mail className="w-4 h-4 text-gray-700" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-text-primary">Google</p>
+                      {user.provider === "google" && (
+                        <p className="text-xs text-status-completed">Connected</p>
+                      )}
+                    </div>
+                  </div>
+                  <Badge variant={user.provider === "google" ? "success" : "default"}>
+                    {user.provider === "google" ? "Primary account" : "Not connected"}
+                  </Badge>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Session & Onboarding */}
+          <Card variant="elevated" padding="lg">
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                  <RefreshCw className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <CardTitle>Session & Onboarding</CardTitle>
+                  <CardDescription>Manage your session and onboarding status</CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <p className="text-sm font-medium text-text-primary">Reset onboarding</p>
-                    <p className="text-xs text-text-muted mt-1">
-                      Password:{" "}
-                      <span
-                        className={user.has_password ? "text-status-completed" : "text-text-muted"}
-                      >
-                        {user.has_password ? "Already Set" : "Not set"}
-                      </span>
+                    <p className="text-sm font-medium text-text-primary">Sign out</p>
+                    <p className="text-xs text-text-muted">
+                      End your current session on this device
                     </p>
                   </div>
-                  <button
-                    onClick={handleResetOnboarding}
-                    disabled={resettingOnboarding}
-                    className="shrink-0 rounded-md border border-border-default bg-surface-raised px-4 py-2 text-sm text-text-secondary hover:bg-surface-hover disabled:opacity-50"
-                  >
-                    {resettingOnboarding ? "Resetting..." : "Reset"}
-                  </button>
+                  <Button variant="secondary" onClick={logout} leftIcon={<LogOut className="w-4 h-4" />}>
+                    Sign out
+                  </Button>
+                </div>
+                <div className="border-t border-border-default pt-4">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-text-primary">Reset onboarding</p>
+                      <p className="text-xs text-text-muted mt-1">
+                        Password:{" "}
+                        <span
+                          className={user.has_password ? "text-status-completed" : "text-text-muted"}
+                        >
+                          {user.has_password ? "Already Set" : "Not set"}
+                        </span>
+                      </p>
+                    </div>
+                    <Button
+                      variant="secondary"
+                      onClick={handleResetOnboarding}
+                      disabled={resettingOnboarding}
+                      leftIcon={<RefreshCw className="w-4 h-4" />}
+                    >
+                      {resettingOnboarding ? "Resetting..." : "Reset"}
+                    </Button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </section>
+            </CardContent>
+          </Card>
 
-          <section className="rounded-lg border border-status-failed/30 bg-surface-panel p-4 md:p-6">
-            <h2 className="mb-4 text-lg font-semibold text-status-failed">Danger Zone</h2>
-            <p className="mb-4 text-sm text-text-muted">
-              Permanently delete your account and all associated data — projects, voices, renders,
-              and referral history. This cannot be undone.
-            </p>
-            {showDeleteConfirm ? (
-              <div className="space-y-3 rounded-md border border-status-failed/30 bg-surface-raised p-4">
-                <p className="text-sm text-status-failed">
-                  Type <strong>delete my account</strong> to confirm:
-                </p>
-                <input
-                  type="text"
-                  value={deleteText}
-                  onChange={(e) => setDeleteText(e.target.value)}
-                  placeholder="delete my account"
-                  className="w-full max-w-sm rounded-md border border-status-failed/40 bg-surface-base px-3 py-2 text-sm text-text-primary placeholder-text-muted focus:border-status-failed focus:outline-none"
-                />
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => {
-                      setShowDeleteConfirm(false);
-                      setDeleteText("");
-                    }}
-                    className="rounded-md border border-border-default bg-surface-raised px-3 py-1.5 text-sm text-text-secondary hover:bg-surface-hover"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    onClick={handleDeleteAccount}
-                    disabled={deleteText !== "delete my account"}
-                    className="rounded-md bg-status-failed px-3 py-1.5 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
-                  >
-                    Permanently delete account
-                  </button>
+          {/* Danger Zone */}
+          <Card variant="elevated" padding="lg" className="border-status-failed/30">
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center">
+                  <AlertTriangle className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <CardTitle className="text-status-failed">Danger Zone</CardTitle>
+                  <CardDescription>Permanent account deletion</CardDescription>
                 </div>
               </div>
-            ) : (
-              <button
-                onClick={() => setShowDeleteConfirm(true)}
-                className="rounded-md border border-status-failed/50 px-4 py-2 text-sm text-status-failed hover:bg-status-failed/10"
-              >
-                Delete account
-              </button>
-            )}
-          </section>
+            </CardHeader>
+            <CardContent>
+              <p className="mb-4 text-sm text-text-muted">
+                Permanently delete your account and all associated data — projects, voices, renders,
+                and referral history. This cannot be undone.
+              </p>
+              {showDeleteConfirm ? (
+                <div className="space-y-4 rounded-lg border border-status-failed/30 bg-status-failed/5 p-4">
+                  <p className="text-sm text-status-failed flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4" />
+                    Type <strong>delete my account</strong> to confirm:
+                  </p>
+                  <Input
+                    type="text"
+                    value={deleteText}
+                    onChange={(e) => setDeleteText(e.target.value)}
+                    placeholder="delete my account"
+                    className="max-w-sm"
+                  />
+                  <div className="flex gap-2">
+                    <Button
+                      variant="ghost"
+                      onClick={() => {
+                        setShowDeleteConfirm(false);
+                        setDeleteText("");
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      variant="danger"
+                      onClick={handleDeleteAccount}
+                      disabled={deleteText !== "delete my account"}
+                      leftIcon={<Trash2 className="w-4 h-4" />}
+                    >
+                      Permanently delete account
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <Button
+                  variant="danger"
+                  onClick={() => setShowDeleteConfirm(true)}
+                  leftIcon={<Trash2 className="w-4 h-4" />}
+                >
+                  Delete account
+                </Button>
+              )}
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
