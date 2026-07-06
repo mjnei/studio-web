@@ -190,8 +190,16 @@ export default function FinalizePage() {
       if (err.status === 402) {
         await loadCreditStatus();
         setShowInsufficientCreditsModal(true);
+      } else if (err.status === 500) {
+        toast.error(
+          "Server error",
+          "An internal error occurred. Please try again or contact support if the issue persists."
+        );
       } else {
-        toast.error("Regeneration failed", err.message || "Failed to start video regeneration");
+        toast.error(
+          "Regeneration failed",
+          err.message || "Failed to start video regeneration. Please check your connection."
+        );
       }
     } finally {
       setIsRegenerating(false);
