@@ -287,3 +287,18 @@ export async function resetOnboarding(): Promise<UserResponse> {
     method: "DELETE",
   });
 }
+
+export interface UserCreditsResponse {
+  user_id: number;
+  credits_remaining: number;
+  monthly_credits: number;
+  bonus_credits: number;
+  credits_used_this_month: number;
+  reset_date: string;
+}
+
+export async function gimmeCredits(): Promise<UserCreditsResponse> {
+  return request<UserCreditsResponse>("/users/me/gimme-credits", {
+    method: "POST",
+  });
+}

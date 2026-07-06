@@ -25,6 +25,7 @@ import {
   changePassword,
   setPassword,
   resetOnboarding,
+  gimmeCredits,
   type UserResponse,
 } from "@/lib/api-client";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -52,6 +53,8 @@ export default function ProfilePage() {
   const [deleteText, setDeleteText] = useState("");
   const [copyFeedback, setCopyFeedback] = useState(false);
   const [resettingOnboarding, setResettingOnboarding] = useState(false);
+  const [addingCredits, setAddingCredits] = useState(false);
+  const [creditsSuccess, setCreditsSuccess] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -137,6 +140,24 @@ export default function ProfilePage() {
     } catch (err: unknown) {
       setProfileError(err instanceof Error ? err.message : "Failed to reset onboarding");
       setResettingOnboarding(false);
+    }
+  }
+
+  async function handleGimmeCredits() {
+    setAddingCredits(true);
+    setCreditsSuccess(false);
+    setProfileError("");
+    try {
+      await gimmeCredits();
+      // Refresh user state to show updated credits
+      await refreshUser();
+      setCreditsSuccess(true);
+      // Clear success message after 3 seconds
+      setTimeout(() => setCreditsSuccess(false), 3000);
+    } catch (err: unknown) {
+      setProfileError(err instanceof Error ? err.message : "Failed to add credits");
+    } finally {
+      setAddingCredits(false);
     }
   }
 
@@ -452,6 +473,12 @@ export default function ProfilePage() {
                     <span>Password updated successfully.</span>
                   </div>
                 )}
+                {creditsSuccess && (
+                  <div className="rounded-lg border border-status-completed/30 bg-status-completed/10 px-4 py-3 text-sm text-status-completed flex items-start gap-2">
+                    <Check className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                    <span>5 credits added successfully! 🎉</span>
+                  </div>
+                )}
                 <div>
                   <button
                     onClick={() => {
@@ -586,6 +613,24 @@ export default function ProfilePage() {
                       leftIcon={<RefreshCw className="w-4 h-4" />}
                     >
                       {resettingOnboarding ? "Resetting..." : "Reset"}
+                    </Button>
+                  </div>
+                </div>
+                <div className="border-t border-border-default pt-4">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-text-primary">Add bonus credits</p>
+                      <p className="text-xs text-text-muted mt-1">
+                        Get 5 bonus credits for testing and development
+                      </p>
+                    </div>
+                    <Button
+                      variant="primary"
+                      onClick={handleGimmeCredits}
+                      disabled={addingCredits}
+                      leftIcon={<Sparkles className="w-4 h-4" />}
+                    >
+                      {addingCredits ? "Adding..." : "Gimme credits"}
                     </Button>
                   </div>
                 </div>

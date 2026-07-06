@@ -1,7 +1,14 @@
 import { request } from "@/lib/api-client";
 import { getAccessToken } from "@/lib/api-client";
 
-export type WorkflowStep = "source" | "script" | "details" | "voice" | "preview" | "compose" | "finalize";
+export type WorkflowStep =
+  | "source"
+  | "script"
+  | "details"
+  | "voice"
+  | "preview"
+  | "compose"
+  | "finalize";
 export type ProjectStatus = "draft" | "in-progress" | "completed";
 export type JobStatus = "idle" | "queued" | "processing" | "completed" | "failed";
 
