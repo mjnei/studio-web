@@ -191,18 +191,23 @@ export async function deleteScript(scriptId: string): Promise<void> {
 // TTS Operations
 // ============================================================================
 
-export async function createTTSJob(
-  projectId: string,
-  scriptId: string,
-  voiceId: string,
-  autoActivate: boolean = false
-): Promise<TTSJobResponse> {
+export async function createTTSJob(params: {
+  projectId: string;
+  scriptId: string;
+  voiceId: string;
+  voiceType: "stock" | "custom";
+  voiceName?: string;
+  autoActivate?: boolean;
+}): Promise<TTSJobResponse> {
+  const { projectId, scriptId, voiceId, voiceType, voiceName, autoActivate = false } = params;
   return request<TTSJobResponse>(`/tts?auto_activate=${autoActivate}`, {
     method: "POST",
     body: JSON.stringify({
       project_id: projectId,
       script_id: scriptId,
       voice_id: voiceId,
+      voice_type: voiceType,
+      voice_name: voiceName,
     }),
   });
 }

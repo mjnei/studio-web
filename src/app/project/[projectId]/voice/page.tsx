@@ -217,6 +217,7 @@ export default function VoicePage() {
         JSON.stringify({
           id: voice.id,
           name: voice.name,
+          type: voice.type === "recording" ? "custom" : "stock", // Map recording -> custom for backend
         })
       );
     } catch (e) {
