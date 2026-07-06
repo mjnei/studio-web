@@ -1,38 +1,52 @@
-import { HTMLAttributes, forwardRef } from "react";
+import React from "react";
+import { cn } from "@/lib/utils/cn";
 
-export interface BadgeProps extends HTMLAttributes<HTMLDivElement> {
-  variant?: "default" | "primary" | "success" | "warning" | "danger" | "info";
+interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
+  variant?:
+    | "default"
+    | "primary"
+    | "secondary"
+    | "success"
+    | "warning"
+    | "error"
+    | "info"
+    | "outline";
   size?: "sm" | "md" | "lg";
 }
 
-export const Badge = forwardRef<HTMLDivElement, BadgeProps>(
-  ({ variant = "default", size = "md", className = "", children, ...props }, ref) => {
-    const baseStyles =
-      "inline-flex items-center justify-center font-medium rounded-full transition-all duration-200 ease-smooth";
-
+export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
+  ({ className, variant = "default", size = "md", children, ...props }, ref) => {
     const variants = {
-      default: "bg-surface-raised text-text-secondary border border-border-default",
-      primary: "bg-accent-primary/15 text-accent-primary border border-accent-primary/30",
-      success: "bg-status-success/15 text-status-success border border-status-success/30",
-      warning: "bg-status-warning/15 text-status-warning border border-status-warning/30",
-      danger: "bg-status-failed/15 text-status-failed border border-status-failed/30",
-      info: "bg-status-info/15 text-status-info border border-status-info/30",
+      default:
+        "bg-[var(--surface-elevated)] text-[var(--text-secondary)] border border-[var(--border-default)]",
+      primary: "bg-[var(--accent-muted)] text-[var(--accent-primary)] border-0",
+      secondary: "bg-purple-500/20 text-purple-400 border-0",
+      success: "bg-green-500/20 text-green-400 border-0",
+      warning: "bg-yellow-500/20 text-yellow-400 border-0",
+      error: "bg-red-500/20 text-red-400 border-0",
+      info: "bg-blue-500/20 text-blue-400 border-0",
+      outline: "bg-transparent text-[var(--text-secondary)] border border-[var(--border-default)]",
     };
 
     const sizes = {
-      sm: "px-2 py-1 text-xs",
-      md: "px-3 py-1.5 text-sm",
-      lg: "px-4 py-2 text-base",
+      sm: "px-2 py-0.5 text-xs",
+      md: "px-2.5 py-1 text-sm",
+      lg: "px-3 py-1.5 text-base",
     };
 
     return (
-      <div
+      <span
         ref={ref}
-        className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
+        className={cn(
+          "inline-flex items-center justify-center rounded-full font-medium whitespace-nowrap",
+          variants[variant],
+          sizes[size],
+          className
+        )}
         {...props}
       >
         {children}
-      </div>
+      </span>
     );
   }
 );

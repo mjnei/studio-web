@@ -1,87 +1,84 @@
-import { InputHTMLAttributes, forwardRef } from "react";
+import React from "react";
+import { cn } from "@/lib/utils/cn";
 
-export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
-  helperText?: string;
-  icon?: React.ReactNode;
+  leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
-  maxLength?: number;
-  showCharCount?: boolean;
+  icon?: React.ReactNode; // Alias for leftIcon
 }
 
-export const Input = forwardRef<HTMLInputElement, InputProps>(
-  (
-    {
-      label,
-      error,
-      helperText,
-      icon,
-      rightIcon,
-      maxLength,
-      showCharCount = false,
-      className = "",
-      type = "text",
-      value,
-      ...props
-    },
-    ref
-  ) => {
-    const characterCount = showCharCount && value ? String(value).length : 0;
+export const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, label, error, leftIcon, rightIcon, icon, type = "text", ...props }, ref) => {
+    const displayLeftIcon = leftIcon || icon;
 
     return (
       <div className="w-full">
         {label && (
-          <label className="mb-2 block text-sm font-medium text-text-secondary">{label}</label>
+          <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
+            {label}
+          </label>
         )}
         <div className="relative">
-          {icon && (
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none">
-              {icon}
+          {displayLeftIcon && (
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]">
+              {displayLeftIcon}
             </div>
           )}
           <input
-            ref={ref}
             type={type}
-            maxLength={maxLength}
-            value={value}
-            className={`
-              w-full rounded-lg border bg-surface-raised px-4 py-2.5 text-sm text-text-primary 
-              placeholder-text-muted transition-all duration-200 ease-smooth
-              ${icon ? "pl-10" : ""}
-              ${rightIcon ? "pr-10" : ""}
-              ${
-                error
-                  ? "border-status-failed focus:border-status-failed focus:ring-2 focus:ring-status-failed/20"
-                  : "border-border-default focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
-              }
-              hover:border-accent-primary/30
-              disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-surface-hover
-              focus:outline-none
-              ${className}
-            `}
+            className={cn(
+              "w-full h-11 px-4 bg-[var(--surface-raised)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent transition-all duration-200",
+              displayLeftIcon && "pl-10",
+              rightIcon && "pr-10",
+              error && "border-[var(--status-error)] focus:ring-[var(--status-error)]",
+              className
+            )}
+            ref={ref}
             {...props}
           />
           {rightIcon && (
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none">
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]">
               {rightIcon}
             </div>
           )}
         </div>
-        <div className="mt-1.5 flex items-center justify-between">
-          <div>
-            {error && <p className="text-xs text-status-failed">{error}</p>}
-            {helperText && !error && <p className="text-xs text-text-muted">{helperText}</p>}
-          </div>
-          {showCharCount && maxLength && (
-            <p className="text-xs text-text-muted">
-              {characterCount}/{maxLength}
-            </p>
-          )}
-        </div>
+        {error && <p className="mt-1.5 text-sm text-[var(--status-error)]">{error}</p>}
       </div>
     );
   }
 );
 
 Input.displayName = "Input";
+
+interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+  label?: string;
+  error?: string;
+}
+
+export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
+  ({ className, label, error, ...props }, ref) => {
+    return (
+      <div className="w-full">
+        {label && (
+          <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
+            {label}
+          </label>
+        )}
+        <textarea
+          className={cn(
+            "w-full min-h-[100px] px-4 py-3 bg-[var(--surface-raised)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent transition-all duration-200 resize-y",
+            error && "border-[var(--status-error)] focus:ring-[var(--status-error)]",
+            className
+          )}
+          ref={ref}
+          {...props}
+        />
+        {error && <p className="mt-1.5 text-sm text-[var(--status-error)]">{error}</p>}
+      </div>
+    );
+  }
+);
+
+TextArea.displayName = "TextArea";

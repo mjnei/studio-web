@@ -1,6 +1,26 @@
+"use client";
+
+import {
+  PlayCircle,
+  FileText,
+  Mic,
+  Video,
+  HelpCircle,
+  Mail,
+  MessageCircle,
+  BookOpen,
+  ExternalLink,
+} from "lucide-react";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { Grid } from "@/components/ui/Grid";
+
 const helpSections = [
   {
     title: "Getting Started",
+    icon: PlayCircle,
+    color: "from-blue-500 to-cyan-500",
     articles: [
       {
         title: "Creating your first project",
@@ -18,6 +38,8 @@ const helpSections = [
   },
   {
     title: "Script & AI",
+    icon: FileText,
+    color: "from-purple-500 to-pink-500",
     articles: [
       {
         title: "Generating AI scripts",
@@ -35,6 +57,8 @@ const helpSections = [
   },
   {
     title: "Voice & Audio",
+    icon: Mic,
+    color: "from-green-500 to-emerald-500",
     articles: [
       {
         title: "Selecting a preset voice",
@@ -52,6 +76,8 @@ const helpSections = [
   },
   {
     title: "Compose & Export",
+    icon: Video,
+    color: "from-orange-500 to-red-500",
     articles: [
       {
         title: "Using the multi-track timeline",
@@ -69,42 +95,117 @@ const helpSections = [
   },
 ];
 
-import { Button } from "@/components/ui/button";
-
 export default function HelpPage() {
   return (
-    <div>
-      <h1 className="mb-2 text-2xl font-bold">Help & Documentation</h1>
-      <p className="mb-6 text-sm text-text-muted">
-        Learn how to use Huavoi Studio from start to finish. Click a topic below to read more.
-      </p>
-      <div className="space-y-8">
-        {helpSections.map((section) => (
-          <section key={section.title}>
-            <h2 className="mb-3 text-lg font-semibold text-text-secondary">{section.title}</h2>
-            <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-              {section.articles.map((article) => (
-                <div
-                  key={article.title}
-                  className="cursor-pointer rounded-lg border border-border-default bg-surface-panel p-4 transition-colors hover:border-accent-cyan/40 hover:bg-surface-hover"
-                >
-                  <h3 className="mb-1 text-sm font-medium text-text-primary">{article.title}</h3>
-                  <p className="text-xs text-text-muted">{article.description}</p>
-                </div>
-              ))}
+    <div className="max-w-6xl mx-auto">
+      <PageHeader
+        title="Help & Documentation"
+        description="Learn how to use Huavoi Studio from start to finish"
+      />
+
+      {/* Quick Links */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <Card variant="interactive" padding="md" className="group">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center group-hover:scale-110 transition-transform">
+              <BookOpen className="w-5 h-5 text-white" />
             </div>
-          </section>
-        ))}
+            <div>
+              <h3 className="text-sm font-semibold text-text-primary">Documentation</h3>
+              <p className="text-xs text-text-muted">Browse all guides</p>
+            </div>
+          </div>
+        </Card>
+
+        <Card variant="interactive" padding="md" className="group">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <MessageCircle className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-text-primary">Community</h3>
+              <p className="text-xs text-text-muted">Join discussions</p>
+            </div>
+          </div>
+        </Card>
+
+        <Card variant="interactive" padding="md" className="group">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <ExternalLink className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-text-primary">API Docs</h3>
+              <p className="text-xs text-text-muted">Developer resources</p>
+            </div>
+          </div>
+        </Card>
       </div>
-      <div className="mt-8 rounded-lg border border-border-default bg-surface-panel p-4 md:p-6 text-center">
-        <h2 className="mb-2 text-lg font-semibold">Still need help?</h2>
-        <p className="mb-4 text-sm text-text-muted">
-          Can&apos;t find what you&apos;re looking for? Reach out to our support team.
-        </p>
-        <Button variant="primary" size="md">
-          Contact support
-        </Button>
+
+      {/* Help Sections */}
+      <div className="space-y-8">
+        {helpSections.map((section) => {
+          const IconComponent = section.icon;
+          return (
+            <Card key={section.title} variant="elevated" padding="lg">
+              <CardHeader>
+                <div className="flex items-center gap-3 mb-4">
+                  <div
+                    className={`w-10 h-10 rounded-xl bg-gradient-to-br ${section.color} flex items-center justify-center`}
+                  >
+                    <IconComponent className="w-5 h-5 text-white" />
+                  </div>
+                  <CardTitle>{section.title}</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <Grid cols={3} gap="md">
+                  {section.articles.map((article) => (
+                    <button
+                      key={article.title}
+                      className="group text-left rounded-xl border border-border-default bg-surface-raised p-4 transition-all hover:border-accent-cyan/40 hover:bg-surface-hover hover:shadow-lg"
+                    >
+                      <h3 className="mb-2 text-sm font-semibold text-text-primary group-hover:text-accent-cyan transition-colors">
+                        {article.title}
+                      </h3>
+                      <p className="text-xs text-text-muted leading-relaxed">
+                        {article.description}
+                      </p>
+                      <div className="mt-3 flex items-center gap-1 text-xs text-accent-cyan opacity-0 group-hover:opacity-100 transition-opacity">
+                        Read more
+                        <ExternalLink className="w-3 h-3" />
+                      </div>
+                    </button>
+                  ))}
+                </Grid>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
+
+      {/* Contact Support */}
+      <Card variant="elevated" padding="lg" className="mt-8 text-center">
+        <div className="max-w-2xl mx-auto">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center">
+            <HelpCircle className="w-8 h-8 text-white" />
+          </div>
+          <CardTitle className="mb-2">Still need help?</CardTitle>
+          <CardDescription className="mb-6">
+            Can't find what you're looking for? Our support team is here to help you succeed.
+          </CardDescription>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Button variant="primary" size="lg">
+              <Mail className="w-4 h-4" />
+              Contact Support
+            </Button>
+            <Button variant="secondary" size="lg">
+              <MessageCircle className="w-4 h-4" />
+              Live Chat
+            </Button>
+          </div>
+        </div>
+      </Card>
     </div>
   );
 }
