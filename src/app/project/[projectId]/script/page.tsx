@@ -144,7 +144,7 @@ export default function ScriptPage() {
               <Button
                 variant="secondary"
                 size="md"
-                icon={<Edit2 className="h-4 w-4" />}
+                leftIcon={<Edit2 className="h-4 w-4" />}
                 onClick={() => setIsEditing(true)}
               ></Button>
             ) : (

@@ -81,7 +81,7 @@ export default function NewProjectSourcePage() {
               <Button
                 variant="ghost"
                 size="md"
-                icon={<Home className="h-4 w-4" />}
+                leftIcon={<Home className="h-4 w-4" />}
                 onClick={handleGoHome}
                 title="Go to Projects"
                 className="shadow-lg"
@@ -102,7 +102,7 @@ export default function NewProjectSourcePage() {
                 <Button
                   variant="primary"
                   size="md"
-                  icon={<ArrowRight className="h-4 w-4" />}
+                  leftIcon={<ArrowRight className="h-4 w-4" />}
                   onClick={handleContinue}
                   className="shadow-lg"
                 >
