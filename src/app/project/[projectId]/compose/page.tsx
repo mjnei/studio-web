@@ -142,7 +142,7 @@ export default function ComposePage() {
                       <p className="text-sm text-text-muted">
                         Your thumbnail is ready for video generation
                       </p>
-                      
+
                       {/* Show confirmed thumbnail image */}
                       {state.finalThumbnailUrl && (
                         <div className="max-w-sm">
@@ -155,7 +155,7 @@ export default function ComposePage() {
                           </div>
                         </div>
                       )}
-                      
+
                       <div className="text-xs text-text-muted space-y-1">
                         <p>• Text overlay: {state.thumbnailText || "None"}</p>
                         <p>
@@ -299,8 +299,6 @@ export default function ComposePage() {
             </div>
           </Card>
         )}
-
-
       </div>
 
       {/* Thumbnail Editor Modal */}

@@ -30,12 +30,7 @@ export function CreditConfirmationModal({
   const hasInsufficientCredits = creditsRemaining < creditCost;
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={title}
-      size="sm"
-    >
+    <Modal isOpen={isOpen} onClose={onClose} title={title} size="sm">
       <div className="space-y-4">
         {/* Message */}
         <p className="text-sm text-text-secondary">{message}</p>
@@ -46,7 +41,9 @@ export function CreditConfirmationModal({
             <span className="text-text-muted">Credit Cost:</span>
             <div className="flex items-center gap-1.5 font-medium text-text-primary">
               <Coins className="h-4 w-4 text-warning-text" />
-              <span>{creditCost} credit{creditCost !== 1 ? "s" : ""}</span>
+              <span>
+                {creditCost} credit{creditCost !== 1 ? "s" : ""}
+              </span>
             </div>
           </div>
 
@@ -54,7 +51,9 @@ export function CreditConfirmationModal({
             <span className="text-text-muted">Current Balance:</span>
             <div className="flex items-center gap-1.5 font-medium text-text-primary">
               <Coins className="h-4 w-4 text-accent-cyan" />
-              <span>{creditsRemaining} credit{creditsRemaining !== 1 ? "s" : ""}</span>
+              <span>
+                {creditsRemaining} credit{creditsRemaining !== 1 ? "s" : ""}
+              </span>
             </div>
           </div>
 
@@ -84,8 +83,8 @@ export function CreditConfirmationModal({
             <div className="flex-1">
               <p className="text-sm font-medium text-warning-text">Low Credit Balance</p>
               <p className="text-xs text-text-muted mt-1">
-                You'll have {afterGeneration} credit{afterGeneration !== 1 ? "s" : ""} remaining after this generation.
-                Consider upgrading your plan.
+                You'll have {afterGeneration} credit{afterGeneration !== 1 ? "s" : ""} remaining
+                after this generation. Consider upgrading your plan.
               </p>
             </div>
           </div>
@@ -98,8 +97,8 @@ export function CreditConfirmationModal({
             <div className="flex-1">
               <p className="text-sm font-medium text-error-text">Insufficient Credits</p>
               <p className="text-xs text-text-muted mt-1">
-                You need {creditCost} credit{creditCost !== 1 ? "s" : ""} but only have {creditsRemaining}.
-                Upgrade your plan to continue.
+                You need {creditCost} credit{creditCost !== 1 ? "s" : ""} but only have{" "}
+                {creditsRemaining}. Upgrade your plan to continue.
               </p>
             </div>
           </div>
@@ -107,15 +106,10 @@ export function CreditConfirmationModal({
 
         {/* Actions */}
         <div className="flex gap-3 pt-2">
-          <Button
-            variant="secondary"
-            onClick={onClose}
-            disabled={isProcessing}
-            className="flex-1"
-          >
+          <Button variant="secondary" onClick={onClose} disabled={isProcessing} className="flex-1">
             Cancel
           </Button>
-          
+
           {hasInsufficientCredits ? (
             <Button
               variant="primary"

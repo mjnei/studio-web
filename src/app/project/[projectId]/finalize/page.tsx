@@ -68,9 +68,7 @@ export default function FinalizePage() {
     }
 
     // Load the full video job with steps
-    const processingVideo = videos?.find(
-      (v) => v.status === "processing" || v.status === "queued"
-    );
+    const processingVideo = videos?.find((v) => v.status === "processing" || v.status === "queued");
 
     if (processingVideo) {
       loadVideoJobWithSteps(processingVideo.id);
@@ -90,21 +88,28 @@ export default function FinalizePage() {
   const loadVideoJobWithSteps = async (videoId: string) => {
     try {
       const job = await getVideoJob(videoId);
-      
+
       // Check if status changed to completed
-      const wasProcessing = processingVideoJob?.status === "processing" || processingVideoJob?.status === "queued";
+      const wasProcessing =
+        processingVideoJob?.status === "processing" || processingVideoJob?.status === "queued";
       const nowCompleted = job.status === "completed";
-      
+
       setProcessingVideoJob(job);
-      
+
       // Show success toast when video completes
       if (wasProcessing && nowCompleted) {
-        toast.success("Video complete!", "Your video has been generated successfully and is ready to download");
+        toast.success(
+          "Video complete!",
+          "Your video has been generated successfully and is ready to download"
+        );
       }
-      
+
       // Show error toast if failed
       if (job.status === "failed" && wasProcessing) {
-        toast.error("Video generation failed", job.error_message || "An error occurred during generation");
+        toast.error(
+          "Video generation failed",
+          job.error_message || "An error occurred during generation"
+        );
       }
     } catch (error) {
       console.error("Failed to load video job with steps:", error);
@@ -313,25 +318,35 @@ export default function FinalizePage() {
             </div>
           </Card>
         ) : (
-          <Card variant="elevated" padding="lg" className="border-accent-cyan/30 bg-gradient-to-br from-accent-cyan/5 to-transparent">
+          <Card
+            variant="elevated"
+            padding="lg"
+            className="border-accent-cyan/30 bg-gradient-to-br from-accent-cyan/5 to-transparent"
+          >
             <div className="text-center max-w-md mx-auto">
               <div className="flex justify-center mb-4">
                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent-cyan-muted">
                   <Video className="h-8 w-8 text-accent-cyan" />
                 </div>
               </div>
-              <h3 className="text-lg font-semibold text-text-primary mb-2">Ready to Generate Your Video</h3>
+              <h3 className="text-lg font-semibold text-text-primary mb-2">
+                Ready to Generate Your Video
+              </h3>
               <p className="text-sm text-text-muted mb-6">
-                Your thumbnail is finalized and everything is ready. Generate your first video for 1 credit.
+                Your thumbnail is finalized and everything is ready. Generate your first video for 1
+                credit.
               </p>
-              
+
               {/* Credit indicator */}
               {creditStatus && (
                 <div className="mb-6 flex justify-center">
-                  <CreditUsageIndicator cost={1} remainingCredits={creditStatus.credits_remaining} />
+                  <CreditUsageIndicator
+                    cost={1}
+                    remainingCredits={creditStatus.credits_remaining}
+                  />
                 </div>
               )}
-              
+
               {/* Generate button */}
               <Button
                 variant="primary"
@@ -353,13 +368,13 @@ export default function FinalizePage() {
               >
                 {isRegenerating ? "Generating..." : "Generate Video"}
               </Button>
-              
+
               {!state?.thumbnailConfirmed && (
                 <p className="mt-3 text-xs text-warning-text">
                   Please complete the compose step before generating videos
                 </p>
               )}
-              
+
               {creditStatus && creditStatus.credits_remaining < 1 && (
                 <p className="mt-3 text-xs text-error-text">
                   Insufficient credits. Please purchase more credits to continue.

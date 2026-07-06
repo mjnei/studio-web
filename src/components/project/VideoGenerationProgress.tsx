@@ -52,12 +52,16 @@ export function VideoGenerationProgress({
         <div className="flex items-start justify-between">
           <div>
             <h3 className="text-sm font-medium text-text-primary">Video Generation In Progress</h3>
-            <p className="text-xs text-text-muted mt-1">Please wait while we generate your video...</p>
+            <p className="text-xs text-text-muted mt-1">
+              Please wait while we generate your video...
+            </p>
           </div>
           {estimatedTimeRemaining && estimatedTimeRemaining > 0 && (
             <div className="text-right">
               <p className="text-xs text-text-muted">Estimated time</p>
-              <p className="text-sm font-medium text-accent-cyan">{formatTime(estimatedTimeRemaining)}</p>
+              <p className="text-sm font-medium text-accent-cyan">
+                {formatTime(estimatedTimeRemaining)}
+              </p>
             </div>
           )}
         </div>
@@ -100,7 +104,11 @@ export function VideoGenerationProgress({
             <div
               key={step.step_number}
               className={`flex items-start gap-3 ${
-                step.status === "processing" ? "opacity-100" : step.status === "completed" ? "opacity-90" : "opacity-50"
+                step.status === "processing"
+                  ? "opacity-100"
+                  : step.status === "completed"
+                    ? "opacity-90"
+                    : "opacity-50"
               }`}
             >
               {getStepIcon(step)}

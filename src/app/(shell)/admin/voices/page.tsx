@@ -1132,7 +1132,9 @@ export default function AdminVoicesPage() {
                         ? "bg-gradient-to-r from-accent-primary to-purple-600 text-white shadow-accent-primary/30"
                         : "border-2 border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:text-accent-primary hover:bg-accent-primary/5"
                     }`}
-                    title={playingVoiceId === String(recording.id) ? "Stop recording" : "Play recording"}
+                    title={
+                      playingVoiceId === String(recording.id) ? "Stop recording" : "Play recording"
+                    }
                   >
                     {playingVoiceId === String(recording.id) ? (
                       <>

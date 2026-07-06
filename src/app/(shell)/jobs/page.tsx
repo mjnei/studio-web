@@ -11,7 +11,11 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
 import { listProjects, type ProjectResponse } from "@/lib/project-client";
-import { getProjectVideos, deleteProjectVideo, type VideoGenerationResponse } from "@/lib/credit-client";
+import {
+  getProjectVideos,
+  deleteProjectVideo,
+  type VideoGenerationResponse,
+} from "@/lib/credit-client";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 
 type FilterTab = "all" | "pending" | "completed" | "failed";
@@ -131,7 +135,9 @@ export default function JobsPage() {
   });
 
   // Sort by created_at descending (newest first)
-  filteredVideos.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+  filteredVideos.sort(
+    (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  );
 
   const getStatusBadgeVariant = (status: string) => {
     if (status === "completed") return "success";
