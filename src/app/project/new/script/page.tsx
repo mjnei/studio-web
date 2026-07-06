@@ -169,7 +169,7 @@ export default function NewProjectScriptPage() {
               <Button
                 variant="secondary"
                 size="md"
-                icon={<ArrowLeft className="h-4 w-4" />}
+                leftIcon={<ArrowLeft className="h-4 w-4" />}
                 onClick={handleBack}
                 disabled={isSaving}
                 className="shadow-lg"
@@ -179,7 +179,7 @@ export default function NewProjectScriptPage() {
               <Button
                 variant="ghost"
                 size="md"
-                icon={<Home className="h-4 w-4" />}
+                leftIcon={<Home className="h-4 w-4" />}
                 onClick={handleGoHome}
                 title="Go to Projects"
               >
@@ -198,7 +198,7 @@ export default function NewProjectScriptPage() {
               <Button
                 variant="primary"
                 size="md"
-                icon={<Save className="h-4 w-4" />}
+                leftIcon={<Save className="h-4 w-4" />}
                 onClick={handleSaveScript}
                 loading={isSaving}
                 disabled={!scriptContent.trim()}

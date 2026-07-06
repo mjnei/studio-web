@@ -169,142 +169,209 @@ Generate and preview TTS audio for your selected voice with the full script.
 ### Step 6: Compose
 **Route:** `/project/[projectId]/compose`
 
-Generate the final video composition and customize the project thumbnail.
+Customize and finalize your project thumbnail. **Video generation happens in the next step (Finalize).**
 
 **Actions:**
-- **Thumbnail Customization** (before video generation):
+- **Thumbnail Customization**:
   - View AI-generated thumbnail (generated in Step 3)
-  - Open dedicated thumbnail editor (modal/page)
-  - Re-generate thumbnail with custom AI prompt
-  - Upload custom thumbnail image (with quality validation)
-  - Add/edit overlay text with positioning (left/right half)
-  - Choose text color and font
+  - Edit overlay text (defaults to script_summary, customizable)
+  - Choose text position (left or right half of image)
+  - Select text color and font style
   - Preview thumbnail with text overlay in real-time
-  - Generate composite image (JPG/PNG) with text baked in
-  - Save final thumbnail to S3
-- **Video Generation**:
-  - Review final configuration (thumbnail + audio)
-  - Start video generation job with TTS audio
-  - Track async video processing progress
-  - Preview composed video
-
-**Thumbnail Editor Details:**
-
-**Editor Mode:** Dedicated modal OR separate page (`/project/[projectId]/compose/thumbnail`)
-- **Advantage of Modal:** Quick access, no navigation away from compose page
-- **Advantage of Separate Page:** More space for advanced controls, better for complex edits
-
-**Base Image Management:**
-- **AI-generated (default)**: NO TEXT in base image, purely visual
-- **Re-generate with Custom Prompt**: User can modify the AI generation prompt (not just click regenerate)
-  - Default prompt uses movie title + script_summary
-  - User can customize prompt for different visual styles
-- **Upload Custom Image**:
-  - File types: JPG, PNG, WEBP
-  - Size limit: 5MB max
-  - **Image Quality Validation**:
-    - Check aspect ratio (recommended 16:9 for video thumbnails)
-    - Minimum resolution: 1280x720px (HD ready)
-    - Warn if image is too small or wrong aspect ratio
-    - Allow user to crop/adjust if needed
-
-**Text Overlay Configuration:**
-- **Content**: Defaults to script_summary, fully editable (max 200 chars)
-- **Position**: Left half OR right half of image
-  - User selects which side (50% width of image)
-  - Maintains margin gaps (e.g., 5% padding from edges)
-- **Font Selection**: 
-  - Choose from predefined fonts (3-5 options)
-  - Examples: Bold/Impact style, Elegant/Serif, Modern/Sans-serif
-- **Color Selection**:
-  - Color picker OR preset colors
-  - High contrast options for readability
-  - Preview updates in real-time
-- **Text Styling**:
-  - Automatic text size based on content length
-  - Semi-transparent background for readability (optional)
-  - Text shadow for better visibility (optional)
-
-**Image Compositing (Server-side):**
-- Backend uses PIL/Pillow to composite base image + text overlay
-- Generates final image as JPG or PNG (user preference)
-- Uploads composite image to S3 storage
-- Returns final_thumbnail_url to frontend
-- Sets thumbnail_confirmed = true
-
-**Final Output:** 
-- Composite image (base + text overlay) saved to S3
-- Available as `final_thumbnail_url` in project
-- Used as video poster in Step 7
+  - Finalize thumbnail (creates composite image with text and uploads to S3)
+  - Re-customize thumbnail anytime if needed
 
 **Display:**
-- **Main Compose Page:**
-  - Thumbnail preview card with "Edit Thumbnail" button
-  - Opens dedicated thumbnail editor (modal or separate page)
-  - Video generation section (disabled until thumbnail confirmed)
-  - "Next" button (enabled only after thumbnail confirmed)
+- If thumbnail **NOT confirmed**:
+  - Thumbnail preview card (clickable to open editor)
+  - Script tagline card
+  - Project summary
+  - Full script preview (expandable)
+  - **Next button**: Disabled until thumbnail confirmed
+  
+- If thumbnail **confirmed**:
+  - Success card showing:
+    - "Your thumbnail is ready for video generation"
+    - Final confirmed thumbnail image (small preview)
+    - Text overlay and base image info
+    - "Re-customize thumbnail" link
+  - Script tagline card
+  - Project summary
+  - Full script preview (expandable)
+  - **Next button**: Enabled - takes user to Finalize step
 
-- **Thumbnail Editor (Modal/Page):**
-  - Large preview area showing base image + text overlay
-  - Base image controls:
-    - Regenerate with custom prompt input
-    - Upload custom image with validation feedback
-  - Text overlay controls:
-    - Text input field (max 200 chars)
-    - Position selector (left half / right half)
-    - Font selector dropdown (3-5 options)
-    - Color picker with presets
-  - Real-time preview updates as user makes changes
-  - "Save & Finalize" button generates composite and saves to S3
-  - "Cancel" button to discard changes
+**Thumbnail Workflow:**
+1. Page loads - shows AI-generated base image preview
+2. User clicks to open thumbnail editor modal
+3. User edits:
+   - Text content (max 200 chars, defaults to script_summary)
+   - Position (left or right half)
+   - Font (from predefined options)
+   - Color (with presets)
+4. Real-time preview shows final composite
+5. User clicks "Finalize Thumbnail":
+   - Backend composites base image + text overlay using PIL/Pillow
+   - Uploads final composite image to S3
+   - Sets `final_thumbnail_url` and `thumbnail_confirmed = true`
+6. User clicks Next → advances to Finalize step
 
-**Technical Flow:**
-1. User lands on compose page → Shows thumbnail preview card
-2. User clicks "Edit Thumbnail" → Opens thumbnail editor
-3. In editor:
-   - View current base image (AI or custom)
-   - Optional: Regenerate with custom prompt (POST `/api/v1/projects/{id}/thumbnail/regenerate-custom`)
-   - Optional: Upload new image with validation (POST `/api/v1/projects/{id}/thumbnail/upload`)
-   - Configure text: content, position, font, color
-   - Preview updates in real-time (client-side)
-4. User clicks "Save & Finalize":
-   - POST `/api/v1/projects/{id}/thumbnail/finalize` with all settings
-   - Backend composites image using PIL/Pillow
-   - Uploads final image to S3
-   - Returns final_thumbnail_url and sets thumbnail_confirmed = true
-5. User returns to compose page
-6. "Next" button now enabled → Can advance to finalize step
+**Important:** 
+- This step is ONLY for thumbnail customization
+- No video generation happens here
+- No credit confirmation modals
+- Next button becomes clickable once thumbnail is confirmed
 
-**Completion:** Thumbnail finalized AND video file generated
+**Completion:** Thumbnail finalized (`thumbnail_confirmed = true`)
 
-**Advances to:** Finalize
+**Advances to:** Finalize (where video generation happens)
 
 ---
 
 ### Step 7: Finalize
 **Route:** `/project/[projectId]/finalize`
 
-Review, publish, or download your completed project. Thumbnail is finalized and used as video poster.
+Generate video (if not yet generated), review completed videos, browse generation history, and manage your project.
 
-**Actions:**
-- View finalized project thumbnail (confirmed in Step 6)
-- Review project summary and final video
-- Download video file
-- Publish to platform (YouTube, social media, etc.)
-- Return to projects list
+**Primary Actions:**
 
-**Display:**
-- Finalized project thumbnail (with text overlay)
-- Full script available via expandable card
-- Video player with thumbnail as poster
+**A. If NO videos generated yet:**
+- Prominent "Generate Video" card with:
+  - Credit cost indicator (1 credit)
+  - Large "Generate Video" button
+  - Credit confirmation modal when clicked
+  - Starts video generation and shows progress
 
-**Video Player:**
-- Uses finalized thumbnail as video poster image
-- Provides professional preview before playback
+**B. If video is PROCESSING:**
+- Video generation progress component showing:
+  - Overall progress (0-100%)
+  - Current step being processed (1-4)
+  - All 4 generation steps with individual status
+- User can leave and return - progress continues
+- Auto-refreshes every 3 seconds
+- Success toast when complete
 
-**Note:** Thumbnail is read-only at this step. All customization happens in Step 6.
+**C. If video COMPLETED:**
+- Success banner ("Video Complete!")
+- Large video player with:
+  - Final video playback
+  - Finalized thumbnail as poster image
+  - Download button
+  - Publish button (coming soon)
+- Video metadata: date, cost, attempt #
 
-**Completion:** Project published or downloaded
+**Video Generation Steps:**
+When user clicks "Generate Video", 4 automatic steps are created:
+1. **Analyzing audio** — Parse TTS audio file
+2. **Syncing with visuals** — Sync audio to video clips
+3. **Rendering video** — Encode final video file
+4. **Finalizing output** — Upload to storage
+
+Each step tracks progress (0-100%) and status (queued → processing → completed/failed).
+
+**Display Sections (Top to Bottom):**
+
+1. **Primary Action Area** (changes based on state)
+   - See A, B, or C above
+
+2. **Video Generation History** (always shown)
+   - List of all videos (completed, processing, failed)
+   - For each video:
+     - Thumbnail preview (16:9 aspect)
+     - Video # and generation date/time
+     - Status badge (completed/processing/failed)
+     - Cost in credits and attempt number
+     - Error message (if failed)
+     - Download button (if completed)
+     - Delete button (all statuses)
+   - Most recent first
+   - Empty state if no history
+
+3. **Generate Additional Videos** (only if at least one video exists)
+   - Credit usage indicator (1 credit required)
+   - Current settings preview: script length, voice, thumbnail confirmation
+   - "Generate New Video" button (disabled if insufficient credits or thumbnail not confirmed)
+   - Regenerates with same script, voice, and thumbnail
+   - Creates new VideoJob with incremented attempt number
+
+4. **Project Summary Card**
+   - Grid showing: Title, Movie, Voice, Script (word count)
+   - Quick reference for project details
+
+5. **Full Script Preview Card** (expandable)
+   - Expandable card showing full script
+   - Click to open modal with complete script text
+   - Shows word count and estimated duration
+
+6. **Return to Projects Button**
+   - Navigate back to projects dashboard
+
+**Video History Data:**
+Each video in history shows:
+- `id` — Unique video job ID
+- `status` — "completed", "processing", "queued", or "failed"
+- `progress` — 0-100 (overall progress across all 4 steps)
+- `video_url` — S3 URL to downloadable MP4 file (if completed)
+- `thumbnail_url` — Video thumbnail (if available)
+- `credit_cost` — Credits spent to generate this video
+- `generation_attempt` — Sequential attempt # (1, 2, 3, etc.)
+- `is_published` — Whether video was published to platform
+- `error_message` — If failed, reason why
+- `created_at` — When video job was created
+- `updated_at` — Last status update
+
+**API Endpoints Used:**
+
+```
+# Get all videos for project (ordered by creation date, newest first)
+GET /api/v1/projects/{projectId}/videos
+Response: {
+  "videos": [
+    {
+      "id": "job-789",
+      "project_id": 123,
+      "status": "completed",
+      "progress": 100,
+      "video_url": "https://storage.../video.mp4",
+      "thumbnail_url": "https://storage.../thumbnail.jpg",
+      "credit_cost": 1,
+      "generation_attempt": 1,
+      "is_published": false,
+      "voice_name": "Morgan Freeman",
+      "tts_job_id": 456,
+      "error_message": null,
+      "created_at": "2026-07-06T10:30:00Z",
+      "updated_at": "2026-07-06T10:35:00Z",
+      ...
+    }
+  ],
+  "total": 3
+}
+
+# Get credit status (to show remaining credits)
+GET /api/v1/users/me/credits
+Response: {
+  "credits_remaining": 15,
+  ...
+}
+
+# Create new video (reuses same script, voice, thumbnail)
+POST /api/v1/video?project_id=123&tts_job_id=456
+Response: {
+  "id": "job-790",
+  "status": "queued",
+  "progress": 0,
+  "generation_attempt": 2,
+  ...
+}
+
+# Delete a video from history
+DELETE /api/v1/projects/{projectId}/videos/{videoId}
+Response: 200 OK
+```
+
+**Completion:** User views and manages project
+
+**Note:** This is the final step. Project status remains "completed".
 
 ---
 
@@ -466,25 +533,14 @@ Response: {
 
 ### Step 6: Compose
 ```
-# Thumbnail Management
-POST /api/v1/projects/{id}/thumbnail/regenerate
-Body: { "prompt": "movie title + script summary" }
-Response: { "thumbnail_url": "https://...", "status": "generating" }
-
-POST /api/v1/projects/{id}/thumbnail/upload
-Body: FormData with image file
-Response: { "custom_thumbnail_url": "https://..." }
-
-PATCH /api/v1/projects/{id}/thumbnail
-Body: { 
-  "thumbnail_text": "Custom overlay text",
-  "use_custom": true  // Use custom_thumbnail_url instead of AI-generated
-}
-
+# Thumbnail Finalization
 POST /api/v1/projects/{id}/thumbnail/finalize
 Body: { 
-  "thumbnail_text": "Final overlay text",
-  "base_image_url": "https://..."  // AI-generated OR custom
+  "thumbnail_text": "Custom overlay text",  // Max 200 chars
+  "base_image_url": "https://...",  // AI-generated thumbnail from Step 3
+  "text_position": "left" | "right",  // Optional, defaults to center
+  "font_style": "bold" | "elegant" | "modern",  // Optional
+  "text_color": "#FFFFFF"  // Optional, defaults to white
 }
 Response: { 
   "final_thumbnail_url": "https://...",  // Composite image (base + text)
@@ -492,29 +548,88 @@ Response: {
 }
 
 # Video Generation (requires confirmed thumbnail)
-POST /api/v1/projects/{id}/compose
-Body: { "tts_job_id": "job-id" }
-Response: { "job_id": "job-123", "status": "queued" }
+POST /api/v1/video?project_id={id}&tts_job_id={tts_id}
+Response: { 
+  "id": 123,
+  "project_id": 456,
+  "status": "queued",
+  "progress": 0,
+  "steps": [
+    { "step_number": 1, "step_name": "Analyzing audio", "status": "queued", "progress": 0 },
+    { "step_number": 2, "step_name": "Syncing with visuals", "status": "queued", "progress": 0 },
+    { "step_number": 3, "step_name": "Rendering video", "status": "queued", "progress": 0 },
+    { "step_number": 4, "step_name": "Finalizing output", "status": "queued", "progress": 0 }
+  ]
+}
 
-GET /api/v1/jobs/{job_id}/status
-Response: { "status": "processing", "progress": 45 }
+# Get video job status
+GET /api/v1/video/{job_id}
+Response: {
+  "id": 123,
+  "status": "processing",
+  "progress": 45,  // Overall progress 0-100
+  "video_url": null,  // Available when status = "completed"
+  "steps": [ ... ]  // 4 generation steps with individual progress
+}
+
+# List all video attempts for project
+GET /api/v1/video/project/{project_id}/list
+Response: [
+  { "id": 123, "status": "completed", "video_url": "...", ... },
+  { "id": 122, "status": "completed", "video_url": "...", ... },
+  { "id": 121, "status": "failed", "error_message": "...", ... }
+]
 ```
+
+**Video Job Statuses:**
+- `queued` — Job waiting to be processed
+- `processing` — Video being generated (steps 1-4 in progress)
+- `completed` — Video ready (video_url available)
+- `failed` — Generation failed (error_message available)
 
 ### Step 7: Finalize
 ```
-GET /api/v1/projects/{id}
-Response: { 
-  "id": 123,
-  "title": "My Project",
-  "video_url": "https://storage.../video.mp4",
-  "final_thumbnail_url": "https://storage.../final_thumbnail.jpg",  // Composite with text
-  "thumbnail_confirmed": true,
+# Get all videos for project (for Finalize page)
+GET /api/v1/projects/{project_id}/videos
+Response: {
+  "videos": [
+    {
+      "id": "job-789",
+      "status": "completed",
+      "progress": 100,
+      "video_url": "https://storage.../video.mp4",
+      "thumbnail_url": "https://storage.../thumbnail.jpg",
+      "credit_cost": 1,
+      "generation_attempt": 1,
+      "is_published": false,
+      "voice_name": "Morgan Freeman",
+      "created_at": "2026-07-06T10:35:00Z",
+      ...
+    }
+  ],
+  "total": 3
+}
+
+# Get user credit status
+GET /api/v1/users/me/credits
+Response: {
+  "credits_remaining": 15,
+  "credits_used": 5,
   ...
 }
 
-POST /api/v1/projects/{id}/publish
-Body: { "platform": "youtube", "metadata": {...} }
-Response: { "published": true, "url": "https://youtube.com/..." }
+# Regenerate video (creates new attempt)
+POST /api/v1/projects/{project_id}/regenerate-video
+Response: {
+  "id": "job-790",
+  "status": "queued",
+  "generation_attempt": 2,
+  ...
+}
+
+# Delete video from history
+DELETE /api/v1/projects/{project_id}/videos/{video_id}
+Response: 200 OK
 ```
 
 ---

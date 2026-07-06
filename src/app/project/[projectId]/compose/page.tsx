@@ -9,13 +9,9 @@ import { FloatingWorkflowNavigation } from "@/components/project/floating-workfl
 import { FullScriptModal } from "@/components/project/full-script-modal";
 import { ThumbnailEditorModal } from "@/components/project/ThumbnailEditorModal";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
-import { CenteredEmptyState } from "@/components/ui/empty-state";
-import { Video, FileText, ChevronDown, Sparkles, Check, Loader2, Coins } from "lucide-react";
-import { advanceProjectStep, createVideoJob } from "@/lib/project-client";
+import { FileText, ChevronDown, Sparkles, Check, Loader2, Image } from "lucide-react";
+import { advanceProjectStep } from "@/lib/project-client";
 import { useToast } from "@/components/ui/toast";
-import { getCreditStatus, type CreditStatus } from "@/lib/credit-client";
-import { CreditUsageIndicator } from "@/components/credits/CreditUsageIndicator";
-import { InsufficientCreditsModal } from "@/components/credits/InsufficientCreditsModal";
 
 export default function ComposePage() {
   const params = useParams();
@@ -28,23 +24,6 @@ export default function ComposePage() {
   const [showThumbnailEditor, setShowThumbnailEditor] = useState(false);
   const [isAdvancing, setIsAdvancing] = useState(false);
   const [isPollingComposition, setIsPollingComposition] = useState(false);
-  const [creditStatus, setCreditStatus] = useState<CreditStatus | null>(null);
-  const [showInsufficientCreditsModal, setShowInsufficientCreditsModal] = useState(false);
-  const [isGeneratingVideo, setIsGeneratingVideo] = useState(false);
-
-  // Load credit status
-  React.useEffect(() => {
-    loadCreditStatus();
-  }, []);
-
-  const loadCreditStatus = async () => {
-    try {
-      const status = await getCreditStatus();
-      setCreditStatus(status);
-    } catch (error) {
-      console.error("Failed to load credit status:", error);
-    }
-  };
 
   // Poll for composition status when processing
   React.useEffect(() => {
@@ -105,55 +84,6 @@ export default function ComposePage() {
     }
   };
 
-  const handleGenerateVideo = async () => {
-    // Check credits
-    if (!creditStatus || creditStatus.credits_remaining < 1) {
-      setShowInsufficientCreditsModal(true);
-      return;
-    }
-
-    if (!state?.thumbnailConfirmed) {
-      toast.error(
-        "Thumbnail not finalized",
-        "Please finalize your thumbnail before generating video"
-      );
-      return;
-    }
-
-    setIsGeneratingVideo(true);
-    try {
-      await createVideoJob({
-        projectId,
-        ttsJobId: state.activeTtsJobId || undefined,
-        autoActivate: true,
-      });
-
-      toast.success(
-        "Video generation started",
-        "Your video is being generated. This may take a few minutes."
-      );
-
-      // Refresh credit status
-      await loadCreditStatus();
-
-      // Continue to finalize page
-      await advanceProjectStep(projectId, "compose");
-      router.push(`/project/${projectId}/finalize`);
-    } catch (error: any) {
-      console.error("Failed to generate video:", error);
-
-      // Check for 402 Payment Required (insufficient credits)
-      if (error.status === 402) {
-        await loadCreditStatus(); // Refresh credits
-        setShowInsufficientCreditsModal(true);
-      } else {
-        toast.error("Video generation failed", error.message || "Failed to start video generation");
-      }
-    } finally {
-      setIsGeneratingVideo(false);
-    }
-  };
-
   if (isLoading) {
     return <PageLoadingSkeleton message="Loading project..." />;
   }
@@ -165,9 +95,9 @@ export default function ComposePage() {
     <>
       <div className="flex flex-col gap-6 pb-24">
         <div>
-          <h2 className="text-xl font-semibold text-text-primary">Video Composition</h2>
+          <h2 className="text-xl font-semibold text-text-primary">Thumbnail Customization</h2>
           <p className="mt-1 text-sm text-text-muted">
-            Customize your thumbnail and prepare for video generation
+            Customize and finalize your project thumbnail before video generation
           </p>
         </div>
 
@@ -208,10 +138,24 @@ export default function ComposePage() {
 
                   {/* Collapsed view when confirmed */}
                   {state.thumbnailConfirmed ? (
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       <p className="text-sm text-text-muted">
                         Your thumbnail is ready for video generation
                       </p>
+                      
+                      {/* Show confirmed thumbnail image */}
+                      {state.finalThumbnailUrl && (
+                        <div className="max-w-sm">
+                          <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default">
+                            <img
+                              src={state.finalThumbnailUrl}
+                              alt="Confirmed thumbnail"
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        </div>
+                      )}
+                      
                       <div className="text-xs text-text-muted space-y-1">
                         <p>• Text overlay: {state.thumbnailText || "None"}</p>
                         <p>
@@ -283,7 +227,7 @@ export default function ComposePage() {
           </Card>
         )}
 
-        {/* Script Tagline - Highlight what's being composed */}
+        {/* Script Tagline */}
         {state?.scriptSummary && (
           <Card
             variant="elevated"
@@ -302,7 +246,7 @@ export default function ComposePage() {
                   "{state.scriptSummary}"
                 </p>
                 <p className="text-xs text-text-muted">
-                  Your video will be composed around this core message
+                  This tagline is used as the default text overlay on your thumbnail
                 </p>
               </div>
             </div>
@@ -356,93 +300,7 @@ export default function ComposePage() {
           </Card>
         )}
 
-        {/* Video generation — placeholder */}
-        <CenteredEmptyState
-          icon={Video}
-          title="Video Generation"
-          description="Generate your final video with the confirmed thumbnail, script, and voice narration."
-          variant="accent-cyan"
-          details={
-            <div className="w-full space-y-4">
-              {/* Credit Cost Indicator */}
-              {creditStatus && (
-                <div className="flex justify-center">
-                  <CreditUsageIndicator
-                    cost={1}
-                    remainingCredits={creditStatus.credits_remaining}
-                  />
-                </div>
-              )}
 
-              {/* Show confirmed thumbnail if available */}
-              {state?.thumbnailConfirmed && state?.finalThumbnailUrl && (
-                <div className="w-full">
-                  <p className="text-xs font-medium text-text-secondary mb-2">
-                    Confirmed Thumbnail:
-                  </p>
-                  <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default">
-                    <img
-                      src={state.finalThumbnailUrl}
-                      alt="Final project thumbnail"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* Project details */}
-              <div className="w-full rounded-lg border border-dashed border-border-default bg-surface-panel p-4 text-left space-y-2">
-                <p className="text-xs text-text-muted">
-                  Movie:{" "}
-                  <span className="font-medium text-text-secondary">
-                    {state?.movieTitle || "—"}
-                  </span>
-                </p>
-                <p className="text-xs text-text-muted">
-                  Voice:{" "}
-                  <span className="font-medium text-text-secondary">{state?.voiceName || "—"}</span>
-                </p>
-                <p className="text-xs text-text-muted">
-                  Script: <span className="font-medium text-text-secondary">{wordCount} words</span>
-                </p>
-                {state?.thumbnailConfirmed && (
-                  <p className="text-xs text-text-muted">
-                    Thumbnail: <span className="font-medium text-status-success">✓ Ready</span>
-                  </p>
-                )}
-              </div>
-
-              {/* Generate Video Button */}
-              <button
-                onClick={handleGenerateVideo}
-                disabled={
-                  !state?.thumbnailConfirmed ||
-                  isGeneratingVideo ||
-                  (creditStatus && creditStatus.credits_remaining < 1)
-                }
-                className="w-full py-3 px-4 rounded-lg bg-accent-cyan text-white font-medium hover:bg-accent-cyan-hover disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
-              >
-                {isGeneratingVideo ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Generating Video...
-                  </>
-                ) : (
-                  <>
-                    <Video className="h-4 w-4" />
-                    Generate Video
-                  </>
-                )}
-              </button>
-
-              {!state?.thumbnailConfirmed && (
-                <p className="text-xs text-warning-text text-center">
-                  Please finalize your thumbnail before generating video
-                </p>
-              )}
-            </div>
-          }
-        />
       </div>
 
       {/* Thumbnail Editor Modal */}
@@ -469,19 +327,11 @@ export default function ComposePage() {
       <FloatingWorkflowNavigation
         projectId={projectId}
         currentStep="compose"
-        canGoNext={!!state?.thumbnailConfirmed}
+        canGoNext={state?.thumbnailConfirmed || false}
         nextLabel="Continue to Finalize"
         canGoBack={true}
         isProcessing={isAdvancing}
         onNext={handleContinue}
-      />
-
-      {/* Insufficient Credits Modal */}
-      <InsufficientCreditsModal
-        isOpen={showInsufficientCreditsModal}
-        onClose={() => setShowInsufficientCreditsModal(false)}
-        creditStatus={creditStatus}
-        requiredCredits={1}
       />
     </>
   );

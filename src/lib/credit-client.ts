@@ -70,7 +70,11 @@ export async function getCreditHistory(page = 1, pageSize = 20): Promise<CreditH
 }
 
 export async function getProjectVideos(projectId: string): Promise<ProjectVideosResponse> {
-  return request<ProjectVideosResponse>(`/projects/${projectId}/videos`);
+  const jobs = await request<VideoGenerationResponse[]>(`/video/project/${projectId}/list`);
+  return {
+    videos: jobs,
+    total: jobs.length,
+  };
 }
 
 export async function regenerateVideo(projectId: string): Promise<VideoGenerationResponse> {

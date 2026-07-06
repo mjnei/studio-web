@@ -90,7 +90,7 @@ export function ScriptGeneration({
             <Button
               variant="primary"
               size="lg"
-              icon={<Sparkles className="w-5 h-5" />}
+              leftIcon={<Sparkles className="w-5 h-5" />}
               onClick={onGenerate}
               loading={isGenerating}
             >
@@ -141,7 +141,7 @@ export function ScriptGeneration({
                 <Button
                   variant="ghost"
                   size="sm"
-                  icon={copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                  leftIcon={copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                   onClick={copyToClipboard}
                 >
                   {copied ? "Copied" : "Copy"}
@@ -149,7 +149,7 @@ export function ScriptGeneration({
                 <Button
                   variant="ghost"
                   size="sm"
-                  icon={<Edit3 className="w-4 h-4" />}
+                  leftIcon={<Edit3 className="w-4 h-4" />}
                   onClick={() => setEditing(!editing)}
                 >
                   {editing ? "Preview" : "Edit"}

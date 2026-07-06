@@ -198,7 +198,7 @@ export default function BillingPage() {
                 <Button
                   variant="primary"
                   size="md"
-                  icon={<ArrowRight className="h-4 w-4" />}
+                  leftIcon={<ArrowRight className="h-4 w-4" />}
                   onClick={() => router.push("/pricing")}
                 >
                   Upgrade Plan
@@ -296,12 +296,12 @@ export default function BillingPage() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  icon={<Settings className="h-4 w-4" />}
+                  leftIcon={<Settings className="h-4 w-4" />}
                   onClick={handleUpdatePayment}
                 >
                   Update Payment
                 </Button>
-                <Button variant="primary" size="sm" icon={<CreditCard className="h-4 w-4" />}>
+                <Button variant="primary" size="sm" leftIcon={<CreditCard className="h-4 w-4" />}>
                   View Billing Portal
                 </Button>
               </div>
@@ -419,10 +419,10 @@ export default function BillingPage() {
               integration.
             </p>
             <div className="flex gap-3 justify-center">
-              <Button variant="ghost" size="lg" icon={<Download className="h-4 w-4" />}>
+              <Button variant="ghost" size="lg" leftIcon={<Download className="h-4 w-4" />}>
                 Download Sample Invoice
               </Button>
-              <Button variant="primary" size="lg" icon={<CreditCard className="h-4 w-4" />}>
+              <Button variant="primary" size="lg" leftIcon={<CreditCard className="h-4 w-4" />}>
                 View Stripe Portal
               </Button>
             </div>

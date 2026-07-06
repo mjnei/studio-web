@@ -15,7 +15,6 @@ import {
   ChevronDown,
   Download,
   Share2,
-  Sparkles,
   Video,
   Trash2,
   Clock,
@@ -30,14 +29,16 @@ import {
   type VideoGenerationResponse,
   type CreditStatus,
 } from "@/lib/credit-client";
+import { getVideoJob, type VideoJobResponse } from "@/lib/project-client";
 import { CreditUsageIndicator } from "@/components/credits/CreditUsageIndicator";
 import { InsufficientCreditsModal } from "@/components/credits/InsufficientCreditsModal";
+import { VideoGenerationProgress } from "@/components/project/VideoGenerationProgress";
 
 export default function FinalizePage() {
   const params = useParams();
   const router = useRouter();
   const projectId = params.projectId as string;
-  const { state, isLoading, refresh } = useProjectState(projectId);
+  const { state, isLoading } = useProjectState(projectId);
   const toast = useToast();
 
   const [showFullScriptModal, setShowFullScriptModal] = useState(false);
@@ -46,6 +47,7 @@ export default function FinalizePage() {
   const [creditStatus, setCreditStatus] = useState<CreditStatus | null>(null);
   const [showInsufficientCreditsModal, setShowInsufficientCreditsModal] = useState(false);
   const [isRegenerating, setIsRegenerating] = useState(false);
+  const [processingVideoJob, setProcessingVideoJob] = useState<VideoJobResponse | null>(null);
 
   React.useEffect(() => {
     if (projectId) {
@@ -53,6 +55,61 @@ export default function FinalizePage() {
       loadCreditStatus();
     }
   }, [projectId]);
+
+  // Poll for video status updates if there's a processing video
+  React.useEffect(() => {
+    const hasProcessingVideo = videos?.some(
+      (v) => v.status === "processing" || v.status === "queued"
+    );
+
+    if (!hasProcessingVideo) {
+      setProcessingVideoJob(null);
+      return;
+    }
+
+    // Load the full video job with steps
+    const processingVideo = videos?.find(
+      (v) => v.status === "processing" || v.status === "queued"
+    );
+
+    if (processingVideo) {
+      loadVideoJobWithSteps(processingVideo.id);
+    }
+
+    const pollInterval = setInterval(() => {
+      if (processingVideo) {
+        loadVideoJobWithSteps(processingVideo.id);
+      }
+      loadVideos();
+      loadCreditStatus(); // Also refresh credits
+    }, 3000); // Poll every 3 seconds for better responsiveness
+
+    return () => clearInterval(pollInterval);
+  }, [videos, projectId]);
+
+  const loadVideoJobWithSteps = async (videoId: string) => {
+    try {
+      const job = await getVideoJob(videoId);
+      
+      // Check if status changed to completed
+      const wasProcessing = processingVideoJob?.status === "processing" || processingVideoJob?.status === "queued";
+      const nowCompleted = job.status === "completed";
+      
+      setProcessingVideoJob(job);
+      
+      // Show success toast when video completes
+      if (wasProcessing && nowCompleted) {
+        toast.success("Video complete!", "Your video has been generated successfully and is ready to download");
+      }
+      
+      // Show error toast if failed
+      if (job.status === "failed" && wasProcessing) {
+        toast.error("Video generation failed", job.error_message || "An error occurred during generation");
+      }
+    } catch (error) {
+      console.error("Failed to load video job with steps:", error);
+    }
+  };
 
   const loadVideos = async () => {
     setIsLoadingVideos(true);
@@ -120,26 +177,12 @@ export default function FinalizePage() {
     return <PageLoadingSkeleton message="Loading project..." />;
   }
 
+  // Get the latest completed video
+  const latestVideo = videos?.find((v) => v.status === "completed");
+  const processingVideo = videos?.find((v) => v.status === "processing" || v.status === "queued");
+
   const activeScript = state?.scripts?.find((script) => script.id === state.activeScriptId);
   const wordCount = activeScript?.wordCount ?? 0;
-
-  // Get the latest completed video
-  const latestVideo = videos.find((v) => v.status === "completed");
-  const processingVideo = videos.find((v) => v.status === "processing" || v.status === "queued");
-
-  const handleDownload = () => {
-    // TODO: Implement download functionality
-    console.log("Download video");
-  };
-
-  const handlePublish = () => {
-    // TODO: Implement publish functionality
-    console.log("Publish video");
-  };
-
-  const handleGoToProjects = () => {
-    router.push("/projects");
-  };
 
   return (
     <>
@@ -218,7 +261,7 @@ export default function FinalizePage() {
                 <Button
                   variant="secondary"
                   size="lg"
-                  icon={<Download className="h-4 w-4" />}
+                  leftIcon={<Download className="h-4 w-4" />}
                   onClick={() => {
                     if (latestVideo.video_url) {
                       window.open(latestVideo.video_url, "_blank");
@@ -231,7 +274,7 @@ export default function FinalizePage() {
                 <Button
                   variant="primary"
                   size="lg"
-                  icon={<Share2 className="h-4 w-4" />}
+                  leftIcon={<Share2 className="h-4 w-4" />}
                   onClick={() => {
                     toast.info("Coming soon", "Publishing functionality will be available soon");
                   }}
@@ -242,35 +285,86 @@ export default function FinalizePage() {
               </div>
             </Card>
           </>
+        ) : processingVideoJob ? (
+          <VideoGenerationProgress
+            overallProgress={processingVideoJob.progress || 0}
+            currentStep={
+              processingVideoJob.steps?.find((s) => s.status === "processing")?.step_number || 1
+            }
+            steps={
+              processingVideoJob.steps?.map((s) => ({
+                step_number: s.step_number,
+                step_name: s.step_name,
+                status: s.status,
+                progress: s.progress,
+              })) || []
+            }
+          />
         ) : processingVideo ? (
-          <Card variant="elevated" padding="md">
+          <Card variant="elevated" padding="md" className="border-accent-cyan/30">
             <div className="flex items-start gap-4">
               <Loader2 className="h-10 w-10 text-accent-cyan animate-spin flex-shrink-0" />
               <div className="flex-1">
                 <h3 className="font-medium text-text-primary">Video Generation in Progress</h3>
                 <p className="mt-1 text-sm text-text-muted">
-                  Your video is being generated. This may take a few minutes. You can leave this
-                  page and come back later.
+                  Your video is being generated. Loading progress details...
                 </p>
-                <div className="mt-3 text-xs text-text-muted">
-                  Status:{" "}
-                  <span className="font-medium text-accent-cyan capitalize">
-                    {processingVideo.status}
-                  </span>
-                </div>
               </div>
             </div>
           </Card>
         ) : (
-          <Card variant="elevated" padding="md">
-            <div className="flex items-start gap-4">
-              <Video className="h-10 w-10 text-text-muted flex-shrink-0" />
-              <div className="flex-1">
-                <h3 className="font-medium text-text-primary">No Videos Generated Yet</h3>
-                <p className="mt-1 text-sm text-text-muted">
-                  Use the regeneration form below to create your first video.
-                </p>
+          <Card variant="elevated" padding="lg" className="border-accent-cyan/30 bg-gradient-to-br from-accent-cyan/5 to-transparent">
+            <div className="text-center max-w-md mx-auto">
+              <div className="flex justify-center mb-4">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent-cyan-muted">
+                  <Video className="h-8 w-8 text-accent-cyan" />
+                </div>
               </div>
+              <h3 className="text-lg font-semibold text-text-primary mb-2">Ready to Generate Your Video</h3>
+              <p className="text-sm text-text-muted mb-6">
+                Your thumbnail is finalized and everything is ready. Generate your first video for 1 credit.
+              </p>
+              
+              {/* Credit indicator */}
+              {creditStatus && (
+                <div className="mb-6 flex justify-center">
+                  <CreditUsageIndicator cost={1} remainingCredits={creditStatus.credits_remaining} />
+                </div>
+              )}
+              
+              {/* Generate button */}
+              <Button
+                variant="primary"
+                size="lg"
+                leftIcon={
+                  isRegenerating ? (
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                  ) : (
+                    <Video className="h-5 w-5" />
+                  )
+                }
+                onClick={handleRegenerate}
+                disabled={
+                  isRegenerating ||
+                  !state?.thumbnailConfirmed ||
+                  (!!creditStatus && creditStatus.credits_remaining < 1)
+                }
+                className="w-full max-w-xs"
+              >
+                {isRegenerating ? "Generating..." : "Generate Video"}
+              </Button>
+              
+              {!state?.thumbnailConfirmed && (
+                <p className="mt-3 text-xs text-warning-text">
+                  Please complete the compose step before generating videos
+                </p>
+              )}
+              
+              {creditStatus && creditStatus.credits_remaining < 1 && (
+                <p className="mt-3 text-xs text-error-text">
+                  Insufficient credits. Please purchase more credits to continue.
+                </p>
+              )}
             </div>
           </Card>
         )}
@@ -278,7 +372,7 @@ export default function FinalizePage() {
         {/* Section B: Video History */}
         <Card variant="elevated" padding="md">
           <h3 className="text-sm font-medium text-text-primary mb-4">Video History</h3>
-          {videos.length === 0 ? (
+          {!videos || videos.length === 0 ? (
             <div className="py-8 text-center text-sm text-text-muted">
               <Clock className="h-10 w-10 mx-auto mb-3 text-text-muted opacity-50" />
               <p>No video history yet</p>
@@ -322,17 +416,22 @@ export default function FinalizePage() {
                           })}
                         </p>
                       </div>
-                      <span
-                        className={`text-xs font-medium px-2 py-1 rounded capitalize ${
-                          video.status === "completed"
-                            ? "bg-success-bg text-success-text"
-                            : video.status === "failed"
-                              ? "bg-error-bg text-error-text"
-                              : "bg-accent-cyan/10 text-accent-cyan"
-                        }`}
-                      >
-                        {video.status}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        {(video.status === "processing" || video.status === "queued") && (
+                          <Loader2 className="h-3.5 w-3.5 text-accent-cyan animate-spin" />
+                        )}
+                        <span
+                          className={`text-xs font-medium px-2 py-1 rounded capitalize ${
+                            video.status === "completed"
+                              ? "bg-success-bg text-success-text"
+                              : video.status === "failed"
+                                ? "bg-error-bg text-error-text"
+                                : "bg-accent-cyan/10 text-accent-cyan"
+                          }`}
+                        >
+                          {video.status}
+                        </span>
+                      </div>
                     </div>
 
                     <div className="text-xs text-text-muted space-y-1">
@@ -407,7 +506,7 @@ export default function FinalizePage() {
           <Button
             variant="primary"
             size="lg"
-            icon={
+            leftIcon={
               isRegenerating ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
@@ -418,7 +517,7 @@ export default function FinalizePage() {
             disabled={
               isRegenerating ||
               !state?.thumbnailConfirmed ||
-              (creditStatus && creditStatus.credits_remaining < 1)
+              (!!creditStatus && creditStatus.credits_remaining < 1)
             }
             className="w-full"
           >

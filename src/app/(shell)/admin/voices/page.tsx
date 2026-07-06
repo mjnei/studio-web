@@ -1121,20 +1121,20 @@ export default function AdminVoicesPage() {
                   </div>
                   <button
                     onClick={() => {
-                      if (playingVoiceId === recording.id) {
+                      if (playingVoiceId === String(recording.id)) {
                         stopAudio();
                       } else {
-                        playRecordingAudio(recording.id);
+                        playRecordingAudio(String(recording.id));
                       }
                     }}
                     className={`group relative flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition-all shadow-sm ${
-                      playingVoiceId === recording.id
+                      playingVoiceId === String(recording.id)
                         ? "bg-gradient-to-r from-accent-primary to-purple-600 text-white shadow-accent-primary/30"
                         : "border-2 border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:text-accent-primary hover:bg-accent-primary/5"
                     }`}
-                    title={playingVoiceId === recording.id ? "Stop recording" : "Play recording"}
+                    title={playingVoiceId === String(recording.id) ? "Stop recording" : "Play recording"}
                   >
-                    {playingVoiceId === recording.id ? (
+                    {playingVoiceId === String(recording.id) ? (
                       <>
                         <Pause className="h-4 w-4" />
                         <span className="hidden md:inline">Stop</span>
