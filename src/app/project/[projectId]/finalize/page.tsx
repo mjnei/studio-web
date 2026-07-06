@@ -265,230 +265,219 @@ export default function FinalizePage() {
 
         {/* Section A: Current Video Hero with Version Selector */}
         {displayVideo ? (
-          <>
-            {/* Video Player */}
-            <Card variant="elevated" padding="md">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-medium text-text-primary">Your Video</h3>
-
-                {/* Regeneration Button */}
-                <div className="flex items-center gap-2">
-                  {creditStatus && (
-                    <div className="text-xs text-text-muted">
-                      {creditStatus.credits_remaining} credit
-                      {creditStatus.credits_remaining !== 1 ? "s" : ""}
-                    </div>
-                  )}
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    leftIcon={
-                      isRegenerating ? (
-                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                      ) : (
-                        <RefreshCw className="h-3.5 w-3.5" />
-                      )
-                    }
-                    onClick={handleRegenerate}
-                    disabled={isRegenerating || !state?.thumbnailConfirmed}
-                    title={
-                      !state?.thumbnailConfirmed
-                        ? "Complete compose step first"
-                        : "Generate a new video variation (1 credit)"
-                    }
-                  >
-                    {isRegenerating ? "Generating..." : "Regenerate"}
-                  </Button>
-                </div>
-              </div>
-
-              {/* Video Player */}
-              <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default">
-                {displayVideo.video_url ? (
-                  <video
-                    key={displayVideo.id}
-                    src={displayVideo.video_url}
-                    controls
-                    className="w-full h-full object-contain"
-                    poster={displayVideo.thumbnail_url || state?.finalThumbnailUrl || undefined}
-                  >
-                    Your browser does not support the video tag.
-                  </video>
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <Loader2 className="h-12 w-12 text-text-muted animate-spin" />
+          <Card variant="elevated" padding="md">
+            {/* Header with Regeneration Button */}
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-medium text-text-primary">Your Video</h3>
+              <div className="flex items-center gap-2">
+                {creditStatus && (
+                  <div className="text-xs text-text-muted">
+                    {creditStatus.credits_remaining} credit
+                    {creditStatus.credits_remaining !== 1 ? "s" : ""}
                   </div>
                 )}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  leftIcon={
+                    isRegenerating ? (
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    ) : (
+                      <RefreshCw className="h-3.5 w-3.5" />
+                    )
+                  }
+                  onClick={handleRegenerate}
+                  disabled={isRegenerating || !state?.thumbnailConfirmed}
+                  title={
+                    !state?.thumbnailConfirmed
+                      ? "Complete compose step first"
+                      : "Generate a new video variation (1 credit)"
+                  }
+                >
+                  {isRegenerating ? "Generating..." : "Regenerate"}
+                </Button>
               </div>
+            </div>
 
-              {/* Version Selector - Only show if there are multiple completed videos */}
-              {completedVideos.length > 1 && (
-                <div className="mt-4 p-3 rounded-lg bg-surface-base border border-border-default">
-                  <p className="text-xs font-medium text-text-muted mb-2">Select Version:</p>
-                  <div className="flex gap-2 overflow-x-auto">
-                    {completedVideos.map((video) => (
-                      <button
-                        key={video.id}
-                        onClick={() => setSelectedVideoId(video.id)}
-                        className={`flex-shrink-0 px-3 py-2 rounded text-xs font-medium transition-all ${
-                          video.id === displayVideo.id
-                            ? "bg-accent-cyan text-white"
-                            : "bg-surface-raised text-text-secondary hover:bg-surface-raised-hover border border-border-default"
-                        }`}
-                      >
-                        Version {video.generation_attempt}
-                      </button>
-                    ))}
-                  </div>
+            {/* Version Selector - Above video if multiple versions exist */}
+            {completedVideos.length > 1 && (
+              <div className="mb-4 flex items-center gap-2">
+                <span className="text-xs font-medium text-text-muted flex-shrink-0">Version:</span>
+                <div className="flex gap-2 overflow-x-auto">
+                  {completedVideos.map((video) => (
+                    <button
+                      key={video.id}
+                      type="button"
+                      onClick={() => setSelectedVideoId(video.id)}
+                      className={`flex-shrink-0 px-3 py-1.5 rounded text-xs font-medium transition-all ${
+                        video.id === displayVideo.id
+                          ? "bg-accent-cyan text-white"
+                          : "bg-surface-raised text-text-secondary hover:bg-surface-raised-hover border border-border-default"
+                      }`}
+                    >
+                      {video.generation_attempt}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Video Player - No key prop to prevent remounting */}
+            <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default mb-4">
+              {displayVideo.video_url ? (
+                <video
+                  src={displayVideo.video_url}
+                  controls
+                  className="w-full h-full object-contain"
+                  poster={displayVideo.thumbnail_url || state?.finalThumbnailUrl || undefined}
+                >
+                  Your browser does not support the video tag.
+                </video>
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <Loader2 className="h-12 w-12 text-text-muted animate-spin" />
                 </div>
               )}
+            </div>
 
-              {/* Video Metadata - Collapsed by default */}
-              <details className="mt-4 group">
-                <summary className="flex items-center gap-2 cursor-pointer text-xs text-text-muted hover:text-accent-cyan transition-colors select-none">
-                  <ChevronRight className="h-3 w-3 group-open:rotate-90 transition-transform" />
-                  <span>View details</span>
-                </summary>
-                <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4 text-xs pl-5">
-                  <div>
-                    <span className="font-medium text-text-secondary">Version:</span>{" "}
-                    <span className="text-text-primary">#{displayVideo.generation_attempt}</span>
-                  </div>
-                  <div>
-                    <span className="font-medium text-text-secondary">Voice:</span>{" "}
-                    <span className="text-text-primary">{displayVideo.voice_name || "N/A"}</span>
-                  </div>
-                  <div>
-                    <span className="font-medium text-text-secondary">Cost:</span>{" "}
-                    <span className="text-text-primary">
-                      {displayVideo.credit_cost} credit{displayVideo.credit_cost !== 1 ? "s" : ""}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="font-medium text-text-secondary">Generated:</span>{" "}
-                    <span className="text-text-primary">
-                      {new Date(displayVideo.created_at).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
-                    </span>
-                  </div>
-                </div>
-              </details>
-
-              {/* Actions */}
-              <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                <Button
-                  variant="secondary"
-                  size="lg"
-                  leftIcon={<Download className="h-4 w-4" />}
-                  onClick={() => {
-                    if (displayVideo.video_url) {
-                      window.open(displayVideo.video_url, "_blank");
-                    }
-                  }}
-                  className="w-full"
-                >
-                  Download Video
-                </Button>
-                <Button
-                  variant="primary"
-                  size="lg"
-                  leftIcon={<Share2 className="h-4 w-4" />}
-                  onClick={() => setShowPublishModal(true)}
-                  className="w-full"
-                >
-                  Publish to Platform
-                </Button>
+            {/* Video Metadata - Always visible, inline */}
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 text-xs mb-4 p-3 rounded-lg bg-surface-base border border-border-default">
+              <div>
+                <span className="font-medium text-text-muted">Voice:</span>{" "}
+                <span className="text-text-primary">{displayVideo.voice_name || "N/A"}</span>
               </div>
+              <div>
+                <span className="font-medium text-text-muted">Cost:</span>{" "}
+                <span className="text-text-primary">
+                  {displayVideo.credit_cost} credit{displayVideo.credit_cost !== 1 ? "s" : ""}
+                </span>
+              </div>
+              <div>
+                <span className="font-medium text-text-muted">Generated:</span>{" "}
+                <span className="text-text-primary">
+                  {new Date(displayVideo.created_at).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </span>
+              </div>
+              <div>
+                <span className="font-medium text-text-muted">Status:</span>{" "}
+                <span className="text-success-text capitalize">{displayVideo.status}</span>
+              </div>
+            </div>
 
-              {/* All Videos List - Collapsed */}
-              {videos && videos.length > 0 && (
-                <details className="mt-4 group">
-                  <summary className="flex items-center gap-2 cursor-pointer text-xs text-text-muted hover:text-accent-cyan transition-colors select-none">
-                    <ChevronRight className="h-3 w-3 group-open:rotate-90 transition-transform" />
-                    <span>View all videos ({videos.length})</span>
-                  </summary>
-                  <div className="mt-3 space-y-2 pl-5">
-                    {videos.map((video) => (
-                      <div
-                        key={video.id}
-                        className="flex items-center justify-between p-2 rounded bg-surface-raised border border-border-default"
-                      >
-                        <div className="flex items-center gap-3 flex-1 min-w-0">
-                          {/* Thumbnail */}
-                          <div className="w-16 aspect-video rounded overflow-hidden bg-surface-base flex-shrink-0">
-                            {video.thumbnail_url ? (
-                              <img
-                                src={video.thumbnail_url}
-                                alt={`Video ${video.generation_attempt}`}
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center">
-                                <Video className="h-4 w-4 text-text-muted" />
-                              </div>
-                            )}
-                          </div>
+            {/* Action Buttons */}
+            <div className="grid gap-3 sm:grid-cols-2 mb-4">
+              <Button
+                variant="secondary"
+                size="lg"
+                leftIcon={<Download className="h-4 w-4" />}
+                onClick={() => {
+                  if (displayVideo.video_url) {
+                    window.open(displayVideo.video_url, "_blank");
+                  }
+                }}
+                className="w-full"
+              >
+                Download Video
+              </Button>
+              <Button
+                variant="primary"
+                size="lg"
+                leftIcon={<Share2 className="h-4 w-4" />}
+                onClick={() => setShowPublishModal(true)}
+                className="w-full"
+              >
+                Publish to Platform
+              </Button>
+            </div>
 
-                          {/* Info */}
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2">
-                              <p className="text-xs font-medium text-text-primary">
-                                Version {video.generation_attempt}
-                              </p>
-                              {(video.status === "processing" || video.status === "queued") && (
-                                <Loader2 className="h-3 w-3 text-accent-cyan animate-spin" />
-                              )}
-                              <span
-                                className={`text-xs px-1.5 py-0.5 rounded capitalize ${
-                                  video.status === "completed"
-                                    ? "bg-success-bg text-success-text"
-                                    : video.status === "failed"
-                                      ? "bg-error-bg text-error-text"
-                                      : "bg-accent-cyan/10 text-accent-cyan"
-                                }`}
-                              >
-                                {video.status}
-                              </span>
+            {/* All Videos List - Collapsed at the bottom */}
+            {videos && videos.length > 1 && (
+              <details className="group">
+                <summary className="flex items-center gap-2 cursor-pointer text-xs text-text-muted hover:text-accent-cyan transition-colors select-none py-2">
+                  <ChevronRight className="h-3 w-3 group-open:rotate-90 transition-transform" />
+                  <span>View all versions ({videos.length})</span>
+                </summary>
+                <div className="mt-2 space-y-2">
+                  {videos.map((video) => (
+                    <div
+                      key={video.id}
+                      className="flex items-center justify-between p-2 rounded bg-surface-raised border border-border-default"
+                    >
+                      <div className="flex items-center gap-3 flex-1 min-w-0">
+                        <div className="w-16 aspect-video rounded overflow-hidden bg-surface-base flex-shrink-0">
+                          {video.thumbnail_url ? (
+                            <img
+                              src={video.thumbnail_url}
+                              alt={`Version ${video.generation_attempt}`}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <Video className="h-4 w-4 text-text-muted" />
                             </div>
-                            <p className="text-xs text-text-muted mt-0.5">
-                              {new Date(video.created_at).toLocaleDateString("en-US", {
-                                month: "short",
-                                day: "numeric",
-                                hour: "numeric",
-                                minute: "2-digit",
-                              })}
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Actions */}
-                        <div className="flex items-center gap-2 flex-shrink-0">
-                          {video.status === "completed" && (
-                            <button
-                              onClick={() => setSelectedVideoId(video.id)}
-                              className="text-xs text-accent-cyan hover:text-accent-cyan-hover font-medium"
-                            >
-                              View
-                            </button>
                           )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <p className="text-xs font-medium text-text-primary">
+                              Version {video.generation_attempt}
+                            </p>
+                            {(video.status === "processing" || video.status === "queued") && (
+                              <Loader2 className="h-3 w-3 text-accent-cyan animate-spin" />
+                            )}
+                            <span
+                              className={`text-xs px-1.5 py-0.5 rounded capitalize ${
+                                video.status === "completed"
+                                  ? "bg-success-bg text-success-text"
+                                  : video.status === "failed"
+                                    ? "bg-error-bg text-error-text"
+                                    : "bg-accent-cyan/10 text-accent-cyan"
+                              }`}
+                            >
+                              {video.status}
+                            </span>
+                          </div>
+                          <p className="text-xs text-text-muted mt-0.5">
+                            {new Date(video.created_at).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              hour: "numeric",
+                              minute: "2-digit",
+                            })}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        {video.status === "completed" && video.id !== displayVideo.id && (
                           <button
+                            type="button"
+                            onClick={() => setSelectedVideoId(video.id)}
+                            className="text-xs text-accent-cyan hover:text-accent-cyan-hover font-medium"
+                          >
+                            View
+                          </button>
+                        )}
+                        {video.id !== displayVideo.id && (
+                          <button
+                            type="button"
                             onClick={() => handleDeleteVideo(video.id)}
                             className="text-xs text-text-muted hover:text-error-text font-medium"
                             title="Delete video"
                           >
                             <Trash2 className="h-3 w-3" />
                           </button>
-                        </div>
+                        )}
                       </div>
-                    ))}
-                  </div>
-                </details>
-              )}
-            </Card>
-          </>
+                    </div>
+                  ))}
+                </div>
+              </details>
+            )}
+          </Card>
         ) : processingVideoJob ? (
           <VideoGenerationProgress
             overallProgress={processingVideoJob.progress || 0}

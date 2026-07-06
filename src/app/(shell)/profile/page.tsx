@@ -724,15 +724,11 @@ export default function ProfilePage() {
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-text-secondary mb-6">
-                    You're about to add 5 bonus credits to your account. This is a one-time offer for
-                    testing and development purposes.
+                    You're about to add 5 bonus credits to your account. This is a one-time offer
+                    for testing and development purposes.
                   </p>
                   <div className="flex gap-3">
-                    <Button
-                      variant="ghost"
-                      onClick={() => setShowCreditsConfirm(false)}
-                      fullWidth
-                    >
+                    <Button variant="ghost" onClick={() => setShowCreditsConfirm(false)} fullWidth>
                       Cancel
                     </Button>
                     <Button
