@@ -3,13 +3,15 @@
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState, useRef } from "react";
 import {
-  Sparkles,
   CheckCircle,
   Mic2,
   FileText,
   ChevronDown,
   Loader2,
   AlertCircle,
+  Play,
+  Pause,
+  Volume2,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -33,185 +35,125 @@ export default function PreviewPage() {
   const [showFullScriptModal, setShowFullScriptModal] = useState(false);
   const [ttsJob, setTtsJob] = useState<TTSJobResponse | null>(null);
   const [ttsError, setTtsError] = useState<string | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const isCreatingJobRef = useRef(false);
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020/api/v1";
-  // Note: NEXT_PUBLIC_API_URL already includes /api/v1
   const sseUrl = ttsJob ? `${apiUrl}/tts/${ttsJob.id}/stream` : "";
   const sseEnabled = Boolean(ttsJob && ttsJob.status !== "completed" && ttsJob.status !== "failed");
 
-  // Debug: Log SSE configuration
-  useEffect(() => {
-    console.log("🔧 SSE Configuration Check:", {
-      hasTtsJob: !!ttsJob,
-      jobId: ttsJob?.id,
-      status: ttsJob?.status,
-      sseUrl,
-      sseEnabled,
-      shouldConnect: sseEnabled && !!sseUrl,
-    });
-  }, [ttsJob, sseUrl, sseEnabled]);
-
-  // Use SSE for real-time updates
+  // SSE for real-time updates
   const { isConnected: isStreaming } = useSSE<TTSJobResponse>({
     url: sseUrl,
     enabled: sseEnabled,
     onMessage: (job) => {
-      console.log(`📨 SSE update received:`, {
-        jobId: job.id,
-        status: job.status,
-        progress: job.progress,
-        audioUrl: job.audio_url,
-        timestamp: new Date().toISOString(),
-      });
+      console.log("📨 SSE update:", job.status, job.progress);
       setTtsJob(job);
     },
-    onError: (error) => {
-      console.error("❌ SSE connection error:", error);
-      setTtsError("Real-time connection failed. Please check your connection and try again.");
+    onError: () => {
+      setTtsError("Real-time connection failed. Retrying...");
     },
-    shouldClose: (job) => {
-      const shouldClose = job.status === "completed" || job.status === "failed";
-      console.log(`🔌 SSE shouldClose check: ${shouldClose} (status: ${job.status})`);
-      return shouldClose;
-    },
+    shouldClose: (job) => job.status === "completed" || job.status === "failed",
   });
 
-  // Fallback polling when SSE is not connected and job is not complete
+  // Fallback polling
   useEffect(() => {
-    if (!ttsJob) return;
+    if (!ttsJob || isStreaming) return;
     if (ttsJob.status === "completed" || ttsJob.status === "failed") return;
-    if (isStreaming) {
-      console.log("⏭️ Skipping polling - SSE is active");
-      return;
-    }
 
-    console.log("🔄 Starting fallback polling for job", ttsJob.id);
     const pollInterval = setInterval(async () => {
       try {
-        console.log("🔄 Polling job status...");
         const updatedJob = await getTTSJob(String(ttsJob.id));
-        console.log("🔄 Poll result:", {
-          jobId: updatedJob.id,
-          status: updatedJob.status,
-          progress: updatedJob.progress,
-        });
         setTtsJob(updatedJob);
-
-        // Stop polling if job is complete
         if (updatedJob.status === "completed" || updatedJob.status === "failed") {
-          console.log("✅ Job complete, stopping polling");
           clearInterval(pollInterval);
         }
       } catch (error) {
-        console.error("❌ Polling error:", error);
+        console.error("Polling error:", error);
       }
-    }, 2000); // Poll every 2 seconds
+    }, 2000);
 
-    return () => {
-      console.log("🧹 Cleaning up polling interval");
-      clearInterval(pollInterval);
-    };
+    return () => clearInterval(pollInterval);
   }, [ttsJob?.id, ttsJob?.status, isStreaming]);
 
-  // Debug: Log when isStreaming changes
-  useEffect(() => {
-    console.log(`🔌 SSE streaming status:`, isStreaming);
-  }, [isStreaming]);
-
-  // Debug: Log when ttsJob changes
-  useEffect(() => {
-    if (ttsJob) {
-      console.log(`📋 TTS Job state updated:`, {
-        id: ttsJob.id,
-        status: ttsJob.status,
-        progress: ttsJob.progress,
-        shouldEnableSSE: ttsJob.status !== "completed" && ttsJob.status !== "failed",
-      });
-    }
-  }, [ttsJob]);
-
-  // Advance step when entering this page
+  // Advance step on page load
   useEffect(() => {
     if (projectId && state?.lastStep && state.lastStep !== "preview") {
       advanceProjectStep(projectId, "preview").catch(console.error);
     }
   }, [projectId, state?.lastStep]);
 
-  // Auto-create or reuse TTS job when page loads
-  // Backend handles smart matching based on voice_id + preview_text (first 2 sentences)
+  // Initialize TTS job - runs once when page loads or when active job changes
   useEffect(() => {
     if (!state || !activeScript || isLoading) return;
 
-    // Get current voice info - ALWAYS check localStorage first (most recent selection)
+    // Get voice info from state or localStorage
     let voiceId = state.voiceId;
     let voiceName = state.voiceName;
+    let voiceType = state.voiceType as "stock" | "custom" | undefined;
 
-    try {
-      const storedVoice = localStorage.getItem(`project_${projectId}_voice`);
-      if (storedVoice) {
-        const voice = JSON.parse(storedVoice);
-        // Use localStorage voice if it exists (overrides state)
-        if (voice.id) {
-          voiceId = voice.id;
-          voiceName = voice.name;
-          console.log("📦 Using voice from localStorage (recent selection):", {
-            voiceId,
-            voiceName,
-          });
+    // Fallback: Try to get voice info from localStorage if not in state
+    if (!voiceId || !voiceType) {
+      try {
+        const storedVoice = localStorage.getItem(`project_${projectId}_voice`);
+        if (storedVoice) {
+          const voice = JSON.parse(storedVoice);
+          if (voice.id && voice.type) {
+            voiceId = voice.id;
+            voiceName = voice.name;
+            voiceType = voice.type;
+            console.log("📦 Loaded voice from localStorage:", { voiceId, voiceName, voiceType });
+          }
         }
+      } catch (e) {
+        console.error("Failed to read voice from localStorage:", e);
       }
-    } catch (e) {
-      console.error("Failed to read voice from localStorage:", e);
     }
 
-    // No voice info available
-    if (!voiceId) {
-      console.warn("⚠️  No voice selected");
+    if (!voiceId || !voiceType) {
       setTtsError("No voice selected. Please go back to Step 4 and select a voice.");
       return;
     }
 
-    // Case 1: Active TTS job exists
-    if (state.activeTtsJobId) {
-      // Load the job if not yet loaded
-      if (!ttsJob || ttsJob.id !== state.activeTtsJobId) {
-        console.log("📥 Loading existing TTS job:", state.activeTtsJobId);
-        loadTTSJob(String(state.activeTtsJobId));
-        return;
-      }
+    // Convert both IDs to strings for comparison (voiceId might be bigint in DB)
+    const currentVoiceId = String(voiceId);
+    const loadedVoiceId = ttsJob?.voice_id ? String(ttsJob.voice_id) : null;
 
-      // Job loaded - check if voice has changed
-      if (ttsJob.voice_id !== voiceId) {
-        console.log("🔄 Voice changed, requesting new TTS job:", {
-          oldVoice: ttsJob.voice_id,
-          oldVoiceName: ttsJob.voice_name,
-          newVoice: voiceId,
-          newVoiceName: voiceName,
-        });
-        createNewTTSJob(voiceId, voiceName);
-        return;
-      }
-
-      // Voice matches, job loaded - we're done
-      console.log("✅ TTS job loaded and voice matches:", {
-        voiceId,
-        voiceName,
-        jobId: ttsJob.id,
-      });
+    // Check if voice has changed compared to loaded job
+    if (ttsJob && loadedVoiceId && loadedVoiceId !== currentVoiceId) {
+      console.log("🔄 Voice changed! Old:", loadedVoiceId, "New:", currentVoiceId);
+      console.log("Creating new TTS job for new voice");
+      createNewTTSJob(voiceId, voiceName, voiceType);
       return;
     }
 
-    // Case 2: No active TTS job - create/match one
-    console.log("🆕 No active TTS job, requesting one (backend will match or create):", {
-      voiceId,
-      voiceName,
-      scriptId: activeScript.id,
-    });
-    createNewTTSJob(voiceId, voiceName);
-  }, [state?.activeTtsJobId, state?.voiceId, activeScript?.id, isLoading, projectId, ttsJob]);
+    // If we already have a loaded job with the same voice, don't re-create
+    if (ttsJob && loadedVoiceId === currentVoiceId) {
+      console.log("✅ TTS job already loaded with correct voice, skipping initialization");
+      return;
+    }
 
-  // Cleanup audio on unmount
+    // Load existing job if we have an active TTS job ID
+    if (state.activeTtsJobId) {
+      console.log("📥 Loading existing TTS job:", state.activeTtsJobId);
+      loadTTSJob(String(state.activeTtsJobId));
+      return;
+    }
+
+    // Otherwise create a new job (backend will match or create)
+    console.log("🆕 No active TTS job, creating new one");
+    createNewTTSJob(voiceId, voiceName, voiceType);
+  }, [
+    state?.activeTtsJobId,
+    activeScript?.id,
+    isLoading,
+    projectId,
+    ttsJob?.voice_id,
+    state?.voiceId,
+  ]);
+
+  // Audio cleanup
   useEffect(() => {
     return () => {
       if (audioRef.current) {
@@ -221,58 +163,63 @@ export default function PreviewPage() {
     };
   }, []);
 
-  const createNewTTSJob = async (voiceId?: string, voiceName?: string) => {
-    if (!state || !activeScript) return;
+  const createNewTTSJob = async (
+    voiceId: string,
+    voiceName?: string,
+    voiceType?: "stock" | "custom"
+  ) => {
+    if (!state || !activeScript || isCreatingJobRef.current) return;
 
-    // Use provided voice info or fall back to state
-    const finalVoiceId = voiceId || state.voiceId;
-    const finalVoiceName = voiceName || state.voiceName;
-
-    if (!finalVoiceId) {
-      console.error("Cannot create TTS job: no voice ID");
-      setTtsError("No voice selected. Please go back and select a voice.");
+    if (!voiceId || !voiceType) {
+      setTtsError("Voice information is incomplete.");
       return;
     }
 
     try {
+      isCreatingJobRef.current = true;
       setTtsError(null);
-      console.log("Creating TTS job:", {
-        projectId: state.id,
-        scriptId: activeScript.id,
-        voiceId: finalVoiceId,
-        voiceName: finalVoiceName,
-      });
 
+      // Backend will check for existing TTS job with matching:
+      // - project_id
+      // - voice_id + voice_type
+      // - preview_text (first 2 sentences of script)
+      // If match found, reuses existing job (saves cost & time)
+      // Otherwise creates new job
       const job = await createTTSJob({
         projectId: String(state.id),
         scriptId: String(activeScript.id),
-        voiceId: finalVoiceId,
-        voiceName: finalVoiceName,
+        voiceId: voiceId,
+        voiceType: voiceType,
+        voiceName: voiceName,
         autoActivate: true,
       });
 
-      console.log("TTS job created:", job);
+      console.log("✅ TTS job created/matched:", job.id);
       setTtsJob(job);
 
-      // Refresh project to get updated activeTtsJobId
-      await refresh();
+      // Don't call refresh() here - it causes infinite loop
+      // The job status will be updated via SSE or polling
     } catch (error) {
       console.error("Failed to create TTS job:", error);
       setTtsError(error instanceof Error ? error.message : "Failed to create TTS job");
+    } finally {
+      isCreatingJobRef.current = false;
     }
   };
 
   const loadTTSJob = async (jobId: string) => {
+    if (isCreatingJobRef.current) return;
+
+    // Don't reload if we already have this job
+    if (ttsJob && String(ttsJob.id) === jobId) {
+      console.log("TTS job already loaded:", jobId);
+      return;
+    }
+
     try {
       console.log(`📥 Loading TTS job ${jobId}...`);
       const job = await getTTSJob(jobId);
-      console.log(`📥 Loaded TTS job ${jobId}:`, {
-        status: job.status,
-        progress: job.progress,
-        voiceId: job.voice_id,
-        voiceName: job.voice_name,
-        audioUrl: job.audio_url,
-      });
+      console.log(`✅ Loaded TTS job ${jobId}:`, job.status);
       setTtsJob(job);
     } catch (error) {
       console.error("Failed to load TTS job:", error);
@@ -280,14 +227,27 @@ export default function PreviewPage() {
     }
   };
 
-  // Get project name from flat state (projectName is the correct field)
+  const togglePlayPause = () => {
+    if (!audioRef.current) return;
+
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
+    setIsPlaying(!isPlaying);
+  };
+
   const projectName = useMemo(() => {
     return state?.projectName || state?.movieTitle || "Your Project";
   }, [state?.projectName, state?.movieTitle]);
 
-  // Show first sentence for the script preview card
+  const voiceName = useMemo(() => {
+    return ttsJob?.voice_name || state?.voiceName || "Selected Voice";
+  }, [ttsJob?.voice_name, state?.voiceName]);
+
   const previewText = useMemo(() => {
-    if (!activeScript?.content) return "This is a preview of your selected voice with the script.";
+    if (!activeScript?.content) return "Preview your script with the selected voice.";
     const sentences = activeScript.content.match(/[^.!?]+[.!?]+/g);
     if (!sentences || sentences.length === 0) {
       return activeScript.content.substring(0, 200);
@@ -295,32 +255,6 @@ export default function PreviewPage() {
     return sentences[0].trim();
   }, [activeScript]);
 
-  // Get voice name (priority: TTS job > localStorage > state)
-  const voiceName = useMemo(() => {
-    // If TTS job exists, use its voice name (most accurate)
-    if (ttsJob?.voice_name) {
-      return ttsJob.voice_name;
-    }
-
-    // Try localStorage (for newly selected voice not yet in TTS job)
-    // Only access localStorage on client side
-    if (typeof window !== "undefined") {
-      try {
-        const storedVoice = localStorage.getItem(`project_${projectId}_voice`);
-        if (storedVoice) {
-          const voice = JSON.parse(storedVoice);
-          if (voice.name) return voice.name;
-        }
-      } catch (e) {
-        console.error("Failed to read voice name from localStorage:", e);
-      }
-    }
-
-    // Fallback to state
-    return state?.voiceName || state?.voice?.name || "Selected Voice";
-  }, [ttsJob?.voice_name, state?.voiceName, state?.voice, projectId]);
-
-  // Determine if we can proceed to next step
   const canProceed = ttsJob?.status === "completed" && !!ttsJob.audio_url;
 
   if (isLoading) {
@@ -330,7 +264,7 @@ export default function PreviewPage() {
   return (
     <>
       <div className="flex flex-col gap-6 pb-24">
-        {/* Page header */}
+        {/* Page Header */}
         <div>
           <h2 className="text-xl font-semibold text-text-primary">Voice Preview</h2>
           <p className="mt-1 text-sm text-text-muted">
@@ -338,146 +272,182 @@ export default function PreviewPage() {
           </p>
         </div>
 
-        {/* TTS Audio Generation & Playback - Priority #1 (first viewport) */}
+        {/* Audio Player Card */}
         <Card variant="elevated" padding="lg">
-          <div className="flex flex-col items-center gap-4 text-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent-cyan/10">
+          <div className="flex flex-col items-center gap-6">
+            {/* Status Icon */}
+            <div
+              className={`flex h-20 w-20 items-center justify-center rounded-full ${
+                ttsJob?.status === "processing" || isStreaming
+                  ? "bg-accent-cyan/10"
+                  : ttsJob?.status === "failed"
+                    ? "bg-status-failed/10"
+                    : ttsJob?.status === "completed"
+                      ? "bg-status-success/10"
+                      : "bg-surface-panel"
+              }`}
+            >
               {ttsJob?.status === "processing" || isStreaming ? (
-                <Loader2 className="h-10 w-10 text-accent-cyan animate-spin" />
+                <Loader2 className="h-12 w-12 text-accent-cyan animate-spin" />
               ) : ttsJob?.status === "failed" ? (
-                <AlertCircle className="h-10 w-10 text-status-failed" />
+                <AlertCircle className="h-12 w-12 text-status-failed" />
+              ) : ttsJob?.status === "completed" ? (
+                <Volume2 className="h-12 w-12 text-status-success" />
               ) : (
-                <Mic2 className="h-10 w-10 text-accent-cyan" />
+                <Mic2 className="h-12 w-12 text-text-muted" />
               )}
             </div>
 
-            <div>
-              <h3 className="text-lg font-semibold text-text-primary">Audio Preview</h3>
-              {!ttsJob && !ttsError && (
-                <p className="mt-1 text-sm text-text-muted max-w-md mx-auto">
-                  Creating TTS audio job...
-                </p>
-              )}
-              {ttsJob?.status === "queued" && (
-                <p className="mt-1 text-sm text-text-muted max-w-md mx-auto">
-                  Your audio is queued for generation...
-                </p>
-              )}
-              {ttsJob?.status === "processing" && (
-                <p className="mt-1 text-sm text-text-muted max-w-md mx-auto">
-                  Generating audio with {voiceName}... {ttsJob.progress}%
-                </p>
-              )}
-              {ttsJob?.status === "completed" && ttsJob.audio_url && (
-                <div className="mt-4 w-full max-w-md mx-auto space-y-3">
-                  <p className="text-sm text-status-success">✓ Audio generation complete!</p>
+            {/* Status Text */}
+            <div className="text-center max-w-lg">
+              <h3 className="text-lg font-semibold text-text-primary">
+                {!ttsJob && !ttsError && "Initializing..."}
+                {ttsJob?.status === "queued" && "Queued for Generation"}
+                {ttsJob?.status === "processing" && `Generating Audio (${ttsJob.progress}%)`}
+                {ttsJob?.status === "completed" && "Audio Ready"}
+                {ttsJob?.status === "failed" && "Generation Failed"}
+              </h3>
+
+              <p className="mt-2 text-sm text-text-muted">
+                {!ttsJob && !ttsError && "Setting up your audio preview..."}
+                {ttsJob?.status === "queued" && "Your request is in the queue"}
+                {ttsJob?.status === "processing" && `Using ${voiceName}`}
+                {ttsJob?.status === "completed" && <>Click play to listen • Job #{ttsJob.id}</>}
+                {ttsJob?.status === "failed" && ttsJob.error_message}
+                {ttsError && !ttsJob && ttsError}
+              </p>
+            </div>
+
+            {/* Audio Player */}
+            {ttsJob?.status === "completed" && ttsJob.audio_url && (
+              <div className="w-full max-w-2xl space-y-4">
+                <div className="rounded-lg bg-surface-panel p-6 border border-border-default">
                   <audio
                     ref={audioRef}
-                    controls
                     src={ttsJob.audio_url}
+                    onPlay={() => setIsPlaying(true)}
+                    onPause={() => setIsPlaying(false)}
+                    onEnded={() => setIsPlaying(false)}
                     className="w-full"
                     preload="metadata"
-                  >
-                    Your browser does not support the audio element.
-                  </audio>
-                  {ttsJob.audio_duration && (
-                    <p className="text-xs text-text-muted">
+                    controls
+                  />
+                </div>
+
+                {ttsJob.audio_duration && (
+                  <div className="flex items-center justify-center gap-2 text-xs text-text-muted">
+                    <Volume2 className="h-4 w-4" />
+                    <span>
                       Duration: {Math.floor(ttsJob.audio_duration / 60)}:
                       {Math.round(ttsJob.audio_duration % 60)
                         .toString()
                         .padStart(2, "0")}
-                    </p>
-                  )}
-                </div>
-              )}
-              {ttsJob?.status === "failed" && (
-                <div className="mt-4 space-y-3">
-                  <p className="text-sm text-status-failed max-w-md mx-auto">
-                    Failed to generate audio: {ttsJob.error_message || "Unknown error"}
-                  </p>
-                  <Button
-                    variant="primary"
-                    size="md"
-                    onClick={() => {
-                      // Get voice info from localStorage or state
-                      let voiceId = state?.voiceId;
-                      let voiceName = state?.voiceName;
-                      try {
-                        const storedVoice = localStorage.getItem(`project_${projectId}_voice`);
-                        if (storedVoice) {
-                          const voice = JSON.parse(storedVoice);
-                          if (voice.id) {
-                            voiceId = voice.id;
-                            voiceName = voice.name;
-                          }
-                        }
-                      } catch (e) {
-                        console.error("Failed to read voice from localStorage:", e);
-                      }
-                      createNewTTSJob(voiceId, voiceName);
-                    }}
-                  >
-                    Retry Generation
-                  </Button>
-                </div>
-              )}
-              {ttsError && !ttsJob && (
-                <p className="mt-1 text-sm text-status-failed max-w-md mx-auto">{ttsError}</p>
-              )}
-            </div>
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
 
+            {/* Retry Button */}
+            {ttsJob?.status === "failed" && (
+              <Button
+                variant="primary"
+                size="md"
+                onClick={() => {
+                  let voiceId = state?.voiceId;
+                  let voiceName = state?.voiceName;
+                  let voiceType = state?.voiceType as "stock" | "custom" | undefined;
+
+                  // Fallback to localStorage
+                  if (!voiceId || !voiceType) {
+                    try {
+                      const storedVoice = localStorage.getItem(`project_${projectId}_voice`);
+                      if (storedVoice) {
+                        const voice = JSON.parse(storedVoice);
+                        if (voice.id && voice.type) {
+                          voiceId = voice.id;
+                          voiceName = voice.name;
+                          voiceType = voice.type;
+                        }
+                      }
+                    } catch (e) {
+                      console.error("Failed to read voice from localStorage:", e);
+                    }
+                  }
+
+                  if (voiceId && voiceType) {
+                    createNewTTSJob(voiceId, voiceName, voiceType);
+                  }
+                }}
+              >
+                Retry Generation
+              </Button>
+            )}
+
+            {/* Job Info */}
             {ttsJob && (
-              <div className="w-full max-w-sm rounded-lg border border-dashed border-border-default bg-surface-panel p-4">
-                <div className="flex items-center justify-between text-xs text-text-muted mb-2">
-                  <span>Voice:</span>
-                  <span className="font-medium text-text-secondary">{voiceName}</span>
-                </div>
-                <div className="flex items-center justify-between text-xs text-text-muted mb-2">
-                  <span>Status:</span>
-                  <span
-                    className={`font-medium ${
-                      ttsJob.status === "completed"
-                        ? "text-status-success"
-                        : ttsJob.status === "failed"
-                          ? "text-status-failed"
-                          : "text-text-secondary"
-                    }`}
-                  >
-                    {ttsJob.status}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-xs text-text-muted">
-                  <span>Job ID:</span>
-                  <span className="font-mono font-medium text-text-secondary">{ttsJob.id}</span>
+              <div className="w-full max-w-md rounded-lg border border-dashed border-border-default bg-surface-panel p-4">
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between items-center">
+                    <span className="text-text-muted">Job ID:</span>
+                    <span className="font-mono font-medium text-text-secondary">#{ttsJob.id}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-text-muted">Voice:</span>
+                    <span className="font-medium text-text-secondary truncate ml-2">
+                      {voiceName}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-text-muted">Status:</span>
+                    <span
+                      className={`font-medium ${
+                        ttsJob.status === "completed"
+                          ? "text-status-success"
+                          : ttsJob.status === "failed"
+                            ? "text-status-failed"
+                            : "text-accent-cyan"
+                      }`}
+                    >
+                      {ttsJob.status}
+                    </span>
+                  </div>
+                  {ttsJob.status === "completed" && ttsJob.audio_url && (
+                    <div className="pt-2 mt-2 border-t border-border-default">
+                      <p className="text-text-muted text-center">
+                        ✓ Backend cached and reused this job
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
           </div>
         </Card>
 
-        {/* Project info card - Priority #2 */}
+        {/* Project Summary Card */}
         <Card variant="elevated" padding="md">
           <h3 className="text-sm font-medium text-text-secondary uppercase tracking-wide mb-3">
             Project Summary
           </h3>
           <div className="flex items-start gap-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-purple-muted">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-purple/10">
               <CheckCircle className="h-5 w-5 text-accent-purple" />
             </div>
-            <div className="flex-1">
-              <h4 className="font-medium text-text-primary">{projectName}</h4>
+            <div className="flex-1 min-w-0">
+              <h4 className="font-medium text-text-primary truncate">{projectName}</h4>
               <p className="mt-1 text-sm text-text-muted">Voice: {voiceName}</p>
               {activeScript && (
                 <p className="mt-1 text-xs text-text-muted">
                   {activeScript.wordCount} words • {Math.floor(activeScript.duration / 60)}:
-                  {(activeScript.duration % 60).toString().padStart(2, "0")} estimated duration
+                  {(activeScript.duration % 60).toString().padStart(2, "0")} estimated
                 </p>
               )}
             </div>
           </div>
         </Card>
 
-        {/* Script preview card - Priority #3 */}
+        {/* Script Preview Card */}
         <Card
           variant="elevated"
           padding="lg"
@@ -489,8 +459,8 @@ export default function PreviewPage() {
               <FileText className="h-5 w-5 text-accent-cyan" />
               <h3 className="text-lg font-medium text-text-primary">Full Script</h3>
             </div>
-            <span className="text-xs font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0 group-hover:text-accent-cyan-hover">
-              Click to expand <ChevronDown className="h-3 w-3" />
+            <span className="text-xs font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0 group-hover:text-accent-cyan-hover transition-colors">
+              View all <ChevronDown className="h-3 w-3" />
             </span>
           </div>
 
@@ -501,7 +471,7 @@ export default function PreviewPage() {
           </div>
 
           <p className="mt-3 text-xs text-text-muted">
-            First sentence from your script • Click card to view full script
+            First sentence preview • Click to view the complete script
           </p>
         </Card>
       </div>
