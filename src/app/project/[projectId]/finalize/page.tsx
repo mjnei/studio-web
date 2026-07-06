@@ -13,12 +13,15 @@ import {
   CheckCircle,
   FileText,
   ChevronDown,
+  ChevronRight,
   Download,
   Share2,
   Video,
   Trash2,
   Clock,
   Loader2,
+  RefreshCw,
+  Info,
 } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
 import {
@@ -48,6 +51,7 @@ export default function FinalizePage() {
   const [showInsufficientCreditsModal, setShowInsufficientCreditsModal] = useState(false);
   const [isRegenerating, setIsRegenerating] = useState(false);
   const [processingVideoJob, setProcessingVideoJob] = useState<VideoJobResponse | null>(null);
+  const [showProjectSummary, setShowProjectSummary] = useState(false);
 
   React.useEffect(() => {
     if (projectId) {
@@ -192,11 +196,31 @@ export default function FinalizePage() {
   return (
     <>
       <div className="flex flex-col gap-6 pb-24">
-        <div>
-          <h2 className="text-xl font-semibold text-text-primary">Finalize Project</h2>
-          <p className="mt-1 text-sm text-text-muted">
-            Review your completed videos, download, or generate new variations
-          </p>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h2 className="text-xl font-semibold text-text-primary">Finalize Project</h2>
+            <p className="mt-1 text-sm text-text-muted">
+              Review your videos and manage your project
+            </p>
+          </div>
+
+          {/* Quick Actions - Tooltip Info */}
+          <div className="group relative">
+            <button
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-surface-raised border border-border-default hover:border-accent-cyan/50 transition-all"
+              title="Project Info"
+            >
+              <Info className="h-4 w-4 text-text-muted group-hover:text-accent-cyan" />
+            </button>
+            <div className="absolute right-0 top-10 z-10 hidden group-hover:block w-64 p-3 rounded-lg bg-surface-raised border border-border-default shadow-lg text-xs">
+              <p className="font-medium text-text-secondary mb-2">Quick Info:</p>
+              <div className="space-y-1 text-text-muted">
+                <p>• Each video generation costs 1 credit</p>
+                <p>• Credits remaining: {creditStatus?.credits_remaining ?? "—"}</p>
+                <p>• Regenerate videos anytime below</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Section A: Current Video Hero */}
@@ -241,25 +265,31 @@ export default function FinalizePage() {
                 )}
               </div>
 
-              {/* Video Metadata */}
-              <div className="mt-4 grid gap-3 sm:grid-cols-3 text-xs text-text-muted">
-                <div>
-                  <span className="font-medium text-text-secondary">Generated:</span>{" "}
-                  {new Date(latestVideo.created_at).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
+              {/* Video Metadata - Collapsed by default */}
+              <details className="mt-4 group">
+                <summary className="flex items-center gap-2 cursor-pointer text-xs text-text-muted hover:text-accent-cyan transition-colors select-none">
+                  <ChevronRight className="h-3 w-3 group-open:rotate-90 transition-transform" />
+                  <span>View details</span>
+                </summary>
+                <div className="mt-3 grid gap-3 sm:grid-cols-3 text-xs text-text-muted pl-5">
+                  <div>
+                    <span className="font-medium text-text-secondary">Generated:</span>{" "}
+                    {new Date(latestVideo.created_at).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                  </div>
+                  <div>
+                    <span className="font-medium text-text-secondary">Cost:</span>{" "}
+                    {latestVideo.credit_cost} credit{latestVideo.credit_cost !== 1 ? "s" : ""}
+                  </div>
+                  <div>
+                    <span className="font-medium text-text-secondary">Attempt:</span> #
+                    {latestVideo.generation_attempt}
+                  </div>
                 </div>
-                <div>
-                  <span className="font-medium text-text-secondary">Cost:</span>{" "}
-                  {latestVideo.credit_cost} credit{latestVideo.credit_cost !== 1 ? "s" : ""}
-                </div>
-                <div>
-                  <span className="font-medium text-text-secondary">Attempt:</span> #
-                  {latestVideo.generation_attempt}
-                </div>
-              </div>
+              </details>
 
               {/* Actions */}
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -384,9 +414,49 @@ export default function FinalizePage() {
           </Card>
         )}
 
-        {/* Section B: Video History */}
+        {/* Section B: Video History with Regeneration */}
         <Card variant="elevated" padding="md">
-          <h3 className="text-sm font-medium text-text-primary mb-4">Video History</h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-sm font-medium text-text-primary">Video History</h3>
+            
+            {/* Inline Regeneration Button - Only show if we have at least one video */}
+            {videos && videos.length > 0 && (
+              <div className="flex items-center gap-2">
+                {creditStatus && (
+                  <div className="text-xs text-text-muted">
+                    {creditStatus.credits_remaining} credit{creditStatus.credits_remaining !== 1 ? "s" : ""}
+                  </div>
+                )}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  leftIcon={
+                    isRegenerating ? (
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    ) : (
+                      <RefreshCw className="h-3.5 w-3.5" />
+                    )
+                  }
+                  onClick={handleRegenerate}
+                  disabled={
+                    isRegenerating ||
+                    !state?.thumbnailConfirmed ||
+                    (!!creditStatus && creditStatus.credits_remaining < 1)
+                  }
+                  title={
+                    !state?.thumbnailConfirmed
+                      ? "Complete compose step first"
+                      : creditStatus && creditStatus.credits_remaining < 1
+                        ? "Insufficient credits"
+                        : "Generate a new video variation (1 credit)"
+                  }
+                >
+                  {isRegenerating ? "Generating..." : "Regenerate"}
+                </Button>
+              </div>
+            )}
+          </div>
+
           {!videos || videos.length === 0 ? (
             <div className="py-8 text-center text-sm text-text-muted">
               <Clock className="h-10 w-10 mx-auto mb-3 text-text-muted opacity-50" />
@@ -397,10 +467,10 @@ export default function FinalizePage() {
               {videos.map((video, index) => (
                 <div
                   key={video.id}
-                  className="flex items-start gap-4 p-4 rounded-lg bg-surface-raised border border-border-default"
+                  className="flex items-start gap-4 p-4 rounded-lg bg-surface-raised border border-border-default hover:border-accent-cyan/30 transition-all group"
                 >
                   {/* Thumbnail */}
-                  <div className="w-32 aspect-video rounded overflow-hidden bg-surface-base flex-shrink-0">
+                  <div className="w-24 sm:w-32 aspect-video rounded overflow-hidden bg-surface-base flex-shrink-0">
                     {video.thumbnail_url ? (
                       <img
                         src={video.thumbnail_url}
@@ -425,7 +495,6 @@ export default function FinalizePage() {
                           {new Date(video.created_at).toLocaleDateString("en-US", {
                             month: "short",
                             day: "numeric",
-                            year: "numeric",
                             hour: "numeric",
                             minute: "2-digit",
                           })}
@@ -449,28 +518,36 @@ export default function FinalizePage() {
                       </div>
                     </div>
 
-                    <div className="text-xs text-text-muted space-y-1">
-                      <p>Voice: {video.voice_name || "N/A"}</p>
-                      <p>Credit cost: {video.credit_cost}</p>
-                    </div>
+                    {/* Collapsed metadata */}
+                    <details className="text-xs text-text-muted group/details">
+                      <summary className="cursor-pointer hover:text-accent-cyan transition-colors select-none flex items-center gap-1">
+                        <ChevronRight className="h-3 w-3 group-open/details:rotate-90 transition-transform" />
+                        <span>Details</span>
+                      </summary>
+                      <div className="mt-2 pl-4 space-y-1">
+                        <p>Voice: {video.voice_name || "N/A"}</p>
+                        <p>Credit cost: {video.credit_cost}</p>
+                      </div>
+                    </details>
 
                     {video.error_message && (
                       <p className="mt-2 text-xs text-error-text">{video.error_message}</p>
                     )}
 
                     {/* Actions */}
-                    <div className="mt-3 flex gap-2">
+                    <div className="mt-3 flex gap-3">
                       {video.status === "completed" && video.video_url && (
                         <button
                           onClick={() => window.open(video.video_url!, "_blank")}
-                          className="text-xs text-accent-cyan hover:text-accent-cyan-hover underline"
+                          className="text-xs text-accent-cyan hover:text-accent-cyan-hover font-medium flex items-center gap-1"
                         >
+                          <Download className="h-3 w-3" />
                           Download
                         </button>
                       )}
                       <button
                         onClick={() => handleDeleteVideo(video.id)}
-                        className="text-xs text-error-text hover:text-error-text-hover underline flex items-center gap-1"
+                        className="text-xs text-text-muted hover:text-error-text font-medium flex items-center gap-1 transition-colors"
                       >
                         <Trash2 className="h-3 w-3" />
                         Delete
@@ -483,90 +560,54 @@ export default function FinalizePage() {
           )}
         </Card>
 
-        {/* Section C: Regeneration Form */}
-        <Card variant="elevated" padding="md">
-          <h3 className="text-sm font-medium text-text-primary mb-4">Generate New Video</h3>
-          <p className="text-sm text-text-muted mb-4">
-            Create a new version of your video with the current project settings (script, voice, and
-            thumbnail).
-          </p>
-
-          {/* Credit Cost */}
-          {creditStatus && (
-            <div className="mb-4 flex justify-start">
-              <CreditUsageIndicator cost={1} remainingCredits={creditStatus.credits_remaining} />
-            </div>
-          )}
-
-          {/* Current Settings Preview */}
-          <div className="mb-4 p-4 rounded-lg bg-surface-raised border border-border-default space-y-2 text-xs">
-            <h4 className="font-medium text-text-secondary mb-2">Current Settings:</h4>
-            <p className="text-text-muted">
-              Script: <span className="font-medium text-text-primary">{wordCount} words</span>
-            </p>
-            <p className="text-text-muted">
-              Voice:{" "}
-              <span className="font-medium text-text-primary">
-                {state?.voiceName || "Not selected"}
-              </span>
-            </p>
-            <p className="text-text-muted">
-              Thumbnail:{" "}
-              <span className="font-medium text-text-primary">
-                {state?.thumbnailConfirmed ? "✓ Confirmed" : "Not confirmed"}
-              </span>
-            </p>
+        {/* Project Summary - Collapsible */}
+        <Card
+          variant="elevated"
+          padding="md"
+          className="cursor-pointer hover:border-accent-cyan/30 transition-all"
+          onClick={() => setShowProjectSummary(!showProjectSummary)}
+        >
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-medium text-text-primary">Project Summary</h3>
+            <ChevronRight
+              className={`h-4 w-4 text-text-muted transition-transform ${
+                showProjectSummary ? "rotate-90" : ""
+              }`}
+            />
           </div>
 
-          <Button
-            variant="primary"
-            size="lg"
-            leftIcon={
-              isRegenerating ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Video className="h-4 w-4" />
-              )
-            }
-            onClick={handleRegenerate}
-            disabled={
-              isRegenerating ||
-              !state?.thumbnailConfirmed ||
-              (!!creditStatus && creditStatus.credits_remaining < 1)
-            }
-            className="w-full"
-          >
-            {isRegenerating ? "Generating..." : "Generate New Video"}
-          </Button>
-
-          {!state?.thumbnailConfirmed && (
-            <p className="mt-2 text-xs text-warning-text text-center">
-              Please complete the compose step before generating videos
-            </p>
+          {showProjectSummary && (
+            <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
+                  Title
+                </p>
+                <p className="mt-1 text-sm text-text-primary">
+                  {state?.title || "Untitled Project"}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
+                  Movie
+                </p>
+                <p className="mt-1 text-sm text-text-primary">{state?.movieTitle || "Unknown"}</p>
+              </div>
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
+                  Voice
+                </p>
+                <p className="mt-1 text-sm text-text-primary">
+                  {state?.voiceName || "Not selected"}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
+                  Script
+                </p>
+                <p className="mt-1 text-sm text-text-primary">{wordCount} words</p>
+              </div>
+            </div>
           )}
-        </Card>
-
-        {/* Project Summary & Script Preview */}
-        <Card variant="elevated" padding="md">
-          <h3 className="text-sm font-medium text-text-primary mb-4">Project Summary</h3>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <div>
-              <p className="text-xs font-medium uppercase tracking-wide text-text-muted">Title</p>
-              <p className="mt-1 text-sm text-text-primary">{state?.title || "Untitled Project"}</p>
-            </div>
-            <div>
-              <p className="text-xs font-medium uppercase tracking-wide text-text-muted">Movie</p>
-              <p className="mt-1 text-sm text-text-primary">{state?.movieTitle || "Unknown"}</p>
-            </div>
-            <div>
-              <p className="text-xs font-medium uppercase tracking-wide text-text-muted">Voice</p>
-              <p className="mt-1 text-sm text-text-primary">{state?.voiceName || "Not selected"}</p>
-            </div>
-            <div>
-              <p className="text-xs font-medium uppercase tracking-wide text-text-muted">Script</p>
-              <p className="mt-1 text-sm text-text-primary">{wordCount} words</p>
-            </div>
-          </div>
         </Card>
 
         {/* Script preview card */}

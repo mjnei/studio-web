@@ -257,7 +257,7 @@ Generate video (if not yet generated), review completed videos, browse generatio
   - Finalized thumbnail as poster image
   - Download button
   - Publish button (coming soon)
-- Video metadata: date, cost, attempt #
+- Video metadata in collapsible details section: date, cost, attempt #
 
 **Video Generation Steps:**
 When user clicks "Generate Video", 4 automatic steps are created:
@@ -270,31 +270,40 @@ Each step tracks progress (0-100%) and status (queued → processing → complet
 
 **Display Sections (Top to Bottom):**
 
-1. **Primary Action Area** (changes based on state)
+1. **Header with Info Tooltip**
+   - Page title and description
+   - Info icon (hover) showing:
+     - Credit cost per video
+     - Remaining credits
+     - Quick usage tips
+
+2. **Primary Action Area** (changes based on state)
    - See A, B, or C above
 
-2. **Video Generation History** (always shown)
+3. **Video History with Inline Regeneration**
+   - Header with "Regenerate" button (appears when history exists)
+   - Shows remaining credits in header
+   - Regenerate button (small, inline) - Creates new video attempt with same settings
    - List of all videos (completed, processing, failed)
    - For each video:
-     - Thumbnail preview (16:9 aspect)
+     - Thumbnail preview (smaller on mobile, 16:9 aspect)
      - Video # and generation date/time
      - Status badge (completed/processing/failed)
-     - Cost in credits and attempt number
-     - Error message (if failed)
-     - Download button (if completed)
-     - Delete button (all statuses)
+     - Collapsible details section:
+       - Voice name
+       - Credit cost
+       - Error message (if failed)
+     - Action buttons:
+       - Download (if completed)
+       - Delete (all statuses)
    - Most recent first
    - Empty state if no history
+   - Hover effects for better interactivity
 
-3. **Generate Additional Videos** (only if at least one video exists)
-   - Credit usage indicator (1 credit required)
-   - Current settings preview: script length, voice, thumbnail confirmation
-   - "Generate New Video" button (disabled if insufficient credits or thumbnail not confirmed)
-   - Regenerates with same script, voice, and thumbnail
-   - Creates new VideoJob with incremented attempt number
-
-4. **Project Summary Card**
+4. **Project Summary** (collapsible)
+   - Click to expand/collapse
    - Grid showing: Title, Movie, Voice, Script (word count)
+   - Chevron icon indicates expand/collapse state
    - Quick reference for project details
 
 5. **Full Script Preview Card** (expandable)
@@ -304,6 +313,15 @@ Each step tracks progress (0-100%) and status (queued → processing → complet
 
 6. **Return to Projects Button**
    - Navigate back to projects dashboard
+
+**Simplified UX Changes:**
+- ✅ Removed separate "Generate New Video" section
+- ✅ Regeneration button now inline in Video History header
+- ✅ Video metadata collapsed by default (expandable with chevron)
+- ✅ Project Summary collapsed by default (click to expand)
+- ✅ Info tooltip in header for quick guidance
+- ✅ Cleaner, more focused layout
+- ✅ Less visual clutter - priority on viewing videos
 
 **Video History Data:**
 Each video in history shows:
@@ -610,7 +628,7 @@ Response: {
   "total": 3
 }
 
-# Get user credit status
+# Get user credit status (displayed in header)
 GET /api/v1/users/me/credits
 Response: {
   "credits_remaining": 15,
@@ -618,7 +636,8 @@ Response: {
   ...
 }
 
-# Regenerate video (creates new attempt)
+# Regenerate video (inline button in Video History header)
+# Creates new attempt with same script, voice, and thumbnail
 POST /api/v1/projects/{project_id}/regenerate-video
 Response: {
   "id": "job-790",
