@@ -294,7 +294,7 @@ export async function adminBulkImportVoices(
 }
 
 // ============================================================================
-// Admin Voice Recording Management
+// Admin Voice Recording Management (User Voices)
 // ============================================================================
 
 export async function adminGetVoiceRecordings(): Promise<any[]> {
@@ -336,4 +336,44 @@ export async function getAdminVoiceAudioUrl(voiceId: string): Promise<{
     audio_url: string;
     expires_in: number | null;
   }>(`/admin/voices/${voiceId}/audio`);
+}
+
+// ============================================================================
+// Admin Voice Approval (Community Sharing)
+// ============================================================================
+
+import type { VoiceWithCreator } from "@/lib/types/api";
+
+/**
+ * Get voices shared by users awaiting admin approval.
+ */
+export async function adminGetPendingVoices(): Promise<VoiceWithCreator[]> {
+  return request<VoiceWithCreator[]>("/admin/voices/pending");
+}
+
+/**
+ * Get voices already approved by admin for public catalog.
+ */
+export async function adminGetApprovedVoices(): Promise<VoiceWithCreator[]> {
+  return request<VoiceWithCreator[]>("/admin/voices/approved");
+}
+
+/**
+ * Approve a shared voice for public catalog.
+ */
+export async function adminApproveVoice(voiceId: number): Promise<VoiceResponse> {
+  return request<VoiceResponse>(`/admin/voices/${voiceId}/approve`, {
+    method: "PATCH",
+    body: JSON.stringify({ is_approved: true }),
+  });
+}
+
+/**
+ * Unapprove a voice (revoke public access).
+ */
+export async function adminUnapproveVoice(voiceId: number): Promise<VoiceResponse> {
+  return request<VoiceResponse>(`/admin/voices/${voiceId}/unapprove`, {
+    method: "PATCH",
+    body: JSON.stringify({ is_approved: false }),
+  });
 }

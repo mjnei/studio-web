@@ -1,20 +1,24 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Trash2, Play, Pause } from "lucide-react";
+import { Trash2, Play, Pause, Share2, Lock } from "lucide-react";
 import { VoiceRecordingResponse } from "@/lib/types/api";
 import { Button } from "@/components/ui/button";
 import { ConfirmModal, AlertModal } from "@/components/ui/modal";
+import { toggleVoiceSharing } from "@/lib/api/voice-recording-client";
 
 interface VoiceRecordingCardProps {
   recording: VoiceRecordingResponse;
   onDelete: (id: string) => void;
+  onSharingToggled?: (id: number, isShared: boolean) => void;
 }
 
-export function VoiceRecordingCard({ recording, onDelete }: VoiceRecordingCardProps) {
+export function VoiceRecordingCard({ recording, onDelete, onSharingToggled }: VoiceRecordingCardProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isTogglingSharing, setIsTogglingSharing] = useState(false);
+  const [isShared, setIsShared] = useState((recording as any).is_shared || false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [audioErrorAlert, setAudioErrorAlert] = useState<{ open: boolean; message: string }>({
     open: false,
@@ -29,11 +33,28 @@ export function VoiceRecordingCard({ recording, onDelete }: VoiceRecordingCardPr
   const handleConfirmDelete = async () => {
     setIsDeleting(true);
     try {
-      await onDelete(recording.id);
+      await onDelete(recording.id.toString());
       setDeleteConfirmOpen(false);
     } catch (error) {
       setAudioErrorAlert({ open: true, message: "Failed to delete recording" });
       setIsDeleting(false);
+    }
+  };
+
+  const handleToggleSharing = async () => {
+    setIsTogglingSharing(true);
+    try {
+      await toggleVoiceSharing(recording.id, !isShared);
+      setIsShared(!isShared);
+      onSharingToggled?.(recording.id, !isShared);
+    } catch (error: any) {
+      console.error("Failed to toggle sharing:", error);
+      setAudioErrorAlert({ 
+        open: true, 
+        message: error.message || "Failed to update sharing status" 
+      });
+    } finally {
+      setIsTogglingSharing(false);
     }
   };
 
@@ -116,10 +137,31 @@ export function VoiceRecordingCard({ recording, onDelete }: VoiceRecordingCardPr
   };
 
   return (
-    <div className="rounded-lg border border-border-default bg-surface-panel p-4 hover:border-border-hover transition-colors">
+    <div className="rounded-xl border border-border-default bg-surface-panel p-5 hover:border-border-hover hover:shadow-md transition-all">
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex-1 min-w-0">
-          <h3 className="font-medium text-text-primary truncate">{recording.title}</h3>
+          <div className="flex items-center gap-2 mb-1">
+            <h3 className="font-semibold text-text-primary truncate">{recording.title}</h3>
+            <span
+              className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold ${
+                isShared
+                  ? "bg-green-500/10 text-green-600 border border-green-500/30"
+                  : "bg-gray-500/10 text-gray-600 border border-gray-500/30"
+              }`}
+            >
+              {isShared ? (
+                <>
+                  <Share2 className="h-3 w-3" />
+                  Shared
+                </>
+              ) : (
+                <>
+                  <Lock className="h-3 w-3" />
+                  Private
+                </>
+              )}
+            </span>
+          </div>
           {recording.description && (
             <p className="text-sm text-text-muted mt-1 line-clamp-2">{recording.description}</p>
           )}
@@ -134,35 +176,56 @@ export function VoiceRecordingCard({ recording, onDelete }: VoiceRecordingCardPr
         </button>
       </div>
 
-      <div className="flex items-center justify-between text-xs text-text-muted mb-3">
+      <div className="flex items-center justify-between text-xs text-text-muted mb-4">
         <span>{formatDate(recording.created_at)}</span>
         <span>{formatDuration(recording.duration_seconds)}</span>
       </div>
 
-      <Button
-        variant="secondary"
-        size="sm"
-        className="w-full"
-        onClick={togglePlayback}
-        disabled={isLoading}
-      >
-        {isLoading ? (
-          <>
-            <div className="mr-1 h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
-            Loading...
-          </>
-        ) : isPlaying ? (
-          <>
-            <Pause size={14} className="mr-1" />
-            Pause
-          </>
-        ) : (
-          <>
-            <Play size={14} className="mr-1" />
-            Play
-          </>
-        )}
-      </Button>
+      <div className="flex gap-2">
+        <Button
+          variant="secondary"
+          size="sm"
+          className="flex-1"
+          onClick={togglePlayback}
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <>
+              <div className="mr-1 h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
+              Loading...
+            </>
+          ) : isPlaying ? (
+            <>
+              <Pause size={14} className="mr-1" />
+              Pause
+            </>
+          ) : (
+            <>
+              <Play size={14} className="mr-1" />
+              Play
+            </>
+          )}
+        </Button>
+
+        <button
+          onClick={handleToggleSharing}
+          disabled={isTogglingSharing}
+          className={`flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-all ${
+            isShared
+              ? "border border-orange-500/50 bg-orange-500/10 text-orange-600 hover:bg-orange-500/20"
+              : "border border-green-500/50 bg-green-500/10 text-green-600 hover:bg-green-500/20"
+          } disabled:opacity-50`}
+          title={isShared ? "Stop sharing (make private)" : "Share with community"}
+        >
+          {isTogglingSharing ? (
+            <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+          ) : isShared ? (
+            <Lock size={14} />
+          ) : (
+            <Share2 size={14} />
+          )}
+        </button>
+      </div>
 
       {/* Delete Confirmation Modal */}
       <ConfirmModal

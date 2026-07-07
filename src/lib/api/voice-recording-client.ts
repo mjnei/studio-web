@@ -106,3 +106,17 @@ export async function getVoiceRecordingAudioUrl(id: number): Promise<{
     storage_type: "s3" | "local";
   }>(`/recordings/${id}/audio-url`);
 }
+
+/**
+ * Toggle voice sharing status (user-controlled).
+ * When is_shared is true, voice becomes available for admin approval.
+ */
+export async function toggleVoiceSharing(
+  id: number,
+  isShared: boolean
+): Promise<VoiceRecordingResponse> {
+  return request<VoiceRecordingResponse>(`/voice-recordings/${id}/share`, {
+    method: "PATCH",
+    body: JSON.stringify({ is_shared: isShared }),
+  });
+}

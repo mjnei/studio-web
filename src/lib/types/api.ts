@@ -86,40 +86,61 @@ export interface MovieListResponse {
 // Voice Types
 // ============================================================================
 
+/**
+ * Unified voice response - user-owned voice with community sharing support
+ */
 export interface VoiceResponse {
-  id: string;
-  provider_id?: string;
-  provider: string;
+  id: number;
+  user_id: number;
   name: string;
-  description?: string | null;
-  preview_path?: string | null;
-  gender?: string | null;
-  age_group?: string | null;
-  accent?: string | null;
+  audio_path: string;
+  mime_type: string;
   language?: string | null;
-  category?: string | null;
-  is_available: boolean;
-  provider_last_synced_at?: string;
+  duration_seconds?: number | null;
+  is_shared: boolean;
+  is_approved: boolean;
+  is_deleted: boolean;
+  admin_approved_at?: string | null;
   created_at: string;
   updated_at: string;
+}
+
+/**
+ * Voice with creator information for community voices
+ */
+export interface VoiceWithCreator extends VoiceResponse {
+  creator_username: string;
+  admin_approved_at?: string | null; // "Approved 3 days ago" format
+}
+
+/**
+ * Available voices for user (own + public community)
+ */
+export interface AvailableVoicesResponse {
+  own_voices: VoiceResponse[];
+  community_voices: VoiceWithCreator[];
+}
+
+/**
+ * Legacy compatibility interface - maps to unified VoiceResponse
+ * @deprecated Use VoiceResponse with new unified schema
+ */
+export interface VoiceRecordingResponse {
+  id: number;
+  user_id: number;
+  title: string;
+  description?: string | null;
+  file_path: string;
+  duration_seconds?: number | null;
+  mime_type: string;
+  created_at: string;
+  updated_at: string;
+  audio_url?: string; // Computed on frontend
 }
 
 export interface VoiceListResponse {
   voices: VoiceResponse[];
   total: number;
-}
-
-export interface VoiceRecordingResponse {
-  id: number;
-  user_id: number;
-  title: string;
-  description: string | null;
-  file_path: string;
-  duration_seconds: number | null;
-  mime_type: string;
-  created_at: string;
-  updated_at: string;
-  audio_url?: string; // Computed on frontend
 }
 
 // ============================================================================
@@ -147,7 +168,7 @@ export interface TTSJobResponse {
   id: string;
   project_id: string;
   script_id: string;
-  voice_id: string;
+  voice_id?: number | null; // Now references unified voices table
   voice_name: string;
   external_job_id: string;
   status: "queued" | "processing" | "completed" | "failed";
@@ -233,27 +254,25 @@ export interface MovieUpdateRequest {
 }
 
 export interface VoiceCreateRequest {
-  id: string;
-  provider: string;
+  id?: number;
   name: string;
-  description?: string | null;
-  preview_path?: string | null;
-  gender?: string | null;
-  accent?: string | null;
+  audio_path: string;
+  mime_type: string;
   language?: string | null;
-  category?: string | null;
-  is_available?: boolean;
+  duration_seconds?: number | null;
 }
 
 export interface VoiceUpdateRequest {
   name?: string;
-  description?: string | null;
-  preview_path?: string | null;
-  gender?: string | null;
-  accent?: string | null;
   language?: string | null;
-  category?: string | null;
-  is_available?: boolean;
+}
+
+export interface VoiceShareRequest {
+  is_shared: boolean;
+}
+
+export interface VoiceApprovalRequest {
+  is_approved: boolean;
 }
 
 export interface VoiceAvailabilityUpdate {
