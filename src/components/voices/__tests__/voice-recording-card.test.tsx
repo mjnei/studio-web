@@ -71,11 +71,7 @@ describe("VoiceRecordingCard - Schema Migration", () => {
     const voice = { ...mockVoiceResponse };
 
     render(
-      <VoiceRecordingCard
-        recording={voice}
-        onDelete={onDelete}
-        onToggleSharing={onToggleSharing}
-      />
+      <VoiceRecordingCard recording={voice} onDelete={onDelete} onToggleSharing={onToggleSharing} />
     );
 
     // Description should not be displayed
@@ -397,9 +393,10 @@ describe("VoiceRecordingCard - Sharing Toggle", () => {
     const onDelete = jest.fn();
     let resolveToggle: any;
     const onToggleSharing = jest.fn(
-      () => new Promise((resolve) => {
-        resolveToggle = resolve;
-      })
+      () =>
+        new Promise((resolve) => {
+          resolveToggle = resolve;
+        })
     );
 
     render(
@@ -427,9 +424,9 @@ describe("VoiceRecordingCard - Sharing Toggle", () => {
 
   test("should handle sharing toggle errors", async () => {
     const onDelete = jest.fn();
-    const onToggleSharing = jest.fn().mockRejectedValue(
-      new Error("Failed to update sharing status")
-    );
+    const onToggleSharing = jest
+      .fn()
+      .mockRejectedValue(new Error("Failed to update sharing status"));
 
     render(
       <VoiceRecordingCard

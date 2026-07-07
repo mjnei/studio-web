@@ -121,19 +121,19 @@ The backend now provides a unified `/api/v1/voices/*` API pattern alongside the 
     - **Property 3: Schema Field Transformation**
     - **Validates: Requirements 3.2, 4.2, 5.1**
 
-  - [-] 3.5 Verify component displays correctly
+  - [x] 3.5 Verify component displays correctly
     - Check styling and layout unchanged
     - Check all interactive features work
     - Test error states
     - _Requirements: 3.1_
 
-- [~] 4. Checkpoint: Voice card component works with new client
+- [x] 4. Checkpoint: Voice card component works with new client
   - Ensure voice-recording-card renders correctly with new schema
   - Verify upload/delete/share buttons function properly
   - Confirm no TypeScript errors
 
 - [ ] 5. Update voice-generation component
-  - [~] 5.1 Update voice fetching to use new client
+  - [-] 5.1 Update voice fetching to use new client
     - Replace `getAvailableVoices()` import to use new client
     - Update to handle new `AvailableVoicesResponse` structure
     - Fetch both `own_voices` and `community_voices` arrays
