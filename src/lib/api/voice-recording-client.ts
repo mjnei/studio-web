@@ -46,7 +46,7 @@ export async function uploadVoiceRecording(
   const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020/api/v1";
   const token = (await import("../api-client")).getAccessToken();
 
-  const response = await fetch(`${API_BASE}/recordings/upload`, {
+  const response = await fetch(`${API_BASE}/voice-recordings/upload`, {
     method: "POST",
     headers: {
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -67,25 +67,25 @@ export async function listVoiceRecordings(
   skip = 0,
   limit = 100
 ): Promise<VoiceRecordingResponse[]> {
-  return request<VoiceRecordingResponse[]>(`/recordings/?skip=${skip}&limit=${limit}`);
+  return request<VoiceRecordingResponse[]>(`/voice-recordings/?skip=${skip}&limit=${limit}`);
 }
 
 export async function getVoiceRecording(id: string): Promise<VoiceRecordingResponse> {
-  return request<VoiceRecordingResponse>(`/recordings/${id}`);
+  return request<VoiceRecordingResponse>(`/voice-recordings/${id}`);
 }
 
 export async function updateVoiceRecording(
   id: string,
   data: { title?: string; description?: string }
 ): Promise<VoiceRecordingResponse> {
-  return request<VoiceRecordingResponse>(`/recordings/${id}`, {
+  return request<VoiceRecordingResponse>(`/voice-recordings/${id}`, {
     method: "PATCH",
     body: JSON.stringify(data),
   });
 }
 
 export async function deleteVoiceRecording(id: string): Promise<void> {
-  return request<void>(`/recordings/${id}`, {
+  return request<void>(`/voice-recordings/${id}`, {
     method: "DELETE",
   });
 }
@@ -104,7 +104,7 @@ export async function getVoiceRecordingAudioUrl(id: number): Promise<{
     audio_url: string;
     expires_in: number | null;
     storage_type: "s3" | "local";
-  }>(`/recordings/${id}/audio-url`);
+  }>(`/voice-recordings/${id}/audio-url`);
 }
 
 /**

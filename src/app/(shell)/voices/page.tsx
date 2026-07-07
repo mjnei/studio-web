@@ -42,8 +42,9 @@ function formatRelativeTime(dateString: string): string {
 export default function VoicesPage() {
   const [tab, setTab] = useState<"my" | "community">("my");
   const [showRecorder, setShowRecorder] = useState(false);
-  const { recordings, loading, error, deleteRecording, addRecording, refetch } = useVoiceRecordings();
-  
+  const { recordings, loading, error, deleteRecording, addRecording, refetch } =
+    useVoiceRecordings();
+
   const [communityVoices, setCommunityVoices] = useState<
     Array<VoiceRecordingResponse & { creator_username: string; admin_approved_at?: string | null }>
   >([]);
@@ -184,7 +185,11 @@ export default function VoicesPage() {
 
           {/* Error Message */}
           {error && (
-            <Card variant="elevated" padding="md" className="mb-6 border-status-failed/30 bg-status-failed/10">
+            <Card
+              variant="elevated"
+              padding="md"
+              className="mb-6 border-status-failed/30 bg-status-failed/10"
+            >
               <div className="flex items-start gap-3">
                 <AlertCircle className="h-5 w-5 text-status-failed flex-shrink-0 mt-0.5" />
                 <p className="text-sm text-status-failed">{error}</p>
@@ -196,7 +201,10 @@ export default function VoicesPage() {
           {loading ? (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="h-48 animate-pulse rounded-xl bg-surface-panel border border-border-default" />
+                <div
+                  key={i}
+                  className="h-48 animate-pulse rounded-xl bg-surface-panel border border-border-default"
+                />
               ))}
             </div>
           ) : recordings.length === 0 ? (
@@ -237,7 +245,6 @@ export default function VoicesPage() {
           )}
         </div>
       ) : (
-      ) : (
         /* Community Voices Tab */
         <div>
           {/* Info Banner */}
@@ -247,9 +254,7 @@ export default function VoicesPage() {
                 <Globe className="h-5 w-5 text-accent-cyan" />
               </div>
               <div className="flex-1">
-                <h3 className="text-sm font-semibold text-text-primary mb-1">
-                  Community Voices
-                </h3>
+                <h3 className="text-sm font-semibold text-text-primary mb-1">Community Voices</h3>
                 <p className="text-xs text-text-muted leading-relaxed">
                   Discover voices shared by other users and approved by our team. Use these voices
                   in your projects alongside your own recordings.
@@ -260,7 +265,11 @@ export default function VoicesPage() {
 
           {/* Error Message */}
           {communityError && (
-            <Card variant="elevated" padding="md" className="mb-6 border-status-failed/30 bg-status-failed/10">
+            <Card
+              variant="elevated"
+              padding="md"
+              className="mb-6 border-status-failed/30 bg-status-failed/10"
+            >
               <div className="flex items-start gap-3">
                 <AlertCircle className="h-5 w-5 text-status-failed flex-shrink-0 mt-0.5" />
                 <p className="text-sm text-status-failed">{communityError}</p>
@@ -272,7 +281,10 @@ export default function VoicesPage() {
           {communityLoading ? (
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="h-56 animate-pulse rounded-xl bg-surface-panel border border-border-default" />
+                <div
+                  key={i}
+                  className="h-56 animate-pulse rounded-xl bg-surface-panel border border-border-default"
+                />
               ))}
             </div>
           ) : communityVoices.length === 0 ? (
@@ -285,8 +297,8 @@ export default function VoicesPage() {
                 No community voices yet
               </h3>
               <p className="text-sm text-text-muted max-w-md mx-auto">
-                Community voices will appear here once users share their voices and they're
-                approved by our team.
+                Community voices will appear here once users share their voices and they're approved
+                by our team.
               </p>
             </Card>
           ) : (
