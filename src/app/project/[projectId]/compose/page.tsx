@@ -10,7 +10,7 @@ import { FullScriptModal } from "@/components/project/full-script-modal";
 import { ThumbnailEditorModal } from "@/components/project/ThumbnailEditorModal";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { FileText, ChevronDown, Sparkles, Check, Loader2, Image } from "lucide-react";
-import { advanceProjectStep } from "@/lib/project-client";
+import { advanceProjectStep, scheduleAgnesJobs } from "@/lib/project-client";
 import { useToast } from "@/components/ui/toast";
 
 export default function ComposePage() {
@@ -24,6 +24,42 @@ export default function ComposePage() {
   const [showThumbnailEditor, setShowThumbnailEditor] = useState(false);
   const [isAdvancing, setIsAdvancing] = useState(false);
   const [isPollingComposition, setIsPollingComposition] = useState(false);
+
+  // Check and schedule thumbnail if needed on page load
+  React.useEffect(() => {
+    if (projectId) {
+      checkAndScheduleThumbnailIfNeeded();
+    }
+  }, [projectId]);
+
+  const checkAndScheduleThumbnailIfNeeded = async () => {
+    if (state?.thumbnailStatus === "generating") {
+      // Already generating - just poll (handled by other useEffect)
+      return;
+    }
+
+    if (state?.thumbnailStatus !== "completed") {
+      // Not ready - schedule if needed
+      try {
+        await scheduleAgnesJobs(projectId, false, true); // Thumbnail only
+        console.log("Scheduled thumbnail generation");
+      } catch (error) {
+        console.error("Failed to schedule thumbnail:", error);
+        // Non-blocking - user can continue
+      }
+    }
+  };
+
+  // Poll for thumbnail status if generating
+  React.useEffect(() => {
+    if (state?.thumbnailStatus === "generating") {
+      const interval = setInterval(() => {
+        refresh(); // Refresh project state to check thumbnail status
+      }, 5000);
+
+      return () => clearInterval(interval);
+    }
+  }, [state?.thumbnailStatus, refresh]);
 
   // Poll for composition status when processing
   React.useEffect(() => {
@@ -109,19 +145,33 @@ export default function ComposePage() {
             className={
               state.thumbnailConfirmed
                 ? "border-status-success/30 bg-surface-raised"
-                : "cursor-pointer hover:border-accent-cyan/30 hover:bg-surface-raised transition-all group"
+                : state.thumbnailStatus === "generating"
+                  ? "border-accent-cyan/30 bg-surface-raised"
+                  : "cursor-pointer hover:border-accent-cyan/30 hover:bg-surface-raised transition-all group"
             }
-            onClick={state.thumbnailConfirmed ? undefined : () => setShowThumbnailEditor(true)}
+            onClick={
+              state.thumbnailConfirmed || state.thumbnailStatus === "generating"
+                ? undefined
+                : () => setShowThumbnailEditor(true)
+            }
           >
             <div className="flex flex-col gap-4">
               <div className="flex items-start gap-4">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted flex-shrink-0">
-                  <Sparkles className="h-5 w-5 text-accent-cyan" />
+                  {state.thumbnailStatus === "generating" ? (
+                    <Loader2 className="h-5 w-5 text-accent-cyan animate-spin" />
+                  ) : (
+                    <Sparkles className="h-5 w-5 text-accent-cyan" />
+                  )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-4 mb-2">
                     <h3 className="font-medium text-text-primary">Project Thumbnail</h3>
-                    {state.thumbnailCompositionStatus === "processing" ? (
+                    {state.thumbnailStatus === "generating" ? (
+                      <span className="text-xs font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0">
+                        <Loader2 className="h-3 w-3 animate-spin" /> Generating...
+                      </span>
+                    ) : state.thumbnailCompositionStatus === "processing" ? (
                       <span className="text-xs font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0">
                         <Loader2 className="h-3 w-3 animate-spin" /> Processing...
                       </span>
@@ -129,15 +179,30 @@ export default function ComposePage() {
                       <span className="text-xs font-medium text-status-success flex items-center gap-1 flex-shrink-0">
                         <Check className="h-3 w-3" /> Confirmed
                       </span>
-                    ) : (
+                    ) : state.thumbnailUrl ? (
                       <span className="text-xs font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0 group-hover:text-accent-cyan-hover">
                         Click to customize
+                      </span>
+                    ) : (
+                      <span className="text-xs font-medium text-text-muted flex items-center gap-1 flex-shrink-0">
+                        Waiting...
                       </span>
                     )}
                   </div>
 
-                  {/* Collapsed view when confirmed */}
-                  {state.thumbnailConfirmed ? (
+                  {/* Show loading message when generating base thumbnail */}
+                  {state.thumbnailStatus === "generating" ? (
+                    <div className="space-y-3">
+                      <p className="text-sm text-text-muted">
+                        AI is generating your thumbnail based on the movie and script content...
+                      </p>
+                      <div className="text-xs text-text-muted space-y-1">
+                        <p>• This usually takes 10-30 seconds</p>
+                        <p>• Once ready, you can customize it before finalizing</p>
+                        <p>• The page will update automatically when complete</p>
+                      </div>
+                    </div>
+                  ) : state.thumbnailConfirmed ? (
                     <div className="space-y-3">
                       <p className="text-sm text-text-muted">
                         Your thumbnail is ready for video generation
@@ -177,9 +242,9 @@ export default function ComposePage() {
                     <>
                       {/* Full view when not confirmed */}
                       <p className="text-sm text-text-muted mb-3">
-                        {state.thumbnailConfirmed
-                          ? "Your thumbnail is ready for video generation"
-                          : "Customize your thumbnail before generating video"}
+                        {state.thumbnailUrl
+                          ? "Customize your thumbnail before generating video"
+                          : "Thumbnail will be available shortly"}
                       </p>
 
                       {/* Thumbnail Preview with side-by-side layout on medium+ screens */}

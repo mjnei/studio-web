@@ -208,12 +208,9 @@ export async function scheduleAgnesJobs(
     schedule_names: String(scheduleNames),
     schedule_thumbnail: String(scheduleThumbnail),
   });
-  return request<ScheduleAgnesResponse>(
-    `/projects/${projectId}/schedule-agnes-jobs?${params}`,
-    {
-      method: "POST",
-    }
-  );
+  return request<ScheduleAgnesResponse>(`/projects/${projectId}/schedule-agnes-jobs?${params}`, {
+    method: "POST",
+  });
 }
 
 export async function advanceProjectStep(

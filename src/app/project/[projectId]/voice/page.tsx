@@ -13,11 +13,7 @@ import { VoiceGeneration } from "@/components/project/voice-generation";
 import { useToast } from "@/components/ui/toast";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { getAvailableVoices, getVoiceAudioUrl } from "@/lib/api/voice-client";
-import {
-  scheduleAgnesJobs,
-  createTTSJob,
-  advanceProjectStep,
-} from "@/lib/project-client";
+import { scheduleAgnesJobs, createTTSJob, advanceProjectStep } from "@/lib/project-client";
 import type { VoiceResponse, VoiceWithCreator } from "@/lib/types/api";
 
 export default function VoicePage() {

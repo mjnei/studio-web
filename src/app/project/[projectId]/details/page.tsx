@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { FileText, Sparkles, Loader2, ChevronDown, RefreshCw, Pencil } from "lucide-react";
+import { FileText, Sparkles, Loader2, ChevronDown, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useProjectState } from "@/lib/hooks/use-project-state";
@@ -13,6 +13,7 @@ import {
   updateProjectName,
   getSuggestedProjectNames,
   advanceProjectStep,
+  scheduleAgnesJobs,
   type NameSuggestion,
 } from "@/lib/project-client";
 
@@ -20,7 +21,7 @@ export default function ProjectDetailsPage() {
   const params = useParams();
   const router = useRouter();
   const projectId = params.projectId as string;
-  const { state, isLoading, activeScript, refresh } = useProjectState(projectId);
+  const { state, isLoading, activeScript } = useProjectState(projectId);
 
   const [projectName, setProjectName] = useState("");
   const [fallbackSuggestions, setFallbackSuggestions] = useState<NameSuggestion[]>([]);
@@ -30,10 +31,10 @@ export default function ProjectDetailsPage() {
   const [showFullScriptModal, setShowFullScriptModal] = useState(false);
 
   // Fetch AI suggestions once when page loads
-  // These should already be cached from when user advanced to Step 3
+  // These should already be cached from when user advanced from Voice step (Step 3)
   useEffect(() => {
     if (projectId && activeScript?.content) {
-      fetchAiNameSuggestions();
+      fetchAiNameSuggestionsWithScheduling();
     }
   }, [projectId, activeScript?.content]);
 
@@ -241,20 +242,62 @@ export default function ProjectDetailsPage() {
     return uniqueSuggestions.slice(0, 3);
   };
 
-  // Fetch AI-powered suggestions from backend (returns cached results only)
-  const fetchAiNameSuggestions = async () => {
+  // Fetch AI-powered suggestions from backend with scheduling fallback
+  const fetchAiNameSuggestionsWithScheduling = async () => {
     if (!projectId || !activeScript?.content) return;
 
     setLoadingAiSuggestions(true);
     try {
       const response = await getSuggestedProjectNames(projectId);
-      setAiSuggestions(response.suggestions);
+
+      if (response.suggestions.length > 0) {
+        // Great! Names are ready
+        setAiSuggestions(response.suggestions);
+        setLoadingAiSuggestions(false);
+      } else {
+        // Not ready yet - schedule if needed
+        await scheduleAgnesJobs(projectId, true, false); // Names only
+
+        // Poll for results
+        startPollingForNameSuggestions();
+      }
     } catch (error) {
-      console.error("Failed to fetch AI name suggestions:", error);
-      // Gracefully fail - fallback suggestions still available
-    } finally {
+      console.error("Failed to fetch name suggestions:", error);
       setLoadingAiSuggestions(false);
+      // Fallback suggestions still available
     }
+  };
+
+  const startPollingForNameSuggestions = async () => {
+    let attempts = 0;
+    const maxAttempts = 20; // ~60 seconds with 3s poll interval
+
+    const poll = async () => {
+      if (attempts >= maxAttempts) {
+        console.log("Name suggestion polling timed out");
+        setLoadingAiSuggestions(false);
+        return;
+      }
+
+      attempts++;
+
+      try {
+        const response = await getSuggestedProjectNames(projectId);
+        if (response.suggestions.length > 0) {
+          setAiSuggestions(response.suggestions);
+          setLoadingAiSuggestions(false);
+        } else {
+          // Keep polling
+          setTimeout(poll, 3000);
+        }
+      } catch (error) {
+        console.error("Polling error:", error);
+        setLoadingAiSuggestions(false);
+      }
+    };
+
+    // Start polling after 2 second delay
+    setTimeout(poll, 2000);
   };
 
   const handleSuggestionClick = (suggestion: NameSuggestion) => {
@@ -283,8 +326,8 @@ export default function ProjectDetailsPage() {
       // Advance last_step on user action (consistent with all other steps)
       await advanceProjectStep(projectId, "details").catch(console.error);
 
-      // Navigate to voice step
-      router.push(`/project/${projectId}/voice`);
+      // Navigate to preview step
+      router.push(`/project/${projectId}/preview`);
     } catch (error) {
       console.error("Failed to save project name:", error);
       router.push(`/project/${projectId}/voice`);

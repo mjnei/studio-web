@@ -21,8 +21,8 @@ interface FloatingWorkflowNavigationProps {
 const steps = [
   { key: "source", label: "Source" },
   { key: "script", label: "Script" },
-  { key: "details", label: "Details" },
   { key: "voice", label: "Voice" },
+  { key: "details", label: "Details" },
   { key: "preview", label: "Preview" },
   { key: "compose", label: "Compose" },
   { key: "finalize", label: "Finalize" },
@@ -32,9 +32,9 @@ const stepOrder: Record<string, number> = Object.fromEntries(steps.map(({ key },
 
 const nextStepLabels: Record<string, string> = {
   source: "Continue to Script",
-  script: "Continue to Details",
-  details: "Continue to Voice",
-  voice: "Continue to Preview",
+  script: "Continue to Voice",
+  voice: "Continue to Details",
+  details: "Continue to Preview",
   preview: "Continue to Compose",
   compose: "Continue to Finalize",
   finalize: "Complete Project",
