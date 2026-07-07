@@ -6,8 +6,8 @@ This implementation plan migrates studio-web from the deprecated `/voice-recordi
 
 ## Tasks
 
-- [ ] 1. Create new unified voice client (voice-client.ts)
-  - [-] 1.1 Create `/src/lib/api/voice-client.ts` with unified endpoint functions
+- [x] 1. Create new unified voice client (voice-client.ts)
+  - [x] 1.1 Create `/src/lib/api/voice-client.ts` with unified endpoint functions
     - Implement `uploadVoice()` with form data (file, name, duration_seconds)
     - Implement `listVoices(skip?, limit?)` using `/voices/` endpoint
     - Implement `getVoice(id)` for single voice fetch
@@ -18,7 +18,7 @@ This implementation plan migrates studio-web from the deprecated `/voice-recordi
     - Implement `getAvailableVoices()` returning own + community voices
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 1.10_
 
-  - [ ]* 1.2 Write unit tests for voice-client functions
+  - [x]* 1.2 Write unit tests for voice-client functions
     - Test upload with various MIME types and file extensions
     - Test list/get/update/delete endpoints
     - Test audio URL retrieval
@@ -27,14 +27,14 @@ This implementation plan migrates studio-web from the deprecated `/voice-recordi
     - **Property 2: Voice Upload Round Trip**
     - **Validates: Requirements 1.2, 12.2, 12.3**
 
-  - [~] 1.3 Test voice-client integration against backend
+  - [x] 1.3 Test voice-client integration against backend
     - Verify endpoints use correct URLs (`/api/v1/voices/*`)
     - Verify form data serialization for uploads
     - Verify authorization headers are set
     - _Requirements: 9.1, 12.1_
 
 - [ ] 2. Create or update use-voices hook
-  - [~] 2.1 Create `/src/lib/hooks/use-voices.ts` or update existing
+  - [x] 2.1 Create `/src/lib/hooks/use-voices.ts` or update existing
     - Initialize state for voices, loading, error
     - Fetch voices on mount using new voice-client
     - Attach audio URLs to voices after loading
@@ -45,7 +45,7 @@ This implementation plan migrates studio-web from the deprecated `/voice-recordi
     - Use `VoiceResponse` type (not deprecated type)
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6_
 
-  - [ ]* 2.2 Write unit tests for use-voices hook
+  - [x]* 2.2 Write unit tests for use-voices hook
     - Test voice fetching on mount
     - Test upload/delete/sharing operations
     - Test error handling and retry

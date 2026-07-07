@@ -161,10 +161,7 @@ export default function PreviewPage() {
     };
   }, []);
 
-  const createNewTTSJob = async (
-    voiceId: string,
-    voiceName?: string
-  ) => {
+  const createNewTTSJob = async (voiceId: string, voiceName?: string) => {
     if (!state || !activeScript || isCreatingJobRef.current) return;
 
     if (!voiceId) {
