@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Plus, Mic, Globe, User, AlertCircle } from "lucide-react";
-import { VoiceRecorder } from "@/components/shared/voice-recorder";
+import { VoiceRecordingModal } from "@/components/shared/voice-recording-modal";
 import { VoiceRecordingCard } from "@/components/voices/voice-recording-card";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -179,18 +179,12 @@ export default function VoicesPage() {
       {/* Content Area */}
       {tab === "my" ? (
         <div>
-          {/* Voice Recorder */}
-          {showRecorder && (
-            <Card variant="elevated" padding="lg" className="mb-8 border-accent-purple/30">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-text-primary">Record New Voice</h2>
-                <Button variant="secondary" size="sm" onClick={() => setShowRecorder(false)}>
-                  Cancel
-                </Button>
-              </div>
-              <VoiceRecorder onSaved={handleRecordingSaved} />
-            </Card>
-          )}
+          {/* Voice Recorder Modal */}
+          <VoiceRecordingModal
+            isOpen={showRecorder}
+            onClose={() => setShowRecorder(false)}
+            onSaved={handleRecordingSaved}
+          />
 
           {/* Error Message */}
           {error && (

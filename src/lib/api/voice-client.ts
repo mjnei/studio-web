@@ -12,12 +12,14 @@ import {
  *
  * @param file - Audio file blob
  * @param name - Voice name (NOT title)
+ * @param language - ISO language code (e.g., 'en', 'es', 'fr', 'de', 'ja', 'ko', 'zh')
  * @param durationSeconds - Optional duration in seconds
  * @returns Promise<VoiceResponse>
  */
 export async function uploadVoice(
   file: Blob,
   name: string,
+  language: string,
   durationSeconds?: number
 ): Promise<VoiceResponse> {
   const formData = new FormData();
@@ -51,6 +53,7 @@ export async function uploadVoice(
 
   formData.append("file", audioFile);
   formData.append("name", name);
+  formData.append("language", language);
   if (durationSeconds !== undefined) {
     formData.append("duration_seconds", durationSeconds.toString());
   }

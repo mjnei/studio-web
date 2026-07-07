@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
-import { VoiceRecorder } from "@/components/shared/voice-recorder";
+import { VoiceRecordingModal } from "@/components/shared/voice-recording-modal";
 import { FullScriptModal } from "@/components/project/full-script-modal";
 import { VoiceGeneration } from "@/components/project/voice-generation";
 import { useToast } from "@/components/ui/toast";
@@ -355,21 +355,11 @@ export default function VoicePage() {
         )}
 
         {/* Voice Recorder Modal */}
-        {showRecorder && (
-          <Card
-            variant="elevated"
-            padding="lg"
-            className="border-accent-purple/30 bg-surface-panel"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-text-primary">Record New Voice</h3>
-              <Button variant="secondary" size="sm" onClick={() => setShowRecorder(false)}>
-                Cancel
-              </Button>
-            </div>
-            <VoiceRecorder onSaved={handleRecordingSaved} />
-          </Card>
-        )}
+        <VoiceRecordingModal
+          isOpen={showRecorder}
+          onClose={() => setShowRecorder(false)}
+          onSaved={handleRecordingSaved}
+        />
       </div>
 
       {/* Full Script Modal */}
