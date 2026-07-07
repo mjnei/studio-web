@@ -1,8 +1,8 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
-import { useState, useEffect, useMemo, useRef } from "react";
-import { Mic, Globe, Plus, FileText, ChevronDown, AlertCircle } from "lucide-react";
+import { useParams } from "next/navigation";
+import { useState, useEffect, useRef } from "react";
+import { Mic, Plus, FileText, ChevronDown } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useProjectState } from "@/lib/hooks/use-project-state";
@@ -12,58 +12,20 @@ import { FullScriptModal } from "@/components/project/full-script-modal";
 import { VoiceGeneration } from "@/components/project/voice-generation";
 import { useToast } from "@/components/ui/toast";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
-import { useVoiceRecordings } from "@/lib/hooks/use-voice-recordings";
 import { getAvailableVoices, getVoiceAudioUrl } from "@/lib/api/voice-client";
 import type { VoiceResponse, VoiceWithCreator } from "@/lib/types/api";
 
-type VoiceOption = {
-  id: string;
-  name: string;
-  type: "own" | "community";
-  creatorUsername?: string;
-  approvedAt?: string;
-};
-
-/**
- * Format relative time for display
- */
-function formatRelativeTime(dateString: string): string {
-  const date = new Date(dateString);
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffSec = Math.floor(diffMs / 1000);
-  const diffMin = Math.floor(diffSec / 60);
-  const diffHours = Math.floor(diffMin / 60);
-  const diffDays = Math.floor(diffHours / 24);
-  const diffWeeks = Math.floor(diffDays / 7);
-
-  if (diffSec < 60) return "just now";
-  if (diffMin < 60) return `${diffMin}m ago`;
-  if (diffHours < 24) return `${diffHours}h ago`;
-  if (diffDays < 7) return `${diffDays}d ago`;
-  if (diffWeeks < 4) return `${diffWeeks}w ago`;
-
-  const months = Math.floor(diffDays / 30);
-  if (months < 12) return `${months}mo ago`;
-
-  const years = Math.floor(diffDays / 365);
-  return `${years}y ago`;
-}
-
 export default function VoicePage() {
   const params = useParams();
-  const router = useRouter();
   const projectId = params.projectId as string;
   const { state, updateVoice, activeScript, isLoading } = useProjectState(projectId);
-  const { recordings, loading: recordingsLoading, addRecording } = useVoiceRecordings();
   const { error: toastError } = useToast();
 
   const [availableVoicesLoading, setAvailableVoicesLoading] = useState(true);
   const [availableVoicesError, setAvailableVoicesError] = useState<string | null>(null);
   const [ownVoices, setOwnVoices] = useState<VoiceResponse[]>([]);
   const [communityVoices, setCommunityVoices] = useState<VoiceWithCreator[]>([]);
-  const [selectedVoice, setSelectedVoice] = useState<VoiceOption | null>(null);
-  const [playingVoice, setPlayingVoice] = useState<string | null>(null);
+  const [selectedVoiceId, setSelectedVoiceId] = useState<number | null>(null);
   const [showRecorder, setShowRecorder] = useState(false);
   const [showFullScriptModal, setShowFullScriptModal] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -109,41 +71,18 @@ export default function VoicePage() {
     };
   }, []);
 
-  const myVoiceOptions: VoiceOption[] = useMemo(() => {
-    return ownVoices.map((voice) => ({
-      id: String(voice.id),
-      name: voice.name,
-      type: "own" as const,
-    }));
-  }, [ownVoices]);
+  const myVoiceOptions: VoiceResponse[] = ownVoices;
+  const communityVoiceOptions: VoiceWithCreator[] = communityVoices;
 
-  const communityVoiceOptions: VoiceOption[] = useMemo(() => {
-    return communityVoices.map((voice) => ({
-      id: String(voice.id),
-      name: voice.name,
-      type: "community" as const,
-      creatorUsername: voice.creator_username,
-      approvedAt: voice.admin_approved_at
-        ? `approved ${formatRelativeTime(voice.admin_approved_at)}`
-        : undefined,
-    }));
-  }, [communityVoices]);
-
-  // Initialize selectedVoice from saved state
+  // Initialize selectedVoiceId from saved state
   useEffect(() => {
-    if (selectedVoice) return;
-    const savedId = state?.voiceId ?? state?.voice?.id;
+    if (selectedVoiceId) return;
+    const savedId = state?.voiceId ? Number(state.voiceId) : (state?.voice?.id ? Number(state.voice.id) : undefined);
     if (!savedId) return;
-    const allVoices = [...myVoiceOptions, ...communityVoiceOptions];
-    const savedVoice = allVoices.find((v) => v.id === savedId);
-    if (savedVoice) {
-      setSelectedVoice(savedVoice);
-    }
-  }, [state?.voiceId, state?.voice, myVoiceOptions, communityVoiceOptions, selectedVoice]);
+    setSelectedVoiceId(savedId);
+  }, [state?.voiceId, state?.voice, selectedVoiceId]);
 
-  const playAudio = async (voice: VoiceOption) => {
-    const cacheKey = `${voice.type}-${voice.id}`;
-
+  const playAudio = async (voiceId: number, type: "own" | "community") => {
     // Stop current audio if playing
     if (audioRef.current) {
       audioRef.current.pause();
@@ -154,19 +93,31 @@ export default function VoicePage() {
     }
 
     try {
-      setPlayingVoice(cacheKey);
-
-      // Get the preview URL from the voice data
+      // Get the voice data
       const voiceData =
-        voice.type === "own"
-          ? ownVoices.find((v) => v.id === Number(voice.id))
-          : communityVoices.find((v) => v.id === Number(voice.id));
+        type === "own"
+          ? ownVoices.find((v) => v.id === voiceId)
+          : communityVoices.find((v) => v.id === voiceId);
 
-      const audioUrl = voiceData?.audio_url;
+      if (!voiceData) {
+        toastError("Voice not found", "Unable to find the selected voice.");
+        return;
+      }
+
+      // If audio_url is not already attached, fetch it
+      let audioUrl = (voiceData as any).audio_url;
+      if (!audioUrl) {
+        try {
+          const audioUrlData = await getVoiceAudioUrl(voiceId);
+          audioUrl = audioUrlData.audio_url;
+        } catch (err) {
+          console.error("Failed to get audio URL:", err);
+          toastError("Preview unavailable", "Audio preview is not available for this voice.");
+          return;
+        }
+      }
 
       if (!audioUrl) {
-        console.error("No audio URL available for voice");
-        setPlayingVoice(null);
         toastError("Preview unavailable", "Audio preview is not available for this voice.");
         return;
       }
@@ -180,12 +131,10 @@ export default function VoicePage() {
 
       audioRef.current = new Audio(blobUrl);
       audioRef.current.onended = () => {
-        setPlayingVoice(null);
         URL.revokeObjectURL(blobUrl);
       };
       audioRef.current.onerror = (e) => {
         console.error("Audio playback error:", audioRef.current?.error, e);
-        setPlayingVoice(null);
         toastError("Playback failed", "Failed to play the audio preview.");
         URL.revokeObjectURL(blobUrl);
       };
@@ -193,24 +142,20 @@ export default function VoicePage() {
       await audioRef.current.play();
     } catch (err) {
       console.error("Failed to load/play audio:", err);
-      setPlayingVoice(null);
       toastError("Playback failed", "Failed to load the audio preview.");
     }
   };
 
-  const handleVoiceIdSelect = (voiceId: string) => {
-    const allVoices = [...myVoiceOptions, ...communityVoiceOptions];
-    const voice = allVoices.find((v) => v.id === voiceId);
-    if (voice) {
-      handleSelectVoiceOption(voice);
-    }
-  };
+  const handleVoiceSelect = async (voiceId: number) => {
+    // Find voice in either own or community voices
+    const voice = ownVoices.find((v) => v.id === voiceId) || communityVoices.find((v) => v.id === voiceId);
+    
+    if (!voice) return;
 
-  const handleSelectVoiceOption = async (voice: VoiceOption) => {
-    setSelectedVoice(voice);
+    setSelectedVoiceId(voiceId);
 
     await updateVoice({
-      id: voice.id,
+      id: String(voiceId),
       name: voice.name,
       audioUrl: null,
     });
@@ -220,10 +165,9 @@ export default function VoicePage() {
       localStorage.setItem(
         `project_${projectId}_voice`,
         JSON.stringify({
-          id: voice.id,
+          id: voiceId,
           name: voice.name,
-          type: voice.type,
-          creator_username: voice.creatorUsername,
+          type: ownVoices.some((v) => v.id === voiceId) ? "own" : "community",
         })
       );
     } catch (e) {
@@ -231,53 +175,42 @@ export default function VoicePage() {
     }
 
     // Auto-play preview
-    await playAudio(voice);
+    const voiceType = ownVoices.some((v) => v.id === voiceId) ? "own" : "community";
+    await playAudio(voiceId, voiceType);
+  };
+
+  const handleChangeVoice = () => {
+    setSelectedVoiceId(null);
   };
 
   const handleRecordingSaved = async (newRecording: any) => {
     try {
-      // The voice recorder returns VoiceRecordingResponse from the old client
-      // We need to get the audio URL for it
+      // The voice recorder returns a response with the recorded voice data
+      // Get the audio URL for it
       const audioUrlData = await getVoiceAudioUrl(newRecording.id);
-      const recordingWithUrl = {
-        ...newRecording,
-        audio_url: audioUrlData.audio_url,
-        audio_storage_type: audioUrlData.storage_type,
-        audio_expires_in: audioUrlData.expires_in,
-      };
-
-      addRecording(recordingWithUrl);
-      setShowRecorder(false);
-
-      // Add to own voices list - convert old type to new field names
-      const voiceAsResponse: VoiceResponse = {
-        id: recordingWithUrl.id,
-        user_id: recordingWithUrl.user_id,
-        name: recordingWithUrl.title, // Map old field to new
-        audio_path: recordingWithUrl.file_path, // Map old field to new
-        mime_type: recordingWithUrl.mime_type,
-        duration_seconds: recordingWithUrl.duration_seconds,
+      const recordingWithUrl: VoiceResponse = {
+        id: newRecording.id,
+        user_id: newRecording.user_id,
+        name: newRecording.name || newRecording.title,
+        audio_path: newRecording.audio_path || newRecording.file_path,
+        mime_type: newRecording.mime_type,
+        duration_seconds: newRecording.duration_seconds,
         is_shared: false,
         is_approved: false,
         is_deleted: false,
-        created_at: recordingWithUrl.created_at,
-        updated_at: recordingWithUrl.updated_at,
-        audio_url: recordingWithUrl.audio_url,
-        audio_storage_type: recordingWithUrl.audio_storage_type,
-        audio_expires_in: recordingWithUrl.audio_expires_in,
-      };
-      setOwnVoices([voiceAsResponse, ...ownVoices]);
-
-      const newVoiceOption: VoiceOption = {
-        id: String(recordingWithUrl.id),
-        name: recordingWithUrl.title,
-        type: "own" as const,
+        created_at: newRecording.created_at,
+        updated_at: newRecording.updated_at,
+        audio_url: audioUrlData.audio_url,
       };
 
-      handleSelectVoiceOption(newVoiceOption);
+      setShowRecorder(false);
+      setOwnVoices([recordingWithUrl, ...ownVoices]);
+
+      // Auto-select the newly recorded voice
+      await handleVoiceSelect(recordingWithUrl.id);
     } catch (error) {
       console.error("Failed to get audio URL for new recording:", error);
-      addRecording(newRecording);
+      toastError("Recording saved", "Voice recorded but audio URL retrieval failed. You can still use it.");
       setShowRecorder(false);
     }
   };
@@ -296,9 +229,12 @@ export default function VoicePage() {
               Choose a voice and listen to its preview. Audio will be generated in the next step.
             </p>
           </div>
-          {selectedVoice && (
+          {selectedVoiceId && (
             <div className="text-sm text-text-muted">
-              Selected: <span className="font-medium text-text-primary">{selectedVoice.name}</span>
+              Selected: <span className="font-medium text-text-primary">
+                {ownVoices.find((v) => v.id === selectedVoiceId)?.name ||
+                  communityVoices.find((v) => v.id === selectedVoiceId)?.name}
+              </span>
             </div>
           )}
         </div>
@@ -365,19 +301,19 @@ export default function VoicePage() {
           script={activeScript?.content || ""}
           ownVoices={myVoiceOptions}
           communityVoices={communityVoiceOptions}
-          selectedVoiceId={selectedVoice?.id}
+          selectedVoiceId={selectedVoiceId || undefined}
           audioUrl={undefined}
           isGenerating={false}
           progress={0}
-          onVoiceSelect={handleVoiceIdSelect}
+          onVoiceSelect={handleVoiceSelect}
           onGenerate={() => {}}
-          onChangeVoice={() => setSelectedVoice(null)}
+          onChangeVoice={handleChangeVoice}
           isLoadingVoices={availableVoicesLoading}
           voicesError={availableVoicesError}
         />
 
         {/* Record New Voice CTA */}
-        {!showRecorder && myVoiceOptions.length < 5 && (
+        {!showRecorder && ownVoices.length < 5 && (
           <Card
             variant="elevated"
             padding="md"
@@ -437,7 +373,7 @@ export default function VoicePage() {
       <FloatingWorkflowNavigation
         projectId={projectId}
         currentStep="voice"
-        canGoNext={!!selectedVoice}
+        canGoNext={!!selectedVoiceId}
         isProcessing={false}
       />
     </>

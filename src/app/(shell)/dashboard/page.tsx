@@ -12,7 +12,7 @@ import {
   type ProjectResponse,
   type MovieResponse,
 } from "@/lib/project-client";
-import { useVoiceRecordings } from "@/lib/hooks/use-voice-recordings";
+import { useVoices } from "@/lib/hooks/use-voices";
 import { useAuth } from "@/lib/auth-context";
 
 export default function DashboardPage() {
@@ -22,7 +22,7 @@ export default function DashboardPage() {
   const [loadingProjects, setLoadingProjects] = useState(true);
   const [loadingMovies, setLoadingMovies] = useState(true);
   const [showWelcomeBanner, setShowWelcomeBanner] = useState(false);
-  const { recordings } = useVoiceRecordings();
+  const { voices } = useVoices();
 
   // Check if user just completed onboarding (within last 5 minutes)
   useEffect(() => {
@@ -91,7 +91,7 @@ export default function DashboardPage() {
     },
     {
       title: "My Voices",
-      value: recordings.length.toString(),
+      value: voices.length.toString(),
       description: "Voice profiles",
       icon: <Mic className="w-6 h-6" />,
       gradient: "from-green-500 to-emerald-500",

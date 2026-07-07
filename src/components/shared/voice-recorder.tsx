@@ -15,7 +15,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { VoiceRecordingResponse } from "@/lib/types/api";
+import type { VoiceResponse } from "@/lib/types/api";
 
 type RecorderState = "idle" | "requesting" | "recording" | "recorded" | "naming";
 
@@ -87,7 +87,7 @@ export function VoiceRecorder({
   onSaved,
 }: {
   onRecorded?: (blob: Blob) => void;
-  onSaved?: (recording: VoiceRecordingResponse) => void;
+  onSaved?: (recording: VoiceResponse) => void;
 }) {
   const [state, setState] = useState<RecorderState>("idle");
   const [duration, setDuration] = useState(0);
@@ -378,7 +378,7 @@ export function VoiceRecorder({
     setNameError(false);
 
     try {
-      const { uploadVoiceRecording } = await import("@/lib/api/voice-recording-client");
+      const { uploadVoice } = await import("@/lib/api/voice-client");
       const { convertWebmToAudio } = await import("@/lib/utils/audio-converter");
 
       // Convert WebM to pure audio format if needed
@@ -397,7 +397,7 @@ export function VoiceRecorder({
         audioBlob = new Blob([blob], { type: mimeType });
       }
 
-      const newRecording = await uploadVoiceRecording(audioBlob, title, undefined, duration);
+      const newRecording = await uploadVoice(audioBlob, title, duration);
       onSaved?.(newRecording);
       discardRecording();
     } catch (err) {
