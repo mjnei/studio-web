@@ -85,8 +85,8 @@ export default function NewProjectScriptPage() {
         sessionStorage.removeItem("newProjectMovie");
       }
 
-      // Redirect to the new project's details step (Step 3 - naming)
-      router.push(`/project/${script.project_id}/details`);
+      // Redirect to the new project's voice step (Step 3 - select voice)
+      router.push(`/project/${script.project_id}/voice`);
     } catch (error) {
       console.error("Failed to create script:", error);
       alert("Failed to create script. Please try again.");

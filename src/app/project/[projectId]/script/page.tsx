@@ -53,12 +53,12 @@ export default function ScriptPage() {
       savePromiseRef.current = savePromise;
 
       // Navigate immediately without waiting
-      router.push(`/project/${projectId}/details`);
+      router.push(`/project/${projectId}/voice`);
 
       // Save continues in background
     } else {
       // No changes, navigate immediately
-      router.push(`/project/${projectId}/details`);
+      router.push(`/project/${projectId}/voice`);
     }
   };
 
