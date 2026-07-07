@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Mic,
   Play,
@@ -15,27 +15,24 @@ import {
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/toast";
+import { VoiceResponse, VoiceWithCreator } from "@/lib/types/api";
 
-export interface Voice {
-  id: string;
-  name: string;
-  type: "own" | "community";
-  creatorUsername?: string;
-  approvedAt?: string;
-}
+/**
+ * Voice type for component - union of own and community voices
+ */
+export type Voice = VoiceResponse | VoiceWithCreator;
 
 interface VoiceGenerationProps {
   script: string;
-  ownVoices: Voice[];
-  communityVoices: Voice[];
-  selectedVoiceId?: string;
+  ownVoices: VoiceResponse[];
+  communityVoices: VoiceWithCreator[];
+  selectedVoiceId?: number;
   audioUrl?: string;
   isGenerating?: boolean;
   progress?: number;
-  onVoiceSelect: (voiceId: string) => void;
-  onGenerate: (voiceId: string) => void;
+  onVoiceSelect: (voiceId: number) => void;
+  onGenerate: (voiceId: number) => void;
   onChangeVoice: () => void;
   isLoadingVoices?: boolean;
   voicesError?: string | null;
@@ -234,7 +231,7 @@ export function VoiceGeneration({
                       <Globe className="h-8 w-8 text-text-muted mx-auto mb-2 opacity-50" />
                       <p className="text-sm text-text-muted mb-2">No community voices available</p>
                       <p className="text-xs text-text-muted max-w-xs mx-auto">
-                        Community voices will appear here once they're shared and approved
+                        Community voices will appear here once they&apos;re shared and approved
                       </p>
                     </div>
                   ) : (
@@ -261,13 +258,15 @@ export function VoiceGeneration({
                                 <p className="font-semibold text-text-primary text-sm truncate">
                                   {voice.name}
                                 </p>
+                                {/* Creator username from VoiceWithCreator */}
                                 <p className="text-xs text-text-muted flex items-center gap-1">
                                   <User className="h-3 w-3" />
-                                  <span>@{voice.creatorUsername}</span>
+                                  <span>@{voice.creator_username}</span>
                                 </p>
-                                {voice.approvedAt && (
+                                {/* Approval status - show if approved */}
+                                {voice.is_approved && voice.admin_approved_at && (
                                   <p className="text-xs text-status-completed mt-1">
-                                    ✓ {voice.approvedAt}
+                                    ✓ Approved {voice.admin_approved_at}
                                   </p>
                                 )}
                               </div>

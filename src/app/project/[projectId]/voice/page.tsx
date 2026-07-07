@@ -378,7 +378,11 @@ export default function VoicePage() {
 
         {/* Record New Voice CTA */}
         {!showRecorder && myVoiceOptions.length < 5 && (
-          <Card variant="elevated" padding="md" className="border-accent-purple/30 bg-accent-purple/5">
+          <Card
+            variant="elevated"
+            padding="md"
+            className="border-accent-purple/30 bg-accent-purple/5"
+          >
             <div className="flex items-center justify-between">
               <div className="flex items-start gap-3">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-primary/20 flex-shrink-0">
