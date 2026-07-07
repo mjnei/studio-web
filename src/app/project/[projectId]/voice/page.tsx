@@ -2,36 +2,53 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect, useMemo, useRef } from "react";
-import { Sparkles, Mic, Globe, Plus, FileText, ChevronDown } from "lucide-react";
+import { Mic, Globe, Plus, FileText, ChevronDown, AlertCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
-import { VoiceSelectionCard } from "@/components/project/voice-selection-card";
 import { VoiceRecorder } from "@/components/shared/voice-recorder";
 import { FullScriptModal } from "@/components/project/full-script-modal";
+import { VoiceGeneration } from "@/components/project/voice-generation";
 import { useToast } from "@/components/ui/toast";
-import { EmptyState } from "@/components/ui/empty-state";
-import { LoadingSkeleton, PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
+import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { useVoiceRecordings } from "@/lib/hooks/use-voice-recordings";
-import { listVoices, type VoiceResponse } from "@/lib/project-client";
-import { getVoicePreviewUrl } from "@/lib/hooks/use-stock-voices";
-import { getVoiceRecordingAudioUrl } from "@/lib/api/voice-recording-client";
+import { getAvailableVoices, getVoiceRecordingAudioUrl } from "@/lib/api/voice-recording-client";
 import type { VoiceRecordingResponse } from "@/lib/types/api";
 
 type VoiceOption = {
   id: string;
   name: string;
-  description?: string | null;
-  type: "stock" | "recording";
-  metadata?: {
-    gender?: string;
-    accent?: string;
-    language?: string;
-    duration?: number;
-  };
-  previewUrl?: string | null;
+  type: "own" | "community";
+  creatorUsername?: string;
+  approvedAt?: string;
 };
+
+/**
+ * Format relative time for display
+ */
+function formatRelativeTime(dateString: string): string {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffSec = Math.floor(diffMs / 1000);
+  const diffMin = Math.floor(diffSec / 60);
+  const diffHours = Math.floor(diffMin / 60);
+  const diffDays = Math.floor(diffHours / 24);
+  const diffWeeks = Math.floor(diffDays / 7);
+
+  if (diffSec < 60) return "just now";
+  if (diffMin < 60) return `${diffMin}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
+  if (diffDays < 7) return `${diffDays}d ago`;
+  if (diffWeeks < 4) return `${diffWeeks}w ago`;
+
+  const months = Math.floor(diffDays / 30);
+  if (months < 12) return `${months}mo ago`;
+
+  const years = Math.floor(diffDays / 365);
+  return `${years}y ago`;
+}
 
 export default function VoicePage() {
   const params = useParams();
@@ -41,34 +58,39 @@ export default function VoicePage() {
   const { recordings, loading: recordingsLoading, addRecording } = useVoiceRecordings();
   const { error: toastError } = useToast();
 
-  const [voices, setVoices] = useState<VoiceResponse[]>([]);
-  const [voicesLoading, setVoicesLoading] = useState(true);
-  const [voicesError, setVoicesError] = useState<string | null>(null);
+  const [availableVoicesLoading, setAvailableVoicesLoading] = useState(true);
+  const [availableVoicesError, setAvailableVoicesError] = useState<string | null>(null);
+  const [ownVoices, setOwnVoices] = useState<VoiceRecordingResponse[]>([]);
+  const [communityVoices, setCommunityVoices] = useState<
+    Array<VoiceRecordingResponse & { creator_username: string; admin_approved_at?: string | null }>
+  >([]);
   const [selectedVoice, setSelectedVoice] = useState<VoiceOption | null>(null);
   const [playingVoice, setPlayingVoice] = useState<string | null>(null);
   const [showRecorder, setShowRecorder] = useState(false);
   const [showFullScriptModal, setShowFullScriptModal] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Fetch voices
+  // Fetch available voices (own + community)
   useEffect(() => {
     let cancelled = false;
-    setVoicesLoading(true);
-    listVoices()
+    setAvailableVoicesLoading(true);
+    getAvailableVoices()
       .then((data) => {
         if (!cancelled) {
-          setVoices(data);
-          setVoicesError(null);
+          setOwnVoices(data.own_voices);
+          setCommunityVoices(data.community_voices);
+          setAvailableVoicesError(null);
         }
       })
       .catch((err) => {
         if (!cancelled) {
-          setVoicesError(err instanceof Error ? err.message : "Unable to load voices");
-          setVoices([]);
+          setAvailableVoicesError(err instanceof Error ? err.message : "Unable to load voices");
+          setOwnVoices([]);
+          setCommunityVoices([]);
         }
       })
       .finally(() => {
-        if (!cancelled) setVoicesLoading(false);
+        if (!cancelled) setAvailableVoicesLoading(false);
       });
 
     return () => {
@@ -90,44 +112,36 @@ export default function VoicePage() {
   }, []);
 
   const myVoiceOptions: VoiceOption[] = useMemo(() => {
-    return recordings.map((recording) => ({
-      id: String(recording.id),
-      name: recording.title,
-      description: recording.description,
-      type: "recording" as const,
-      metadata: {
-        duration: recording.duration_seconds ?? undefined,
-      },
-      previewUrl: recording.audio_url,
+    return ownVoices.map((voice) => ({
+      id: String(voice.id),
+      name: voice.title,
+      type: "own" as const,
     }));
-  }, [recordings]);
+  }, [ownVoices]);
 
-  const stockVoiceOptions: VoiceOption[] = useMemo(() => {
-    return voices.map((voice) => ({
-      id: voice.id,
-      name: voice.name,
-      description: voice.description,
-      type: "stock" as const,
-      metadata: {
-        gender: voice.gender ?? undefined,
-        accent: voice.accent ?? undefined,
-        language: voice.language ?? undefined,
-      },
-      previewUrl: voice.preview_path ?? undefined,
+  const communityVoiceOptions: VoiceOption[] = useMemo(() => {
+    return communityVoices.map((voice) => ({
+      id: String(voice.id),
+      name: voice.title,
+      type: "community" as const,
+      creatorUsername: voice.creator_username,
+      approvedAt: voice.admin_approved_at
+        ? `approved ${formatRelativeTime(voice.admin_approved_at)}`
+        : undefined,
     }));
-  }, [voices]);
+  }, [communityVoices]);
 
-  // Initialize selectedVoice from saved state — merged into a single effect
+  // Initialize selectedVoice from saved state
   useEffect(() => {
     if (selectedVoice) return;
     const savedId = state?.voiceId ?? state?.voice?.id;
     if (!savedId) return;
-    const allVoices = [...myVoiceOptions, ...stockVoiceOptions];
+    const allVoices = [...myVoiceOptions, ...communityVoiceOptions];
     const savedVoice = allVoices.find((v) => v.id === savedId);
     if (savedVoice) {
       setSelectedVoice(savedVoice);
     }
-  }, [state?.voiceId, state?.voice, myVoiceOptions, stockVoiceOptions, selectedVoice]);
+  }, [state?.voiceId, state?.voice, myVoiceOptions, communityVoiceOptions, selectedVoice]);
 
   const playAudio = async (voice: VoiceOption) => {
     const cacheKey = `${voice.type}-${voice.id}`;
@@ -144,52 +158,38 @@ export default function VoicePage() {
     try {
       setPlayingVoice(cacheKey);
 
-      let audioUrl: string;
+      // Get the preview URL from the voice data
+      const voiceData =
+        voice.type === "own"
+          ? ownVoices.find((v) => v.id === Number(voice.id))
+          : communityVoices.find((v) => v.id === Number(voice.id));
 
-      if (voice.type === "recording") {
-        const recordingAudioUrl = voice.previewUrl;
+      const audioUrl = voiceData?.audio_url;
 
-        if (!recordingAudioUrl) {
-          console.error("No audio URL available for recording");
-          setPlayingVoice(null);
-          toastError("Preview unavailable", "Audio preview is not available for this recording.");
-          return;
-        }
-
-        const response = await fetch(recordingAudioUrl);
-        if (!response.ok) {
-          throw new Error("Failed to load recording audio");
-        }
-        const blob = await response.blob();
-        audioUrl = URL.createObjectURL(blob);
-      } else {
-        const presignedUrl = await getVoicePreviewUrl(voice.id);
-
-        if (!presignedUrl) {
-          console.error("No preview available for stock voice");
-          setPlayingVoice(null);
-          toastError("Preview unavailable", "This voice does not have a preview available.");
-          return;
-        }
-
-        const response = await fetch(presignedUrl);
-        if (!response.ok) {
-          throw new Error("Failed to load voice preview");
-        }
-        const blob = await response.blob();
-        audioUrl = URL.createObjectURL(blob);
+      if (!audioUrl) {
+        console.error("No audio URL available for voice");
+        setPlayingVoice(null);
+        toastError("Preview unavailable", "Audio preview is not available for this voice.");
+        return;
       }
 
-      audioRef.current = new Audio(audioUrl);
+      const response = await fetch(audioUrl);
+      if (!response.ok) {
+        throw new Error("Failed to load voice audio");
+      }
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+
+      audioRef.current = new Audio(blobUrl);
       audioRef.current.onended = () => {
         setPlayingVoice(null);
-        URL.revokeObjectURL(audioUrl);
+        URL.revokeObjectURL(blobUrl);
       };
       audioRef.current.onerror = (e) => {
         console.error("Audio playback error:", audioRef.current?.error, e);
         setPlayingVoice(null);
         toastError("Playback failed", "Failed to play the audio preview.");
-        URL.revokeObjectURL(audioUrl);
+        URL.revokeObjectURL(blobUrl);
       };
 
       await audioRef.current.play();
@@ -207,7 +207,6 @@ export default function VoicePage() {
       id: voice.id,
       name: voice.name,
       audioUrl: null,
-      duration: voice.metadata?.duration,
     });
 
     // Save voice selection to localStorage for preview page
@@ -217,7 +216,8 @@ export default function VoicePage() {
         JSON.stringify({
           id: voice.id,
           name: voice.name,
-          type: voice.type === "recording" ? "custom" : "stock", // Map recording -> custom for backend
+          type: voice.type,
+          creator_username: voice.creatorUsername,
         })
       );
     } catch (e) {
@@ -239,15 +239,13 @@ export default function VoicePage() {
       addRecording(recordingWithUrl);
       setShowRecorder(false);
 
+      // Add to own voices list
+      setOwnVoices([recordingWithUrl, ...ownVoices]);
+
       const newVoiceOption: VoiceOption = {
         id: String(recordingWithUrl.id),
         name: recordingWithUrl.title,
-        description: recordingWithUrl.description,
-        type: "recording" as const,
-        metadata: {
-          duration: recordingWithUrl.duration_seconds ?? undefined,
-        },
-        previewUrl: recordingWithUrl.audio_url,
+        type: "own" as const,
       };
 
       handleSelectVoice(newVoiceOption);
@@ -279,7 +277,7 @@ export default function VoicePage() {
           )}
         </div>
 
-        {/* Script Summary Card - Highlight the tagline */}
+        {/* Script Summary Card */}
         {state?.scriptSummary && (
           <Card
             variant="elevated"
@@ -288,7 +286,7 @@ export default function VoicePage() {
           >
             <div className="flex items-start gap-4">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted flex-shrink-0">
-                <Sparkles className="h-5 w-5 text-accent-cyan" />
+                <FileText className="h-5 w-5 text-accent-cyan" />
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="text-sm font-medium text-text-secondary uppercase tracking-wide mb-2">
@@ -336,19 +334,45 @@ export default function VoicePage() {
           </Card>
         )}
 
-        {/* Record Voice CTA */}
-        {!showRecorder && myVoiceOptions.length === 0 && (
-          <EmptyState
-            icon={Mic}
-            title="Record Your Voice"
-            description="Create a custom voice clone by recording a sample from your microphone."
-            action={{
-              label: "Start Recording",
-              onClick: () => setShowRecorder(true),
-              icon: <Mic size={16} />,
-            }}
-            variant="accent-purple"
-          />
+        {/* Voice Selection Component */}
+        <VoiceGeneration
+          script={activeScript?.content || ""}
+          ownVoices={myVoiceOptions}
+          communityVoices={communityVoiceOptions}
+          selectedVoiceId={selectedVoice?.id}
+          audioUrl={undefined}
+          isGenerating={false}
+          progress={0}
+          onVoiceSelect={handleSelectVoice}
+          onGenerate={() => {}}
+          onChangeVoice={() => setSelectedVoice(null)}
+          isLoadingVoices={availableVoicesLoading}
+          voicesError={availableVoicesError}
+        />
+
+        {/* Record New Voice CTA */}
+        {!showRecorder && myVoiceOptions.length < 5 && (
+          <Card variant="glass" padding="md" className="border-accent-purple/30 bg-accent-purple/5">
+            <div className="flex items-center justify-between">
+              <div className="flex items-start gap-3">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-primary/20 flex-shrink-0">
+                  <Plus className="w-4 h-4 text-accent-primary" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-text-primary">
+                    Want to add more of your voices?
+                  </p>
+                  <p className="text-xs text-text-secondary">
+                    Record more voices in your Voice Library
+                  </p>
+                </div>
+              </div>
+              <Button variant="secondary" size="sm" onClick={() => setShowRecorder(true)}>
+                <Mic className="h-3 w-3 mr-1" />
+                Record
+              </Button>
+            </div>
+          </Card>
         )}
 
         {/* Voice Recorder Modal */}
@@ -358,7 +382,7 @@ export default function VoicePage() {
             padding="lg"
             className="border-accent-purple/30 bg-surface-panel"
           >
-            <div className="mb-4 flex items-center justify-between">
+            <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-text-primary">Record New Voice</h3>
               <Button variant="secondary" size="sm" onClick={() => setShowRecorder(false)}>
                 Cancel
@@ -367,99 +391,6 @@ export default function VoicePage() {
             <VoiceRecorder onSaved={handleRecordingSaved} />
           </Card>
         )}
-
-        {/* My Voices Section */}
-        {myVoiceOptions.length > 0 && (
-          <div>
-            <div className="mb-3 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Mic className="h-5 w-5 text-accent-purple" />
-                <h3 className="text-lg font-medium text-text-primary">
-                  My Voices ({myVoiceOptions.length})
-                </h3>
-              </div>
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => setShowRecorder(true)}
-                className="gap-1"
-              >
-                <Plus size={16} />
-                <span>Record</span>
-              </Button>
-            </div>
-
-            {recordingsLoading ? (
-              <LoadingSkeleton variant="grid" count={3} />
-            ) : (
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {myVoiceOptions.map((voice) => {
-                  const cacheKey = `${voice.type}-${voice.id}`;
-                  return (
-                    <VoiceSelectionCard
-                      key={cacheKey}
-                      id={voice.id}
-                      name={voice.name}
-                      description={voice.description}
-                      type={voice.type}
-                      metadata={voice.metadata}
-                      isSelected={
-                        selectedVoice?.id === voice.id && selectedVoice?.type === voice.type
-                      }
-                      isPlaying={playingVoice === cacheKey}
-                      previewUrl={voice.previewUrl}
-                      onSelect={() => handleSelectVoice(voice)}
-                    />
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Stock Voices Section */}
-        <div>
-          <div className="mb-3 flex items-center gap-2">
-            <Globe className="h-5 w-5 text-accent-cyan" />
-            <h3 className="text-lg font-medium text-text-primary">
-              Stock Voices ({stockVoiceOptions.length})
-            </h3>
-          </div>
-
-          {voicesLoading ? (
-            <LoadingSkeleton variant="grid" count={6} />
-          ) : voicesError ? (
-            <p className="text-sm text-status-failed">{voicesError}</p>
-          ) : stockVoiceOptions.length === 0 ? (
-            <div className="rounded-lg border border-border-default bg-surface-panel p-8 text-center">
-              <p className="mb-2 text-text-secondary">No stock voices available.</p>
-              <p className="text-sm text-text-muted">Stock voices will appear here once loaded.</p>
-            </div>
-          ) : (
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {stockVoiceOptions.map((voice) => {
-                const cacheKey = `${voice.type}-${voice.id}`;
-
-                return (
-                  <VoiceSelectionCard
-                    key={cacheKey}
-                    id={voice.id}
-                    name={voice.name}
-                    description={voice.description}
-                    type={voice.type}
-                    metadata={voice.metadata}
-                    isSelected={
-                      selectedVoice?.id === voice.id && selectedVoice?.type === voice.type
-                    }
-                    isPlaying={playingVoice === cacheKey}
-                    previewUrl={voice.previewUrl}
-                    onSelect={() => handleSelectVoice(voice)}
-                  />
-                );
-              })}
-            </div>
-          )}
-        </div>
       </div>
 
       {/* Full Script Modal */}

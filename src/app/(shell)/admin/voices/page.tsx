@@ -170,7 +170,7 @@ export default function AdminVoicesPage() {
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    
+
     if (diffDays === 0) return "Today";
     if (diffDays === 1) return "1 day ago";
     if (diffDays < 7) return `${diffDays} days ago`;
@@ -182,7 +182,7 @@ export default function AdminVoicesPage() {
   // Filter voices based on search and view type
   const getFilteredVoices = (): VoiceWithCreator[] => {
     let voices: VoiceWithCreator[] = [];
-    
+
     if (viewType === "pending") {
       voices = pendingVoices;
     } else if (viewType === "approved") {
@@ -197,8 +197,7 @@ export default function AdminVoicesPage() {
     const query = searchTerm.toLowerCase();
     return voices.filter(
       (v) =>
-        v.name.toLowerCase().includes(query) ||
-        v.creator_username.toLowerCase().includes(query)
+        v.name.toLowerCase().includes(query) || v.creator_username.toLowerCase().includes(query)
     );
   };
 
@@ -244,7 +243,9 @@ export default function AdminVoicesPage() {
               </div>
               <h1 className="text-3xl font-bold text-text-primary">Community Voices</h1>
             </div>
-            <p className="text-text-secondary">Review and approve shared voices for the public catalog</p>
+            <p className="text-text-secondary">
+              Review and approve shared voices for the public catalog
+            </p>
           </div>
         </div>
 
@@ -404,8 +405,8 @@ export default function AdminVoicesPage() {
               {searchTerm
                 ? "Try adjusting your search criteria"
                 : viewType === "pending"
-                ? "User-shared voices will appear here for your approval"
-                : "Approved voices will appear here"}
+                  ? "User-shared voices will appear here for your approval"
+                  : "Approved voices will appear here"}
             </p>
           </div>
         </div>
@@ -439,8 +440,7 @@ export default function AdminVoicesPage() {
                 <div className="col-span-1 md:col-span-2">
                   <div className="md:hidden text-xs font-medium text-text-muted mb-1">Creator</div>
                   <p className="text-sm text-text-secondary flex items-center gap-1.5">
-                    <User className="h-3.5 w-3.5" />
-                    @{voice.creator_username}
+                    <User className="h-3.5 w-3.5" />@{voice.creator_username}
                   </p>
                 </div>
                 <div className="col-span-1 md:col-span-2">

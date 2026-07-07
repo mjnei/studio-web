@@ -13,7 +13,11 @@ interface VoiceRecordingCardProps {
   onSharingToggled?: (id: number, isShared: boolean) => void;
 }
 
-export function VoiceRecordingCard({ recording, onDelete, onSharingToggled }: VoiceRecordingCardProps) {
+export function VoiceRecordingCard({
+  recording,
+  onDelete,
+  onSharingToggled,
+}: VoiceRecordingCardProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -49,9 +53,9 @@ export function VoiceRecordingCard({ recording, onDelete, onSharingToggled }: Vo
       onSharingToggled?.(recording.id, !isShared);
     } catch (error: any) {
       console.error("Failed to toggle sharing:", error);
-      setAudioErrorAlert({ 
-        open: true, 
-        message: error.message || "Failed to update sharing status" 
+      setAudioErrorAlert({
+        open: true,
+        message: error.message || "Failed to update sharing status",
       });
     } finally {
       setIsTogglingSharing(false);

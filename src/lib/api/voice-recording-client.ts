@@ -120,3 +120,19 @@ export async function toggleVoiceSharing(
     body: JSON.stringify({ is_shared: isShared }),
   });
 }
+
+/**
+ * Get all available voices for the user (own voices + approved community voices).
+ * Separates voices into own_voices and community_voices lists.
+ * Used for voice selection in project creation/editing.
+ */
+export async function getAvailableVoices(): Promise<{
+  own_voices: VoiceRecordingResponse[];
+  community_voices: Array<VoiceRecordingResponse & { creator_username: string }>;
+}> {
+  const { AvailableVoicesResponse } = await import("../types/api");
+  return request<{
+    own_voices: VoiceRecordingResponse[];
+    community_voices: Array<VoiceRecordingResponse & { creator_username: string }>;
+  }>("/voices/available");
+}

@@ -1,25 +1,37 @@
 "use client";
 
-import { useState } from "react";
-import { Mic, Play, Pause, Volume2, Download, Loader2, Check } from "lucide-react";
+import { useState, useEffect } from "react";
+import {
+  Mic,
+  Play,
+  Pause,
+  Volume2,
+  Download,
+  Loader2,
+  Check,
+  Globe,
+  User,
+  AlertCircle,
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Select } from "@/components/ui/select";
 import { useToast } from "@/components/ui/toast";
+import { getAvailableVoices } from "@/lib/api/voice-recording-client";
+import type { VoiceRecordingResponse } from "@/lib/types/api";
 
 export interface Voice {
   id: string;
   name: string;
-  gender?: string;
-  accent?: string;
-  category?: string;
-  provider?: string;
+  type: "own" | "community";
+  creatorUsername?: string;
+  approvedAt?: string;
 }
 
 interface VoiceGenerationProps {
   script: string;
-  voices: Voice[];
+  ownVoices: Voice[];
+  communityVoices: Voice[];
   selectedVoiceId?: string;
   audioUrl?: string;
   isGenerating?: boolean;
@@ -27,11 +39,14 @@ interface VoiceGenerationProps {
   onVoiceSelect: (voiceId: string) => void;
   onGenerate: (voiceId: string) => void;
   onChangeVoice: () => void;
+  isLoadingVoices?: boolean;
+  voicesError?: string | null;
 }
 
 export function VoiceGeneration({
   script,
-  voices,
+  ownVoices,
+  communityVoices,
   selectedVoiceId,
   audioUrl,
   isGenerating = false,
@@ -39,8 +54,11 @@ export function VoiceGeneration({
   onVoiceSelect,
   onGenerate,
   onChangeVoice,
+  isLoadingVoices = false,
+  voicesError = null,
 }: VoiceGenerationProps) {
   const [playing, setPlaying] = useState(false);
+  const [tab, setTab] = useState<"own" | "community">("own");
   const toast = useToast();
 
   const handleGenerate = () => {
@@ -58,7 +76,6 @@ export function VoiceGeneration({
 
   const downloadAudio = () => {
     if (audioUrl) {
-      // Implement download logic
       toast.success("Downloaded", "Audio file saved to your device");
     }
   };
@@ -66,7 +83,8 @@ export function VoiceGeneration({
   const wordCount = script.split(/\s+/).filter(Boolean).length;
   const estimatedDuration = Math.ceil(wordCount / 150);
 
-  const selectedVoice = voices.find((v) => v.id === selectedVoiceId);
+  const allVoices = [...ownVoices, ...communityVoices];
+  const selectedVoice = allVoices.find((v) => v.id === selectedVoiceId);
 
   return (
     <div className="space-y-6 fade-in">
@@ -88,58 +106,188 @@ export function VoiceGeneration({
         <CardHeader className="pb-4">
           <CardTitle>Select Voice</CardTitle>
           <p className="text-sm text-text-secondary mt-1">
-            Choose the voice that best fits your project
+            Choose from your voices or discover community-approved voices
           </p>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {voices.map((voice) => (
-              <Card
-                key={voice.id}
-                variant="bordered"
-                padding="md"
-                interactive
-                className={`
-                  cursor-pointer transition-all
-                  ${
-                    selectedVoiceId === voice.id
-                      ? "ring-2 ring-accent-primary border-accent-primary"
-                      : ""
-                  }
-                `}
-                onClick={() => onVoiceSelect(voice.id)}
-              >
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-accent-secondary to-accent-tertiary">
-                      <Mic className="w-5 h-5 text-white" />
+          {/* Tab Navigation */}
+          <div className="inline-flex items-center gap-2 rounded-lg bg-surface-panel p-1.5 border border-border-default w-full sm:w-auto">
+            <button
+              onClick={() => setTab("own")}
+              className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold transition-all ${
+                tab === "own"
+                  ? "bg-gradient-to-r from-accent-primary to-purple-600 text-white shadow-md"
+                  : "text-text-muted hover:text-text-secondary hover:bg-surface-raised"
+              }`}
+            >
+              <Mic className="h-4 w-4" />
+              <span>My Voices</span>
+              {ownVoices.length > 0 && (
+                <span
+                  className={`text-xs font-bold ${tab === "own" ? "bg-white/20" : "bg-surface-raised"} px-2 py-0.5 rounded-full`}
+                >
+                  {ownVoices.length}
+                </span>
+              )}
+            </button>
+
+            <button
+              onClick={() => setTab("community")}
+              className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold transition-all ${
+                tab === "community"
+                  ? "bg-gradient-to-r from-accent-cyan to-blue-600 text-white shadow-md"
+                  : "text-text-muted hover:text-text-secondary hover:bg-surface-raised"
+              }`}
+            >
+              <Globe className="h-4 w-4" />
+              <span>Community</span>
+              {communityVoices.length > 0 && (
+                <span
+                  className={`text-xs font-bold ${tab === "community" ? "bg-white/20" : "bg-surface-raised"} px-2 py-0.5 rounded-full`}
+                >
+                  {communityVoices.length}
+                </span>
+              )}
+            </button>
+          </div>
+
+          {/* Error State */}
+          {voicesError && (
+            <Card
+              variant="glass"
+              padding="md"
+              className="border-status-failed/30 bg-status-failed/10"
+            >
+              <div className="flex items-start gap-3">
+                <AlertCircle className="h-5 w-5 text-status-failed flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-status-failed">{voicesError}</p>
+              </div>
+            </Card>
+          )}
+
+          {/* Loading State */}
+          {isLoadingVoices ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="h-24 animate-pulse rounded-lg bg-surface-panel border border-border-default"
+                />
+              ))}
+            </div>
+          ) : (
+            <>
+              {/* Own Voices Tab */}
+              {tab === "own" && (
+                <div className="space-y-3">
+                  {ownVoices.length === 0 ? (
+                    <div className="text-center py-8 rounded-lg border border-dashed border-border-default bg-surface-panel/50">
+                      <Mic className="h-8 w-8 text-text-muted mx-auto mb-2 opacity-50" />
+                      <p className="text-sm text-text-muted mb-2">No personal voices yet</p>
+                      <p className="text-xs text-text-muted max-w-xs mx-auto">
+                        Record a voice in your Voice Library to use it here
+                      </p>
                     </div>
-                    <div>
-                      <p className="font-semibold text-text-primary text-sm">{voice.name}</p>
-                      <div className="flex items-center gap-2 mt-1">
-                        {voice.gender && (
-                          <Badge variant="default" size="sm">
-                            {voice.gender}
-                          </Badge>
-                        )}
-                        {voice.accent && (
-                          <Badge variant="default" size="sm">
-                            {voice.accent}
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  {selectedVoiceId === voice.id && (
-                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-primary">
-                      <Check className="w-4 h-4 text-white" />
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {ownVoices.map((voice) => (
+                        <Card
+                          key={voice.id}
+                          variant={selectedVoiceId === voice.id ? "elevated" : "bordered"}
+                          padding="md"
+                          interactive
+                          className={`cursor-pointer transition-all ${
+                            selectedVoiceId === voice.id
+                              ? "ring-2 ring-accent-primary border-accent-primary"
+                              : "hover:border-accent-primary/40"
+                          }`}
+                          onClick={() => onVoiceSelect(voice.id)}
+                        >
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex items-start gap-2 flex-1 min-w-0">
+                              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-accent-primary to-purple-600 flex-shrink-0">
+                                <Mic className="w-5 h-5 text-white" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="font-semibold text-text-primary text-sm truncate">
+                                  {voice.name}
+                                </p>
+                                <p className="text-xs text-text-muted">Your voice</p>
+                              </div>
+                            </div>
+                            {selectedVoiceId === voice.id && (
+                              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-primary flex-shrink-0">
+                                <Check className="w-4 h-4 text-white" />
+                              </div>
+                            )}
+                          </div>
+                        </Card>
+                      ))}
                     </div>
                   )}
                 </div>
-                {voice.category && <p className="text-xs text-text-secondary">{voice.category}</p>}
-              </Card>
-            ))}
-          </div>
+              )}
+
+              {/* Community Voices Tab */}
+              {tab === "community" && (
+                <div className="space-y-3">
+                  {communityVoices.length === 0 ? (
+                    <div className="text-center py-8 rounded-lg border border-dashed border-border-default bg-surface-panel/50">
+                      <Globe className="h-8 w-8 text-text-muted mx-auto mb-2 opacity-50" />
+                      <p className="text-sm text-text-muted mb-2">No community voices available</p>
+                      <p className="text-xs text-text-muted max-w-xs mx-auto">
+                        Community voices will appear here once they're shared and approved
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {communityVoices.map((voice) => (
+                        <Card
+                          key={voice.id}
+                          variant={selectedVoiceId === voice.id ? "elevated" : "bordered"}
+                          padding="md"
+                          interactive
+                          className={`cursor-pointer transition-all ${
+                            selectedVoiceId === voice.id
+                              ? "ring-2 ring-accent-cyan border-accent-cyan"
+                              : "hover:border-accent-cyan/40"
+                          }`}
+                          onClick={() => onVoiceSelect(voice.id)}
+                        >
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex items-start gap-2 flex-1 min-w-0">
+                              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-accent-cyan to-blue-600 flex-shrink-0">
+                                <Globe className="w-5 h-5 text-white" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="font-semibold text-text-primary text-sm truncate">
+                                  {voice.name}
+                                </p>
+                                <p className="text-xs text-text-muted flex items-center gap-1">
+                                  <User className="h-3 w-3" />
+                                  <span>@{voice.creatorUsername}</span>
+                                </p>
+                                {voice.approvedAt && (
+                                  <p className="text-xs text-status-completed mt-1">
+                                    ✓ {voice.approvedAt}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                            {selectedVoiceId === voice.id && (
+                              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-cyan flex-shrink-0">
+                                <Check className="w-4 h-4 text-white" />
+                              </div>
+                            )}
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </>
+          )}
         </CardContent>
       </Card>
 

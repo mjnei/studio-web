@@ -1,64 +1,84 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { Plus, Play, Pause, Volume2, Mic, Sparkles, Search, X } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Plus, Mic, Globe, User, AlertCircle } from "lucide-react";
 import { VoiceRecorder } from "@/components/shared/voice-recorder";
 import { VoiceRecordingCard } from "@/components/voices/voice-recording-card";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { useVoiceRecordings } from "@/lib/hooks/use-voice-recordings";
-import { useStockVoices, getVoicePreviewUrl } from "@/lib/hooks/use-stock-voices";
+import { getAvailableVoices } from "@/lib/api/voice-recording-client";
 import { VoiceRecordingResponse } from "@/lib/types/api";
 
+/**
+ * Format relative time for display
+ * @param dateString ISO date string
+ * @returns Relative time like "3 days ago"
+ */
+function formatRelativeTime(dateString: string): string {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffSec = Math.floor(diffMs / 1000);
+  const diffMin = Math.floor(diffSec / 60);
+  const diffHours = Math.floor(diffMin / 60);
+  const diffDays = Math.floor(diffHours / 24);
+  const diffWeeks = Math.floor(diffDays / 7);
+
+  if (diffSec < 60) return "just now";
+  if (diffMin < 60) return `${diffMin}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
+  if (diffDays < 7) return `${diffDays}d ago`;
+  if (diffWeeks < 4) return `${diffWeeks}w ago`;
+
+  const months = Math.floor(diffDays / 30);
+  if (months < 12) return `${months}mo ago`;
+
+  const years = Math.floor(diffDays / 365);
+  return `${years}y ago`;
+}
+
 export default function VoicesPage() {
-  const [tab, setTab] = useState<"my" | "stock">("my");
+  const [tab, setTab] = useState<"my" | "community">("my");
   const [showRecorder, setShowRecorder] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const { recordings, loading, error, deleteRecording, addRecording } = useVoiceRecordings();
-  const { voices: stockVoices, loading: stockLoading, error: stockError } = useStockVoices();
+  const { recordings, loading, error, deleteRecording, addRecording, refetch } = useVoiceRecordings();
+  
+  const [communityVoices, setCommunityVoices] = useState<
+    Array<VoiceRecordingResponse & { creator_username: string; admin_approved_at?: string | null }>
+  >([]);
+  const [communityLoading, setCommunityLoading] = useState(false);
+  const [communityError, setCommunityError] = useState<string | null>(null);
 
   const [playingVoiceId, setPlayingVoiceId] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Fetch community voices when switching to community tab
+  useEffect(() => {
+    if (tab === "community" && communityVoices.length === 0) {
+      setCommunityLoading(true);
+      getAvailableVoices()
+        .then((data) => {
+          setCommunityVoices(data.community_voices);
+          setCommunityError(null);
+        })
+        .catch((err) => {
+          setCommunityError(err instanceof Error ? err.message : "Failed to load community voices");
+        })
+        .finally(() => {
+          setCommunityLoading(false);
+        });
+    }
+  }, [tab, communityVoices.length]);
 
   const handleRecordingSaved = (newRecording: VoiceRecordingResponse) => {
     addRecording(newRecording);
     setShowRecorder(false);
   };
 
-  const playStockVoiceAudio = async (voiceId: string) => {
-    try {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-
-      setPlayingVoiceId(voiceId);
-
-      const audioUrl = await getVoicePreviewUrl(voiceId);
-      if (!audioUrl) {
-        setPlayingVoiceId(null);
-        alert("Failed to load voice preview. Please try again.");
-        return;
-      }
-
-      const audio = new Audio(audioUrl);
-      audioRef.current = audio;
-
-      audio.onerror = () => {
-        setPlayingVoiceId(null);
-        alert("Failed to play audio. The preview file may be unavailable.");
-      };
-
-      audio.onended = () => {
-        setPlayingVoiceId(null);
-      };
-
-      await audio.play();
-    } catch (error) {
-      console.error("Audio playback error:", error);
-      setPlayingVoiceId(null);
-      alert("Failed to play audio. Please try again.");
-    }
+  const handleSharingToggled = () => {
+    // Refetch recordings to get updated sharing status
+    refetch();
   };
 
   const stopAudio = () => {
@@ -69,23 +89,19 @@ export default function VoicesPage() {
     setPlayingVoiceId(null);
   };
 
-  const filteredStockVoices = stockVoices.filter((voice) => {
-    if (!searchQuery) return true;
-    const query = searchQuery.toLowerCase();
-    return (
-      voice.name.toLowerCase().includes(query) ||
-      voice.description?.toLowerCase().includes(query) ||
-      voice.gender?.toLowerCase().includes(query) ||
-      voice.accent?.toLowerCase().includes(query) ||
-      voice.language?.toLowerCase().includes(query)
-    );
-  });
+  const stopAudio = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+    setPlayingVoiceId(null);
+  };
 
   return (
     <div className="max-w-7xl mx-auto">
       <PageHeader
         title="Voice Library"
-        description="Create custom voices or choose from our curated collection"
+        description="Create custom voices and discover community-shared voices for your projects"
         action={
           tab === "my" && !showRecorder ? (
             <Button
@@ -106,10 +122,7 @@ export default function VoicesPage() {
         <div className="inline-flex items-center gap-2 rounded-xl bg-surface-panel p-1.5 shadow-sm border border-border-default">
           {/* My Voices Tab */}
           <button
-            onClick={() => {
-              setTab("my");
-              setSearchQuery("");
-            }}
+            onClick={() => setTab("my")}
             className={`relative flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold transition-all duration-200 ${
               tab === "my"
                 ? "bg-gradient-to-r from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30"
@@ -129,68 +142,36 @@ export default function VoicesPage() {
             )}
           </button>
 
-          {/* Stock Voices Tab */}
+          {/* Community Voices Tab */}
           <button
-            onClick={() => {
-              setTab("stock");
-              setSearchQuery("");
-            }}
+            onClick={() => setTab("community")}
             className={`relative flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold transition-all duration-200 ${
-              tab === "stock"
+              tab === "community"
                 ? "bg-gradient-to-r from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30"
                 : "text-text-muted hover:text-text-secondary hover:bg-surface-raised"
             }`}
           >
-            <Sparkles className="h-4 w-4" />
-            <span>Stock Voices</span>
-            {stockVoices.length > 0 && (
+            <Globe className="h-4 w-4" />
+            <span>Community</span>
+            {communityVoices.length > 0 && (
               <span
                 className={`ml-1 rounded-full px-2 py-0.5 text-xs font-bold ${
-                  tab === "stock" ? "bg-white/20" : "bg-surface-raised"
+                  tab === "community" ? "bg-white/20" : "bg-surface-raised"
                 }`}
               >
-                {stockVoices.length}
+                {communityVoices.length}
               </span>
             )}
           </button>
         </div>
       </div>
 
-      {/* Search Bar (Stock Voices Only) */}
-      {tab === "stock" && stockVoices.length > 0 && (
-        <div className="mb-6">
-          <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
-            <input
-              type="text"
-              placeholder="Search voices by name, gender, accent..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-lg border border-border-default bg-surface-panel pl-10 pr-10 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:border-accent-primary focus:outline-none focus:ring-2 focus:ring-accent-primary/20 transition-all"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-secondary transition-colors"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            )}
-          </div>
-          {searchQuery && (
-            <p className="mt-2 text-xs text-text-muted">
-              Found {filteredStockVoices.length} voice{filteredStockVoices.length !== 1 ? "s" : ""}
-            </p>
-          )}
-        </div>
-      )}
-
       {/* Content Area */}
       {tab === "my" ? (
         <div>
           {/* Voice Recorder */}
           {showRecorder && (
-            <div className="mb-8 rounded-xl border border-border-default bg-surface-panel p-6 shadow-lg">
+            <Card variant="elevated" padding="lg" className="mb-8 border-accent-purple/30">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold text-text-primary">Record New Voice</h2>
                 <Button variant="secondary" size="sm" onClick={() => setShowRecorder(false)}>
@@ -198,31 +179,34 @@ export default function VoicesPage() {
                 </Button>
               </div>
               <VoiceRecorder onSaved={handleRecordingSaved} />
-            </div>
+            </Card>
           )}
 
           {/* Error Message */}
           {error && (
-            <div className="mb-6 rounded-lg border border-red-500/20 bg-red-500/10 p-4">
-              <p className="text-sm text-red-300">{error}</p>
-            </div>
+            <Card variant="elevated" padding="md" className="mb-6 border-status-failed/30 bg-status-failed/10">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="h-5 w-5 text-status-failed flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-status-failed">{error}</p>
+              </div>
+            </Card>
           )}
 
           {/* Loading State */}
           {loading ? (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="h-48 animate-pulse rounded-xl bg-surface-panel" />
+                <div key={i} className="h-48 animate-pulse rounded-xl bg-surface-panel border border-border-default" />
               ))}
             </div>
           ) : recordings.length === 0 ? (
             /* Empty State */
-            <div className="rounded-xl border-2 border-dashed border-border-default bg-surface-panel/50 p-12 text-center">
+            <Card variant="glass" padding="xl" className="text-center border-dashed">
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent-primary/10">
                 <Mic className="h-8 w-8 text-accent-primary" />
               </div>
               <h3 className="mb-2 text-lg font-semibold text-text-primary">No voices yet</h3>
-              <p className="mb-4 text-sm text-text-muted max-w-md mx-auto">
+              <p className="mb-6 text-sm text-text-muted max-w-md mx-auto">
                 Start by recording a voice sample from your microphone. Your voice will be cloned
                 and ready to use in your projects.
               </p>
@@ -237,7 +221,7 @@ export default function VoicesPage() {
                   Record Your First Voice
                 </Button>
               )}
-            </div>
+            </Card>
           ) : (
             /* Voice Recordings Grid */
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -246,64 +230,79 @@ export default function VoicesPage() {
                   key={recording.id}
                   recording={recording}
                   onDelete={deleteRecording}
+                  onSharingToggled={handleSharingToggled}
                 />
               ))}
             </div>
           )}
         </div>
       ) : (
+      ) : (
+        /* Community Voices Tab */
         <div>
-          {/* Error Message */}
-          {stockError && (
-            <div className="mb-6 rounded-lg border border-red-500/20 bg-red-500/10 p-4">
-              <p className="text-sm text-red-300">{stockError}</p>
+          {/* Info Banner */}
+          <Card variant="glass" padding="md" className="mb-6 border-accent-cyan/30">
+            <div className="flex items-start gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan/10 flex-shrink-0">
+                <Globe className="h-5 w-5 text-accent-cyan" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-sm font-semibold text-text-primary mb-1">
+                  Community Voices
+                </h3>
+                <p className="text-xs text-text-muted leading-relaxed">
+                  Discover voices shared by other users and approved by our team. Use these voices
+                  in your projects alongside your own recordings.
+                </p>
+              </div>
             </div>
+          </Card>
+
+          {/* Error Message */}
+          {communityError && (
+            <Card variant="elevated" padding="md" className="mb-6 border-status-failed/30 bg-status-failed/10">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="h-5 w-5 text-status-failed flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-status-failed">{communityError}</p>
+              </div>
+            </Card>
           )}
 
           {/* Loading State */}
-          {stockLoading ? (
+          {communityLoading ? (
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="h-56 animate-pulse rounded-xl bg-surface-panel" />
+                <div key={i} className="h-56 animate-pulse rounded-xl bg-surface-panel border border-border-default" />
               ))}
             </div>
-          ) : filteredStockVoices.length === 0 ? (
+          ) : communityVoices.length === 0 ? (
             /* Empty State */
-            <div className="rounded-xl border-2 border-dashed border-border-default bg-surface-panel/50 p-12 text-center">
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-purple-500/10">
-                <Sparkles className="h-8 w-8 text-purple-500" />
+            <Card variant="glass" padding="xl" className="text-center border-dashed">
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent-cyan/10">
+                <Globe className="h-8 w-8 text-accent-cyan" />
               </div>
               <h3 className="mb-2 text-lg font-semibold text-text-primary">
-                {searchQuery ? "No voices found" : "No stock voices available"}
+                No community voices yet
               </h3>
-              <p className="text-sm text-text-muted">
-                {searchQuery
-                  ? "Try adjusting your search criteria"
-                  : "Stock voices will appear here once they're added"}
+              <p className="text-sm text-text-muted max-w-md mx-auto">
+                Community voices will appear here once users share their voices and they're
+                approved by our team.
               </p>
-              {searchQuery && (
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => setSearchQuery("")}
-                  className="mt-4"
-                >
-                  Clear Search
-                </Button>
-              )}
-            </div>
+            </Card>
           ) : (
-            /* Stock Voices Grid */
+            /* Community Voices Grid */
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {filteredStockVoices.map((voice) => (
-                <div
+              {communityVoices.map((voice) => (
+                <Card
                   key={voice.id}
-                  className="group relative rounded-xl border border-border-default bg-surface-panel p-5 shadow-sm hover:shadow-lg hover:border-accent-primary/40 transition-all duration-200 hover:-translate-y-1"
+                  variant="elevated"
+                  padding="md"
+                  className="group hover:border-accent-cyan/40 hover:shadow-lg transition-all duration-200 hover:-translate-y-1"
                 >
-                  {/* Voice Info */}
+                  {/* Voice Header */}
                   <div className="mb-4">
-                    <h3 className="font-semibold text-text-primary text-lg mb-2 truncate group-hover:text-accent-primary transition-colors">
-                      {voice.name}
+                    <h3 className="font-semibold text-text-primary text-lg mb-1 truncate group-hover:text-accent-cyan transition-colors">
+                      {voice.title}
                     </h3>
                     {voice.description && (
                       <p className="text-xs text-text-muted line-clamp-2 leading-relaxed">
@@ -312,61 +311,39 @@ export default function VoicesPage() {
                     )}
                   </div>
 
-                  {/* Tags */}
-                  <div className="flex flex-wrap gap-1.5 mb-4">
-                    {voice.gender && (
-                      <span className="inline-flex items-center rounded-full bg-blue-500/10 px-2.5 py-1 text-xs font-medium text-blue-600 border border-blue-500/20 capitalize">
-                        {voice.gender}
+                  {/* Creator Info */}
+                  <div className="mb-4 space-y-2">
+                    <div className="flex items-center gap-2 text-xs">
+                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-purple-500/10 flex-shrink-0">
+                        <User className="h-3.5 w-3.5 text-purple-600" />
+                      </div>
+                      <span className="text-text-secondary font-medium">
+                        by @{voice.creator_username}
                       </span>
+                    </div>
+
+                    {voice.admin_approved_at && (
+                      <div className="flex items-center gap-1.5 text-xs text-status-completed">
+                        <div className="h-1 w-1 rounded-full bg-status-completed"></div>
+                        <span>Approved {formatRelativeTime(voice.admin_approved_at)}</span>
+                      </div>
                     )}
-                    {voice.language && (
-                      <span className="inline-flex items-center rounded-full bg-purple-500/10 px-2.5 py-1 text-xs font-medium text-purple-600 border border-purple-500/20 uppercase">
-                        {voice.language}
-                      </span>
-                    )}
-                    {voice.accent && (
-                      <span className="inline-flex items-center rounded-full bg-orange-500/10 px-2.5 py-1 text-xs font-medium text-orange-600 border border-orange-500/20 capitalize">
-                        {voice.accent}
-                      </span>
+
+                    {voice.duration_seconds && (
+                      <div className="text-xs text-text-muted">
+                        Duration: {Math.floor(voice.duration_seconds / 60)}:
+                        {(voice.duration_seconds % 60).toFixed(0).padStart(2, "0")}
+                      </div>
                     )}
                   </div>
 
-                  {/* Preview Button */}
-                  {voice.preview_path ? (
-                    <button
-                      onClick={() => {
-                        if (playingVoiceId === voice.id) {
-                          stopAudio();
-                        } else {
-                          playStockVoiceAudio(voice.id);
-                        }
-                      }}
-                      className={`w-full flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-all duration-200 ${
-                        playingVoiceId === voice.id
-                          ? "bg-gradient-to-r from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30 scale-[1.02]"
-                          : "border border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:text-accent-primary hover:bg-accent-primary/5 hover:shadow-md"
-                      }`}
-                      title={playingVoiceId === voice.id ? "Stop preview" : "Play preview"}
-                    >
-                      {playingVoiceId === voice.id ? (
-                        <>
-                          <Pause className="h-4 w-4" />
-                          <span>Playing</span>
-                          <Volume2 className="h-4 w-4 animate-pulse" />
-                        </>
-                      ) : (
-                        <>
-                          <Play className="h-4 w-4" />
-                          <span>Preview Voice</span>
-                        </>
-                      )}
-                    </button>
-                  ) : (
-                    <div className="w-full flex items-center justify-center px-4 py-2.5 text-xs text-text-muted italic border border-border-default rounded-lg bg-surface-base/50">
-                      No preview available
+                  {/* Action Button - Placeholder for future preview functionality */}
+                  <div className="pt-3 border-t border-border-subtle">
+                    <div className="text-xs text-text-muted text-center italic">
+                      Preview available in projects
                     </div>
-                  )}
-                </div>
+                  </div>
+                </Card>
               ))}
             </div>
           )}
