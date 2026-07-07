@@ -86,7 +86,7 @@ The backend now provides a unified `/api/v1/voices/*` API pattern alongside the 
     - Test error handling and retry
     - Test audio URL attachment
     - **Property 1: Audio URL Retrieval Consistency**
-    - **Validates: Requirements 2.1, 2.2, 2.6_**
+    - **Validates: Requirements 2.1, 2.2, 2.6**
 
   - [x] 2.3 Verify hook works with components
     - Ensure hook exports correct TypeScript types
@@ -165,70 +165,78 @@ The backend now provides a unified `/api/v1/voices/*` API pattern alongside the 
     - Test community voice discovery and approval display
     - _Requirements: 4.3, 4.4, 6.3, 6.6_
 
-- [ ] 6. Update any additional voice-related components
-  - [~] 6.1 Search for all imports of `VoiceRecordingResponse`
-    - Find components still using deprecated type
-    - List all files needing updates
+- [x] 6. Update any additional voice-related components
+  - [x] 6.1 Search for all imports of `VoiceRecordingResponse`
+    - ✅ No components found using deprecated type
+    - ✅ All components already migrated to new API
     - _Requirements: 5.3_
 
-  - [~] 6.2 Update each component
-    - Replace `VoiceRecordingResponse` with `VoiceResponse`
-    - Update field references (title → name)
-    - Update any voice client function calls
-    - For each component: ~15 minutes per file
+  - [x] 6.2 Update each component
+    - ✅ No components need updating
+    - ✅ voice-recorder.tsx already uses uploadVoice from voice-client
+    - ✅ voice-recording-card.tsx already uses VoiceResponse type
+    - ✅ voices/page.tsx already uses useVoices hook
+    - ✅ All field references already updated (title → name)
     - _Requirements: 4.1, 4.2_
 
-  - [ ]* 6.3 Write tests for all updated components
-    - Test each component with new schema
-    - Test all voice-related functionality
+  - [x] 6.3 Write tests for all updated components
+    - ✅ Tests already exist in previous tasks
+    - ✅ voice-recording-card.test.tsx created in Task 3.3
+    - ✅ voice-generation.test.tsx created in Task 5
     - **Property 3: Schema Field Transformation**
     - **Validates: Requirements 4.1, 4.2**
 
-- [ ] 7. Update and clean type definitions
-  - [~] 7.1 Review `/src/lib/types/api.ts`
-    - Confirm `VoiceResponse` is primary schema
-    - Confirm `VoiceWithCreator` is defined correctly
-    - Confirm `AvailableVoicesResponse` matches backend
+- [x] 7. Update and clean type definitions
+  - [x] 7.1 Review `/src/lib/types/api.ts`
+    - ✅ `VoiceResponse` is primary schema
+    - ✅ `VoiceWithCreator` is defined correctly
+    - ✅ `AvailableVoicesResponse` matches backend
+    - ✅ Request/response types all present
     - _Requirements: 5.1, 5.2, 5.3_
 
-  - [~] 7.2 Mark `VoiceRecordingResponse` as deprecated
-    - Add JSDoc `@deprecated` comment
-    - Add migration note pointing to `VoiceResponse`
-    - Keep interface in place temporarily
+  - [x] 7.2 Mark `VoiceRecordingResponse` as deprecated
+    - ✅ Already marked with @deprecated JSDoc comment
+    - ✅ Migration note pointing to `VoiceResponse` present
+    - ✅ Interface kept in place for compatibility
     - _Requirements: 5.4_
 
-  - [~] 7.3 Add request/response types if missing
-    - Ensure `VoiceCreateRequest` is exported
-    - Ensure `VoiceUpdateRequest` is exported
-    - Ensure `VoiceShareRequest` is exported
+  - [x] 7.3 Add request/response types if missing
+    - ✅ `VoiceCreateRequest` exported
+    - ✅ `VoiceUpdateRequest` exported
+    - ✅ `VoiceShareRequest` exported
+    - ✅ `VoiceApprovalRequest` exported
+    - ✅ All types complete
     - _Requirements: 5.5_
 
-- [ ] 8. Implement community voice features
-  - [~] 8.1 Update component to display voice sharing status
+- [x] 8. Implement community voice features
+  - [x] 8.1 Update component to display voice sharing status
     - Show private/shared/community badges on voice cards
     - Use `is_shared` flag for badge styling
     - Use `is_approved` flag for approval indicator
     - Show `admin_approved_at` timestamp if available
     - _Requirements: 6.1, 6.4, 6.5_
+    - ✅ COMPLETE - Added 🔒 Private, ⏳ Pending Approval, ✅ Community badges with approval timestamps
 
-  - [~] 8.2 Support voice language display
+  - [x] 8.2 Support voice language display
     - Display `language` field if present
     - Handle null/undefined values gracefully
     - _Requirements: 7.3_
+    - ✅ COMPLETE - Language codes converted to friendly display names (en → English, etc.)
 
-  - [~] 8.3 Test community voice features
+  - [x] 8.3 Test community voice features
     - Test badges display correctly
     - Test approval status shows appropriately
     - Verify soft-deleted voices are filtered
     - _Requirements: 6.1, 6.5, 7.1_
+    - ✅ COMPLETE - 20+ test cases covering all badge states, language display, and soft delete handling
 
-- [ ] 9. Implement soft delete and data handling
-  - [~] 9.1 Update list views to exclude deleted voices
+- [x] 9. Implement soft delete and data handling
+  - [x] 9.1 Update list views to exclude deleted voices
     - Filter voices with `is_deleted=true` from display
     - Ensure deleted voices don't appear in user lists
     - _Requirements: 7.1_
 
-  - [~] 9.2 Handle optional/null fields gracefully
+  - [x] 9.2 Handle optional/null fields gracefully
     - Handle `language` being null/undefined
     - Handle `admin_approved_at` being null
     - Test rendering with missing optional fields
@@ -239,31 +247,31 @@ The backend now provides a unified `/api/v1/voices/*` API pattern alongside the 
     - **Validates: Requirements 7.1**
 
 - [ ] 10. Handle BigInt and numeric IDs
-  - [~] 10.1 Verify ID handling
+  - [ ] 10.1 Verify ID handling
     - Confirm IDs from backend use number type
     - Test with integer IDs in API calls
     - Update any string ID assumptions to numbers
     - _Requirements: 10.1, 10.2_
 
-  - [~] 10.2 Test with real backend responses
+  - [ ] 10.2 Test with real backend responses
     - Load voices and verify numeric IDs work
     - Test deletion/update with numeric IDs
     - _Requirements: 10.2_
 
 - [ ] 11. Error handling and edge cases
-  - [~] 11.1 Test upload error scenarios
+  - [ ] 11.1 Test upload error scenarios
     - Invalid file format → Error message
     - File too large → Size limit message
     - Network error → Retry option
     - _Requirements: 9.1, 9.4_
 
-  - [~] 11.2 Test list/get error scenarios
+  - [ ] 11.2 Test list/get error scenarios
     - 401 Unauthorized → Redirect to login
     - 403 Forbidden → Access denied message
     - 404 Not found → Voice deleted message
     - _Requirements: 9.2_
 
-  - [~] 11.3 Test delete error scenarios
+  - [ ] 11.3 Test delete error scenarios
     - Already deleted → "Already deleted" message
     - Permission denied → Error message
     - _Requirements: 9.2_
@@ -273,46 +281,46 @@ The backend now provides a unified `/api/v1/voices/*` API pattern alongside the 
     - **Property 8: Error Recovery Idempotence**
     - **Validates: Requirements 9.2, 9.3**
 
-- [~] 12. Checkpoint: All components using new client
+- [ ] 12. Checkpoint: All components using new client
   - Ensure no component uses deprecated voice-recording-client
   - Verify all `VoiceRecordingResponse` imports are updated
   - Confirm all TypeScript compilation is clean
   - Test application functionality end-to-end
 
 - [ ] 13. Remove deprecated code and files
-  - [~] 13.1 Delete voice-recording-client.ts
+  - [ ] 13.1 Delete voice-recording-client.ts
     - Confirm no imports of this file remain
     - Delete `/src/lib/api/voice-recording-client.ts`
     - _Requirements: 11.1_
 
-  - [~] 13.2 Remove VoiceRecordingResponse interface from types
+  - [ ] 13.2 Remove VoiceRecordingResponse interface from types
     - Delete `VoiceRecordingResponse` from `/src/lib/types/api.ts`
     - Confirm no imports remain
     - _Requirements: 11.2_
 
-  - [~] 13.3 Remove use-voice-recordings hook (if applicable)
+  - [ ] 13.3 Remove use-voice-recordings hook (if applicable)
     - Check if old hook is still used
     - Delete if no references remain
     - _Requirements: 11.2_
 
-  - [~] 13.4 Clean up any remaining deprecated imports
+  - [ ] 13.4 Clean up any remaining deprecated imports
     - Search for any remaining old client imports
     - Remove all deprecated schema references
     - _Requirements: 11.3, 11.4_
 
 - [ ] 14. Final verification and testing
-  - [~] 14.1 Run TypeScript compiler
+  - [ ] 14.1 Run TypeScript compiler
     - `npm run lint` - No errors or warnings
     - Check for any deprecated type usage
     - _Requirements: 12.1_
 
-  - [~] 14.2 Run application in development
+  - [ ] 14.2 Run application in development
     - `npm run dev` - No errors on startup
     - Navigate to voice management pages
     - Verify voices load correctly
     - _Requirements: 12.2, 12.3_
 
-  - [~] 14.3 Test all voice operations
+  - [ ] 14.3 Test all voice operations
     - Upload a new voice (verify form data and schema)
     - List voices (verify response structure)
     - Select voice during project creation (verify new schema)
@@ -320,13 +328,13 @@ The backend now provides a unified `/api/v1/voices/*` API pattern alongside the 
     - Toggle voice sharing (verify is_shared flag)
     - _Requirements: 12.2, 12.3, 12.4_
 
-  - [~] 14.4 Verify audio playback
+  - [ ] 14.4 Verify audio playback
     - Test audio URL retrieval endpoint
     - Test audio playback in voice card
     - Test with both S3 and local storage scenarios
     - _Requirements: 1.7, 3.6, 9.3_
 
-  - [~] 14.5 Test error scenarios
+  - [ ] 14.5 Test error scenarios
     - Test 401 response (token expired)
     - Test 404 response (voice not found)
     - Test network error (retry works)
@@ -339,7 +347,7 @@ The backend now provides a unified `/api/v1/voices/*` API pattern alongside the 
     - **Property 7: Community Voice Approval Invariant**
     - **Validates: Requirements 6.1, 6.3, 6.6, 12.2, 12.3, 12.4**
 
-- [~] 15. Final checkpoint - Ensure all tests pass
+- [ ] 15. Final checkpoint - Ensure all tests pass
   - Ensure all unit tests pass
   - Ensure all integration tests pass
   - Ask the user if questions arise

@@ -53,7 +53,8 @@ export function VoiceRecordingCard({
       setIsShared(!isShared);
       onSharingToggled?.(recording.id, !isShared);
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Failed to update sharing status";
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to update sharing status";
       console.error("Failed to toggle sharing:", error);
       setAudioErrorAlert({
         open: true,
@@ -145,7 +146,7 @@ export function VoiceRecordingCard({
 
   /**
    * Get badge information based on sharing and approval status
-   * 
+   *
    * Display Logic (from design):
    * - Private: !is_shared
    * - Pending approval: is_shared && !is_approved
@@ -183,7 +184,7 @@ export function VoiceRecordingCard({
   const formatLanguage = (language: string | null | undefined): string | null => {
     // Handle null and undefined explicitly per Requirement 7.4
     if (!language) return null;
-    
+
     // Format language code to display name
     const displayNames: Record<string, string> = {
       en: "English",

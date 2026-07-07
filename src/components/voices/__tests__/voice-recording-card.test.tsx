@@ -282,7 +282,9 @@ describe("VoiceRecordingCard - Audio Playback", () => {
     // Verify that mockVoiceResponse has audio_url from hook
     expect(mockVoiceResponse).toHaveProperty("audio_url");
     expect(typeof (mockVoiceResponse as Record<string, unknown>).audio_url).toBe("string");
-    expect(((mockVoiceResponse as Record<string, unknown>).audio_url as string).length).toBeGreaterThan(0);
+    expect(
+      ((mockVoiceResponse as Record<string, unknown>).audio_url as string).length
+    ).toBeGreaterThan(0);
 
     render(
       <VoiceRecordingCard

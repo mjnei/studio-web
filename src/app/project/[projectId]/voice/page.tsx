@@ -40,7 +40,7 @@ export default function VoicePage() {
           // Filter out deleted voices per Requirement 7.1 (soft delete support)
           const activeOwnVoices = data.own_voices.filter((voice) => !voice.is_deleted);
           const activeCommunityVoices = data.community_voices.filter((voice) => !voice.is_deleted);
-          
+
           setOwnVoices(activeOwnVoices);
           setCommunityVoices(activeCommunityVoices);
           setAvailableVoicesError(null);
