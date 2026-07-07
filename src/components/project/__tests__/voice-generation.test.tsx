@@ -128,12 +128,7 @@ describe("VoiceGeneration Component", () => {
 
     it("should call onVoiceSelect when an own voice is clicked", async () => {
       const onVoiceSelect = jest.fn();
-      render(
-        <VoiceGeneration
-          {...defaultProps}
-          onVoiceSelect={onVoiceSelect}
-        />
-      );
+      render(<VoiceGeneration {...defaultProps} onVoiceSelect={onVoiceSelect} />);
 
       const voice1Card = screen.getByText("My Voice 1").closest("div")?.closest("[interactive]");
       if (!voice1Card) {
@@ -151,29 +146,20 @@ describe("VoiceGeneration Component", () => {
     });
 
     it("should highlight selected voice with ring and border styling", () => {
-      const { container } = render(
-        <VoiceGeneration
-          {...defaultProps}
-          selectedVoiceId={1}
-        />
-      );
+      const { container } = render(<VoiceGeneration {...defaultProps} selectedVoiceId={1} />);
 
       // Check for selected state styling
       const cards = container.querySelectorAll("[role='button']");
       // The voice card should have ring-2 and border styling applied
-      const hasRingClass = Array.from(cards).some((card) =>
-        card.className.includes("ring-2") && card.className.includes("ring-accent-primary")
+      const hasRingClass = Array.from(cards).some(
+        (card) =>
+          card.className.includes("ring-2") && card.className.includes("ring-accent-primary")
       );
       // Note: This may require additional CSS inspection or snapshot testing
     });
 
     it("should show checkmark for selected own voice", () => {
-      render(
-        <VoiceGeneration
-          {...defaultProps}
-          selectedVoiceId={1}
-        />
-      );
+      render(<VoiceGeneration {...defaultProps} selectedVoiceId={1} />);
 
       // Check component state - selected voice should display check icon
       const checkMarks = screen.getAllByRole("img", { hidden: true });
@@ -219,12 +205,7 @@ describe("VoiceGeneration Component", () => {
 
     it("should call onVoiceSelect when a community voice is clicked", async () => {
       const onVoiceSelect = jest.fn();
-      render(
-        <VoiceGeneration
-          {...defaultProps}
-          onVoiceSelect={onVoiceSelect}
-        />
-      );
+      render(<VoiceGeneration {...defaultProps} onVoiceSelect={onVoiceSelect} />);
 
       const communityTab = screen.getByText("Community").closest("button");
       fireEvent.click(communityTab!);
@@ -287,24 +268,13 @@ describe("VoiceGeneration Component", () => {
     });
 
     it("should display empty states when voice arrays are empty", () => {
-      render(
-        <VoiceGeneration
-          {...defaultProps}
-          ownVoices={[]}
-          communityVoices={[]}
-        />
-      );
+      render(<VoiceGeneration {...defaultProps} ownVoices={[]} communityVoices={[]} />);
 
       expect(screen.getByText("No personal voices yet")).toBeInTheDocument();
     });
 
     it("should show empty community voices message", async () => {
-      render(
-        <VoiceGeneration
-          {...defaultProps}
-          communityVoices={[]}
-        />
-      );
+      render(<VoiceGeneration {...defaultProps} communityVoices={[]} />);
 
       const communityTab = screen.getByText("Community").closest("button");
       fireEvent.click(communityTab!);
@@ -323,24 +293,14 @@ describe("VoiceGeneration Component", () => {
     });
 
     it("should disable generate button when no voice is selected", () => {
-      render(
-        <VoiceGeneration
-          {...defaultProps}
-          selectedVoiceId={undefined}
-        />
-      );
+      render(<VoiceGeneration {...defaultProps} selectedVoiceId={undefined} />);
 
       const generateButton = screen.getByRole("button", { name: /Generate Voice Audio/i });
       expect(generateButton).toBeDisabled();
     });
 
     it("should enable generate button when voice is selected", () => {
-      render(
-        <VoiceGeneration
-          {...defaultProps}
-          selectedVoiceId={1}
-        />
-      );
+      render(<VoiceGeneration {...defaultProps} selectedVoiceId={1} />);
 
       const generateButton = screen.getByRole("button", { name: /Generate Voice Audio/i });
       expect(generateButton).not.toBeDisabled();
@@ -348,12 +308,7 @@ describe("VoiceGeneration Component", () => {
 
     it("should show loading state while generating", () => {
       render(
-        <VoiceGeneration
-          {...defaultProps}
-          selectedVoiceId={1}
-          isGenerating={true}
-          progress={45}
-        />
+        <VoiceGeneration {...defaultProps} selectedVoiceId={1} isGenerating={true} progress={45} />
       );
 
       expect(screen.getByText(/Generating audio... 45%/)).toBeInTheDocument();
@@ -361,12 +316,7 @@ describe("VoiceGeneration Component", () => {
 
     it("should display progress bar while generating", () => {
       const { container } = render(
-        <VoiceGeneration
-          {...defaultProps}
-          selectedVoiceId={1}
-          isGenerating={true}
-          progress={75}
-        />
+        <VoiceGeneration {...defaultProps} selectedVoiceId={1} isGenerating={true} progress={75} />
       );
 
       const progressBar = container.querySelector("[style*='width']");
@@ -375,13 +325,7 @@ describe("VoiceGeneration Component", () => {
 
     it("should calculate word count from script correctly", () => {
       const script = "This is a test script with ten words total for testing purposes here.";
-      render(
-        <VoiceGeneration
-          {...defaultProps}
-          script={script}
-          selectedVoiceId={1}
-        />
-      );
+      render(<VoiceGeneration {...defaultProps} script={script} selectedVoiceId={1} />);
 
       // 10 words at 150 wpm = 0.066 minutes ≈ rounds up to 1 minute
       expect(screen.getByText(/Estimated duration: ~1 minutes/)).toBeInTheDocument();
@@ -437,9 +381,7 @@ describe("VoiceGeneration Component", () => {
         />
       );
 
-      expect(
-        screen.getByText("Not satisfied with the result?")
-      ).toBeInTheDocument();
+      expect(screen.getByText("Not satisfied with the result?")).toBeInTheDocument();
       expect(screen.getByRole("button", { name: /Change Voice/i })).toBeInTheDocument();
     });
 
@@ -466,46 +408,26 @@ describe("VoiceGeneration Component", () => {
   describe("Error Handling", () => {
     it("should display error message when voicesError prop is set", () => {
       const errorMessage = "Failed to load voices from server";
-      render(
-        <VoiceGeneration
-          {...defaultProps}
-          voicesError={errorMessage}
-        />
-      );
+      render(<VoiceGeneration {...defaultProps} voicesError={errorMessage} />);
 
       expect(screen.getByText(errorMessage)).toBeInTheDocument();
     });
 
     it("should show error styling with alert icon", () => {
-      render(
-        <VoiceGeneration
-          {...defaultProps}
-          voicesError="Connection error"
-        />
-      );
+      render(<VoiceGeneration {...defaultProps} voicesError="Connection error" />);
 
       expect(screen.getByText("Connection error")).toBeInTheDocument();
     });
 
     it("should show loading skeleton when isLoadingVoices is true", () => {
-      const { container } = render(
-        <VoiceGeneration
-          {...defaultProps}
-          isLoadingVoices={true}
-        />
-      );
+      const { container } = render(<VoiceGeneration {...defaultProps} isLoadingVoices={true} />);
 
       const skeletons = container.querySelectorAll(".animate-pulse");
       expect(skeletons.length).toBeGreaterThan(0);
     });
 
     it("should show loading skeletons while loading voices", () => {
-      const { container } = render(
-        <VoiceGeneration
-          {...defaultProps}
-          isLoadingVoices={true}
-        />
-      );
+      const { container } = render(<VoiceGeneration {...defaultProps} isLoadingVoices={true} />);
 
       // Should show 4 skeleton placeholders
       const animatedDivs = container.querySelectorAll(".animate-pulse");
@@ -519,11 +441,7 @@ describe("VoiceGeneration Component", () => {
       const onGenerate = jest.fn();
 
       const { rerender } = render(
-        <VoiceGeneration
-          {...defaultProps}
-          onVoiceSelect={onVoiceSelect}
-          onGenerate={onGenerate}
-        />
+        <VoiceGeneration {...defaultProps} onVoiceSelect={onVoiceSelect} onGenerate={onGenerate} />
       );
 
       // Simulate voice selection
@@ -555,12 +473,7 @@ describe("VoiceGeneration Component", () => {
 
     it("should handle switching between own and community voices", async () => {
       const onVoiceSelect = jest.fn();
-      render(
-        <VoiceGeneration
-          {...defaultProps}
-          onVoiceSelect={onVoiceSelect}
-        />
-      );
+      render(<VoiceGeneration {...defaultProps} onVoiceSelect={onVoiceSelect} />);
 
       // Select own voice
       const ownVoiceCard = screen.getByText("My Voice 1").closest("[interactive]");
@@ -658,12 +571,7 @@ describe("VoiceGeneration Component", () => {
     });
 
     it("should have proper button labels", () => {
-      render(
-        <VoiceGeneration
-          {...defaultProps}
-          selectedVoiceId={1}
-        />
-      );
+      render(<VoiceGeneration {...defaultProps} selectedVoiceId={1} />);
       expect(screen.getByRole("button", { name: /Generate Voice Audio/i })).toBeInTheDocument();
     });
   });

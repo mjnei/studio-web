@@ -37,8 +37,12 @@ export default function VoicePage() {
     getAvailableVoices()
       .then((data) => {
         if (!cancelled) {
-          setOwnVoices(data.own_voices);
-          setCommunityVoices(data.community_voices);
+          // Filter out deleted voices per Requirement 7.1 (soft delete support)
+          const activeOwnVoices = data.own_voices.filter((voice) => !voice.is_deleted);
+          const activeCommunityVoices = data.community_voices.filter((voice) => !voice.is_deleted);
+          
+          setOwnVoices(activeOwnVoices);
+          setCommunityVoices(activeCommunityVoices);
           setAvailableVoicesError(null);
         }
       })
@@ -77,7 +81,11 @@ export default function VoicePage() {
   // Initialize selectedVoiceId from saved state
   useEffect(() => {
     if (selectedVoiceId) return;
-    const savedId = state?.voiceId ? Number(state.voiceId) : (state?.voice?.id ? Number(state.voice.id) : undefined);
+    const savedId = state?.voiceId
+      ? Number(state.voiceId)
+      : state?.voice?.id
+        ? Number(state.voice.id)
+        : undefined;
     if (!savedId) return;
     setSelectedVoiceId(savedId);
   }, [state?.voiceId, state?.voice, selectedVoiceId]);
@@ -148,8 +156,9 @@ export default function VoicePage() {
 
   const handleVoiceSelect = async (voiceId: number) => {
     // Find voice in either own or community voices
-    const voice = ownVoices.find((v) => v.id === voiceId) || communityVoices.find((v) => v.id === voiceId);
-    
+    const voice =
+      ownVoices.find((v) => v.id === voiceId) || communityVoices.find((v) => v.id === voiceId);
+
     if (!voice) return;
 
     setSelectedVoiceId(voiceId);
@@ -210,7 +219,10 @@ export default function VoicePage() {
       await handleVoiceSelect(recordingWithUrl.id);
     } catch (error) {
       console.error("Failed to get audio URL for new recording:", error);
-      toastError("Recording saved", "Voice recorded but audio URL retrieval failed. You can still use it.");
+      toastError(
+        "Recording saved",
+        "Voice recorded but audio URL retrieval failed. You can still use it."
+      );
       setShowRecorder(false);
     }
   };
@@ -231,7 +243,8 @@ export default function VoicePage() {
           </div>
           {selectedVoiceId && (
             <div className="text-sm text-text-muted">
-              Selected: <span className="font-medium text-text-primary">
+              Selected:{" "}
+              <span className="font-medium text-text-primary">
                 {ownVoices.find((v) => v.id === selectedVoiceId)?.name ||
                   communityVoices.find((v) => v.id === selectedVoiceId)?.name}
               </span>

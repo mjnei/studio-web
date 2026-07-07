@@ -33,9 +33,12 @@ export function useVoices(): UseVoicesReturn {
       // Fetch voices from the backend
       const data = await listVoices();
 
+      // Filter out deleted voices (soft delete support per Requirement 7.1)
+      const activeVoices = data.filter((voice) => !voice.is_deleted);
+
       // Fetch audio URLs for all voices in parallel
       const voicesWithAudioUrls = await Promise.all(
-        data.map(async (voice) => {
+        activeVoices.map(async (voice) => {
           try {
             const audioUrlData = await getVoiceAudioUrl(voice.id);
             return {

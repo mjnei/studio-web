@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Trash2, Play, Pause, Share2, Lock } from "lucide-react";
+import { Trash2, Play, Pause, Share2, Lock, CheckCircle, Clock } from "lucide-react";
 import { VoiceResponse } from "@/lib/types/api";
 import { Button } from "@/components/ui/button";
 import { ConfirmModal, AlertModal } from "@/components/ui/modal";
@@ -40,7 +40,7 @@ export function VoiceRecordingCard({
     try {
       await onDelete(recording.id);
       setDeleteConfirmOpen(false);
-    } catch (error) {
+    } catch {
       setAudioErrorAlert({ open: true, message: "Failed to delete recording" });
       setIsDeleting(false);
     }
@@ -52,11 +52,12 @@ export function VoiceRecordingCard({
       await onToggleSharing(recording.id, !isShared);
       setIsShared(!isShared);
       onSharingToggled?.(recording.id, !isShared);
-    } catch (error: any) {
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to update sharing status";
       console.error("Failed to toggle sharing:", error);
       setAudioErrorAlert({
         open: true,
-        message: error.message || "Failed to update sharing status",
+        message: errorMessage,
       });
     } finally {
       setIsTogglingSharing(false);
@@ -142,31 +143,87 @@ export function VoiceRecordingCard({
     });
   };
 
+  /**
+   * Get badge information based on sharing and approval status
+   * 
+   * Display Logic (from design):
+   * - Private: !is_shared
+   * - Pending approval: is_shared && !is_approved
+   * - Community (approved): is_shared && is_approved
+   */
+  const getBadgeInfo = () => {
+    if (!isShared) {
+      return {
+        label: "🔒 Private",
+        color: "bg-gray-500/10 text-gray-600 border-gray-500/30",
+        icon: <Lock className="h-3 w-3" />,
+      };
+    }
+
+    // Handle optional is_approved field gracefully (could be undefined, null, or false)
+    if (!recording.is_approved) {
+      return {
+        label: "⏳ Pending Approval",
+        color: "bg-yellow-500/10 text-yellow-600 border-yellow-500/30",
+        icon: <Clock className="h-3 w-3" />,
+      };
+    }
+
+    // Approved community voice - handle optional admin_approved_at gracefully
+    const approvalDate = recording.admin_approved_at
+      ? ` • Approved ${formatDate(recording.admin_approved_at)}`
+      : "";
+    return {
+      label: `✅ Community${approvalDate}`,
+      color: "bg-green-500/10 text-green-600 border-green-500/30",
+      icon: <CheckCircle className="h-3 w-3" />,
+    };
+  };
+
+  const formatLanguage = (language: string | null | undefined): string | null => {
+    // Handle null and undefined explicitly per Requirement 7.4
+    if (!language) return null;
+    
+    // Format language code to display name
+    const displayNames: Record<string, string> = {
+      en: "English",
+      es: "Spanish",
+      fr: "French",
+      de: "German",
+      it: "Italian",
+      pt: "Portuguese",
+      ru: "Russian",
+      ja: "Japanese",
+      zh: "Chinese",
+      "zh-CN": "Simplified Chinese",
+      "zh-TW": "Traditional Chinese",
+      ko: "Korean",
+      ar: "Arabic",
+      hi: "Hindi",
+    };
+
+    return displayNames[language] || language.toUpperCase();
+  };
+
   return (
     <div className="rounded-xl border border-border-default bg-surface-panel p-5 hover:border-border-hover hover:shadow-md transition-all">
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
             <h3 className="font-semibold text-text-primary truncate">{recording.name}</h3>
-            <span
-              className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold ${
-                isShared
-                  ? "bg-green-500/10 text-green-600 border border-green-500/30"
-                  : "bg-gray-500/10 text-gray-600 border border-gray-500/30"
-              }`}
-            >
-              {isShared ? (
-                <>
-                  <Share2 className="h-3 w-3" />
-                  Shared
-                </>
-              ) : (
-                <>
-                  <Lock className="h-3 w-3" />
-                  Private
-                </>
-              )}
-            </span>
+            {/* Community Voice Status Badge */}
+            {(() => {
+              const badgeInfo = getBadgeInfo();
+              return (
+                <span
+                  className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold border whitespace-nowrap ${badgeInfo.color}`}
+                  title={badgeInfo.label}
+                >
+                  {badgeInfo.icon}
+                  {badgeInfo.label}
+                </span>
+              );
+            })()}
           </div>
         </div>
         <button
@@ -180,8 +237,20 @@ export function VoiceRecordingCard({
       </div>
 
       <div className="flex items-center justify-between text-xs text-text-muted mb-4">
-        <span>{formatDate(recording.created_at)}</span>
-        <span>{formatDuration(recording.duration_seconds)}</span>
+        <div className="flex items-center gap-2">
+          <span>{formatDate(recording.created_at)}</span>
+          <span>•</span>
+          <span>{formatDuration(recording.duration_seconds)}</span>
+          {/* Language Display (Requirement 8.2) */}
+          {formatLanguage(recording.language) && (
+            <>
+              <span>•</span>
+              <span className="text-xs bg-blue-500/10 text-blue-600 px-2 py-0.5 rounded">
+                {formatLanguage(recording.language)}
+              </span>
+            </>
+          )}
+        </div>
       </div>
 
       <div className="flex gap-2">
