@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { Mic, Plus, FileText, ChevronDown } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -13,13 +13,19 @@ import { VoiceGeneration } from "@/components/project/voice-generation";
 import { useToast } from "@/components/ui/toast";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { getAvailableVoices, getVoiceAudioUrl } from "@/lib/api/voice-client";
+import {
+  scheduleAgnesJobs,
+  createTTSJob,
+  advanceProjectStep,
+} from "@/lib/project-client";
 import type { VoiceResponse, VoiceWithCreator } from "@/lib/types/api";
 
 export default function VoicePage() {
   const params = useParams();
+  const router = useRouter();
   const projectId = params.projectId as string;
-  const { state, updateVoice, activeScript, isLoading } = useProjectState(projectId);
-  const { error: toastError } = useToast();
+  const { state, updateVoice, activeScript, isLoading, refresh } = useProjectState(projectId);
+  const { error: toastError, success: toastSuccess } = useToast();
 
   const [availableVoicesLoading, setAvailableVoicesLoading] = useState(true);
   const [availableVoicesError, setAvailableVoicesError] = useState<string | null>(null);
@@ -28,7 +34,29 @@ export default function VoicePage() {
   const [selectedVoiceId, setSelectedVoiceId] = useState<number | null>(null);
   const [showRecorder, setShowRecorder] = useState(false);
   const [showFullScriptModal, setShowFullScriptModal] = useState(false);
+  const [isAdvancing, setIsAdvancing] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Schedule Agnes jobs on page load (progressive scheduling)
+  useEffect(() => {
+    if (projectId && activeScript?.content) {
+      scheduleAgnesJobsIfNeeded();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projectId, activeScript?.content]);
+
+  const scheduleAgnesJobsIfNeeded = async () => {
+    try {
+      // Backend checks state and schedules only what's missing
+      const result = await scheduleAgnesJobs(projectId);
+      if (result.scheduled.length > 0) {
+        console.log("[Voice Page] Agnes jobs scheduled:", result.scheduled);
+      }
+    } catch (error) {
+      console.error("[Voice Page] Failed to schedule Agnes jobs:", error);
+      // Non-blocking - user can continue
+    }
+  };
 
   // Fetch available voices (own + community)
   useEffect(() => {
@@ -227,6 +255,38 @@ export default function VoicePage() {
     }
   };
 
+  const handleContinue = async () => {
+    if (!selectedVoiceId || !activeScript?.id) return;
+
+    setIsAdvancing(true);
+    try {
+      // Schedule TTS job with selected voice
+      const voice =
+        ownVoices.find((v) => v.id === selectedVoiceId) ||
+        communityVoices.find((v) => v.id === selectedVoiceId);
+
+      await createTTSJob({
+        projectId,
+        scriptId: activeScript.id,
+        voiceId: String(selectedVoiceId),
+        voiceName: voice?.name,
+        autoActivate: true,
+      });
+
+      // Advance to details step
+      await advanceProjectStep(projectId, "voice");
+
+      // Navigate to details page
+      router.push(`/project/${projectId}/details`);
+      toastSuccess("Voice selected", "Proceeding to project details");
+    } catch (error) {
+      console.error("Failed to schedule TTS job:", error);
+      toastError("Failed to schedule audio generation", "Please try again");
+    } finally {
+      setIsAdvancing(false);
+    }
+  };
+
   if (isLoading) {
     return <PageLoadingSkeleton message="Loading project..." />;
   }
@@ -376,8 +436,9 @@ export default function VoicePage() {
       <FloatingWorkflowNavigation
         projectId={projectId}
         currentStep="voice"
-        canGoNext={!!selectedVoiceId}
-        isProcessing={false}
+        canGoNext={!!selectedVoiceId && !isAdvancing}
+        isProcessing={isAdvancing}
+        onNext={handleContinue}
       />
     </>
   );

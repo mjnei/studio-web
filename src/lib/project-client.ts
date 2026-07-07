@@ -2,13 +2,13 @@ import { request } from "@/lib/api-client";
 import { getAccessToken } from "@/lib/api-client";
 
 export type WorkflowStep =
-  | "source"
-  | "script"
-  | "details"
-  | "voice"
-  | "preview"
-  | "compose"
-  | "finalize";
+  | "source" // Step 1
+  | "script" // Step 2
+  | "voice" // Step 3 (was Step 4) - MOVED UP
+  | "details" // Step 4 (was Step 3) - MOVED DOWN
+  | "preview" // Step 5
+  | "compose" // Step 6
+  | "finalize"; // Step 7
 export type ProjectStatus = "draft" | "in-progress" | "completed";
 export type JobStatus = "idle" | "queued" | "processing" | "completed" | "failed";
 
@@ -190,13 +190,29 @@ export interface SuggestedNamesResponse {
   cached: boolean;
 }
 
-export async function getSuggestedProjectNames(
+export async function getSuggestedProjectNames(projectId: string): Promise<SuggestedNamesResponse> {
+  return request<SuggestedNamesResponse>(`/projects/${projectId}/suggested-names`);
+}
+
+export interface ScheduleAgnesResponse {
+  status: string;
+  scheduled: string[];
+}
+
+export async function scheduleAgnesJobs(
   projectId: string,
-  regenerate = false
-): Promise<SuggestedNamesResponse> {
-  const params = new URLSearchParams({ regenerate: String(regenerate) });
-  return request<SuggestedNamesResponse>(
-    `/projects/${projectId}/suggested-names?${params.toString()}`
+  scheduleNames = true,
+  scheduleThumbnail = true
+): Promise<ScheduleAgnesResponse> {
+  const params = new URLSearchParams({
+    schedule_names: String(scheduleNames),
+    schedule_thumbnail: String(scheduleThumbnail),
+  });
+  return request<ScheduleAgnesResponse>(
+    `/projects/${projectId}/schedule-agnes-jobs?${params}`,
+    {
+      method: "POST",
+    }
   );
 }
 

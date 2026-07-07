@@ -29,14 +29,13 @@ export default function ProjectDetailsPage() {
   const [savingName, setSavingName] = useState(false);
   const [showFullScriptModal, setShowFullScriptModal] = useState(false);
 
-  // Refresh project data when page loads to get latest script from Step 2
+  // Fetch AI suggestions once when page loads
+  // These should already be cached from when user advanced to Step 3
   useEffect(() => {
-    if (projectId) {
-      refresh();
+    if (projectId && activeScript?.content) {
+      fetchAiNameSuggestions();
     }
-  }, [projectId, refresh]);
-
-  // Step advancement happens in handleContinue (user-action-driven, consistent with all other steps)
+  }, [projectId, activeScript?.content]);
 
   // Initialize project name from existing state (if already set) or use first fallback
   useEffect(() => {
@@ -54,13 +53,6 @@ export default function ProjectDetailsPage() {
       }
     }
   }, [state?.movieTitle, state?.projectName]);
-
-  // Fetch AI suggestions asynchronously (only if script exists)
-  useEffect(() => {
-    if (projectId && activeScript?.content) {
-      fetchAiNameSuggestions();
-    }
-  }, [projectId, activeScript?.content]);
 
   // Generate fallback suggestions locally without API call
   const generateLocalFallbackSuggestions = (movieTitle: string): NameSuggestion[] => {
@@ -249,13 +241,13 @@ export default function ProjectDetailsPage() {
     return uniqueSuggestions.slice(0, 3);
   };
 
-  // Fetch AI-powered suggestions from backend (uses cached suggestions when available)
-  const fetchAiNameSuggestions = async (regenerate = false) => {
+  // Fetch AI-powered suggestions from backend (returns cached results only)
+  const fetchAiNameSuggestions = async () => {
     if (!projectId || !activeScript?.content) return;
 
     setLoadingAiSuggestions(true);
     try {
-      const response = await getSuggestedProjectNames(projectId, regenerate);
+      const response = await getSuggestedProjectNames(projectId);
       setAiSuggestions(response.suggestions);
     } catch (error) {
       console.error("Failed to fetch AI name suggestions:", error);
@@ -511,16 +503,12 @@ export default function ProjectDetailsPage() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => fetchAiNameSuggestions(true)}
                     disabled={loadingAiSuggestions}
                     className="text-xs h-8 text-accent-cyan hover:bg-accent-cyan/10"
+                    title="AI suggestions are only generated once when you advance to this step"
                   >
-                    {loadingAiSuggestions ? (
-                      <Loader2 className="h-3 w-3 mr-1 animate-spin" />
-                    ) : (
-                      <RefreshCw className="h-3 w-3 mr-1" />
-                    )}
-                    Regenerate AI Ideas
+                    <Sparkles className="h-3 w-3 mr-1" />
+                    AI Generated
                   </Button>
                 )}
               </div>
