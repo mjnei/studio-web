@@ -2,27 +2,28 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Trash2, Play, Pause, Share2, Lock } from "lucide-react";
-import { VoiceRecordingResponse } from "@/lib/types/api";
+import { VoiceResponse } from "@/lib/types/api";
 import { Button } from "@/components/ui/button";
 import { ConfirmModal, AlertModal } from "@/components/ui/modal";
-import { toggleVoiceSharing } from "@/lib/api/voice-recording-client";
 
 interface VoiceRecordingCardProps {
-  recording: VoiceRecordingResponse;
-  onDelete: (id: string) => void;
+  recording: VoiceResponse;
+  onDelete: (id: number) => void;
+  onToggleSharing: (id: number, isShared: boolean) => Promise<void>;
   onSharingToggled?: (id: number, isShared: boolean) => void;
 }
 
 export function VoiceRecordingCard({
   recording,
   onDelete,
+  onToggleSharing,
   onSharingToggled,
 }: VoiceRecordingCardProps) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isTogglingSharing, setIsTogglingSharing] = useState(false);
-  const [isShared, setIsShared] = useState((recording as any).is_shared || false);
+  const [isShared, setIsShared] = useState(recording.is_shared || false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [audioErrorAlert, setAudioErrorAlert] = useState<{ open: boolean; message: string }>({
     open: false,
@@ -37,7 +38,7 @@ export function VoiceRecordingCard({
   const handleConfirmDelete = async () => {
     setIsDeleting(true);
     try {
-      await onDelete(recording.id.toString());
+      await onDelete(recording.id);
       setDeleteConfirmOpen(false);
     } catch (error) {
       setAudioErrorAlert({ open: true, message: "Failed to delete recording" });
@@ -48,7 +49,7 @@ export function VoiceRecordingCard({
   const handleToggleSharing = async () => {
     setIsTogglingSharing(true);
     try {
-      await toggleVoiceSharing(recording.id, !isShared);
+      await onToggleSharing(recording.id, !isShared);
       setIsShared(!isShared);
       onSharingToggled?.(recording.id, !isShared);
     } catch (error: any) {
@@ -73,8 +74,9 @@ export function VoiceRecordingCard({
       setIsLoading(true);
 
       try {
-        // Use presigned URL from S3
-        const audioUrl = (recording as any).audio_url;
+        // Use audio URL attached by useVoices hook from new endpoint
+        // The hook fetches from /api/v1/voices/{id}/audio-url and attaches audio_url property
+        const audioUrl = recording.audio_url;
 
         if (!audioUrl) {
           setAudioErrorAlert({ open: true, message: "Audio URL not available" });
@@ -124,7 +126,7 @@ export function VoiceRecordingCard({
     };
   }, []);
 
-  const formatDuration = (seconds: number | null) => {
+  const formatDuration = (seconds: number | null | undefined) => {
     if (!seconds) return "Unknown";
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
@@ -145,7 +147,7 @@ export function VoiceRecordingCard({
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <h3 className="font-semibold text-text-primary truncate">{recording.title}</h3>
+            <h3 className="font-semibold text-text-primary truncate">{recording.name}</h3>
             <span
               className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold ${
                 isShared
@@ -166,9 +168,6 @@ export function VoiceRecordingCard({
               )}
             </span>
           </div>
-          {recording.description && (
-            <p className="text-sm text-text-muted mt-1 line-clamp-2">{recording.description}</p>
-          )}
         </div>
         <button
           onClick={handleDeleteClick}
@@ -237,7 +236,7 @@ export function VoiceRecordingCard({
         onClose={() => setDeleteConfirmOpen(false)}
         onConfirm={handleConfirmDelete}
         title="Delete Recording"
-        description={`Are you sure you want to delete "${recording.title}"? This action cannot be undone.`}
+        description={`Are you sure you want to delete "${recording.name}"? This action cannot be undone.`}
         confirmText="Delete"
         cancelText="Cancel"
         variant="danger"

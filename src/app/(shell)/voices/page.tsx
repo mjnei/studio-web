@@ -7,9 +7,9 @@ import { VoiceRecordingCard } from "@/components/voices/voice-recording-card";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { useVoiceRecordings } from "@/lib/hooks/use-voice-recordings";
-import { getAvailableVoices } from "@/lib/api/voice-recording-client";
-import { VoiceRecordingResponse } from "@/lib/types/api";
+import { useVoices } from "@/lib/hooks/use-voices";
+import { getAvailableVoices } from "@/lib/api/voice-client";
+import type { VoiceResponse, VoiceWithCreator } from "@/lib/types/api";
 
 /**
  * Format relative time for display
@@ -42,16 +42,13 @@ function formatRelativeTime(dateString: string): string {
 export default function VoicesPage() {
   const [tab, setTab] = useState<"my" | "community">("my");
   const [showRecorder, setShowRecorder] = useState(false);
-  const { recordings, loading, error, deleteRecording, addRecording, refetch } =
-    useVoiceRecordings();
+  const { voices, loading, error, uploadVoice, deleteVoice, toggleSharing, refetch } = useVoices();
 
-  const [communityVoices, setCommunityVoices] = useState<
-    Array<VoiceRecordingResponse & { creator_username: string; admin_approved_at?: string | null }>
-  >([]);
+  const [communityVoices, setCommunityVoices] = useState<VoiceWithCreator[]>([]);
   const [communityLoading, setCommunityLoading] = useState(false);
   const [communityError, setCommunityError] = useState<string | null>(null);
 
-  const [playingVoiceId, setPlayingVoiceId] = useState<string | null>(null);
+  const [playingVoiceId, setPlayingVoiceId] = useState<number | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Fetch community voices when switching to community tab
@@ -72,13 +69,33 @@ export default function VoicesPage() {
     }
   }, [tab, communityVoices.length]);
 
-  const handleRecordingSaved = (newRecording: VoiceRecordingResponse) => {
-    addRecording(newRecording);
+  const handleRecordingSaved = async (newRecording: any) => {
+    // VoiceRecorder component still uses the old upload function
+    // Refetch to get the newly uploaded voice through the hook
+    await refetch();
     setShowRecorder(false);
   };
 
+  const handleDeleteVoice = async (id: number) => {
+    try {
+      await deleteVoice(id);
+    } catch (err) {
+      console.error("Failed to delete voice:", err);
+      throw err;
+    }
+  };
+
+  const handleToggleSharingVoice = async (id: number, isShared: boolean) => {
+    try {
+      await toggleSharing(id, isShared);
+    } catch (err) {
+      console.error("Failed to toggle sharing:", err);
+      throw err;
+    }
+  };
+
   const handleSharingToggled = () => {
-    // Refetch recordings to get updated sharing status
+    // Refetch voices to get updated sharing status
     refetch();
   };
 
@@ -124,13 +141,13 @@ export default function VoicesPage() {
           >
             <Mic className="h-4 w-4" />
             <span>My Voices</span>
-            {recordings.length > 0 && (
+            {voices.length > 0 && (
               <span
                 className={`ml-1 rounded-full px-2 py-0.5 text-xs font-bold ${
                   tab === "my" ? "bg-white/20" : "bg-surface-raised"
                 }`}
               >
-                {recordings.length}
+                {voices.length}
               </span>
             )}
           </button>
@@ -199,9 +216,9 @@ export default function VoicesPage() {
                 />
               ))}
             </div>
-          ) : recordings.length === 0 ? (
+          ) : voices.length === 0 ? (
             /* Empty State */
-            <Card variant="glass" padding="xl" className="text-center border-dashed">
+            <Card variant="default" padding="lg" className="text-center border-dashed">
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent-primary/10">
                 <Mic className="h-8 w-8 text-accent-primary" />
               </div>
@@ -225,11 +242,12 @@ export default function VoicesPage() {
           ) : (
             /* Voice Recordings Grid */
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {recordings.map((recording) => (
+              {voices.map((voice) => (
                 <VoiceRecordingCard
-                  key={recording.id}
-                  recording={recording}
-                  onDelete={deleteRecording}
+                  key={voice.id}
+                  recording={voice}
+                  onDelete={handleDeleteVoice}
+                  onToggleSharing={handleToggleSharingVoice}
                   onSharingToggled={handleSharingToggled}
                 />
               ))}
@@ -240,7 +258,7 @@ export default function VoicesPage() {
         /* Community Voices Tab */
         <div>
           {/* Info Banner */}
-          <Card variant="glass" padding="md" className="mb-6 border-accent-cyan/30">
+          <Card variant="default" padding="md" className="mb-6 border-accent-cyan/30">
             <div className="flex items-start gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan/10 flex-shrink-0">
                 <Globe className="h-5 w-5 text-accent-cyan" />
@@ -281,7 +299,7 @@ export default function VoicesPage() {
             </div>
           ) : communityVoices.length === 0 ? (
             /* Empty State */
-            <Card variant="glass" padding="xl" className="text-center border-dashed">
+            <Card variant="default" padding="lg" className="text-center border-dashed">
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent-cyan/10">
                 <Globe className="h-8 w-8 text-accent-cyan" />
               </div>
@@ -306,13 +324,8 @@ export default function VoicesPage() {
                   {/* Voice Header */}
                   <div className="mb-4">
                     <h3 className="font-semibold text-text-primary text-lg mb-1 truncate group-hover:text-accent-cyan transition-colors">
-                      {voice.title}
+                      {voice.name}
                     </h3>
-                    {voice.description && (
-                      <p className="text-xs text-text-muted line-clamp-2 leading-relaxed">
-                        {voice.description}
-                      </p>
-                    )}
                   </div>
 
                   {/* Creator Info */}

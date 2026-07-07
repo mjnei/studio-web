@@ -103,6 +103,10 @@ export interface VoiceResponse {
   admin_approved_at?: string | null;
   created_at: string;
   updated_at: string;
+  // Dynamically attached by useVoices hook when fetching audio URLs
+  audio_url?: string;
+  audio_storage_type?: "s3" | "local";
+  audio_expires_in?: number | null;
 }
 
 /**
