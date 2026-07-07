@@ -6,7 +6,7 @@ import type { VoiceResponse } from "@/lib/types/api";
 
 /**
  * @deprecated Use VoiceRecordingModal directly instead
- * 
+ *
  * This component is kept for backward compatibility but should be replaced
  * with VoiceRecordingModal in all new code.
  */

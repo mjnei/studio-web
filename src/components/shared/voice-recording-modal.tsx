@@ -653,7 +653,10 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
             </div>
 
             <div>
-              <label htmlFor="voice-name" className="block text-sm font-medium text-text-primary mb-2">
+              <label
+                htmlFor="voice-name"
+                className="block text-sm font-medium text-text-primary mb-2"
+              >
                 Voice Name *
               </label>
               <div className="relative">
@@ -698,11 +701,17 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
             </div>
 
             <div>
-              <label htmlFor="voice-language" className="block text-sm font-medium text-text-primary mb-2">
+              <label
+                htmlFor="voice-language"
+                className="block text-sm font-medium text-text-primary mb-2"
+              >
                 Language *
               </label>
               <div className="relative">
-                <Globe size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
+                <Globe
+                  size={18}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted"
+                />
                 <select
                   id="voice-language"
                   value={language}
