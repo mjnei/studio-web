@@ -125,23 +125,6 @@ export interface AvailableVoicesResponse {
   community_voices: VoiceWithCreator[];
 }
 
-/**
- * Legacy compatibility interface - maps to unified VoiceResponse
- * @deprecated Use VoiceResponse with new unified schema
- */
-export interface VoiceRecordingResponse {
-  id: number;
-  user_id: number;
-  title: string;
-  description?: string | null;
-  file_path: string;
-  duration_seconds?: number | null;
-  mime_type: string;
-  created_at: string;
-  updated_at: string;
-  audio_url?: string; // Computed on frontend
-}
-
 export interface VoiceListResponse {
   voices: VoiceResponse[];
   total: number;
