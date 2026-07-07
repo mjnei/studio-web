@@ -91,19 +91,17 @@ export default function PreviewPage() {
     // Get voice info from state or localStorage
     let voiceId = state.voiceId;
     let voiceName = state.voiceName;
-    let voiceType = state.voiceType as "stock" | "custom" | undefined;
 
     // Fallback: Try to get voice info from localStorage if not in state
-    if (!voiceId || !voiceType) {
+    if (!voiceId) {
       try {
         const storedVoice = localStorage.getItem(`project_${projectId}_voice`);
         if (storedVoice) {
           const voice = JSON.parse(storedVoice);
-          if (voice.id && voice.type) {
+          if (voice.id) {
             voiceId = voice.id;
             voiceName = voice.name;
-            voiceType = voice.type;
-            console.log("📦 Loaded voice from localStorage:", { voiceId, voiceName, voiceType });
+            console.log("📦 Loaded voice from localStorage:", { voiceId, voiceName });
           }
         }
       } catch (e) {
@@ -111,7 +109,7 @@ export default function PreviewPage() {
       }
     }
 
-    if (!voiceId || !voiceType) {
+    if (!voiceId) {
       setTtsError("No voice selected. Please go back to Step 4 and select a voice.");
       return;
     }
@@ -124,7 +122,7 @@ export default function PreviewPage() {
     if (ttsJob && loadedVoiceId && loadedVoiceId !== currentVoiceId) {
       console.log("🔄 Voice changed! Old:", loadedVoiceId, "New:", currentVoiceId);
       console.log("Creating new TTS job for new voice");
-      createNewTTSJob(voiceId, voiceName, voiceType);
+      createNewTTSJob(voiceId, voiceName);
       return;
     }
 
@@ -143,7 +141,7 @@ export default function PreviewPage() {
 
     // Otherwise create a new job (backend will match or create)
     console.log("🆕 No active TTS job, creating new one");
-    createNewTTSJob(voiceId, voiceName, voiceType);
+    createNewTTSJob(voiceId, voiceName);
   }, [
     state?.activeTtsJobId,
     activeScript?.id,
@@ -165,12 +163,11 @@ export default function PreviewPage() {
 
   const createNewTTSJob = async (
     voiceId: string,
-    voiceName?: string,
-    voiceType?: "stock" | "custom"
+    voiceName?: string
   ) => {
     if (!state || !activeScript || isCreatingJobRef.current) return;
 
-    if (!voiceId || !voiceType) {
+    if (!voiceId) {
       setTtsError("Voice information is incomplete.");
       return;
     }
@@ -181,7 +178,7 @@ export default function PreviewPage() {
 
       // Backend will check for existing TTS job with matching:
       // - project_id
-      // - voice_id + voice_type
+      // - voice_id
       // - preview_text (first 2 sentences of script)
       // If match found, reuses existing job (saves cost & time)
       // Otherwise creates new job
@@ -189,7 +186,6 @@ export default function PreviewPage() {
         projectId: String(state.id),
         scriptId: String(activeScript.id),
         voiceId: voiceId,
-        voiceType: voiceType,
         voiceName: voiceName,
         autoActivate: true,
       });
@@ -348,7 +344,6 @@ export default function PreviewPage() {
               </div>
             )}
 
-            {/* Retry Button */}
             {ttsJob?.status === "failed" && (
               <Button
                 variant="primary"
@@ -356,18 +351,16 @@ export default function PreviewPage() {
                 onClick={() => {
                   let voiceId = state?.voiceId;
                   let voiceName = state?.voiceName;
-                  let voiceType = state?.voiceType as "stock" | "custom" | undefined;
 
                   // Fallback to localStorage
-                  if (!voiceId || !voiceType) {
+                  if (!voiceId) {
                     try {
                       const storedVoice = localStorage.getItem(`project_${projectId}_voice`);
                       if (storedVoice) {
                         const voice = JSON.parse(storedVoice);
-                        if (voice.id && voice.type) {
+                        if (voice.id) {
                           voiceId = voice.id;
                           voiceName = voice.name;
-                          voiceType = voice.type;
                         }
                       }
                     } catch (e) {
@@ -375,8 +368,8 @@ export default function PreviewPage() {
                     }
                   }
 
-                  if (voiceId && voiceType) {
-                    createNewTTSJob(voiceId, voiceName, voiceType);
+                  if (voiceId) {
+                    createNewTTSJob(voiceId, voiceName);
                   }
                 }}
               >

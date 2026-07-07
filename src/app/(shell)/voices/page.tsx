@@ -90,14 +90,6 @@ export default function VoicesPage() {
     setPlayingVoiceId(null);
   };
 
-  const stopAudio = () => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current = null;
-    }
-    setPlayingVoiceId(null);
-  };
-
   return (
     <div className="max-w-7xl mx-auto">
       <PageHeader

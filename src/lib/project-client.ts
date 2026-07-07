@@ -290,7 +290,6 @@ export async function createTTSJob(data: {
   projectId: string;
   scriptId: string;
   voiceId: string;
-  voiceType: "stock" | "custom";
   voiceName?: string;
   autoActivate?: boolean;
 }): Promise<TTSJobResponse> {
@@ -304,7 +303,6 @@ export async function createTTSJob(data: {
       project_id: data.projectId,
       script_id: data.scriptId,
       voice_id: data.voiceId,
-      voice_type: data.voiceType,
       voice_name: data.voiceName,
     }),
   });
