@@ -17,8 +17,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/toast";
-import { getAvailableVoices } from "@/lib/api/voice-recording-client";
-import type { VoiceRecordingResponse } from "@/lib/types/api";
 
 export interface Voice {
   id: string;

@@ -13,8 +13,8 @@ import { VoiceGeneration } from "@/components/project/voice-generation";
 import { useToast } from "@/components/ui/toast";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { useVoiceRecordings } from "@/lib/hooks/use-voice-recordings";
-import { getAvailableVoices, getVoiceRecordingAudioUrl } from "@/lib/api/voice-recording-client";
-import type { VoiceRecordingResponse } from "@/lib/types/api";
+import { getAvailableVoices, getVoiceAudioUrl } from "@/lib/api/voice-client";
+import type { VoiceResponse, VoiceWithCreator } from "@/lib/types/api";
 
 type VoiceOption = {
   id: string;
@@ -60,10 +60,8 @@ export default function VoicePage() {
 
   const [availableVoicesLoading, setAvailableVoicesLoading] = useState(true);
   const [availableVoicesError, setAvailableVoicesError] = useState<string | null>(null);
-  const [ownVoices, setOwnVoices] = useState<VoiceRecordingResponse[]>([]);
-  const [communityVoices, setCommunityVoices] = useState<
-    Array<VoiceRecordingResponse & { creator_username: string; admin_approved_at?: string | null }>
-  >([]);
+  const [ownVoices, setOwnVoices] = useState<VoiceResponse[]>([]);
+  const [communityVoices, setCommunityVoices] = useState<VoiceWithCreator[]>([]);
   const [selectedVoice, setSelectedVoice] = useState<VoiceOption | null>(null);
   const [playingVoice, setPlayingVoice] = useState<string | null>(null);
   const [showRecorder, setShowRecorder] = useState(false);
@@ -114,7 +112,7 @@ export default function VoicePage() {
   const myVoiceOptions: VoiceOption[] = useMemo(() => {
     return ownVoices.map((voice) => ({
       id: String(voice.id),
-      name: voice.title,
+      name: voice.name,
       type: "own" as const,
     }));
   }, [ownVoices]);
@@ -122,7 +120,7 @@ export default function VoicePage() {
   const communityVoiceOptions: VoiceOption[] = useMemo(() => {
     return communityVoices.map((voice) => ({
       id: String(voice.id),
-      name: voice.title,
+      name: voice.name,
       type: "community" as const,
       creatorUsername: voice.creator_username,
       approvedAt: voice.admin_approved_at
@@ -200,7 +198,15 @@ export default function VoicePage() {
     }
   };
 
-  const handleSelectVoice = async (voice: VoiceOption) => {
+  const handleVoiceIdSelect = (voiceId: string) => {
+    const allVoices = [...myVoiceOptions, ...communityVoiceOptions];
+    const voice = allVoices.find((v) => v.id === voiceId);
+    if (voice) {
+      handleSelectVoiceOption(voice);
+    }
+  };
+
+  const handleSelectVoiceOption = async (voice: VoiceOption) => {
     setSelectedVoice(voice);
 
     await updateVoice({
@@ -228,19 +234,39 @@ export default function VoicePage() {
     await playAudio(voice);
   };
 
-  const handleRecordingSaved = async (newRecording: VoiceRecordingResponse) => {
+  const handleRecordingSaved = async (newRecording: any) => {
     try {
-      const audioUrlData = await getVoiceRecordingAudioUrl(newRecording.id);
+      // The voice recorder returns VoiceRecordingResponse from the old client
+      // We need to get the audio URL for it
+      const audioUrlData = await getVoiceAudioUrl(newRecording.id);
       const recordingWithUrl = {
         ...newRecording,
         audio_url: audioUrlData.audio_url,
+        audio_storage_type: audioUrlData.storage_type,
+        audio_expires_in: audioUrlData.expires_in,
       };
 
       addRecording(recordingWithUrl);
       setShowRecorder(false);
 
-      // Add to own voices list
-      setOwnVoices([recordingWithUrl, ...ownVoices]);
+      // Add to own voices list - convert old type to new field names
+      const voiceAsResponse: VoiceResponse = {
+        id: recordingWithUrl.id,
+        user_id: recordingWithUrl.user_id,
+        name: recordingWithUrl.title, // Map old field to new
+        audio_path: recordingWithUrl.file_path, // Map old field to new
+        mime_type: recordingWithUrl.mime_type,
+        duration_seconds: recordingWithUrl.duration_seconds,
+        is_shared: false,
+        is_approved: false,
+        is_deleted: false,
+        created_at: recordingWithUrl.created_at,
+        updated_at: recordingWithUrl.updated_at,
+        audio_url: recordingWithUrl.audio_url,
+        audio_storage_type: recordingWithUrl.audio_storage_type,
+        audio_expires_in: recordingWithUrl.audio_expires_in,
+      };
+      setOwnVoices([voiceAsResponse, ...ownVoices]);
 
       const newVoiceOption: VoiceOption = {
         id: String(recordingWithUrl.id),
@@ -248,7 +274,7 @@ export default function VoicePage() {
         type: "own" as const,
       };
 
-      handleSelectVoice(newVoiceOption);
+      handleSelectVoiceOption(newVoiceOption);
     } catch (error) {
       console.error("Failed to get audio URL for new recording:", error);
       addRecording(newRecording);
@@ -343,7 +369,7 @@ export default function VoicePage() {
           audioUrl={undefined}
           isGenerating={false}
           progress={0}
-          onVoiceSelect={handleSelectVoice}
+          onVoiceSelect={handleVoiceIdSelect}
           onGenerate={() => {}}
           onChangeVoice={() => setSelectedVoice(null)}
           isLoadingVoices={availableVoicesLoading}
@@ -352,7 +378,7 @@ export default function VoicePage() {
 
         {/* Record New Voice CTA */}
         {!showRecorder && myVoiceOptions.length < 5 && (
-          <Card variant="glass" padding="md" className="border-accent-purple/30 bg-accent-purple/5">
+          <Card variant="elevated" padding="md" className="border-accent-purple/30 bg-accent-purple/5">
             <div className="flex items-center justify-between">
               <div className="flex items-start gap-3">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-primary/20 flex-shrink-0">

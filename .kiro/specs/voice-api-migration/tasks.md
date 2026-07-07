@@ -133,13 +133,13 @@ The backend now provides a unified `/api/v1/voices/*` API pattern alongside the 
   - Confirm no TypeScript errors
 
 - [ ] 5. Update voice-generation component
-  - [-] 5.1 Update voice fetching to use new client
+  - [x] 5.1 Update voice fetching to use new client
     - Replace `getAvailableVoices()` import to use new client
     - Update to handle new `AvailableVoicesResponse` structure
     - Fetch both `own_voices` and `community_voices` arrays
     - _Requirements: 4.1, 4.3_
 
-  - [~] 5.2 Update voice selection and display logic
+  - [-] 5.2 Update voice selection and display logic
     - Display separate sections for own vs community voices
     - Show creator username for community voices (from `VoiceWithCreator`)
     - Include approval status for community voices if available
