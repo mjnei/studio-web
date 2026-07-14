@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { PanelLeft, ArrowLeft } from "lucide-react";
 import { DrawerContent } from "@/components/shell/drawer-content";
 import { useSidebar } from "@/components/shell/sidebar-context";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
+import { CreditStatus } from "@/components/credits/CreditStatus";
 
 /**
  * Shell for new project creation flow (/project/new/*).
@@ -47,19 +49,27 @@ export function NewProjectShell({ children }: { children: React.ReactNode }) {
 
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Header */}
-        <header className="flex h-14 shrink-0 items-center gap-4 border-b border-border-default bg-surface-panel px-4">
-          <button
-            onClick={toggle}
-            className="rounded-md p-1.5 text-text-muted hover:bg-surface-hover hover:text-text-secondary"
-            aria-label={isNarrow ? "Open navigation" : "Toggle sidebar"}
-          >
-            <PanelLeft size={20} />
-          </button>
-          <Link href="/projects" className="text-text-muted hover:text-text-secondary">
-            <ArrowLeft size={20} />
-          </Link>
-          <h1 className="text-base font-semibold text-text-primary">Create New Project</h1>
-          <span className="ml-2 text-sm text-text-muted">{stepLabel}</span>
+        <header className="flex h-14 shrink-0 items-center justify-between gap-4 border-b border-border-default bg-surface-panel px-4">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={toggle}
+              className="rounded-md p-1.5 text-text-muted hover:bg-surface-hover hover:text-text-secondary"
+              aria-label={isNarrow ? "Open navigation" : "Toggle sidebar"}
+            >
+              <PanelLeft size={20} />
+            </button>
+            <Link href="/projects" className="text-text-muted hover:text-text-secondary">
+              <ArrowLeft size={20} />
+            </Link>
+            <div>
+              <h1 className="text-base font-semibold text-text-primary">Create New Project</h1>
+              <span className="text-xs text-text-muted">{stepLabel}</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 md:gap-4">
+            <CreditStatus />
+            <NotificationBell />
+          </div>
         </header>
 
         {/* Main content */}
