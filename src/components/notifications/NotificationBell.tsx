@@ -42,14 +42,14 @@ export function NotificationBell() {
         title="Notifications"
       >
         <Bell size={20} className="group-hover:scale-110 transition-transform duration-200" />
-        
+
         {/* Unread badge */}
         {unreadCount > 0 && (
           <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-status-failed text-white text-[10px] font-semibold flex items-center justify-center leading-none">
             {unreadCount > 99 ? "99+" : unreadCount}
           </span>
         )}
-        
+
         {/* Connection indicator */}
         {isSSEConnected && (
           <span className="absolute bottom-1 right-1 h-2 w-2 rounded-full bg-status-success" />

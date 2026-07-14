@@ -1,6 +1,14 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, useCallback, useRef, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+  type ReactNode,
+} from "react";
 import { useAuth } from "./auth-context";
 import { request } from "@/lib/api-client";
 import { isPushNotificationsSupported, setupPushNotifications } from "./push-notifications";
@@ -107,7 +115,9 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
         await request<void>(`/notifications/${id}/read`, { method: "PATCH" });
         // Optimistically update UI
         setNotifications((prev) =>
-          prev.map((n) => (n.id === id ? { ...n, is_read: true, read_at: new Date().toISOString() } : n))
+          prev.map((n) =>
+            n.id === id ? { ...n, is_read: true, read_at: new Date().toISOString() } : n
+          )
         );
         await refreshUnreadCount();
       } catch (error) {
@@ -221,12 +231,12 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
       }
 
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020/api/v1";
-      
+
       // EventSource doesn't support custom headers, so we pass the token as a query parameter
       // The backend needs to be updated to accept token from query params for SSE endpoint
       const url = new URL(`${apiUrl}/notifications/stream`);
-      url.searchParams.set('token', accessToken);
-      
+      url.searchParams.set("token", accessToken);
+
       const eventSource = new EventSource(url.toString());
 
       // Handle connection confirmation
@@ -264,7 +274,10 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
         // Attempt to reconnect with exponential backoff
         if (reconnectAttemptsRef.current < maxReconnectAttemptsRef.current) {
           reconnectAttemptsRef.current++;
-          const delay = Math.min(reconnectDelayRef.current * Math.pow(2, reconnectAttemptsRef.current - 1), 30000);
+          const delay = Math.min(
+            reconnectDelayRef.current * Math.pow(2, reconnectAttemptsRef.current - 1),
+            30000
+          );
 
           reconnectTimeoutRef.current = setTimeout(() => {
             connectSSE();

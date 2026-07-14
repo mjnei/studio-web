@@ -222,9 +222,7 @@ export default function NotificationSettingsPage() {
                               onClick={() => handleToggle(type, "push")}
                               disabled={!pushEnabled}
                               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                                pref.push && pushEnabled
-                                  ? "bg-accent-primary"
-                                  : "bg-surface-muted"
+                                pref.push && pushEnabled ? "bg-accent-primary" : "bg-surface-muted"
                               } ${!pushEnabled ? "opacity-50 cursor-not-allowed" : ""}`}
                             >
                               <span

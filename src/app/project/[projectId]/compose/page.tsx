@@ -30,7 +30,7 @@ export default function ComposePage() {
   React.useEffect(() => {
     const checkAndScheduleThumbnailIfNeeded = async () => {
       if (!state) return; // Wait for state to load
-      
+
       // Skip if already completed or currently generating
       if (state?.thumbnailStatus === "completed" || state?.thumbnailStatus === "generating") {
         setHasScheduledThumbnail(true);

@@ -287,6 +287,8 @@ Each step tracks progress (0-100%) and status (queued → processing → complet
 
 1. **Header with Info Tooltip**
    - Page title and description
+   - Credit status showing remaining credits
+   - Notification bell with unread badge
    - Info icon (hover) showing:
      - Credit cost per video
      - Remaining credits

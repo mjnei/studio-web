@@ -1,7 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useNotifications, type Notification as NotificationType } from "@/lib/notification-context";
+import {
+  useNotifications,
+  type Notification as NotificationType,
+} from "@/lib/notification-context";
 import { NotificationItem } from "@/components/notifications/NotificationItem";
 import { NotificationPreferencesModal } from "@/components/notifications/NotificationPreferencesModal";
 import { Bell, Settings, CheckCheck, Filter } from "lucide-react";
@@ -17,13 +20,8 @@ const NOTIFICATION_FILTERS = [
 ];
 
 export default function NotificationsPage() {
-  const {
-    notifications,
-    unreadCount,
-    isLoading,
-    clearAllNotifications,
-    refreshNotifications,
-  } = useNotifications();
+  const { notifications, unreadCount, isLoading, clearAllNotifications, refreshNotifications } =
+    useNotifications();
 
   const [filter, setFilter] = useState("all");
   const [showPreferences, setShowPreferences] = useState(false);
@@ -74,12 +72,7 @@ export default function NotificationsPage() {
           {/* Actions */}
           <div className="flex items-center gap-2">
             {notifications.length > 0 && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleClearAll}
-                className="gap-2"
-              >
+              <Button variant="ghost" size="sm" onClick={handleClearAll} className="gap-2">
                 <CheckCheck size={16} />
                 Clear All
               </Button>

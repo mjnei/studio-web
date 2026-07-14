@@ -93,7 +93,9 @@ export function NotificationBell() {
                   <div className="flex gap-3">
                     {/* Content */}
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-text-primary text-sm truncate">{notification.message_short}</p>
+                      <p className="font-medium text-text-primary text-sm truncate">
+                        {notification.message_short}
+                      </p>
                       <p className="text-text-secondary text-xs mt-1 line-clamp-2">
                         {notification.message_medium}
                       </p>

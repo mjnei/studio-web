@@ -49,7 +49,8 @@ export function NotificationItem({ notification, onClose }: NotificationItemProp
   };
 
   const Icon = iconMap[notification.notification_type as keyof typeof iconMap] || Info;
-  const iconColor = colorMap[notification.notification_type as keyof typeof colorMap] || "text-text-muted";
+  const iconColor =
+    colorMap[notification.notification_type as keyof typeof colorMap] || "text-text-muted";
 
   const timeAgo = formatDistanceToNow(new Date(notification.created_at), { addSuffix: true });
 

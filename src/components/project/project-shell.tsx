@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { PanelLeft, ArrowLeft, Check } from "lucide-react";
 import { DrawerContent } from "@/components/shell/drawer-content";
 import { useSidebar } from "@/components/shell/sidebar-context";
 import { Button } from "@/components/ui/button";
 import { useProjectState } from "@/lib/hooks/use-project-state";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
+import { CreditStatus } from "@/components/credits/CreditStatus";
 
 const stages = [
   { step: "voice", label: "Voice" },
@@ -35,11 +37,10 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const projectId = pathname.split("/")[2];
   const currentStep = pathname.split("/")[3] || "voice"; // Default to voice step
-  const activeIndex = stages.findIndex((s) => s.step === currentStep);
   const { collapsed, mobileOpen, setMobileOpen, toggle, isNarrow } = useSidebar();
 
   // Get project state from persistent storage
-  const { state: projectState, isLoading } = useProjectState(projectId);
+  const { state: projectState } = useProjectState(projectId);
 
   // Determine which steps are completed based on project state
   const completedSteps = {
@@ -149,7 +150,9 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
               );
             })}
           </nav>
-          <div className="ml-auto hidden items-center gap-2 md:flex">
+          <div className="ml-auto flex items-center gap-3 md:gap-4">
+            <CreditStatus />
+            <NotificationBell />
             {currentStep === "compose" && (
               <>
                 <select className="rounded-md border border-border-default bg-surface-raised px-2 py-1 text-xs text-text-secondary">

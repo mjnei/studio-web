@@ -41,8 +41,18 @@ const NOTIFICATION_TYPE_LABELS: Record<string, { title: string; description: str
   },
 };
 
-export function NotificationPreferencesModal({ isOpen, onClose }: NotificationPreferencesModalProps) {
-  const { preferences, updatePreferences, preferencesLoading, subscribeToPush, unsubscribeFromPush, isSubscribedToPush } = useNotifications();
+export function NotificationPreferencesModal({
+  isOpen,
+  onClose,
+}: NotificationPreferencesModalProps) {
+  const {
+    preferences,
+    updatePreferences,
+    preferencesLoading,
+    subscribeToPush,
+    unsubscribeFromPush,
+    isSubscribedToPush,
+  } = useNotifications();
   const [localPreferences, setLocalPreferences] = useState(preferences || {});
   const [isSaving, setIsSaving] = useState(false);
   const [pushEnabled, setPushEnabled] = useState(isSubscribedToPush);
@@ -104,9 +114,7 @@ export function NotificationPreferencesModal({ isOpen, onClose }: NotificationPr
             <Bell size={24} className="text-accent-primary" />
             <div>
               <h2 className="text-lg font-semibold text-text-primary">Notification Preferences</h2>
-              <p className="text-sm text-text-muted mt-0.5">
-                Manage how you receive notifications
-              </p>
+              <p className="text-sm text-text-muted mt-0.5">Manage how you receive notifications</p>
             </div>
           </div>
           <button
