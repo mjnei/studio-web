@@ -249,11 +249,19 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
       // Handle incoming notifications
       eventSource.addEventListener("notification", (event) => {
         try {
+          console.log("📩 SSE notification received:", event.data);
           const notification = JSON.parse(event.data) as Notification;
+          console.log("📩 Parsed notification:", notification);
           // Add to the beginning of the list
-          setNotifications((prev) => [notification, ...prev]);
+          setNotifications((prev) => {
+            console.log("📩 Adding notification to list, current count:", prev.length);
+            return [notification, ...prev];
+          });
           // Increment unread count
-          setUnreadCount((prev) => prev + 1);
+          setUnreadCount((prev) => {
+            console.log("📩 Incrementing unread count from", prev, "to", prev + 1);
+            return prev + 1;
+          });
         } catch (error) {
           console.error("Failed to parse notification:", error);
         }

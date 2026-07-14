@@ -153,18 +153,6 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
           <div className="ml-auto flex items-center gap-3 md:gap-4">
             <CreditStatus />
             <NotificationBell />
-            {currentStep === "compose" && (
-              <>
-                <select className="rounded-md border border-border-default bg-surface-raised px-2 py-1 text-xs text-text-secondary">
-                  <option>1080p / 30fps</option>
-                  <option>720p / 30fps</option>
-                  <option>4K / 60fps</option>
-                </select>
-                <Button variant="primary" size="sm">
-                  Export
-                </Button>
-              </>
-            )}
           </div>
         </header>
         <main className="flex-1 overflow-y-auto p-4 md:p-6">{children}</main>
