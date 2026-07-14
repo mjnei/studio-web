@@ -31,28 +31,30 @@ export default function VoicePage() {
   const [showRecorder, setShowRecorder] = useState(false);
   const [showFullScriptModal, setShowFullScriptModal] = useState(false);
   const [isAdvancing, setIsAdvancing] = useState(false);
+  const [hasScheduledAgnes, setHasScheduledAgnes] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Schedule Agnes jobs on page load (progressive scheduling)
+  // Schedule Agnes jobs on page load (progressive scheduling) - ONCE
   useEffect(() => {
-    if (projectId && activeScript?.content) {
-      scheduleAgnesJobsIfNeeded();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projectId, activeScript?.content]);
+    const scheduleAgnesJobsIfNeeded = async () => {
+      if (!projectId || !activeScript?.content) return;
+      if (hasScheduledAgnes) return; // Only schedule once
 
-  const scheduleAgnesJobsIfNeeded = async () => {
-    try {
-      // Backend checks state and schedules only what's missing
-      const result = await scheduleAgnesJobs(projectId);
-      if (result.scheduled.length > 0) {
-        console.log("[Voice Page] Agnes jobs scheduled:", result.scheduled);
+      try {
+        // Backend checks state and schedules only what's missing
+        const result = await scheduleAgnesJobs(projectId);
+        if (result.scheduled.length > 0) {
+          console.log("[Voice Page] Agnes jobs scheduled:", result.scheduled);
+        }
+        setHasScheduledAgnes(true);
+      } catch (error) {
+        console.error("[Voice Page] Failed to schedule Agnes jobs:", error);
+        setHasScheduledAgnes(true); // Mark as attempted even if failed
       }
-    } catch (error) {
-      console.error("[Voice Page] Failed to schedule Agnes jobs:", error);
-      // Non-blocking - user can continue
-    }
-  };
+    };
+
+    scheduleAgnesJobsIfNeeded();
+  }, [projectId, activeScript?.content, hasScheduledAgnes]);
 
   // Fetch available voices (own + community)
   useEffect(() => {

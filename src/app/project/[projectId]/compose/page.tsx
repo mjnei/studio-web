@@ -24,31 +24,37 @@ export default function ComposePage() {
   const [showThumbnailEditor, setShowThumbnailEditor] = useState(false);
   const [isAdvancing, setIsAdvancing] = useState(false);
   const [isPollingComposition, setIsPollingComposition] = useState(false);
+  const [hasScheduledThumbnail, setHasScheduledThumbnail] = useState(false);
 
-  // Check and schedule thumbnail if needed on page load
+  // Check and schedule thumbnail if needed on page load (once)
   React.useEffect(() => {
-    if (projectId) {
-      checkAndScheduleThumbnailIfNeeded();
-    }
-  }, [projectId]);
+    const checkAndScheduleThumbnailIfNeeded = async () => {
+      if (!state) return; // Wait for state to load
+      
+      // Skip if already completed or currently generating
+      if (state?.thumbnailStatus === "completed" || state?.thumbnailStatus === "generating") {
+        setHasScheduledThumbnail(true);
+        return;
+      }
 
-  const checkAndScheduleThumbnailIfNeeded = async () => {
-    if (state?.thumbnailStatus === "generating") {
-      // Already generating - just poll (handled by other useEffect)
-      return;
-    }
+      // Only schedule once
+      if (hasScheduledThumbnail) {
+        return;
+      }
 
-    if (state?.thumbnailStatus !== "completed") {
       // Not ready - schedule if needed
       try {
-        await scheduleAgnesJobs(projectId, false, true); // Thumbnail only
-        console.log("Scheduled thumbnail generation");
+        const result = await scheduleAgnesJobs(projectId, false, true); // Thumbnail only
+        console.log("Scheduled thumbnail generation:", result);
+        setHasScheduledThumbnail(true);
       } catch (error) {
         console.error("Failed to schedule thumbnail:", error);
-        // Non-blocking - user can continue
+        setHasScheduledThumbnail(true); // Mark as attempted even if failed
       }
-    }
-  };
+    };
+
+    checkAndScheduleThumbnailIfNeeded();
+  }, [projectId, state, hasScheduledThumbnail]);
 
   // Poll for thumbnail status if generating
   React.useEffect(() => {

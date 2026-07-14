@@ -29,14 +29,21 @@ export default function ProjectDetailsPage() {
   const [loadingAiSuggestions, setLoadingAiSuggestions] = useState(false);
   const [savingName, setSavingName] = useState(false);
   const [showFullScriptModal, setShowFullScriptModal] = useState(false);
+  const [hasFetchedSuggestions, setHasFetchedSuggestions] = useState(false);
 
   // Fetch AI suggestions once when page loads
   // These should already be cached from when user advanced from Voice step (Step 3)
   useEffect(() => {
-    if (projectId && activeScript?.content) {
-      fetchAiNameSuggestionsWithScheduling();
-    }
-  }, [projectId, activeScript?.content]);
+    const fetchAiSuggestionsOnce = async () => {
+      if (!projectId || !activeScript?.content) return;
+      if (hasFetchedSuggestions) return; // Only fetch once
+
+      await fetchAiNameSuggestionsWithScheduling();
+      setHasFetchedSuggestions(true);
+    };
+
+    fetchAiSuggestionsOnce();
+  }, [projectId, activeScript?.content, hasFetchedSuggestions]);
 
   // Initialize project name from existing state (if already set) or use first fallback
   useEffect(() => {

@@ -5,6 +5,7 @@ import { PanelLeft, Search, Plus, Bell, ChevronDown } from "lucide-react";
 import { useSidebar } from "@/components/shell/sidebar-context";
 import { Button } from "@/components/ui/button";
 import { CreditStatus } from "@/components/credits/CreditStatus";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 
 export function TopNav() {
   const { toggle, isNarrow } = useSidebar();
@@ -41,10 +42,7 @@ export function TopNav() {
           </div>
 
           {/* Notifications */}
-          <button className="relative rounded-lg p-2 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all focus-ring group">
-            <Bell size={20} className="group-hover:scale-110 transition-transform duration-200" />
-            <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-status-failed pulse-soft" />
-          </button>
+          <NotificationBell />
         </div>
       </header>
     </>

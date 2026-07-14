@@ -15,6 +15,7 @@ import {
   type UserResponse,
   setAccessToken,
 } from "@/lib/api-client";
+import { isPushNotificationsSupported, setupPushNotifications } from "@/lib/push-notifications";
 
 type AuthContextValue = {
   user: UserResponse | null;
@@ -69,6 +70,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const session = await fetchSession();
       if (session) {
         await refreshUser();
+        // Setup push notifications if supported
+        if (isPushNotificationsSupported()) {
+          setupPushNotifications().catch((error) =>
+            console.warn("Failed to setup push notifications:", error)
+          );
+        }
       }
       setIsLoading(false);
     })();
@@ -109,6 +116,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const me = await getMe();
     setUser(me);
 
+    // Setup push notifications if supported
+    if (isPushNotificationsSupported()) {
+      setupPushNotifications().catch((error) =>
+        console.warn("Failed to setup push notifications:", error)
+      );
+    }
+
     // Redirect based on onboarding status
     if (!me.onboarding_completed) {
       router.push(ONBOARDING_ROUTE);
@@ -122,6 +136,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await apiLoginWithPassword(email, password);
       const me = await getMe();
       setUser(me);
+
+      // Setup push notifications if supported
+      if (isPushNotificationsSupported()) {
+        setupPushNotifications().catch((error) =>
+          console.warn("Failed to setup push notifications:", error)
+        );
+      }
 
       // Redirect based on onboarding status
       if (!me.onboarding_completed) {
@@ -138,6 +159,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await apiSignupWithPassword(email, password, name);
       const me = await getMe();
       setUser(me);
+
+      // Setup push notifications if supported
+      if (isPushNotificationsSupported()) {
+        setupPushNotifications().catch((error) =>
+          console.warn("Failed to setup push notifications:", error)
+        );
+      }
 
       // New users should go to onboarding
       if (!me.onboarding_completed) {
