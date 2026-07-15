@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useNotifications } from "@/lib/notification-context";
-import { X, Bell, Smartphone } from "lucide-react";
+import { X, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface NotificationPreferencesModalProps {
@@ -45,17 +45,9 @@ export function NotificationPreferencesModal({
   isOpen,
   onClose,
 }: NotificationPreferencesModalProps) {
-  const {
-    preferences,
-    updatePreferences,
-    preferencesLoading,
-    subscribeToPush,
-    unsubscribeFromPush,
-    isSubscribedToPush,
-  } = useNotifications();
+  const { preferences, updatePreferences, preferencesLoading } = useNotifications();
   const [localPreferences, setLocalPreferences] = useState(preferences || {});
   const [isSaving, setIsSaving] = useState(false);
-  const [pushEnabled, setPushEnabled] = useState(isSubscribedToPush);
 
   useEffect(() => {
     if (preferences) {
@@ -63,34 +55,16 @@ export function NotificationPreferencesModal({
     }
   }, [preferences]);
 
-  useEffect(() => {
-    setPushEnabled(isSubscribedToPush);
-  }, [isSubscribedToPush]);
-
   if (!isOpen) return null;
 
-  const handleToggle = (notificationType: string, channel: "in_app" | "push") => {
+  const handleToggle = (notificationType: string) => {
     setLocalPreferences((prev) => ({
       ...prev,
       [notificationType]: {
         ...prev[notificationType],
-        [channel]: !prev[notificationType]?.[channel],
+        in_app: !prev[notificationType]?.in_app,
       },
     }));
-  };
-
-  const handlePushToggle = async () => {
-    if (pushEnabled) {
-      const success = await unsubscribeFromPush();
-      if (success) {
-        setPushEnabled(false);
-      }
-    } else {
-      const success = await subscribeToPush();
-      if (success) {
-        setPushEnabled(true);
-      }
-    }
   };
 
   const handleSave = async () => {
@@ -128,33 +102,6 @@ export function NotificationPreferencesModal({
 
         {/* Content */}
         <div className="p-6 max-h-[70vh] overflow-y-auto">
-          {/* Push Notification Master Toggle */}
-          <div className="mb-6 p-4 bg-surface-raised rounded-lg border border-border-default">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Smartphone size={20} className="text-accent-primary" />
-                <div>
-                  <h3 className="text-sm font-medium text-text-primary">Push Notifications</h3>
-                  <p className="text-xs text-text-muted mt-0.5">
-                    Enable push notifications on this device
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={handlePushToggle}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  pushEnabled ? "bg-accent-primary" : "bg-surface-muted"
-                }`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    pushEnabled ? "translate-x-6" : "translate-x-1"
-                  }`}
-                />
-              </button>
-            </div>
-          </div>
-
           {/* Notification Type Preferences */}
           <div className="space-y-4">
             <h3 className="text-sm font-semibold text-text-primary mb-3">Notification Types</h3>
@@ -164,7 +111,7 @@ export function NotificationPreferencesModal({
               </div>
             ) : (
               Object.keys(NOTIFICATION_TYPE_LABELS).map((notificationType) => {
-                const pref = localPreferences[notificationType] || { in_app: true, push: false };
+                const pref = localPreferences[notificationType] || { in_app: true };
                 const { title, description } = NOTIFICATION_TYPE_LABELS[notificationType];
 
                 return (
@@ -178,30 +125,16 @@ export function NotificationPreferencesModal({
                         <p className="text-xs text-text-muted mt-1">{description}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-4 ml-0">
-                      {/* In-App Toggle */}
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={pref.in_app}
-                          onChange={() => handleToggle(notificationType, "in_app")}
-                          className="w-4 h-4 rounded border-border-default text-accent-primary focus:ring-accent-primary focus:ring-offset-0 cursor-pointer"
-                        />
-                        <span className="text-xs text-text-secondary">In-App</span>
-                      </label>
-
-                      {/* Push Toggle */}
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={pref.push}
-                          onChange={() => handleToggle(notificationType, "push")}
-                          disabled={!pushEnabled}
-                          className="w-4 h-4 rounded border-border-default text-accent-primary focus:ring-accent-primary focus:ring-offset-0 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-                        />
-                        <span className="text-xs text-text-secondary">Push</span>
-                      </label>
-                    </div>
+                    {/* In-App Toggle */}
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={pref.in_app}
+                        onChange={() => handleToggle(notificationType)}
+                        className="w-4 h-4 rounded border-border-default text-accent-primary focus:ring-accent-primary focus:ring-offset-0 cursor-pointer"
+                      />
+                      <span className="text-xs text-text-secondary">In-App</span>
+                    </label>
                   </div>
                 );
               })

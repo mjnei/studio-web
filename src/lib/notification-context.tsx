@@ -11,7 +11,6 @@ import {
 } from "react";
 import { useAuth } from "./auth-context";
 import { request, getAccessToken } from "@/lib/api-client";
-import { isPushNotificationsSupported, setupPushNotifications } from "./push-notifications";
 
 export interface Notification {
   id: string;
@@ -34,7 +33,6 @@ export interface Notification {
 export interface NotificationPreferences {
   [key: string]: {
     in_app: boolean;
-    push: boolean;
   };
 }
 
@@ -44,7 +42,6 @@ interface NotificationContextValue {
   isLoading: boolean;
   preferences: NotificationPreferences | null;
   preferencesLoading: boolean;
-  isSubscribedToPush: boolean;
   isSSEConnected: boolean;
   markAsRead: (id: string) => Promise<void>;
   deleteNotification: (id: string) => Promise<void>;
@@ -53,8 +50,6 @@ interface NotificationContextValue {
   refreshUnreadCount: () => Promise<void>;
   fetchPreferences: () => Promise<void>;
   updatePreferences: (prefs: Partial<NotificationPreferences>) => Promise<void>;
-  subscribeToPush: () => Promise<boolean>;
-  unsubscribeFromPush: () => Promise<boolean>;
 }
 
 const NotificationContext = createContext<NotificationContextValue | null>(null);
@@ -70,7 +65,6 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [preferences, setPreferences] = useState<NotificationPreferences | null>(null);
   const [preferencesLoading, setPreferencesLoading] = useState(false);
-  const [isSubscribedToPush, setIsSubscribedToPush] = useState(false);
   const [isSSEConnected, setIsSSEConnected] = useState(false);
 
   const eventSourceRef = useRef<EventSource | null>(null);
@@ -185,40 +179,6 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
     },
     [preferences]
   );
-
-  // Subscribe to push notifications
-  const subscribeToPush = useCallback(async () => {
-    if (!isPushNotificationsSupported()) {
-      console.warn("Push notifications not supported");
-      return false;
-    }
-
-    try {
-      const success = await setupPushNotifications();
-      if (success) {
-        setIsSubscribedToPush(true);
-      }
-      return success;
-    } catch (error) {
-      console.error("Failed to subscribe to push notifications:", error);
-      return false;
-    }
-  }, []);
-
-  // Unsubscribe from push notifications
-  const unsubscribeFromPush = useCallback(async () => {
-    try {
-      await request<void>("/notifications/unsubscribe-push", {
-        method: "POST",
-        body: JSON.stringify({}),
-      });
-      setIsSubscribedToPush(false);
-      return true;
-    } catch (error) {
-      console.error("Failed to unsubscribe from push notifications:", error);
-      return false;
-    }
-  }, []);
 
   // Connect to SSE stream
   const connectSSE = useCallback(() => {
@@ -382,7 +342,6 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
     isLoading,
     preferences,
     preferencesLoading,
-    isSubscribedToPush,
     isSSEConnected,
     markAsRead,
     deleteNotification,
@@ -391,8 +350,6 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
     refreshUnreadCount,
     fetchPreferences,
     updatePreferences,
-    subscribeToPush,
-    unsubscribeFromPush,
   };
 
   return <NotificationContext.Provider value={value}>{children}</NotificationContext.Provider>;

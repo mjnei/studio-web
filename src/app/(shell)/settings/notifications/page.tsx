@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNotifications } from "@/lib/notification-context";
-import { Bell, Smartphone, Monitor, Check } from "lucide-react";
+import { Bell, Monitor, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/PageHeader";
 
@@ -54,49 +54,27 @@ const NOTIFICATION_TYPE_CONFIG = [
 const CATEGORIES = ["Video Jobs", "Account", "Projects"];
 
 export default function NotificationSettingsPage() {
-  const {
-    preferences,
-    updatePreferences,
-    preferencesLoading,
-    subscribeToPush,
-    unsubscribeFromPush,
-    isSubscribedToPush,
-  } = useNotifications();
+  const { preferences, updatePreferences, preferencesLoading } = useNotifications();
 
   const [localPreferences, setLocalPreferences] = useState(preferences || {});
-  const [pushEnabled, setPushEnabled] = useState(isSubscribedToPush);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
   // Sync with context when preferences change
-  useState(() => {
+  useEffect(() => {
     if (preferences) {
       setLocalPreferences(preferences);
     }
-  });
+  }, [preferences]);
 
-  const handleToggle = (notificationType: string, channel: "in_app" | "push") => {
+  const handleToggle = (notificationType: string) => {
     setLocalPreferences((prev) => ({
       ...prev,
       [notificationType]: {
         ...prev[notificationType],
-        [channel]: !prev[notificationType]?.[channel],
+        in_app: !prev[notificationType]?.in_app,
       },
     }));
-  };
-
-  const handlePushToggle = async () => {
-    if (pushEnabled) {
-      const success = await unsubscribeFromPush();
-      if (success) {
-        setPushEnabled(false);
-      }
-    } else {
-      const success = await subscribeToPush();
-      if (success) {
-        setPushEnabled(true);
-      }
-    }
   };
 
   const handleSave = async () => {
@@ -119,59 +97,10 @@ export default function NotificationSettingsPage() {
     <div className="min-h-screen bg-surface-base">
       <PageHeader
         title="Notification Settings"
-        subtitle="Manage how you receive notifications"
-        icon={Bell}
+        description="Manage how you receive notifications"
       />
 
       <div className="max-w-4xl mx-auto p-6 space-y-8">
-        {/* Push Notification Master Toggle */}
-        <section className="bg-surface-panel rounded-xl border border-border-default p-6">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex items-start gap-4">
-              <div className="p-3 bg-accent-primary/10 rounded-lg">
-                <Smartphone size={24} className="text-accent-primary" />
-              </div>
-              <div>
-                <h2 className="text-lg font-semibold text-text-primary">Push Notifications</h2>
-                <p className="text-sm text-text-muted mt-1">
-                  Receive notifications on this device even when you're not actively using the app.
-                  Requires browser permission.
-                </p>
-                <div className="mt-3 flex items-center gap-2">
-                  <span
-                    className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
-                      pushEnabled
-                        ? "bg-status-success/10 text-status-success"
-                        : "bg-surface-muted text-text-muted"
-                    }`}
-                  >
-                    {pushEnabled ? (
-                      <>
-                        <Check size={12} />
-                        Enabled
-                      </>
-                    ) : (
-                      "Disabled"
-                    )}
-                  </span>
-                </div>
-              </div>
-            </div>
-            <button
-              onClick={handlePushToggle}
-              className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors ${
-                pushEnabled ? "bg-accent-primary" : "bg-surface-muted"
-              }`}
-            >
-              <span
-                className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform shadow-sm ${
-                  pushEnabled ? "translate-x-6" : "translate-x-1"
-                }`}
-              />
-            </button>
-          </div>
-        </section>
-
         {/* Notification Preferences by Category */}
         {CATEGORIES.map((category) => {
           const categoryNotifications = NOTIFICATION_TYPE_CONFIG.filter(
@@ -187,7 +116,7 @@ export default function NotificationSettingsPage() {
 
               <div className="bg-surface-panel rounded-xl border border-border-default divide-y divide-border-default">
                 {categoryNotifications.map(({ type, title, description }) => {
-                  const pref = localPreferences[type] || { in_app: true, push: false };
+                  const pref = localPreferences[type] || { in_app: true };
 
                   return (
                     <div key={type} className="p-6">
@@ -197,42 +126,22 @@ export default function NotificationSettingsPage() {
                           <p className="text-sm text-text-muted mt-1">{description}</p>
                         </div>
 
-                        <div className="flex items-center gap-6">
-                          {/* In-App Toggle */}
-                          <label className="flex flex-col items-center gap-2 cursor-pointer">
-                            <span className="text-xs font-medium text-text-muted">In-App</span>
-                            <button
-                              onClick={() => handleToggle(type, "in_app")}
-                              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                                pref.in_app ? "bg-accent-primary" : "bg-surface-muted"
+                        {/* In-App Toggle */}
+                        <label className="flex flex-col items-center gap-2 cursor-pointer">
+                          <span className="text-xs font-medium text-text-muted">In-App</span>
+                          <button
+                            onClick={() => handleToggle(type)}
+                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                              pref.in_app ? "bg-accent-primary" : "bg-surface-muted"
+                            }`}
+                          >
+                            <span
+                              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                                pref.in_app ? "translate-x-6" : "translate-x-1"
                               }`}
-                            >
-                              <span
-                                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                                  pref.in_app ? "translate-x-6" : "translate-x-1"
-                                }`}
-                              />
-                            </button>
-                          </label>
-
-                          {/* Push Toggle */}
-                          <label className="flex flex-col items-center gap-2 cursor-pointer">
-                            <span className="text-xs font-medium text-text-muted">Push</span>
-                            <button
-                              onClick={() => handleToggle(type, "push")}
-                              disabled={!pushEnabled}
-                              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                                pref.push && pushEnabled ? "bg-accent-primary" : "bg-surface-muted"
-                              } ${!pushEnabled ? "opacity-50 cursor-not-allowed" : ""}`}
-                            >
-                              <span
-                                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                                  pref.push ? "translate-x-6" : "translate-x-1"
-                                }`}
-                              />
-                            </button>
-                          </label>
-                        </div>
+                            />
+                          </button>
+                        </label>
                       </div>
                     </div>
                   );
