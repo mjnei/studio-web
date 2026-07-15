@@ -1,0 +1,151 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { getAccessToken } from "@/lib/api-client";
+import { useAuth } from "@/lib/auth-context";
+import { useNotifications } from "@/lib/notification-context";
+
+export default function DebugSSEPage() {
+  const { isAuthenticated, user } = useAuth();
+  const { isSSEConnected } = useNotifications();
+  const [token, setToken] = useState<string | null>(null);
+  const [logs, setLogs] = useState<string[]>([]);
+
+  useEffect(() => {
+    const currentToken = getAccessToken();
+    setToken(currentToken);
+    addLog(`Token check: ${currentToken ? "present" : "missing"}`);
+    addLog(`User: ${user ? user.email : "not logged in"}`);
+    addLog(`isAuthenticated: ${isAuthenticated}`);
+    addLog(`isSSEConnected: ${isSSEConnected}`);
+  }, [isAuthenticated, user, isSSEConnected]);
+
+  const addLog = (message: string) => {
+    setLogs((prev) => [...prev, `${new Date().toLocaleTimeString()}: ${message}`]);
+  };
+
+  const testSSEConnection = async () => {
+    const currentToken = getAccessToken();
+    if (!currentToken) {
+      addLog("ERROR: No token available");
+      return;
+    }
+
+    addLog("Attempting SSE connection...");
+    try {
+      const url = `${
+        process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020/api/v1"
+      }/notifications/stream?token=${currentToken}`;
+      addLog(`URL: ${url.replace(/token=[^&]+/, "token=***")}`);
+
+      const eventSource = new EventSource(url);
+
+      eventSource.addEventListener("connected", (event) => {
+        addLog(`✅ Connected: ${event.data}`);
+      });
+
+      eventSource.addEventListener("notification", (event) => {
+        addLog(`📩 Notification: ${event.data}`);
+      });
+
+      eventSource.addEventListener("ping", () => {
+        addLog("💓 Ping received");
+      });
+
+      eventSource.onerror = (error) => {
+        addLog(`❌ Error: ${JSON.stringify(error)}`);
+        eventSource.close();
+      };
+
+      // Auto-close after 10 seconds
+      setTimeout(() => {
+        addLog("Closing connection after 10 seconds");
+        eventSource.close();
+      }, 10000);
+    } catch (error) {
+      addLog(`❌ Exception: ${error}`);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-surface-base p-8">
+      <div className="max-w-4xl mx-auto space-y-6">
+        <h1 className="text-2xl font-bold text-text-primary">SSE Debug Page</h1>
+
+        <div className="bg-surface-float p-6 rounded-lg space-y-4">
+          <h2 className="text-lg font-semibold text-text-primary">Auth Status</h2>
+          <div className="space-y-2 text-sm text-text-secondary font-mono">
+            <div>Authenticated: {isAuthenticated ? "✅ Yes" : "❌ No"}</div>
+            <div>User: {user ? user.email : "Not logged in"}</div>
+            <div>SSE Connected: {isSSEConnected ? "✅ Yes" : "❌ No"}</div>
+            <div>Token: {token ? "✅ Present" : "❌ Missing"}</div>
+            {token && (
+              <div className="text-xs break-all">
+                Token (first 50 chars): {token.substring(0, 50)}...
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="bg-surface-float p-6 rounded-lg space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-text-primary">Manual SSE Test</h2>
+            <button
+              onClick={testSSEConnection}
+              disabled={!token}
+              className="px-4 py-2 bg-primary-base text-white rounded hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Test SSE Connection
+            </button>
+          </div>
+        </div>
+
+        <div className="bg-surface-float p-6 rounded-lg space-y-4">
+          <h2 className="text-lg font-semibold text-text-primary">Logs</h2>
+          <div className="bg-surface-base p-4 rounded max-h-96 overflow-y-auto">
+            {logs.length === 0 ? (
+              <div className="text-text-muted text-sm">No logs yet</div>
+            ) : (
+              <div className="space-y-1 text-xs font-mono">
+                {logs.map((log, i) => (
+                  <div key={i} className="text-text-secondary">
+                    {log}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          <button
+            onClick={() => setLogs([])}
+            className="text-sm text-text-muted hover:text-text-secondary"
+          >
+            Clear Logs
+          </button>
+        </div>
+
+        <div className="bg-surface-float p-6 rounded-lg space-y-4">
+          <h2 className="text-lg font-semibold text-text-primary">Instructions</h2>
+          <ol className="list-decimal list-inside space-y-2 text-sm text-text-secondary">
+            <li>Check if you're authenticated (should show email above)</li>
+            <li>Check if token is present</li>
+            <li>Click "Test SSE Connection" button</li>
+            <li>Watch the logs for connection events</li>
+            <li>
+              Run backend test:{" "}
+              <code className="bg-surface-base px-2 py-1 rounded text-xs">
+                uv run python scripts/test_sse_connection.py
+              </code>
+            </li>
+          </ol>
+        </div>
+
+        <div className="bg-amber-500/10 border border-amber-500/20 p-6 rounded-lg">
+          <h3 className="text-sm font-semibold text-amber-500 mb-2">⚠️ Browser Console</h3>
+          <p className="text-sm text-text-secondary">
+            Open DevTools Console (F12) to see detailed [SSE] logs from NotificationProvider
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}

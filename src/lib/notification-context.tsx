@@ -10,7 +10,7 @@ import {
   type ReactNode,
 } from "react";
 import { useAuth } from "./auth-context";
-import { request } from "@/lib/api-client";
+import { request, getAccessToken } from "@/lib/api-client";
 import { isPushNotificationsSupported, setupPushNotifications } from "./push-notifications";
 
 export interface Notification {
@@ -64,7 +64,7 @@ interface NotificationProviderProps {
 }
 
 export function NotificationProvider({ children }: NotificationProviderProps) {
-  const { isAuthenticated, accessToken } = useAuth() as any;
+  const { isAuthenticated } = useAuth();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -222,7 +222,21 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
 
   // Connect to SSE stream
   const connectSSE = useCallback(() => {
-    if (!isAuthenticated || !accessToken) return;
+    console.log("[SSE] connectSSE called, isAuthenticated:", isAuthenticated);
+    
+    if (!isAuthenticated) {
+      console.log("[SSE] Not authenticated, skipping connection");
+      return;
+    }
+
+    // Get the current access token
+    const accessToken = getAccessToken();
+    console.log("[SSE] Retrieved access token:", accessToken ? "present" : "missing");
+    
+    if (!accessToken) {
+      console.warn("[SSE] Cannot connect to SSE: no access token available");
+      return;
+    }
 
     try {
       // Close existing connection
@@ -237,11 +251,13 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
       const url = new URL(`${apiUrl}/notifications/stream`);
       url.searchParams.set("token", accessToken);
 
+      console.log("[SSE] Connecting to SSE stream:", url.toString().replace(/token=[^&]+/, "token=***"));
+
       const eventSource = new EventSource(url.toString());
 
       // Handle connection confirmation
       eventSource.addEventListener("connected", (event) => {
-        console.log("SSE connected:", event.data);
+        console.log("[SSE] ✅ SSE connected:", event.data);
         setIsSSEConnected(true);
         reconnectAttemptsRef.current = 0;
       });
@@ -274,8 +290,9 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
       });
 
       // Handle errors
-      eventSource.onerror = () => {
-        console.warn("SSE connection error, will attempt to reconnect");
+      eventSource.onerror = (error) => {
+        console.error("[SSE] ⚠️ SSE connection error:", error);
+        console.warn("[SSE] SSE connection error, will attempt to reconnect");
         eventSource.close();
         setIsSSEConnected(false);
 
@@ -297,16 +314,16 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
 
       eventSourceRef.current = eventSource;
 
-      console.log("SSE connection established");
+      console.log("[SSE] ✅ SSE connection established, waiting for events");
 
       return () => {
         eventSource.close();
       };
     } catch (error) {
-      console.error("Failed to connect to SSE stream:", error);
+      console.error("[SSE] ❌ Failed to connect to SSE stream:", error);
       setIsSSEConnected(false);
     }
-  }, [isAuthenticated, accessToken]);
+  }, [isAuthenticated]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -322,9 +339,12 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
 
   // Connect to SSE when authenticated
   useEffect(() => {
+    console.log("[SSE] useEffect triggered - isAuthenticated:", isAuthenticated);
     if (isAuthenticated) {
+      console.log("[SSE] Calling connectSSE from useEffect");
       connectSSE();
     } else {
+      console.log("[SSE] Not authenticated, cleaning up existing connection");
       // Cleanup when logged out
       if (eventSourceRef.current) {
         eventSourceRef.current.close();
