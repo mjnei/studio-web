@@ -304,8 +304,32 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
   useEffect(() => {
     console.log("[SSE] useEffect triggered - isAuthenticated:", isAuthenticated);
     if (isAuthenticated) {
-      console.log("[SSE] Calling connectSSE from useEffect");
-      connectSSE();
+      const accessToken = getAccessToken();
+      console.log(
+        "[SSE] Calling connectSSE from useEffect, token:",
+        accessToken ? "present" : "missing"
+      );
+
+      // Only attempt connection if token is available
+      if (accessToken) {
+        connectSSE();
+      } else {
+        console.warn(
+          "[SSE] Token not yet available, will retry when token is set"
+        );
+        // Retry after a short delay to allow token to be set
+        const retryTimer = setTimeout(() => {
+          const retryToken = getAccessToken();
+          if (retryToken) {
+            console.log("[SSE] Token now available, connecting SSE");
+            connectSSE();
+          } else {
+            console.error("[SSE] Token still not available after delay");
+          }
+        }, 500);
+
+        return () => clearTimeout(retryTimer);
+      }
     } else {
       console.log("[SSE] Not authenticated, cleaning up existing connection");
       // Cleanup when logged out
