@@ -223,7 +223,7 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
   // Connect to SSE stream
   const connectSSE = useCallback(() => {
     console.log("[SSE] connectSSE called, isAuthenticated:", isAuthenticated);
-    
+
     if (!isAuthenticated) {
       console.log("[SSE] Not authenticated, skipping connection");
       return;
@@ -232,7 +232,7 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
     // Get the current access token
     const accessToken = getAccessToken();
     console.log("[SSE] Retrieved access token:", accessToken ? "present" : "missing");
-    
+
     if (!accessToken) {
       console.warn("[SSE] Cannot connect to SSE: no access token available");
       return;
@@ -251,7 +251,10 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
       const url = new URL(`${apiUrl}/notifications/stream`);
       url.searchParams.set("token", accessToken);
 
-      console.log("[SSE] Connecting to SSE stream:", url.toString().replace(/token=[^&]+/, "token=***"));
+      console.log(
+        "[SSE] Connecting to SSE stream:",
+        url.toString().replace(/token=[^&]+/, "token=***")
+      );
 
       const eventSource = new EventSource(url.toString());
 

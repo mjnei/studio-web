@@ -59,6 +59,11 @@ export function getAccessToken(): string | null {
   return accessToken;
 }
 
+// Debug helper - expose token to window in development
+if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
+  (window as any).getAccessToken = getAccessToken;
+}
+
 export async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",

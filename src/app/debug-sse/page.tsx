@@ -15,6 +15,9 @@ export default function DebugSSEPage() {
     const currentToken = getAccessToken();
     setToken(currentToken);
     addLog(`Token check: ${currentToken ? "present" : "missing"}`);
+    if (currentToken) {
+      addLog(`Token length: ${currentToken.length} characters`);
+    }
     addLog(`User: ${user ? user.email : "not logged in"}`);
     addLog(`isAuthenticated: ${isAuthenticated}`);
     addLog(`isSSEConnected: ${isSSEConnected}`);
@@ -22,6 +25,13 @@ export default function DebugSSEPage() {
 
   const addLog = (message: string) => {
     setLogs((prev) => [...prev, `${new Date().toLocaleTimeString()}: ${message}`]);
+  };
+
+  const copyToken = () => {
+    if (token) {
+      navigator.clipboard.writeText(token);
+      addLog("✅ Token copied to clipboard!");
+    }
   };
 
   const testSSEConnection = async () => {
@@ -80,9 +90,17 @@ export default function DebugSSEPage() {
             <div>SSE Connected: {isSSEConnected ? "✅ Yes" : "❌ No"}</div>
             <div>Token: {token ? "✅ Present" : "❌ Missing"}</div>
             {token && (
-              <div className="text-xs break-all">
-                Token (first 50 chars): {token.substring(0, 50)}...
-              </div>
+              <>
+                <div className="text-xs break-all">
+                  Token (first 50 chars): {token.substring(0, 50)}...
+                </div>
+                <button
+                  onClick={copyToken}
+                  className="mt-2 px-3 py-1 text-xs bg-surface-base hover:bg-surface-float rounded border border-border-default"
+                >
+                  📋 Copy Full Token
+                </button>
+              </>
             )}
           </div>
         </div>
@@ -128,6 +146,7 @@ export default function DebugSSEPage() {
           <ol className="list-decimal list-inside space-y-2 text-sm text-text-secondary">
             <li>Check if you're authenticated (should show email above)</li>
             <li>Check if token is present</li>
+            <li>Click "📋 Copy Full Token" to copy your access token</li>
             <li>Click "Test SSE Connection" button</li>
             <li>Watch the logs for connection events</li>
             <li>
@@ -137,6 +156,18 @@ export default function DebugSSEPage() {
               </code>
             </li>
           </ol>
+
+          <div className="mt-4 p-4 bg-surface-base rounded border border-border-default">
+            <h3 className="text-sm font-semibold text-text-primary mb-2">
+              🔧 Get Token from Console
+            </h3>
+            <p className="text-xs text-text-secondary mb-2">
+              You can also get the token from browser console (F12):
+            </p>
+            <code className="block text-xs bg-black/20 p-2 rounded text-text-secondary">
+              window.getAccessToken()
+            </code>
+          </div>
         </div>
 
         <div className="bg-amber-500/10 border border-amber-500/20 p-6 rounded-lg">
