@@ -56,18 +56,18 @@ export default function ComposePage() {
     checkAndScheduleThumbnailIfNeeded();
   }, [projectId, state, hasScheduledThumbnail]);
 
-  // Poll for thumbnail status if generating
+  // Poll for thumbnail status if generating (reduced frequency, fallback for SSE)
   React.useEffect(() => {
     if (state?.thumbnailStatus === "generating") {
       const interval = setInterval(() => {
         refresh(); // Refresh project state to check thumbnail status
-      }, 5000);
+      }, 8000); // Increased from 5s to 8s
 
       return () => clearInterval(interval);
     }
   }, [state?.thumbnailStatus, refresh]);
 
-  // Poll for composition status when processing
+  // Poll for composition status when processing (reduced frequency, fallback for SSE)
   React.useEffect(() => {
     if (state?.thumbnailCompositionStatus === "processing" && !isPollingComposition) {
       setIsPollingComposition(true);
@@ -91,7 +91,7 @@ export default function ComposePage() {
             state?.thumbnailCompositionError || "Failed to composite thumbnail"
           );
         }
-      }, 2000); // Poll every 2 seconds
+      }, 5000); // Reduced from 2s to 5s (fallback polling)
 
       return () => clearInterval(pollInterval);
     }

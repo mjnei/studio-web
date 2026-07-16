@@ -57,7 +57,7 @@ export default function PreviewPage() {
     shouldClose: (job) => job.status === "completed" || job.status === "failed",
   });
 
-  // Fallback polling
+  // Fallback polling (only when SSE fails)
   useEffect(() => {
     if (!ttsJob || isStreaming) return;
     if (ttsJob.status === "completed" || ttsJob.status === "failed") return;
@@ -72,7 +72,7 @@ export default function PreviewPage() {
       } catch (error) {
         console.error("Polling error:", error);
       }
-    }, 2000);
+    }, 5000); // Reduced from 2s to 5s (fallback polling)
 
     return () => clearInterval(pollInterval);
   }, [ttsJob?.id, ttsJob?.status, isStreaming]);

@@ -314,9 +314,7 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
       if (accessToken) {
         connectSSE();
       } else {
-        console.warn(
-          "[SSE] Token not yet available, will retry when token is set"
-        );
+        console.warn("[SSE] Token not yet available, will retry when token is set");
         // Retry after a short delay to allow token to be set
         const retryTimer = setTimeout(() => {
           const retryToken = getAccessToken();

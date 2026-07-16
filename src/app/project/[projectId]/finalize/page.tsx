@@ -35,6 +35,7 @@ import { CreditUsageIndicator } from "@/components/credits/CreditUsageIndicator"
 import { InsufficientCreditsModal } from "@/components/credits/InsufficientCreditsModal";
 import { CreditConfirmationModal } from "@/components/credits/CreditConfirmationModal";
 import { VideoGenerationProgress } from "@/components/project/VideoGenerationProgress";
+import { useNotifications } from "@/lib/notification-context";
 
 export default function FinalizePage() {
   const params = useParams();
@@ -42,6 +43,7 @@ export default function FinalizePage() {
   const projectId = params.projectId as string;
   const { state, isLoading } = useProjectState(projectId);
   const toast = useToast();
+  const { isSSEConnected } = useNotifications();
 
   const [showFullScriptModal, setShowFullScriptModal] = useState(false);
   const [videos, setVideos] = useState<VideoGenerationResponse[]>([]);
@@ -128,13 +130,15 @@ export default function FinalizePage() {
   }, [projectId, loadVideos, loadCreditStatus]);
 
   // Poll for video status updates if there's a processing video
+  // Only poll if SSE is NOT connected (fallback mechanism)
+  // Polling frequency: 10 seconds (reduced from 3 seconds) when SSE unavailable
   React.useEffect(() => {
     const hasProcessingVideo = videos?.some(
       (v) => v.status === "processing" || v.status === "queued"
     );
 
-    if (!hasProcessingVideo) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+    // If SSE is connected, rely on real-time notifications instead of polling
+    if (isSSEConnected || !hasProcessingVideo) {
       setProcessingVideoJob(null);
       return;
     }
@@ -152,10 +156,10 @@ export default function FinalizePage() {
       }
       void loadVideos();
       void loadCreditStatus(); // Also refresh credits
-    }, 3000); // Poll every 3 seconds for better responsiveness
+    }, 10000); // Poll every 10 seconds (fallback only when SSE not connected)
 
     return () => clearInterval(pollInterval);
-  }, [videos, projectId, loadVideoJobWithSteps, loadVideos, loadCreditStatus]);
+  }, [videos, projectId, loadVideoJobWithSteps, loadVideos, loadCreditStatus, isSSEConnected]);
 
   const handleRegenerate = async () => {
     // Always load fresh credit status before checking
