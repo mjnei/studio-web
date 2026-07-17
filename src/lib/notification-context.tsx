@@ -198,9 +198,16 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
       return;
     }
 
+    // Skip if already connected and healthy
+    if (eventSourceRef.current && eventSourceRef.current.readyState !== EventSource.CLOSED) {
+      console.log("[SSE] Connection already exists and is active, skipping reconnect");
+      return;
+    }
+
     try {
-      // Close existing connection
+      // Close existing connection if it exists
       if (eventSourceRef.current) {
+        console.log("[SSE] Closing existing connection before reconnecting");
         eventSourceRef.current.close();
       }
 
@@ -336,7 +343,8 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
         setIsSSEConnected(false);
       }
     }
-  }, [isAuthenticated, connectSSE]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated]); // Only depend on isAuthenticated, not connectSSE to avoid reconnection loops
 
   // Initial data fetch when authenticated
   useEffect(() => {
