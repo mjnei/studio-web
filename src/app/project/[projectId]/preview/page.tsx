@@ -77,12 +77,9 @@ export default function PreviewPage() {
     return () => clearInterval(pollInterval);
   }, [ttsJob?.id, ttsJob?.status, isStreaming]);
 
-  // Advance step on page load
-  useEffect(() => {
-    if (projectId && state?.lastStep && state.lastStep !== "preview") {
-      advanceProjectStep(projectId, "preview").catch(console.error);
-    }
-  }, [projectId, state?.lastStep]);
+  // Note: Do not auto-advance step to preview
+  // Users may navigate back to preview from compose, and we want them to return to compose
+  // Step advancement only happens via explicit forward navigation
 
   // Initialize TTS job - runs once when page loads or when active job changes
   useEffect(() => {
