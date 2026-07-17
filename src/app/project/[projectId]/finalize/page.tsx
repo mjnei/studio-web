@@ -129,6 +129,22 @@ export default function FinalizePage() {
     }
   }, [projectId, loadVideos, loadCreditStatus]);
 
+  // Listen for video completion notifications to refresh the page
+  const { notifications } = useNotifications();
+  React.useEffect(() => {
+    // Check if there's a new video_job_completed notification
+    const latestNotification = notifications[0]; // Latest is at index 0
+    if (
+      latestNotification &&
+      latestNotification.notification_type === "video_job_completed" &&
+      latestNotification.project_id?.toString() === projectId
+    ) {
+      console.log("📹 Video completed notification received, refreshing videos...");
+      void loadVideos();
+      void loadCreditStatus();
+    }
+  }, [notifications, projectId, loadVideos, loadCreditStatus]);
+
   // Poll for video status updates if there's a processing video
   // Only poll if SSE is NOT connected (fallback mechanism)
   // Polling frequency: 10 seconds (reduced from 3 seconds) when SSE unavailable
