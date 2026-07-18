@@ -3,8 +3,8 @@
 import { type Notification } from "@/lib/notification-context";
 import { useNotifications } from "@/lib/notification-context";
 import { formatDistanceToNow } from "date-fns";
-import { X, CheckCircle, AlertCircle, Info, Trash2 } from "lucide-react";
-import Link from "next/link";
+import { CheckCircle, AlertCircle, Info, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface NotificationItemProps {
   notification: Notification;
@@ -33,6 +33,31 @@ const colorMap = {
 
 export function NotificationItem({ notification, onClose }: NotificationItemProps) {
   const { markAsRead, deleteNotification } = useNotifications();
+  const router = useRouter();
+
+  const handleClick = async (e: React.MouseEvent<HTMLDivElement>) => {
+    // Don't navigate if clicking on action buttons
+    const target = e.target as HTMLElement;
+    if (target.closest("button")) {
+      return;
+    }
+
+    // Mark as read if unread
+    if (!notification.is_read) {
+      await markAsRead(notification.id);
+    }
+
+    // Close dropdown if provided
+    if (onClose) {
+      onClose();
+    }
+
+    // Navigate if action URL exists
+    const actionUrl = notification.action_url;
+    if (actionUrl) {
+      router.push(actionUrl);
+    }
+  };
 
   const handleMarkAsRead = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -54,15 +79,12 @@ export function NotificationItem({ notification, onClose }: NotificationItemProp
 
   const timeAgo = formatDistanceToNow(new Date(notification.created_at), { addSuffix: true });
 
-  // Extract action URL from notification if it exists
-  const actionUrl = notification.action_url;
-
-  const content = (
+  return (
     <div
       className={`p-4 hover:bg-surface-hover transition-all cursor-pointer group ${
         !notification.is_read ? "bg-accent-primary/5" : ""
       }`}
-      onClick={handleMarkAsRead}
+      onClick={handleClick}
     >
       <div className="flex gap-3">
         {/* Icon */}
@@ -108,15 +130,4 @@ export function NotificationItem({ notification, onClose }: NotificationItemProp
       </div>
     </div>
   );
-
-  // Wrap in Link if action URL exists
-  if (actionUrl) {
-    return (
-      <Link href={actionUrl} onClick={onClose}>
-        {content}
-      </Link>
-    );
-  }
-
-  return content;
 }
