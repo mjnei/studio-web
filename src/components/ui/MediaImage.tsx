@@ -30,13 +30,13 @@ export function MediaImage({
 }: MediaImageProps) {
   const [imageError, setImageError] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(showLoadingState);
-  
+
   // Calculate URL immediately from props (no effect needed)
   const displayUrl = React.useMemo(
     () => ImageUrlUtils.getThumbnailUrl(src, fallbackSrc),
     [src, fallbackSrc]
   );
-  
+
   const [currentSrc, setCurrentSrc] = React.useState<string | undefined>(displayUrl);
   const [attemptedFallback, setAttemptedFallback] = React.useState(false);
 

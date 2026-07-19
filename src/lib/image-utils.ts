@@ -26,7 +26,10 @@ export class ImageUrlUtils {
    * @param fallbackUrl - Optional fallback URL if imageUrl is invalid
    * @returns Ready-to-use image URL or undefined if not available
    */
-  static getImageUrl(imageUrl: string | null | undefined, fallbackUrl?: string): string | undefined {
+  static getImageUrl(
+    imageUrl: string | null | undefined,
+    fallbackUrl?: string
+  ): string | undefined {
     // Return undefined if no URL provided
     if (!imageUrl) {
       return fallbackUrl;

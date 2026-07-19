@@ -110,10 +110,7 @@ export function MediaImageExample() {
             <h3 className="mb-2 text-sm font-medium">Video with Poster (Using getThumbnailUrl)</h3>
             <video
               src={video.video_url}
-              poster={ImageUrlUtils.getThumbnailUrl(
-                video.thumbnail_url,
-                project.finalThumbnailUrl
-              )}
+              poster={ImageUrlUtils.getThumbnailUrl(video.thumbnail_url, project.finalThumbnailUrl)}
               controls
               className="aspect-video w-full rounded-lg"
             >
@@ -124,7 +121,9 @@ export function MediaImageExample() {
       </section>
 
       <section>
-        <h2 className="mb-4 text-xl font-semibold">3. Direct Usage (When Backend Returns Full URL)</h2>
+        <h2 className="mb-4 text-xl font-semibold">
+          3. Direct Usage (When Backend Returns Full URL)
+        </h2>
         <p className="mb-4 text-sm text-text-muted">
           If backend already returns properly formatted URLs, use them directly
         </p>

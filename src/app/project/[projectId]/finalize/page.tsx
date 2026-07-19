@@ -22,6 +22,7 @@ import {
   Info,
 } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
+import { ImageUrlUtils } from "@/lib/image-utils";
 import {
   getProjectVideos,
   regenerateVideo,
@@ -346,10 +347,13 @@ export default function FinalizePage() {
             <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default mb-4">
               {displayVideo.video_url ? (
                 <video
-                  src={displayVideo.video_url}
+                  src={ImageUrlUtils.getImageUrl(displayVideo.video_url)}
                   controls
                   className="w-full h-full object-contain"
-                  poster={displayVideo.thumbnail_url || state?.finalThumbnailUrl || undefined}
+                  poster={ImageUrlUtils.getThumbnailUrl(
+                    displayVideo.thumbnail_url,
+                    state?.finalThumbnailUrl
+                  )}
                 >
                   Your browser does not support the video tag.
                 </video>
@@ -396,7 +400,7 @@ export default function FinalizePage() {
                 leftIcon={<Download className="h-4 w-4" />}
                 onClick={() => {
                   if (displayVideo.video_url) {
-                    window.open(displayVideo.video_url, "_blank");
+                    window.open(ImageUrlUtils.getImageUrl(displayVideo.video_url), "_blank");
                   }
                 }}
                 className="w-full"
@@ -719,7 +723,9 @@ export default function FinalizePage() {
                     if (displayVideo?.video_url) {
                       // In a real implementation, this would open the platform's sharing dialog
                       // For now, we'll copy the video URL and show a toast
-                      navigator.clipboard.writeText(displayVideo.video_url);
+                      navigator.clipboard.writeText(
+                        ImageUrlUtils.getImageUrl(displayVideo.video_url) || ""
+                      );
                       toast.success(
                         "Video URL copied",
                         "Open X.com and paste the link to share your video"
@@ -747,7 +753,9 @@ export default function FinalizePage() {
                 <button
                   onClick={() => {
                     if (displayVideo?.video_url) {
-                      navigator.clipboard.writeText(displayVideo.video_url);
+                      navigator.clipboard.writeText(
+                        ImageUrlUtils.getImageUrl(displayVideo.video_url) || ""
+                      );
                       toast.success(
                         "Video URL copied",
                         "Open WeChat and paste the link to share your video"
