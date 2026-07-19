@@ -22,7 +22,7 @@ import {
   Info,
 } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
-import { ImageUrlUtils } from "@/lib/image-utils";
+import { MediaImage } from "@/components/ui/MediaImage";
 import {
   getProjectVideos,
   regenerateVideo,
@@ -347,13 +347,10 @@ export default function FinalizePage() {
             <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default mb-4">
               {displayVideo.video_url ? (
                 <video
-                  src={ImageUrlUtils.getImageUrl(displayVideo.video_url)}
+                  src={displayVideo.video_url}
                   controls
                   className="w-full h-full object-contain"
-                  poster={ImageUrlUtils.getThumbnailUrl(
-                    displayVideo.thumbnail_url,
-                    state?.finalThumbnailUrl
-                  )}
+                  poster={displayVideo.thumbnail_url || state?.finalThumbnailUrl || undefined}
                 >
                   Your browser does not support the video tag.
                 </video>
@@ -400,7 +397,7 @@ export default function FinalizePage() {
                 leftIcon={<Download className="h-4 w-4" />}
                 onClick={() => {
                   if (displayVideo.video_url) {
-                    window.open(ImageUrlUtils.getImageUrl(displayVideo.video_url), "_blank");
+                    window.open(displayVideo.video_url, "_blank");
                   }
                 }}
                 className="w-full"
@@ -433,17 +430,11 @@ export default function FinalizePage() {
                     >
                       <div className="flex items-center gap-3 flex-1 min-w-0">
                         <div className="w-16 aspect-video rounded overflow-hidden bg-surface-base flex-shrink-0">
-                          {video.thumbnail_url ? (
-                            <img
-                              src={video.thumbnail_url}
-                              alt={`Version ${video.generation_attempt}`}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center">
-                              <Video className="h-4 w-4 text-text-muted" />
-                            </div>
-                          )}
+                          <MediaImage
+                            src={video.thumbnail_url}
+                            alt={`Version ${video.generation_attempt}`}
+                            className="w-full h-full object-cover"
+                          />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
@@ -721,11 +712,7 @@ export default function FinalizePage() {
                 <button
                   onClick={() => {
                     if (displayVideo?.video_url) {
-                      // In a real implementation, this would open the platform's sharing dialog
-                      // For now, we'll copy the video URL and show a toast
-                      navigator.clipboard.writeText(
-                        ImageUrlUtils.getImageUrl(displayVideo.video_url) || ""
-                      );
+                      navigator.clipboard.writeText(displayVideo.video_url);
                       toast.success(
                         "Video URL copied",
                         "Open X.com and paste the link to share your video"
@@ -753,9 +740,7 @@ export default function FinalizePage() {
                 <button
                   onClick={() => {
                     if (displayVideo?.video_url) {
-                      navigator.clipboard.writeText(
-                        ImageUrlUtils.getImageUrl(displayVideo.video_url) || ""
-                      );
+                      navigator.clipboard.writeText(displayVideo.video_url);
                       toast.success(
                         "Video URL copied",
                         "Open WeChat and paste the link to share your video"
