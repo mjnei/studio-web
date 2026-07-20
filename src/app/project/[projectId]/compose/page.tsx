@@ -444,6 +444,29 @@ export default function ComposePage() {
         onClose={() => setShowActionModal(false)}
         title={actionModalType === "regenerate" ? "Regenerate Thumbnail?" : "Customize Thumbnail?"}
         size="md"
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => setShowActionModal(false)}>
+              Cancel
+            </Button>
+            <Button
+              variant="primary"
+              onClick={
+                actionModalType === "regenerate" ? handleRegenerateThumbnail : handleEditThumbnail
+              }
+              loading={isRegenerating}
+              icon={
+                actionModalType === "regenerate" ? (
+                  <RotateCw className="h-4 w-4" />
+                ) : (
+                  <Edit className="h-4 w-4" />
+                )
+              }
+            >
+              {actionModalType === "regenerate" ? "Regenerate" : "Open Editor"}
+            </Button>
+          </>
+        }
       >
         <div className="space-y-4">
           {actionModalType === "regenerate" ? (
@@ -507,30 +530,6 @@ export default function ComposePage() {
               </div>
             </>
           )}
-        </div>
-        <div className="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-border-default">
-          <Button variant="secondary" onClick={() => setShowActionModal(false)}>
-            Cancel
-          </Button>
-          <Button
-            variant="primary"
-            onClick={
-              actionModalType === "regenerate" ? handleRegenerateThumbnail : handleEditThumbnail
-            }
-            loading={isRegenerating}
-          >
-            {actionModalType === "regenerate" ? (
-              <>
-                <RotateCw className="h-4 w-4 mr-2" />
-                Regenerate
-              </>
-            ) : (
-              <>
-                <Edit className="h-4 w-4 mr-2" />
-                Open Editor
-              </>
-            )}
-          </Button>
         </div>
       </Modal>
 
