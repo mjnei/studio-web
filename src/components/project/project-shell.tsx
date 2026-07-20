@@ -105,11 +105,7 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
               {projectStatus}
             </span>
             <div className="ml-auto flex items-center gap-2 md:hidden">
-              {currentStep === "compose" && (
-                <Button variant="primary" size="sm">
-                  Export
-                </Button>
-              )}
+              {/* Export button removed */}
             </div>
           </div>
           <nav className="flex items-center gap-0.5 overflow-x-auto px-3 pb-2 md:ml-6 md:flex md:pb-0">
