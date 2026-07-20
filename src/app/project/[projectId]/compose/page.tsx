@@ -9,8 +9,8 @@ import { FloatingWorkflowNavigation } from "@/components/project/floating-workfl
 import { FullScriptModal } from "@/components/project/full-script-modal";
 import { ThumbnailEditorModal } from "@/components/project/ThumbnailEditorModal";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
-import { FileText, ChevronDown, Sparkles, Check, Loader2 } from "lucide-react";
-import { advanceProjectStep, scheduleAgnesJobs } from "@/lib/project-client";
+import { FileText, ChevronDown, Sparkles, Check, Loader2, RotateCw, Edit } from "lucide-react";
+import { advanceProjectStep, scheduleAgnesJobs, regenerateThumbnail } from "@/lib/project-client";
 import { useToast } from "@/components/ui/toast";
 
 export default function ComposePage() {
@@ -25,6 +25,7 @@ export default function ComposePage() {
   const [isAdvancing, setIsAdvancing] = useState(false);
   const [isPollingComposition, setIsPollingComposition] = useState(false);
   const [hasScheduledThumbnail, setHasScheduledThumbnail] = useState(false);
+  const [isRegenerating, setIsRegenerating] = useState(false);
 
   // Check and schedule thumbnail if needed on page load (once)
   React.useEffect(() => {
@@ -60,7 +61,7 @@ export default function ComposePage() {
   React.useEffect(() => {
     // Poll when thumbnail is not ready yet (no thumbnailUrl) or currently generating
     const shouldPoll = !state?.thumbnailUrl || state?.thumbnailStatus === "generating";
-    
+
     if (shouldPoll && !state?.thumbnailConfirmed) {
       const interval = setInterval(() => {
         refresh(); // Refresh project state to check thumbnail status
@@ -111,6 +112,29 @@ export default function ComposePage() {
     );
   };
 
+  const handleRegenerateThumbnail = async () => {
+    setIsRegenerating(true);
+    try {
+      await regenerateThumbnail(projectId);
+      toast.success(
+        "Regenerating thumbnail",
+        "AI is generating a new thumbnail. This will take a few moments..."
+      );
+      // Reset the scheduled flag to allow re-checking
+      setHasScheduledThumbnail(false);
+      // Refresh to get the updated status
+      await refresh();
+    } catch (error) {
+      console.error("Failed to regenerate thumbnail:", error);
+      toast.error(
+        "Regeneration failed",
+        error instanceof Error ? error.message : "Failed to regenerate thumbnail"
+      );
+    } finally {
+      setIsRegenerating(false);
+    }
+  };
+
   const handleContinue = async () => {
     if (!state?.thumbnailConfirmed) {
       toast.error("Thumbnail not finalized", "Please finalize your thumbnail before continuing");
@@ -159,7 +183,9 @@ export default function ComposePage() {
                   : "cursor-pointer hover:border-accent-cyan/30 hover:bg-surface-raised transition-all group"
             }
             onClick={
-              state.thumbnailConfirmed || state.thumbnailStatus === "generating" || !state.thumbnailUrl
+              state.thumbnailConfirmed ||
+              state.thumbnailStatus === "generating" ||
+              !state.thumbnailUrl
                 ? undefined
                 : () => setShowThumbnailEditor(true)
             }
@@ -167,7 +193,7 @@ export default function ComposePage() {
             <div className="flex flex-col gap-4">
               <div className="flex items-start gap-4">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted flex-shrink-0">
-                  {state.thumbnailStatus === "generating" || !state.thumbnailUrl ? (
+                  {state.thumbnailStatus === "generating" || !state.thumbnailUrl || isRegenerating ? (
                     <Loader2 className="h-5 w-5 text-accent-cyan animate-spin" />
                   ) : (
                     <Sparkles className="h-5 w-5 text-accent-cyan" />
@@ -176,30 +202,50 @@ export default function ComposePage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-4 mb-2">
                     <h3 className="font-medium text-text-primary">Project Thumbnail</h3>
-                    {state.thumbnailStatus === "generating" || !state.thumbnailUrl ? (
-                      <span className="text-xs font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0">
-                        <Loader2 className="h-3 w-3 animate-spin" /> Generating...
-                      </span>
-                    ) : state.thumbnailCompositionStatus === "processing" ? (
-                      <span className="text-xs font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0">
-                        <Loader2 className="h-3 w-3 animate-spin" /> Processing...
-                      </span>
-                    ) : state.thumbnailConfirmed ? (
-                      <span className="text-xs font-medium text-status-success flex items-center gap-1 flex-shrink-0">
-                        <Check className="h-3 w-3" /> Confirmed
-                      </span>
-                    ) : state.thumbnailUrl ? (
-                      <span className="text-xs font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0 group-hover:text-accent-cyan-hover">
-                        Click to customize
-                      </span>
-                    ) : null}
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      {/* Regenerate button - always visible unless currently regenerating */}
+                      {!isRegenerating && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRegenerateThumbnail();
+                          }}
+                          disabled={isRegenerating}
+                          className="text-xs font-medium text-accent-cyan hover:text-accent-cyan-hover flex items-center gap-1 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          title="Regenerate base thumbnail"
+                        >
+                          <RotateCw className="h-3 w-3" />
+                        </button>
+                      )}
+                      
+                      {/* Status indicators */}
+                      {state.thumbnailStatus === "generating" || !state.thumbnailUrl || isRegenerating ? (
+                        <span className="text-xs font-medium text-accent-cyan flex items-center gap-1">
+                          <Loader2 className="h-3 w-3 animate-spin" /> Generating...
+                        </span>
+                      ) : state.thumbnailCompositionStatus === "processing" ? (
+                        <span className="text-xs font-medium text-accent-cyan flex items-center gap-1">
+                          <Loader2 className="h-3 w-3 animate-spin" /> Processing...
+                        </span>
+                      ) : state.thumbnailConfirmed ? (
+                        <span className="text-xs font-medium text-status-success flex items-center gap-1">
+                          <Check className="h-3 w-3" /> Confirmed
+                        </span>
+                      ) : state.thumbnailUrl ? (
+                        <span className="text-xs font-medium text-accent-cyan flex items-center gap-1 group-hover:text-accent-cyan-hover">
+                          <Edit className="h-3 w-3" />
+                        </span>
+                      ) : null}
+                    </div>
                   </div>
 
                   {/* Show loading message when generating base thumbnail or waiting for it */}
-                  {state.thumbnailStatus === "generating" || !state.thumbnailUrl ? (
+                  {state.thumbnailStatus === "generating" || !state.thumbnailUrl || isRegenerating ? (
                     <div className="space-y-3">
                       <p className="text-sm text-text-muted">
-                        AI is generating your thumbnail based on the movie and script content...
+                        {isRegenerating 
+                          ? "Regenerating your thumbnail with fresh AI-generated content..."
+                          : "AI is generating your thumbnail based on the movie and script content..."}
                       </p>
                       <div className="text-xs text-text-muted space-y-1">
                         <p>• This usually takes 10-30 seconds</p>
