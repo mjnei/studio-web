@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
-import { Mic, Plus, FileText, ChevronDown } from "lucide-react";
+import { Mic, Plus, FileText, ChevronDown, Globe, User, AlertCircle, Check } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useProjectState } from "@/lib/hooks/use-project-state";
@@ -11,7 +11,6 @@ import { FloatingWorkflowNavigation } from "@/components/project/floating-workfl
 import { VoiceRecordingModal } from "@/components/shared/voice-recording-modal";
 import { VoiceLimitDialog } from "@/components/voices/voice-limit-dialog";
 import { FullScriptModal } from "@/components/project/full-script-modal";
-import { VoiceGeneration } from "@/components/project/voice-generation";
 import { useToast } from "@/components/ui/toast";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { getAvailableVoices, getVoiceAudioUrl } from "@/lib/api/voice-client";
@@ -22,7 +21,7 @@ export default function VoicePage() {
   const params = useParams();
   const router = useRouter();
   const projectId = params.projectId as string;
-  const { state, updateVoice, activeScript, isLoading, refresh } = useProjectState(projectId);
+  const { state, updateVoice, activeScript, isLoading } = useProjectState(projectId);
   const { error: toastError, success: toastSuccess } = useToast();
 
   const [availableVoicesLoading, setAvailableVoicesLoading] = useState(true);
@@ -30,6 +29,7 @@ export default function VoicePage() {
   const [ownVoices, setOwnVoices] = useState<VoiceResponse[]>([]);
   const [communityVoices, setCommunityVoices] = useState<VoiceWithCreator[]>([]);
   const [selectedVoiceId, setSelectedVoiceId] = useState<number | null>(null);
+  const [tab, setTab] = useState<"my" | "community">("my");
   const [showRecorder, setShowRecorder] = useState(false);
   const [showLimitDialog, setShowLimitDialog] = useState(false);
   const [showFullScriptModal, setShowFullScriptModal] = useState(false);
@@ -39,6 +39,26 @@ export default function VoicePage() {
   const voiceLimits = useVoiceLimits();
 
   // Schedule Agnes jobs on page load (progressive scheduling) - ONCE
+  useEffect(() => {
+    const scheduleAgnesJobsIfNeeded = async () => {
+      if (!projectId || !activeScript?.content) return;
+      if (hasScheduledAgnes) return; // Only schedule once
+
+      try {
+        // Backend checks state and schedules only what's missing
+        const result = await scheduleAgnesJobs(projectId);
+        if (result.scheduled.length > 0) {
+          console.log("[Voice Page] Agnes jobs scheduled:", result.scheduled);
+        }
+        setHasScheduledAgnes(true);
+      } catch (error) {
+        console.error("[Voice Page] Failed to schedule Agnes jobs:", error);
+        setHasScheduledAgnes(true); // Mark as attempted even if failed
+      }
+    };
+
+    scheduleAgnesJobsIfNeeded();
+  }, [projectId, activeScript?.content, hasScheduledAgnes]);
   useEffect(() => {
     const scheduleAgnesJobsIfNeeded = async () => {
       if (!projectId || !activeScript?.content) return;
@@ -105,9 +125,6 @@ export default function VoicePage() {
     };
   }, []);
 
-  const myVoiceOptions: VoiceResponse[] = ownVoices;
-  const communityVoiceOptions: VoiceWithCreator[] = communityVoices;
-
   // Initialize selectedVoiceId from saved state
   useEffect(() => {
     if (selectedVoiceId) return;
@@ -143,7 +160,7 @@ export default function VoicePage() {
       }
 
       // If audio_url is not already attached, fetch it
-      let audioUrl = (voiceData as any).audio_url;
+      let audioUrl = voiceData.audio_url;
       if (!audioUrl) {
         try {
           const audioUrlData = await getVoiceAudioUrl(voiceId);
@@ -218,11 +235,9 @@ export default function VoicePage() {
     await playAudio(voiceId, voiceType);
   };
 
-  const handleChangeVoice = () => {
-    setSelectedVoiceId(null);
-  };
-
-  const handleRecordingSaved = async (newRecording: any) => {
+  const handleRecordingSaved = async (
+    newRecording: VoiceResponse & { title?: string; file_path?: string }
+  ) => {
     try {
       // The voice recorder returns a response with the recorded voice data
       // Get the audio URL for it
@@ -245,8 +260,13 @@ export default function VoicePage() {
       setShowRecorder(false);
       setOwnVoices([recordingWithUrl, ...ownVoices]);
 
+      // Refresh voice limits after adding a voice
+      await voiceLimits.refetch();
+
       // Auto-select the newly recorded voice
       await handleVoiceSelect(recordingWithUrl.id);
+
+      toastSuccess("Voice recorded", "Your new voice has been added");
     } catch (error) {
       console.error("Failed to get audio URL for new recording:", error);
       toastError(
@@ -386,54 +406,210 @@ export default function VoicePage() {
           </Card>
         )}
 
-        {/* Voice Selection Component */}
-        <VoiceGeneration
-          script={activeScript?.content || ""}
-          ownVoices={myVoiceOptions}
-          communityVoices={communityVoiceOptions}
-          selectedVoiceId={selectedVoiceId || undefined}
-          audioUrl={undefined}
-          isGenerating={false}
-          progress={0}
-          onVoiceSelect={handleVoiceSelect}
-          onGenerate={() => {}}
-          onChangeVoice={handleChangeVoice}
-          isLoadingVoices={availableVoicesLoading}
-          voicesError={availableVoicesError}
-        />
+        {/* Voice Selection with Tabs */}
+        <Card variant="elevated" padding="lg">
+          <div className="space-y-4">
+            {/* Tab Navigation */}
+            <div className="inline-flex items-center gap-2 rounded-xl bg-surface-panel p-1.5 shadow-sm border border-border-default">
+              <button
+                onClick={() => setTab("my")}
+                className={`relative flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold transition-all duration-200 ${
+                  tab === "my"
+                    ? "bg-gradient-to-r from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30"
+                    : "text-text-muted hover:text-text-secondary hover:bg-surface-raised"
+                }`}
+              >
+                <Mic className="h-4 w-4" />
+                <span>My Voices</span>
+                {ownVoices.length > 0 && (
+                  <span
+                    className={`ml-1 rounded-full px-2 py-0.5 text-xs font-bold ${
+                      tab === "my" ? "bg-white/20" : "bg-surface-raised"
+                    }`}
+                  >
+                    {ownVoices.length}
+                  </span>
+                )}
+              </button>
 
-        {/* Record New Voice CTA */}
-        {!showRecorder && ownVoices.length < 5 && (
-          <Card
-            variant="elevated"
-            padding="md"
-            className="border-accent-purple/30 bg-accent-purple/5"
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-start gap-3">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-primary/20 flex-shrink-0">
-                  <Plus className="w-4 h-4 text-accent-primary" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-text-primary">
-                    Want to add more of your voices?
-                  </p>
-                  <p className="text-xs text-text-secondary">
-                    {voiceLimits.loading
-                      ? "Checking limits..."
-                      : voiceLimits.isAtLimit
-                        ? voiceLimits.message
-                        : `You have ${voiceLimits.remainingCount} voice slot${voiceLimits.remainingCount !== 1 ? "s" : ""} remaining`}
-                  </p>
-                </div>
-              </div>
-              <Button variant="secondary" size="sm" onClick={handleAddVoiceClick}>
-                <Mic className="h-3 w-3 mr-1" />
-                Record
-              </Button>
+              <button
+                onClick={() => setTab("community")}
+                className={`relative flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold transition-all duration-200 ${
+                  tab === "community"
+                    ? "bg-gradient-to-r from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30"
+                    : "text-text-muted hover:text-text-secondary hover:bg-surface-raised"
+                }`}
+              >
+                <Globe className="h-4 w-4" />
+                <span>Community</span>
+                {communityVoices.length > 0 && (
+                  <span
+                    className={`ml-1 rounded-full px-2 py-0.5 text-xs font-bold ${
+                      tab === "community" ? "bg-white/20" : "bg-surface-raised"
+                    }`}
+                  >
+                    {communityVoices.length}
+                  </span>
+                )}
+              </button>
             </div>
-          </Card>
-        )}
+
+            {/* Error State */}
+            {availableVoicesError && (
+              <Card
+                variant="elevated"
+                padding="md"
+                className="border-status-failed/30 bg-status-failed/10"
+              >
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="h-5 w-5 text-status-failed flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-status-failed">{availableVoicesError}</p>
+                </div>
+              </Card>
+            )}
+
+            {/* Loading State */}
+            {availableVoicesLoading ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="h-24 animate-pulse rounded-lg bg-surface-panel border border-border-default"
+                  />
+                ))}
+              </div>
+            ) : (
+              <>
+                {/* My Voices Tab */}
+                {tab === "my" && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {ownVoices.length === 0 ? (
+                      <div className="col-span-full text-center py-8 rounded-lg border border-dashed border-border-default bg-surface-panel/50">
+                        <Mic className="h-8 w-8 text-text-muted mx-auto mb-2 opacity-50" />
+                        <p className="text-sm text-text-muted mb-2">No personal voices yet</p>
+                        <p className="text-xs text-text-muted max-w-xs mx-auto mb-4">
+                          Record your first voice to get started
+                        </p>
+                        <Button variant="primary" size="sm" onClick={handleAddVoiceClick}>
+                          <Plus size={16} className="mr-2" />
+                          Record Voice
+                        </Button>
+                      </div>
+                    ) : (
+                      <>
+                        {ownVoices.map((voice) => (
+                          <Card
+                            key={voice.id}
+                            variant={selectedVoiceId === voice.id ? "elevated" : "default"}
+                            padding="md"
+                            className={`cursor-pointer transition-all ${
+                              selectedVoiceId === voice.id
+                                ? "ring-2 ring-accent-primary border-accent-primary"
+                                : "hover:border-accent-primary/40"
+                            }`}
+                            onClick={() => handleVoiceSelect(voice.id)}
+                          >
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex items-start gap-2 flex-1 min-w-0">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-accent-primary to-purple-600 flex-shrink-0">
+                                  <Mic className="w-5 h-5 text-white" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <p className="font-semibold text-text-primary text-sm truncate">
+                                    {voice.name}
+                                  </p>
+                                  <p className="text-xs text-text-muted">Your voice</p>
+                                </div>
+                              </div>
+                              {selectedVoiceId === voice.id && (
+                                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-primary flex-shrink-0">
+                                  <Check className="w-4 h-4 text-white" />
+                                </div>
+                              )}
+                            </div>
+                          </Card>
+                        ))}
+
+                        {/* Add Voice Card */}
+                        <Card
+                          variant="default"
+                          padding="md"
+                          className="border-dashed hover:border-accent-primary/50 hover:bg-accent-primary/5 transition-all cursor-pointer group"
+                          onClick={handleAddVoiceClick}
+                        >
+                          <div className="flex flex-col items-center justify-center h-full min-h-[88px] text-center">
+                            <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-accent-primary/10 group-hover:bg-accent-primary/20 transition-colors">
+                              <Plus className="h-5 w-5 text-accent-primary" />
+                            </div>
+                            <p className="text-xs font-semibold text-text-primary mb-0.5">
+                              Add Voice
+                            </p>
+                            <p className="text-xs text-text-muted">
+                              {voiceLimits.canAdd
+                                ? `${voiceLimits.remainingCount} left`
+                                : "Limit reached"}
+                            </p>
+                          </div>
+                        </Card>
+                      </>
+                    )}
+                  </div>
+                )}
+
+                {/* Community Voices Tab */}
+                {tab === "community" && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {communityVoices.length === 0 ? (
+                      <div className="col-span-full text-center py-8 rounded-lg border border-dashed border-border-default bg-surface-panel/50">
+                        <Globe className="h-8 w-8 text-text-muted mx-auto mb-2 opacity-50" />
+                        <p className="text-sm text-text-muted mb-2">No community voices available</p>
+                        <p className="text-xs text-text-muted max-w-xs mx-auto">
+                          Community voices will appear here once they&apos;re shared and approved
+                        </p>
+                      </div>
+                    ) : (
+                      communityVoices.map((voice) => (
+                        <Card
+                          key={voice.id}
+                          variant={selectedVoiceId === voice.id ? "elevated" : "default"}
+                          padding="md"
+                          className={`cursor-pointer transition-all ${
+                            selectedVoiceId === voice.id
+                              ? "ring-2 ring-accent-cyan border-accent-cyan"
+                              : "hover:border-accent-cyan/40"
+                          }`}
+                          onClick={() => handleVoiceSelect(voice.id)}
+                        >
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex items-start gap-2 flex-1 min-w-0">
+                              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-accent-cyan to-blue-600 flex-shrink-0">
+                                <Globe className="w-5 h-5 text-white" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="font-semibold text-text-primary text-sm truncate">
+                                  {voice.name}
+                                </p>
+                                <p className="text-xs text-text-muted flex items-center gap-1">
+                                  <User className="h-3 w-3" />
+                                  <span>@{voice.creator_username}</span>
+                                </p>
+                              </div>
+                            </div>
+                            {selectedVoiceId === voice.id && (
+                              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-cyan flex-shrink-0">
+                                <Check className="w-4 h-4 text-white" />
+                              </div>
+                            )}
+                          </div>
+                        </Card>
+                      ))
+                    )}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </Card>
 
         {/* Voice Recorder Modal */}
         <VoiceRecordingModal

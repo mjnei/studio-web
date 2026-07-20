@@ -1,6 +1,6 @@
 /**
  * Voice creation limits by membership tier
- * 
+ *
  * These limits match the backend enforcement in:
  * app/services/voice_service.py::check_voice_limit()
  */
@@ -53,7 +53,7 @@ export function getVoiceLimitMessage(
 
   // At limit - suggest upgrade
   const tierName = tier === "free" ? "Free" : tier === "pro" ? "Pro" : "Premium";
-  
+
   if (tier === "premium") {
     return {
       isAtLimit: true,

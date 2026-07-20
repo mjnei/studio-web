@@ -78,8 +78,8 @@ export default function VoicesPage() {
     // Refetch to get the newly uploaded voice through the hook
     await refetch();
     setShowRecorder(false);
-    // Refresh limits after adding a voice
-    window.location.reload(); // Simple way to refresh limits
+    // Refresh voice limits after adding a voice
+    await voiceLimits.refetch();
   };
 
   const handleAddVoiceClick = () => {
@@ -100,6 +100,8 @@ export default function VoicesPage() {
   const handleDeleteVoice = async (id: number) => {
     try {
       await deleteVoice(id);
+      // Refresh voice limits after deleting a voice
+      await voiceLimits.refetch();
     } catch (err) {
       console.error("Failed to delete voice:", err);
       throw err;
@@ -133,19 +135,6 @@ export default function VoicesPage() {
       <PageHeader
         title="Voice Library"
         description="Create custom voices and discover community-shared voices for your projects"
-        action={
-          tab === "my" && !showRecorder ? (
-            <Button
-              variant="primary"
-              size="md"
-              onClick={handleAddVoiceClick}
-              className="w-full sm:w-auto shadow-lg shadow-accent-primary/20"
-            >
-              <Plus size={18} className="mr-2" />
-              Record New Voice
-            </Button>
-          ) : undefined
-        }
       />
 
       {/* Tab Navigation */}
@@ -254,17 +243,15 @@ export default function VoicesPage() {
                 Start by recording a voice sample from your microphone. Your voice will be cloned
                 and ready to use in your projects.
               </p>
-              {!showRecorder && (
-                <Button
-                  variant="primary"
-                  size="md"
-                  onClick={handleAddVoiceClick}
-                  className="shadow-lg shadow-accent-primary/20"
-                >
-                  <Plus size={18} className="mr-2" />
-                  Record Your First Voice
-                </Button>
-              )}
+              <Button
+                variant="primary"
+                size="md"
+                onClick={handleAddVoiceClick}
+                className="shadow-lg shadow-accent-primary/20"
+              >
+                <Plus size={18} className="mr-2" />
+                Record Your First Voice
+              </Button>
             </Card>
           ) : (
             /* Voice Recordings Grid */
@@ -278,6 +265,26 @@ export default function VoicesPage() {
                   onSharingToggled={handleSharingToggled}
                 />
               ))}
+
+              {/* Add Voice Card - Always visible */}
+              <Card
+                variant="default"
+                padding="md"
+                className="border-dashed hover:border-accent-primary/50 hover:bg-accent-primary/5 transition-all cursor-pointer group"
+                onClick={handleAddVoiceClick}
+              >
+                <div className="flex flex-col items-center justify-center h-full min-h-[180px] text-center">
+                  <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-accent-primary/10 group-hover:bg-accent-primary/20 transition-colors">
+                    <Plus className="h-6 w-6 text-accent-primary" />
+                  </div>
+                  <h3 className="text-sm font-semibold text-text-primary mb-1">Add New Voice</h3>
+                  <p className="text-xs text-text-muted">
+                    {voiceLimits.canAdd
+                      ? `${voiceLimits.remainingCount} of ${voiceLimits.limit} slots remaining`
+                      : voiceLimits.message}
+                  </p>
+                </div>
+              </Card>
             </div>
           )}
         </div>
