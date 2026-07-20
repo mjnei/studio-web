@@ -9,6 +9,8 @@ import { FloatingWorkflowNavigation } from "@/components/project/floating-workfl
 import { FullScriptModal } from "@/components/project/full-script-modal";
 import { ThumbnailEditorModal } from "@/components/project/ThumbnailEditorModal";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
+import { Modal } from "@/components/ui/modal";
+import { Button } from "@/components/ui/button";
 import { FileText, ChevronDown, Sparkles, Check, Loader2, RotateCw, Edit } from "lucide-react";
 import { advanceProjectStep, scheduleAgnesJobs, regenerateThumbnail } from "@/lib/project-client";
 import { useToast } from "@/components/ui/toast";
@@ -22,6 +24,8 @@ export default function ComposePage() {
 
   const [showFullScriptModal, setShowFullScriptModal] = useState(false);
   const [showThumbnailEditor, setShowThumbnailEditor] = useState(false);
+  const [showActionModal, setShowActionModal] = useState(false);
+  const [actionModalType, setActionModalType] = useState<"regenerate" | "edit">("regenerate");
   const [isAdvancing, setIsAdvancing] = useState(false);
   const [isPollingComposition, setIsPollingComposition] = useState(false);
   const [hasScheduledThumbnail, setHasScheduledThumbnail] = useState(false);
@@ -114,6 +118,7 @@ export default function ComposePage() {
 
   const handleRegenerateThumbnail = async () => {
     setIsRegenerating(true);
+    setShowActionModal(false);
     try {
       await regenerateThumbnail(projectId);
       toast.success(
@@ -133,6 +138,16 @@ export default function ComposePage() {
     } finally {
       setIsRegenerating(false);
     }
+  };
+
+  const handleEditThumbnail = () => {
+    setShowActionModal(false);
+    setShowThumbnailEditor(true);
+  };
+
+  const openActionModal = (type: "regenerate" | "edit") => {
+    setActionModalType(type);
+    setShowActionModal(true);
   };
 
   const handleContinue = async () => {
@@ -180,20 +195,15 @@ export default function ComposePage() {
                 ? "border-status-success/30 bg-surface-raised"
                 : state.thumbnailStatus === "generating" || !state.thumbnailUrl
                   ? "border-accent-cyan/30 bg-surface-raised"
-                  : "cursor-pointer hover:border-accent-cyan/30 hover:bg-surface-raised transition-all group"
-            }
-            onClick={
-              state.thumbnailConfirmed ||
-              state.thumbnailStatus === "generating" ||
-              !state.thumbnailUrl
-                ? undefined
-                : () => setShowThumbnailEditor(true)
+                  : "border-border-default bg-surface-raised"
             }
           >
             <div className="flex flex-col gap-4">
               <div className="flex items-start gap-4">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted flex-shrink-0">
-                  {state.thumbnailStatus === "generating" || !state.thumbnailUrl || isRegenerating ? (
+                  {state.thumbnailStatus === "generating" ||
+                  !state.thumbnailUrl ||
+                  isRegenerating ? (
                     <Loader2 className="h-5 w-5 text-accent-cyan animate-spin" />
                   ) : (
                     <Sparkles className="h-5 w-5 text-accent-cyan" />
@@ -203,23 +213,36 @@ export default function ComposePage() {
                   <div className="flex items-center justify-between gap-4 mb-2">
                     <h3 className="font-medium text-text-primary">Project Thumbnail</h3>
                     <div className="flex items-center gap-2 flex-shrink-0">
-                      {/* Regenerate button - always visible unless currently regenerating */}
-                      {!isRegenerating && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleRegenerateThumbnail();
-                          }}
-                          disabled={isRegenerating}
-                          className="text-xs font-medium text-accent-cyan hover:text-accent-cyan-hover flex items-center gap-1 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                          title="Regenerate base thumbnail"
-                        >
-                          <RotateCw className="h-3 w-3" />
-                        </button>
+                      {/* Action buttons - visible when thumbnail is ready */}
+                      {!isRegenerating && state.thumbnailUrl && (
+                        <>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              openActionModal("regenerate");
+                            }}
+                            className="text-xs font-medium text-accent-cyan hover:text-accent-cyan-hover flex items-center gap-1 transition-colors"
+                            title="Regenerate base thumbnail"
+                          >
+                            <RotateCw className="h-3 w-3" />
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              openActionModal("edit");
+                            }}
+                            className="text-xs font-medium text-accent-cyan hover:text-accent-cyan-hover flex items-center gap-1 transition-colors"
+                            title="Customize thumbnail"
+                          >
+                            <Edit className="h-3 w-3" />
+                          </button>
+                        </>
                       )}
-                      
+
                       {/* Status indicators */}
-                      {state.thumbnailStatus === "generating" || !state.thumbnailUrl || isRegenerating ? (
+                      {state.thumbnailStatus === "generating" ||
+                      !state.thumbnailUrl ||
+                      isRegenerating ? (
                         <span className="text-xs font-medium text-accent-cyan flex items-center gap-1">
                           <Loader2 className="h-3 w-3 animate-spin" /> Generating...
                         </span>
@@ -231,19 +254,17 @@ export default function ComposePage() {
                         <span className="text-xs font-medium text-status-success flex items-center gap-1">
                           <Check className="h-3 w-3" /> Confirmed
                         </span>
-                      ) : state.thumbnailUrl ? (
-                        <span className="text-xs font-medium text-accent-cyan flex items-center gap-1 group-hover:text-accent-cyan-hover">
-                          <Edit className="h-3 w-3" />
-                        </span>
                       ) : null}
                     </div>
                   </div>
 
                   {/* Show loading message when generating base thumbnail or waiting for it */}
-                  {state.thumbnailStatus === "generating" || !state.thumbnailUrl || isRegenerating ? (
+                  {state.thumbnailStatus === "generating" ||
+                  !state.thumbnailUrl ||
+                  isRegenerating ? (
                     <div className="space-y-3">
                       <p className="text-sm text-text-muted">
-                        {isRegenerating 
+                        {isRegenerating
                           ? "Regenerating your thumbnail with fresh AI-generated content..."
                           : "AI is generating your thumbnail based on the movie and script content..."}
                       </p>
@@ -416,6 +437,102 @@ export default function ComposePage() {
           </Card>
         )}
       </div>
+
+      {/* Thumbnail Action Confirmation Modal */}
+      <Modal
+        open={showActionModal}
+        onClose={() => setShowActionModal(false)}
+        title={actionModalType === "regenerate" ? "Regenerate Thumbnail?" : "Customize Thumbnail?"}
+        size="md"
+      >
+        <div className="space-y-4">
+          {actionModalType === "regenerate" ? (
+            <>
+              <div className="flex items-start gap-3 p-4 rounded-lg bg-accent-cyan/5 border border-accent-cyan/20">
+                <RotateCw className="h-5 w-5 text-accent-cyan flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="font-medium text-text-primary mb-1">Generate New AI Image</h4>
+                  <p className="text-sm text-text-secondary leading-relaxed">
+                    This will create a completely new thumbnail image using AI based on your movie
+                    and script content. The current thumbnail will be replaced.
+                  </p>
+                </div>
+              </div>
+              <div className="text-sm text-text-muted space-y-2 pl-2">
+                <p className="flex items-start gap-2">
+                  <span className="text-accent-cyan">•</span>
+                  <span>Takes 10-30 seconds to generate</span>
+                </p>
+                <p className="flex items-start gap-2">
+                  <span className="text-accent-cyan">•</span>
+                  <span>You can customize or add text overlays after generation</span>
+                </p>
+                <p className="flex items-start gap-2">
+                  <span className="text-accent-cyan">•</span>
+                  <span>Your current customizations will be reset</span>
+                </p>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex items-start gap-3 p-4 rounded-lg bg-accent-cyan/5 border border-accent-cyan/20">
+                <Edit className="h-5 w-5 text-accent-cyan flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="font-medium text-text-primary mb-1">
+                    Customize Current Thumbnail
+                  </h4>
+                  <p className="text-sm text-text-secondary leading-relaxed">
+                    Open the thumbnail editor to customize your existing thumbnail. You can upload
+                    your own image, adjust text overlays, or regenerate with custom AI prompts.
+                  </p>
+                </div>
+              </div>
+              <div className="text-sm text-text-muted space-y-2 pl-2">
+                <p className="flex items-start gap-2">
+                  <span className="text-accent-cyan">•</span>
+                  <span>Upload custom image or keep current one</span>
+                </p>
+                <p className="flex items-start gap-2">
+                  <span className="text-accent-cyan">•</span>
+                  <span>Add/edit text overlay with multiple styles</span>
+                </p>
+                <p className="flex items-start gap-2">
+                  <span className="text-accent-cyan">•</span>
+                  <span>Adjust font, color, position, and size</span>
+                </p>
+                <p className="flex items-start gap-2">
+                  <span className="text-accent-cyan">•</span>
+                  <span>Preview before finalizing</span>
+                </p>
+              </div>
+            </>
+          )}
+        </div>
+        <div className="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-border-default">
+          <Button variant="secondary" onClick={() => setShowActionModal(false)}>
+            Cancel
+          </Button>
+          <Button
+            variant="primary"
+            onClick={
+              actionModalType === "regenerate" ? handleRegenerateThumbnail : handleEditThumbnail
+            }
+            loading={isRegenerating}
+          >
+            {actionModalType === "regenerate" ? (
+              <>
+                <RotateCw className="h-4 w-4 mr-2" />
+                Regenerate
+              </>
+            ) : (
+              <>
+                <Edit className="h-4 w-4 mr-2" />
+                Open Editor
+              </>
+            )}
+          </Button>
+        </div>
+      </Modal>
 
       {/* Thumbnail Editor Modal */}
       {state && (
