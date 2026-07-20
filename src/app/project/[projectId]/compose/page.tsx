@@ -9,7 +9,7 @@ import { FloatingWorkflowNavigation } from "@/components/project/floating-workfl
 import { FullScriptModal } from "@/components/project/full-script-modal";
 import { ThumbnailEditorModal } from "@/components/project/ThumbnailEditorModal";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
-import { FileText, ChevronDown, Sparkles, Check, Loader2, Image } from "lucide-react";
+import { FileText, ChevronDown, Sparkles, Check, Loader2 } from "lucide-react";
 import { advanceProjectStep, scheduleAgnesJobs } from "@/lib/project-client";
 import { useToast } from "@/components/ui/toast";
 
@@ -56,16 +56,19 @@ export default function ComposePage() {
     checkAndScheduleThumbnailIfNeeded();
   }, [projectId, state, hasScheduledThumbnail]);
 
-  // Poll for thumbnail status if generating (reduced frequency, fallback for SSE)
+  // Poll for thumbnail status if not yet completed (reduced frequency, fallback for SSE)
   React.useEffect(() => {
-    if (state?.thumbnailStatus === "generating") {
+    // Poll when thumbnail is not ready yet (no thumbnailUrl) or currently generating
+    const shouldPoll = !state?.thumbnailUrl || state?.thumbnailStatus === "generating";
+    
+    if (shouldPoll && !state?.thumbnailConfirmed) {
       const interval = setInterval(() => {
         refresh(); // Refresh project state to check thumbnail status
-      }, 8000); // Increased from 5s to 8s
+      }, 8000); // 8 second polling interval
 
       return () => clearInterval(interval);
     }
-  }, [state?.thumbnailStatus, refresh]);
+  }, [state?.thumbnailUrl, state?.thumbnailStatus, state?.thumbnailConfirmed, refresh]);
 
   // Poll for composition status when processing (reduced frequency, fallback for SSE)
   React.useEffect(() => {
@@ -151,12 +154,12 @@ export default function ComposePage() {
             className={
               state.thumbnailConfirmed
                 ? "border-status-success/30 bg-surface-raised"
-                : state.thumbnailStatus === "generating"
+                : state.thumbnailStatus === "generating" || !state.thumbnailUrl
                   ? "border-accent-cyan/30 bg-surface-raised"
                   : "cursor-pointer hover:border-accent-cyan/30 hover:bg-surface-raised transition-all group"
             }
             onClick={
-              state.thumbnailConfirmed || state.thumbnailStatus === "generating"
+              state.thumbnailConfirmed || state.thumbnailStatus === "generating" || !state.thumbnailUrl
                 ? undefined
                 : () => setShowThumbnailEditor(true)
             }
@@ -164,7 +167,7 @@ export default function ComposePage() {
             <div className="flex flex-col gap-4">
               <div className="flex items-start gap-4">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted flex-shrink-0">
-                  {state.thumbnailStatus === "generating" ? (
+                  {state.thumbnailStatus === "generating" || !state.thumbnailUrl ? (
                     <Loader2 className="h-5 w-5 text-accent-cyan animate-spin" />
                   ) : (
                     <Sparkles className="h-5 w-5 text-accent-cyan" />
@@ -173,7 +176,7 @@ export default function ComposePage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-4 mb-2">
                     <h3 className="font-medium text-text-primary">Project Thumbnail</h3>
-                    {state.thumbnailStatus === "generating" ? (
+                    {state.thumbnailStatus === "generating" || !state.thumbnailUrl ? (
                       <span className="text-xs font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0">
                         <Loader2 className="h-3 w-3 animate-spin" /> Generating...
                       </span>
@@ -189,15 +192,11 @@ export default function ComposePage() {
                       <span className="text-xs font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0 group-hover:text-accent-cyan-hover">
                         Click to customize
                       </span>
-                    ) : (
-                      <span className="text-xs font-medium text-text-muted flex items-center gap-1 flex-shrink-0">
-                        Waiting...
-                      </span>
-                    )}
+                    ) : null}
                   </div>
 
-                  {/* Show loading message when generating base thumbnail */}
-                  {state.thumbnailStatus === "generating" ? (
+                  {/* Show loading message when generating base thumbnail or waiting for it */}
+                  {state.thumbnailStatus === "generating" || !state.thumbnailUrl ? (
                     <div className="space-y-3">
                       <p className="text-sm text-text-muted">
                         AI is generating your thumbnail based on the movie and script content...
