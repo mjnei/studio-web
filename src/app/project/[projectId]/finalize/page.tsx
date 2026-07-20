@@ -308,10 +308,10 @@ export default function FinalizePage() {
                     )
                   }
                   onClick={handleRegenerate}
-                  disabled={isRegenerating || !state?.thumbnailConfirmed}
+                  disabled={isRegenerating || state?.thumbnailStatus === "generating"}
                   title={
-                    !state?.thumbnailConfirmed
-                      ? "Complete compose step first"
+                    state?.thumbnailStatus === "generating"
+                      ? "Waiting for thumbnail generation..."
                       : "Generate a new video variation (1 credit)"
                   }
                 >
@@ -558,15 +558,16 @@ export default function FinalizePage() {
                   )
                 }
                 onClick={handleRegenerate}
-                disabled={isRegenerating || !state?.thumbnailConfirmed}
+                disabled={isRegenerating || state?.thumbnailStatus === "generating"}
                 className="w-full max-w-xs"
               >
                 {isRegenerating ? "Generating..." : "Generate Video"}
               </Button>
 
-              {!state?.thumbnailConfirmed && (
-                <p className="mt-3 text-xs text-warning-text">
-                  Please complete the compose step before generating videos
+              {state?.thumbnailStatus === "generating" && (
+                <p className="mt-3 text-xs text-warning-text flex items-center justify-center gap-1">
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                  Waiting for thumbnail to finish generating...
                 </p>
               )}
 

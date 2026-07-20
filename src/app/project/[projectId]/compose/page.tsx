@@ -151,11 +151,6 @@ export default function ComposePage() {
   };
 
   const handleContinue = async () => {
-    if (!state?.thumbnailConfirmed) {
-      toast.error("Thumbnail not finalized", "Please finalize your thumbnail before continuing");
-      return;
-    }
-
     setIsAdvancing(true);
     try {
       await advanceProjectStep(projectId, "finalize");
@@ -557,7 +552,7 @@ export default function ComposePage() {
       <FloatingWorkflowNavigation
         projectId={projectId}
         currentStep="compose"
-        canGoNext={state?.thumbnailConfirmed || false}
+        canGoNext={true}
         nextLabel="Continue to Finalize"
         canGoBack={true}
         isProcessing={isAdvancing}
