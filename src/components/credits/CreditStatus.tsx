@@ -57,13 +57,6 @@ export function CreditStatus() {
           </div>
         </div>
       </div>
-
-      {creditStatus.bonus_credits > 0 && (
-        <div className="flex items-center gap-1 text-xs text-accent-cyan">
-          <TrendingUp className="h-3 w-3" />
-          <span>+{creditStatus.bonus_credits} bonus</span>
-        </div>
-      )}
     </Link>
   );
 }
