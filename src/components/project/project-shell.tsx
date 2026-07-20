@@ -81,13 +81,6 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
       <div className="flex flex-1 flex-col overflow-hidden">
         <header className="flex shrink-0 flex-col border-b border-border-default bg-surface-panel md:h-14 md:flex-row md:items-center md:gap-4 md:px-4">
           <div className="flex h-14 items-center gap-2 px-3 md:shrink-0 md:px-0">
-            <button
-              onClick={toggle}
-              className="rounded-md p-1.5 text-text-muted hover:bg-surface-hover hover:text-text-secondary"
-              aria-label={isNarrow ? "Open navigation" : "Toggle sidebar"}
-            >
-              <PanelLeft size={20} />
-            </button>
             <Link href="/projects" className="text-text-muted hover:text-text-secondary">
               <ArrowLeft size={20} />
             </Link>
