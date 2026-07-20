@@ -562,7 +562,9 @@ export default function VoicePage() {
                     {communityVoices.length === 0 ? (
                       <div className="col-span-full text-center py-8 rounded-lg border border-dashed border-border-default bg-surface-panel/50">
                         <Globe className="h-8 w-8 text-text-muted mx-auto mb-2 opacity-50" />
-                        <p className="text-sm text-text-muted mb-2">No community voices available</p>
+                        <p className="text-sm text-text-muted mb-2">
+                          No community voices available
+                        </p>
                         <p className="text-xs text-text-muted max-w-xs mx-auto">
                           Community voices will appear here once they&apos;re shared and approved
                         </p>
