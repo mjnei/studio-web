@@ -4,10 +4,12 @@ import { useState, useRef, useEffect } from "react";
 import { Plus, Mic, Globe, User, AlertCircle } from "lucide-react";
 import { VoiceRecordingModal } from "@/components/shared/voice-recording-modal";
 import { VoiceRecordingCard } from "@/components/voices/voice-recording-card";
+import { VoiceLimitDialog } from "@/components/voices/voice-limit-dialog";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { useVoices } from "@/lib/hooks/use-voices";
+import { useVoiceLimits } from "@/lib/hooks/use-voice-limits";
 import { getAvailableVoices } from "@/lib/api/voice-client";
 import type { VoiceResponse, VoiceWithCreator } from "@/lib/types/api";
 
@@ -42,7 +44,9 @@ function formatRelativeTime(dateString: string): string {
 export default function VoicesPage() {
   const [tab, setTab] = useState<"my" | "community">("my");
   const [showRecorder, setShowRecorder] = useState(false);
+  const [showLimitDialog, setShowLimitDialog] = useState(false);
   const { voices, loading, error, uploadVoice, deleteVoice, toggleSharing, refetch } = useVoices();
+  const voiceLimits = useVoiceLimits();
 
   const [communityVoices, setCommunityVoices] = useState<VoiceWithCreator[]>([]);
   const [communityLoading, setCommunityLoading] = useState(false);
@@ -74,6 +78,23 @@ export default function VoicesPage() {
     // Refetch to get the newly uploaded voice through the hook
     await refetch();
     setShowRecorder(false);
+    // Refresh limits after adding a voice
+    window.location.reload(); // Simple way to refresh limits
+  };
+
+  const handleAddVoiceClick = () => {
+    // Check limits before opening recorder
+    if (!voiceLimits.canAdd) {
+      setShowLimitDialog(true);
+      return;
+    }
+    setShowRecorder(true);
+  };
+
+  const handleUpgradeClick = () => {
+    setShowLimitDialog(false);
+    // Navigate to pricing/upgrade page
+    window.location.href = "/pricing";
   };
 
   const handleDeleteVoice = async (id: number) => {
@@ -117,7 +138,7 @@ export default function VoicesPage() {
             <Button
               variant="primary"
               size="md"
-              onClick={() => setShowRecorder(true)}
+              onClick={handleAddVoiceClick}
               className="w-full sm:w-auto shadow-lg shadow-accent-primary/20"
             >
               <Plus size={18} className="mr-2" />
@@ -186,6 +207,18 @@ export default function VoicesPage() {
             onSaved={handleRecordingSaved}
           />
 
+          {/* Voice Limit Dialog */}
+          {showLimitDialog && (
+            <VoiceLimitDialog
+              tier={voiceLimits.tier}
+              currentCount={voiceLimits.currentCount}
+              limit={voiceLimits.limit}
+              upgradeRequired={voiceLimits.upgradeRequired}
+              onClose={() => setShowLimitDialog(false)}
+              onUpgrade={handleUpgradeClick}
+            />
+          )}
+
           {/* Error Message */}
           {error && (
             <Card
@@ -225,7 +258,7 @@ export default function VoicesPage() {
                 <Button
                   variant="primary"
                   size="md"
-                  onClick={() => setShowRecorder(true)}
+                  onClick={handleAddVoiceClick}
                   className="shadow-lg shadow-accent-primary/20"
                 >
                   <Plus size={18} className="mr-2" />

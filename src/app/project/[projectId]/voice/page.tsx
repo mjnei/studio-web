@@ -6,8 +6,10 @@ import { Mic, Plus, FileText, ChevronDown } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useProjectState } from "@/lib/hooks/use-project-state";
+import { useVoiceLimits } from "@/lib/hooks/use-voice-limits";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { VoiceRecordingModal } from "@/components/shared/voice-recording-modal";
+import { VoiceLimitDialog } from "@/components/voices/voice-limit-dialog";
 import { FullScriptModal } from "@/components/project/full-script-modal";
 import { VoiceGeneration } from "@/components/project/voice-generation";
 import { useToast } from "@/components/ui/toast";
@@ -29,10 +31,12 @@ export default function VoicePage() {
   const [communityVoices, setCommunityVoices] = useState<VoiceWithCreator[]>([]);
   const [selectedVoiceId, setSelectedVoiceId] = useState<number | null>(null);
   const [showRecorder, setShowRecorder] = useState(false);
+  const [showLimitDialog, setShowLimitDialog] = useState(false);
   const [showFullScriptModal, setShowFullScriptModal] = useState(false);
   const [isAdvancing, setIsAdvancing] = useState(false);
   const [hasScheduledAgnes, setHasScheduledAgnes] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const voiceLimits = useVoiceLimits();
 
   // Schedule Agnes jobs on page load (progressive scheduling) - ONCE
   useEffect(() => {
@@ -253,6 +257,21 @@ export default function VoicePage() {
     }
   };
 
+  const handleAddVoiceClick = () => {
+    // Check limits before opening recorder
+    if (!voiceLimits.canAdd) {
+      setShowLimitDialog(true);
+      return;
+    }
+    setShowRecorder(true);
+  };
+
+  const handleUpgradeClick = () => {
+    setShowLimitDialog(false);
+    // Navigate to pricing/upgrade page
+    window.location.href = "/pricing";
+  };
+
   const handleContinue = async () => {
     if (!selectedVoiceId || !activeScript?.id) return;
 
@@ -400,11 +419,15 @@ export default function VoicePage() {
                     Want to add more of your voices?
                   </p>
                   <p className="text-xs text-text-secondary">
-                    Record more voices in your Voice Library
+                    {voiceLimits.loading
+                      ? "Checking limits..."
+                      : voiceLimits.isAtLimit
+                        ? voiceLimits.message
+                        : `You have ${voiceLimits.remainingCount} voice slot${voiceLimits.remainingCount !== 1 ? "s" : ""} remaining`}
                   </p>
                 </div>
               </div>
-              <Button variant="secondary" size="sm" onClick={() => setShowRecorder(true)}>
+              <Button variant="secondary" size="sm" onClick={handleAddVoiceClick}>
                 <Mic className="h-3 w-3 mr-1" />
                 Record
               </Button>
@@ -418,6 +441,18 @@ export default function VoicePage() {
           onClose={() => setShowRecorder(false)}
           onSaved={handleRecordingSaved}
         />
+
+        {/* Voice Limit Dialog */}
+        {showLimitDialog && (
+          <VoiceLimitDialog
+            tier={voiceLimits.tier}
+            currentCount={voiceLimits.currentCount}
+            limit={voiceLimits.limit}
+            upgradeRequired={voiceLimits.upgradeRequired}
+            onClose={() => setShowLimitDialog(false)}
+            onUpgrade={handleUpgradeClick}
+          />
+        )}
       </div>
 
       {/* Full Script Modal */}
