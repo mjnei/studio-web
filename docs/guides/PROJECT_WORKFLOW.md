@@ -503,16 +503,7 @@ PATCH /api/v1/projects/{id}
 Body: { "script": "Updated script content..." }
 ```
 
-### Step 3: Project Details
-```
-PATCH /api/v1/projects/{id}
-Body: { "project_name": "My Awesome Project" }
-
-# AI thumbnail generation happens automatically in background
-# No explicit API call needed - triggered by Step 3 entry
-```
-
-### Step 4: Voice Selection
+### Step 3: Voice Selection
 ```
 GET /api/v1/voices
 GET /api/v1/recordings
@@ -525,6 +516,15 @@ Response: { "audio_url": "https://storage.../audio.mp3", ... }
 
 PATCH /api/v1/projects/{id}
 Body: { "voice_id": "voice-uuid" }
+```
+
+### Step 4: Project Details
+```
+PATCH /api/v1/projects/{id}
+Body: { "project_name": "My Awesome Project" }
+
+# AI thumbnail generation happens automatically in background
+# No explicit API call needed - triggered by Step 3 entry
 ```
 
 ### Step 5: Preview - TTS Audio Generation
@@ -747,7 +747,7 @@ The workflow navigation component (`FloatingWorkflowNavigation`) enforces these 
 
 ## Voice Selection vs TTS Audio
 
-### Step 4: Voice Selection
+### Step 3: Voice Selection
 - **Purpose**: Choose a voice actor for your project
 - **Audio**: Plays voice samples (not script-based)
 - **Action**: Select a voice to proceed

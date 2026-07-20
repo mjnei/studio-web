@@ -3,18 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
-import { PanelLeft, ArrowLeft, Check } from "lucide-react";
+import { PanelLeft, ArrowLeft } from "lucide-react";
 import { DrawerContent } from "@/components/shell/drawer-content";
 import { useSidebar } from "@/components/shell/sidebar-context";
-import { Button } from "@/components/ui/button";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { CreditStatus } from "@/components/credits/CreditStatus";
-
-const stages = [
-  { step: "voice", label: "Voice" },
-  { step: "compose", label: "Compose" },
-];
 
 type Status = "Voice Ready" | "Composing" | "Rendering" | "Completed";
 
@@ -36,7 +30,6 @@ function getProjectStatus(hasVoice: boolean, hasVideo: boolean, isRendering: boo
 export function ProjectShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const projectId = pathname.split("/")[2];
-  const currentStep = pathname.split("/")[3] || "voice"; // Default to voice step
   const { collapsed, mobileOpen, setMobileOpen, toggle, isNarrow } = useSidebar();
 
   // Get project state from persistent storage
@@ -108,44 +101,6 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
               {/* Export button removed */}
             </div>
           </div>
-          <nav className="flex items-center gap-0.5 overflow-x-auto px-3 pb-2 md:ml-6 md:flex md:pb-0">
-            {stages.map((stage, i) => {
-              const isActive = stage.step === currentStep;
-              const isCompleted = completedSteps[stage.step as keyof typeof completedSteps];
-              const isAccessible =
-                i === 0 || completedSteps[stages[i - 1].step as keyof typeof completedSteps];
-
-              return (
-                <div key={stage.step} className="flex shrink-0 items-center">
-                  {i > 0 && (
-                    <div
-                      className={`h-px w-4 md:w-6 ${isCompleted ? "bg-accent-cyan" : "bg-border-default"}`}
-                    />
-                  )}
-                  <Link
-                    href={isAccessible ? `/project/${projectId}/${stage.step}` : "#"}
-                    className={`flex items-center gap-1 rounded-md px-2 py-1 text-sm ${
-                      isActive
-                        ? "bg-accent-cyan-muted text-accent-cyan font-medium"
-                        : isCompleted
-                          ? "text-accent-cyan hover:bg-accent-cyan-muted/50"
-                          : isAccessible
-                            ? "text-text-muted hover:text-text-secondary"
-                            : "text-text-disabled cursor-not-allowed"
-                    }`}
-                    onClick={(e) => {
-                      if (!isAccessible) {
-                        e.preventDefault();
-                      }
-                    }}
-                  >
-                    {isCompleted && <Check size={14} strokeWidth={3} />}
-                    {stage.label}
-                  </Link>
-                </div>
-              );
-            })}
-          </nav>
           <div className="ml-auto flex items-center gap-3 md:gap-4">
             <CreditStatus />
             <NotificationBell />
