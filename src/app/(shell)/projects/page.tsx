@@ -22,7 +22,6 @@ export default function ProjectsPage() {
   const [error, setError] = useState<string | null>(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState<ProjectResponse | null>(null);
-  const [deleteMode, setDeleteMode] = useState<"soft" | "hard">("soft");
   const [deleting, setDeleting] = useState(false);
 
   const loadProjects = () => {
@@ -48,7 +47,6 @@ export default function ProjectsPage() {
     e.preventDefault(); // Prevent navigation to project
     e.stopPropagation();
     setProjectToDelete(project);
-    setDeleteMode("soft");
     setDeleteModalOpen(true);
   };
 
@@ -57,7 +55,8 @@ export default function ProjectsPage() {
 
     setDeleting(true);
     try {
-      await deleteProject(projectToDelete.id, deleteMode === "hard");
+      // Always soft delete
+      await deleteProject(projectToDelete.id, false);
       setDeleteModalOpen(false);
       setProjectToDelete(null);
       // Reload projects list
@@ -265,11 +264,11 @@ export default function ProjectsPage() {
         }}
         onSubmit={handleDeleteConfirm}
         title="Delete Project?"
-        submitText={deleteMode === "hard" ? "Delete Permanently" : "Delete"}
+        submitText="Delete"
         cancelText="Cancel"
         loading={deleting}
       >
-        <div className="space-y-4">
+        <div className="space-y-3">
           <p className="text-sm text-text-secondary">
             You are about to delete the project:{" "}
             <span className="font-semibold text-text-primary">
@@ -277,55 +276,9 @@ export default function ProjectsPage() {
                 "Untitled project"}
             </span>
           </p>
-
-          {/* Delete mode selection */}
-          <div className="space-y-3 rounded-lg border border-border-default bg-surface-base p-4">
-            <label className="flex items-start gap-3 cursor-pointer">
-              <input
-                type="radio"
-                name="deleteMode"
-                value="soft"
-                checked={deleteMode === "soft"}
-                onChange={() => setDeleteMode("soft")}
-                className="mt-1"
-              />
-              <div className="flex-1">
-                <div className="font-medium text-text-primary">Soft Delete (Recommended)</div>
-                <div className="text-xs text-text-secondary mt-1">
-                  Project will be hidden but can be restored later
-                </div>
-              </div>
-            </label>
-
-            <label className="flex items-start gap-3 cursor-pointer">
-              <input
-                type="radio"
-                name="deleteMode"
-                value="hard"
-                checked={deleteMode === "hard"}
-                onChange={() => setDeleteMode("hard")}
-                className="mt-1"
-              />
-              <div className="flex-1">
-                <div className="font-medium text-text-primary">Permanent Delete</div>
-                <div className="text-xs text-text-secondary mt-1">
-                  Completely remove project and all associated data
-                </div>
-              </div>
-            </label>
-          </div>
-
-          {deleteMode === "hard" && (
-            <div className="rounded-lg bg-status-error/10 border border-status-error/30 p-3">
-              <div className="flex gap-2">
-                <span className="text-status-error font-bold text-lg">⚠️</span>
-                <div className="text-xs text-status-error">
-                  <strong>Warning:</strong> This will permanently delete the project, all scripts,
-                  TTS jobs, video jobs, and associated data. This action cannot be undone!
-                </div>
-              </div>
-            </div>
-          )}
+          <p className="text-sm text-text-secondary">
+            This project can be restored within the next 7 days.
+          </p>
         </div>
       </FormModal>
     </div>
