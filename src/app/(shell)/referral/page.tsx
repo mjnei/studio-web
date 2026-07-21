@@ -26,7 +26,7 @@ export default function ReferralPage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto">
+    <div className="max-w-6xl mx-auto">
       <PageHeader title="Referral Program" description="Invite friends and earn credits together" />
 
       {/* Referral Link Card */}

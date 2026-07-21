@@ -430,7 +430,7 @@ export default function FinalizePage() {
                 </div>
 
                 {/* Video metadata */}
-                <div className="grid gap-2 grid-cols-2 lg:grid-cols-4 text-xs p-3 rounded-lg bg-surface-base border border-border-default">
+                <div className="grid gap-4 grid-cols-2 lg:grid-cols-4 text-xs p-3 rounded-lg bg-surface-base border border-border-default">
                   <div>
                     <span className="font-medium text-text-muted">Voice:</span>{" "}
                     <span className="text-text-primary">{displayVideo.voice_name || "N/A"}</span>
@@ -580,7 +580,7 @@ export default function FinalizePage() {
             </div>
 
             {/* Action Buttons */}
-            <div className="grid gap-3 sm:grid-cols-2 mb-4">
+            <div className="grid gap-2 sm:grid-cols-2 mb-4">
               <Button
                 variant="secondary"
                 size="lg"

@@ -90,7 +90,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto">
+    <div className="max-w-6xl mx-auto">
       <PageHeader
         title="Settings"
         description="Customize your experience and manage preferences"
@@ -114,7 +114,7 @@ export default function SettingsPage() {
         }
       />
 
-      <div className="space-y-6">
+      <div className="space-y-4">
         {/* Notifications Card */}
         <Card variant="elevated" padding="lg">
           <CardHeader>
@@ -206,7 +206,7 @@ export default function SettingsPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-5 grid-cols-1 sm:grid-cols-2">
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
               <div>
                 <label className="mb-2 block text-sm font-medium text-text-primary">
                   Default Voice

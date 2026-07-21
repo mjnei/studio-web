@@ -104,7 +104,7 @@ export default function HelpPage() {
       />
 
       {/* Quick Links */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <Card variant="interactive" padding="md" className="group">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -143,7 +143,7 @@ export default function HelpPage() {
       </div>
 
       {/* Help Sections */}
-      <div className="space-y-8">
+      <div className="space-y-6">
         {helpSections.map((section) => {
           const IconComponent = section.icon;
           return (

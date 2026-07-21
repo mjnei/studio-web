@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { Check, Sparkles, Zap, Crown, Coins, TrendingUp } from "lucide-react";
 import { useState } from "react";
 
@@ -140,47 +141,52 @@ export default function PricingPage() {
     );
   };
 
+  const BillingToggle = () => (
+    <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-surface-raised border border-border-default shadow-sm">
+      <button
+        onClick={() => setBillingCycle("monthly")}
+        className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
+          billingCycle === "monthly"
+            ? "bg-accent-primary text-white shadow-glow"
+            : "text-text-muted hover:text-text-primary"
+        }`}
+      >
+        Monthly
+      </button>
+      <button
+        onClick={() => setBillingCycle("annual")}
+        className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
+          billingCycle === "annual"
+            ? "bg-accent-primary text-white shadow-glow"
+            : "text-text-muted hover:text-text-primary"
+        }`}
+      >
+        <span>Annual</span>
+        <span className="ml-2 text-xs opacity-75">Save 20%</span>
+      </button>
+    </div>
+  );
+
   return (
-    <div className="max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="text-center max-w-3xl mx-auto mb-12">
+    <div className="max-w-6xl mx-auto">
+      <PageHeader
+        title="Simple, Transparent Pricing"
+        description="1 credit = 1 video generation. Choose the plan that fits your needs."
+      />
+
+      {/* Pricing Header with Badge and Billing Toggle */}
+      <div className="text-center mb-6">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-muted text-accent-primary text-sm font-medium mb-4">
           <Sparkles className="w-4 h-4" />
           Special Launch Pricing
         </div>
-        <h1 className="text-4xl font-bold text-text-primary mb-4">Simple, Transparent Pricing</h1>
-        <p className="text-lg text-text-secondary mb-8">
-          1 credit = 1 video generation. Choose the plan that fits your needs.
-        </p>
-
-        {/* Billing Toggle */}
-        <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-surface-raised border border-border-default shadow-sm">
-          <button
-            onClick={() => setBillingCycle("monthly")}
-            className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
-              billingCycle === "monthly"
-                ? "bg-accent-primary text-white shadow-glow"
-                : "text-text-muted hover:text-text-primary"
-            }`}
-          >
-            Monthly
-          </button>
-          <button
-            onClick={() => setBillingCycle("annual")}
-            className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
-              billingCycle === "annual"
-                ? "bg-accent-primary text-white shadow-glow"
-                : "text-text-muted hover:text-text-primary"
-            }`}
-          >
-            <span>Annual</span>
-            <span className="ml-2 text-xs opacity-75">Save 20%</span>
-          </button>
+        <div className="flex justify-center">
+          <BillingToggle />
         </div>
       </div>
 
       {/* Pricing Grid */}
-      <div className="grid gap-6 md:grid-cols-3 max-w-6xl mx-auto">
+      <div className="grid gap-4 md:grid-cols-3 mb-6">
         {pricingTiers.map((tier) => {
           const Icon = tier.icon;
           const currentPrice = billingCycle === "annual" ? tier.annualPrice : tier.monthlyPrice;
@@ -272,11 +278,11 @@ export default function PricingPage() {
       </div>
 
       {/* FAQ Section */}
-      <div className="max-w-3xl mx-auto mt-16">
-        <h2 className="text-2xl font-bold text-text-primary text-center mb-8">
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold text-text-primary text-center mb-6">
           Frequently Asked Questions
         </h2>
-        <div className="space-y-6">
+        <div className="space-y-4 max-w-3xl mx-auto">
           <Card variant="elevated" padding="md">
             <h3 className="font-medium text-text-primary mb-2">
               What is a credit and how is it used?

@@ -172,7 +172,7 @@ export default function ProfilePage() {
   const isFreeUser = membershipTier === "free";
 
   return (
-    <div className="max-w-5xl mx-auto">
+    <div className="max-w-6xl mx-auto">
       <PageHeader
         title="Profile Settings"
         description="Manage your account settings and preferences"
@@ -186,7 +186,7 @@ export default function ProfilePage() {
           className="mb-6 border-accent-cyan/20 bg-gradient-to-br from-accent-cyan/10 via-accent-primary/10 to-accent-secondary/10 overflow-hidden relative"
         >
           <div className="absolute inset-0 bg-gradient-to-br from-accent-cyan/5 to-transparent" />
-          <div className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-start gap-4">
               <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-accent-cyan to-accent-primary flex items-center justify-center">
                 <Crown className="w-6 h-6 text-white" />
@@ -201,7 +201,7 @@ export default function ProfilePage() {
                 </p>
               </div>
             </div>
-            <div className="flex gap-3 shrink-0">
+            <div className="flex gap-2 shrink-0">
               <Link href="/pricing">
                 <Button variant="primary" size="md">
                   View Plans
@@ -218,9 +218,9 @@ export default function ProfilePage() {
         </Card>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Main Content Column */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-4">
           {/* Account Overview */}
           <Card variant="elevated" padding="lg">
             <CardHeader className="pb-6">
@@ -231,7 +231,7 @@ export default function ProfilePage() {
               <CardDescription>Your personal information and account status</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
+              <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
                 {user.picture_url ? (
                   <img
                     src={user.picture_url}
