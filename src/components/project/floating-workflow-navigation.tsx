@@ -115,36 +115,41 @@ export function FloatingWorkflowNavigation({
       className={`fixed bottom-0 right-0 z-40 transition-all duration-300 ${
         isVisible ? "translate-y-0" : "translate-y-full"
       } ${sidebarOffsetClass}`}
+      style={{
+        paddingBottom: "env(safe-area-inset-bottom, 0px)",
+      }}
     >
       {/* Backdrop blur effect */}
       <div className="absolute inset-0 bg-surface-panel/95 backdrop-blur-xl border-t border-border-default" />
 
       {/* Navigation content */}
-      <div className="relative mx-auto max-w-7xl px-4 pt-3 pb-4 md:px-6">
+      <div className="relative mx-auto max-w-7xl px-2 pt-2 pb-3 sm:px-4 sm:pt-3 sm:pb-4 md:px-6">
         {/* Step indicator bar */}
-        <div className="mb-3 flex items-center justify-center gap-1.5">
+        <div className="mb-2 sm:mb-3 flex items-center justify-center gap-0.5 sm:gap-1.5 overflow-x-auto scrollbar-hide px-2">
           {steps.map((step, index) => {
             const isCompleted = index < currentStepIndex;
             const isCurrent = index === currentStepIndex;
             const isUpcoming = index > currentStepIndex;
 
             return (
-              <div key={step.key} className="flex items-center">
+              <div key={step.key} className="flex items-center flex-shrink-0">
                 {/* Circle */}
                 <div
-                  className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-semibold transition-all duration-300 ${
+                  className={`flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded-full text-[10px] sm:text-xs font-semibold transition-all duration-300 ${
                     isCompleted
                       ? "bg-accent-cyan text-white"
                       : isCurrent
-                        ? "bg-accent-cyan text-white ring-4 ring-accent-cyan/20"
+                        ? "bg-accent-cyan text-white ring-2 sm:ring-4 ring-accent-cyan/20"
                         : "bg-surface-raised border border-border-default text-text-muted"
                   }`}
+                  aria-label={`Step ${index + 1}: ${step.label}${isCurrent ? " (current)" : ""}${isCompleted ? " (completed)" : ""}`}
+                  role="status"
                 >
-                  {isCompleted ? <Check className="h-3 w-3" strokeWidth={3} /> : index + 1}
+                  {isCompleted ? <Check className="h-2.5 w-2.5 sm:h-3 sm:w-3" strokeWidth={3} /> : index + 1}
                 </div>
-                {/* Label — only on larger screens */}
+                {/* Label — hidden on mobile, visible on sm+ */}
                 <span
-                  className={`ml-1 hidden sm:inline text-xs transition-colors duration-300 ${
+                  className={`ml-1 hidden md:inline text-xs transition-colors duration-300 ${
                     isCurrent
                       ? "font-medium text-text-primary"
                       : isCompleted
@@ -157,7 +162,7 @@ export function FloatingWorkflowNavigation({
                 {/* Connector */}
                 {index < steps.length - 1 && (
                   <div
-                    className={`mx-1.5 h-px w-4 sm:w-6 transition-colors duration-300 ${
+                    className={`mx-1 sm:mx-1.5 h-px w-3 sm:w-4 md:w-6 transition-colors duration-300 ${
                       isCompleted ? "bg-accent-cyan" : "bg-border-default"
                     }`}
                   />
@@ -168,16 +173,17 @@ export function FloatingWorkflowNavigation({
         </div>
 
         {/* Back / Home / Next row */}
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center justify-between gap-2 sm:gap-4">
           {/* Left side - Back button */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             {!isFirstStep && canGoBack && !isProcessing && (
               <Button
                 variant="secondary"
-                size="md"
-                icon={<ArrowLeft className="h-4 w-4" />}
+                size="sm"
+                icon={<ArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
                 onClick={handleBack}
-                className="shadow-lg"
+                className="shadow-lg sm:size-md text-xs sm:text-sm touch-manipulation"
+                aria-label={backLabel || "Go back"}
               >
                 <span className="hidden sm:inline">{backLabel || "Back"}</span>
               </Button>
@@ -186,26 +192,28 @@ export function FloatingWorkflowNavigation({
             {/* Projects home button — always visible */}
             <Button
               variant="ghost"
-              size="md"
-              icon={<Home className="h-4 w-4" />}
+              size="sm"
+              icon={<Home className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
               onClick={handleGoHome}
-              className="shadow-lg"
+              className="shadow-lg sm:size-md text-xs sm:text-sm touch-manipulation"
               title="Go to Projects"
+              aria-label="Go to Projects home"
             >
               <span className="hidden md:inline">Projects</span>
             </Button>
           </div>
 
           {/* Right side - Next button */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             {canGoNext && (
               <Button
                 variant="primary"
-                size="md"
-                icon={!isLastStep ? <ArrowRight className="h-4 w-4" /> : undefined}
+                size="sm"
+                icon={!isLastStep ? <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> : undefined}
                 onClick={handleNext}
                 disabled={isProcessing}
-                className="shadow-lg"
+                className="shadow-lg sm:size-md text-xs sm:text-sm touch-manipulation"
+                aria-label={nextLabel || nextStepLabels[currentStep] || "Continue to next step"}
               >
                 <span className="hidden sm:inline">
                   {nextLabel || nextStepLabels[currentStep] || "Continue"}
@@ -215,7 +223,7 @@ export function FloatingWorkflowNavigation({
             )}
 
             {/* Placeholder to maintain layout balance when next button is hidden */}
-            {!canGoNext && <div className="w-24 md:w-32" />}
+            {!canGoNext && <div className="w-16 sm:w-24 md:w-32" />}
           </div>
         </div>
       </div>

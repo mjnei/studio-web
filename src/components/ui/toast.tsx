@@ -105,12 +105,12 @@ export function ToastProvider({
   );
 
   const positions: Record<ToastPosition, string> = {
-    "top-right": "top-4 right-4",
-    "top-center": "top-4 left-1/2 -translate-x-1/2",
-    "top-left": "top-4 left-4",
-    "bottom-right": "bottom-4 right-4",
-    "bottom-center": "bottom-4 left-1/2 -translate-x-1/2",
-    "bottom-left": "bottom-4 left-4",
+    "top-right": "top-2 right-2 sm:top-4 sm:right-4",
+    "top-center": "top-2 left-2 right-2 sm:top-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2",
+    "top-left": "top-2 left-2 sm:top-4 sm:left-4",
+    "bottom-right": "bottom-2 right-2 sm:bottom-4 sm:right-4",
+    "bottom-center": "bottom-2 left-2 right-2 sm:bottom-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2",
+    "bottom-left": "bottom-2 left-2 sm:bottom-4 sm:left-4",
   };
 
   return (
@@ -167,24 +167,24 @@ function ToastItem({ toast, onClose }: ToastItemProps) {
   return (
     <div
       className={`
-        pointer-events-auto w-96 max-w-full rounded-lg border backdrop-blur-sm
+        pointer-events-auto w-full sm:w-96 rounded-lg border backdrop-blur-sm
         shadow-lg animate-in slide-in-from-top-2 fade-in duration-300
         ${variantStyle.bgColor} ${variantStyle.borderColor}
       `}
     >
-      <div className="flex items-start gap-3 p-4">
-        <div className={`shrink-0 rounded-lg p-2 ${variantStyle.iconBg} ${variantStyle.textColor}`}>
+      <div className="flex items-start gap-2 sm:gap-3 p-3 sm:p-4">
+        <div className={`shrink-0 rounded-lg p-1.5 sm:p-2 ${variantStyle.iconBg} ${variantStyle.textColor}`}>
           {variantStyle.icon}
         </div>
         <div className="flex-1 min-w-0">
-          <p className={`font-semibold text-sm ${variantStyle.textColor}`}>{toast.title}</p>
+          <p className={`font-semibold text-xs sm:text-sm ${variantStyle.textColor}`}>{toast.title}</p>
           {toast.description && (
-            <p className="mt-1 text-sm text-text-secondary">{toast.description}</p>
+            <p className="mt-1 text-xs sm:text-sm text-text-secondary line-clamp-2">{toast.description}</p>
           )}
         </div>
         <button
           onClick={onClose}
-          className="shrink-0 rounded-lg p-1 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all"
+          className="shrink-0 rounded-lg p-1 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all touch-manipulation"
           aria-label="Close notification"
         >
           <X size={16} />

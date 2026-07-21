@@ -330,6 +330,16 @@ body {
     overflow: hidden;
   }
 
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
   /* Gradient text */
   .text-gradient {
     background: linear-gradient(135deg, #8b5cf6, #06b6d4);
