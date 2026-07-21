@@ -138,7 +138,7 @@ export default function VoicesPage() {
       />
 
       {/* Tab Navigation */}
-      <div className="mb-8">
+      <div className="mb-6">
         <div className="inline-flex items-center gap-2 rounded-xl bg-surface-panel p-1.5 shadow-sm border border-border-default">
           {/* My Voices Tab */}
           <button
@@ -323,7 +323,7 @@ export default function VoicesPage() {
 
           {/* Loading State */}
           {communityLoading ? (
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {Array.from({ length: 8 }).map((_, i) => (
                 <div
                   key={i}
@@ -347,7 +347,7 @@ export default function VoicesPage() {
             </Card>
           ) : (
             /* Community Voices Grid */
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {communityVoices.map((voice) => (
                 <Card
                   key={voice.id}
