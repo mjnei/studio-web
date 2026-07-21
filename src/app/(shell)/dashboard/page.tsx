@@ -223,11 +223,11 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle>Recent Projects</CardTitle>
-                <CardDescription>Your latest work in progress</CardDescription>
+                <CardDescription>Your latest work</CardDescription>
               </div>
               <Link href="/projects">
                 <Button variant="secondary" size="sm">
-                  View All
+                  All
                   <ArrowRight className="w-4 h-4 ml-1" />
                 </Button>
               </Link>

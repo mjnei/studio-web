@@ -286,7 +286,7 @@ export default function BillingPage() {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-lg font-semibold text-text-primary mb-1">
-                  Billing Information
+                  Billing
                 </h2>
                 <p className="text-sm text-text-muted">
                   Manage your payment method and subscription
@@ -299,10 +299,10 @@ export default function BillingPage() {
                   leftIcon={<Settings className="h-4 w-4" />}
                   onClick={handleUpdatePayment}
                 >
-                  Update Payment
+                  Update
                 </Button>
                 <Button variant="primary" size="sm" leftIcon={<CreditCard className="h-4 w-4" />}>
-                  View Billing Portal
+                  Billing Portal
                 </Button>
               </div>
             </div>
