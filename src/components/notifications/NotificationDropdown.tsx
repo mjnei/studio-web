@@ -20,22 +20,22 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
   };
 
   return (
-    <div className="w-screen max-w-[400px] max-h-[85vh] sm:max-h-[600px] bg-surface-panel rounded-t-xl sm:rounded-xl border border-border-default shadow-2xl overflow-hidden flex flex-col">
+    <div className="w-[calc(100vw-16px)] sm:w-96 md:w-[450px] max-h-[85vh] sm:max-h-[600px] bg-surface-panel rounded-t-xl sm:rounded-xl border border-border-default shadow-2xl overflow-hidden flex flex-col">
       {/* Header */}
-      <div className="p-3 sm:p-4 border-b border-border-default bg-surface-raised flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Bell size={16} className="text-text-secondary sm:hidden" />
-          <Bell size={18} className="text-text-secondary hidden sm:block" />
-          <h3 className="text-xs sm:text-sm font-semibold text-text-primary">Notifications</h3>
+      <div className="p-3 sm:p-4 border-b border-border-default bg-surface-raised flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+          <Bell size={16} className="text-text-secondary sm:hidden shrink-0" />
+          <Bell size={18} className="text-text-secondary hidden sm:block shrink-0" />
+          <h3 className="text-xs sm:text-sm font-semibold text-text-primary truncate">Notifications</h3>
           {unreadCount > 0 && (
-            <span className="text-[10px] sm:text-xs text-text-muted">({unreadCount} new)</span>
+            <span className="text-[10px] sm:text-xs text-text-muted shrink-0">({unreadCount} new)</span>
           )}
         </div>
-        <div className="flex items-center gap-0.5 sm:gap-1">
+        <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
           {notifications.length > 0 && (
             <button
               onClick={handleClearAll}
-              className="p-1.5 rounded-lg text-text-muted hover:bg-surface-hover hover:text-text-primary transition-all touch-manipulation"
+              className="p-1.5 sm:p-2 rounded-lg text-text-muted hover:bg-surface-hover hover:text-text-primary active:bg-surface-hover transition-all touch-manipulation"
               title="Clear all notifications"
               aria-label="Clear all notifications"
             >
@@ -46,7 +46,7 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
           <Link
             href="/settings/notifications"
             onClick={onClose}
-            className="p-1.5 rounded-lg text-text-muted hover:bg-surface-hover hover:text-text-primary transition-all touch-manipulation"
+            className="p-1.5 sm:p-2 rounded-lg text-text-muted hover:bg-surface-hover hover:text-text-primary active:bg-surface-hover transition-all touch-manipulation"
             title="Notification settings"
             aria-label="Notification settings"
           >
@@ -74,7 +74,7 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
           </div>
         ) : (
           <div className="divide-y divide-border-default">
-            {notifications.slice(0, 10).map((notification) => (
+            {notifications.slice(0, 5).map((notification) => (
               <NotificationItem
                 key={notification.id}
                 notification={notification}
