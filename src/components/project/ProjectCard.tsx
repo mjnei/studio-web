@@ -218,11 +218,11 @@ export function ProjectCard({
         </Card>
       </Link>
 
-      {/* Delete Button - appears on hover */}
+      {/* Delete Button - always visible on mobile, appears on hover on desktop */}
       {showDelete && onDelete && (
         <button
           onClick={handleDeleteClick}
-          className="absolute top-2 right-2 p-2 rounded-lg bg-surface-elevated/90 backdrop-blur-sm border border-border-default opacity-0 group-hover:opacity-100 hover:bg-status-error/10 hover:border-status-error hover:text-status-error text-text-secondary transition-all duration-200 focus-ring"
+          className="absolute top-2 right-2 p-2 rounded-lg bg-surface-elevated/90 backdrop-blur-sm border border-border-default opacity-100 md:opacity-0 md:group-hover:opacity-100 hover:bg-status-error/10 hover:border-status-error hover:text-status-error text-text-secondary transition-all duration-200 focus-ring"
           aria-label="Delete project"
           title="Delete project"
         >

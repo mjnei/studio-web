@@ -380,7 +380,7 @@ export default function FinalizePage() {
                   disabled={isGenerateDisabled}
                   title={generateDisabledTitle}
                 >
-                  {isRegeneratingVideo ? "Generating..." : "Regenerate Video"}
+                  {isRegeneratingVideo ? "Generating..." : "Regenerate"}
                 </Button>
               </div>
             </div>
