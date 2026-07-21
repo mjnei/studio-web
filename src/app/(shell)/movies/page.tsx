@@ -15,6 +15,7 @@ import {
   Film,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { PageHeader } from "@/components/ui/PageHeader";
 import {
   getPopularMovies,
   searchMovies,
@@ -165,26 +166,23 @@ export default function MoviesPage() {
   );
 
   return (
-    <div className="relative">
-      {/* Header */}
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="mb-1 text-2xl font-bold text-text-primary">Movie Library</h1>
-          <p className="text-sm text-text-muted">
-            Discover and explore movies to create your next project
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <span className="rounded-full bg-accent-cyan/10 px-3 py-1.5 text-xs font-medium text-accent-cyan">
-            {movies.length} {movies.length === 1 ? "movie" : "movies"}
-          </span>
-          {enrichmentProgress > 0 && enrichmentProgress < 100 && (
-            <span className="text-xs text-text-muted">
-              Loading details... {enrichmentProgress}%
+    <div className="max-w-7xl mx-auto">
+      <PageHeader
+        title="Movie Library"
+        description="Discover and explore movies to create your next project"
+        action={
+          <div className="flex items-center gap-3">
+            <span className="rounded-full bg-accent-cyan/10 px-3 py-1.5 text-xs font-medium text-accent-cyan whitespace-nowrap">
+              {movies.length} {movies.length === 1 ? "movie" : "movies"}
             </span>
-          )}
-        </div>
-      </div>
+            {enrichmentProgress > 0 && enrichmentProgress < 100 && (
+              <span className="text-xs text-text-muted whitespace-nowrap">
+                Loading details... {enrichmentProgress}%
+              </span>
+            )}
+          </div>
+        }
+      />
 
       {/* Search and Layout Controls */}
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center">

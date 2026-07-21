@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Folder, Film, Mic, Plus, ArrowRight, Sparkles, X } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { ProjectCard } from "@/components/project/ProjectCard";
 import {
   listProjects,
@@ -139,14 +140,10 @@ export default function DashboardPage() {
         </Card>
       )}
 
-      {/* Header */}
-      <div className="mb-8 fade-in">
-        <h1 className="text-3xl font-bold text-text-primary mb-2">Dashboard</h1>
-        <p className="text-text-secondary">Welcome back! Here's your overview.</p>
-      </div>
+      <PageHeader title="Dashboard" description="Welcome back! Here's your overview." />
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-8">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-6">
         {stats.map((stat, index) => (
           <Link key={index} href={stat.href}>
             <Card
@@ -178,7 +175,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Quick Actions */}
-      <Card variant="elevated" padding="lg" className="mb-8 fade-in">
+      <Card variant="elevated" padding="lg" className="mb-6 fade-in">
         <CardHeader>
           <CardTitle>Quick Actions</CardTitle>
           <CardDescription>Get started with these common tasks</CardDescription>
@@ -221,7 +218,7 @@ export default function DashboardPage() {
 
       {/* Recent Projects */}
       {!loadingProjects && projects.length > 0 && (
-        <Card variant="elevated" padding="lg" className="mb-8 fade-in">
+        <Card variant="elevated" padding="lg" className="mb-6 fade-in">
           <CardHeader className="mb-6">
             <div className="flex items-center justify-between">
               <div>
