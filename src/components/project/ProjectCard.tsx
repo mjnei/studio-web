@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Folder, Trash2, Clock, CheckCircle2 } from "lucide-react";
+import { Folder, Trash2, Clock, CheckCircle2, Calendar } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { tmdbImageUrl, type ProjectResponse } from "@/lib/project-client";
@@ -8,15 +8,92 @@ interface ProjectCardProps {
   project: ProjectResponse;
   showDelete?: boolean;
   onDelete?: (project: ProjectResponse) => void;
+  layoutMode?: "grid-sm" | "grid-md" | "list";
 }
 
-export function ProjectCard({ project, showDelete = false, onDelete }: ProjectCardProps) {
+export function ProjectCard({
+  project,
+  showDelete = false,
+  onDelete,
+  layoutMode = "grid-md",
+}: ProjectCardProps) {
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     onDelete?.(project);
   };
 
+  const projectName = project.project_name || project.movie?.title || "Untitled project";
+  const movieTitle = project.movie?.title;
+
+  // Render list view
+  if (layoutMode === "list") {
+    return (
+      <Link
+        href={`/project/${project.id}/${project.last_step}`}
+        className="group flex gap-4 overflow-hidden rounded-xl border border-border-default bg-surface-panel p-4 transition-all hover:border-accent-cyan/50 hover:bg-surface-raised hover:shadow-lg hover:shadow-accent-cyan/5"
+      >
+        {/* Project Info */}
+        <div className="flex min-w-0 flex-1 flex-col justify-between py-1">
+          <div>
+            <h3 className="mb-1.5 text-base font-bold text-text-primary transition-colors group-hover:text-accent-cyan">
+              {projectName}
+            </h3>
+
+            {/* Movie title if different from project name */}
+            {movieTitle && projectName !== movieTitle && (
+              <p className="mb-2 text-sm text-text-muted">
+                Based on: <span className="text-text-secondary">{movieTitle}</span>
+              </p>
+            )}
+
+            {/* Status Badge - only 1 tag */}
+            <div className="mb-2 flex flex-wrap items-center gap-2">
+              <Badge
+                variant={
+                  project.status === "completed"
+                    ? "success"
+                    : project.status === "in-progress"
+                      ? "info"
+                      : "default"
+                }
+                size="sm"
+              >
+                {project.status === "completed" && <CheckCircle2 className="w-3 h-3" />}
+                {project.status}
+              </Badge>
+            </div>
+          </div>
+
+          {/* Metadata */}
+          <div className="flex items-center gap-3 text-xs text-text-muted">
+            <div className="flex items-center gap-1">
+              <Calendar className="h-3.5 w-3.5" />
+              <span>Created {new Date(project.created_at).toLocaleDateString()}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Clock className="h-3.5 w-3.5" />
+              <span>Updated {new Date(project.updated_at).toLocaleDateString()}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Delete Button */}
+        {showDelete && onDelete && (
+          <button
+            onClick={handleDeleteClick}
+            className="flex-shrink-0 self-start rounded-lg border border-border-default bg-surface-elevated/90 p-2 text-text-secondary backdrop-blur-sm transition-all duration-200 hover:border-status-error hover:bg-status-error/10 hover:text-status-error focus-ring"
+            aria-label="Delete project"
+            title="Delete project"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
+        )}
+      </Link>
+    );
+  }
+
+  // Render grid view (grid-sm or grid-md)
   return (
     <div className="group relative overflow-hidden rounded-xl">
       <Link href={`/project/${project.id}/${project.last_step}`}>
@@ -110,9 +187,6 @@ export function ProjectCard({ project, showDelete = false, onDelete }: ProjectCa
                 </h2>
                 {showDelete ? (
                   <div className="flex items-center gap-2 mt-2 flex-wrap">
-                    <Badge variant="info" size="sm">
-                      {project.last_step}
-                    </Badge>
                     <Badge
                       variant={
                         project.status === "completed"

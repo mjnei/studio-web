@@ -285,9 +285,7 @@ export default function BillingPage() {
           <Card variant="elevated" padding="lg">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-lg font-semibold text-text-primary mb-1">
-                  Billing
-                </h2>
+                <h2 className="text-lg font-semibold text-text-primary mb-1">Billing</h2>
                 <p className="text-sm text-text-muted">
                   Manage your payment method and subscription
                 </p>

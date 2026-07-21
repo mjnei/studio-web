@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Folder, Plus } from "lucide-react";
+import { Folder, Plus, Grid3x3, LayoutGrid, List } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { FormModal } from "@/components/ui/modal";
@@ -11,6 +11,8 @@ import { LoadingState } from "@/components/ui/LoadingSpinner";
 import { ProjectCard } from "@/components/project/ProjectCard";
 import { listProjects, deleteProject, type ProjectResponse } from "@/lib/project-client";
 
+type LayoutMode = "grid-sm" | "grid-md" | "list";
+
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<ProjectResponse[]>([]);
   const [loading, setLoading] = useState(true);
@@ -18,6 +20,7 @@ export default function ProjectsPage() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState<ProjectResponse | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid-md");
 
   const loadProjects = () => {
     setLoading(true);
@@ -62,19 +65,84 @@ export default function ProjectsPage() {
     }
   };
 
+  const getGridClass = () => {
+    switch (layoutMode) {
+      case "grid-sm":
+        // Small cards: 2 cols (base), 3 cols (md), 4 cols (lg)
+        return "grid gap-3 grid-cols-2 md:grid-cols-3 lg:grid-cols-4";
+      case "grid-md":
+        // Medium cards: 1 col (base), 2 cols (sm), 3 cols (lg)
+        return "grid gap-4 sm:grid-cols-2 lg:grid-cols-3";
+      case "list":
+        return "space-y-3";
+      default:
+        return "grid gap-4 sm:grid-cols-2 lg:grid-cols-3";
+    }
+  };
+
+  const LayoutToggle = () => (
+    <div className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-panel p-1">
+      <button
+        onClick={() => setLayoutMode("grid-sm")}
+        className={`rounded p-1.5 transition-all ${
+          layoutMode === "grid-sm"
+            ? "bg-accent-primary text-white"
+            : "text-text-muted hover:text-text-primary"
+        }`}
+        title="Small grid (up to 4 columns)"
+      >
+        <Grid3x3 className="h-4 w-4" />
+      </button>
+      <button
+        onClick={() => setLayoutMode("grid-md")}
+        className={`rounded p-1.5 transition-all ${
+          layoutMode === "grid-md"
+            ? "bg-accent-primary text-white"
+            : "text-text-muted hover:text-text-primary"
+        }`}
+        title="Medium grid (2-3 columns)"
+      >
+        <LayoutGrid className="h-4 w-4" />
+      </button>
+      <button
+        onClick={() => setLayoutMode("list")}
+        className={`rounded p-1.5 transition-all ${
+          layoutMode === "list"
+            ? "bg-accent-primary text-white"
+            : "text-text-muted hover:text-text-primary"
+        }`}
+        title="List view"
+      >
+        <List className="h-4 w-4" />
+      </button>
+    </div>
+  );
+
   return (
     <div className="max-w-7xl mx-auto">
       <PageHeader
         title="Projects"
         description="Create and manage your video projects"
         action={
-          <Link href="/project/new">
-            <Button variant="primary" size="md" leftIcon={<Plus className="h-4 w-4" />}>
-              New Project
-            </Button>
-          </Link>
+          <div className="flex items-center gap-3">
+            <span className="rounded-full bg-accent-cyan/10 px-3 py-1.5 text-xs font-medium text-accent-cyan whitespace-nowrap">
+              {projects.length} {projects.length === 1 ? "project" : "projects"}
+            </span>
+            <Link href="/project/new">
+              <Button variant="primary" size="md" leftIcon={<Plus className="h-4 w-4" />}>
+                New Project
+              </Button>
+            </Link>
+          </div>
         }
       />
+
+      {/* Layout Controls */}
+      {!loading && !error && projects.length > 0 && (
+        <div className="mb-6 flex justify-end">
+          <LayoutToggle />
+        </div>
+      )}
 
       {loading ? (
         <LoadingState
@@ -112,13 +180,14 @@ export default function ProjectsPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className={getGridClass()}>
           {projects.map((project) => (
             <ProjectCard
               key={project.id}
               project={project}
               showDelete={true}
               onDelete={handleDeleteClick}
+              layoutMode={layoutMode}
             />
           ))}
         </div>
