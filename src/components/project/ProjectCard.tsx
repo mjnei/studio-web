@@ -17,9 +17,19 @@ export function ProjectCard({
   onDelete,
   layoutMode = "grid-md",
 }: ProjectCardProps) {
-  const handleDeleteClick = (e: React.MouseEvent) => {
+  const handleDeleteClick = (e: React.MouseEvent | React.PointerEvent) => {
     e.preventDefault();
     e.stopPropagation();
+
+    // Release any pointer capture before triggering state change
+    if ("pointerId" in e && e.currentTarget instanceof Element) {
+      try {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      } catch {
+        // Ignore if pointer capture wasn't active
+      }
+    }
+
     onDelete?.(project);
   };
 
@@ -81,8 +91,8 @@ export function ProjectCard({
         {/* Delete Button */}
         {showDelete && onDelete && (
           <button
-            onClick={handleDeleteClick}
-            className="flex-shrink-0 self-start rounded-lg border border-border-default bg-surface-elevated/90 p-2 text-text-secondary backdrop-blur-sm transition-all duration-200 hover:border-status-error hover:bg-status-error/10 hover:text-status-error focus-ring"
+            onPointerDown={handleDeleteClick}
+            className="flex-shrink-0 self-start rounded-lg border border-border-default bg-surface-elevated/90 p-2 text-text-secondary backdrop-blur-sm transition-all duration-200 hover:border-status-error hover:bg-status-error/10 hover:text-status-error focus-ring touch-none"
             aria-label="Delete project"
             title="Delete project"
           >
@@ -221,8 +231,8 @@ export function ProjectCard({
       {/* Delete Button - always visible on mobile, appears on hover on desktop */}
       {showDelete && onDelete && (
         <button
-          onClick={handleDeleteClick}
-          className="absolute top-2 right-2 p-2 rounded-lg bg-surface-elevated/90 backdrop-blur-sm border border-border-default opacity-100 md:opacity-0 md:group-hover:opacity-100 hover:bg-status-error/10 hover:border-status-error hover:text-status-error text-text-secondary transition-all duration-200 focus-ring"
+          onPointerDown={handleDeleteClick}
+          className="absolute top-2 right-2 p-2 rounded-lg bg-surface-elevated/90 backdrop-blur-sm border border-border-default opacity-100 md:opacity-0 md:group-hover:opacity-100 hover:bg-status-error/10 hover:border-status-error hover:text-status-error text-text-secondary transition-all duration-200 focus-ring touch-none"
           aria-label="Delete project"
           title="Delete project"
         >

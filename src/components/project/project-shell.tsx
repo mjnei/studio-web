@@ -43,11 +43,11 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
     if (!isLoading && error) {
       // Check if it's an ApiError with status 404
       const apiError = error as any;
-      const is404 = 
-        apiError.status === 404 || 
-        error.message.includes("not found") || 
+      const is404 =
+        apiError.status === 404 ||
+        error.message.includes("not found") ||
         error.message.includes("Project not found");
-      
+
       if (is404) {
         toast.error(
           "Project not found",
