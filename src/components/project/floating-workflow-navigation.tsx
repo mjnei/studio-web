@@ -145,7 +145,11 @@ export function FloatingWorkflowNavigation({
                   aria-label={`Step ${index + 1}: ${step.label}${isCurrent ? " (current)" : ""}${isCompleted ? " (completed)" : ""}`}
                   role="status"
                 >
-                  {isCompleted ? <Check className="h-2.5 w-2.5 sm:h-3 sm:w-3" strokeWidth={3} /> : index + 1}
+                  {isCompleted ? (
+                    <Check className="h-2.5 w-2.5 sm:h-3 sm:w-3" strokeWidth={3} />
+                  ) : (
+                    index + 1
+                  )}
                 </div>
                 {/* Label — hidden on mobile, visible on sm+ */}
                 <span
@@ -209,7 +213,9 @@ export function FloatingWorkflowNavigation({
               <Button
                 variant="primary"
                 size="sm"
-                icon={!isLastStep ? <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> : undefined}
+                icon={
+                  !isLastStep ? <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> : undefined
+                }
                 onClick={handleNext}
                 disabled={isProcessing}
                 className="shadow-lg sm:size-md text-xs sm:text-sm touch-manipulation"

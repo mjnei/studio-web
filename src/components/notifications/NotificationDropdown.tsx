@@ -27,7 +27,9 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
           <Bell size={16} className="text-text-secondary sm:hidden" />
           <Bell size={18} className="text-text-secondary hidden sm:block" />
           <h3 className="text-xs sm:text-sm font-semibold text-text-primary">Notifications</h3>
-          {unreadCount > 0 && <span className="text-[10px] sm:text-xs text-text-muted">({unreadCount} new)</span>}
+          {unreadCount > 0 && (
+            <span className="text-[10px] sm:text-xs text-text-muted">({unreadCount} new)</span>
+          )}
         </div>
         <div className="flex items-center gap-0.5 sm:gap-1">
           {notifications.length > 0 && (
@@ -66,7 +68,9 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
             <Bell size={40} className="mb-2 sm:mb-3 opacity-50 sm:hidden" />
             <Bell size={48} className="mb-3 opacity-50 hidden sm:block" />
             <p className="text-xs sm:text-sm font-medium">No notifications yet</p>
-            <p className="text-[10px] sm:text-xs mt-1 text-center px-4">You'll see updates here when something happens</p>
+            <p className="text-[10px] sm:text-xs mt-1 text-center px-4">
+              You'll see updates here when something happens
+            </p>
           </div>
         ) : (
           <div className="divide-y divide-border-default">

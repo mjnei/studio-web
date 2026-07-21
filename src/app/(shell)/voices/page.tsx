@@ -150,7 +150,7 @@ export default function VoicesPage() {
             }`}
           >
             <Mic className="h-4 w-4" />
-            <span>My Voices</span>
+            <span>Private</span>
             {voices.length > 0 && (
               <span
                 className={`ml-1 rounded-full px-2 py-0.5 text-xs font-bold ${
@@ -172,7 +172,7 @@ export default function VoicesPage() {
             }`}
           >
             <Globe className="h-4 w-4" />
-            <span>Community</span>
+            <span>Shared</span>
             {communityVoices.length > 0 && (
               <span
                 className={`ml-1 rounded-full px-2 py-0.5 text-xs font-bold ${

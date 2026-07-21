@@ -109,7 +109,8 @@ export function ToastProvider({
     "top-center": "top-2 left-2 right-2 sm:top-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2",
     "top-left": "top-2 left-2 sm:top-4 sm:left-4",
     "bottom-right": "bottom-2 right-2 sm:bottom-4 sm:right-4",
-    "bottom-center": "bottom-2 left-2 right-2 sm:bottom-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2",
+    "bottom-center":
+      "bottom-2 left-2 right-2 sm:bottom-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2",
     "bottom-left": "bottom-2 left-2 sm:bottom-4 sm:left-4",
   };
 
@@ -173,13 +174,19 @@ function ToastItem({ toast, onClose }: ToastItemProps) {
       `}
     >
       <div className="flex items-start gap-2 sm:gap-3 p-3 sm:p-4">
-        <div className={`shrink-0 rounded-lg p-1.5 sm:p-2 ${variantStyle.iconBg} ${variantStyle.textColor}`}>
+        <div
+          className={`shrink-0 rounded-lg p-1.5 sm:p-2 ${variantStyle.iconBg} ${variantStyle.textColor}`}
+        >
           {variantStyle.icon}
         </div>
         <div className="flex-1 min-w-0">
-          <p className={`font-semibold text-xs sm:text-sm ${variantStyle.textColor}`}>{toast.title}</p>
+          <p className={`font-semibold text-xs sm:text-sm ${variantStyle.textColor}`}>
+            {toast.title}
+          </p>
           {toast.description && (
-            <p className="mt-1 text-xs sm:text-sm text-text-secondary line-clamp-2">{toast.description}</p>
+            <p className="mt-1 text-xs sm:text-sm text-text-secondary line-clamp-2">
+              {toast.description}
+            </p>
           )}
         </div>
         <button
