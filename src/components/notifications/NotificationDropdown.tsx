@@ -26,9 +26,13 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
         <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
           <Bell size={16} className="text-text-secondary sm:hidden shrink-0" />
           <Bell size={18} className="text-text-secondary hidden sm:block shrink-0" />
-          <h3 className="text-xs sm:text-sm font-semibold text-text-primary truncate">Notifications</h3>
+          <h3 className="text-xs sm:text-sm font-semibold text-text-primary truncate">
+            Notifications
+          </h3>
           {unreadCount > 0 && (
-            <span className="text-[10px] sm:text-xs text-text-muted shrink-0">({unreadCount} new)</span>
+            <span className="text-[10px] sm:text-xs text-text-muted shrink-0">
+              ({unreadCount} new)
+            </span>
           )}
         </div>
         <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
