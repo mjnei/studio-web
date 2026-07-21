@@ -28,7 +28,7 @@ The Voice Table Consolidation project is 95.7% complete with all backend and fro
 **Delivery Quality**:
 - ✅ Database schema consolidated into single `voices` table
 - ✅ All 5 performance indexes created and verified
-- ✅ Voice limits enforced by membership tier (Free=1, Pro=5, Premium=10)
+- ✅ Voice limits enforced by membership tier (Free=2, Pro=5, Premium=10)
 - ✅ Soft delete strategy preserves referential integrity
 - ✅ Community sharing with two-tier approval workflow
 - ✅ All tests passing (10/10 voice recording endpoint tests) ✅

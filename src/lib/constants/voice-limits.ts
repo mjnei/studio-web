@@ -6,7 +6,7 @@
  */
 
 export const VOICE_LIMITS = {
-  free: 1,
+  free: 2,
   pro: 5,
   premium: 10,
 } as const;

@@ -16,7 +16,7 @@ Implemented membership-aware voice recording limits that check the user's tier b
 **File:** `src/lib/constants/voice-limits.ts`
 
 Defines tier-based limits matching backend enforcement:
-- **Free tier:** 1 voice
+- **Free tier:** 2 voices
 - **Pro tier:** 5 voices  
 - **Premium tier:** 10 voices
 
@@ -114,7 +114,7 @@ User clicks "Record New Voice"
   → New voice added to library
 ```
 
-### Scenario 2: User at limit (Free tier with 1 voice)
+### Scenario 2: User at limit (Free tier with 2 voices)
 ```
 User clicks "Record New Voice"
   → voiceLimits.canAdd = false
@@ -182,8 +182,8 @@ tier_limits = {
 ## Testing Checklist
 
 ### Manual Testing
-- [ ] Free tier user with 0 voices can add 1 voice
-- [ ] Free tier user with 1 voice sees limit dialog
+- [ ] Free tier user with 0 voices can add up to 2 voices
+- [ ] Free tier user with 2 voices sees limit dialog
 - [ ] Pro tier user can add up to 5 voices
 - [ ] Pro tier user with 5 voices sees limit dialog
 - [ ] Premium tier user can add up to 10 voices
