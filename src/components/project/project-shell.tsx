@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { PanelLeft, ArrowLeft } from "lucide-react";
 import { DrawerContent } from "@/components/shell/drawer-content";
@@ -9,6 +9,7 @@ import { useSidebar } from "@/components/shell/sidebar-context";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { CreditStatus } from "@/components/credits/CreditStatus";
+import { useToast } from "@/components/ui/toast";
 
 type Status = "Voice Ready" | "Composing" | "Rendering" | "Completed";
 
@@ -29,11 +30,35 @@ function getProjectStatus(hasVoice: boolean, hasVideo: boolean, isRendering: boo
 
 export function ProjectShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const toast = useToast();
   const projectId = pathname.split("/")[2];
   const { collapsed, mobileOpen, setMobileOpen, toggle, isNarrow } = useSidebar();
 
   // Get project state from persistent storage
-  const { state: projectState } = useProjectState(projectId);
+  const { state: projectState, isLoading, error } = useProjectState(projectId);
+
+  // Redirect to projects list if project not found (404 error)
+  useEffect(() => {
+    if (!isLoading && error) {
+      // Check if it's an ApiError with status 404
+      const apiError = error as any;
+      const is404 = 
+        apiError.status === 404 || 
+        error.message.includes("not found") || 
+        error.message.includes("Project not found");
+      
+      if (is404) {
+        toast.error(
+          "Project not found",
+          "This project may have been deleted. Redirecting to projects list..."
+        );
+        setTimeout(() => {
+          router.push("/projects");
+        }, 2000);
+      }
+    }
+  }, [isLoading, error, router, toast]);
 
   // Determine which steps are completed based on project state
   const completedSteps = {

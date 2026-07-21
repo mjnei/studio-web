@@ -197,7 +197,7 @@ export function useProjectState(projectId: string) {
   const { isLoading: isAuthLoading } = useAuth();
   const [state, setState] = useState<ProjectState | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<Error | null>(null);
 
   const refresh = useCallback(async () => {
     setIsLoading(true);
@@ -209,8 +209,7 @@ export function useProjectState(projectId: string) {
       ]);
       setState(mapProject(project, scripts));
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Unable to load project";
-      setError(message);
+      setError(err instanceof Error ? err : new Error("Unable to load project"));
       setState(null);
     } finally {
       setIsLoading(false);

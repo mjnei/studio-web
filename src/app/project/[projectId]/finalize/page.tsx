@@ -90,11 +90,23 @@ export default function FinalizePage() {
       }
     } catch (error) {
       console.error("Failed to load videos:", error);
-      toast.error("Failed to load videos", "Could not retrieve video history");
+      // Check if the error is a 404 (project not found)
+      const apiError = error as { status?: number; message?: string };
+      if (apiError.status === 404) {
+        toast.error(
+          "Project not found",
+          "This project may have been deleted. Redirecting to projects list..."
+        );
+        setTimeout(() => {
+          router.push("/projects");
+        }, 2000);
+      } else {
+        toast.error("Failed to load videos", "Could not retrieve video history");
+      }
     } finally {
       setIsLoadingVideos(false);
     }
-  }, [projectId, selectedVideoId, toast]);
+  }, [projectId, selectedVideoId, toast, router]);
 
   const loadCreditStatus = React.useCallback(async () => {
     try {
