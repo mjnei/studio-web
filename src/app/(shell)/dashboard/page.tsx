@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Folder, Film, Mic, Plus, ArrowRight, Sparkles, X } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { ProjectCard } from "@/components/project/ProjectCard";
 import {
   listProjects,
   getPopularMovies,
@@ -238,65 +239,7 @@ export default function DashboardPage() {
           <CardContent>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {projects.map((project) => (
-                <Link key={project.id} href={`/project/${project.id}/${project.last_step}`}>
-                  <Card variant="elevated" padding="none" interactive className="overflow-hidden">
-                    <div className="aspect-video bg-surface-raised relative">
-                      {project.thumbnail?.final_url ||
-                      project.thumbnail?.custom_image_url ||
-                      (project.thumbnail?.base_image_url &&
-                        project.thumbnail?.base_image_status === "completed") ? (
-                        <img
-                          src={
-                            project.thumbnail?.final_url ||
-                            project.thumbnail?.custom_image_url ||
-                            project.thumbnail?.base_image_url ||
-                            ""
-                          }
-                          alt={project.project_name || project.movie?.title || "Project thumbnail"}
-                          className="h-full w-full object-cover"
-                          onError={(e) => {
-                            const img = e.target as HTMLImageElement;
-                            const backdropOrPoster =
-                              project.movie?.backdrop_path ?? project.movie?.poster_path;
-                            if (backdropOrPoster) {
-                              const fallbackUrl = tmdbImageUrl(backdropOrPoster, "w780");
-                              if (fallbackUrl) {
-                                img.src = fallbackUrl;
-                              }
-                            }
-                          }}
-                        />
-                      ) : project.movie?.backdrop_path || project.movie?.poster_path ? (
-                        <img
-                          src={
-                            tmdbImageUrl(
-                              project.movie.backdrop_path ?? project.movie.poster_path,
-                              "w780"
-                            ) || ""
-                          }
-                          alt={project.movie?.title ?? "Project movie"}
-                          className="h-full w-full object-cover"
-                        />
-                      ) : (
-                        <div className="flex h-full items-center justify-center">
-                          <Folder className="h-10 w-10 text-text-muted" />
-                        </div>
-                      )}
-                    </div>
-                    <CardContent className="p-4">
-                      <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <h2 className="font-semibold text-text-primary truncate">
-                            {project.project_name || project.movie?.title || "Untitled project"}
-                          </h2>
-                          <p className="mt-1 text-xs text-text-muted">
-                            Step: {project.last_step} • {project.status}
-                          </p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
+                <ProjectCard key={project.id} project={project} />
               ))}
             </div>
           </CardContent>
