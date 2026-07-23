@@ -1,8 +1,38 @@
-# Modern Dark Theme Design System
+# Frontend UI Design System
+
+**Version**: 2.0  
+**Last Updated**: 2026-07-24  
+**Repository**: `/Users/aa/git/github_uncgra/huavoi/studio-web/`
+
+---
+
+## 📚 Table of Contents
+
+1. [Overview](#overview)
+2. [Design Principles](#design-principles)
+3. [Color System](#color-system)
+4. [Component Library](#component-library)
+5. [Responsive Design](#responsive-design-breakpoints)
+6. [Layout Patterns](#layout-patterns)
+7. [Animation & Transitions](#animation--transitions)
+8. [Accessibility](#accessibility)
+9. [Best Practices](#best-practices)
+10. [Quick Reference](#quick-reference)
+
+---
 
 ## Overview
 
-This document outlines the unified design system for Huavoi Studio's frontend redesign, featuring a modern dark theme that's responsive, intuitive, and visually cohesive.
+This is the **single source of truth** for Huavoi Studio's frontend design system. It documents the unified design system for the frontend redesign, featuring a modern dark theme that's responsive, intuitive, and visually cohesive.
+
+This document combines:
+- Complete color system and CSS variables
+- Production-ready component library
+- Responsive breakpoints and grid patterns
+- Animation timing and easing functions
+- Accessibility standards and best practices
+- Quick reference for developers
+- Real-world implementation patterns
 
 ## Design Principles
 
@@ -12,7 +42,13 @@ This document outlines the unified design system for Huavoi Studio's frontend re
 4. **Accessible** - WCAG-compliant with proper contrast and focus states
 5. **Performant** - Optimized animations and transitions
 
+---
+
 ## Color System
+
+### CSS Variables Reference
+
+All colors are defined as CSS variables in `tailwind.config.ts` and `globals.css`.
 
 ### Surface Colors
 - `--surface-base`: #0a0e17 (Page background)
@@ -25,6 +61,7 @@ This document outlines the unified design system for Huavoi Studio's frontend re
 - `--accent-primary`: #6366f1 (Indigo - Primary actions)
 - `--accent-secondary`: #8b5cf6 (Purple - Secondary accents)
 - `--accent-tertiary`: #06b6d4 (Cyan - Highlights)
+- `--accent-muted`: rgba(99, 102, 241, 0.15) (Muted accent)
 
 ### Text Colors
 - `--text-primary`: #f1f5f9 (Primary text)
@@ -42,57 +79,284 @@ This document outlines the unified design system for Huavoi Studio's frontend re
 - `--status-queued`: #6b7280 (Gray)
 - `--status-failed`: #ef4444 (Red)
 
+### Shadow Variables
+- `--shadow-sm`: Small shadow effect
+- `--shadow-md`: Medium shadow effect
+- `--shadow-lg`: Large shadow effect
+- `--shadow-glow`: Glowing shadow
+- `--shadow-glow-hover`: Hover glow shadow
+
+### Animation Timing
+- `--transition-ultra-fast`: 75ms
+- `--transition-fast`: 150ms
+- `--transition-base`: 200ms
+- `--transition-slow`: 300ms
+- `--transition-slower`: 500ms
+
+### Gradient Patterns
+- **Blue → Cyan**: Notifications, Privacy features
+- **Purple → Pink**: Projects, Files
+- **Green → Emerald**: Audio, Voice
+- **Orange → Red**: Video, Warnings
+- **Indigo → Purple**: Primary actions
+
 ## Component Library
+
+### Overview
+
+**Total Components**: 11 production-ready UI components
+
+All components are located in `src/components/ui/` and are built with React 19, TypeScript, and Tailwind CSS 4.
 
 ### Core Components
 
-#### Button
+#### 1. Button
+- **File**: `src/components/ui/button.tsx`
 - **Variants**: primary, secondary, outline, ghost, danger, success
 - **Sizes**: sm (h-8), md (h-10), lg (h-12)
-- **Features**: Loading state, icons, full width option
+- **Features**: Loading state, icons, icon-only mode, full width option
 - **Usage**: Actions, navigation, form submissions
 
-#### Card
-- **Variants**: default, elevated, interactive, gradient
+```tsx
+import { Button } from "@/components/ui/button";
+
+<Button variant="primary" size="md" loading={false} icon={<IconComponent />}>
+  Click me
+</Button>
+```
+
+#### 2. Card
+- **File**: `src/components/ui/card.tsx`
+- **Variants**: default, elevated, bordered, glass
 - **Padding**: none, sm, md, lg
 - **Features**: Composable with Header, Title, Description, Content, Footer
+- **Properties**: `interactive`, `hover` for states
 - **Usage**: Content containers, feature blocks, list items
 
-#### Input/TextArea
-- **Features**: Label, error state, left/right icons
+```tsx
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+
+<Card variant="elevated" padding="md" interactive>
+  <CardHeader>
+    <CardTitle>Title</CardTitle>
+    <CardDescription>Description</CardDescription>
+  </CardHeader>
+  <CardContent>Content here</CardContent>
+</Card>
+```
+
+#### 3. Input & TextArea
+- **File**: `src/components/ui/input.tsx`
+- **Features**: Label, error state, left/right icons, character count
 - **States**: Default, focus, error, disabled
+- **Properties**: `maxLength`, `showCharCount`, `helperText`
 - **Usage**: Forms, search, filters
 
-#### Badge
+```tsx
+import { Input } from "@/components/ui/input";
+
+<Input 
+  label="Email" 
+  type="email"
+  placeholder="user@example.com"
+  error="Invalid email"
+  helperText="Must be a valid email"
+  icon={<IconMail />}
+/>
+```
+
+#### 4. Badge
+- **File**: `src/components/ui/badge.tsx`
 - **Variants**: default, primary, secondary, success, warning, error, info, outline
 - **Sizes**: sm, md, lg
 - **Usage**: Status indicators, tags, counts
 
-### Layout Components
+```tsx
+import { Badge } from "@/components/ui/badge";
 
-#### PageHeader
-- **Features**: Title, description, action, breadcrumbs
-- **Responsive**: Stacks on mobile, side-by-side on desktop
-- **Usage**: Page titles and actions
+<Badge variant="success">Completed</Badge>
+<Badge variant="warning">Processing</Badge>
+<Badge variant="error">Failed</Badge>
+```
 
-#### Grid
-- **Columns**: 1-6 columns with responsive breakpoints
-- **Gap**: sm, md, lg
-- **Usage**: Card grids, content layouts
+#### 5. Skeleton
+- **File**: `src/components/ui/skeleton.tsx`
+- **Variants**: text, circular, rectangular, rounded
+- **Properties**: `width`, `height` for sizing
+- **Features**: Shimmer animation
+- **Usage**: Loading placeholders
 
-#### EmptyState
-- **Features**: Icon, title, description, action
-- **Usage**: No data states, empty lists
+```tsx
+import { Skeleton } from "@/components/ui/skeleton";
 
-### Feedback Components
+<div className="space-y-2">
+  <Skeleton variant="text" />
+  <Skeleton variant="text" width="80%" />
+  <Skeleton variant="circular" width={48} height={48} />
+</div>
+```
 
-#### LoadingSpinner
+#### 6. Tooltip
+- **File**: `src/components/ui/tooltip.tsx`
+- **Positions**: top, right, bottom, left
+- **Properties**: `content`, `delay` (ms)
+- **Usage**: Contextual help, information hints
+
+```tsx
+import { Tooltip } from "@/components/ui/tooltip";
+
+<Tooltip content="Click to open" position="top" delay={200}>
+  <button>Hover me</button>
+</Tooltip>
+```
+
+#### 7. Modal
+- **File**: `src/components/ui/modal.tsx`
+- **Components**: `Modal`, `ConfirmModal`, `FormModal`
 - **Sizes**: sm, md, lg
-- **Usage**: Loading indicators, async operations
+- **Features**: Backdrop click to close, keyboard escape support
+- **Usage**: Dialogs, confirmations, forms
 
-#### LoadingState
-- **Features**: Spinner, title, description
-- **Usage**: Full-page loading states
+```tsx
+import { Modal, ConfirmModal, FormModal } from "@/components/ui/modal";
+
+// Basic Modal
+<Modal open={isOpen} onClose={handleClose} title="Dialog Title" size="md">
+  Your content here
+</Modal>
+
+// Confirmation Modal
+<ConfirmModal 
+  open={isOpen}
+  onClose={handleClose}
+  onConfirm={handleDelete}
+  title="Delete Project?"
+  variant="danger"
+/>
+
+// Form Modal
+<FormModal
+  open={isOpen}
+  onClose={handleClose}
+  onSubmit={handleSubmit}
+  title="Create Project"
+  loading={isLoading}
+>
+  <Input label="Name" placeholder="Project name" />
+</FormModal>
+```
+
+#### 8. Select
+- **File**: `src/components/ui/select.tsx`
+- **Features**: Single selection, searchable, custom options
+- **Properties**: `value`, `onChange`, `options`, `searchable`, `disabled`
+- **Usage**: Dropdown selection menus
+
+```tsx
+import { Select } from "@/components/ui/select";
+
+<Select
+  value={value}
+  onChange={setValue}
+  options={[
+    { value: "1", label: "Option 1" },
+    { value: "2", label: "Option 2" }
+  ]}
+  searchable
+/>
+```
+
+#### 9. MultiSelect
+- **File**: `src/components/ui/multi-select.tsx`
+- **Features**: Multiple selections, searchable, max selections limit
+- **Properties**: `value`, `onChange`, `options`, `maxSelections`, `searchable`
+- **Usage**: Multiple choice selections
+
+```tsx
+import { MultiSelect } from "@/components/ui/multi-select";
+
+<MultiSelect
+  value={values}
+  onChange={setValues}
+  options={options}
+  maxSelections={3}
+  searchable
+/>
+```
+
+#### 10. Toast Notifications
+- **File**: `src/components/ui/toast.tsx`
+- **Provider**: `ToastProvider` (setup in root layout)
+- **Hook**: `useToast()`
+- **Methods**: `toast.success()`, `toast.error()`, `toast.warning()`, `toast.info()`
+- **Positions**: top-right, top-center, bottom-right, bottom-center
+- **Usage**: User feedback and notifications
+
+```tsx
+// Setup in root layout
+import { ToastProvider } from "@/components/ui/toast";
+
+<ToastProvider position="top-right">
+  {children}
+</ToastProvider>
+
+// Use in components
+import { useToast } from "@/components/ui/toast";
+
+const MyComponent = () => {
+  const toast = useToast();
+
+  const handleAction = async () => {
+    try {
+      // Do something
+      toast.success("Success!", "Action completed");
+    } catch (error) {
+      toast.error("Error", "Something went wrong");
+    }
+  };
+};
+```
+
+#### 11. Loading Spinner
+- **File**: `src/components/ui/loading-spinner.tsx`
+- **Sizes**: sm, md, lg
+- **Features**: Customizable colors and speed
+- **Usage**: Loading indicators for async operations
+
+```tsx
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+
+<LoadingSpinner size="md" />
+```
+
+---
+
+## Import Guide
+
+```tsx
+// Buttons & Actions
+import { Button } from "@/components/ui/button";
+
+// Cards & Containers
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+
+// Forms & Inputs
+import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
+import { MultiSelect } from "@/components/ui/multi-select";
+
+// Feedback
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Tooltip } from "@/components/ui/tooltip";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+
+// Modals & Dialogs
+import { Modal, ConfirmModal, FormModal } from "@/components/ui/modal";
+
+// Notifications
+import { useToast, ToastProvider } from "@/components/ui/toast";
+```
 
 ## Layout Patterns
 
@@ -135,17 +399,167 @@ This document outlines the unified design system for Huavoi Studio's frontend re
 )}
 ```
 
-## Responsive Breakpoints
+## Responsive Design & Breakpoints
 
-- **Mobile**: < 640px (sm)
-- **Tablet**: 640px - 1024px (md - lg)
-- **Desktop**: > 1024px (xl+)
+### Tailwind Breakpoints
+
+The project uses standard Tailwind CSS breakpoints:
+
+| Breakpoint | Min Width | Class Prefix | Use Case |
+|-----------|-----------|--------------|----------|
+| None (base) | 0px | — | Mobile-first default |
+| sm | 640px | `sm:` | Small devices |
+| md | 768px | `md:` | Tablets |
+| lg | 1024px | `lg:` | Desktops |
+| xl | 1280px | `xl:` | Large desktops |
+| 2xl | 1536px | `2xl:` | Ultra-wide screens |
+
+### Responsive Grid System
+
+The frontend uses a flexible grid layout system designed to maximize content display across all screen sizes while ensuring optimal user experience. The system prevents single-column layouts to maintain readability and visual hierarchy.
+
+#### Mode 1: Small Cards (Dense Grid)
+**Best for**: Browsing and discovering many items quickly
+
+- **Base (mobile)**: 3 columns
+- **md (768px+)**: 4 columns
+- **lg (1024px+)**: 5 columns
+- **xl (1280px+)**: 6 columns
+
+```tsx
+className="grid gap-6 grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
+```
+
+#### Mode 2: Medium Cards (Balanced Grid)
+**Best for**: Default view with good balance between detail and overview
+
+- **Base (mobile)**: 2 columns
+- **md (768px+)**: 3 columns
+- **lg (1024px+)**: 4 columns
+
+```tsx
+className="grid gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+```
+
+#### Mode 3: Large Cards (Spacious Grid)
+**Best for**: Detailed content with focus on individual items
+
+- **Base (mobile)**: 2 columns
+- **md (768px+)**: 2 columns
+- **lg (1024px+)**: 3 columns
+
+```tsx
+className="grid gap-6 grid-cols-2 md:grid-cols-2 lg:grid-cols-3"
+```
+
+#### Mode 4: List View
+**Best for**: Detailed information with extended metadata
+
+- Single row per item with thumbnail
+- Horizontal layout with full-width information
+- All metadata visible at once
+
+```tsx
+className="space-y-4"
+```
+
+### Design Rationale
+
+1. **Never Single Column**: All grid modes maintain a minimum of 2 columns on mobile to ensure content doesn't feel cramped or endlessly scrollable
+
+2. **Responsive Scaling**: Column count increases smoothly with viewport width:
+   - Mobile: Compact view suitable for thumb navigation
+   - Tablet (md): Comfortable viewing with balance
+   - Desktop (lg): Optimal use of screen real estate
+   - Wide (xl): Maximum information density
+
+3. **Gap Consistency**: All modes use `gap-6` for consistent spacing (24px), which scales appropriately across all devices
+
+4. **Max-Width Container**: Pages are wrapped in `max-w-7xl` (1280px), ensuring grids never become too wide and maintaining readability
+
+### Layout Toggle Implementation
+
+```tsx
+type LayoutMode = "grid-sm" | "grid-md" | "grid-lg" | "list";
+
+const LayoutToggle = ({ layoutMode, setLayoutMode }: Props) => (
+  <div className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-panel p-1">
+    <button 
+      onClick={() => setLayoutMode("grid-sm")}
+      className={layoutMode === "grid-sm" ? "active" : ""}
+      title="Small dense grid"
+    >
+      <Grid3x3 className="h-4 w-4" />
+    </button>
+    <button 
+      onClick={() => setLayoutMode("grid-md")}
+      className={layoutMode === "grid-md" ? "active" : ""}
+      title="Medium balanced grid"
+    >
+      <LayoutGrid className="h-4 w-4" />
+    </button>
+    <button 
+      onClick={() => setLayoutMode("grid-lg")}
+      className={layoutMode === "grid-lg" ? "active" : ""}
+      title="Large spacious grid"
+    >
+      <Grid2x2 className="h-4 w-4" />
+    </button>
+    <button 
+      onClick={() => setLayoutMode("list")}
+      className={layoutMode === "list" ? "active" : ""}
+      title="List view"
+    >
+      <List className="h-4 w-4" />
+    </button>
+  </div>
+);
+
+const getGridClass = (layoutMode: LayoutMode) => {
+  switch (layoutMode) {
+    case "grid-sm":
+      return "grid gap-6 grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6";
+    case "grid-md":
+      return "grid gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4";
+    case "grid-lg":
+      return "grid gap-6 grid-cols-2 md:grid-cols-2 lg:grid-cols-3";
+    case "list":
+      return "space-y-4";
+    default:
+      return "grid gap-6 grid-cols-2 md:grid-cols-2 lg:grid-cols-3";
+  }
+};
+```
 
 ### Responsive Strategy
-1. Mobile-first CSS (base styles for mobile)
-2. Progressive enhancement for larger screens
-3. Touch-friendly targets (min 44x44px)
-4. Readable text sizes (min 16px on mobile)
+
+1. **Mobile-first**: Base styles are for mobile, enhanced with breakpoint prefixes for larger screens
+2. **Progressive enhancement**: Simpler layouts on mobile, more complex on desktop
+3. **Touch-friendly targets**: Minimum 44x44px clickable areas
+4. **Readable text**: Minimum 16px on mobile
+5. **Flexible containers**: Use `flex-col` on mobile, `flex-row` on desktop
+
+### Common Responsive Patterns
+
+**Responsive flex layout:**
+```tsx
+className="flex flex-col sm:flex-row gap-4"
+```
+
+**Responsive grid columns:**
+```tsx
+className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+```
+
+**Responsive text sizes:**
+```tsx
+className="text-base md:text-lg lg:text-xl"
+```
+
+**Responsive padding:**
+```tsx
+className="p-4 md:p-6 lg:p-8"
+```
 
 ## Animation & Transitions
 
@@ -190,97 +604,368 @@ This document outlines the unified design system for Huavoi Studio's frontend re
 - Alt text for images
 - Loading states announced
 
-## Best Practices
+## Quick Reference
 
-### Do's
-✅ Use design system components
-✅ Follow responsive patterns
-✅ Maintain consistent spacing (4px grid)
-✅ Use CSS variables for colors
-✅ Test on mobile devices
-✅ Include loading and error states
-✅ Provide meaningful empty states
+### CSS Variables Quick Copy
 
-### Don'ts
-❌ Use hardcoded colors
-❌ Skip responsive testing
-❌ Forget loading states
-❌ Use custom components without system review
-❌ Ignore accessibility
-❌ Add animations without purpose
+```css
+/* Surface Colors */
+--surface-base: #0a0e17
+--surface-panel: #0f1419
+--surface-raised: #161b22
+--surface-hover: #1c2128
+--surface-elevated: #21262d
 
-## Component Usage Examples
+/* Text Colors */
+--text-primary: #f1f5f9
+--text-secondary: #94a3b8
+--text-muted: #64748b
+--text-disabled: #475569
 
-### Dashboard Card
-```typescript
-<Card variant="elevated" padding="md">
-  <CardHeader>
-    <div className="flex items-center justify-between">
-      <div>
-        <CardTitle>Recent Projects</CardTitle>
-        <CardDescription>Your latest work in progress</CardDescription>
-      </div>
-      <Button variant="secondary" size="sm">
-        View All
-        <ArrowRight className="w-4 h-4" />
-      </Button>
+/* Accent Colors */
+--accent-primary: #6366f1
+--accent-secondary: #8b5cf6
+--accent-tertiary: #06b6d4
+--accent-muted: rgba(99, 102, 241, 0.15)
+
+/* Status Colors */
+--status-success: #22c55e
+--status-error: #ef4444
+--status-warning: #f59e0b
+--status-info: #3b82f6
+--status-processing: #3b82f6
+--status-completed: #22c55e
+--status-queued: #6b7280
+--status-failed: #ef4444
+
+/* Transitions */
+--transition-ultra-fast: 75ms
+--transition-fast: 150ms
+--transition-base: 200ms
+--transition-slow: 300ms
+--transition-slower: 500ms
+```
+
+### Common Tailwind Utilities
+
+**Spacing (4px grid)**:
+- `p-4` - Padding (16px)
+- `m-4` - Margin (16px)
+- `gap-3` - Gap between items (12px)
+- `gap-6` - Gap between items (24px)
+
+**Text**:
+- `text-sm` - 14px
+- `text-base` - 16px
+- `text-lg` - 18px
+- `font-semibold` - 600 weight
+- `text-text-primary` - Main text color
+- `text-text-secondary` - Secondary text
+- `truncate` - Single line truncate
+- `line-clamp-2` - Max 2 lines
+
+**Layout**:
+- `flex` - Flex container
+- `flex-col` - Column direction
+- `grid` - Grid container
+- `items-center` - Vertical center
+- `justify-between` - Space between
+- `gap-4` - Gap between flex/grid items
+
+**Effects**:
+- `shadow-glow` - Glow shadow
+- `shadow-glow-hover` - Hover glow
+- `transition-all` - Animate all properties
+- `duration-200` - 200ms transition
+
+### Common Component Patterns
+
+**Stat Card with Gradient Icon:**
+```tsx
+<Card variant="elevated" interactive>
+  <div className="flex items-start justify-between">
+    <div className="flex-1">
+      <p className="text-sm text-text-secondary">Metric Title</p>
+      <p className="text-4xl font-bold text-text-primary">123</p>
     </div>
-  </CardHeader>
-  <CardContent>
-    <Grid cols={3} gap="md">
-      {projects.map(project => ...)}
-    </Grid>
-  </CardContent>
+    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 text-white">
+      <IconComponent className="h-6 w-6" />
+    </div>
+  </div>
 </Card>
 ```
 
-### Search & Filter Bar
-```typescript
-<div className="flex flex-col sm:flex-row gap-4">
+**Empty State:**
+```tsx
+<Card variant="elevated" padding="lg">
+  <div className="flex flex-col items-center justify-center py-12 text-center">
+    <div className="mb-4 h-16 w-16 rounded-full bg-gradient-to-br from-accent-secondary to-accent-tertiary" />
+    <h2 className="mb-2 text-2xl font-bold text-text-primary">No Items Found</h2>
+    <p className="mb-6 text-text-secondary">Get started by creating your first item</p>
+    <Button variant="primary">Create Item</Button>
+  </div>
+</Card>
+```
+
+**Loading Skeleton List:**
+```tsx
+<div className="space-y-3">
+  {[1, 2, 3].map(i => (
+    <div key={i} className="flex gap-3">
+      <Skeleton variant="circular" width={48} height={48} />
+      <div className="flex-1 space-y-2">
+        <Skeleton variant="text" />
+        <Skeleton variant="text" width="80%" />
+      </div>
+    </div>
+  ))}
+</div>
+```
+
+**Action Bar:**
+```tsx
+<div className="flex flex-col gap-3 border-t border-border-default pt-4 sm:flex-row">
+  <Button variant="primary" fullWidth>Save</Button>
+  <Button variant="secondary" fullWidth>Cancel</Button>
+</div>
+```
+
+**Responsive Grid Layout:**
+```tsx
+<div className="grid gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+  {items.map(item => (
+    <Card key={item.id} variant="elevated" interactive>
+      {/* Card content */}
+    </Card>
+  ))}
+</div>
+```
+
+**Search and Filter Bar:**
+```tsx
+<div className="flex flex-col gap-4 sm:flex-row">
   <Input
     placeholder="Search..."
     icon={<Search className="h-4 w-4" />}
     className="flex-1"
   />
   <div className="flex gap-2">
-    <Button variant="secondary">Filter</Button>
-    <Button variant="primary">Search</Button>
+    <Button variant="secondary" size="md">Filter</Button>
+    <Button variant="primary" size="md">Search</Button>
   </div>
 </div>
 ```
 
-### Status Badge
-```typescript
-<Badge variant="success">Completed</Badge>
-<Badge variant="warning">Processing</Badge>
-<Badge variant="error">Failed</Badge>
+### Animation Classes
+
+```tsx
+// Fade effects
+className="fade-in"
+className="fade-out"
+
+// Slide effects
+className="slide-in-from-left"
+className="slide-in-from-right"
+className="slide-in-from-top"
+className="slide-in-from-bottom"
+
+// Scale effects
+className="hover:scale-105 transition-transform duration-200"
+
+// Smooth transitions
+className="transition-all duration-200 ease-in-out"
+
+// Pulse effect
+className="animate-pulse"
+
+// Shimmer effect (for skeletons)
+className="shimmer"
 ```
+
+### Focus Ring for Accessibility
+
+```tsx
+// Using the focus-ring utility
+className="focus-ring"
+
+// Or manual implementation
+className="focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-primary focus-visible:ring-offset-2"
+```
+
+### Gradient Color Combinations
+
+**Blue → Cyan** (Notifications, Info):
+```tsx
+className="bg-gradient-to-r from-blue-500 to-cyan-500"
+```
+
+**Purple → Pink** (Projects, Creative):
+```tsx
+className="bg-gradient-to-r from-purple-500 to-pink-500"
+```
+
+**Green → Emerald** (Success, Voice):
+```tsx
+className="bg-gradient-to-r from-green-500 to-emerald-500"
+```
+
+**Orange → Red** (Warnings, Video):
+```tsx
+className="bg-gradient-to-r from-orange-500 to-red-500"
+```
+
+**Indigo → Purple** (Primary, Actions):
+```tsx
+className="bg-gradient-to-r from-indigo-500 to-purple-500"
+```
+
+### Common Responsive Patterns
+
+**Text Responsive Sizes:**
+```tsx
+className="text-sm md:text-base lg:text-lg"
+```
+
+**Padding Responsive:**
+```tsx
+className="p-4 md:p-6 lg:p-8"
+```
+
+**Grid Responsive Columns:**
+```tsx
+className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+```
+
+**Flex Responsive Direction:**
+```tsx
+className="flex flex-col md:flex-row gap-4"
+```
+
+---
 
 ## Implementation Checklist
 
-- [x] Create base component library
-- [x] Define color system with CSS variables
-- [x] Setup responsive utilities
-- [x] Add animation utilities
-- [ ] Redesign all pages
-  - [ ] Dashboard
-  - [ ] Projects
-  - [ ] Movies
-  - [ ] Movie Details
-  - [ ] Voices
-  - [ ] Profile
-  - [ ] Settings
-  - [ ] Admin Pages
-  - [ ] Project Workflow Pages
-  - [ ] Auth Pages
-- [ ] Test responsive behavior
-- [ ] Accessibility audit
-- [ ] Performance optimization
+### For Developers Starting New Work
 
-## Future Enhancements
+- [ ] Read Design Principles section
+- [ ] Review Color System
+- [ ] Check Component Library for available components
+- [ ] Use components from `src/components/ui/`
+- [ ] Follow responsive grid patterns
+- [ ] Test on mobile, tablet, and desktop
+- [ ] Verify keyboard navigation works
+- [ ] Check color contrast (WCAG AA)
+- [ ] Add appropriate loading/empty states
+- [ ] Update this document if adding new components/patterns
 
-- Dark/Light theme toggle
-- Customizable accent colors
-- Advanced animations
-- Component variants expansion
-- Additional layout patterns
+### For New Components
+
+- [ ] Built with React 19 and TypeScript
+- [ ] Use Tailwind CSS 4 for styling
+- [ ] Support all necessary variants
+- [ ] Include proper prop typing
+- [ ] Add accessibility features (ARIA labels, focus states)
+- [ ] Include responsive design
+- [ ] Document in this file
+- [ ] Add example usage
+- [ ] Export from `src/components/ui/index.ts`
+
+---
+
+## Design System Adoption Status
+
+✅ **Complete Design System** - Colors, typography, spacing, animations
+✅ **Production-Ready Components** - 11 core UI components
+✅ **Responsive Patterns** - Grid layouts for all page types
+✅ **Comprehensive Documentation** - This unified document
+✅ **Accessibility Standards** - WCAG AA compliance guidelines
+
+### Completed Pages (9/11 shell pages redesigned)
+- Dashboard
+- Projects
+- Movies
+- Voices (95% complete, cleanup pending)
+- Settings
+- Help
+- Jobs
+- Referral
+- Pricing
+- Admin Dashboard
+
+### In Progress
+- Profile (70% complete)
+- Voices (cleanup needed)
+
+### Backlog
+- Project Workflow pages (7 pages)
+- Admin detail pages (3 pages)
+- Auth pages (4 pages)
+
+---
+
+## Performance Tips
+
+✅ **DO**:
+- Use `transform` for animations
+- Use `opacity` changes for fading
+- Keep animations under 300ms
+- Use CSS instead of JavaScript
+- Use `shadow-glow` for emphasis
+- Cache component refs when needed
+
+❌ **DON'T**:
+- Animate width/height
+- Animate left/top position
+- Use setTimeout for animations
+- Have multiple animations simultaneously
+- Use excessive filter effects
+- Hardcode colors
+
+---
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| Button not showing gradient | Ensure `bg-gradient-to-r` is applied |
+| Card shadow not visible | Use `variant="elevated"` or `shadow-glow` |
+| Tooltip not appearing | Check parent `overflow: hidden` |
+| Animation stuttering | Use `transform` instead of positional changes |
+| Focus ring not visible | Verify `--border-focus` color contrast |
+| Modal not clickable | Ensure it's rendered inside `ToastProvider` if using toast |
+| Text color hard to read | Use `text-text-primary` or `text-text-secondary`, avoid manual colors |
+
+---
+
+## Related Documentation
+
+- **Project Workflow**: `/docs/guides/PROJECT_WORKFLOW.md`
+- **Token Management**: `/docs/guides/TOKEN_MANAGEMENT.md`
+- **Architecture**: `/AGENTS.md`
+- **Configuration**: `tailwind.config.ts`, `globals.css`
+
+---
+
+## Contributing
+
+When adding new components or patterns:
+
+1. Ensure consistency with existing design system
+2. Update import paths in this document
+3. Add example usage code
+4. Test responsiveness across all breakpoints
+5. Verify accessibility compliance
+6. Update status checklist if needed
+
+---
+
+## Support
+
+For questions or improvements to this design system, refer to the component files in `src/components/ui/` or check the team's architecture guide in `AGENTS.md`.
+
+---
+
+**Last Updated**: July 24, 2026  
+**Version**: 2.0  
+**Maintained by**: Frontend Team  
+**Repository**: `studio-web/`
