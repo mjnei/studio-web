@@ -104,7 +104,7 @@ All colors are defined as CSS variables in `tailwind.config.ts` and `globals.css
 
 ### Overview
 
-**Total Components**: 11 production-ready UI components
+**Total Components**: 10 production-ready UI components
 
 All components are located in `src/components/ui/` and are built with React 19, TypeScript, and Tailwind CSS 4.
 
@@ -114,23 +114,23 @@ All components are located in `src/components/ui/` and are built with React 19, 
 - **File**: `src/components/ui/button.tsx`
 - **Variants**: primary, secondary, outline, ghost, danger, success
 - **Sizes**: sm (h-8), md (h-10), lg (h-12)
-- **Features**: Loading state, icons, icon-only mode, full width option
+- **Features**: Loading state (via `loading` or `isLoading` prop), left/right icons, full width option
 - **Usage**: Actions, navigation, form submissions
 
 ```tsx
 import { Button } from "@/components/ui/button";
 
-<Button variant="primary" size="md" loading={false} icon={<IconComponent />}>
+<Button variant="primary" size="md" loading={false} leftIcon={<IconComponent />}>
   Click me
 </Button>
 ```
 
 #### 2. Card
 - **File**: `src/components/ui/card.tsx`
-- **Variants**: default, elevated, bordered, glass
+- **Variants**: default, elevated, interactive, gradient
 - **Padding**: none, sm, md, lg
 - **Features**: Composable with Header, Title, Description, Content, Footer
-- **Properties**: `interactive`, `hover` for states
+- **Properties**: `interactive` prop for hover states
 - **Usage**: Content containers, feature blocks, list items
 
 ```tsx
@@ -147,21 +147,29 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 #### 3. Input & TextArea
 - **File**: `src/components/ui/input.tsx`
-- **Features**: Label, error state, left/right icons, character count
+- **Features**: Label, error state, left/right icons
 - **States**: Default, focus, error, disabled
-- **Properties**: `maxLength`, `showCharCount`, `helperText`
+- **Components**: `Input` for single-line, `TextArea` for multi-line
 - **Usage**: Forms, search, filters
 
 ```tsx
-import { Input } from "@/components/ui/input";
+import { Input, TextArea } from "@/components/ui/input";
 
+// Input
 <Input 
   label="Email" 
   type="email"
   placeholder="user@example.com"
   error="Invalid email"
-  helperText="Must be a valid email"
   icon={<IconMail />}
+/>
+
+// TextArea
+<TextArea
+  label="Description"
+  placeholder="Enter description..."
+  error="Description is required"
+  rows={4}
 />
 ```
 
@@ -212,10 +220,11 @@ import { Tooltip } from "@/components/ui/tooltip";
 
 #### 7. Modal
 - **File**: `src/components/ui/modal.tsx`
-- **Components**: `Modal`, `ConfirmModal`, `FormModal`
-- **Sizes**: sm, md, lg
-- **Features**: Backdrop click to close, keyboard escape support
-- **Usage**: Dialogs, confirmations, forms
+- **Components**: `Modal`, `ConfirmModal`, `FormModal`, `AlertModal`, `InputModal`
+- **Sizes**: sm, md, lg, xl, full
+- **Variants**: default, danger, success
+- **Features**: Backdrop click to close, keyboard escape support, customizable footer
+- **Usage**: Dialogs, confirmations, forms, alerts
 
 ```tsx
 import { Modal, ConfirmModal, FormModal } from "@/components/ui/modal";
@@ -267,13 +276,13 @@ import { Select } from "@/components/ui/select";
 ```
 
 #### 9. MultiSelect
-- **File**: `src/components/ui/multi-select.tsx`
+- **File**: `src/components/ui/select.tsx` (exported alongside `Select`)
 - **Features**: Multiple selections, searchable, max selections limit
 - **Properties**: `value`, `onChange`, `options`, `maxSelections`, `searchable`
 - **Usage**: Multiple choice selections
 
 ```tsx
-import { MultiSelect } from "@/components/ui/multi-select";
+import { MultiSelect } from "@/components/ui/select";
 
 <MultiSelect
   value={values}
@@ -289,7 +298,8 @@ import { MultiSelect } from "@/components/ui/multi-select";
 - **Provider**: `ToastProvider` (setup in root layout)
 - **Hook**: `useToast()`
 - **Methods**: `toast.success()`, `toast.error()`, `toast.warning()`, `toast.info()`
-- **Positions**: top-right, top-center, bottom-right, bottom-center
+- **Positions**: top-right, top-center, top-left, bottom-right, bottom-center, bottom-left
+- **Properties**: `maxToasts` (default: 5), `duration` (default: 5000ms, 0 for persistent)
 - **Usage**: User feedback and notifications
 
 ```tsx
@@ -341,9 +351,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 
 // Forms & Inputs
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
-import { MultiSelect } from "@/components/ui/multi-select";
+import { Input, TextArea } from "@/components/ui/input";
+import { Select, MultiSelect } from "@/components/ui/select";
 
 // Feedback
 import { Badge } from "@/components/ui/badge";
@@ -421,23 +430,40 @@ The frontend uses a flexible grid layout system designed to maximize content dis
 #### Mode 1: Small Cards (Dense Grid)
 **Best for**: Browsing and discovering many items quickly
 
-- **Base (mobile)**: 3 columns
-- **md (768px+)**: 4 columns
-- **lg (1024px+)**: 5 columns
-- **xl (1280px+)**: 6 columns
+- **Base (mobile)**: 2-3 columns (varies by page)
+- **sm (640px+)**: 3 columns
+- **md (768px+)**: 3-4 columns
+- **lg (1024px+)**: 4-5 columns
+- **xl (1280px+)**: 5-6 columns
 
 ```tsx
+// Movies page
+className="grid gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
+
+// Projects page
+className="grid gap-3 grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+
+// Admin movies page
 className="grid gap-6 grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
 ```
 
 #### Mode 2: Medium Cards (Balanced Grid)
 **Best for**: Default view with good balance between detail and overview
 
-- **Base (mobile)**: 2 columns
+- **Base (mobile)**: 1-2 columns (varies by page)
+- **sm (640px+)**: 2 columns
 - **md (768px+)**: 3 columns
-- **lg (1024px+)**: 4 columns
+- **lg (1024px+)**: 3-4 columns
+- **xl (1280px+)**: 4-5 columns
 
 ```tsx
+// Movies page
+className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+
+// Projects page (default)
+className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+
+// Admin movies page
 className="grid gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
 ```
 
@@ -479,35 +505,46 @@ className="space-y-4"
 
 ### Layout Toggle Implementation
 
+**Current Implementation**: Movies, Projects, and Admin Movies pages support layout toggle.
+
 ```tsx
+// Most pages support 2-3 modes
+type LayoutMode = "grid-sm" | "grid-md" | "list";
+// Admin pages support all 4 modes
 type LayoutMode = "grid-sm" | "grid-md" | "grid-lg" | "list";
 
 const LayoutToggle = ({ layoutMode, setLayoutMode }: Props) => (
   <div className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-panel p-1">
     <button 
       onClick={() => setLayoutMode("grid-sm")}
-      className={layoutMode === "grid-sm" ? "active" : ""}
+      className={`rounded p-1.5 transition-all ${
+        layoutMode === "grid-sm"
+          ? "bg-accent-primary text-white"
+          : "text-text-muted hover:text-text-primary"
+      }`}
       title="Small dense grid"
     >
       <Grid3x3 className="h-4 w-4" />
     </button>
     <button 
       onClick={() => setLayoutMode("grid-md")}
-      className={layoutMode === "grid-md" ? "active" : ""}
+      className={`rounded p-1.5 transition-all ${
+        layoutMode === "grid-md"
+          ? "bg-accent-primary text-white"
+          : "text-text-muted hover:text-text-primary"
+      }`}
       title="Medium balanced grid"
     >
       <LayoutGrid className="h-4 w-4" />
     </button>
-    <button 
-      onClick={() => setLayoutMode("grid-lg")}
-      className={layoutMode === "grid-lg" ? "active" : ""}
-      title="Large spacious grid"
-    >
-      <Grid2x2 className="h-4 w-4" />
-    </button>
+    {/* grid-lg only shown on admin pages */}
     <button 
       onClick={() => setLayoutMode("list")}
-      className={layoutMode === "list" ? "active" : ""}
+      className={`rounded p-1.5 transition-all ${
+        layoutMode === "list"
+          ? "bg-accent-primary text-white"
+          : "text-text-muted hover:text-text-primary"
+      }`}
       title="List view"
     >
       <List className="h-4 w-4" />
@@ -515,18 +552,17 @@ const LayoutToggle = ({ layoutMode, setLayoutMode }: Props) => (
   </div>
 );
 
-const getGridClass = (layoutMode: LayoutMode) => {
+// Example from projects page
+const getGridClass = () => {
   switch (layoutMode) {
     case "grid-sm":
-      return "grid gap-6 grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6";
+      return "grid gap-3 grid-cols-2 md:grid-cols-3 lg:grid-cols-4";
     case "grid-md":
-      return "grid gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4";
-    case "grid-lg":
-      return "grid gap-6 grid-cols-2 md:grid-cols-2 lg:grid-cols-3";
+      return "grid gap-4 sm:grid-cols-2 lg:grid-cols-3";
     case "list":
-      return "space-y-4";
+      return "space-y-3"; // or "space-y-4" depending on page
     default:
-      return "grid gap-6 grid-cols-2 md:grid-cols-2 lg:grid-cols-3";
+      return "grid gap-4 sm:grid-cols-2 lg:grid-cols-3";
   }
 };
 ```
