@@ -184,7 +184,7 @@ export function FloatingWorkflowNavigation({
               <Button
                 variant="secondary"
                 size="sm"
-                icon={<ArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
+                leftIcon={<ArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
                 onClick={handleBack}
                 className="shadow-lg sm:size-md text-xs sm:text-sm touch-manipulation"
                 aria-label={backLabel || "Go back"}
@@ -197,7 +197,7 @@ export function FloatingWorkflowNavigation({
             <Button
               variant="ghost"
               size="sm"
-              icon={<Home className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
+              leftIcon={<Home className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
               onClick={handleGoHome}
               className="shadow-lg sm:size-md text-xs sm:text-sm touch-manipulation"
               title="Go to Projects"
@@ -213,7 +213,7 @@ export function FloatingWorkflowNavigation({
               <Button
                 variant="primary"
                 size="sm"
-                icon={
+                rightIcon={
                   !isLastStep ? <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> : undefined
                 }
                 onClick={handleNext}

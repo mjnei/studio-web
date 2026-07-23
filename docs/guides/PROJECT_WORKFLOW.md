@@ -1,6 +1,6 @@
 # Project Creation Workflow
 
-**Last Updated:** June 25, 2026 | **Status:** ✅ Production Ready
+**Last Updated:** July 22, 2026 | **Status:** ✅ Production Ready
 
 ---
 
@@ -12,6 +12,14 @@ A streamlined 7-step workflow for creating video projects from movie trailers. E
 Source → Script → Voice → Details → Preview → Compose → Finalize
 ```
 
+**Navigation:** All pages use unified `FloatingWorkflowNavigation` component with:
+- Back button (hidden on Step 1, visible on all other steps)
+- Home button (always visible, returns to projects list)
+- Next/Continue button (visible when step requirements are met)
+- Step progress indicator showing all 7 steps
+- Auto-hide on scroll down, show on scroll up
+- Responsive sizing for mobile, tablet, and desktop
+
 **Key Features:**
 - ✅ Database-backed persistence
 - ✅ Non-linear navigation (revisit any step)
@@ -19,8 +27,9 @@ Source → Script → Voice → Details → Preview → Compose → Finalize
 - ✅ Background AI job scheduling (name suggestions, thumbnail generation)
 - ✅ Voice sample playback (Step 3: pre-recorded audio samples)
 - ✅ TTS audio generation (Step 5: full script with voice)
-- ✅ Mobile responsive & accessible
+- ✅ Mobile responsive & accessible (unified navigation buttons)
 - ✅ Exit and resume anytime
+- ✅ Consistent UI patterns across all steps
 
 ---
 
@@ -35,6 +44,11 @@ Select a movie from TMDB to base your project on.
 - Browse TMDB movies with search
 - Click to select a movie
 - Movie metadata saved to project
+
+**Navigation:**
+- Back button: Hidden (first step)
+- Home button: Visible (returns to projects list)
+- Next button: Visible when movie selected
 
 **Completion:** Project has `movie_id` set
 
@@ -51,7 +65,14 @@ Generate and edit the voiceover script for your video.
 - Generate AI-powered script based on movie
 - Edit script content
 - View word count and estimated duration
-- Save changes
+- Save changes (auto-saved on Continue)
+
+**Navigation:**
+- Back button: Visible (returns to Source)
+- Home button: Visible
+- Next button: Visible when script exists
+
+**Note:** Script changes auto-save in background when clicking Continue - no need to wait for save completion before navigation
 
 **Completion:** Project has script content saved
 
@@ -71,6 +92,11 @@ Choose a voice for your voiceover narration, listen to voice samples, and schedu
 - Record your own voice
 - Select a voice for the project
 - Schedule TTS job for audio generation (happens on Continue button)
+
+**Navigation:**
+- Back button: Visible (returns to Script)
+- Home button: Visible
+- Next button: Visible when voice selected, triggers TTS job scheduling
 
 **Background Jobs:**
 - Name suggestions and thumbnail generation start automatically
@@ -97,6 +123,11 @@ Name your project using AI-generated suggestions or custom input.
 - View AI-generated name suggestions (or local fallbacks if still generating)
 - Select a suggested name or enter custom name
 - Auto-save on input
+
+**Navigation:**
+- Back button: Visible (returns to Voice)
+- Home button: Visible
+- Next button: Visible when project name entered
 
 **AI Name Suggestions:**
 - Generated in background starting from Step 3
@@ -131,6 +162,11 @@ Generate and preview TTS audio for your selected voice with the full script.
 - Real-time progress tracking (queued → processing → completed)
 - Play and review audio quality before proceeding
 
+**Navigation:**
+- Back button: Visible (returns to Details)
+- Home button: Visible
+- Next button: Enabled when TTS generation complete
+
 **Display Priority (Top to Bottom):**
 1. **Audio Preview** (first viewport) - Audio player and controls
 2. **Project Summary** - Name, selected voice
@@ -146,7 +182,8 @@ Generate and preview TTS audio for your selected voice with the full script.
 - Processing details:
   - Published to RabbitMQ for async processing
   - 3rd party TTS service generates audio
-  - Frontend polls for status updates
+  - Frontend uses SSE (Server-Sent Events) for real-time updates
+  - Fallback to polling if SSE unavailable
   - Audio player appears when generation completes
 
 **Technical Flow:**
@@ -155,12 +192,12 @@ Generate and preview TTS audio for your selected voice with the full script.
 3. TTS Service: Picks up job, generates audio, updates progress
 4. TTS Service: Publishes result to `tts_results` queue
 5. Backend Consumer: Updates database with audio_url and status
-6. Frontend: Polls `GET /api/v1/tts/{job_id}` every 2s
+6. Frontend: SSE connection receives real-time updates (fallback: 5s polling)
 7. Frontend: Displays audio player when complete
 
 **Completion:** TTS audio generated successfully (status = "completed")
 
-**Advances to:** Video composition
+**Advances to:** Compose (thumbnail customization)
 
 ---
 
@@ -178,29 +215,22 @@ Customize and finalize your project thumbnail. **Video generation happens in the
   - Preview thumbnail with text overlay in real-time
   - Finalize thumbnail (creates composite image with text and uploads to S3)
   - Re-customize thumbnail anytime if needed
+  - Regenerate base thumbnail with new AI generation
+
+**Navigation:**
+- Back button: Visible (returns to Preview)
+- Home button: Visible
+- Next button: Always enabled (advances to Finalize)
 
 **Display:**
-- If thumbnail **NOT confirmed**:
-  - Thumbnail preview card (clickable to open editor)
-  - Script tagline card
-  - Project summary
-  - Full script preview (expandable)
-  - **Next button**: Disabled until thumbnail confirmed
-  
-- If thumbnail **confirmed**:
-  - Success card showing:
-    - "Your thumbnail is ready for video generation"
-    - Final confirmed thumbnail image (small preview)
-    - Text overlay and base image info
-    - "Re-customize thumbnail" link
-  - Script tagline card
-  - Project summary
-  - Full script preview (expandable)
-  - **Next button**: Enabled - takes user to Finalize step
+- Thumbnail preview card (clickable icons for Regenerate and Edit actions)
+- Script tagline card (shows default text overlay)
+- Project summary (movie, voice, script stats)
+- Full script preview (expandable)
 
 **Thumbnail Workflow:**
 1. Page loads - shows AI-generated base image preview
-2. User clicks to open thumbnail editor modal
+2. User clicks Edit icon to open thumbnail editor modal
 3. User edits:
    - Text content (max 200 chars, defaults to script_summary)
    - Position (left or right half)
@@ -213,13 +243,19 @@ Customize and finalize your project thumbnail. **Video generation happens in the
    - Sets `final_thumbnail_url` and `thumbnail_confirmed = true`
 6. User clicks Next → advances to Finalize step
 
+**Regenerate Thumbnail:**
+- User can click Regenerate icon at any time
+- Creates new AI-generated base image
+- Resets customizations
+- Takes 10-30 seconds
+
 **Important:** 
 - This step is ONLY for thumbnail customization
 - No video generation happens here
 - No credit confirmation modals
-- Next button becomes clickable once thumbnail is confirmed
+- Next button is always enabled
 
-**Completion:** Thumbnail finalized (`thumbnail_confirmed = true`)
+**Completion:** Ready to proceed to Finalize
 
 **Advances to:** Finalize (where video generation happens)
 
@@ -229,6 +265,11 @@ Customize and finalize your project thumbnail. **Video generation happens in the
 **Route:** `/project/[projectId]/finalize`
 
 Generate video (if not yet generated), review completed videos, browse generation history, and manage your project.
+
+**Navigation:**
+- Back button: Visible (returns to Compose)
+- Home button: Visible
+- Next button: Hidden (final step)
 
 **Primary Actions:**
 
@@ -674,17 +715,48 @@ src/app/project/
     voice/page.tsx           # Step 3 - Voice selection + Agnes scheduling
     details/page.tsx         # Step 4 - Project naming + AI suggestions
     preview/page.tsx         # Step 5 - Audio preview
-    compose/page.tsx         # Step 6 - Thumbnail editor + video generation
-    finalize/page.tsx        # Step 7 - Shows final thumbnail as video poster
+    compose/page.tsx         # Step 6 - Thumbnail editor
+    finalize/page.tsx        # Step 7 - Video generation & management
 
 src/components/project/
+  floating-workflow-navigation.tsx  # Unified navigation component (all steps use this)
   ThumbnailEditor.tsx        # Step 6 thumbnail customization component
 
 src/lib/
   project-client.ts          # API client functions (includes thumbnail fields + scheduleAgnesJobs)
   hooks/
     use-project-state.ts     # Project state management hook (includes thumbnail fields)
+    use-sse.ts               # Server-Sent Events hook for real-time updates
 ```
+
+### Navigation Component
+
+All step pages use the unified `FloatingWorkflowNavigation` component with consistent behavior:
+
+```typescript
+<FloatingWorkflowNavigation
+  projectId={projectId}
+  currentStep="voice"          // Current step key
+  canGoNext={!!selectedVoiceId} // Enable/disable Next button
+  nextLabel="Continue to Details" // Optional custom label (defaults to "Continue to [Step]")
+  onNext={handleContinue}      // Optional custom handler (defaults to route navigation)
+  canGoBack={true}             // Enable/disable Back button (false for Step 1)
+  backLabel="Back"             // Optional custom label
+  onBack={handleBack}          // Optional custom handler (defaults to route navigation)
+  isProcessing={isAdvancing}   // Show loading state
+/>
+```
+
+**Button Behavior:**
+- **Back button:** Uses `leftIcon` prop with `ArrowLeft` icon - icon always visible
+- **Home button:** Uses `leftIcon` prop with `Home` icon - icon always visible
+- **Next button:** Uses `rightIcon` prop with `ArrowRight` icon - icon always visible
+
+**Mobile Responsiveness:**
+- Icons: 3.5w/3.5h on mobile, 4w/4h on sm+ screens
+- Button text: Hidden on mobile (shows "Back"/"Next" only), full labels on sm+ screens
+- Button sizes: sm on mobile, md on larger screens
+- Touch targets: `touch-manipulation` class for better mobile interaction
 
 ### State Management Hook
 
@@ -694,26 +766,77 @@ const {
   isLoading,          // Loading state
   error,              // Error state
   refetch,            // Refetch project data
-  advanceStep,        // Move to next step
+  advanceStep,        // Move to next step (deprecated - use direct API call)
 } = useProjectState(projectId);
+```
+
+### Navigation Patterns
+
+**Default Navigation (No Custom Handler):**
+```typescript
+<FloatingWorkflowNavigation
+  projectId={projectId}
+  currentStep="source"
+  canGoNext={!!state?.movieId}
+  canGoBack={false}  // Hidden on Step 1
+/>
+// Next button automatically navigates to /project/{id}/script
+// Back button hidden on Step 1
+```
+
+**Custom Navigation Handler:**
+```typescript
+const handleContinue = async () => {
+  // Perform async operations (save data, schedule jobs, etc.)
+  await updateProjectName(projectId, projectName);
+  await advanceProjectStep(projectId, "details");
+  
+  // Navigate manually
+  router.push(`/project/${projectId}/preview`);
+};
+
+<FloatingWorkflowNavigation
+  projectId={projectId}
+  currentStep="details"
+  canGoNext={!!projectName.trim()}
+  onNext={handleContinue}
+  canGoBack={true}
+  isProcessing={savingName}
+/>
 ```
 
 ### Step Advancement
 
-Each step page calls `advanceStep()` when the user completes the step's requirements:
+Each step page calls `advanceProjectStep()` when the user completes the step's requirements:
 
 ```typescript
-// Example from compose page - only advance after thumbnail is confirmed
-const handleStartVideoGeneration = async () => {
-  if (!project.thumbnail_confirmed) {
-    toast.error("Please finalize your thumbnail first");
-    return;
+// Example from voice page - schedule TTS job and advance
+const handleContinue = async () => {
+  if (!selectedVoiceId || !activeScript?.id) return;
+
+  setIsAdvancing(true);
+  try {
+    // Schedule TTS job with selected voice
+    await createTTSJob({
+      projectId,
+      scriptId: activeScript.id,
+      voiceId: String(selectedVoiceId),
+      voiceName: voice?.name,
+      autoActivate: true,
+    });
+
+    // Advance to details step
+    await advanceProjectStep(projectId, "voice");
+
+    // Navigate to details page
+    router.push(`/project/${projectId}/details`);
+    toastSuccess("Voice selected", "Proceeding to project details");
+  } catch (error) {
+    console.error("Failed to schedule TTS job:", error);
+    toastError("Failed to schedule audio generation", "Please try again");
+  } finally {
+    setIsAdvancing(false);
   }
-  
-  await createVideoJob(projectId, ttsJobId);
-  // Wait for video completion...
-  await advanceProjectStep(projectId, "finalize");
-  router.push(`/project/${projectId}/finalize`);
 };
 ```
 
@@ -725,23 +848,27 @@ This updates the `last_step` field in the database.
 
 ### Step Access Control
 
-| Step | Always Accessible | Requires Previous Steps |
-|------|-------------------|-------------------------|
-| Source | ✅ Yes | None |
-| Script | ❌ No | Source completed |
-| Voice | ❌ No | Script completed |
-| Details | ❌ No | Voice completed |
-| Preview | ❌ No | Details completed |
-| Compose | ❌ No | Preview completed |
-| Finalize | ❌ No | Compose completed |
+| Step | Always Accessible | Requires Previous Steps | Back Button | Next Button |
+|------|-------------------|-------------------------|-------------|-------------|
+| Source | ✅ Yes | None | ❌ Hidden | ✅ Visible when movie selected |
+| Script | ❌ No | Source completed | ✅ Visible | ✅ Visible when script exists |
+| Voice | ❌ No | Script completed | ✅ Visible | ✅ Visible when voice selected |
+| Details | ❌ No | Voice completed | ✅ Visible | ✅ Visible when name entered |
+| Preview | ❌ No | Details completed | ✅ Visible | ✅ Visible when TTS complete |
+| Compose | ❌ No | Preview completed | ✅ Visible | ✅ Always visible |
+| Finalize | ❌ No | Compose completed | ✅ Visible | ❌ Hidden (final step) |
 
-### Navigation Component
+### Navigation Component Usage
 
 The workflow navigation component (`FloatingWorkflowNavigation`) enforces these rules:
-- Completed steps are clickable
-- Current step is highlighted
-- Future steps are disabled
-- Can always go back to any completed step
+- Completed steps are clickable in the step indicator
+- Current step is highlighted with ring effect
+- Future steps are shown but not clickable
+- Back button hidden only on Step 1 (Source)
+- Next button visibility controlled by `canGoNext` prop
+- Home button always visible (returns to projects list)
+- Auto-hides on scroll down, shows on scroll up for better content viewing
+- Responsive sizing and touch targets for mobile devices
 
 ---
 
@@ -770,6 +897,13 @@ The workflow navigation component (`FloatingWorkflowNavigation`) enforces these 
 - [ ] Navigate away and return - should resume at last_step
 - [ ] Try to access future steps - should redirect back
 - [ ] Go back to previous steps - should work
+- [ ] Verify Back button hidden on Step 1
+- [ ] Verify Back button visible on Steps 2-7
+- [ ] Verify Home button always visible and functional
+- [ ] Verify Next button shows correct labels for each step
+- [ ] Test navigation on mobile, tablet, and desktop
+- [ ] Verify icons display correctly on mobile (ArrowLeft, Home, ArrowRight)
+- [ ] Test touch targets on mobile devices
 
 ### Voice Selection (Step 3)
 - [ ] Browse stock voices
@@ -803,28 +937,39 @@ The workflow navigation component (`FloatingWorkflowNavigation`) enforces these 
 - [ ] Page checks thumbnail status on load
 - [ ] Shows loading state if thumbnail generating
 - [ ] Schedules thumbnail if not ready (fallback)
-- [ ] Polls for thumbnail status every 5 seconds
+- [ ] Polls for thumbnail status every 8 seconds (reduced from 5s)
 - [ ] AI-generated thumbnail displays when ready
-- [ ] Re-generate thumbnail button works
-- [ ] Upload custom thumbnail works
+- [ ] Regenerate thumbnail button works (opens confirmation modal)
+- [ ] Edit thumbnail button works (opens editor modal)
 - [ ] Text overlay input shows script tagline by default
 - [ ] Can edit overlay text
 - [ ] Preview shows thumbnail + text overlay in real-time
 - [ ] Finalize thumbnail button creates composite image
-- [ ] Video generation button disabled until thumbnail confirmed
-- [ ] Receives TTS job ID from Step 5
-- [ ] Can start video generation with confirmed thumbnail
-- [ ] Video progress tracks correctly
-- [ ] Next button enabled when video complete
+- [ ] Composition status polling works (5s interval, fallback for SSE)
+- [ ] Next button always enabled (no longer dependent on thumbnail confirmation)
+- [ ] Successfully advances to Finalize step
 
 ### Finalize Step (Step 7)
-- [ ] Displays finalized thumbnail (with text overlay)
-- [ ] Thumbnail is read-only (no edit buttons)
-- [ ] Shows final video player
-- [ ] Video uses finalized thumbnail as poster
+- [ ] Displays proper UI based on video generation state (A/B/C)
+- [ ] Generate Video button shows credit confirmation modal
+- [ ] Credit confirmation modal shows correct balance calculations
+- [ ] Video generation starts after modal confirmation
+- [ ] Video progress component shows 4 steps with individual progress
+- [ ] Progress updates every 3 seconds (reduced from 2s)
+- [ ] Can leave and return - progress persists
+- [ ] Video player displays when generation complete
+- [ ] Video uses finalized thumbnail as poster image
 - [ ] Download button works
-- [ ] Publish button works
-- [ ] Can return to projects list
+- [ ] Video History section displays all attempts
+- [ ] Regenerate button in header shows credit confirmation
+- [ ] Video metadata collapsible sections work
+- [ ] Delete video button works
+- [ ] Project Summary collapsible section works
+- [ ] Back button returns to Compose step
+- [ ] Home button returns to projects list
+- [ ] Next button hidden (final step)
+
+---
 
 ### Database Persistence
 - [ ] last_step value saves correctly after each step
@@ -842,7 +987,11 @@ The workflow navigation component (`FloatingWorkflowNavigation`) enforces these 
 | Can't advance past step | Missing required field | Check completion conditions |
 | Lost progress after reload | last_step not being saved | Each step calls advanceStep() on completion |
 | TTS fails on Step 5 | Missing script or voice | Verify both are selected |
-| Video won't generate | No TTS audio | Ensure Step 5 completed successfully |
+| Video won't generate | Missing TTS audio or thumbnail | Ensure Steps 5 & 6 completed successfully |
+| Back button icon not showing on mobile | Using `icon` prop instead of `leftIcon` | Use `leftIcon` prop for left-aligned icons |
+| Next button icon not showing on mobile | Using `icon` prop instead of `rightIcon` | Use `rightIcon` prop for right-aligned icons |
+| Navigation buttons too small on mobile | Missing responsive sizing | Use sm size on mobile, md on larger screens |
+| Polling too frequent causing performance issues | Polling every 2 seconds | Reduce to 5-8 seconds, use SSE for real-time updates |
 
 ---
 
@@ -951,4 +1100,4 @@ AI jobs (project name suggestions and thumbnail generation) are handled automati
 
 ---
 
-**Version:** 3.0 (7-step workflow with Finalize step) | **Updated:** July 1, 2026
+**Version:** 4.0 (Updated navigation patterns, SSE integration, mobile improvements) | **Updated:** July 22, 2026
