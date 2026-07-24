@@ -12,7 +12,12 @@ import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
 import { FileText, ChevronDown, Sparkles, Check, Loader2, RotateCw, Edit } from "lucide-react";
-import { advanceProjectStep, scheduleAgnesJobs, regenerateThumbnail, retryThumbnailGeneration } from "@/lib/project-client";
+import {
+  advanceProjectStep,
+  scheduleAgnesJobs,
+  regenerateThumbnail,
+  retryThumbnailGeneration,
+} from "@/lib/project-client";
 import { useToast } from "@/components/ui/toast";
 
 export default function ComposePage() {
