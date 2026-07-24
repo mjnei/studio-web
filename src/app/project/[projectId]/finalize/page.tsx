@@ -31,7 +31,6 @@ import {
 } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
 import { MediaImage } from "@/components/ui/MediaImage";
-import { getThumbnailUrl } from "@/lib/image-utils";
 import {
   getProjectVideos,
   regenerateVideo,
@@ -77,14 +76,17 @@ export default function FinalizePage() {
 
   // ── Video data loaders ─────────────────────────────────────────────────────
   const loadVideos = React.useCallback(async () => {
+    console.log("🎬 [Finalize] loadVideos called");
     setIsLoadingVideos(true);
     try {
       const response = await getProjectVideos(projectId);
+      console.log("🎬 [Finalize] Loaded videos:", response.videos.length, "videos", response.videos.map(v => ({ id: v.id, status: v.status })));
       setVideos(response.videos);
 
       if (!selectedVideoId && response.videos.length > 0) {
         const firstCompleted = response.videos.find((v) => v.status === "completed");
         if (firstCompleted) {
+          console.log("🎬 [Finalize] Setting first completed video as selected:", firstCompleted.id);
           setSelectedVideoId(firstCompleted.id);
         }
       }
@@ -125,8 +127,17 @@ export default function FinalizePage() {
         const wasProcessing =
           processingVideoJob?.status === "processing" || processingVideoJob?.status === "queued";
         const nowCompleted = job.status === "completed";
+        const nowFailed = job.status === "failed";
 
-        setProcessingVideoJob(job);
+        // Clear processingVideoJob if completed or failed, otherwise update it
+        if (nowCompleted || nowFailed) {
+          setProcessingVideoJob(null);
+          
+          // Refresh videos list to show the completed/failed video
+          await loadVideos();
+        } else {
+          setProcessingVideoJob(job);
+        }
 
         if (wasProcessing && nowCompleted) {
           toast.success(
@@ -135,7 +146,7 @@ export default function FinalizePage() {
           );
         }
 
-        if (job.status === "failed" && wasProcessing) {
+        if (nowFailed && wasProcessing) {
           toast.error(
             "Video generation failed",
             job.error_message || "An error occurred during generation"
@@ -145,7 +156,7 @@ export default function FinalizePage() {
         console.error("Failed to load video job with steps:", error);
       }
     },
-    [processingVideoJob, toast]
+    [processingVideoJob, toast, loadVideos]
   );
 
   React.useEffect(() => {
@@ -161,12 +172,15 @@ export default function FinalizePage() {
   const { notifications } = useNotifications();
   React.useEffect(() => {
     const latestNotification = notifications[0];
+    console.log("🔔 [Finalize] Notifications changed, latest:", latestNotification);
     if (
       latestNotification &&
       latestNotification.notification_type === "video_job_completed" &&
       latestNotification.project_id?.toString() === projectId
     ) {
       console.log("📹 Video completed notification received, refreshing videos...");
+      // Clear processing video job state
+      setProcessingVideoJob(null);
       // eslint-disable-next-line react-hooks/set-state-in-effect
       void loadVideos();
       // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -174,13 +188,14 @@ export default function FinalizePage() {
     }
   }, [notifications, projectId, loadVideos, loadCreditStatus]);
 
-  // Poll for video status when SSE unavailable (fallback)
+  // Poll for video status when SSE unavailable (fallback) or when videos need refresh
   React.useEffect(() => {
     const hasProcessingVideo = videos?.some(
       (v) => v.status === "processing" || v.status === "queued"
     );
 
-    if (isSSEConnected || !hasProcessingVideo) {
+    // Clear processingVideoJob if no processing videos
+    if (!hasProcessingVideo) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setProcessingVideoJob(null);
       return;
@@ -192,13 +207,17 @@ export default function FinalizePage() {
       void loadVideoJobWithSteps(processingVideo.id);
     }
 
+    // Poll interval - use longer interval when SSE connected (as backup)
+    // Use shorter interval when SSE disconnected (primary method)
+    const pollDelay = isSSEConnected ? 30000 : 10000; // 30s with SSE, 10s without
+
     const pollInterval = setInterval(() => {
       if (processingVideo) {
         void loadVideoJobWithSteps(processingVideo.id);
       }
       void loadVideos();
       void loadCreditStatus();
-    }, 10000);
+    }, pollDelay);
 
     return () => clearInterval(pollInterval);
   }, [videos, projectId, loadVideoJobWithSteps, loadVideos, loadCreditStatus, isSSEConnected]);
