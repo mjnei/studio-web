@@ -325,7 +325,8 @@ export function VoiceGeneration({
             ) : (
               <Button
                 variant="primary"
-                size="lg" leftIcon={<Volume2 className="w-5 h-5" />}
+                size="lg"
+                leftIcon={<Volume2 className="w-5 h-5" />}
                 onClick={handleGenerate}
                 disabled={!selectedVoiceId}
               >
@@ -373,7 +374,8 @@ export function VoiceGeneration({
                 </div>
                 <Button
                   variant="secondary"
-                  size="md" leftIcon={<Download className="w-5 h-5" />}
+                  size="md"
+                  leftIcon={<Download className="w-5 h-5" />}
                   onClick={downloadAudio}
                 >
                   <span className="hidden sm:inline">Download</span>

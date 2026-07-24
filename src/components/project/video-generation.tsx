@@ -135,7 +135,8 @@ export function VideoGeneration({
             </p>
             <Button
               variant="primary"
-              size="lg" leftIcon={<Video className="w-5 h-5" />}
+              size="lg"
+              leftIcon={<Video className="w-5 h-5" />}
               onClick={onStartGeneration}
             >
               Start Video Generation
@@ -244,11 +245,7 @@ export function VideoGeneration({
                     </div>
                   )}
                   <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button
-                      variant="primary"
-                      size="lg"
-                      leftIcon={<Play className="w-8 h-8" />}
-                    />
+                    <Button variant="primary" size="lg" leftIcon={<Play className="w-8 h-8" />} />
                   </div>
                 </div>
               </div>
@@ -257,7 +254,8 @@ export function VideoGeneration({
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Button
                   variant="primary"
-                  size="lg" leftIcon={<Download className="w-5 h-5" />}
+                  size="lg"
+                  leftIcon={<Download className="w-5 h-5" />}
                   onClick={downloadVideo}
                 >
                   Download Video

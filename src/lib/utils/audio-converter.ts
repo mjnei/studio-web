@@ -15,7 +15,7 @@ export async function convertWebmToAudio(blob: Blob, voiceName: string): Promise
   try {
     // Try to use FFmpeg if available (via FFmpeg.wasm or similar)
     if (typeof window !== "undefined" && "FFmpeg" in window) {
-      return await convertWebmUsingFFmpeg(blob, voiceName);
+      return await convertWebmUsingFFmpeg(voiceName);
     }
 
     // Fallback: Try to decode and re-encode using Web Audio API
@@ -33,7 +33,9 @@ export async function convertWebmToAudio(blob: Blob, voiceName: string): Promise
  */
 async function convertWebmUsingWebAudio(blob: Blob, voiceName: string): Promise<Blob> {
   // Decode the audio data
-  const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+  const audioContext = new (window.AudioContext ||
+    (window as Window & typeof globalThis & { webkitAudioContext: AudioContext })
+      .webkitAudioContext)();
   const arrayBuffer = await blob.arrayBuffer();
   const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
 
@@ -133,8 +135,8 @@ function audioBufferToWav(audioBuffer: AudioBuffer): Blob {
  * Attempt to use FFmpeg.wasm if available
  * This is a fallback for more advanced conversions
  */
-async function convertWebmUsingFFmpeg(blob: Blob, voiceName: string): Promise<Blob> {
+async function convertWebmUsingFFmpeg(voiceName: string): Promise<Blob> {
   // This would require FFmpeg.wasm to be loaded separately
   // For now, we'll use the Web Audio API approach
-  throw new Error("FFmpeg conversion not configured");
+  throw new Error(`FFmpeg conversion not configured for ${voiceName}`);
 }
