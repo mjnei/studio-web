@@ -2,18 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import {
-  Star,
-  Search,
-  Loader,
-  Grid3x3,
-  LayoutGrid,
-  List,
-  Calendar,
-  Clock,
-  User,
-  Film,
-} from "lucide-react";
+import { Star, Search, Loader, Calendar, Clock, Film } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/ui/PageHeader";
 import {
@@ -27,13 +16,23 @@ import {
   type MovieDetailsResponse,
   type CastResponse,
 } from "@/lib/api/admin";
+import { LayoutToggle, type LayoutMode } from "@/components/ui/LayoutToggle";
 
-type LayoutMode = "grid-sm" | "grid-md" | "list";
-
-interface EnrichedMovie extends MovieResponse {
+interface EnrichedMovie {
+  id: number;
+  title: string;
+  original_title?: string | null;
+  overview?: string | null;
+  poster_path?: string | null;
+  backdrop_path?: string | null;
+  release_date?: string | null;
+  runtime?: number | null;
+  vote_average?: number | null;
+  imdb_id?: string | null;
+  douban_id?: string | null;
+  genres?: Array<{ id?: number; name?: string } | Record<string, unknown>> | string[] | null;
   directors?: string[];
   topCast?: string[];
-  genres?: string[] | Array<{ id?: number; name?: string } | Record<string, unknown>> | null;
 }
 
 export default function MoviesPage() {
@@ -127,44 +126,6 @@ export default function MoviesPage() {
     }
   };
 
-  const LayoutToggle = () => (
-    <div className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-panel p-1">
-      <button
-        onClick={() => setLayoutMode("grid-sm")}
-        className={`rounded p-1.5 transition-all ${
-          layoutMode === "grid-sm"
-            ? "bg-accent-primary text-white"
-            : "text-text-muted hover:text-text-primary"
-        }`}
-        title="Small grid (up to 6 columns)"
-      >
-        <Grid3x3 className="h-4 w-4" />
-      </button>
-      <button
-        onClick={() => setLayoutMode("grid-md")}
-        className={`rounded p-1.5 transition-all ${
-          layoutMode === "grid-md"
-            ? "bg-accent-primary text-white"
-            : "text-text-muted hover:text-text-primary"
-        }`}
-        title="Medium grid (4-5 columns)"
-      >
-        <LayoutGrid className="h-4 w-4" />
-      </button>
-      <button
-        onClick={() => setLayoutMode("list")}
-        className={`rounded p-1.5 transition-all ${
-          layoutMode === "list"
-            ? "bg-accent-primary text-white"
-            : "text-text-muted hover:text-text-primary"
-        }`}
-        title="List view"
-      >
-        <List className="h-4 w-4" />
-      </button>
-    </div>
-  );
-
   return (
     <div className="max-w-7xl mx-auto">
       <PageHeader
@@ -195,7 +156,11 @@ export default function MoviesPage() {
             icon={<Search className="h-4 w-4" />}
           />
         </div>
-        <LayoutToggle />
+        <LayoutToggle
+          layoutMode={layoutMode === "grid-lg" ? "grid-md" : layoutMode}
+          onLayoutChange={(mode) => setLayoutMode(mode as LayoutMode)}
+          variant="compact"
+        />
       </div>
 
       {/* Content */}
@@ -285,14 +250,19 @@ export default function MoviesPage() {
                   {/* Genres */}
                   {movie.genres && movie.genres.length > 0 && (
                     <div className="mb-2 flex flex-wrap gap-1.5">
-                      {movie.genres.map((genre) => (
-                        <span
-                          key={genre}
-                          className="rounded-md bg-accent-cyan/10 px-2 py-0.5 text-xs font-medium text-accent-cyan"
-                        >
-                          {genre}
-                        </span>
-                      ))}
+                      {movie.genres.map((genre, idx) => {
+                        const genreName =
+                          typeof genre === "string" ? genre : (genre as any)?.name || "";
+                        if (!genreName) return null;
+                        return (
+                          <span
+                            key={typeof genre === "string" ? genre : idx}
+                            className="rounded-md bg-accent-cyan/10 px-2 py-0.5 text-xs font-medium text-accent-cyan"
+                          >
+                            {genreName}
+                          </span>
+                        );
+                      })}
                     </div>
                   )}
 
@@ -365,14 +335,19 @@ export default function MoviesPage() {
                   {/* Genres */}
                   {movie.genres && movie.genres.length > 0 && (
                     <div className="flex flex-wrap gap-1">
-                      {movie.genres.slice(0, 2).map((genre) => (
-                        <span
-                          key={genre}
-                          className="rounded bg-white/20 px-2 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm"
-                        >
-                          {genre}
-                        </span>
-                      ))}
+                      {movie.genres.slice(0, 2).map((genre, idx) => {
+                        const genreName =
+                          typeof genre === "string" ? genre : (genre as any)?.name || "";
+                        if (!genreName) return null;
+                        return (
+                          <span
+                            key={typeof genre === "string" ? genre : idx}
+                            className="rounded bg-white/20 px-2 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm"
+                          >
+                            {genreName}
+                          </span>
+                        );
+                      })}
                     </div>
                   )}
 

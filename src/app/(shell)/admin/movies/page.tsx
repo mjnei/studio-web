@@ -17,10 +17,6 @@ import {
   ChevronRight,
   Save,
   X,
-  Grid3x3,
-  Grid2x2,
-  LayoutGrid,
-  List,
   ChevronDown,
   ChevronUp,
   Eye,
@@ -36,6 +32,7 @@ import {
   type TMDBMovieSearchResult,
   type AdminMovieResponse,
 } from "@/lib/api/admin";
+import { LayoutToggle, type LayoutMode } from "@/components/ui/LayoutToggle";
 
 type Toast = {
   id: number;
@@ -44,8 +41,6 @@ type Toast = {
 };
 
 type ViewMode = "library" | "import";
-
-type LayoutMode = "grid-sm" | "grid-md" | "grid-lg" | "list";
 
 type EditingMovie = {
   id: number;
@@ -291,56 +286,6 @@ export default function AdminMoviesPage() {
     return `https://image.tmdb.org/t/p/${size}${path}`;
   };
 
-  // Layout toggle component (reused in both library and TMDB sections)
-  const LayoutToggle = () => (
-    <div className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-panel p-1">
-      <button
-        onClick={() => setLayoutMode("grid-sm")}
-        className={`rounded p-1.5 transition-all ${
-          layoutMode === "grid-sm"
-            ? "bg-accent-primary text-white"
-            : "text-text-muted hover:text-text-primary"
-        }`}
-        title="Small grid (up to 6 columns)"
-      >
-        <Grid3x3 className="h-4 w-4" />
-      </button>
-      <button
-        onClick={() => setLayoutMode("grid-md")}
-        className={`rounded p-1.5 transition-all ${
-          layoutMode === "grid-md"
-            ? "bg-accent-primary text-white"
-            : "text-text-muted hover:text-text-primary"
-        }`}
-        title="Medium grid (4 columns)"
-      >
-        <LayoutGrid className="h-4 w-4" />
-      </button>
-      <button
-        onClick={() => setLayoutMode("grid-lg")}
-        className={`rounded p-1.5 transition-all ${
-          layoutMode === "grid-lg"
-            ? "bg-accent-primary text-white"
-            : "text-text-muted hover:text-text-primary"
-        }`}
-        title="Large grid (3 columns)"
-      >
-        <Grid2x2 className="h-4 w-4" />
-      </button>
-      <button
-        onClick={() => setLayoutMode("list")}
-        className={`rounded p-1.5 transition-all ${
-          layoutMode === "list"
-            ? "bg-accent-primary text-white"
-            : "text-text-muted hover:text-text-primary"
-        }`}
-        title="List view"
-      >
-        <List className="h-4 w-4" />
-      </button>
-    </div>
-  );
-
   const getGridClass = () => {
     switch (layoutMode) {
       case "grid-sm":
@@ -442,7 +387,7 @@ export default function AdminMoviesPage() {
             </div>
             <div className="flex items-center gap-2">
               {/* Layout Mode Toggle */}
-              <LayoutToggle />
+              <LayoutToggle layoutMode={layoutMode} onLayoutChange={setLayoutMode} variant="full" />
               <span className="text-sm text-text-muted">Locale:</span>
               <select
                 value={selectedLocale}
@@ -922,13 +867,12 @@ export default function AdminMoviesPage() {
           {/* Search Results */}
           {tmdbSearchResults.length > 0 && (
             <>
-              {/* Results Info and Layout Toggle */}
               <div className="mb-4 flex items-center justify-between">
                 <p className="text-sm text-text-secondary">
                   Found {tmdbTotalResults.toLocaleString()} results • Page {tmdbPage} of{" "}
                   {tmdbTotalPages}
                 </p>
-                <LayoutToggle />
+                <LayoutToggle layoutMode={layoutMode} onLayoutChange={setLayoutMode} variant="full" />
               </div>
 
               {/* Results Grid */}
