@@ -34,7 +34,6 @@ import { useToast } from "@/components/ui/toast";
 import { Pagination } from "@/components/ui/Pagination";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { MovieCard } from "@/components/movie";
 
 type ViewMode = "library" | "import";
 

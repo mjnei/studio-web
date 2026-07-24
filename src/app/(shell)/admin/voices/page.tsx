@@ -4,7 +4,6 @@ import { useState, useEffect, useRef } from "react";
 import {
   Mic,
   CheckCircle2,
-  AlertCircle,
   Search,
   User,
   Play,
@@ -128,10 +127,7 @@ export default function AdminVoicesPage() {
     if (!approveModal.voice) return;
     try {
       await adminApproveVoice(approveModal.voice.id);
-      toast.success(
-        "Voice approved",
-        `Approved "${approveModal.voice.name}" for public catalog`
-      );
+      toast.success("Voice approved", `Approved "${approveModal.voice.name}" for public catalog`);
       await loadVoices();
       setApproveModal({ open: false, voice: null });
     } catch (error: any) {
