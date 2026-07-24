@@ -52,7 +52,7 @@ export default function FinalizePage() {
   const projectId = params.projectId as string;
   const { state, isLoading, refresh } = useProjectState(projectId);
   const toast = useToast();
-  const { isSSEConnected } = useNotifications();
+  const { isSSEConnected, refreshNotifications } = useNotifications();
 
   // ── Video state ────────────────────────────────────────────────────────────
   const [showFullScriptModal, setShowFullScriptModal] = useState(false);
@@ -135,6 +135,9 @@ export default function FinalizePage() {
           
           // Refresh videos list to show the completed/failed video
           await loadVideos();
+          
+          // Refresh notifications to ensure they're up to date
+          await refreshNotifications();
         } else {
           setProcessingVideoJob(job);
         }
@@ -156,7 +159,7 @@ export default function FinalizePage() {
         console.error("Failed to load video job with steps:", error);
       }
     },
-    [processingVideoJob, toast, loadVideos]
+    [processingVideoJob, toast, loadVideos, refreshNotifications]
   );
 
   React.useEffect(() => {
