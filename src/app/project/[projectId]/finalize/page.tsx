@@ -80,13 +80,21 @@ export default function FinalizePage() {
     setIsLoadingVideos(true);
     try {
       const response = await getProjectVideos(projectId);
-      console.log("🎬 [Finalize] Loaded videos:", response.videos.length, "videos", response.videos.map(v => ({ id: v.id, status: v.status })));
+      console.log(
+        "🎬 [Finalize] Loaded videos:",
+        response.videos.length,
+        "videos",
+        response.videos.map((v) => ({ id: v.id, status: v.status }))
+      );
       setVideos(response.videos);
 
       if (!selectedVideoId && response.videos.length > 0) {
         const firstCompleted = response.videos.find((v) => v.status === "completed");
         if (firstCompleted) {
-          console.log("🎬 [Finalize] Setting first completed video as selected:", firstCompleted.id);
+          console.log(
+            "🎬 [Finalize] Setting first completed video as selected:",
+            firstCompleted.id
+          );
           setSelectedVideoId(firstCompleted.id);
         }
       }
@@ -132,10 +140,10 @@ export default function FinalizePage() {
         // Clear processingVideoJob if completed or failed, otherwise update it
         if (nowCompleted || nowFailed) {
           setProcessingVideoJob(null);
-          
+
           // Refresh videos list to show the completed/failed video
           await loadVideos();
-          
+
           // Refresh notifications to ensure they're up to date
           await refreshNotifications();
         } else {
