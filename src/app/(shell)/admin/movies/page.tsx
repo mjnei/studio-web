@@ -780,9 +780,7 @@ export default function AdminMoviesPage() {
           </div>
 
           {/* Search Results Loading */}
-          {isSearchingTmdb && (
-            <LoadingSpinner size="lg" message="Searching TMDB..." fullHeight />
-          )}
+          {isSearchingTmdb && <LoadingSpinner size="lg" message="Searching TMDB..." fullHeight />}
 
           {/* Search Results */}
           {!isSearchingTmdb && tmdbSearchResults.length > 0 && (

@@ -6,7 +6,6 @@ import {
   CheckCircle2,
   AlertCircle,
   Search,
-  Loader,
   User,
   Play,
   Pause,
@@ -16,6 +15,9 @@ import {
   XCircle,
 } from "lucide-react";
 import { ConfirmModal } from "@/components/ui/modal";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { useToast } from "@/components/ui/toast";
 import {
   adminGetPendingVoices,
   adminGetApprovedVoices,
@@ -26,22 +28,16 @@ import {
 } from "@/lib/api/admin";
 import type { VoiceWithCreator } from "@/lib/types/api";
 
-type Toast = {
-  id: number;
-  type: "success" | "error";
-  message: string;
-};
-
 type ViewType = "pending" | "approved" | "all";
 
 export default function AdminVoicesPage() {
+  const toast = useToast();
   const [pendingVoices, setPendingVoices] = useState<VoiceWithCreator[]>([]);
   const [approvedVoices, setApprovedVoices] = useState<VoiceWithCreator[]>([]);
   const [allRecordings, setAllRecordings] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [viewType, setViewType] = useState<ViewType>("pending");
-  const [toasts, setToasts] = useState<Toast[]>([]);
   const [playingVoiceId, setPlayingVoiceId] = useState<number | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -71,18 +67,10 @@ export default function AdminVoicesPage() {
       setApprovedVoices(approved);
       setAllRecordings(recordings);
     } catch (error: any) {
-      showToast("error", error.message || "Failed to load voices");
+      toast.error("Failed to load voices", error.message || "An error occurred");
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const showToast = (type: "success" | "error", message: string) => {
-    const id = Date.now();
-    setToasts((prev) => [...prev, { id, type, message }]);
-    setTimeout(() => {
-      setToasts((prev) => prev.filter((t) => t.id !== id));
-    }, 5000);
   };
 
   const playVoiceAudio = async (voiceId: number) => {
@@ -100,7 +88,7 @@ export default function AdminVoicesPage() {
       audioRef.current = audio;
 
       audio.onerror = () => {
-        showToast("error", "Failed to play audio");
+        toast.error("Audio playback failed", "Failed to play audio");
         setPlayingVoiceId(null);
       };
 
@@ -111,7 +99,7 @@ export default function AdminVoicesPage() {
       await audio.play();
     } catch (error) {
       console.error("Audio playback error:", error);
-      showToast("error", "Failed to play voice");
+      toast.error("Audio playback failed", "Failed to play voice");
       setPlayingVoiceId(null);
     }
   };
@@ -140,11 +128,14 @@ export default function AdminVoicesPage() {
     if (!approveModal.voice) return;
     try {
       await adminApproveVoice(approveModal.voice.id);
-      showToast("success", `Approved "${approveModal.voice.name}" for public catalog`);
+      toast.success(
+        "Voice approved",
+        `Approved "${approveModal.voice.name}" for public catalog`
+      );
       await loadVoices();
       setApproveModal({ open: false, voice: null });
     } catch (error: any) {
-      showToast("error", error.message || "Failed to approve voice");
+      toast.error("Failed to approve voice", error.message || "An error occurred");
     }
   };
 
@@ -156,11 +147,11 @@ export default function AdminVoicesPage() {
     if (!unapproveModal.voice) return;
     try {
       await adminUnapproveVoice(unapproveModal.voice.id);
-      showToast("success", `Revoked approval for "${unapproveModal.voice.name}"`);
+      toast.success("Approval revoked", `Revoked approval for "${unapproveModal.voice.name}"`);
       await loadVoices();
       setUnapproveModal({ open: false, voice: null });
     } catch (error: any) {
-      showToast("error", error.message || "Failed to unapprove voice");
+      toast.error("Failed to unapprove voice", error.message || "An error occurred");
     }
   };
 
@@ -212,27 +203,6 @@ export default function AdminVoicesPage() {
 
   return (
     <div className="mx-auto max-w-7xl">
-      {/* Toasts */}
-      <div className="fixed bottom-4 right-4 z-50 space-y-2">
-        {toasts.map((toast) => (
-          <div
-            key={toast.id}
-            className={`flex items-center gap-3 rounded-lg border px-4 py-3 shadow-lg ${
-              toast.type === "success"
-                ? "border-green-500/50 bg-green-500/10 text-green-600"
-                : "border-red-500/50 bg-red-500/10 text-red-600"
-            }`}
-          >
-            {toast.type === "success" ? (
-              <CheckCircle2 className="h-5 w-5" />
-            ) : (
-              <AlertCircle className="h-5 w-5" />
-            )}
-            <span className="text-sm font-medium">{toast.message}</span>
-          </div>
-        ))}
-      </div>
-
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-6">
@@ -382,34 +352,26 @@ export default function AdminVoicesPage() {
 
       {/* Voices List */}
       {isLoading ? (
-        <div className="flex h-64 items-center justify-center">
-          <div className="flex flex-col items-center gap-2">
-            <Loader className="h-8 w-8 animate-spin text-accent-primary" />
-            <p className="text-sm text-text-muted">Loading voices...</p>
-          </div>
-        </div>
+        <LoadingSpinner size="lg" message="Loading voices..." fullHeight />
       ) : filteredVoices.length === 0 ? (
-        <div className="flex h-64 items-center justify-center rounded-2xl border border-dashed border-border-default">
-          <div className="text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent-primary/10">
-              {viewType === "pending" ? (
-                <Clock className="h-8 w-8 text-accent-primary" />
-              ) : (
-                <CheckCircle2 className="h-8 w-8 text-green-600" />
-              )}
-            </div>
-            <h3 className="mb-2 text-lg font-semibold text-text-primary">
-              {searchTerm ? "No voices found" : `No ${viewType} voices`}
-            </h3>
-            <p className="text-sm text-text-muted">
-              {searchTerm
-                ? "Try adjusting your search criteria"
-                : viewType === "pending"
-                  ? "User-shared voices will appear here for your approval"
-                  : "Approved voices will appear here"}
-            </p>
-          </div>
-        </div>
+        <EmptyState
+          variant="bordered"
+          icon={
+            viewType === "pending" ? (
+              <Clock className="h-12 w-12" />
+            ) : (
+              <CheckCircle2 className="h-12 w-12" />
+            )
+          }
+          title={searchTerm ? "No voices found" : `No ${viewType} voices`}
+          description={
+            searchTerm
+              ? "Try adjusting your search criteria"
+              : viewType === "pending"
+                ? "User-shared voices will appear here for your approval"
+                : "Approved voices will appear here"
+          }
+        />
       ) : (
         <div className="space-y-2 rounded-2xl border border-border-default bg-surface-panel overflow-hidden">
           {/* Table Header */}

@@ -8,6 +8,8 @@ import { VoiceLimitDialog } from "@/components/voices/voice-limit-dialog";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { useVoices } from "@/lib/hooks/use-voices";
 import { useVoiceLimits } from "@/lib/hooks/use-voice-limits";
 import { getAvailableVoices } from "@/lib/api/voice-client";
@@ -224,35 +226,26 @@ export default function VoicesPage() {
 
           {/* Loading State */}
           {loading ? (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="h-48 animate-pulse rounded-xl bg-surface-panel border border-border-default"
-                />
-              ))}
-            </div>
+            <LoadingSpinner size="lg" message="Loading your voices..." fullHeight />
           ) : voices.length === 0 ? (
             /* Empty State */
-            <Card variant="default" padding="lg" className="text-center border-dashed">
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent-primary/10">
-                <Mic className="h-8 w-8 text-accent-primary" />
-              </div>
-              <h3 className="mb-2 text-lg font-semibold text-text-primary">No voices yet</h3>
-              <p className="mb-6 text-sm text-text-muted max-w-md mx-auto">
-                Start by recording a voice sample from your microphone. Your voice will be cloned
-                and ready to use in your projects.
-              </p>
-              <Button
-                variant="primary"
-                size="md"
-                onClick={handleAddVoiceClick}
-                className="shadow-lg shadow-accent-primary/20"
-              >
-                <Plus size={18} className="mr-2" />
-                Record Your First Voice
-              </Button>
-            </Card>
+            <EmptyState
+              variant="bordered"
+              icon={<Mic className="h-12 w-12" />}
+              title="No voices yet"
+              description="Start by recording a voice sample from your microphone. Your voice will be cloned and ready to use in your projects."
+              action={
+                <Button
+                  variant="primary"
+                  size="md"
+                  onClick={handleAddVoiceClick}
+                  className="shadow-lg shadow-accent-primary/20"
+                >
+                  <Plus size={18} className="mr-2" />
+                  Record Your First Voice
+                </Button>
+              }
+            />
           ) : (
             /* Voice Recordings Grid */
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -323,28 +316,15 @@ export default function VoicesPage() {
 
           {/* Loading State */}
           {communityLoading ? (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {Array.from({ length: 8 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="h-56 animate-pulse rounded-xl bg-surface-panel border border-border-default"
-                />
-              ))}
-            </div>
+            <LoadingSpinner size="lg" message="Loading community voices..." fullHeight />
           ) : communityVoices.length === 0 ? (
             /* Empty State */
-            <Card variant="default" padding="lg" className="text-center border-dashed">
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent-cyan/10">
-                <Globe className="h-8 w-8 text-accent-cyan" />
-              </div>
-              <h3 className="mb-2 text-lg font-semibold text-text-primary">
-                No community voices yet
-              </h3>
-              <p className="text-sm text-text-muted max-w-md mx-auto">
-                Community voices will appear here once users share their voices and they're approved
-                by our team.
-              </p>
-            </Card>
+            <EmptyState
+              variant="bordered"
+              icon={<Globe className="h-12 w-12" />}
+              title="No community voices yet"
+              description="Community voices will appear here once users share their voices and they're approved by our team."
+            />
           ) : (
             /* Community Voices Grid */
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
