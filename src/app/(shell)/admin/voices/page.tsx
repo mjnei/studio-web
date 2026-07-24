@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
   Mic,
   CheckCircle2,
@@ -33,7 +33,7 @@ export default function AdminVoicesPage() {
   const toast = useToast();
   const [pendingVoices, setPendingVoices] = useState<VoiceWithCreator[]>([]);
   const [approvedVoices, setApprovedVoices] = useState<VoiceWithCreator[]>([]);
-  const [allRecordings, setAllRecordings] = useState<any[]>([]);
+  const [allRecordings, setAllRecordings] = useState<Record<string, unknown>[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [viewType, setViewType] = useState<ViewType>("pending");
@@ -50,11 +50,7 @@ export default function AdminVoicesPage() {
     voice: VoiceWithCreator | null;
   }>({ open: false, voice: null });
 
-  useEffect(() => {
-    loadVoices();
-  }, []);
-
-  const loadVoices = async () => {
+  const loadVoices = useCallback(async () => {
     setIsLoading(true);
     try {
       const [pending, approved, recordings] = await Promise.all([
@@ -65,12 +61,17 @@ export default function AdminVoicesPage() {
       setPendingVoices(pending);
       setApprovedVoices(approved);
       setAllRecordings(recordings);
-    } catch (error: any) {
-      toast.error("Failed to load voices", error.message || "An error occurred");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "An error occurred";
+      toast.error("Failed to load voices", message);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    void loadVoices();
+  }, [loadVoices]);
 
   const playVoiceAudio = async (voiceId: number) => {
     try {
@@ -130,8 +131,9 @@ export default function AdminVoicesPage() {
       toast.success("Voice approved", `Approved "${approveModal.voice.name}" for public catalog`);
       await loadVoices();
       setApproveModal({ open: false, voice: null });
-    } catch (error: any) {
-      toast.error("Failed to approve voice", error.message || "An error occurred");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "An error occurred";
+      toast.error("Failed to approve voice", message);
     }
   };
 
@@ -146,8 +148,9 @@ export default function AdminVoicesPage() {
       toast.success("Approval revoked", `Revoked approval for "${unapproveModal.voice.name}"`);
       await loadVoices();
       setUnapproveModal({ open: false, voice: null });
-    } catch (error: any) {
-      toast.error("Failed to unapprove voice", error.message || "An error occurred");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "An error occurred";
+      toast.error("Failed to unapprove voice", message);
     }
   };
 

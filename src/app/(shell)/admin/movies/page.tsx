@@ -78,20 +78,9 @@ export default function AdminMoviesPage() {
   const [tmdbTotalResults, setTmdbTotalResults] = useState(0);
   const [importingIds, setImportingIds] = useState<Set<number>>(new Set());
   const [selectedLocales, setSelectedLocales] = useState<string[]>(SUPPORTED_LOCALES);
-  const [importedMovieIds, setImportedMovieIds] = useState<Set<number>>(new Set()); // Track newly imported movies
+  const [importedMovieIds, setImportedMovieIds] = useState<Set<number>>(new Set());
 
-  useEffect(() => {
-    if (viewMode === "library") {
-      loadMovies();
-    } else if (viewMode === "import") {
-      // Auto-focus on search input when switching to import tab
-      setTimeout(() => {
-        tmdbSearchInputRef.current?.focus();
-      }, 100);
-    }
-  }, [viewMode, libraryPage, librarySearchTerm, selectedLocale]);
-
-  const loadMovies = async () => {
+  const loadMovies = useCallback(async () => {
     setIsLoadingLibrary(true);
     try {
       const response = await adminListMovies({
@@ -105,12 +94,23 @@ export default function AdminMoviesPage() {
       setMovies(response.movies);
       setLibraryTotal(response.total);
       setLibraryTotalPages(Math.ceil(response.total / response.page_size));
-    } catch (error: any) {
-      toast.error(error.message || "Failed to load movies");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to load movies";
+      toast.error(message);
     } finally {
       setIsLoadingLibrary(false);
     }
-  };
+  }, [librarySearchTerm, selectedLocale, libraryPage, toast]);
+
+  useEffect(() => {
+    if (viewMode === "library") {
+      void loadMovies();
+    } else if (viewMode === "import") {
+      setTimeout(() => {
+        tmdbSearchInputRef.current?.focus();
+      }, 100);
+    }
+  }, [viewMode, libraryPage, librarySearchTerm, selectedLocale, loadMovies]);
 
   // TMDB Search handlers
   const handleTmdbSearch = async (page: number = 1) => {
@@ -119,7 +119,6 @@ export default function AdminMoviesPage() {
       return;
     }
 
-    // Blur the input after search
     tmdbSearchInputRef.current?.blur();
 
     setIsSearchingTmdb(true);
@@ -133,29 +132,25 @@ export default function AdminMoviesPage() {
       if (response.results.length === 0) {
         toast.info("No movies found. Try a different search query.");
       } else {
-        // Check which of the search results are already in the database
-        // We'll fetch all library movies in batches (max 100 per request)
         const allExistingIds = new Set<number>();
-        let libraryPage = 1;
+        let libraryPageNum = 1;
         let hasMore = true;
 
-        while (hasMore && libraryPage <= 10) {
-          // Limit to 1000 movies max for performance
+        while (hasMore && libraryPageNum <= 10) {
           try {
             const libraryResponse = await adminListMovies({
-              page: libraryPage,
+              page: libraryPageNum,
               page_size: 100,
             });
             libraryResponse.movies.forEach((m) => allExistingIds.add(m.id));
             hasMore = libraryResponse.movies.length === 100;
-            libraryPage++;
+            libraryPageNum++;
           } catch (error) {
             console.error("Error fetching library for comparison:", error);
             break;
           }
         }
 
-        // Initialize imported set with existing movies from search results
         const initialImported = new Set(importedMovieIds);
         response.results.forEach((movie) => {
           if (allExistingIds.has(movie.id)) {
@@ -164,8 +159,9 @@ export default function AdminMoviesPage() {
         });
         setImportedMovieIds(initialImported);
       }
-    } catch (error: any) {
-      toast.error(error.message || "Failed to search movies");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to search movies";
+      toast.error(message);
       setTmdbSearchResults([]);
     } finally {
       setIsSearchingTmdb(false);
@@ -181,15 +177,14 @@ export default function AdminMoviesPage() {
       });
       toast.success(response.message);
 
-      // Track this movie as imported (whether new or existing)
       setImportedMovieIds((prev) => new Set(prev).add(movie.id));
 
-      // Reload library if in library mode
       if (viewMode === "library") {
-        loadMovies();
+        await loadMovies();
       }
-    } catch (error: any) {
-      toast.error(error.message || "Failed to import movie");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to import movie";
+      toast.error(message);
     } finally {
       setImportingIds((prev) => {
         const next = new Set(prev);
@@ -217,7 +212,6 @@ export default function AdminMoviesPage() {
     );
   };
 
-  // Library handlers
   const handleDeleteMovie = async (movieId: number) => {
     if (
       !confirm(
@@ -229,8 +223,9 @@ export default function AdminMoviesPage() {
       await adminDeleteMovie(movieId);
       toast.success("Movie deleted successfully");
       await loadMovies();
-    } catch (error: any) {
-      toast.error(error.message || "Failed to delete movie");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to delete movie";
+      toast.error(message);
     }
   };
 
@@ -251,8 +246,9 @@ export default function AdminMoviesPage() {
       setEditingId(null);
       setEditingData(null);
       await loadMovies();
-    } catch (error: any) {
-      toast.error(error.message || "Failed to update movie");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to update movie";
+      toast.error(message);
     }
   };
 

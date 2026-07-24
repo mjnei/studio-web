@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import {
   Star,
@@ -42,13 +42,6 @@ type EditingMovie = {
 
 const SUPPORTED_LOCALES = ["en", "de", "fr", "es", "zh-CN", "zh-TW", "ja", "ko"];
 
-const GENDER_LABELS: Record<number, string> = {
-  0: "Not set",
-  1: "Female",
-  2: "Male",
-  3: "Non-binary",
-};
-
 export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const [movieId, setMovieId] = useState<number | null>(null);
@@ -60,20 +53,7 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
   const [isEditing, setIsEditing] = useState(false);
   const [editingData, setEditingData] = useState<EditingMovie | null>(null);
 
-  useEffect(() => {
-    (async () => {
-      const resolvedParams = await params;
-      setMovieId(parseInt(resolvedParams.id));
-    })();
-  }, [params]);
-
-  useEffect(() => {
-    if (movieId) {
-      loadMovieDetails();
-    }
-  }, [movieId, selectedLocale]);
-
-  const loadMovieDetails = async () => {
+  const loadMovieDetails = useCallback(async () => {
     if (!movieId) return;
 
     setLoading(true);
@@ -86,7 +66,20 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
     } finally {
       setLoading(false);
     }
-  };
+  }, [movieId, selectedLocale]);
+
+  useEffect(() => {
+    (async () => {
+      const resolvedParams = await params;
+      setMovieId(parseInt(resolvedParams.id));
+    })();
+  }, [params]);
+
+  useEffect(() => {
+    if (movieId) {
+      loadMovieDetails();
+    }
+  }, [movieId, selectedLocale, loadMovieDetails]);
 
   const showToast = (type: "success" | "error" | "info", message: string) => {
     const id = Date.now();
@@ -104,8 +97,9 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
       setIsEditing(false);
       setEditingData(null);
       await loadMovieDetails();
-    } catch (error: any) {
-      showToast("error", error.message || "Failed to update movie");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to update movie";
+      showToast("error", message);
     }
   };
 
@@ -124,8 +118,9 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
       setTimeout(() => {
         router.push("/admin/movies");
       }, 1500);
-    } catch (error: any) {
-      showToast("error", error.message || "Failed to delete movie");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to delete movie";
+      showToast("error", message);
     }
   };
 
@@ -453,7 +448,7 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                 {/* Tagline */}
                 {movie.tagline && (
                   <div className="rounded-2xl border border-border-default bg-surface-panel p-6 italic text-text-secondary">
-                    "{movie.tagline}"
+                    &quot;{movie.tagline}&quot;
                   </div>
                 )}
 

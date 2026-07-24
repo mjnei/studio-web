@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Mail, Lock, Check } from "lucide-react";
+import { Mail, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -20,7 +20,7 @@ export default function ForgotPasswordPage() {
         <h2 className="mb-3 text-2xl font-bold text-text-primary">Check your email</h2>
         <p className="mb-6 text-sm text-text-secondary">
           If an account exists for <span className="font-medium text-accent-primary">{email}</span>,
-          you'll receive a password reset link shortly.
+          you&apos;ll receive a password reset link shortly.
         </p>
         <Button variant="primary" size="lg" fullWidth>
           <Link href="/login">Back to login</Link>
@@ -37,7 +37,7 @@ export default function ForgotPasswordPage() {
         </div>
         <h2 className="mb-2 text-2xl font-bold text-text-primary">Reset your password</h2>
         <p className="text-sm text-text-secondary">
-          Enter your email and we'll send you a reset link.
+          Enter your email and we&apos;ll send you a reset link.
         </p>
       </div>
 

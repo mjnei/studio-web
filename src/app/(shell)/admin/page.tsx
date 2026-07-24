@@ -9,7 +9,6 @@ import {
   Users,
   Settings,
   BarChart3,
-  TrendingUp,
 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/PageHeader";
