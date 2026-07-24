@@ -245,8 +245,8 @@ export default function VoicePage() {
       const recordingWithUrl: VoiceResponse = {
         id: newRecording.id,
         user_id: newRecording.user_id,
-        name: newRecording.name || newRecording.title,
-        audio_path: newRecording.audio_path || newRecording.file_path,
+        name: newRecording.name || newRecording.title || "Recorded Voice",
+        audio_path: newRecording.audio_path || newRecording.file_path || "",
         mime_type: newRecording.mime_type,
         duration_seconds: newRecording.duration_seconds,
         is_shared: false,

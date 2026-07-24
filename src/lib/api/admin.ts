@@ -140,16 +140,18 @@ export async function adminGetMovies(): Promise<MovieResponse[]> {
 
   // Convert to MovieResponse format for backward compatibility
   return allMovies.map((m) => ({
-    id: m.id,
+    id: m.id.toString(),
+    tmdb_id: m.id,
     title: m.title || m.original_title,
     original_title: m.original_title,
     overview: m.overview || null,
     poster_path: m.poster_path || null,
     backdrop_path: m.backdrop_path || null,
     release_date: m.release_date || null,
-    runtime: m.runtime || null,
-    vote_average: m.vote_average || null,
-    rating: m.vote_average?.toString() || null,
+    rating: m.vote_average || 0,
+    genre_ids: [],
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
   }));
 }
 

@@ -144,8 +144,8 @@ export function MediaImageExample() {
           <li>✅ Use ImageUrlUtils.getThumbnailUrl() for video posters with fallbacks</li>
           <li>✅ Use ImageUrlUtils.getImageUrl() when you need URL directly</li>
           <li>✅ Provide fallback images for better UX</li>
-          <li>❌ Don't manually construct paths like `/uploads/${path}`</li>
-          <li>❌ Don't assume all images are from local storage (could be S3)</li>
+          <li>❌ Don&apos;t manually construct paths like /uploads/imagePath</li>
+          <li>❌ Don&apos;t assume all images are from local storage (could be S3)</li>
         </ul>
       </section>
     </div>

@@ -230,7 +230,7 @@ export default function VoicesPage() {
           ) : voices.length === 0 ? (
             /* Empty State */
             <EmptyState
-              variant="bordered"
+              variant="default"
               icon={<Mic className="h-12 w-12" />}
               title="No voices yet"
               description="Start by recording a voice sample from your microphone. Your voice will be cloned and ready to use in your projects."
@@ -320,7 +320,7 @@ export default function VoicesPage() {
           ) : communityVoices.length === 0 ? (
             /* Empty State */
             <EmptyState
-              variant="bordered"
+              variant="default"
               icon={<Globe className="h-12 w-12" />}
               title="No community voices yet"
               description="Community voices will appear here once users share their voices and they're approved by our team."

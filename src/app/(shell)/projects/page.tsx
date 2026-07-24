@@ -159,7 +159,7 @@ export default function ProjectsPage() {
         />
       ) : projects.length === 0 ? (
         <EmptyState
-          variant="bordered"
+          variant="default"
           icon={<Folder className="h-12 w-12" />}
           title="No projects yet"
           description="Get started by creating your first project"

@@ -45,7 +45,7 @@ export function VoiceSelectionCard({
 
   return (
     <Card
-      variant={isSelected ? "elevated" : "bordered"}
+      variant={isSelected ? "elevated" : "default"}
       padding="md"
       className={`cursor-pointer transition-all hover:border-accent-cyan/60 ${
         isSelected ? "border-accent-cyan ring-2 ring-accent-cyan/20" : ""

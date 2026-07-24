@@ -450,7 +450,7 @@ export default function ComposePage() {
                 actionModalType === "regenerate" ? handleRegenerateThumbnail : handleEditThumbnail
               }
               loading={isRegenerating}
-              icon={
+              leftIcon={
                 actionModalType === "regenerate" ? (
                   <RotateCw className="h-4 w-4" />
                 ) : (

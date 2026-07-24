@@ -11,7 +11,7 @@
 import * as React from "react";
 import { ImageUrlUtils } from "@/lib/image-utils";
 
-interface MediaImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
+interface MediaImageProps extends Omit<React.ImgHTMLAttributes<HTMLImageElement>, 'src'> {
   src: string | null | undefined;
   fallbackSrc?: string | null | undefined;
   alt: string;

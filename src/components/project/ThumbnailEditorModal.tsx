@@ -179,8 +179,7 @@ export function ThumbnailEditorModal({
           </Button>
           <Button
             variant="primary"
-            size="md"
-            icon={<Check className="h-4 w-4" />}
+            size="md" leftIcon={<Check className="h-4 w-4" />}
             onClick={handleFinalize}
             disabled={!hasThumbnail || isFinalizing}
             loading={isFinalizing}
@@ -312,8 +311,7 @@ export function ThumbnailEditorModal({
           {/* AI Regenerate (icon only) */}
           <Button
             variant="secondary"
-            size="sm"
-            icon={<Sparkles className="h-4 w-4" />}
+            size="sm" leftIcon={<Sparkles className="h-4 w-4" />}
             onClick={() => setShowPromptInput(!showPromptInput)}
             disabled={isRegenerating || isUploading}
             className="p-2"
@@ -323,8 +321,7 @@ export function ThumbnailEditorModal({
           {/* Upload (icon only) */}
           <Button
             variant="secondary"
-            size="sm"
-            icon={<Upload className="h-4 w-4" />}
+            size="sm" leftIcon={<Upload className="h-4 w-4" />}
             onClick={() => fileInputRef.current?.click()}
             disabled={isUploading || isRegenerating}
             className="p-2"

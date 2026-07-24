@@ -149,7 +149,7 @@ export function VoiceGeneration({
           {/* Error State */}
           {voicesError && (
             <Card
-              variant="glass"
+              variant="elevated"
               padding="md"
               className="border-status-failed/30 bg-status-failed/10"
             >
@@ -188,7 +188,7 @@ export function VoiceGeneration({
                       {ownVoices.map((voice) => (
                         <Card
                           key={voice.id}
-                          variant={selectedVoiceId === voice.id ? "elevated" : "bordered"}
+                          variant={selectedVoiceId === voice.id ? "elevated" : "default"}
                           padding="md"
                           interactive
                           className={`cursor-pointer transition-all ${
@@ -239,7 +239,7 @@ export function VoiceGeneration({
                       {communityVoices.map((voice) => (
                         <Card
                           key={voice.id}
-                          variant={selectedVoiceId === voice.id ? "elevated" : "bordered"}
+                          variant={selectedVoiceId === voice.id ? "elevated" : "default"}
                           padding="md"
                           interactive
                           className={`cursor-pointer transition-all ${
@@ -325,8 +325,7 @@ export function VoiceGeneration({
             ) : (
               <Button
                 variant="primary"
-                size="lg"
-                icon={<Volume2 className="w-5 h-5" />}
+                size="lg" leftIcon={<Volume2 className="w-5 h-5" />}
                 onClick={handleGenerate}
                 disabled={!selectedVoiceId}
               >
@@ -357,8 +356,7 @@ export function VoiceGeneration({
                 <Button
                   variant="primary"
                   size="lg"
-                  iconOnly
-                  icon={playing ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" />}
+                  leftIcon={playing ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" />}
                   onClick={togglePlayback}
                 />
                 <div className="flex-1">
@@ -375,8 +373,7 @@ export function VoiceGeneration({
                 </div>
                 <Button
                   variant="secondary"
-                  size="md"
-                  icon={<Download className="w-5 h-5" />}
+                  size="md" leftIcon={<Download className="w-5 h-5" />}
                   onClick={downloadAudio}
                 >
                   <span className="hidden sm:inline">Download</span>
@@ -386,7 +383,7 @@ export function VoiceGeneration({
           </Card>
 
           {/* Regenerate Option */}
-          <Card variant="glass" padding="md" className="border-border-subtle">
+          <Card variant="elevated" padding="md" className="border-border-subtle">
             <div className="flex items-center justify-between">
               <div className="flex items-start gap-3">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-primary/20 flex-shrink-0">

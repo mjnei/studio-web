@@ -354,7 +354,7 @@ export default function AdminVoicesPage() {
         <LoadingSpinner size="lg" message="Loading voices..." fullHeight />
       ) : filteredVoices.length === 0 ? (
         <EmptyState
-          variant="bordered"
+          variant="default"
           icon={
             viewType === "pending" ? (
               <Clock className="h-12 w-12" />

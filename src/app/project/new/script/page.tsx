@@ -117,7 +117,7 @@ export default function NewProjectScriptPage() {
         </div>
 
         {/* Selected movie card */}
-        <Card variant="bordered" padding="md" className="mb-6">
+        <Card variant="elevated" padding="md" className="mb-6">
           <div className="flex items-center gap-4">
             {selectedMovie.poster && (
               <div className="h-24 w-16 overflow-hidden rounded-md bg-surface-raised">

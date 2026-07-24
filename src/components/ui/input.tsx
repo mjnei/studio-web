@@ -30,8 +30,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             type={type}
             className={cn(
               "w-full h-11 px-4 bg-[var(--surface-raised)] border border-[var(--border-default)] rounded-lg text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-transparent transition-all duration-200",
-              displayLeftIcon && "pl-10",
-              rightIcon && "pr-10",
+              displayLeftIcon ? "pl-10" : "",
+              rightIcon ? "pr-10" : "",
               error && "border-[var(--status-error)] focus:ring-[var(--status-error)]",
               className
             )}

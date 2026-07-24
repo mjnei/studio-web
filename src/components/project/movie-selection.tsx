@@ -197,7 +197,7 @@ export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps)
 
       {/* Selected Movie Info */}
       {selectedMovie && (
-        <Card variant="glass" padding="md" className="border-accent-primary/30">
+        <Card variant="elevated" padding="md" className="border-accent-primary/30">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent-primary/20">
               <Check className="w-5 h-5 text-accent-primary" />

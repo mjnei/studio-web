@@ -175,7 +175,7 @@ export default function MoviesPage() {
         />
       ) : movies.length === 0 ? (
         <EmptyState
-          variant="bordered"
+          variant="default"
           icon={<Film className="h-16 w-16" />}
           title="No movies found"
           description={

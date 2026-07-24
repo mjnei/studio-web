@@ -365,7 +365,7 @@ export default function AdminMoviesPage() {
             <LoadingSpinner size="lg" message="Loading movies..." fullHeight />
           ) : movies.length === 0 ? (
             <EmptyState
-              variant="bordered"
+              variant="default"
               size="md"
               icon={<Film className="h-12 w-12" />}
               title="No movies found"
@@ -994,7 +994,7 @@ export default function AdminMoviesPage() {
           {/* Empty State */}
           {!isSearchingTmdb && tmdbSearchResults.length === 0 && tmdbSearchQuery && (
             <EmptyState
-              variant="bordered"
+              variant="default"
               icon={<Film className="h-12 w-12" />}
               title="No movies found"
               description="Try a different search query."
@@ -1004,7 +1004,7 @@ export default function AdminMoviesPage() {
           {/* Initial State */}
           {!isSearchingTmdb && tmdbSearchResults.length === 0 && !tmdbSearchQuery && (
             <EmptyState
-              variant="bordered"
+              variant="default"
               icon={<Database className="h-12 w-12" />}
               title="Search TMDB"
               description="Enter a movie title above to search The Movie Database"

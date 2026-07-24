@@ -103,19 +103,19 @@ export function ScriptGeneration({
         <div className="space-y-4">
           {/* Stats */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <Card variant="glass" padding="md">
+            <Card variant="elevated" padding="md">
               <div className="text-center">
                 <p className="text-2xl font-bold text-accent-primary">{wordCount}</p>
                 <p className="text-xs text-text-muted">Words</p>
               </div>
             </Card>
-            <Card variant="glass" padding="md">
+            <Card variant="elevated" padding="md">
               <div className="text-center">
                 <p className="text-2xl font-bold text-accent-secondary">~{estimatedDuration}min</p>
                 <p className="text-xs text-text-muted">Est. Duration</p>
               </div>
             </Card>
-            <Card variant="glass" padding="md">
+            <Card variant="elevated" padding="md">
               <div className="text-center">
                 <p className="text-2xl font-bold text-accent-tertiary">
                   {script.split("\n\n").length}
@@ -123,7 +123,7 @@ export function ScriptGeneration({
                 <p className="text-xs text-text-muted">Paragraphs</p>
               </div>
             </Card>
-            <Card variant="glass" padding="md">
+            <Card variant="elevated" padding="md">
               <div className="text-center">
                 <Badge variant="success" size="md">
                   Ready
@@ -157,7 +157,7 @@ export function ScriptGeneration({
                 <Button
                   variant="ghost"
                   size="sm"
-                  icon={<RefreshCw className="w-4 h-4" />}
+                  leftIcon={<RefreshCw className="w-4 h-4" />}
                   onClick={regenerateScript}
                 >
                   Regenerate
@@ -185,7 +185,7 @@ export function ScriptGeneration({
           </Card>
 
           {/* Tips */}
-          <Card variant="glass" padding="md" className="border-border-subtle">
+          <Card variant="elevated" padding="md" className="border-border-subtle">
             <div className="flex items-start gap-3">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-primary/20 flex-shrink-0">
                 <Sparkles className="w-4 h-4 text-accent-primary" />

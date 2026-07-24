@@ -135,8 +135,7 @@ export function VideoGeneration({
             </p>
             <Button
               variant="primary"
-              size="lg"
-              icon={<Video className="w-5 h-5" />}
+              size="lg" leftIcon={<Video className="w-5 h-5" />}
               onClick={onStartGeneration}
             >
               Start Video Generation
@@ -248,8 +247,7 @@ export function VideoGeneration({
                     <Button
                       variant="primary"
                       size="lg"
-                      iconOnly
-                      icon={<Play className="w-8 h-8" />}
+                      leftIcon={<Play className="w-8 h-8" />}
                     />
                   </div>
                 </div>
@@ -259,13 +257,12 @@ export function VideoGeneration({
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Button
                   variant="primary"
-                  size="lg"
-                  icon={<Download className="w-5 h-5" />}
+                  size="lg" leftIcon={<Download className="w-5 h-5" />}
                   onClick={downloadVideo}
                 >
                   Download Video
                 </Button>
-                <Button variant="secondary" size="lg" icon={<Play className="w-5 h-5" />}>
+                <Button variant="secondary" size="lg" leftIcon={<Play className="w-5 h-5" />}>
                   Preview Video
                 </Button>
               </div>
@@ -273,7 +270,7 @@ export function VideoGeneration({
           </Card>
 
           {/* Next Steps */}
-          <Card variant="glass" padding="md" className="border-border-subtle">
+          <Card variant="elevated" padding="md" className="border-border-subtle">
             <div className="flex items-start gap-3">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-primary/20 flex-shrink-0">
                 <CheckCircle2 className="w-4 h-4 text-accent-primary" />

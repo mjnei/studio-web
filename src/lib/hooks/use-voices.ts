@@ -68,7 +68,7 @@ export function useVoices(): UseVoicesReturn {
   const handleUploadVoice = useCallback(
     async (file: Blob, name: string, duration?: number): Promise<VoiceResponse> => {
       try {
-        const newVoice = await uploadVoice(file, name, duration);
+        const newVoice = await uploadVoice(file, name, "en", duration);
 
         // Fetch audio URL for the newly uploaded voice
         try {
