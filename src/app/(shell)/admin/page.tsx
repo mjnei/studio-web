@@ -1,15 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {
-  Film,
-  Mic,
-  ShieldCheck,
-  Database,
-  Users,
-  Settings,
-  BarChart3,
-} from "lucide-react";
+import { Film, Mic, ShieldCheck, Database, Users, Settings, BarChart3 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Grid } from "@/components/ui/Grid";

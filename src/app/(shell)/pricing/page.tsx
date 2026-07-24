@@ -1,11 +1,10 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Check, Sparkles, Zap, Crown, Coins, TrendingUp } from "lucide-react";
-import { useState } from "react";
 
 interface PricingTier {
   name: string;
@@ -79,8 +78,40 @@ const pricingTiers: PricingTier[] = [
   },
 ];
 
+interface BillingToggleProps {
+  billingCycle: "monthly" | "annual";
+  onBillingCycleChange: (cycle: "monthly" | "annual") => void;
+}
+
+function BillingToggle({ billingCycle, onBillingCycleChange }: BillingToggleProps) {
+  return (
+    <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-surface-raised border border-border-default shadow-sm">
+      <button
+        onClick={() => onBillingCycleChange("monthly")}
+        className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
+          billingCycle === "monthly"
+            ? "bg-accent-primary text-white shadow-glow"
+            : "text-text-muted hover:text-text-primary"
+        }`}
+      >
+        Monthly
+      </button>
+      <button
+        onClick={() => onBillingCycleChange("annual")}
+        className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
+          billingCycle === "annual"
+            ? "bg-accent-primary text-white shadow-glow"
+            : "text-text-muted hover:text-text-primary"
+        }`}
+      >
+        <span>Annual</span>
+        <span className="ml-2 text-xs opacity-75">Save 20%</span>
+      </button>
+    </div>
+  );
+}
+
 export default function PricingPage() {
-  const router = useRouter();
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
 
   const getColorClasses = (color: PricingTier["color"]) => {
@@ -141,32 +172,6 @@ export default function PricingPage() {
     );
   };
 
-  const BillingToggle = () => (
-    <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-surface-raised border border-border-default shadow-sm">
-      <button
-        onClick={() => setBillingCycle("monthly")}
-        className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
-          billingCycle === "monthly"
-            ? "bg-accent-primary text-white shadow-glow"
-            : "text-text-muted hover:text-text-primary"
-        }`}
-      >
-        Monthly
-      </button>
-      <button
-        onClick={() => setBillingCycle("annual")}
-        className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
-          billingCycle === "annual"
-            ? "bg-accent-primary text-white shadow-glow"
-            : "text-text-muted hover:text-text-primary"
-        }`}
-      >
-        <span>Annual</span>
-        <span className="ml-2 text-xs opacity-75">Save 20%</span>
-      </button>
-    </div>
-  );
-
   return (
     <div className="max-w-6xl mx-auto">
       <PageHeader
@@ -181,7 +186,7 @@ export default function PricingPage() {
           Special Launch Pricing
         </div>
         <div className="flex justify-center">
-          <BillingToggle />
+          <BillingToggle billingCycle={billingCycle} onBillingCycleChange={setBillingCycle} />
         </div>
       </div>
 

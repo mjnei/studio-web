@@ -41,53 +41,86 @@ export default function JobsPage() {
   ];
 
   useEffect(() => {
-    loadAllJobs();
-  }, []);
+    let isMounted = true;
+
+    const performLoad = async () => {
+      try {
+        // Load all projects
+        const projects = await listProjects(true);
+
+        // Load videos for each project
+        const projectsWithVideoData = await Promise.all(
+          projects.map(async (project) => {
+            try {
+              const { videos } = await getProjectVideos(project.id);
+              return { project, videos };
+            } catch (error) {
+              console.error(`Failed to load videos for project ${project.id}:`, error);
+              return { project, videos: [] };
+            }
+          })
+        );
+
+        // Filter out projects with no videos
+        const filtered = projectsWithVideoData.filter((pwv) => pwv.videos.length > 0);
+
+        if (isMounted) {
+          setProjectsWithVideos(filtered);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error("Failed to load jobs:", error);
+        if (isMounted) {
+          toast.error("Failed to load jobs", "Could not retrieve video generation history");
+          setIsLoading(false);
+        }
+      }
+    };
+
+    performLoad();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [toast]);
 
   // Poll for updates if there are any pending jobs
   useEffect(() => {
+    let isMounted = true;
+
     const hasProcessingJobs = projectsWithVideos.some((pwv) =>
       pwv.videos.some((v) => v.status === "processing" || v.status === "queued")
     );
 
     if (!hasProcessingJobs) return;
 
-    const pollInterval = setInterval(() => {
-      loadAllJobs();
-    }, 5000); // Poll every 5 seconds
+    const pollInterval = setInterval(async () => {
+      try {
+        const projects = await listProjects(true);
+        const projectsWithVideoData = await Promise.all(
+          projects.map(async (project) => {
+            try {
+              const { videos } = await getProjectVideos(project.id);
+              return { project, videos };
+            } catch (error) {
+              return { project, videos: [] };
+            }
+          })
+        );
+        const filtered = projectsWithVideoData.filter((pwv) => pwv.videos.length > 0);
+        if (isMounted) {
+          setProjectsWithVideos(filtered);
+        }
+      } catch {
+        console.error("Failed to poll jobs:");
+      }
+    }, 5000);
 
-    return () => clearInterval(pollInterval);
+    return () => {
+      isMounted = false;
+      clearInterval(pollInterval);
+    };
   }, [projectsWithVideos]);
-
-  const loadAllJobs = async () => {
-    try {
-      // Load all projects
-      const projects = await listProjects(true);
-
-      // Load videos for each project
-      const projectsWithVideoData = await Promise.all(
-        projects.map(async (project) => {
-          try {
-            const { videos } = await getProjectVideos(project.id);
-            return { project, videos };
-          } catch (error) {
-            console.error(`Failed to load videos for project ${project.id}:`, error);
-            return { project, videos: [] };
-          }
-        })
-      );
-
-      // Filter out projects with no videos
-      const filtered = projectsWithVideoData.filter((pwv) => pwv.videos.length > 0);
-
-      setProjectsWithVideos(filtered);
-    } catch (error) {
-      console.error("Failed to load jobs:", error);
-      toast.error("Failed to load jobs", "Could not retrieve video generation history");
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleDeleteVideo = async (projectId: string, videoId: string) => {
     if (!confirm("Are you sure you want to delete this video? This action cannot be undone.")) {
@@ -98,7 +131,12 @@ export default function JobsPage() {
     try {
       await deleteProjectVideo(projectId, videoId);
       toast.success("Video deleted", "The video has been removed");
-      await loadAllJobs();
+      
+      // Reload videos for the affected project
+      const { videos } = await getProjectVideos(projectId);
+      setProjectsWithVideos((prev) =>
+        prev.map((pwv) => (pwv.project.id === projectId ? { ...pwv, videos } : pwv))
+      );
     } catch (error) {
       console.error("Failed to delete video:", error);
       toast.error("Delete failed", "Failed to delete the video");

@@ -82,7 +82,7 @@ export default function MoviesPage() {
 
             setEnrichmentProgress(Math.round(((i + 1) / data.length) * 100));
             setMovies([...enrichedMovies, ...data.slice(i + 1)]);
-          } catch (err) {
+          } catch {
             // If enrichment fails, just use the basic movie data
             enrichedMovies.push(data[i]);
             setMovies([...enrichedMovies, ...data.slice(i + 1)]);

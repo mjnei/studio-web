@@ -28,18 +28,22 @@ export default function DashboardPage() {
 
   // Check if user just completed onboarding (within last 5 minutes)
   useEffect(() => {
-    const dismissedKey = "welcome-banner-dismissed";
-    const dismissed = localStorage.getItem(dismissedKey);
+    const checkWelcomeBanner = async () => {
+      const dismissedKey = "welcome-banner-dismissed";
+      const dismissed = localStorage.getItem(dismissedKey);
 
-    if (user?.onboarding_completed_at && !dismissed) {
-      const completedAt = new Date(user.onboarding_completed_at).getTime();
-      const now = Date.now();
-      const fiveMinutes = 5 * 60 * 1000;
+      if (user?.onboarding_completed_at && !dismissed) {
+        const completedAt = new Date(user.onboarding_completed_at).getTime();
+        const now = Date.now();
+        const fiveMinutes = 5 * 60 * 1000;
 
-      if (now - completedAt < fiveMinutes) {
-        setShowWelcomeBanner(true);
+        if (now - completedAt < fiveMinutes) {
+          setShowWelcomeBanner(true);
+        }
       }
-    }
+    };
+
+    checkWelcomeBanner();
   }, [user]);
 
   const dismissWelcomeBanner = () => {

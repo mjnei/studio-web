@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import {
   Star,
@@ -47,24 +47,23 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
     })();
   }, [params]);
 
-  useEffect(() => {
-    if (movieId) {
-      loadMovieDetails();
-    }
-  }, [movieId]);
-
-  const loadMovieDetails = async () => {
+  const loadMovieDetails = useCallback(async () => {
+    if (!movieId) return;
     setLoading(true);
     setError(null);
     try {
-      const data = await adminGetMovieDetails(movieId!, "en");
+      const data = await adminGetMovieDetails(movieId, "en");
       setMovie(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load movie details");
     } finally {
       setLoading(false);
     }
-  };
+  }, [movieId]);
+
+  useEffect(() => {
+    loadMovieDetails();
+  }, [loadMovieDetails]);
 
   const showToast = (type: "success" | "error", message: string) => {
     const id = Date.now();
@@ -339,7 +338,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                 {movie.tagline && (
                   <div className="rounded-xl border border-accent-cyan/30 bg-accent-cyan/5 p-5">
                     <p className="text-base italic text-text-primary leading-relaxed">
-                      "{movie.tagline}"
+                      &quot;{movie.tagline}&quot;
                     </p>
                   </div>
                 )}

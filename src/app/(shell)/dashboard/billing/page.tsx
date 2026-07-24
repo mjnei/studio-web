@@ -14,7 +14,6 @@ import {
   Receipt,
   Settings,
   TrendingUp,
-  ChevronRight,
   Coins,
   ArrowRight,
 } from "lucide-react";
@@ -25,14 +24,6 @@ import {
   type CreditTransaction,
 } from "@/lib/credit-client";
 
-interface BillingHistory {
-  id: string;
-  date: string;
-  description: string;
-  amount: string;
-  status: "paid" | "pending" | "failed";
-}
-
 export default function BillingPage() {
   const router = useRouter();
   const [creditStatus, setCreditStatus] = React.useState<CreditStatus | null>(null);
@@ -42,35 +33,37 @@ export default function BillingPage() {
   const toast = useToast();
 
   React.useEffect(() => {
+    let isMounted = true;
+
+    const loadData = async () => {
+      setIsLoading(true);
+      try {
+        const [status, history] = await Promise.all([getCreditStatus(), getCreditHistory(1, 10)]);
+        if (isMounted) {
+          setCreditStatus(status);
+          setTransactions(history.transactions);
+        }
+      } catch (error) {
+        console.error("Failed to load billing data:", error);
+        if (isMounted) {
+          toast.error("Failed to load billing data", "Please try again later");
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
     loadData();
-  }, []);
 
-  const loadData = async () => {
-    setIsLoading(true);
-    try {
-      const [status, history] = await Promise.all([getCreditStatus(), getCreditHistory(1, 10)]);
-      setCreditStatus(status);
-      setTransactions(history.transactions);
-    } catch (error) {
-      console.error("Failed to load billing data:", error);
-      toast.error("Failed to load billing data", "Please try again later");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleViewInvoice = (invoiceId: string) => {
-    alert(`Viewing invoice ${invoiceId}... (Stripe integration will be implemented in Phase 5)`);
-  };
+    return () => {
+      isMounted = false;
+    };
+  }, [toast]);
 
   const handleUpdatePayment = () => {
     alert("Updating payment method... (Stripe integration will be implemented in Phase 5)");
-  };
-
-  const handleDownloadInvoice = (invoiceId: string) => {
-    alert(
-      `Downloading invoice ${invoiceId}... (Stripe integration will be implemented in Phase 5)`
-    );
   };
 
   const formatDate = (dateString: string) => {
