@@ -12,11 +12,7 @@ interface LayoutToggleProps {
   variant?: "full" | "compact";
 }
 
-export function LayoutToggle({
-  layoutMode,
-  onLayoutChange,
-  variant = "full",
-}: LayoutToggleProps) {
+export function LayoutToggle({ layoutMode, onLayoutChange, variant = "full" }: LayoutToggleProps) {
   return (
     <div className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-panel p-1">
       <button
