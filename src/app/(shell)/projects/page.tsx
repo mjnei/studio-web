@@ -7,16 +7,18 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { FormModal } from "@/components/ui/modal";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { LoadingState } from "@/components/ui/LoadingSpinner";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { useToast } from "@/components/ui/toast";
 import { ProjectCard } from "@/components/project/ProjectCard";
 import { listProjects, deleteProject, type ProjectResponse } from "@/lib/project-client";
 
 type LayoutMode = "grid-sm" | "grid-md" | "list";
 
 export default function ProjectsPage() {
+  const toast = useToast();
   const [projects, setProjects] = useState<ProjectResponse[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState<ProjectResponse | null>(null);
   const [deleting, setDeleting] = useState(false);
@@ -27,10 +29,12 @@ export default function ProjectsPage() {
     listProjects(true)
       .then((data) => {
         setProjects(data);
-        setError(null);
       })
       .catch((err) => {
-        setError(err instanceof Error ? err.message : "Unable to load projects");
+        toast.error(
+          "Failed to load projects",
+          err instanceof Error ? err.message : "Unable to load projects"
+        );
       })
       .finally(() => {
         setLoading(false);
@@ -55,11 +59,14 @@ export default function ProjectsPage() {
       await deleteProject(projectToDelete.id, false);
       setDeleteModalOpen(false);
       setProjectToDelete(null);
+      toast.success("Project deleted successfully");
       // Reload projects list
       loadProjects();
     } catch (err) {
-      console.error("Delete failed:", err);
-      setError(err instanceof Error ? err.message : "Failed to delete project");
+      toast.error(
+        "Failed to delete project",
+        err instanceof Error ? err.message : "An error occurred"
+      );
     } finally {
       setDeleting(false);
     }
@@ -138,47 +145,33 @@ export default function ProjectsPage() {
       />
 
       {/* Layout Controls */}
-      {!loading && !error && projects.length > 0 && (
+      {!loading && projects.length > 0 && (
         <div className="mb-6 flex justify-end">
           <LayoutToggle />
         </div>
       )}
 
       {loading ? (
-        <LoadingState
-          title="Loading projects..."
+        <LoadingSpinner
+          size="lg"
+          message="Loading projects..."
           description="Please wait while we fetch your projects"
+          fullHeight
         />
-      ) : error ? (
-        <Card variant="elevated" padding="lg" className="fade-in border-status-error/30">
-          <CardContent>
-            <div className="py-12 text-center">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-status-error/10 flex items-center justify-center">
-                <Folder className="w-8 h-8 text-status-error" />
-              </div>
-              <p className="text-status-error font-medium">{error}</p>
-            </div>
-          </CardContent>
-        </Card>
       ) : projects.length === 0 ? (
-        <Card variant="elevated" padding="lg" className="fade-in">
-          <CardContent>
-            <div className="flex flex-col items-center justify-center py-16 text-center">
-              <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-accent-secondary to-accent-tertiary shadow-lg">
-                <Folder className="w-10 h-10 text-white" />
-              </div>
-              <h2 className="text-2xl font-bold text-text-primary mb-2">No projects yet</h2>
-              <p className="text-text-secondary mb-8 max-w-md">
-                Get started by creating your first project.
-              </p>
-              <Link href="/project/new">
-                <Button variant="primary" size="lg">
-                  Create Your First Project
-                </Button>
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
+        <EmptyState
+          variant="bordered"
+          icon={<Folder className="h-12 w-12" />}
+          title="No projects yet"
+          description="Get started by creating your first project"
+          action={
+            <Link href="/project/new">
+              <Button variant="primary" size="md">
+                Create Your First Project
+              </Button>
+            </Link>
+          }
+        />
       ) : (
         <div className={getGridClass()}>
           {projects.map((project) => (
