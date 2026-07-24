@@ -4,5 +4,5 @@ export { Badge } from "./badge";
 export { Input, TextArea } from "./input";
 export { EmptyState } from "./EmptyState";
 export { PageHeader } from "./PageHeader";
-export { LoadingSpinner, LoadingState } from "./LoadingSpinner";
+export { LoadingSpinner } from "./LoadingSpinner";
 export { Grid } from "./Grid";
