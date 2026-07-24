@@ -1,21 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import { Star, Search, Loader, Calendar, Clock, Film } from "lucide-react";
+import { Search, Film } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/ui/PageHeader";
-import {
-  getPopularMovies,
-  searchMovies,
-  tmdbImageUrl,
-  type MovieResponse,
-} from "@/lib/project-client";
-import {
-  adminGetMovieDetails,
-  type MovieDetailsResponse,
-  type CastResponse,
-} from "@/lib/api/admin";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { MovieCard } from "@/components/movie";
+import { getPopularMovies, searchMovies } from "@/lib/project-client";
+import { adminGetMovieDetails } from "@/lib/api/admin";
 import { LayoutToggle, type LayoutMode } from "@/components/ui/LayoutToggle";
 
 interface EnrichedMovie {
@@ -165,235 +158,41 @@ export default function MoviesPage() {
 
       {/* Content */}
       {loading ? (
-        <div className="flex h-96 items-center justify-center rounded-2xl border border-border-default bg-surface-panel">
-          <div className="flex flex-col items-center gap-3">
-            <Loader className="h-10 w-10 animate-spin text-accent-cyan" />
-            <p className="text-sm font-medium text-text-primary">Loading movies...</p>
-            <p className="text-xs text-text-muted">Please wait while we fetch the catalog</p>
-          </div>
-        </div>
+        <LoadingSpinner
+          size="lg"
+          message="Loading movies..."
+          description="Please wait while we fetch the catalog"
+          className="rounded-2xl border border-border-default bg-surface-panel"
+          fullHeight
+        />
       ) : error ? (
-        <div className="rounded-2xl border border-status-failed/30 bg-status-failed/5 p-8 text-center">
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-status-failed/10">
-            <Search className="h-6 w-6 text-status-failed" />
-          </div>
-          <h3 className="mb-1 text-sm font-semibold text-text-primary">Unable to load movies</h3>
-          <p className="text-sm text-text-muted">{error}</p>
-        </div>
+        <EmptyState
+          variant="elevated"
+          icon={<Search className="h-12 w-12 text-status-failed" />}
+          title="Unable to load movies"
+          description={error}
+          className="border-status-failed/30 bg-status-failed/5"
+        />
       ) : movies.length === 0 ? (
-        <div className="rounded-2xl border border-border-default bg-surface-panel p-12 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-surface-raised">
-            <Film className="h-8 w-8 text-text-muted" />
-          </div>
-          <h3 className="mb-2 text-base font-semibold text-text-primary">No movies found</h3>
-          <p className="text-sm text-text-muted">
-            {searchQuery.trim()
+        <EmptyState
+          variant="bordered"
+          icon={<Film className="h-16 w-16" />}
+          title="No movies found"
+          description={
+            searchQuery.trim()
               ? "Try adjusting your search terms"
-              : "No movies available in the catalog"}
-          </p>
-        </div>
-      ) : layoutMode === "list" ? (
-        <div className="space-y-3">
-          {movies.map((movie) => (
-            <Link
-              key={movie.id}
-              href={`/movies/${movie.id}`}
-              className="group flex gap-4 overflow-hidden rounded-xl border border-border-default bg-surface-panel p-4 transition-all hover:border-accent-cyan/50 hover:bg-surface-raised hover:shadow-lg hover:shadow-accent-cyan/5"
-            >
-              {/* Poster Thumbnail */}
-              <div className="relative h-36 w-24 flex-shrink-0 overflow-hidden rounded-lg bg-surface-raised shadow-md">
-                {movie.poster_path ? (
-                  <img
-                    src={tmdbImageUrl(movie.poster_path, "w342")}
-                    alt={movie.title}
-                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                ) : (
-                  <div className="flex h-full items-center justify-center">
-                    <Film className="h-10 w-10 text-text-muted opacity-30" />
-                  </div>
-                )}
-                {movie.vote_average && movie.vote_average > 0 && (
-                  <div className="absolute right-1.5 top-1.5 flex items-center gap-1 rounded-md bg-black/80 px-1.5 py-1 backdrop-blur-sm">
-                    <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                    <span className="text-xs font-bold text-white">
-                      {movie.vote_average.toFixed(1)}
-                    </span>
-                  </div>
-                )}
-              </div>
-
-              {/* Movie Info */}
-              <div className="flex min-w-0 flex-1 flex-col justify-between py-1">
-                {/* Top Section */}
-                <div>
-                  <h3 className="mb-1.5 text-base font-bold text-text-primary transition-colors group-hover:text-accent-cyan">
-                    {movie.title}
-                  </h3>
-
-                  {/* Metadata Row */}
-                  <div className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-text-muted">
-                    {movie.release_date && (
-                      <div className="flex items-center gap-1">
-                        <Calendar className="h-3.5 w-3.5" />
-                        <span>{new Date(movie.release_date).getUTCFullYear()}</span>
-                      </div>
-                    )}
-                    {movie.runtime && (
-                      <div className="flex items-center gap-1">
-                        <Clock className="h-3.5 w-3.5" />
-                        <span>{movie.runtime} min</span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Genres */}
-                  {movie.genres && movie.genres.length > 0 && (
-                    <div className="mb-2 flex flex-wrap gap-1.5">
-                      {movie.genres.map((genre, idx) => {
-                        const genreName =
-                          typeof genre === "string" ? genre : (genre as any)?.name || "";
-                        if (!genreName) return null;
-                        return (
-                          <span
-                            key={typeof genre === "string" ? genre : idx}
-                            className="rounded-md bg-accent-cyan/10 px-2 py-0.5 text-xs font-medium text-accent-cyan"
-                          >
-                            {genreName}
-                          </span>
-                        );
-                      })}
-                    </div>
-                  )}
-
-                  {/* Overview */}
-                  {movie.overview && (
-                    <p className="mb-2 line-clamp-2 text-sm leading-relaxed text-text-secondary">
-                      {movie.overview}
-                    </p>
-                  )}
-                </div>
-
-                {/* Bottom Section - Cast & Crew */}
-                <div className="space-y-1.5 text-xs">
-                  {movie.directors && movie.directors.length > 0 && (
-                    <div className="flex items-start gap-2">
-                      <span className="font-medium text-text-muted">Director:</span>
-                      <span className="text-text-secondary">{movie.directors.join(", ")}</span>
-                    </div>
-                  )}
-                  {movie.topCast && movie.topCast.length > 0 && (
-                    <div className="flex items-start gap-2">
-                      <span className="font-medium text-text-muted">Cast:</span>
-                      <span className="line-clamp-1 text-text-secondary">
-                        {movie.topCast.join(", ")}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
+              : "No movies available in the catalog"
+          }
+        />
       ) : (
         <div className={getGridClass()}>
           {movies.map((movie) => (
-            <Link
+            <MovieCard
               key={movie.id}
+              movie={movie}
+              layout={layoutMode === "grid-lg" ? "grid-md" : layoutMode}
               href={`/movies/${movie.id}`}
-              className="group relative overflow-hidden rounded-xl border border-border-default bg-surface-panel transition-all duration-300 hover:border-accent-cyan/50 hover:shadow-xl hover:shadow-accent-cyan/10"
-            >
-              {/* Poster */}
-              <div className="relative aspect-[2/3] overflow-hidden bg-surface-raised">
-                {movie.poster_path ? (
-                  <img
-                    src={tmdbImageUrl(movie.poster_path, "w500")}
-                    alt={movie.title}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                ) : (
-                  <div className="flex h-full items-center justify-center">
-                    <Film className="h-16 w-16 text-text-muted opacity-20" />
-                  </div>
-                )}
-
-                {/* Gradient Overlay on Hover */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-
-                {/* Rating Badge */}
-                {movie.vote_average && movie.vote_average > 0 && (
-                  <div className="absolute right-2 top-2 flex items-center gap-1 rounded-lg bg-black/80 px-2 py-1 backdrop-blur-md">
-                    <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
-                    <span className="text-xs font-bold text-white">
-                      {movie.vote_average.toFixed(1)}
-                    </span>
-                  </div>
-                )}
-
-                {/* Hover Content - Cast & Crew */}
-                <div className="absolute inset-x-0 bottom-0 translate-y-full space-y-2 p-3 transition-transform duration-300 group-hover:translate-y-0">
-                  {/* Genres */}
-                  {movie.genres && movie.genres.length > 0 && (
-                    <div className="flex flex-wrap gap-1">
-                      {movie.genres.slice(0, 2).map((genre, idx) => {
-                        const genreName =
-                          typeof genre === "string" ? genre : (genre as any)?.name || "";
-                        if (!genreName) return null;
-                        return (
-                          <span
-                            key={typeof genre === "string" ? genre : idx}
-                            className="rounded bg-white/20 px-2 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm"
-                          >
-                            {genreName}
-                          </span>
-                        );
-                      })}
-                    </div>
-                  )}
-
-                  {/* Director */}
-                  {movie.directors && movie.directors.length > 0 && (
-                    <div className="text-[11px] leading-tight text-white">
-                      <span className="font-semibold">Director: </span>
-                      <span className="text-gray-200">{movie.directors[0]}</span>
-                    </div>
-                  )}
-
-                  {/* Top Cast */}
-                  {movie.topCast && movie.topCast.length > 0 && (
-                    <div className="text-[11px] leading-tight text-white">
-                      <span className="font-semibold">Cast: </span>
-                      <span className="line-clamp-2 text-gray-200">{movie.topCast.join(", ")}</span>
-                    </div>
-                  )}
-
-                  {/* Overview fallback if no cast data yet */}
-                  {!movie.directors && !movie.topCast && movie.overview && (
-                    <p className="line-clamp-3 text-[11px] leading-relaxed text-gray-200">
-                      {movie.overview}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              {/* Card Footer */}
-              <div className="p-3">
-                <h3 className="mb-1 line-clamp-1 text-sm font-bold text-text-primary transition-colors group-hover:text-accent-cyan">
-                  {movie.title}
-                </h3>
-                <div className="flex items-center gap-2 text-xs text-text-muted">
-                  {movie.release_date && (
-                    <span>{new Date(movie.release_date).getUTCFullYear()}</span>
-                  )}
-                  {movie.runtime && (
-                    <>
-                      <span className="h-1 w-1 rounded-full bg-text-muted" />
-                      <span>{movie.runtime} min</span>
-                    </>
-                  )}
-                </div>
-              </div>
-            </Link>
+            />
           ))}
         </div>
       )}

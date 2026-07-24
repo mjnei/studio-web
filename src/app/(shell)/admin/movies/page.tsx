@@ -5,21 +5,18 @@ import {
   Film,
   Trash2,
   Edit2,
-  AlertCircle,
-  CheckCircle2,
   Search,
-  Loader,
   Star,
   Calendar,
   Download,
   Database,
-  ChevronLeft,
-  ChevronRight,
   Save,
   X,
   ChevronDown,
   ChevronUp,
   Eye,
+  CheckCircle2,
+  Loader,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -33,12 +30,11 @@ import {
   type AdminMovieResponse,
 } from "@/lib/api/admin";
 import { LayoutToggle, type LayoutMode } from "@/components/ui/LayoutToggle";
-
-type Toast = {
-  id: number;
-  type: "success" | "error" | "info";
-  message: string;
-};
+import { useToast } from "@/components/ui/toast";
+import { Pagination } from "@/components/ui/Pagination";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { MovieCard } from "@/components/movie";
 
 type ViewMode = "library" | "import";
 
@@ -53,6 +49,8 @@ type EditingMovie = {
 const SUPPORTED_LOCALES = ["en", "de", "fr", "es", "zh-CN", "zh-TW", "ja", "ko"];
 
 export default function AdminMoviesPage() {
+  const toast = useToast();
+
   // View mode: library (manage existing) or import (TMDB search)
   const [viewMode, setViewMode] = useState<ViewMode>("library");
   const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid-md");
@@ -83,9 +81,6 @@ export default function AdminMoviesPage() {
   const [selectedLocales, setSelectedLocales] = useState<string[]>(SUPPORTED_LOCALES);
   const [importedMovieIds, setImportedMovieIds] = useState<Set<number>>(new Set()); // Track newly imported movies
 
-  // Common state
-  const [toasts, setToasts] = useState<Toast[]>([]);
-
   useEffect(() => {
     if (viewMode === "library") {
       loadMovies();
@@ -112,24 +107,16 @@ export default function AdminMoviesPage() {
       setLibraryTotal(response.total);
       setLibraryTotalPages(Math.ceil(response.total / response.page_size));
     } catch (error: any) {
-      showToast("error", error.message || "Failed to load movies");
+      toast.error(error.message || "Failed to load movies");
     } finally {
       setIsLoadingLibrary(false);
     }
   };
 
-  const showToast = (type: "success" | "error" | "info", message: string) => {
-    const id = Date.now();
-    setToasts((prev) => [...prev, { id, type, message }]);
-    setTimeout(() => {
-      setToasts((prev) => prev.filter((t) => t.id !== id));
-    }, 5000);
-  };
-
   // TMDB Search handlers
   const handleTmdbSearch = async (page: number = 1) => {
     if (!tmdbSearchQuery.trim()) {
-      showToast("error", "Please enter a search query");
+      toast.error("Please enter a search query");
       return;
     }
 
@@ -145,7 +132,7 @@ export default function AdminMoviesPage() {
       setTmdbTotalResults(response.total_results);
 
       if (response.results.length === 0) {
-        showToast("info", "No movies found. Try a different search query.");
+        toast.info("No movies found. Try a different search query.");
       } else {
         // Check which of the search results are already in the database
         // We'll fetch all library movies in batches (max 100 per request)
@@ -179,7 +166,7 @@ export default function AdminMoviesPage() {
         setImportedMovieIds(initialImported);
       }
     } catch (error: any) {
-      showToast("error", error.message || "Failed to search movies");
+      toast.error(error.message || "Failed to search movies");
       setTmdbSearchResults([]);
     } finally {
       setIsSearchingTmdb(false);
@@ -193,7 +180,7 @@ export default function AdminMoviesPage() {
         movie_id: movie.id,
         locales: selectedLocales.length > 0 ? selectedLocales : undefined,
       });
-      showToast("success", response.message);
+      toast.success(response.message);
 
       // Track this movie as imported (whether new or existing)
       setImportedMovieIds((prev) => new Set(prev).add(movie.id));
@@ -203,7 +190,7 @@ export default function AdminMoviesPage() {
         loadMovies();
       }
     } catch (error: any) {
-      showToast("error", error.message || "Failed to import movie");
+      toast.error(error.message || "Failed to import movie");
     } finally {
       setImportingIds((prev) => {
         const next = new Set(prev);
@@ -241,10 +228,10 @@ export default function AdminMoviesPage() {
       return;
     try {
       await adminDeleteMovie(movieId);
-      showToast("success", "Movie deleted successfully");
+      toast.success("Movie deleted successfully");
       await loadMovies();
     } catch (error: any) {
-      showToast("error", error.message || "Failed to delete movie");
+      toast.error(error.message || "Failed to delete movie");
     }
   };
 
@@ -261,12 +248,12 @@ export default function AdminMoviesPage() {
         },
         selectedLocale
       );
-      showToast("success", "Movie updated successfully");
+      toast.success("Movie updated successfully");
       setEditingId(null);
       setEditingData(null);
       await loadMovies();
     } catch (error: any) {
-      showToast("error", error.message || "Failed to update movie");
+      toast.error(error.message || "Failed to update movie");
     }
   };
 
@@ -306,31 +293,6 @@ export default function AdminMoviesPage() {
 
   return (
     <div className="mx-auto max-w-7xl">
-      {/* Toasts */}
-      <div className="fixed bottom-4 right-4 z-50 space-y-2">
-        {toasts.map((toast) => (
-          <div
-            key={toast.id}
-            className={`flex items-center gap-3 rounded-lg border px-4 py-3 shadow-lg ${
-              toast.type === "success"
-                ? "border-green-500/50 bg-green-500/10 text-green-600"
-                : toast.type === "error"
-                  ? "border-red-500/50 bg-red-500/10 text-red-600"
-                  : "border-blue-500/50 bg-blue-500/10 text-blue-600"
-            }`}
-          >
-            {toast.type === "success" ? (
-              <CheckCircle2 className="h-5 w-5" />
-            ) : toast.type === "error" ? (
-              <AlertCircle className="h-5 w-5" />
-            ) : (
-              <AlertCircle className="h-5 w-5" />
-            )}
-            <span className="text-sm font-medium">{toast.message}</span>
-          </div>
-        ))}
-      </div>
-
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
@@ -405,33 +367,30 @@ export default function AdminMoviesPage() {
 
           {/* Movies Grid */}
           {isLoadingLibrary ? (
-            <div className="flex h-64 items-center justify-center">
-              <div className="flex flex-col items-center gap-2">
-                <Loader className="h-8 w-8 animate-spin text-accent-primary" />
-                <p className="text-sm text-text-muted">Loading movies...</p>
-              </div>
-            </div>
+            <LoadingSpinner size="lg" message="Loading movies..." fullHeight />
           ) : movies.length === 0 ? (
-            <div className="flex h-64 items-center justify-center rounded-2xl border border-dashed border-border-default">
-              <div className="text-center">
-                <Film className="mx-auto h-12 w-12 text-text-muted opacity-50 mb-3" />
-                <p className="text-sm text-text-primary font-medium mb-1">No movies found</p>
-                <p className="text-sm text-text-muted mb-3">
-                  {librarySearchTerm
-                    ? "Try a different search query"
-                    : "Import movies from TMDB to get started"}
-                </p>
-                {!librarySearchTerm && (
+            <EmptyState
+              variant="bordered"
+              size="md"
+              icon={<Film className="h-12 w-12" />}
+              title="No movies found"
+              description={
+                librarySearchTerm
+                  ? "Try a different search query"
+                  : "Import movies from TMDB to get started"
+              }
+              action={
+                !librarySearchTerm && (
                   <button
                     onClick={() => setViewMode("import")}
-                    className="mx-auto flex items-center gap-2 rounded-lg bg-accent-primary px-4 py-2 text-sm font-medium text-white hover:bg-accent-primary/90"
+                    className="flex items-center gap-2 rounded-lg bg-accent-primary px-4 py-2 text-sm font-medium text-white hover:bg-accent-primary/90"
                   >
                     <Download className="h-4 w-4" />
                     Import from TMDB
                   </button>
-                )}
-              </div>
-            </div>
+                )
+              }
+            />
           ) : (
             <>
               <div className={getGridClass() + " mb-6"}>
@@ -715,56 +674,12 @@ export default function AdminMoviesPage() {
               </div>
 
               {/* Pagination */}
-              {libraryTotalPages > 1 && (
-                <div className="flex items-center justify-center gap-2 pb-8">
-                  <button
-                    onClick={() => setLibraryPage((p) => Math.max(1, p - 1))}
-                    disabled={libraryPage === 1}
-                    className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-panel px-3 py-2 text-sm font-medium text-text-secondary hover:bg-surface-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                  >
-                    <ChevronLeft className="h-4 w-4" />
-                    Previous
-                  </button>
-
-                  <div className="flex items-center gap-1">
-                    {Array.from({ length: Math.min(5, libraryTotalPages) }, (_, i) => {
-                      let pageNum;
-                      if (libraryTotalPages <= 5) {
-                        pageNum = i + 1;
-                      } else if (libraryPage <= 3) {
-                        pageNum = i + 1;
-                      } else if (libraryPage >= libraryTotalPages - 2) {
-                        pageNum = libraryTotalPages - 4 + i;
-                      } else {
-                        pageNum = libraryPage - 2 + i;
-                      }
-
-                      return (
-                        <button
-                          key={pageNum}
-                          onClick={() => setLibraryPage(pageNum)}
-                          className={`h-9 w-9 rounded-lg text-sm font-medium transition-all ${
-                            pageNum === libraryPage
-                              ? "bg-accent-primary text-white"
-                              : "border border-border-default bg-surface-panel text-text-secondary hover:bg-surface-hover"
-                          }`}
-                        >
-                          {pageNum}
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  <button
-                    onClick={() => setLibraryPage((p) => Math.min(libraryTotalPages, p + 1))}
-                    disabled={libraryPage === libraryTotalPages}
-                    className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-panel px-3 py-2 text-sm font-medium text-text-secondary hover:bg-surface-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                  >
-                    Next
-                    <ChevronRight className="h-4 w-4" />
-                  </button>
-                </div>
-              )}
+              <Pagination
+                currentPage={libraryPage}
+                totalPages={libraryTotalPages}
+                onPageChange={setLibraryPage}
+                totalItems={libraryTotal}
+              />
             </>
           )}
         </>
@@ -864,8 +779,13 @@ export default function AdminMoviesPage() {
             </div>
           </div>
 
+          {/* Search Results Loading */}
+          {isSearchingTmdb && (
+            <LoadingSpinner size="lg" message="Searching TMDB..." fullHeight />
+          )}
+
           {/* Search Results */}
-          {tmdbSearchResults.length > 0 && (
+          {!isSearchingTmdb && tmdbSearchResults.length > 0 && (
             <>
               <div className="mb-4 flex items-center justify-between">
                 <p className="text-sm text-text-secondary">
@@ -1069,83 +989,33 @@ export default function AdminMoviesPage() {
               </div>
 
               {/* Pagination */}
-              {tmdbTotalPages > 1 && (
-                <div className="flex items-center justify-center gap-2 pb-8">
-                  <button
-                    onClick={() => handleTmdbSearch(tmdbPage - 1)}
-                    disabled={tmdbPage === 1 || isSearchingTmdb}
-                    className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-panel px-3 py-2 text-sm font-medium text-text-secondary hover:bg-surface-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                  >
-                    <ChevronLeft className="h-4 w-4" />
-                    Previous
-                  </button>
-
-                  <div className="flex items-center gap-1">
-                    {Array.from({ length: Math.min(5, tmdbTotalPages) }, (_, i) => {
-                      let pageNum;
-                      if (tmdbTotalPages <= 5) {
-                        pageNum = i + 1;
-                      } else if (tmdbPage <= 3) {
-                        pageNum = i + 1;
-                      } else if (tmdbPage >= tmdbTotalPages - 2) {
-                        pageNum = tmdbTotalPages - 4 + i;
-                      } else {
-                        pageNum = tmdbPage - 2 + i;
-                      }
-
-                      return (
-                        <button
-                          key={pageNum}
-                          onClick={() => handleTmdbSearch(pageNum)}
-                          disabled={isSearchingTmdb}
-                          className={`h-9 w-9 rounded-lg text-sm font-medium transition-all ${
-                            pageNum === tmdbPage
-                              ? "bg-accent-primary text-white"
-                              : "border border-border-default bg-surface-panel text-text-secondary hover:bg-surface-hover"
-                          } disabled:opacity-50 disabled:cursor-not-allowed`}
-                        >
-                          {pageNum}
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  <button
-                    onClick={() => handleTmdbSearch(tmdbPage + 1)}
-                    disabled={tmdbPage === tmdbTotalPages || isSearchingTmdb}
-                    className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-panel px-3 py-2 text-sm font-medium text-text-secondary hover:bg-surface-hover disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                  >
-                    Next
-                    <ChevronRight className="h-4 w-4" />
-                  </button>
-                </div>
-              )}
+              <Pagination
+                currentPage={tmdbPage}
+                totalPages={tmdbTotalPages}
+                onPageChange={(page) => handleTmdbSearch(page)}
+                totalItems={tmdbTotalResults}
+              />
             </>
           )}
 
           {/* Empty State */}
           {!isSearchingTmdb && tmdbSearchResults.length === 0 && tmdbSearchQuery && (
-            <div className="flex h-64 items-center justify-center rounded-2xl border border-dashed border-border-default">
-              <div className="text-center">
-                <Film className="mx-auto h-12 w-12 text-text-muted opacity-50 mb-3" />
-                <p className="text-sm text-text-muted">
-                  No movies found. Try a different search query.
-                </p>
-              </div>
-            </div>
+            <EmptyState
+              variant="bordered"
+              icon={<Film className="h-12 w-12" />}
+              title="No movies found"
+              description="Try a different search query."
+            />
           )}
 
           {/* Initial State */}
           {!isSearchingTmdb && tmdbSearchResults.length === 0 && !tmdbSearchQuery && (
-            <div className="flex h-64 items-center justify-center rounded-2xl border border-dashed border-border-default">
-              <div className="text-center">
-                <Database className="mx-auto h-12 w-12 text-text-muted opacity-50 mb-3" />
-                <p className="text-sm text-text-primary font-medium mb-1">Search TMDB</p>
-                <p className="text-sm text-text-muted">
-                  Enter a movie title above to search The Movie Database
-                </p>
-              </div>
-            </div>
+            <EmptyState
+              variant="bordered"
+              icon={<Database className="h-12 w-12" />}
+              title="Search TMDB"
+              description="Enter a movie title above to search The Movie Database"
+            />
           )}
         </>
       )}
