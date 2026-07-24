@@ -76,10 +76,10 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
   const handleCreateProject = async () => {
     setIsCreatingProject(true);
     try {
-      await createProject(movieId);
+      const project = await createProject(movieId);
       showToast("success", "Project created! Redirecting...");
       setTimeout(() => {
-        router.push(`/dashboard`);
+        router.push(`/project/${project.id}/source`);
       }, 1000);
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : "Failed to create project";
@@ -200,10 +200,15 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                 {/* Create Project Button */}
                 <button
                   onClick={handleCreateProject}
-                  disabled={isCreatingProject}
+                  disabled={isCreatingProject || movieId === null || loading}
                   className="flex w-full items-center justify-center gap-2 rounded-xl bg-accent-cyan px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-accent-cyan/20 hover:bg-accent-cyan/90 hover:shadow-xl hover:shadow-accent-cyan/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
                 >
-                  {isCreatingProject ? (
+                  {loading ? (
+                    <>
+                      <Loader className="h-5 w-5 animate-spin" />
+                      Loading...
+                    </>
+                  ) : isCreatingProject ? (
                     <>
                       <Loader className="h-5 w-5 animate-spin" />
                       Creating Project...
