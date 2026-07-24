@@ -192,7 +192,8 @@ export default function HelpPage() {
           </div>
           <CardTitle className="mb-2">Still need help?</CardTitle>
           <CardDescription className="mb-6">
-            Can&apos;t find what you&apos;re looking for? Our support team is here to help you succeed.
+            Can&apos;t find what you&apos;re looking for? Our support team is here to help you
+            succeed.
           </CardDescription>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button variant="primary" size="lg">

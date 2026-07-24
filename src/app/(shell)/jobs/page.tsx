@@ -131,7 +131,7 @@ export default function JobsPage() {
     try {
       await deleteProjectVideo(projectId, videoId);
       toast.success("Video deleted", "The video has been removed");
-      
+
       // Reload videos for the affected project
       const { videos } = await getProjectVideos(projectId);
       setProjectsWithVideos((prev) =>
