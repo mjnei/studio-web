@@ -364,6 +364,12 @@ export async function regenerateThumbnail(
   });
 }
 
+export async function retryThumbnailGeneration(projectId: string): Promise<ProjectResponse> {
+  return request<ProjectResponse>(`/projects/${projectId}/thumbnail/retry-generation`, {
+    method: "POST",
+  });
+}
+
 export async function uploadCustomThumbnail(
   projectId: string,
   file: File

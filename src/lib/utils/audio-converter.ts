@@ -33,9 +33,10 @@ export async function convertWebmToAudio(blob: Blob, voiceName: string): Promise
  */
 async function convertWebmUsingWebAudio(blob: Blob, voiceName: string): Promise<Blob> {
   // Decode the audio data
-  const audioContext = new (window.AudioContext ||
-    (window as Window & typeof globalThis & { webkitAudioContext: AudioContext })
-      .webkitAudioContext)();
+  const audioContext = new (
+    window.AudioContext ||
+    (window as Window & typeof globalThis & { webkitAudioContext: AudioContext }).webkitAudioContext
+  )();
   const arrayBuffer = await blob.arrayBuffer();
   const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
 

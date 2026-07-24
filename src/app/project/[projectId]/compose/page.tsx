@@ -12,7 +12,7 @@ import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
 import { FileText, ChevronDown, Sparkles, Check, Loader2, RotateCw, Edit } from "lucide-react";
-import { advanceProjectStep, scheduleAgnesJobs, regenerateThumbnail } from "@/lib/project-client";
+import { advanceProjectStep, scheduleAgnesJobs, regenerateThumbnail, retryThumbnailGeneration } from "@/lib/project-client";
 import { useToast } from "@/components/ui/toast";
 
 export default function ComposePage() {
@@ -25,7 +25,9 @@ export default function ComposePage() {
   const [showFullScriptModal, setShowFullScriptModal] = useState(false);
   const [showThumbnailEditor, setShowThumbnailEditor] = useState(false);
   const [showActionModal, setShowActionModal] = useState(false);
-  const [actionModalType, setActionModalType] = useState<"regenerate" | "edit">("regenerate");
+  const [actionModalType, setActionModalType] = useState<"regenerate" | "edit" | "retry">(
+    "regenerate"
+  );
   const [isAdvancing, setIsAdvancing] = useState(false);
   const [isPollingComposition, setIsPollingComposition] = useState(false);
   const [hasScheduledThumbnail, setHasScheduledThumbnail] = useState(false);
@@ -140,12 +142,35 @@ export default function ComposePage() {
     }
   };
 
+  const handleRetryGeneration = async () => {
+    setIsRegenerating(true);
+    setShowActionModal(false);
+    try {
+      // Call the new retry endpoint that cancels stuck jobs and re-schedules
+      await retryThumbnailGeneration(projectId);
+      toast.success(
+        "Retrying generation",
+        "Cancelled previous job and queued a new one. This will take a few moments..."
+      );
+      // Refresh to get the updated status
+      await refresh();
+    } catch (error) {
+      console.error("Failed to retry generation:", error);
+      toast.error(
+        "Retry failed",
+        error instanceof Error ? error.message : "Failed to retry thumbnail generation"
+      );
+    } finally {
+      setIsRegenerating(false);
+    }
+  };
+
   const handleEditThumbnail = () => {
     setShowActionModal(false);
     setShowThumbnailEditor(true);
   };
 
-  const openActionModal = (type: "regenerate" | "edit") => {
+  const openActionModal = (type: "regenerate" | "edit" | "retry") => {
     setActionModalType(type);
     setShowActionModal(true);
   };
@@ -238,9 +263,24 @@ export default function ComposePage() {
                       {state.thumbnailStatus === "generating" ||
                       !state.thumbnailUrl ||
                       isRegenerating ? (
-                        <span className="text-xs font-medium text-accent-cyan flex items-center gap-1">
-                          <Loader2 className="h-3 w-3 animate-spin" /> Generating...
-                        </span>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-xs font-medium text-accent-cyan flex items-center gap-1">
+                            <Loader2 className="h-3 w-3 animate-spin" /> Generating...
+                          </span>
+                          {/* Show retry button when generating */}
+                          {!isRegenerating && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                openActionModal("retry");
+                              }}
+                              className="text-xs font-medium text-white bg-status-warning hover:bg-status-warning/90 flex items-center gap-1 transition-colors px-2 py-1 rounded"
+                              title="Generation taking too long? Click to retry"
+                            >
+                              <RotateCw className="h-3 w-3" /> Retry
+                            </button>
+                          )}
+                        </div>
                       ) : state.thumbnailCompositionStatus === "processing" ? (
                         <span className="text-xs font-medium text-accent-cyan flex items-center gap-1">
                           <Loader2 className="h-3 w-3 animate-spin" /> Processing...
@@ -437,7 +477,13 @@ export default function ComposePage() {
       <Modal
         open={showActionModal}
         onClose={() => setShowActionModal(false)}
-        title={actionModalType === "regenerate" ? "Regenerate Thumbnail?" : "Customize Thumbnail?"}
+        title={
+          actionModalType === "regenerate"
+            ? "Regenerate Thumbnail?"
+            : actionModalType === "retry"
+              ? "Retry Thumbnail Generation?"
+              : "Customize Thumbnail?"
+        }
         size="md"
         footer={
           <>
@@ -447,18 +493,26 @@ export default function ComposePage() {
             <Button
               variant="primary"
               onClick={
-                actionModalType === "regenerate" ? handleRegenerateThumbnail : handleEditThumbnail
+                actionModalType === "regenerate"
+                  ? handleRegenerateThumbnail
+                  : actionModalType === "retry"
+                    ? handleRetryGeneration
+                    : handleEditThumbnail
               }
               loading={isRegenerating}
               leftIcon={
-                actionModalType === "regenerate" ? (
+                actionModalType === "regenerate" || actionModalType === "retry" ? (
                   <RotateCw className="h-4 w-4" />
                 ) : (
                   <Edit className="h-4 w-4" />
                 )
               }
             >
-              {actionModalType === "regenerate" ? "Regenerate" : "Open Editor"}
+              {actionModalType === "regenerate"
+                ? "Regenerate"
+                : actionModalType === "retry"
+                  ? "Retry Now"
+                  : "Open Editor"}
             </Button>
           </>
         }
@@ -488,6 +542,33 @@ export default function ComposePage() {
                 <p className="flex items-start gap-2">
                   <span className="text-accent-cyan">•</span>
                   <span>Your current customizations will be reset</span>
+                </p>
+              </div>
+            </>
+          ) : actionModalType === "retry" ? (
+            <>
+              <div className="flex items-start gap-3 p-4 rounded-lg bg-status-warning/5 border border-status-warning/20">
+                <RotateCw className="h-5 w-5 text-status-warning flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="font-medium text-text-primary mb-1">Retry Stuck Generation</h4>
+                  <p className="text-sm text-text-secondary leading-relaxed">
+                    The thumbnail generation appears to be taking longer than usual. This will
+                    restart the generation process with the same settings.
+                  </p>
+                </div>
+              </div>
+              <div className="text-sm text-text-muted space-y-2 pl-2">
+                <p className="flex items-start gap-2">
+                  <span className="text-status-warning">•</span>
+                  <span>This may happen if the background worker was restarted</span>
+                </p>
+                <p className="flex items-start gap-2">
+                  <span className="text-status-warning">•</span>
+                  <span>The retry will use your existing movie and script content</span>
+                </p>
+                <p className="flex items-start gap-2">
+                  <span className="text-status-warning">•</span>
+                  <span>Takes 10-30 seconds to complete</span>
                 </p>
               </div>
             </>
