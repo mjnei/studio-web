@@ -218,9 +218,7 @@ export default function ProfilePage() {
         </Card>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Main Content Column */}
-        <div className="lg:col-span-2 space-y-4">
+      <div className="space-y-4">
           {/* Account Overview */}
           <Card variant="elevated" padding="lg">
             <CardHeader className="pb-6">
@@ -746,7 +744,6 @@ export default function ProfilePage() {
             </div>
           )}
         </div>
-      </div>
     </div>
   );
 }
