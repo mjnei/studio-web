@@ -19,7 +19,6 @@ import {
   ChevronUp,
 } from "lucide-react";
 import Link from "next/link";
-import { createProject } from "@/lib/project-client";
 import { adminGetMovieDetails, type MovieDetailsResponse } from "@/lib/api/admin";
 
 type Toast = {
@@ -35,7 +34,6 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
   const [movie, setMovie] = useState<MovieDetailsResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isCreatingProject, setIsCreatingProject] = useState(false);
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [isTopCastExpanded, setIsTopCastExpanded] = useState(true);
   const [isCrewExpanded, setIsCrewExpanded] = useState(true);
@@ -73,20 +71,26 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
     }, 5000);
   };
 
-  const handleCreateProject = async () => {
-    setIsCreatingProject(true);
-    try {
-      const project = await createProject(movieId);
-      showToast("success", "Project created! Redirecting...");
-      setTimeout(() => {
-        router.push(`/project/${project.id}/source`);
-      }, 1000);
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : "Failed to create project";
-      showToast("error", errorMsg);
-    } finally {
-      setIsCreatingProject(false);
+  const handleCreateProject = () => {
+    if (!movie) return;
+
+    // Store movie in sessionStorage (same pattern as /project/new/source)
+    const movieData = {
+      id: movie.id.toString(),
+      title: movie.title || movie.original_title,
+      year: movie.release_date ? new Date(movie.release_date).getFullYear() : 0,
+      poster: posterUrl || "",
+      rating: movie.vote_average || 0,
+      genre: movie.genres?.map((g) => g.name).filter(Boolean) || [],
+      duration: movie.runtime ? `${movie.runtime} min` : "",
+    };
+
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("newProjectMovie", JSON.stringify(movieData));
     }
+
+    // Redirect to script creation (project will be created when script is saved)
+    router.push("/project/new/script");
   };
 
   const posterUrl = movie?.poster_path
@@ -200,18 +204,13 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                 {/* Create Project Button */}
                 <button
                   onClick={handleCreateProject}
-                  disabled={isCreatingProject || movieId === null || loading}
+                  disabled={movieId === null || loading}
                   className="flex w-full items-center justify-center gap-2 rounded-xl bg-accent-cyan px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-accent-cyan/20 hover:bg-accent-cyan/90 hover:shadow-xl hover:shadow-accent-cyan/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
                 >
                   {loading ? (
                     <>
                       <Loader className="h-5 w-5 animate-spin" />
                       Loading...
-                    </>
-                  ) : isCreatingProject ? (
-                    <>
-                      <Loader className="h-5 w-5 animate-spin" />
-                      Creating Project...
                     </>
                   ) : (
                     <>

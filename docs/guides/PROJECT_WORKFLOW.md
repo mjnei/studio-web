@@ -12,6 +12,13 @@ A streamlined 7-step workflow for creating video projects from movie trailers. E
 Source → Script → Voice → Details → Preview → Compose → Finalize
 ```
 
+**Project Creation Entry Points:**
+
+1. **From Dashboard/Projects**: Navigate to `/project/new/source` to browse and select a movie, then continue to script creation
+2. **From Movie Details**: Click "Create Project" on any movie details page (`/movies/{id}`) to skip movie selection and go directly to script creation
+
+Both entry points lead to `/project/new/script` where the project is created when the first script is saved.
+
 **Navigation:** All pages use unified `FloatingWorkflowNavigation` component with:
 - Back button (hidden on Step 1, visible on all other steps)
 - Home button (always visible, returns to projects list)
@@ -30,6 +37,34 @@ Source → Script → Voice → Details → Preview → Compose → Finalize
 - ✅ Mobile responsive & accessible (unified navigation buttons)
 - ✅ Exit and resume anytime
 - ✅ Consistent UI patterns across all steps
+
+---
+
+## Project Creation Entry Points
+
+### Entry Point 1: Browse Movies First
+**Flow**: Dashboard → New Project → Browse Movies → Select Movie → Write Script → Create Project
+
+1. User clicks "New Project" from dashboard or projects page
+2. Navigates to `/project/new/source`
+3. Browses and selects a movie
+4. Movie data stored in sessionStorage
+5. Continues to `/project/new/script`
+6. Writes script and clicks "Save"
+7. Project created with movie + script, redirects to `/project/{id}/voice`
+
+### Entry Point 2: Start from Movie Details
+**Flow**: Movie Details → Create Project → Write Script → Create Project
+
+1. User browses movies at `/movies` or searches for a specific movie
+2. Clicks on a movie to view details at `/movies/{id}`
+3. Clicks "Create Project" button
+4. Movie data stored in sessionStorage
+5. Directly navigates to `/project/new/script` (skips movie selection)
+6. Writes script and clicks "Save"
+7. Project created with movie + script, redirects to `/project/{id}/voice`
+
+**Key Implementation Detail**: Both entry points use sessionStorage to pass movie data to the script creation page, where the actual project is created via the `createScript()` API call with `movie_id` parameter.
 
 ---
 
