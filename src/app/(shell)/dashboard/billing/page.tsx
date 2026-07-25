@@ -16,6 +16,8 @@ import {
   TrendingUp,
   Coins,
   ArrowRight,
+  Sparkles,
+  Check,
 } from "lucide-react";
 import {
   getCreditStatus,
@@ -23,6 +25,7 @@ import {
   type CreditStatus,
   type CreditTransaction,
 } from "@/lib/credit-client";
+import { gimmeCredits } from "@/lib/api-client";
 
 export default function BillingPage() {
   const router = useRouter();
@@ -30,6 +33,10 @@ export default function BillingPage() {
   const [transactions, setTransactions] = React.useState<CreditTransaction[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [activeTab, setActiveTab] = React.useState<"overview" | "history" | "invoices">("overview");
+  const [addingCredits, setAddingCredits] = React.useState(false);
+  const [creditsSuccess, setCreditsSuccess] = React.useState(false);
+  const [creditsError, setCreditsError] = React.useState("");
+  const [showCreditsConfirm, setShowCreditsConfirm] = React.useState(false);
   const toast = useToast();
 
   React.useEffect(() => {
@@ -65,6 +72,27 @@ export default function BillingPage() {
   const handleUpdatePayment = () => {
     alert("Updating payment method... (Stripe integration will be implemented in Phase 5)");
   };
+
+  async function handleGimmeCredits() {
+    setAddingCredits(true);
+    setCreditsSuccess(false);
+    setCreditsError("");
+    try {
+      await gimmeCredits();
+      // Refresh credit status to show updated credits
+      const [status, history] = await Promise.all([getCreditStatus(), getCreditHistory(1, 10)]);
+      setCreditStatus(status);
+      setTransactions(history.transactions);
+      setCreditsSuccess(true);
+      setShowCreditsConfirm(false);
+      // Clear success message after 3 seconds
+      setTimeout(() => setCreditsSuccess(false), 3000);
+    } catch (err: unknown) {
+      setCreditsError(err instanceof Error ? err.message : "Failed to add credits");
+    } finally {
+      setAddingCredits(false);
+    }
+  }
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -197,6 +225,19 @@ export default function BillingPage() {
                   Upgrade Plan
                 </Button>
               </div>
+
+              {/* Success Message */}
+              {creditsSuccess && (
+                <div className="mt-4 rounded-lg border border-status-completed/30 bg-status-completed/10 px-4 py-3 text-sm text-status-completed flex items-start gap-2">
+                  <Check className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                  <span>5 credits added successfully! 🎉</span>
+                </div>
+              )}
+              {creditsError && (
+                <div className="mt-4 rounded-lg border border-status-failed/30 bg-status-failed/10 px-4 py-3 text-sm text-status-failed flex items-start gap-2">
+                  <span>{creditsError}</span>
+                </div>
+              )}
             </div>
           </Card>
 
@@ -207,6 +248,14 @@ export default function BillingPage() {
                 <h2 className="text-lg font-semibold text-text-primary mb-1">Credit Details</h2>
                 <p className="text-sm text-text-muted">Your current credit allocation and usage</p>
               </div>
+              <Button
+                variant="primary"
+                onClick={() => setShowCreditsConfirm(true)}
+                disabled={addingCredits}
+                leftIcon={<Sparkles className="w-4 h-4" />}
+              >
+                {addingCredits ? "Adding..." : "Gimme Credits"}
+              </Button>
             </div>
 
             <div className="grid gap-6 md:grid-cols-3 mb-6">
@@ -443,6 +492,45 @@ export default function BillingPage() {
           </div>
         </div>
       </Card>
+
+      {/* Credits Confirmation Modal */}
+      {showCreditsConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <Card
+            variant="elevated"
+            padding="lg"
+            className="max-w-sm w-full animate-in fade-in zoom-in-95"
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-cyan to-accent-primary flex items-center justify-center">
+                <Sparkles className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold text-text-primary">Add Bonus Credits?</h2>
+                <p className="text-sm text-text-muted">Get 5 bonus credits now</p>
+              </div>
+            </div>
+            <p className="text-sm text-text-secondary mb-6">
+              You're about to add 5 bonus credits to your account. This is a one-time offer for
+              testing and development purposes.
+            </p>
+            <div className="flex gap-3">
+              <Button variant="ghost" onClick={() => setShowCreditsConfirm(false)} fullWidth>
+                Cancel
+              </Button>
+              <Button
+                variant="primary"
+                onClick={handleGimmeCredits}
+                disabled={addingCredits}
+                fullWidth
+                leftIcon={<Sparkles className="w-4 h-4" />}
+              >
+                {addingCredits ? "Adding..." : "Add Credits"}
+              </Button>
+            </div>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }
