@@ -184,7 +184,7 @@ export default function ProfilePage() {
                   View Plans
                 </Button>
               </Link>
-              <Link href="/dashboard/billing">
+              <Link href="/billing">
                 <Button variant="secondary" size="md">
                   <CreditCard className="w-4 h-4" />
                   Billing
@@ -409,7 +409,7 @@ export default function ProfilePage() {
                     {isFreeUser ? "Upgrade Plan" : "View All Plans"}
                   </Button>
                 </Link>
-                <Link href="/dashboard/billing" className="flex-1">
+                <Link href="/billing" className="flex-1">
                   <Button
                     variant="secondary"
                     fullWidth
