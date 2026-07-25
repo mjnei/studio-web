@@ -350,21 +350,21 @@ import type { VoiceWithCreator } from "@/lib/types/api";
  * Get voices shared by users awaiting admin approval.
  */
 export async function adminGetPendingVoices(): Promise<VoiceWithCreator[]> {
-  return request<VoiceWithCreator[]>("/admin/voices/pending");
+  return request<VoiceWithCreator[]>("/voices/admin/pending");
 }
 
 /**
  * Get voices already approved by admin for public catalog.
  */
 export async function adminGetApprovedVoices(): Promise<VoiceWithCreator[]> {
-  return request<VoiceWithCreator[]>("/admin/voices/approved");
+  return request<VoiceWithCreator[]>("/voices/admin/approved");
 }
 
 /**
  * Approve a shared voice for public catalog.
  */
 export async function adminApproveVoice(voiceId: number): Promise<VoiceResponse> {
-  return request<VoiceResponse>(`/admin/voices/${voiceId}/approve`, {
+  return request<VoiceResponse>(`/voices/admin/${voiceId}/approve`, {
     method: "PATCH",
     body: JSON.stringify({ is_approved: true }),
   });
@@ -374,7 +374,7 @@ export async function adminApproveVoice(voiceId: number): Promise<VoiceResponse>
  * Unapprove a voice (revoke public access).
  */
 export async function adminUnapproveVoice(voiceId: number): Promise<VoiceResponse> {
-  return request<VoiceResponse>(`/admin/voices/${voiceId}/unapprove`, {
+  return request<VoiceResponse>(`/voices/admin/${voiceId}/unapprove`, {
     method: "PATCH",
     body: JSON.stringify({ is_approved: false }),
   });
