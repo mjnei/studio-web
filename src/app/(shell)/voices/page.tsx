@@ -1,7 +1,17 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Mic, Globe, User, AlertCircle, CheckCircle, Play, Clock, Trash2 } from "lucide-react";
+import {
+  Plus,
+  Mic,
+  Globe,
+  User,
+  AlertCircle,
+  CheckCircle,
+  Play,
+  Clock,
+  Trash2,
+} from "lucide-react";
 import { VoiceRecordingModal } from "@/components/shared/voice-recording-modal";
 import { VoiceRecordingCard } from "@/components/voices/voice-recording-card";
 import { VoiceLimitDialog } from "@/components/voices/voice-limit-dialog";
@@ -94,7 +104,7 @@ export default function VoicesPage() {
   const [communityVoices, setCommunityVoices] = useState<VoiceWithCreator[]>([]);
   const [communityLoading, setCommunityLoading] = useState(false);
   const [communityError, setCommunityError] = useState<string | null>(null);
-  
+
   // State for delete confirmation on community tab
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [voiceToDelete, setVoiceToDelete] = useState<number | null>(null);
@@ -120,7 +130,7 @@ export default function VoicesPage() {
           setCommunityLoading(false);
         }
       };
-      
+
       fetchCommunityVoices();
     }
   }, [tab]);
@@ -172,16 +182,16 @@ export default function VoicesPage() {
     // Refetch voices to get updated sharing status
     refetch();
   };
-  
+
   // Community tab: delete handler
   const handleCommunityDeleteClick = (voiceId: number) => {
     setVoiceToDelete(voiceId);
     setDeleteConfirmOpen(true);
   };
-  
+
   const handleCommunityDeleteConfirm = async () => {
     if (!voiceToDelete) return;
-    
+
     setDeleting(true);
     try {
       await deleteVoice(voiceToDelete);
@@ -249,7 +259,9 @@ export default function VoicesPage() {
             {privateVoices.length > 0 && (
               <span
                 className={`ml-1 rounded-full px-2 py-0.5 text-xs font-bold ${
-                  tab === "private" ? "bg-white/20 text-white" : "bg-surface-elevated text-text-muted"
+                  tab === "private"
+                    ? "bg-white/20 text-white"
+                    : "bg-surface-elevated text-text-muted"
                 }`}
               >
                 {privateVoices.length}
@@ -271,7 +283,9 @@ export default function VoicesPage() {
             {communityVoices.length > 0 && (
               <span
                 className={`ml-1 rounded-full px-2 py-0.5 text-xs font-bold ${
-                  tab === "community" ? "bg-white/20 text-white" : "bg-surface-elevated text-text-muted"
+                  tab === "community"
+                    ? "bg-white/20 text-white"
+                    : "bg-surface-elevated text-text-muted"
                 }`}
               >
                 {communityVoices.length}
@@ -388,11 +402,11 @@ export default function VoicesPage() {
                 <Globe className="h-5 w-5 text-accent-cyan" />
               </div>
               <div className="flex-1">
-                <h3 className="text-sm font-semibold text-text-primary mb-1">
-                  Community Voices
-                </h3>
+                <h3 className="text-sm font-semibold text-text-primary mb-1">Community Voices</h3>
                 <p className="text-xs text-text-secondary leading-relaxed">
-                  These voices have been shared and approved by our team. All community voices are available for use in your projects. You can delete your own shared voices from here.
+                  These voices have been shared and approved by our team. All community voices are
+                  available for use in your projects. You can delete your own shared voices from
+                  here.
                 </p>
               </div>
             </div>
@@ -430,7 +444,7 @@ export default function VoicesPage() {
               {communityVoices.map((voice) => {
                 // Check if this voice belongs to the current user (compare as numbers)
                 const isOwnVoice = user && voice.user_id === parseInt(user.id, 10);
-                
+
                 return (
                   <Card
                     key={voice.id}
@@ -444,7 +458,7 @@ export default function VoicesPage() {
                         <h3 className="font-semibold text-text-primary text-base truncate group-hover:text-accent-cyan transition-colors flex-1">
                           {voice.name}
                         </h3>
-                        
+
                         {/* Actions: Delete (if own voice) or Approved badge */}
                         <div className="flex items-center gap-2 flex-shrink-0">
                           {isOwnVoice ? (
@@ -514,7 +528,7 @@ export default function VoicesPage() {
               })}
             </div>
           )}
-          
+
           {/* Delete Confirmation Modal for Community Voices */}
           <ConfirmModal
             open={deleteConfirmOpen}
