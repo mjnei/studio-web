@@ -87,12 +87,10 @@ export default function VoicePage() {
     getAvailableVoices()
       .then((data) => {
         if (!cancelled) {
-          // Filter out deleted voices per Requirement 7.1 (soft delete support)
-          const activeOwnVoices = data.own_voices.filter((voice) => !voice.is_deleted);
-          const activeCommunityVoices = data.community_voices.filter((voice) => !voice.is_deleted);
-
-          setOwnVoices(activeOwnVoices);
-          setCommunityVoices(activeCommunityVoices);
+          // Backend already filters out deleted voices and returns only approved community voices
+          // (is_shared=TRUE AND is_approved=TRUE AND is_deleted=FALSE)
+          setOwnVoices(data.own_voices);
+          setCommunityVoices(data.community_voices);
           setAvailableVoicesError(null);
         }
       })
@@ -566,7 +564,7 @@ export default function VoicePage() {
                           No community voices available
                         </p>
                         <p className="text-xs text-text-muted max-w-xs mx-auto">
-                          Community voices will appear here once they&apos;re shared and approved
+                          Approved community voices will appear here
                         </p>
                       </div>
                     ) : (
@@ -591,10 +589,17 @@ export default function VoicePage() {
                                 <p className="font-semibold text-text-primary text-sm truncate">
                                   {voice.name}
                                 </p>
-                                <p className="text-xs text-text-muted flex items-center gap-1">
-                                  <User className="h-3 w-3" />
-                                  <span>@{voice.creator_username}</span>
+                                <p className="text-xs text-text-muted flex items-center gap-1 truncate">
+                                  <User className="h-3 w-3 flex-shrink-0" />
+                                  <span className="truncate">@{voice.creator_username}</span>
                                 </p>
+                                {/* Approved badge */}
+                                <div className="mt-1">
+                                  <span className="inline-flex items-center gap-1 rounded-full bg-green-500/10 border border-green-500/30 px-1.5 py-0.5 text-[10px] font-bold text-green-600">
+                                    <div className="h-1 w-1 rounded-full bg-green-600"></div>
+                                    Approved
+                                  </span>
+                                </div>
                               </div>
                             </div>
                             {selectedVoiceId === voice.id && (

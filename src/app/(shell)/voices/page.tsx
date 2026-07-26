@@ -63,6 +63,8 @@ export default function VoicesPage() {
       setCommunityLoading(true);
       getAvailableVoices()
         .then((data) => {
+          // Backend already filters to show only approved community voices
+          // (is_shared=TRUE AND is_approved=TRUE AND is_deleted=FALSE)
           setCommunityVoices(data.community_voices);
           setCommunityError(null);
         })
@@ -293,8 +295,9 @@ export default function VoicesPage() {
               <div className="flex-1">
                 <h3 className="text-sm font-semibold text-text-primary mb-1">Community Voices</h3>
                 <p className="text-xs text-text-muted leading-relaxed">
-                  Discover voices shared by other users and approved by our team. Use these voices
-                  in your projects alongside your own recordings.
+                  These voices have been shared by other users and approved by our team. All
+                  community voices are available for use in your projects alongside your own
+                  recordings.
                 </p>
               </div>
             </div>
@@ -337,9 +340,18 @@ export default function VoicesPage() {
                 >
                   {/* Voice Header */}
                   <div className="mb-4">
-                    <h3 className="font-semibold text-text-primary text-lg mb-1 truncate group-hover:text-accent-cyan transition-colors">
-                      {voice.name}
-                    </h3>
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                      <h3 className="font-semibold text-text-primary text-lg truncate group-hover:text-accent-cyan transition-colors flex-1">
+                        {voice.name}
+                      </h3>
+                      {/* Approved Badge */}
+                      <div className="flex-shrink-0">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-green-500/10 border border-green-500/30 px-2 py-0.5 text-xs font-bold text-green-600">
+                          <div className="h-1.5 w-1.5 rounded-full bg-green-600 animate-pulse"></div>
+                          Approved
+                        </span>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Creator Info */}
@@ -348,7 +360,7 @@ export default function VoicesPage() {
                       <div className="flex h-6 w-6 items-center justify-center rounded-full bg-purple-500/10 flex-shrink-0">
                         <User className="h-3.5 w-3.5 text-purple-600" />
                       </div>
-                      <span className="text-text-secondary font-medium">
+                      <span className="text-text-secondary font-medium truncate">
                         by @{voice.creator_username}
                       </span>
                     </div>
