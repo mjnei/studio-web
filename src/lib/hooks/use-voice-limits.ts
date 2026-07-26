@@ -48,8 +48,11 @@ export function useVoiceLimits(): VoiceLimitStatus {
       const tier = userData.membership_tier || "free";
       const limit = getVoiceLimit(tier);
 
-      // Count only non-deleted voices
-      const currentCount = voicesData.filter((v) => !v.is_deleted).length;
+      // Count only non-deleted voices, excluding approved shared voices
+      // Approved shared voices don't count toward limit (community contribution)
+      const currentCount = voicesData.filter(
+        (v) => !v.is_deleted && !(v.is_shared && v.is_approved)
+      ).length;
       const remainingCount = Math.max(0, limit - currentCount);
       const canAddMore = canAddVoice(currentCount, tier);
       const limitMessage = getVoiceLimitMessage(currentCount, tier);
