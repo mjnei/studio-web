@@ -356,24 +356,35 @@ export default function PreviewPage() {
                 {ttsJob?.status === "failed" && ttsJob.error_message}
                 {ttsError && !ttsJob && ttsError}
               </p>
+
+              {/* Debug info */}
+              {ttsJob?.status === "completed" && (
+                <p className="text-xs text-accent-tertiary mt-2">
+                  Status: {ttsJob.status} | Audio URL: {ttsJob.audio_url ? "✓" : "✗"} | Duration:{" "}
+                  {duration}s
+                </p>
+              )}
             </div>
+
+            {/* Hidden audio element - always present */}
+            {ttsJob?.audio_url && (
+              <audio
+                ref={audioRef}
+                src={ttsJob.audio_url}
+                onPlay={() => setIsPlaying(true)}
+                onPause={() => setIsPlaying(false)}
+                preload="metadata"
+                style={{ display: "none" }}
+              />
+            )}
 
             {/* Custom Audio Player */}
             {ttsJob?.status === "completed" && ttsJob.audio_url && (
               <div className="space-y-4">
-                {/* Hidden audio element */}
-                <audio
-                  ref={audioRef}
-                  src={ttsJob.audio_url}
-                  onPlay={() => setIsPlaying(true)}
-                  onPause={() => setIsPlaying(false)}
-                  preload="metadata"
-                />
-
                 {/* Playback Controls Card */}
-                <div className="mx-auto max-w-2xl rounded-xl bg-surface-elevated p-6 border border-border-default">
+                <div className="mx-auto w-full max-w-2xl rounded-xl bg-surface-elevated p-6 border border-border-default">
                   {/* Progress Bar */}
-                  <div className="mb-4">
+                  <div className="mb-6">
                     <input
                       type="range"
                       min="0"
@@ -408,41 +419,38 @@ export default function PreviewPage() {
                   </div>
 
                   {/* Main Controls */}
-                  <div className="flex items-center justify-center gap-3 mb-4">
-                    <Button
-                      variant="ghost"
-                      size="sm"
+                  <div className="flex items-center justify-center gap-4 mb-6">
+                    <button
                       onClick={resetAudio}
-                      className="h-10 w-10 p-0"
+                      title="Reset to start"
+                      className="h-10 w-10 p-0 flex items-center justify-center rounded hover:bg-surface-panel transition-colors"
                     >
-                      <RotateCcw className="h-4 w-4" />
-                    </Button>
+                      <RotateCcw className="h-4 w-4 text-text-primary" />
+                    </button>
 
-                    <Button
-                      variant="primary"
-                      size="lg"
+                    <button
                       onClick={togglePlayPause}
-                      className="h-16 w-16 rounded-full p-0 shadow-glow-hover"
+                      className="h-16 w-16 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 p-0 flex items-center justify-center shadow-lg hover:shadow-glow-hover transition-all text-white font-semibold flex-shrink-0"
+                      title={isPlaying ? "Pause" : "Play"}
                     >
                       {isPlaying ? (
-                        <Pause className="h-7 w-7" />
+                        <Pause className="h-8 w-8 fill-white" />
                       ) : (
-                        <Play className="h-7 w-7 ml-0.5" />
+                        <Play className="h-8 w-8 ml-1 fill-white" />
                       )}
-                    </Button>
+                    </button>
 
-                    <Button
-                      variant="ghost"
-                      size="sm"
+                    <button
                       onClick={toggleMute}
-                      className="h-10 w-10 p-0"
+                      title={isMuted ? "Unmute" : "Mute"}
+                      className="h-10 w-10 p-0 flex items-center justify-center rounded hover:bg-surface-panel transition-colors"
                     >
                       {isMuted || volume === 0 ? (
-                        <VolumeX className="h-4 w-4" />
+                        <VolumeX className="h-4 w-4 text-text-primary" />
                       ) : (
-                        <Volume2 className="h-4 w-4" />
+                        <Volume2 className="h-4 w-4 text-text-primary" />
                       )}
-                    </Button>
+                    </button>
                   </div>
 
                   {/* Volume Control */}
@@ -455,6 +463,7 @@ export default function PreviewPage() {
                       step="0.01"
                       value={isMuted ? 0 : volume}
                       onChange={handleVolumeChange}
+                      title="Volume"
                       className="flex-1 h-1.5 bg-surface-panel rounded-lg appearance-none cursor-pointer
                         [&::-webkit-slider-thumb]:appearance-none
                         [&::-webkit-slider-thumb]:w-3
@@ -462,6 +471,7 @@ export default function PreviewPage() {
                         [&::-webkit-slider-thumb]:rounded-full
                         [&::-webkit-slider-thumb]:bg-accent-primary
                         [&::-webkit-slider-thumb]:cursor-pointer
+                        [&::-webkit-slider-thumb]:transition-all
                         [&::-moz-range-thumb]:w-3
                         [&::-moz-range-thumb]:h-3
                         [&::-moz-range-thumb]:rounded-full
@@ -588,8 +598,7 @@ export default function PreviewPage() {
                   <div>
                     <p className="text-xs text-text-muted uppercase tracking-wide mb-1">Script</p>
                     <p className="text-sm text-text-secondary">
-                      {activeScript.wordCount} words • ~
-                      {Math.floor(activeScript.duration / 60)}:
+                      {activeScript.wordCount} words • ~{Math.floor(activeScript.duration / 60)}:
                       {(activeScript.duration % 60).toString().padStart(2, "0")}
                     </p>
                   </div>
