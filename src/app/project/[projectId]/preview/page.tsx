@@ -16,7 +16,6 @@ import {
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useProjectState } from "@/lib/hooks/use-project-state";
-import { useSSE } from "@/lib/hooks/use-sse";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { FullScriptModal } from "@/components/project/full-script-modal";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
@@ -38,44 +37,41 @@ export default function PreviewPage() {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const isCreatingJobRef = useRef(false);
+  const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020/api/v1";
-  const sseUrl = ttsJob ? `${apiUrl}/tts/${ttsJob.id}/stream` : "";
-  const sseEnabled = Boolean(ttsJob && ttsJob.status !== "completed" && ttsJob.status !== "failed");
-
-  // SSE for real-time updates
-  const { isConnected: isStreaming } = useSSE<TTSJobResponse>({
-    url: sseUrl,
-    enabled: sseEnabled,
-    onMessage: (job) => {
-      console.log("📨 SSE update:", job.status, job.progress);
-      setTtsJob(job);
-    },
-    onError: () => {
-      setTtsError("Real-time connection failed. Retrying...");
-    },
-    shouldClose: (job) => job.status === "completed" || job.status === "failed",
-  });
-
-  // Fallback polling (only when SSE fails)
+  // Polling for TTS job updates (simplified approach without SSE)
   useEffect(() => {
-    if (!ttsJob || isStreaming) return;
-    if (ttsJob.status === "completed" || ttsJob.status === "failed") return;
+    if (!ttsJob) return;
+    if (ttsJob.status === "completed" || ttsJob.status === "failed") {
+      // Stop polling for terminal states
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+        pollingIntervalRef.current = null;
+      }
+      return;
+    }
 
+    // Poll every 3 seconds for active jobs
     const pollInterval = setInterval(async () => {
       try {
         const updatedJob = await getTTSJob(String(ttsJob.id));
         setTtsJob(updatedJob);
+
+        // Stop polling when job completes
         if (updatedJob.status === "completed" || updatedJob.status === "failed") {
           clearInterval(pollInterval);
         }
       } catch (error) {
         console.error("Polling error:", error);
       }
-    }, 5000); // Reduced from 2s to 5s (fallback polling)
+    }, 3000); // Poll every 3 seconds
 
-    return () => clearInterval(pollInterval);
-  }, [ttsJob?.id, ttsJob?.status, isStreaming]);
+    pollingIntervalRef.current = pollInterval;
+
+    return () => {
+      clearInterval(pollInterval);
+    };
+  }, [ttsJob?.id, ttsJob?.status]);
 
   // Note: Do not auto-advance step to preview
   // Users may navigate back to preview from compose, and we want them to return to compose
@@ -154,6 +150,9 @@ export default function PreviewPage() {
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current = null;
+      }
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
       }
     };
   }, []);
@@ -246,6 +245,7 @@ export default function PreviewPage() {
   }, [activeScript]);
 
   const canProceed = ttsJob?.status === "completed" && !!ttsJob.audio_url;
+  const isProcessing = ttsJob?.status === "queued" || ttsJob?.status === "processing";
 
   if (isLoading) {
     return <PageLoadingSkeleton message="Loading project..." />;
@@ -268,7 +268,7 @@ export default function PreviewPage() {
             {/* Status Icon */}
             <div
               className={`flex h-20 w-20 items-center justify-center rounded-full ${
-                ttsJob?.status === "processing" || isStreaming
+                isProcessing
                   ? "bg-accent-cyan/10"
                   : ttsJob?.status === "failed"
                     ? "bg-status-failed/10"
@@ -277,7 +277,7 @@ export default function PreviewPage() {
                       : "bg-surface-panel"
               }`}
             >
-              {ttsJob?.status === "processing" || isStreaming ? (
+              {isProcessing ? (
                 <Loader2 className="h-12 w-12 text-accent-cyan animate-spin" />
               ) : ttsJob?.status === "failed" ? (
                 <AlertCircle className="h-12 w-12 text-status-failed" />
@@ -293,7 +293,8 @@ export default function PreviewPage() {
               <h3 className="text-lg font-semibold text-text-primary">
                 {!ttsJob && !ttsError && "Initializing..."}
                 {ttsJob?.status === "queued" && "Queued for Generation"}
-                {ttsJob?.status === "processing" && `Generating Audio (${ttsJob.progress}%)`}
+                {ttsJob?.status === "processing" &&
+                  `Generating Audio${ttsJob.progress ? ` (${ttsJob.progress}%)` : ""}`}
                 {ttsJob?.status === "completed" && "Audio Ready"}
                 {ttsJob?.status === "failed" && "Generation Failed"}
               </h3>
@@ -480,7 +481,7 @@ export default function PreviewPage() {
         currentStep="preview"
         canGoNext={canProceed}
         canGoBack={true}
-        isProcessing={isStreaming}
+        isProcessing={isProcessing}
       />
     </>
   );
