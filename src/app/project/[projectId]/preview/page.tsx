@@ -6,15 +6,19 @@ import {
   CheckCircle,
   Mic2,
   FileText,
-  ChevronDown,
   Loader2,
   AlertCircle,
   Play,
   Pause,
   Volume2,
+  VolumeX,
+  RotateCcw,
+  Info,
+  Sparkles,
 } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { FullScriptModal } from "@/components/project/full-script-modal";
@@ -35,6 +39,10 @@ export default function PreviewPage() {
   const [ttsJob, setTtsJob] = useState<TTSJobResponse | null>(null);
   const [ttsError, setTtsError] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [volume, setVolume] = useState(1);
+  const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const isCreatingJobRef = useRef(false);
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -64,7 +72,7 @@ export default function PreviewPage() {
       } catch (error) {
         console.error("Polling error:", error);
       }
-    }, 3000); // Poll every 3 seconds
+    }, 3000);
 
     pollingIntervalRef.current = pollInterval;
 
@@ -73,11 +81,7 @@ export default function PreviewPage() {
     };
   }, [ttsJob?.id, ttsJob?.status]);
 
-  // Note: Do not auto-advance step to preview
-  // Users may navigate back to preview from compose, and we want them to return to compose
-  // Step advancement only happens via explicit forward navigation
-
-  // Initialize TTS job - runs once when page loads or when active job changes
+  // Initialize TTS job
   useEffect(() => {
     if (!state || !activeScript || isLoading) return;
 
@@ -94,7 +98,6 @@ export default function PreviewPage() {
           if (voice.id) {
             voiceId = voice.id;
             voiceName = voice.name;
-            console.log("📦 Loaded voice from localStorage:", { voiceId, voiceName });
           }
         }
       } catch (e) {
@@ -107,33 +110,28 @@ export default function PreviewPage() {
       return;
     }
 
-    // Convert both IDs to strings for comparison (voiceId might be bigint in DB)
+    // Convert both IDs to strings for comparison
     const currentVoiceId = String(voiceId);
     const loadedVoiceId = ttsJob?.voice_id ? String(ttsJob.voice_id) : null;
 
     // Check if voice has changed compared to loaded job
     if (ttsJob && loadedVoiceId && loadedVoiceId !== currentVoiceId) {
-      console.log("🔄 Voice changed! Old:", loadedVoiceId, "New:", currentVoiceId);
-      console.log("Creating new TTS job for new voice");
       createNewTTSJob(voiceId, voiceName);
       return;
     }
 
     // If we already have a loaded job with the same voice, don't re-create
     if (ttsJob && loadedVoiceId === currentVoiceId) {
-      console.log("✅ TTS job already loaded with correct voice, skipping initialization");
       return;
     }
 
     // Load existing job if we have an active TTS job ID
     if (state.activeTtsJobId) {
-      console.log("📥 Loading existing TTS job:", state.activeTtsJobId);
       loadTTSJob(String(state.activeTtsJobId));
       return;
     }
 
     // Otherwise create a new job (backend will match or create)
-    console.log("🆕 No active TTS job, creating new one");
     createNewTTSJob(voiceId, voiceName);
   }, [
     state?.activeTtsJobId,
@@ -143,6 +141,26 @@ export default function PreviewPage() {
     ttsJob?.voice_id,
     state?.voiceId,
   ]);
+
+  // Audio event handlers
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const handleTimeUpdate = () => setCurrentTime(audio.currentTime);
+    const handleLoadedMetadata = () => setDuration(audio.duration);
+    const handleEnded = () => setIsPlaying(false);
+
+    audio.addEventListener("timeupdate", handleTimeUpdate);
+    audio.addEventListener("loadedmetadata", handleLoadedMetadata);
+    audio.addEventListener("ended", handleEnded);
+
+    return () => {
+      audio.removeEventListener("timeupdate", handleTimeUpdate);
+      audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      audio.removeEventListener("ended", handleEnded);
+    };
+  }, [ttsJob?.audio_url]);
 
   // Audio cleanup
   useEffect(() => {
@@ -169,12 +187,6 @@ export default function PreviewPage() {
       isCreatingJobRef.current = true;
       setTtsError(null);
 
-      // Backend will check for existing TTS job with matching:
-      // - project_id
-      // - voice_id
-      // - preview_text (first 2 sentences of script)
-      // If match found, reuses existing job (saves cost & time)
-      // Otherwise creates new job
       const job = await createTTSJob({
         projectId: String(state.id),
         scriptId: String(activeScript.id),
@@ -185,11 +197,7 @@ export default function PreviewPage() {
         autoActivate: true,
       });
 
-      console.log("✅ TTS job created/matched:", job.id);
       setTtsJob(job);
-
-      // Don't call refresh() here - it causes infinite loop
-      // The job status will be updated via SSE or polling
     } catch (error) {
       console.error("Failed to create TTS job:", error);
       setTtsError(error instanceof Error ? error.message : "Failed to create TTS job");
@@ -203,14 +211,11 @@ export default function PreviewPage() {
 
     // Don't reload if we already have this job
     if (ttsJob && String(ttsJob.id) === jobId) {
-      console.log("TTS job already loaded:", jobId);
       return;
     }
 
     try {
-      console.log(`📥 Loading TTS job ${jobId}...`);
       const job = await getTTSJob(jobId);
-      console.log(`✅ Loaded TTS job ${jobId}:`, job.status);
       setTtsJob(job);
     } catch (error) {
       console.error("Failed to load TTS job:", error);
@@ -227,6 +232,46 @@ export default function PreviewPage() {
       audioRef.current.play();
     }
     setIsPlaying(!isPlaying);
+  };
+
+  const toggleMute = () => {
+    if (!audioRef.current) return;
+    audioRef.current.muted = !isMuted;
+    setIsMuted(!isMuted);
+  };
+
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!audioRef.current) return;
+    const time = parseFloat(e.target.value);
+    audioRef.current.currentTime = time;
+    setCurrentTime(time);
+  };
+
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!audioRef.current) return;
+    const vol = parseFloat(e.target.value);
+    audioRef.current.volume = vol;
+    setVolume(vol);
+    if (vol > 0 && isMuted) {
+      setIsMuted(false);
+      audioRef.current.muted = false;
+    }
+  };
+
+  const resetAudio = () => {
+    if (!audioRef.current) return;
+    audioRef.current.currentTime = 0;
+    setCurrentTime(0);
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    }
+  };
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
   const projectName = useMemo(() => {
@@ -258,212 +303,329 @@ export default function PreviewPage() {
       <div className="flex flex-col gap-6 pb-24">
         {/* Page Header */}
         <div>
-          <h2 className="text-xl font-semibold text-text-primary">Voice Preview</h2>
+          <h2 className="text-2xl font-bold text-text-primary">Voice Preview</h2>
           <p className="mt-1 text-sm text-text-muted">
-            Listen to your script with the selected voice
+            Listen to your narration and make sure everything sounds perfect
           </p>
         </div>
 
-        {/* Audio Player Card */}
-        <Card variant="elevated" padding="lg">
-          <div className="flex flex-col items-center gap-6">
-            {/* Status Icon */}
-            <div
-              className={`flex h-20 w-20 items-center justify-center rounded-full ${
-                isProcessing
-                  ? "bg-accent-cyan/10"
-                  : ttsJob?.status === "failed"
-                    ? "bg-status-failed/10"
-                    : ttsJob?.status === "completed"
-                      ? "bg-status-success/10"
-                      : "bg-surface-panel"
-              }`}
-            >
-              {isProcessing ? (
-                <Loader2 className="h-12 w-12 text-accent-cyan animate-spin" />
-              ) : ttsJob?.status === "failed" ? (
-                <AlertCircle className="h-12 w-12 text-status-failed" />
-              ) : ttsJob?.status === "completed" ? (
-                <Volume2 className="h-12 w-12 text-status-success" />
-              ) : (
-                <Mic2 className="h-12 w-12 text-text-muted" />
-              )}
+        {/* Main Audio Player Card */}
+        <Card variant="elevated" padding="none" className="overflow-hidden">
+          <div className="bg-gradient-to-br from-green-500/10 via-emerald-500/5 to-green-500/10 p-8">
+            {/* Status Indicator */}
+            <div className="flex items-center justify-center mb-6">
+              <div
+                className={`flex h-24 w-24 items-center justify-center rounded-full transition-all duration-300 ${
+                  isProcessing
+                    ? "bg-accent-primary/10 shadow-glow"
+                    : ttsJob?.status === "failed"
+                      ? "bg-status-error/10"
+                      : ttsJob?.status === "completed"
+                        ? "bg-gradient-to-br from-green-500 to-emerald-500 shadow-glow-hover"
+                        : "bg-surface-elevated"
+                }`}
+              >
+                {isProcessing ? (
+                  <Loader2 className="h-12 w-12 text-accent-primary animate-spin" />
+                ) : ttsJob?.status === "failed" ? (
+                  <AlertCircle className="h-12 w-12 text-status-error" />
+                ) : ttsJob?.status === "completed" ? (
+                  <Volume2 className="h-12 w-12 text-white" />
+                ) : (
+                  <Mic2 className="h-12 w-12 text-text-muted" />
+                )}
+              </div>
             </div>
 
             {/* Status Text */}
-            <div className="text-center max-w-lg">
-              <h3 className="text-lg font-semibold text-text-primary">
-                {!ttsJob && !ttsError && "Initializing..."}
+            <div className="text-center mb-6">
+              <h3 className="text-xl font-semibold text-text-primary mb-2">
+                {!ttsJob && !ttsError && "Initializing Preview..."}
                 {ttsJob?.status === "queued" && "Queued for Generation"}
                 {ttsJob?.status === "processing" &&
-                  `Generating Audio${ttsJob.progress ? ` (${ttsJob.progress}%)` : ""}`}
+                  `Generating Audio${ttsJob.progress ? ` (${ttsJob.progress}%)` : "..."}`}
                 {ttsJob?.status === "completed" && "Audio Ready"}
                 {ttsJob?.status === "failed" && "Generation Failed"}
               </h3>
 
-              <p className="mt-2 text-sm text-text-muted">
+              <p className="text-sm text-text-muted">
                 {!ttsJob && !ttsError && "Setting up your audio preview..."}
                 {ttsJob?.status === "queued" && "Your request is in the queue"}
                 {ttsJob?.status === "processing" && `Using ${voiceName}`}
-                {ttsJob?.status === "completed" && <>Click play to listen • Job #{ttsJob.id}</>}
+                {ttsJob?.status === "completed" && `Narrated by ${voiceName}`}
                 {ttsJob?.status === "failed" && ttsJob.error_message}
                 {ttsError && !ttsJob && ttsError}
               </p>
             </div>
 
-            {/* Audio Player */}
+            {/* Custom Audio Player */}
             {ttsJob?.status === "completed" && ttsJob.audio_url && (
-              <div className="w-full max-w-2xl space-y-4">
-                <div className="rounded-lg bg-surface-panel p-6 border border-border-default">
-                  <audio
-                    ref={audioRef}
-                    src={ttsJob.audio_url}
-                    onPlay={() => setIsPlaying(true)}
-                    onPause={() => setIsPlaying(false)}
-                    onEnded={() => setIsPlaying(false)}
-                    className="w-full"
-                    preload="metadata"
-                    controls
-                  />
-                </div>
+              <div className="space-y-4">
+                {/* Hidden audio element */}
+                <audio
+                  ref={audioRef}
+                  src={ttsJob.audio_url}
+                  onPlay={() => setIsPlaying(true)}
+                  onPause={() => setIsPlaying(false)}
+                  preload="metadata"
+                />
 
-                {ttsJob.audio_duration && (
-                  <div className="flex items-center justify-center gap-2 text-xs text-text-muted">
-                    <Volume2 className="h-4 w-4" />
-                    <span>
-                      Duration: {Math.floor(ttsJob.audio_duration / 60)}:
-                      {Math.round(ttsJob.audio_duration % 60)
-                        .toString()
-                        .padStart(2, "0")}
-                    </span>
+                {/* Playback Controls Card */}
+                <div className="mx-auto max-w-2xl rounded-xl bg-surface-elevated p-6 border border-border-default">
+                  {/* Progress Bar */}
+                  <div className="mb-4">
+                    <input
+                      type="range"
+                      min="0"
+                      max={duration || 100}
+                      value={currentTime}
+                      onChange={handleSeek}
+                      className="w-full h-2 bg-surface-panel rounded-lg appearance-none cursor-pointer
+                        [&::-webkit-slider-thumb]:appearance-none
+                        [&::-webkit-slider-thumb]:w-4
+                        [&::-webkit-slider-thumb]:h-4
+                        [&::-webkit-slider-thumb]:rounded-full
+                        [&::-webkit-slider-thumb]:bg-gradient-to-br
+                        [&::-webkit-slider-thumb]:from-green-500
+                        [&::-webkit-slider-thumb]:to-emerald-500
+                        [&::-webkit-slider-thumb]:cursor-pointer
+                        [&::-webkit-slider-thumb]:shadow-lg
+                        [&::-webkit-slider-thumb]:hover:shadow-glow-hover
+                        [&::-webkit-slider-thumb]:transition-all
+                        [&::-moz-range-thumb]:w-4
+                        [&::-moz-range-thumb]:h-4
+                        [&::-moz-range-thumb]:rounded-full
+                        [&::-moz-range-thumb]:bg-gradient-to-br
+                        [&::-moz-range-thumb]:from-green-500
+                        [&::-moz-range-thumb]:to-emerald-500
+                        [&::-moz-range-thumb]:border-0
+                        [&::-moz-range-thumb]:cursor-pointer"
+                    />
+                    <div className="flex items-center justify-between mt-2 text-xs text-text-muted">
+                      <span>{formatTime(currentTime)}</span>
+                      <span>{duration ? formatTime(duration) : "--:--"}</span>
+                    </div>
                   </div>
-                )}
+
+                  {/* Main Controls */}
+                  <div className="flex items-center justify-center gap-3 mb-4">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={resetAudio}
+                      className="h-10 w-10 p-0"
+                    >
+                      <RotateCcw className="h-4 w-4" />
+                    </Button>
+
+                    <Button
+                      variant="primary"
+                      size="lg"
+                      onClick={togglePlayPause}
+                      className="h-16 w-16 rounded-full p-0 shadow-glow-hover"
+                    >
+                      {isPlaying ? (
+                        <Pause className="h-7 w-7" />
+                      ) : (
+                        <Play className="h-7 w-7 ml-0.5" />
+                      )}
+                    </Button>
+
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={toggleMute}
+                      className="h-10 w-10 p-0"
+                    >
+                      {isMuted || volume === 0 ? (
+                        <VolumeX className="h-4 w-4" />
+                      ) : (
+                        <Volume2 className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
+
+                  {/* Volume Control */}
+                  <div className="flex items-center gap-3">
+                    <VolumeX className="h-4 w-4 text-text-muted flex-shrink-0" />
+                    <input
+                      type="range"
+                      min="0"
+                      max="1"
+                      step="0.01"
+                      value={isMuted ? 0 : volume}
+                      onChange={handleVolumeChange}
+                      className="flex-1 h-1.5 bg-surface-panel rounded-lg appearance-none cursor-pointer
+                        [&::-webkit-slider-thumb]:appearance-none
+                        [&::-webkit-slider-thumb]:w-3
+                        [&::-webkit-slider-thumb]:h-3
+                        [&::-webkit-slider-thumb]:rounded-full
+                        [&::-webkit-slider-thumb]:bg-accent-primary
+                        [&::-webkit-slider-thumb]:cursor-pointer
+                        [&::-moz-range-thumb]:w-3
+                        [&::-moz-range-thumb]:h-3
+                        [&::-moz-range-thumb]:rounded-full
+                        [&::-moz-range-thumb]:bg-accent-primary
+                        [&::-moz-range-thumb]:border-0
+                        [&::-moz-range-thumb]:cursor-pointer"
+                    />
+                    <Volume2 className="h-4 w-4 text-text-muted flex-shrink-0" />
+                  </div>
+                </div>
               </div>
             )}
 
+            {/* Retry Button for Failed Jobs */}
             {ttsJob?.status === "failed" && (
-              <Button
-                variant="primary"
-                size="md"
-                onClick={() => {
-                  let voiceId = state?.voiceId;
-                  let voiceName = state?.voiceName;
+              <div className="flex justify-center">
+                <Button
+                  variant="primary"
+                  size="lg"
+                  onClick={() => {
+                    let voiceId = state?.voiceId;
+                    let voiceName = state?.voiceName;
 
-                  // Fallback to localStorage
-                  if (!voiceId) {
-                    try {
-                      const storedVoice = localStorage.getItem(`project_${projectId}_voice`);
-                      if (storedVoice) {
-                        const voice = JSON.parse(storedVoice);
-                        if (voice.id) {
-                          voiceId = voice.id;
-                          voiceName = voice.name;
+                    if (!voiceId) {
+                      try {
+                        const storedVoice = localStorage.getItem(`project_${projectId}_voice`);
+                        if (storedVoice) {
+                          const voice = JSON.parse(storedVoice);
+                          if (voice.id) {
+                            voiceId = voice.id;
+                            voiceName = voice.name;
+                          }
                         }
+                      } catch (e) {
+                        console.error("Failed to read voice from localStorage:", e);
                       }
-                    } catch (e) {
-                      console.error("Failed to read voice from localStorage:", e);
                     }
-                  }
 
-                  if (voiceId) {
-                    createNewTTSJob(voiceId, voiceName);
-                  }
-                }}
-              >
-                Retry Generation
-              </Button>
+                    if (voiceId) {
+                      createNewTTSJob(voiceId, voiceName);
+                    }
+                  }}
+                >
+                  <RotateCcw className="h-5 w-5 mr-2" />
+                  Retry Generation
+                </Button>
+              </div>
             )}
+          </div>
 
-            {/* Job Info */}
-            {ttsJob && (
-              <div className="w-full max-w-md rounded-lg border border-dashed border-border-default bg-surface-panel p-4">
-                <div className="space-y-2 text-xs">
-                  <div className="flex justify-between items-center">
+          {/* Job Details Footer */}
+          {ttsJob && (
+            <div className="bg-surface-panel px-8 py-4 border-t border-border-default">
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div className="flex items-center gap-4 text-sm flex-wrap">
+                  <div className="flex items-center gap-2">
                     <span className="text-text-muted">Job ID:</span>
-                    <span className="font-mono font-medium text-text-secondary">#{ttsJob.id}</span>
+                    <Badge variant="outline" className="font-mono">
+                      #{ttsJob.id}
+                    </Badge>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-text-muted">Voice:</span>
-                    <span className="font-medium text-text-secondary truncate ml-2">
-                      {voiceName}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-2">
                     <span className="text-text-muted">Status:</span>
-                    <span
-                      className={`font-medium ${
+                    <Badge
+                      variant={
                         ttsJob.status === "completed"
-                          ? "text-status-success"
+                          ? "success"
                           : ttsJob.status === "failed"
-                            ? "text-status-failed"
-                            : "text-accent-cyan"
-                      }`}
+                            ? "error"
+                            : "primary"
+                      }
                     >
                       {ttsJob.status}
-                    </span>
+                    </Badge>
                   </div>
-                  {ttsJob.status === "completed" && ttsJob.audio_url && (
-                    <div className="pt-2 mt-2 border-t border-border-default">
-                      <p className="text-text-muted text-center">
-                        ✓ Backend cached and reused this job
-                      </p>
+                  {ttsJob.audio_duration && (
+                    <div className="flex items-center gap-2">
+                      <Volume2 className="h-4 w-4 text-text-muted" />
+                      <span className="text-text-secondary">
+                        {Math.floor(ttsJob.audio_duration / 60)}:
+                        {Math.round(ttsJob.audio_duration % 60)
+                          .toString()
+                          .padStart(2, "0")}
+                      </span>
                     </div>
                   )}
                 </div>
+                {ttsJob.status === "completed" && (
+                  <div className="flex items-center gap-2 text-xs text-accent-tertiary">
+                    <Sparkles className="h-4 w-4" />
+                    <span>Cached & optimized</span>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </Card>
 
-        {/* Project Summary Card */}
-        <Card variant="elevated" padding="md">
-          <h3 className="text-sm font-medium text-text-secondary uppercase tracking-wide mb-3">
-            Project Summary
-          </h3>
-          <div className="flex items-start gap-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-purple/10">
-              <CheckCircle className="h-5 w-5 text-accent-purple" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <h4 className="font-medium text-text-primary truncate">{projectName}</h4>
-              <p className="mt-1 text-sm text-text-muted">Voice: {voiceName}</p>
-              {activeScript && (
-                <p className="mt-1 text-xs text-text-muted">
-                  {activeScript.wordCount} words • {Math.floor(activeScript.duration / 60)}:
-                  {(activeScript.duration % 60).toString().padStart(2, "0")} estimated
+        {/* Info Cards Grid */}
+        <div className="grid gap-4 md:grid-cols-2">
+          {/* Project Summary */}
+          <Card variant="elevated" padding="md">
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500">
+                  <CheckCircle className="h-5 w-5 text-white" />
+                </div>
+                <CardTitle>Project Details</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div>
+                  <p className="text-xs text-text-muted uppercase tracking-wide mb-1">
+                    Project Name
+                  </p>
+                  <p className="font-medium text-text-primary">{projectName}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-text-muted uppercase tracking-wide mb-1">Voice</p>
+                  <p className="font-medium text-text-primary">{voiceName}</p>
+                </div>
+                {activeScript && (
+                  <div>
+                    <p className="text-xs text-text-muted uppercase tracking-wide mb-1">Script</p>
+                    <p className="text-sm text-text-secondary">
+                      {activeScript.wordCount} words • ~
+                      {Math.floor(activeScript.duration / 60)}:
+                      {(activeScript.duration % 60).toString().padStart(2, "0")}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Script Preview */}
+          <Card
+            variant="elevated"
+            padding="md"
+            className="cursor-pointer hover:border-accent-tertiary/40 transition-all group"
+            onClick={() => setShowFullScriptModal(true)}
+          >
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-cyan-500">
+                  <FileText className="h-5 w-5 text-white" />
+                </div>
+                <CardTitle>Script Preview</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="rounded-lg bg-surface-panel p-4 border border-border-default">
+                <p className="text-sm text-text-primary leading-relaxed line-clamp-3">
+                  &ldquo;{previewText}&rdquo;
                 </p>
-              )}
-            </div>
-          </div>
-        </Card>
-
-        {/* Script Preview Card */}
-        <Card
-          variant="elevated"
-          padding="lg"
-          className="cursor-pointer hover:border-accent-cyan/30 transition-all group"
-          onClick={() => setShowFullScriptModal(true)}
-        >
-          <div className="mb-4 flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <FileText className="h-5 w-5 text-accent-cyan" />
-              <h3 className="text-lg font-medium text-text-primary">Full Script</h3>
-            </div>
-            <span className="text-xs font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0 group-hover:text-accent-cyan-hover transition-colors">
-              View all <ChevronDown className="h-3 w-3" />
-            </span>
-          </div>
-
-          <div className="rounded-lg bg-surface-panel p-4 border border-border-default">
-            <p className="text-sm text-text-primary leading-relaxed line-clamp-3">
-              &ldquo;{previewText}&rdquo;
-            </p>
-          </div>
-
-          <p className="mt-3 text-xs text-text-muted">
-            First sentence preview • Click to view the complete script
-          </p>
-        </Card>
+              </div>
+              <div className="mt-3 flex items-center gap-2 text-xs text-accent-tertiary group-hover:text-accent-tertiary-hover transition-colors">
+                <Info className="h-3.5 w-3.5" />
+                <span>Click to view full script</span>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
 
       {/* Full Script Modal */}
