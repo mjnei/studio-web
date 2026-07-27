@@ -180,6 +180,8 @@ export default function PreviewPage() {
         scriptId: String(activeScript.id),
         voiceId: voiceId,
         voiceName: voiceName,
+        scriptText: activeScript.content,
+        language: "zh",
         autoActivate: true,
       });
 

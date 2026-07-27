@@ -196,9 +196,11 @@ export async function createTTSJob(params: {
   scriptId: string;
   voiceId: string;
   voiceName?: string;
+  scriptText: string;
+  language?: string;
   autoActivate?: boolean;
 }): Promise<TTSJobResponse> {
-  const { projectId, scriptId, voiceId, voiceName, autoActivate = false } = params;
+  const { projectId, scriptId, voiceId, voiceName, scriptText, language = "zh", autoActivate = false } = params;
   return request<TTSJobResponse>(`/tts?auto_activate=${autoActivate}`, {
     method: "POST",
     body: JSON.stringify({
@@ -206,6 +208,8 @@ export async function createTTSJob(params: {
       script_id: scriptId,
       voice_id: voiceId,
       voice_name: voiceName,
+      text: scriptText,
+      language: language,
     }),
   });
 }

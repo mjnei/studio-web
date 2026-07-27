@@ -291,7 +291,7 @@ export default function VoicePage() {
   };
 
   const handleContinue = async () => {
-    if (!selectedVoiceId || !activeScript?.id) return;
+    if (!selectedVoiceId || !activeScript?.id || !activeScript?.content) return;
 
     setIsAdvancing(true);
     try {
@@ -305,6 +305,8 @@ export default function VoicePage() {
         scriptId: activeScript.id,
         voiceId: String(selectedVoiceId),
         voiceName: voice?.name,
+        scriptText: activeScript.content,
+        language: "zh",
         autoActivate: true,
       });
 
