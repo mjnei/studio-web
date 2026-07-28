@@ -221,13 +221,24 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
     mimeRef.current = mime;
 
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          echoCancellation: true,
-          noiseSuppression: true,
-          sampleRate: 48000,
-        },
-      });
+      // Request microphone access with fallback constraints
+      let stream: MediaStream | null = null;
+      
+      try {
+        // Try with optimal constraints first
+        stream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            sampleRate: 48000,
+          },
+        });
+      } catch (err) {
+        // If optimal constraints fail, try with minimal constraints
+        console.warn("Optimal audio constraints failed, trying minimal constraints:", err);
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      }
+
       streamRef.current = stream;
 
       const recorder = new MediaRecorder(stream, { mimeType: mime });
@@ -274,10 +285,21 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
         }
       }, 200);
     } catch (err) {
-      const msg =
-        err instanceof DOMException && err.name === "NotAllowedError"
-          ? "Microphone access denied. Please allow microphone permissions and try again."
-          : "Could not start recording. Please check your microphone and try again.";
+      let msg = "Could not start recording. Please check your microphone and try again.";
+      
+      if (err instanceof DOMException) {
+        if (err.name === "NotAllowedError") {
+          msg = "Microphone access denied. Please allow microphone permissions in your browser settings and try again.";
+        } else if (err.name === "NotFoundError" || err.name === "DevicesNotFoundError") {
+          msg = "No microphone found. Please connect a microphone and try again.";
+        } else if (err.name === "NotReadableError") {
+          msg = "Microphone is in use by another application. Please close other apps using the microphone and try again.";
+        } else if (err.name === "SecurityError") {
+          msg = "Microphone access blocked by browser security settings. Please use HTTPS or localhost.";
+        }
+      }
+      
+      console.error("[VoiceRecording] Failed to start recording:", err);
       setError(msg);
       setState("idle");
     }
@@ -480,7 +502,14 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
         {error && (
           <div className="mb-4 flex items-start gap-2 rounded-xl bg-red-500/10 px-4 py-3 border border-red-500/20">
             <X size={18} className="mt-0.5 shrink-0 text-red-400" />
-            <p className="text-sm text-red-300">{error}</p>
+            <div className="text-sm text-red-300">
+              <p>{error}</p>
+              {error.includes("HTTPS") && (
+                <p className="mt-1 text-xs text-red-400">
+                  💡 Tip: Try accessing the app via <code className="bg-red-950/50 px-2 py-0.5 rounded">localhost:3020</code> instead of an IP address.
+                </p>
+              )}
+            </div>
           </div>
         )}
 
