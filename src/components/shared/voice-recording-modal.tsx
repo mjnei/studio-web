@@ -223,7 +223,7 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
     try {
       // Request microphone access with fallback constraints
       let stream: MediaStream | null = null;
-      
+
       try {
         // Try with optimal constraints first
         stream = await navigator.mediaDevices.getUserMedia({
@@ -286,19 +286,22 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
       }, 200);
     } catch (err) {
       let msg = "Could not start recording. Please check your microphone and try again.";
-      
+
       if (err instanceof DOMException) {
         if (err.name === "NotAllowedError") {
-          msg = "Microphone access denied. Please allow microphone permissions in your browser settings and try again.";
+          msg =
+            "Microphone access denied. Please allow microphone permissions in your browser settings and try again.";
         } else if (err.name === "NotFoundError" || err.name === "DevicesNotFoundError") {
           msg = "No microphone found. Please connect a microphone and try again.";
         } else if (err.name === "NotReadableError") {
-          msg = "Microphone is in use by another application. Please close other apps using the microphone and try again.";
+          msg =
+            "Microphone is in use by another application. Please close other apps using the microphone and try again.";
         } else if (err.name === "SecurityError") {
-          msg = "Microphone access blocked by browser security settings. Please use HTTPS or localhost.";
+          msg =
+            "Microphone access blocked by browser security settings. Please use HTTPS or localhost.";
         }
       }
-      
+
       console.error("[VoiceRecording] Failed to start recording:", err);
       setError(msg);
       setState("idle");
@@ -506,7 +509,9 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
               <p>{error}</p>
               {error.includes("HTTPS") && (
                 <p className="mt-1 text-xs text-red-400">
-                  💡 Tip: Try accessing the app via <code className="bg-red-950/50 px-2 py-0.5 rounded">localhost:3020</code> instead of an IP address.
+                  💡 Tip: Try accessing the app via{" "}
+                  <code className="bg-red-950/50 px-2 py-0.5 rounded">localhost:3020</code> instead
+                  of an IP address.
                 </p>
               )}
             </div>
