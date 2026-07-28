@@ -20,6 +20,12 @@ interface TabsTriggerProps {
   className?: string;
 }
 
+interface TabsContentProps {
+  value: string;
+  children: React.ReactNode;
+  className?: string;
+}
+
 const TabsContext = React.createContext<{
   value: string;
   onValueChange: (value: string) => void;
@@ -65,4 +71,14 @@ export function TabsTrigger({ value, children, className = "" }: TabsTriggerProp
       {children}
     </button>
   );
+}
+
+
+export function TabsContent({ value, children, className = "" }: TabsContentProps) {
+  const context = React.useContext(TabsContext);
+  const isActive = context.value === value;
+
+  if (!isActive) return null;
+
+  return <div className={className}>{children}</div>;
 }

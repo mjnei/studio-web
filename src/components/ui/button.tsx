@@ -2,8 +2,8 @@ import React from "react";
 import { cn } from "@/lib/utils/cn";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "outline" | "ghost" | "danger" | "success";
-  size?: "sm" | "md" | "lg";
+  variant?: "primary" | "secondary" | "outline" | "ghost" | "danger" | "success" | "destructive";
+  size?: "icon" | "sm" | "md" | "lg";
   isLoading?: boolean;
   loading?: boolean; // Alias for isLoading
   leftIcon?: React.ReactNode;
@@ -41,11 +41,14 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-hover)]",
       danger:
         "bg-[var(--status-error)] hover:bg-red-600 text-white disabled:opacity-50 disabled:cursor-not-allowed",
+      destructive:
+        "bg-red-600 hover:bg-red-700 text-white disabled:opacity-50 disabled:cursor-not-allowed",
       success:
         "bg-[var(--status-success)] hover:bg-green-600 text-white disabled:opacity-50 disabled:cursor-not-allowed",
     };
 
     const sizes = {
+      icon: "h-10 w-10 p-0",
       sm: "h-8 px-3 text-sm",
       md: "h-10 px-4 text-sm",
       lg: "h-12 px-6 text-base",
