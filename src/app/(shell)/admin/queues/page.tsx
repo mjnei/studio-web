@@ -11,11 +11,13 @@ import { QueuePurgeDialog } from "@/components/queue/QueuePurgeDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useToast } from "@/lib/hooks/use-toast";
+import { useToast } from "@/components/ui/toast";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { LayoutToggle, type LayoutMode } from "@/components/ui/LayoutToggle";
 
 export default function QueueManagementPage() {
   const router = useRouter();
-  const { toast } = useToast();
+  const toast = useToast();
 
   const [queues, setQueues] = useState<Record<string, QueueStats>>({});
   const [loading, setLoading] = useState(true);
@@ -23,6 +25,7 @@ export default function QueueManagementPage() {
   const [error, setError] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState<QueueCategory | "all">("all");
   const [purgeQueue, setPurgeQueue] = useState<QueueStats | null>(null);
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid-md");
 
   // Auto-refresh interval (10 seconds)
   const [autoRefresh, setAutoRefresh] = useState(true);
@@ -37,11 +40,7 @@ export default function QueueManagementPage() {
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to load queues";
       setError(message);
-      toast({
-        title: "Error Loading Queues",
-        description: message,
-        variant: "destructive",
-      });
+      toast.error(message);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -77,6 +76,23 @@ export default function QueueManagementPage() {
     tts: Object.values(queues).filter((q) => q.metadata?.category === "tts").length,
     video: Object.values(queues).filter((q) => q.metadata?.category === "video").length,
     agnes: Object.values(queues).filter((q) => q.metadata?.category === "agnes").length,
+    system: Object.values(queues).filter((q) => q.metadata?.category === "system").length,
+  };
+
+  // Get responsive grid class based on layout mode
+  const getGridClass = () => {
+    switch (layoutMode) {
+      case "grid-sm":
+        // Small cards: 2 cols (base), 3 cols (sm), 4 cols (md), 5 cols (lg), 6 cols (xl)
+        return "grid gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6";
+      case "grid-md":
+        // Medium cards: 1 col (base), 2 cols (sm), 3 cols (md), 4 cols (lg), 4 cols (xl)
+        return "grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4";
+      case "list":
+        return "space-y-3";
+      default:
+        return "grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4";
+    }
   };
 
   // Calculate summary stats
@@ -87,22 +103,25 @@ export default function QueueManagementPage() {
   ).length;
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="max-w-7xl mx-auto space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Queue Management</h1>
-          <p className="text-muted-foreground mt-1">
-            Monitor and manage all queues across TTS, Video, and Agnes services
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={() => fetchQueues()} disabled={refreshing}>
-            <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? "animate-spin" : ""}`} />
-            Refresh
-          </Button>
-        </div>
-      </div>
+      <PageHeader
+        title="Queue Management"
+        description="Monitor and manage all queues across TTS, Video, and Agnes services"
+        action={
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => fetchQueues()} disabled={refreshing}>
+              <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? "animate-spin" : ""}`} />
+              Refresh
+            </Button>
+            <LayoutToggle
+              layoutMode={layoutMode}
+              onLayoutChange={(mode) => setLayoutMode(mode as LayoutMode)}
+              variant="compact"
+            />
+          </div>
+        }
+      />
 
       {/* Error State */}
       {error && (
@@ -155,7 +174,7 @@ export default function QueueManagementPage() {
 
       {/* Queue Grid */}
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className={getGridClass()}>
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <Card key={i}>
               <CardHeader>
@@ -175,7 +194,7 @@ export default function QueueManagementPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className={getGridClass()}>
           {filteredQueues.map((queue) => (
             <QueueStatsCard
               key={queue.queue_name}

@@ -5,6 +5,7 @@ import type { QueueStats } from "@/lib/types/queue";
 import { getQueueHealth, getHealthColor } from "@/lib/types/queue";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Tooltip } from "@/components/ui/tooltip";
 
 interface QueueStatsCardProps {
   stats: QueueStats;
@@ -16,15 +17,23 @@ export function QueueStatsCard({ stats, onViewDetails, onPurge }: QueueStatsCard
   const health = getQueueHealth(stats);
   const colors = getHealthColor(health.status);
 
-  const { metadata, message_count, consumer_count } = stats;
+  const { metadata, message_count, consumer_count, queue_name } = stats;
 
   return (
     <Card className="hover:shadow-md transition-shadow">
       <CardHeader>
         <div className="flex items-start justify-between">
-          <div>
-            <CardTitle className="text-lg">{metadata?.display_name || stats.queue_name}</CardTitle>
-            <CardDescription className="mt-1">{metadata?.description}</CardDescription>
+          <div className="flex-1">
+            <div className="flex items-center gap-2">
+              <CardTitle className="text-lg">{queue_name}</CardTitle>
+              {metadata?.description && (
+                <Tooltip content={metadata.description} position="top">
+                  <div className="text-muted-foreground hover:text-foreground cursor-help">
+                    <AlertCircle className="w-4 h-4" />
+                  </div>
+                </Tooltip>
+              )}
+            </div>
           </div>
           <Badge variant="outline" className={colors.badge}>
             {health.status === "healthy" && <CheckCircle2 className="w-3 h-3 mr-1" />}

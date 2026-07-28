@@ -151,6 +151,7 @@ export interface ConfirmModalProps {
   cancelText?: string;
   variant?: "default" | "danger" | "success";
   loading?: boolean;
+  children?: ReactNode;
 }
 
 export function ConfirmModal({
@@ -163,6 +164,7 @@ export function ConfirmModal({
   cancelText = "Cancel",
   variant = "default",
   loading = false,
+  children,
 }: ConfirmModalProps) {
   const buttonVariant =
     variant === "danger" ? "danger" : variant === "success" ? "success" : "primary";
@@ -186,7 +188,7 @@ export function ConfirmModal({
         </>
       }
     >
-      {/* Content can be passed as children if needed */}
+      {children}
     </Modal>
   );
 }
