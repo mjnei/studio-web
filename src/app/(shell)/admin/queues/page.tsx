@@ -28,10 +28,12 @@ export default function QueueManagementPage() {
   const [activeCategory, setActiveCategory] = useState<QueueCategory | "all">("all");
   const [purgeQueue, setPurgeQueue] = useState<QueueStats | null>(null);
   const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid-md");
-  
+
   // Search and filter states
   const [searchQuery, setSearchQuery] = useState("");
-  const [healthFilter, setHealthFilter] = useState<"all" | "healthy" | "warning" | "critical">("all");
+  const [healthFilter, setHealthFilter] = useState<"all" | "healthy" | "warning" | "critical">(
+    "all"
+  );
   const [sortBy, setSortBy] = useState<"name" | "messages" | "consumers">("messages");
 
   // Auto-refresh interval (10 seconds)
@@ -94,12 +96,14 @@ export default function QueueManagementPage() {
       const isJobQueue = queue.metadata?.is_job_queue;
       const hasMessages = queue.message_count > 0;
       const hasConsumers = queue.consumer_count > 0;
-      
-      const currentHealth = 
-        isJobQueue && hasMessages && !hasConsumers ? "critical" :
-        queue.message_count > 1000 ? "warning" :
-        "healthy";
-      
+
+      const currentHealth =
+        isJobQueue && hasMessages && !hasConsumers
+          ? "critical"
+          : queue.message_count > 1000
+            ? "warning"
+            : "healthy";
+
       if (currentHealth !== healthFilter) {
         return false;
       }
@@ -153,12 +157,9 @@ export default function QueueManagementPage() {
   const criticalQueues = Object.values(queues).filter(
     (q) => q.metadata?.is_job_queue && q.message_count > 0 && q.consumer_count === 0
   ).length;
-  const warningQueues = Object.values(queues).filter(
-    (q) => q.message_count > 1000
-  ).length;
-  const avgMessagesPerQueue = Object.values(queues).length > 0 
-    ? Math.round(totalMessages / Object.values(queues).length)
-    : 0;
+  const warningQueues = Object.values(queues).filter((q) => q.message_count > 1000).length;
+  const avgMessagesPerQueue =
+    Object.values(queues).length > 0 ? Math.round(totalMessages / Object.values(queues).length) : 0;
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
@@ -201,9 +202,7 @@ export default function QueueManagementPage() {
             <CardHeader className="pb-3">
               <CardDescription>Total Messages</CardDescription>
               <CardTitle className="text-3xl">{totalMessages.toLocaleString()}</CardTitle>
-              <p className="text-xs text-muted-foreground mt-1">
-                Avg {avgMessagesPerQueue}/queue
-              </p>
+              <p className="text-xs text-muted-foreground mt-1">Avg {avgMessagesPerQueue}/queue</p>
             </CardHeader>
           </Card>
           <Card>
@@ -220,9 +219,7 @@ export default function QueueManagementPage() {
               <CardDescription>Critical Queues</CardDescription>
               <CardTitle className="text-3xl flex items-center gap-2">
                 {criticalQueues}
-                {criticalQueues > 0 && (
-                  <AlertCircle className="w-5 h-5 text-destructive" />
-                )}
+                {criticalQueues > 0 && <AlertCircle className="w-5 h-5 text-destructive" />}
               </CardTitle>
               <p className="text-xs text-muted-foreground mt-1">
                 {criticalQueues > 0 ? "Action required" : "All healthy"}
@@ -234,9 +231,7 @@ export default function QueueManagementPage() {
               <CardDescription>Warning Queues</CardDescription>
               <CardTitle className="text-3xl flex items-center gap-2">
                 {warningQueues}
-                {warningQueues > 0 && (
-                  <TrendingUp className="w-5 h-5 text-yellow-500" />
-                )}
+                {warningQueues > 0 && <TrendingUp className="w-5 h-5 text-yellow-500" />}
               </CardTitle>
               <p className="text-xs text-muted-foreground mt-1">
                 {warningQueues > 0 ? "High load" : "Normal load"}
@@ -316,20 +311,16 @@ export default function QueueManagementPage() {
               />
             </div>
           </div>
-          
+
           {/* Active Filters Display */}
           {(searchQuery || healthFilter !== "all") && (
             <div className="mt-4 flex items-center gap-2 flex-wrap">
               <span className="text-sm text-muted-foreground">Active filters:</span>
               {searchQuery && (
-                <span className="text-xs bg-muted px-2 py-1 rounded">
-                  Search: "{searchQuery}"
-                </span>
+                <span className="text-xs bg-muted px-2 py-1 rounded">Search: "{searchQuery}"</span>
               )}
               {healthFilter !== "all" && (
-                <span className="text-xs bg-muted px-2 py-1 rounded">
-                  Health: {healthFilter}
-                </span>
+                <span className="text-xs bg-muted px-2 py-1 rounded">Health: {healthFilter}</span>
               )}
               <Button
                 variant="ghost"
@@ -395,7 +386,7 @@ export default function QueueManagementPage() {
               Showing {sortedQueues.length} of {Object.keys(queues).length} queues
             </p>
           </div>
-          
+
           <div className={getGridClass()}>
             {sortedQueues.map((queue) => (
               <QueueStatsCard

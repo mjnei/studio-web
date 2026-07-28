@@ -223,9 +223,7 @@ export default function QueueDetailPage() {
               <CardDescription>Dead-Letter Queue</CardDescription>
               <CardTitle className="text-3xl flex items-center gap-2">
                 {dlqStats.message_count}
-                {dlqStats.message_count > 0 && (
-                  <AlertCircle className="w-5 h-5 text-destructive" />
-                )}
+                {dlqStats.message_count > 0 && <AlertCircle className="w-5 h-5 text-destructive" />}
               </CardTitle>
               <p className="text-xs text-muted-foreground mt-1">
                 {dlqStats.message_count > 0 ? "Failed messages" : "No failures"}
