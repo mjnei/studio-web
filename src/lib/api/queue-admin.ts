@@ -57,3 +57,20 @@ export async function purgeQueue(
 export async function getQueueDLQStats(queueName: string): Promise<QueueStats> {
   return request<QueueStats>(`/queues/${queueName}/dlq`);
 }
+
+/**
+ * Peek at a message in the queue without removing it.
+ * Returns the first message available in the queue.
+ *
+ * Requires admin role.
+ *
+ * @param queueName - Queue name to peek into
+ * @returns Message data or null if queue is empty
+ */
+export async function peekQueueMessage(
+  queueName: string
+): Promise<{ body: string; headers?: Record<string, string>; timestamp?: string } | null> {
+  return request<{ body: string; headers?: Record<string, string>; timestamp?: string } | null>(
+    `/queues/${queueName}/peek`
+  );
+}

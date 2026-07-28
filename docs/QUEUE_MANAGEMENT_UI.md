@@ -273,9 +273,9 @@ interface QueueMetadata {
 - Optimized spacing for small screens
 - Collapsible sidebar
 
-## Future Enhancements (Phase 4)
+## Future Enhancements
 
-See `QUEUE_MANAGEMENT_ROADMAP.md` for:
+See `docs/QUEUE_MANAGEMENT_COMPLETE.md` under "Phase 5: Monitoring & Alerts" for:
 
 - Individual queue detail pages
 - Message activity charts
@@ -366,10 +366,9 @@ open http://localhost:3020/admin/queues
 
 ## Related Documentation
 
-- Backend Implementation: `studio-backend/docs/QUEUE_MANAGEMENT_IMPLEMENTATION.md`
-- Framework Design: `studio-backend/docs/QUEUE_MANAGEMENT_FRAMEWORK.md`
-- Roadmap: `studio-backend/docs/QUEUE_MANAGEMENT_ROADMAP.md`
-- API Reference: `studio-backend/docs/API_ENDPOINTS.md`
+- **Main Reference**: `studio-backend/docs/QUEUE_MANAGEMENT_COMPLETE.md`
+- **Quick Start**: `studio-backend/docs/QUEUE_QUICKSTART.md`
+- **API Reference**: `studio-backend/docs/API_ENDPOINTS.md`
 
 ## Success Criteria ✅
 

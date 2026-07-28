@@ -8,6 +8,7 @@ import type { QueueStats } from "@/lib/types/queue";
 import { QueueDetailPanel } from "@/components/queue/QueueDetailPanel";
 import { QueueActivityChart } from "@/components/queue/QueueActivityChart";
 import { DLQInspector } from "@/components/queue/DLQInspector";
+import { QueueMessagePeeker } from "@/components/queue/QueueMessagePeeker";
 import { QueuePurgeDialog } from "@/components/queue/QueuePurgeDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -47,7 +48,7 @@ export default function QueueDetailPage() {
         try {
           const dlqData = await getQueueDLQStats(queueName);
           setDLQStats(dlqData);
-        } catch (err) {
+        } catch {
           // DLQ might not exist yet, that's okay
           setDLQStats(null);
         }
@@ -238,6 +239,7 @@ export default function QueueDetailPage() {
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="activity">Activity Chart</TabsTrigger>
+          <TabsTrigger value="messages">Peek Messages</TabsTrigger>
           {dlqStats && <TabsTrigger value="dlq">Dead-Letter Queue</TabsTrigger>}
         </TabsList>
 
@@ -247,6 +249,10 @@ export default function QueueDetailPage() {
 
         <TabsContent value="activity" className="space-y-6">
           <QueueActivityChart queueName={queueName} stats={stats} />
+        </TabsContent>
+
+        <TabsContent value="messages" className="space-y-6">
+          <QueueMessagePeeker queueName={queueName} stats={stats} />
         </TabsContent>
 
         {dlqStats && (
