@@ -141,8 +141,8 @@ export default function QueueManagementPage() {
     <div className="max-w-7xl mx-auto space-y-6">
       {/* Header */}
       <PageHeader
-        title="Queue Management"
-        description="Monitor and manage all queues across TTS, Video, and Agnes services"
+        title="兔子MQ"
+        description="Monitor and manage all RabbitMQ across TTS, Video, and Agnes services"
       />
 
       {/* Error State */}
@@ -177,10 +177,16 @@ export default function QueueManagementPage() {
               {/* Show compact stats in header when collapsed */}
               {!statsExpanded && (
                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                  <span>Messages: <strong>{totalMessages.toLocaleString()}</strong></span>
-                  <span>Consumers: <strong>{totalConsumers}</strong></span>
+                  <span>
+                    Messages: <strong>{totalMessages.toLocaleString()}</strong>
+                  </span>
+                  <span>
+                    Consumers: <strong>{totalConsumers}</strong>
+                  </span>
                   {criticalQueues > 0 && (
-                    <span className="text-destructive">Critical: <strong>{criticalQueues}</strong></span>
+                    <span className="text-destructive">
+                      Critical: <strong>{criticalQueues}</strong>
+                    </span>
                   )}
                 </div>
               )}
