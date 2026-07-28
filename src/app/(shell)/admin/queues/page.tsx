@@ -2,13 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  RefreshCw,
-  AlertCircle,
-  TrendingUp,
-  ArrowUpDown,
-  AlertTriangle,
-} from "lucide-react";
+import { RefreshCw, AlertCircle, TrendingUp, ArrowUpDown, AlertTriangle, ChevronDown } from "lucide-react";
 import { listAllQueues } from "@/lib/api/queue-admin";
 import type { QueueStats, QueueCategory } from "@/lib/types/queue";
 import { QueueStatsCard } from "@/components/queue/QueueStatsCard";
@@ -34,6 +28,7 @@ export default function QueueManagementPage() {
   const [activeCategory, setActiveCategory] = useState<QueueCategory | "all">("all");
   const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid-md");
   const [sortBy, setSortBy] = useState<"name" | "messages" | "consumers">("messages");
+  const [statsExpanded, setStatsExpanded] = useState(true);
 
   // Auto-refresh interval (10 seconds)
   const [autoRefresh, setAutoRefresh] = useState(true);
@@ -53,7 +48,12 @@ export default function QueueManagementPage() {
       }
     } finally {
       setLoading(false);
-      setRefreshing(false);
+      // Extend visual feedback duration: 2 seconds instead of immediate reset
+      if (!silent) {
+        setTimeout(() => setRefreshing(false), 2000);
+      } else {
+        setRefreshing(false);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -136,9 +136,130 @@ export default function QueueManagementPage() {
       <PageHeader
         title="Queue Management"
         description="Monitor and manage all queues across TTS, Video, and Agnes services"
-        action={
+      />
+
+      {/* Error State */}
+      {error && (
+        <Card className="border-destructive">
+          <CardContent className="flex items-center gap-3 pt-6">
+            <AlertCircle className="w-5 h-5 text-destructive" />
+            <div>
+              <p className="font-medium">Failed to load queues</p>
+              <p className="text-sm text-muted-foreground">{error}</p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Summary Stats Charts - Expandable */}
+      {!loading && !error && (
+        <Card>
+          <CardHeader 
+            className="pb-4 cursor-pointer"
+            onClick={() => setStatsExpanded(!statsExpanded)}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <CardTitle>Summary Statistics</CardTitle>
+                <ChevronDown 
+                  className={`w-5 h-5 text-muted-foreground transition-transform ${
+                    statsExpanded ? "rotate-0" : "-rotate-90"
+                  }`}
+                />
+              </div>
+            </div>
+          </CardHeader>
+
+          {statsExpanded && (
+            <CardContent className="space-y-4">
+              {/* Key Metrics Grid */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <Card className="border-muted">
+                  <CardHeader className="pb-3">
+                    <CardDescription className="text-xs">Total Messages</CardDescription>
+                    <CardTitle className="text-3xl font-bold">
+                      {totalMessages.toLocaleString()}
+                    </CardTitle>
+                  </CardHeader>
+                </Card>
+                <Card className="border-muted">
+                  <CardHeader className="pb-3">
+                    <CardDescription className="text-xs">Active Consumers</CardDescription>
+                    <CardTitle className="text-3xl font-bold">{totalConsumers}</CardTitle>
+                  </CardHeader>
+                </Card>
+                <Card
+                  className={
+                    criticalQueues > 0 ? "border-destructive bg-destructive/5" : "border-muted"
+                  }
+                >
+                  <CardHeader className="pb-3">
+                    <CardDescription className="text-xs">Critical Queues</CardDescription>
+                    <CardTitle className="text-3xl font-bold flex items-center gap-2">
+                      {criticalQueues}
+                      {criticalQueues > 0 && <AlertTriangle className="w-5 h-5 text-destructive" />}
+                    </CardTitle>
+                  </CardHeader>
+                </Card>
+                <Card
+                  className={
+                    warningQueues > 0 ? "border-yellow-500/50 bg-yellow-500/5" : "border-muted"
+                  }
+                >
+                  <CardHeader className="pb-3">
+                    <CardDescription className="text-xs">High Load Queues</CardDescription>
+                    <CardTitle className="text-3xl font-bold flex items-center gap-2">
+                      {warningQueues}
+                      {warningQueues > 0 && <TrendingUp className="w-5 h-5 text-yellow-600" />}
+                    </CardTitle>
+                  </CardHeader>
+                </Card>
+              </div>
+
+              {/* Health & Distribution Charts */}
+              <div className="grid md:grid-cols-2 gap-4">
+                {/* Health Indicator Chart */}
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm font-semibold">Queue Health Status</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <HealthIndicator queues={Object.values(queues)} />
+                  </CardContent>
+                </Card>
+
+                {/* Queue Distribution Chart */}
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm font-semibold">Messages by Category</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <QueueDistributionChart queues={Object.values(queues)} />
+                  </CardContent>
+                </Card>
+              </div>
+            </CardContent>
+          )}
+        </Card>
+      )}
+
+      {/* Category Tabs with Control Buttons */}
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <QueueCategoryTabs
+            activeCategory={activeCategory}
+            onCategoryChange={setActiveCategory}
+            counts={categoryCounts}
+          />
+          
+          {/* Control Buttons (moved from header) */}
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={() => fetchQueues()} disabled={refreshing}>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => fetchQueues()} 
+              disabled={refreshing}
+            >
               <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? "animate-spin" : ""}`} />
               Refresh
             </Button>
@@ -161,100 +282,8 @@ export default function QueueManagementPage() {
               variant="compact"
             />
           </div>
-        }
-      />
-
-      {/* Error State */}
-      {error && (
-        <Card className="border-destructive">
-          <CardContent className="flex items-center gap-3 pt-6">
-            <AlertCircle className="w-5 h-5 text-destructive" />
-            <div>
-              <p className="font-medium">Failed to load queues</p>
-              <p className="text-sm text-muted-foreground">{error}</p>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Summary Stats Charts */}
-      {!loading && !error && (
-        <div className="space-y-4">
-          {/* Key Metrics Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Card className="border-muted">
-              <CardHeader className="pb-3">
-                <CardDescription className="text-xs">Total Messages</CardDescription>
-                <CardTitle className="text-3xl font-bold">
-                  {totalMessages.toLocaleString()}
-                </CardTitle>
-              </CardHeader>
-            </Card>
-            <Card className="border-muted">
-              <CardHeader className="pb-3">
-                <CardDescription className="text-xs">Active Consumers</CardDescription>
-                <CardTitle className="text-3xl font-bold">{totalConsumers}</CardTitle>
-              </CardHeader>
-            </Card>
-            <Card
-              className={
-                criticalQueues > 0 ? "border-destructive bg-destructive/5" : "border-muted"
-              }
-            >
-              <CardHeader className="pb-3">
-                <CardDescription className="text-xs">Critical Queues</CardDescription>
-                <CardTitle className="text-3xl font-bold flex items-center gap-2">
-                  {criticalQueues}
-                  {criticalQueues > 0 && <AlertTriangle className="w-5 h-5 text-destructive" />}
-                </CardTitle>
-              </CardHeader>
-            </Card>
-            <Card
-              className={
-                warningQueues > 0 ? "border-yellow-500/50 bg-yellow-500/5" : "border-muted"
-              }
-            >
-              <CardHeader className="pb-3">
-                <CardDescription className="text-xs">High Load Queues</CardDescription>
-                <CardTitle className="text-3xl font-bold flex items-center gap-2">
-                  {warningQueues}
-                  {warningQueues > 0 && <TrendingUp className="w-5 h-5 text-yellow-600" />}
-                </CardTitle>
-              </CardHeader>
-            </Card>
-          </div>
-
-          {/* Health & Distribution Charts */}
-          <div className="grid md:grid-cols-2 gap-4">
-            {/* Health Indicator Chart */}
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-semibold">Queue Health Status</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <HealthIndicator queues={Object.values(queues)} />
-              </CardContent>
-            </Card>
-
-            {/* Queue Distribution Chart */}
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-semibold">Messages by Category</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <QueueDistributionChart queues={Object.values(queues)} />
-              </CardContent>
-            </Card>
-          </div>
         </div>
-      )}
-
-      {/* Category Tabs */}
-      <QueueCategoryTabs
-        activeCategory={activeCategory}
-        onCategoryChange={setActiveCategory}
-        counts={categoryCounts}
-      />
+      </div>
 
       {/* Queue Grid */}
       {loading ? (
