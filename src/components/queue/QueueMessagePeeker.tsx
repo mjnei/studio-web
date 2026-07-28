@@ -37,11 +37,13 @@ export function QueueMessagePeeker({ queueName, stats }: QueueMessagePeekerProps
       if (data) {
         setMessage(data);
       } else {
+        // null response means queue is genuinely empty
         setError("Queue is empty - no messages to peek");
       }
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : "Failed to peek message";
       setError(errorMsg);
+      console.error("Peek message error:", err);
       toast.error(errorMsg);
     } finally {
       setLoading(false);
@@ -135,12 +137,7 @@ export function QueueMessagePeeker({ queueName, stats }: QueueMessagePeekerProps
                 <CardTitle className="text-base">Message Content</CardTitle>
                 <Badge variant="outline">Raw Data</Badge>
               </div>
-              <Button
-                onClick={copyToClipboard}
-                variant="outline"
-                size="sm"
-                className="gap-2"
-              >
+              <Button onClick={copyToClipboard} variant="outline" size="sm" className="gap-2">
                 {copied ? (
                   <>
                     <Check className="w-4 h-4" />
@@ -187,8 +184,8 @@ export function QueueMessagePeeker({ queueName, stats }: QueueMessagePeekerProps
             <div className="pt-4 border-t flex items-start gap-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded">
               <AlertCircle className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
               <p className="text-xs text-blue-600 dark:text-blue-400">
-                This message is not removed from the queue. Use the peek function to inspect
-                without affecting message processing.
+                This message is not removed from the queue. Use the peek function to inspect without
+                affecting message processing.
               </p>
             </div>
           </CardContent>

@@ -34,7 +34,7 @@ A feature-rich dashboard with advanced filtering and monitoring:
 
 ### 2. Queue Detail Page (`/admin/queues/[queueName]`)
 
-Enhanced individual queue monitoring with rich metrics:
+Enhanced individual queue monitoring with rich metrics and message inspection:
 
 **Core Features:**
 - **4-Card Metrics Dashboard**:
@@ -45,6 +45,7 @@ Enhanced individual queue monitoring with rich metrics:
 - **Tabbed Interface**:
   - Overview: Configuration, health indicators, detailed info
   - Activity: Time-series charts for messages and consumers
+  - **Peek Messages**: Non-destructive message inspection (NEW)
   - DLQ: Dead-letter queue inspection and management
 - **Real-time Updates**: Auto-refresh every 5 seconds
 - **Quick Actions**: Refresh and purge queue operations
@@ -56,6 +57,7 @@ Enhanced individual queue monitoring with rich metrics:
 - Active/inactive consumer status
 - DLQ message count with visual alerts
 - Category and type information
+- Description and type explanations (merged)
 
 ### 3. Queue Health Indicators
 
@@ -72,7 +74,33 @@ Intelligent health assessment system:
 - Contextual messages explaining health status
 - Aggregate system health in hub dashboard
 
-### 4. Advanced Filtering & Search
+### 4. Message Peeking (NEW)
+
+Safe, non-destructive message inspection:
+
+**Features:**
+- **Non-destructive Viewing**: Inspect messages without removing them from queue
+- **Message Display**: View first available message with formatted JSON
+- **Metadata**: Display message headers and timestamp information
+- **Copy to Clipboard**: Export message content for external analysis
+- **Empty Queue Handling**: Clear feedback when queue has no messages
+- **Admin-only Access**: Requires admin role for security
+
+**Workflow:**
+1. Navigate to queue detail page
+2. Click "Peek Messages" tab
+3. Click "Peek Message" button
+4. Review message content, headers, and metadata
+5. Copy message data for debugging
+6. Message remains in queue for processing
+
+**Implementation:**
+- Uses RabbitMQ Management HTTP API (port 15672)
+- Non-destructive with `ackmode=nack`
+- Graceful error handling and empty queue states
+- Visual feedback and informational banners
+
+### 5. Advanced Filtering & Search
 
 **Search Capabilities:**
 - Full-text search across queue names
@@ -91,7 +119,7 @@ Intelligent health assessment system:
 - Results counter (X of Y queues)
 - Helpful empty states with guidance
 
-### 5. Purge Queue Dialog
+### 6. Purge Queue Dialog
 
 Safe queue purging workflow:
 
@@ -101,7 +129,7 @@ Safe queue purging workflow:
 - **Success/Error Toast**: Operation result notification
 - **Auto-refresh**: Queue stats refresh after purge
 
-### 6. Admin Sidebar Navigation
+### 7. Admin Sidebar Navigation
 
 Seamless navigation integration:
 
@@ -119,7 +147,7 @@ studio-web/
 │   │   ├── types/
 │   │   │   └── queue.ts                    # TypeScript types & helpers
 │   │   ├── api/
-│   │   │   └── queue-admin.ts              # API client
+│   │   │   └── queue-admin.ts              # API client (+ peekQueueMessage)
 │   │   └── hooks/
 │   │       └── use-toast.ts                # Toast hook wrapper
 │   ├── components/
@@ -129,16 +157,22 @@ studio-web/
 │   │   ├── queue/
 │   │   │   ├── QueueStatsCard.tsx          # Queue card component
 │   │   │   ├── QueueCategoryTabs.tsx       # Category filter tabs
+│   │   │   ├── QueueDetailPanel.tsx        # Queue info (merged sections)
+│   │   │   ├── QueueMessagePeeker.tsx      # Message peeking (NEW)
+│   │   │   ├── QueueActivityChart.tsx      # Activity charts
+│   │   │   ├── DLQInspector.tsx            # DLQ management
 │   │   │   └── QueuePurgeDialog.tsx        # Purge confirmation
 │   │   └── shell/
 │   │       └── drawer-content.tsx          # Updated sidebar
 │   └── app/
 │       └── (shell)/
-│           └── admin/
-│               └── queues/
-│                   └── page.tsx             # Hub page
-└── docs/
-    └── QUEUE_MANAGEMENT_UI.md              # This file
+│           ├── admin/
+│           │   └── queues/
+│           │       ├── page.tsx             # Hub page
+│           │       └── [queueName]/
+│           │           └── page.tsx         # Detail page (+ tabs)
+│           └── docs/
+│               └── QUEUE_MANAGEMENT_UI.md  # This file
 ```
 
 ## Components
@@ -202,6 +236,10 @@ GET /api/v1/queues
 GET /api/v1/queues/{queue_name}/stats
 → QueueStatsResponse
 
+// Peek at a message (NEW)
+GET /api/v1/queues/{queue_name}/peek
+→ { body: string; headers?: Record<string, string>; timestamp?: string } | null
+
 // Purge queue (dry-run or actual)
 POST /api/v1/queues/{queue_name}/purge?dry_run={true|false}
 → QueuePurgeResponse
@@ -235,8 +273,30 @@ interface QueueMetadata {
 
 1. Navigate to `/admin/queues` (admin role required)
 2. View all queues or filter by category
-3. Click "View Details" for deep dive (Phase 4)
+3. Click "View Details" for individual queue monitoring
 4. Click "Purge Queue" to delete messages
+
+### Viewing Queue Details
+
+1. Click "View Details" on any queue card or navigate directly to `/admin/queues/[queueName]`
+2. Review metrics in the 4-card dashboard
+3. Use tabs to explore different views:
+   - **Overview**: Configuration and health indicators
+   - **Activity**: Message and consumer trends
+   - **Peek Messages**: Inspect individual messages (NEW)
+   - **Dead-Letter Queue**: View failed messages
+
+### Peeking at Messages (NEW)
+
+1. Navigate to queue detail page
+2. Click "Peek Messages" tab
+3. Click "Peek Message" button
+4. Review message content:
+   - Message body (formatted JSON)
+   - Headers (key-value pairs)
+   - Timestamp (when sent)
+5. Copy message to clipboard for analysis
+6. Message remains in queue for processing
 
 ### Purging a Queue
 
@@ -296,18 +356,33 @@ See `docs/QUEUE_MANAGEMENT_COMPLETE.md` under "Phase 5: Monitoring & Alerts" for
    - Stats update every 10 seconds
    - Category tabs filter correctly
 
-3. **Purge Workflow**:
+3. **Queue Details**:
+   - Metrics display correctly on detail page
+   - Auto-refresh updates stats every 5 seconds
+   - All tabs render without errors
+   - Back button returns to hub
+
+4. **Message Peeking** (NEW):
+   - Click "Peek Message" button
+   - Message content displays correctly
+   - Headers and metadata show properly
+   - Copy to clipboard works
+   - Empty queue shows appropriate message
+   - Non-destructive operation confirmed
+
+5. **Purge Workflow**:
    - Preview shows correct message count
    - Confirmation required before purge
    - Success toast displays after purge
    - Queue stats refresh after purge
 
-4. **Error Handling**:
+6. **Error Handling**:
    - Backend down: Error message displays
    - Invalid queue: 400 error handled
    - Network error: Retry available
+   - RabbitMQ unreachable: Graceful degradation
 
-5. **Responsive Design**:
+7. **Responsive Design**:
    - Test on mobile (iPhone, Android)
    - Test on tablet (iPad)
    - Test on desktop (various resolutions)
@@ -375,6 +450,9 @@ open http://localhost:3020/admin/queues
 - ✅ Hub page loads all queues
 - ✅ Category filtering works
 - ✅ Auto-refresh updates stats
+- ✅ Message peeking works non-destructively
+- ✅ Copy to clipboard functionality
+- ✅ Empty queue handling in peek tab
 - ✅ Purge workflow functional
 - ✅ Health indicators accurate
 - ✅ Error states handled
@@ -382,3 +460,30 @@ open http://localhost:3020/admin/queues
 - ✅ Admin-only access enforced
 - ✅ Sidebar navigation added
 - ✅ Toast notifications working
+- ✅ All tabs render correctly
+- ✅ Auto-refresh on detail page
+- ✅ Tab switching works smoothly
+- ✅ Message peeking uses Management API correctly
+
+### Message Peeking Feature (NEW)
+- **What Added**: "Peek Messages" tab with non-destructive message inspection
+- **How It Works**:
+  - Uses RabbitMQ Management HTTP API
+  - Non-destructive with `ackmode=nack`
+  - Displays first available message
+  - Shows message body (formatted JSON), headers, timestamp
+  - Copy to clipboard for external analysis
+- **Why**: Admins can now safely inspect messages without removing them, enabling better debugging without disrupting queue processing
+- **Impact**:
+  - New tab in detail page (4 tabs total: Overview, Activity, Peek Messages, DLQ)
+  - New backend endpoint: `GET /queues/{queue_name}/peek`
+  - New component: `QueueMessagePeeker.tsx`
+  - New API function: `peekQueueMessage()`
+
+## Related Documentation
+
+- **Main Reference**: `studio-backend/docs/QUEUE_MANAGEMENT_COMPLETE.md`
+- **Quick Start**: `studio-backend/docs/QUEUE_QUICKSTART.md`
+- **API Reference**: `studio-backend/docs/API_ENDPOINTS.md`
+- **Technical Details**: `QUEUE_DETAIL_PAGE_UPDATES.md` (new)
+- **Changes Summary**: `QUEUE_DETAIL_CHANGES_SUMMARY.md` (new)
