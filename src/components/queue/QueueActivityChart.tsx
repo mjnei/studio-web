@@ -107,9 +107,7 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
               )}
             </div>
           </CardTitle>
-          <CardDescription>
-            Message count over time (sampled every 5 minutes)
-          </CardDescription>
+          <CardDescription>Message count over time (sampled every 5 minutes)</CardDescription>
         </CardHeader>
       </Card>
 

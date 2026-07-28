@@ -20,7 +20,11 @@ export function DLQInspector({ queueName, dlqStats }: DLQInspectorProps) {
   const dlqName = dlqStats.queue_name;
 
   const handlePurgeDLQ = async () => {
-    if (!confirm(`Are you sure you want to purge ${dlqStats.message_count} messages from the dead-letter queue?`)) {
+    if (
+      !confirm(
+        `Are you sure you want to purge ${dlqStats.message_count} messages from the dead-letter queue?`
+      )
+    ) {
       return;
     }
 
@@ -99,9 +103,7 @@ export function DLQInspector({ queueName, dlqStats }: DLQInspectorProps) {
               <ol className="list-decimal list-inside space-y-1 text-sm text-muted-foreground">
                 <li>Investigate the root cause of failures in your logs</li>
                 <li>Fix the underlying issue in your worker service</li>
-                <li>
-                  Consider manually reprocessing messages (requires custom tooling)
-                </li>
+                <li>Consider manually reprocessing messages (requires custom tooling)</li>
                 <li>Once resolved, purge the DLQ to start fresh</li>
               </ol>
             </div>
@@ -111,12 +113,7 @@ export function DLQInspector({ queueName, dlqStats }: DLQInspectorProps) {
                 <RefreshCw className="w-4 h-4 mr-2" />
                 Refresh
               </Button>
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={handlePurgeDLQ}
-                disabled={purging}
-              >
+              <Button variant="destructive" size="sm" onClick={handlePurgeDLQ} disabled={purging}>
                 <Trash2 className="w-4 h-4 mr-2" />
                 Purge DLQ
               </Button>
@@ -192,9 +189,9 @@ export function DLQInspector({ queueName, dlqStats }: DLQInspectorProps) {
       <Card className="bg-muted/30">
         <CardContent className="pt-6">
           <p className="text-xs text-muted-foreground">
-            <strong>Future Enhancement:</strong> Message sampling and inspection tools will be
-            added in a future release, allowing you to view actual message payloads and error
-            details directly from this interface.
+            <strong>Future Enhancement:</strong> Message sampling and inspection tools will be added
+            in a future release, allowing you to view actual message payloads and error details
+            directly from this interface.
           </p>
         </CardContent>
       </Card>

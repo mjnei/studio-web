@@ -179,9 +179,7 @@ export function QueueDetailPanel({ stats }: QueueDetailPanelProps) {
             )}
 
             {/* Check: Queue looks healthy */}
-            {((metadata?.is_job_queue &&
-              stats.message_count < 100 &&
-              stats.consumer_count > 0) ||
+            {((metadata?.is_job_queue && stats.message_count < 100 && stats.consumer_count > 0) ||
               (!metadata?.is_job_queue && stats.message_count < 100)) && (
               <div className="flex items-start gap-3 p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
                 <div className="w-2 h-2 rounded-full bg-green-500 mt-1.5" />

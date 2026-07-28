@@ -73,7 +73,6 @@ export function TabsTrigger({ value, children, className = "" }: TabsTriggerProp
   );
 }
 
-
 export function TabsContent({ value, children, className = "" }: TabsContentProps) {
   const context = React.useContext(TabsContext);
   const isActive = context.value === value;

@@ -29,7 +29,9 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
                 {title}
               </h1>
               {description && (
-                <p className="mt-2 text-sm sm:text-base text-[var(--text-secondary)]">{description}</p>
+                <p className="mt-2 text-sm sm:text-base text-[var(--text-secondary)]">
+                  {description}
+                </p>
               )}
             </>
           ) : (

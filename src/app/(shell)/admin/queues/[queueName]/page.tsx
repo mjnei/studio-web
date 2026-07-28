@@ -3,10 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, RefreshCw, AlertCircle, TrendingUp, Activity } from "lucide-react";
-import {
-  getQueueStats,
-  getQueueDLQStats,
-} from "@/lib/api/queue-admin";
+import { getQueueStats, getQueueDLQStats } from "@/lib/api/queue-admin";
 import type { QueueStats } from "@/lib/types/queue";
 import { QueueDetailPanel } from "@/components/queue/QueueDetailPanel";
 import { QueueActivityChart } from "@/components/queue/QueueActivityChart";
@@ -170,12 +167,7 @@ export default function QueueDetailPage() {
         }
         action={
           <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => fetchStats()}
-              disabled={refreshing}
-            >
+            <Button variant="outline" size="sm" onClick={() => fetchStats()} disabled={refreshing}>
               <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? "animate-spin" : ""}`} />
               Refresh
             </Button>
