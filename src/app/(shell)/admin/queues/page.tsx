@@ -83,15 +83,15 @@ export default function QueueManagementPage() {
   const getGridClass = () => {
     switch (layoutMode) {
       case "grid-sm":
-        // Small cards: 2 cols (base), 3 cols (sm), 4 cols (md), 5 cols (lg), 6 cols (xl)
-        return "grid gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6";
+        // Small cards: 2 cols (base), 2 cols (sm), 3 cols (md), 4 cols (lg), 4 cols (xl)
+        return "grid gap-3 grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4";
       case "grid-md":
-        // Medium cards: 1 col (base), 2 cols (sm), 3 cols (md), 4 cols (lg), 4 cols (xl)
-        return "grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4";
+        // Medium cards: 1 col (base), 1 col (sm), 2 cols (md), 3 cols (lg), 3 cols (xl)
+        return "grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3";
       case "list":
         return "space-y-3";
       default:
-        return "grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4";
+        return "grid gap-4 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3";
     }
   };
 

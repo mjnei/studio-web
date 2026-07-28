@@ -103,7 +103,7 @@ export function QueueStatsCard({ stats, onViewDetails, onPurge }: QueueStatsCard
               onClick={onViewDetails}
               className="flex-1 px-3 py-1.5 text-xs font-medium rounded bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
             >
-              View Details
+              View
             </button>
           )}
           {onPurge && message_count > 0 && (
@@ -111,7 +111,7 @@ export function QueueStatsCard({ stats, onViewDetails, onPurge }: QueueStatsCard
               onClick={onPurge}
               className="flex-1 px-3 py-1.5 text-xs font-medium rounded border border-destructive text-destructive hover:bg-destructive/10 transition-colors"
             >
-              Purge Queue
+              Purge
             </button>
           )}
         </div>
