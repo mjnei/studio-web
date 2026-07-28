@@ -17,6 +17,7 @@ import {
   ShieldCheck,
   DollarSign,
   CreditCard,
+  Layers,
 } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
@@ -94,6 +95,11 @@ const adminItems = [
     label: "Voices",
     icon: "M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3zM5 10v2a7 7 0 0 0 14 0v-2M12 19v4M8 23h8",
   },
+  {
+    href: "/admin/queues",
+    label: "Queues",
+    icon: "M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16zM3.27 6.96L12 12.01l8.73-5.05M12 22.08V12",
+  },
 ];
 
 function isActive(pathname: string, href: string) {
@@ -118,6 +124,7 @@ const iconMap: Record<string, React.ReactNode> = {
   "/admin": <ShieldCheck size={20} />,
   "/admin/movies": <Film size={20} />,
   "/admin/voices": <Mic size={20} />,
+  "/admin/queues": <Layers size={20} />,
 };
 
 function RailLink({
