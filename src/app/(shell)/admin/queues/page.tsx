@@ -2,7 +2,14 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { RefreshCw, AlertCircle, TrendingUp, ArrowUpDown, AlertTriangle, ChevronDown } from "lucide-react";
+import {
+  RefreshCw,
+  AlertCircle,
+  TrendingUp,
+  ArrowUpDown,
+  AlertTriangle,
+  ChevronDown,
+} from "lucide-react";
 import { listAllQueues } from "@/lib/api/queue-admin";
 import type { QueueStats, QueueCategory } from "@/lib/types/queue";
 import { QueueStatsCard } from "@/components/queue/QueueStatsCard";
@@ -154,19 +161,29 @@ export default function QueueManagementPage() {
       {/* Summary Stats Charts - Expandable */}
       {!loading && !error && (
         <Card>
-          <CardHeader 
-            className="pb-4 cursor-pointer"
+          <CardHeader
+            className="pb-4 cursor-pointer hover:bg-muted/50 transition-colors"
             onClick={() => setStatsExpanded(!statsExpanded)}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <CardTitle>Summary Statistics</CardTitle>
-                <ChevronDown 
+                <ChevronDown
                   className={`w-5 h-5 text-muted-foreground transition-transform ${
                     statsExpanded ? "rotate-0" : "-rotate-90"
                   }`}
                 />
               </div>
+              {/* Show compact stats in header when collapsed */}
+              {!statsExpanded && (
+                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                  <span>Messages: <strong>{totalMessages.toLocaleString()}</strong></span>
+                  <span>Consumers: <strong>{totalConsumers}</strong></span>
+                  {criticalQueues > 0 && (
+                    <span className="text-destructive">Critical: <strong>{criticalQueues}</strong></span>
+                  )}
+                </div>
+              )}
             </div>
           </CardHeader>
 
@@ -251,15 +268,10 @@ export default function QueueManagementPage() {
             onCategoryChange={setActiveCategory}
             counts={categoryCounts}
           />
-          
+
           {/* Control Buttons (moved from header) */}
           <div className="flex items-center gap-2">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={() => fetchQueues()} 
-              disabled={refreshing}
-            >
+            <Button variant="outline" size="sm" onClick={() => fetchQueues()} disabled={refreshing}>
               <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? "animate-spin" : ""}`} />
               Refresh
             </Button>
