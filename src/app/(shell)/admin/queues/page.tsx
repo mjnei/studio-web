@@ -1,8 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { RefreshCw, AlertCircle, TrendingUp, ArrowUpDown } from "lucide-react";
+import {
+  RefreshCw,
+  AlertCircle,
+  TrendingUp,
+  ArrowUpDown,
+  AlertTriangle,
+} from "lucide-react";
 import { listAllQueues } from "@/lib/api/queue-admin";
 import type { QueueStats, QueueCategory } from "@/lib/types/queue";
 import { QueueStatsCard } from "@/components/queue/QueueStatsCard";
@@ -14,6 +20,8 @@ import { useToast } from "@/components/ui/toast";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { LayoutToggle, type LayoutMode } from "@/components/ui/LayoutToggle";
 import { Select } from "@/components/ui/select";
+import { HealthIndicator } from "@/components/queue/HealthIndicator";
+import { QueueDistributionChart } from "@/components/queue/QueueDistributionChart";
 
 export default function QueueManagementPage() {
   const router = useRouter();
@@ -30,7 +38,7 @@ export default function QueueManagementPage() {
   // Auto-refresh interval (10 seconds)
   const [autoRefresh, setAutoRefresh] = useState(true);
 
-  const fetchQueues = async (silent = false) => {
+  const fetchQueues = useCallback(async (silent = false) => {
     if (!silent) setRefreshing(true);
     setError(null);
 
@@ -40,18 +48,21 @@ export default function QueueManagementPage() {
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to load queues";
       setError(message);
-      toast.error(message);
+      if (!silent) {
+        toast.error(message);
+      }
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Initial load
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    fetchQueues();
-  }, []);
+    void fetchQueues();
+  }, [fetchQueues]);
 
   // Auto-refresh
   useEffect(() => {
@@ -62,7 +73,7 @@ export default function QueueManagementPage() {
     }, 10000);
 
     return () => clearInterval(interval);
-  }, [autoRefresh]);
+  }, [autoRefresh, fetchQueues]);
 
   // Filter queues by category
   const filteredQueues = Object.values(queues).filter((queue) => {
@@ -166,45 +177,75 @@ export default function QueueManagementPage() {
         </Card>
       )}
 
-      {/* Summary Stats */}
+      {/* Summary Stats Charts */}
       {!loading && !error && (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          <Card className="border-muted">
-            <CardHeader className="pb-3">
-              <CardDescription className="text-xs">Total Messages</CardDescription>
-              <CardTitle className="text-2xl font-bold">{totalMessages.toLocaleString()}</CardTitle>
-            </CardHeader>
-          </Card>
-          <Card className="border-muted">
-            <CardHeader className="pb-3">
-              <CardDescription className="text-xs">Active Consumers</CardDescription>
-              <CardTitle className="text-2xl font-bold">{totalConsumers}</CardTitle>
-            </CardHeader>
-          </Card>
-          <Card className="border-muted">
-            <CardHeader className="pb-3">
-              <CardDescription className="text-xs">Total Queues</CardDescription>
-              <CardTitle className="text-2xl font-bold">{Object.keys(queues).length}</CardTitle>
-            </CardHeader>
-          </Card>
-          <Card className={criticalQueues > 0 ? "border-destructive" : "border-muted"}>
-            <CardHeader className="pb-3">
-              <CardDescription className="text-xs">Critical</CardDescription>
-              <CardTitle className="text-2xl font-bold flex items-center gap-2">
-                {criticalQueues}
-                {criticalQueues > 0 && <AlertCircle className="w-4 h-4 text-destructive" />}
-              </CardTitle>
-            </CardHeader>
-          </Card>
-          <Card className={warningQueues > 0 ? "border-yellow-500/50" : "border-muted"}>
-            <CardHeader className="pb-3">
-              <CardDescription className="text-xs">Warnings</CardDescription>
-              <CardTitle className="text-2xl font-bold flex items-center gap-2">
-                {warningQueues}
-                {warningQueues > 0 && <TrendingUp className="w-4 h-4 text-yellow-500" />}
-              </CardTitle>
-            </CardHeader>
-          </Card>
+        <div className="space-y-4">
+          {/* Key Metrics Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <Card className="border-muted">
+              <CardHeader className="pb-3">
+                <CardDescription className="text-xs">Total Messages</CardDescription>
+                <CardTitle className="text-3xl font-bold">
+                  {totalMessages.toLocaleString()}
+                </CardTitle>
+              </CardHeader>
+            </Card>
+            <Card className="border-muted">
+              <CardHeader className="pb-3">
+                <CardDescription className="text-xs">Active Consumers</CardDescription>
+                <CardTitle className="text-3xl font-bold">{totalConsumers}</CardTitle>
+              </CardHeader>
+            </Card>
+            <Card
+              className={
+                criticalQueues > 0 ? "border-destructive bg-destructive/5" : "border-muted"
+              }
+            >
+              <CardHeader className="pb-3">
+                <CardDescription className="text-xs">Critical Queues</CardDescription>
+                <CardTitle className="text-3xl font-bold flex items-center gap-2">
+                  {criticalQueues}
+                  {criticalQueues > 0 && <AlertTriangle className="w-5 h-5 text-destructive" />}
+                </CardTitle>
+              </CardHeader>
+            </Card>
+            <Card
+              className={
+                warningQueues > 0 ? "border-yellow-500/50 bg-yellow-500/5" : "border-muted"
+              }
+            >
+              <CardHeader className="pb-3">
+                <CardDescription className="text-xs">High Load Queues</CardDescription>
+                <CardTitle className="text-3xl font-bold flex items-center gap-2">
+                  {warningQueues}
+                  {warningQueues > 0 && <TrendingUp className="w-5 h-5 text-yellow-600" />}
+                </CardTitle>
+              </CardHeader>
+            </Card>
+          </div>
+
+          {/* Health & Distribution Charts */}
+          <div className="grid md:grid-cols-2 gap-4">
+            {/* Health Indicator Chart */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-semibold">Queue Health Status</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <HealthIndicator queues={Object.values(queues)} />
+              </CardContent>
+            </Card>
+
+            {/* Queue Distribution Chart */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-semibold">Messages by Category</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <QueueDistributionChart queues={Object.values(queues)} />
+              </CardContent>
+            </Card>
+          </div>
         </div>
       )}
 
@@ -247,6 +288,7 @@ export default function QueueManagementPage() {
               <QueueStatsCard
                 key={queue.queue_name}
                 stats={queue}
+                isRefreshing={refreshing}
                 onViewDetails={() => router.push(`/admin/queues/${queue.queue_name}`)}
                 onRefresh={() => fetchQueues(true)}
               />

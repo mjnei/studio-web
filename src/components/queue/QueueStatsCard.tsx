@@ -3,7 +3,7 @@
 import { AlertCircle, CheckCircle2, Clock, Users, RefreshCw } from "lucide-react";
 import type { QueueStats } from "@/lib/types/queue";
 import { getQueueHealth, getHealthColor } from "@/lib/types/queue";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip } from "@/components/ui/tooltip";
 
@@ -11,9 +11,15 @@ interface QueueStatsCardProps {
   stats: QueueStats;
   onViewDetails?: () => void;
   onRefresh?: () => void;
+  isRefreshing?: boolean;
 }
 
-export function QueueStatsCard({ stats, onViewDetails, onRefresh }: QueueStatsCardProps) {
+export function QueueStatsCard({
+  stats,
+  onViewDetails,
+  onRefresh,
+  isRefreshing,
+}: QueueStatsCardProps) {
   const health = getQueueHealth(stats);
   const colors = getHealthColor(health.status);
 
@@ -101,7 +107,8 @@ export function QueueStatsCard({ stats, onViewDetails, onRefresh }: QueueStatsCa
           {onViewDetails && (
             <button
               onClick={onViewDetails}
-              className="flex-1 px-3 py-1.5 text-xs font-medium rounded bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+              disabled={isRefreshing}
+              className="flex-1 px-3 py-1.5 text-xs font-medium rounded border border-primary bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               View Details
             </button>
@@ -109,9 +116,10 @@ export function QueueStatsCard({ stats, onViewDetails, onRefresh }: QueueStatsCa
           {onRefresh && (
             <button
               onClick={onRefresh}
-              className="px-3 py-1.5 text-xs font-medium rounded border border-muted-foreground/30 hover:bg-muted transition-colors flex items-center gap-1.5"
+              disabled={isRefreshing}
+              className="px-3 py-1.5 text-xs font-medium rounded border border-muted-foreground/30 hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1.5"
             >
-              <RefreshCw className="w-3 h-3" />
+              <RefreshCw className={`w-3 h-3 ${isRefreshing ? "animate-spin" : ""}`} />
               Refresh
             </button>
           )}
