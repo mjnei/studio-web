@@ -139,64 +139,6 @@ export function QueueDetailPanel({ stats }: QueueDetailPanelProps) {
           )}
         </CardContent>
       </Card>
-
-      {/* Health Indicators */}
-      <Card className="md:col-span-2">
-        <CardHeader>
-          <CardTitle>Queue Health Indicators</CardTitle>
-          <CardDescription>Automated checks for common issues</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            {/* Check: Job queue with messages but no consumers */}
-            {metadata?.is_job_queue && stats.message_count > 0 && stats.consumer_count === 0 && (
-              <div className="flex items-start gap-3 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
-                <div className="w-2 h-2 rounded-full bg-destructive mt-1.5" />
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-destructive">No Active Consumers</p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    This job queue has {stats.message_count} pending messages but no consumers to
-                    process them. Check if your worker service is running.
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {/* Check: High message count */}
-            {stats.message_count > 1000 && (
-              <div className="flex items-start gap-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
-                <div className="w-2 h-2 rounded-full bg-yellow-500 mt-1.5" />
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-yellow-600 dark:text-yellow-500">
-                    High Message Count
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Queue has {stats.message_count.toLocaleString()} messages. Consider scaling up
-                    consumers or investigating if messages are being processed correctly.
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {/* Check: Queue looks healthy */}
-            {((metadata?.is_job_queue && stats.message_count < 100 && stats.consumer_count > 0) ||
-              (!metadata?.is_job_queue && stats.message_count < 100)) && (
-              <div className="flex items-start gap-3 p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
-                <div className="w-2 h-2 rounded-full bg-green-500 mt-1.5" />
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-green-600 dark:text-green-500">
-                    Queue Healthy
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Queue is operating normally with {stats.consumer_count} active consumer(s) and{" "}
-                    {stats.message_count} pending message(s).
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }

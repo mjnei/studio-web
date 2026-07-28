@@ -236,7 +236,8 @@ export default function QueueDetailPage() {
                   </CardTitle>
                   {stats.metadata?.max_messages && (
                     <p className="text-xs text-muted-foreground mt-1">
-                      {Math.round((stats.message_count / stats.metadata.max_messages) * 100)}% capacity
+                      {Math.round((stats.message_count / stats.metadata.max_messages) * 100)}%
+                      capacity
                     </p>
                   )}
                 </CardHeader>
@@ -268,12 +269,20 @@ export default function QueueDetailPage() {
               </Card>
 
               {dlqStats && (
-                <Card className={dlqStats.message_count > 0 ? "border-destructive bg-destructive/5" : "border-muted"}>
+                <Card
+                  className={
+                    dlqStats.message_count > 0
+                      ? "border-destructive bg-destructive/5"
+                      : "border-muted"
+                  }
+                >
                   <CardHeader className="pb-3">
                     <CardDescription className="text-xs">Dead-Letter Queue</CardDescription>
                     <CardTitle className="text-3xl font-bold flex items-center gap-2">
                       {dlqStats.message_count}
-                      {dlqStats.message_count > 0 && <AlertCircle className="w-5 h-5 text-destructive" />}
+                      {dlqStats.message_count > 0 && (
+                        <AlertCircle className="w-5 h-5 text-destructive" />
+                      )}
                     </CardTitle>
                     <p className="text-xs text-muted-foreground mt-1">
                       {dlqStats.message_count > 0 ? "Failed messages" : "No failures"}
@@ -289,8 +298,8 @@ export default function QueueDetailPage() {
                 health.status === "critical"
                   ? "border-destructive bg-destructive/5"
                   : health.status === "warning"
-                  ? "border-yellow-500 bg-yellow-500/5"
-                  : "border-muted"
+                    ? "border-yellow-500 bg-yellow-500/5"
+                    : "border-muted"
               }
             >
               <CardContent className="flex items-center gap-3 pt-4 pb-4">
@@ -299,8 +308,8 @@ export default function QueueDetailPage() {
                     health.status === "critical"
                       ? "text-destructive"
                       : health.status === "warning"
-                      ? "text-yellow-600"
-                      : "text-green-600"
+                        ? "text-yellow-600"
+                        : "text-green-600"
                   }`}
                 />
                 <div>
