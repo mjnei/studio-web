@@ -106,10 +106,15 @@ export function QueueStatsCard({ stats, onViewDetails, onPurge }: QueueStatsCard
               View
             </button>
           )}
-          {onPurge && message_count > 0 && (
+          {onPurge && (
             <button
               onClick={onPurge}
-              className="flex-1 px-3 py-1.5 text-xs font-medium rounded border border-destructive text-destructive hover:bg-destructive/10 transition-colors"
+              disabled={message_count === 0}
+              className={`flex-1 px-3 py-1.5 text-xs font-medium rounded border transition-colors ${
+                message_count === 0
+                  ? "border-muted-foreground text-muted-foreground cursor-not-allowed opacity-50"
+                  : "border-destructive text-destructive hover:bg-destructive/10"
+              }`}
             >
               Purge
             </button>
