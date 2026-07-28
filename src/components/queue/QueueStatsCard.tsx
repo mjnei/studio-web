@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircle, CheckCircle2, Clock, Users } from "lucide-react";
+import { AlertCircle, CheckCircle2, Clock, Users, RefreshCw } from "lucide-react";
 import type { QueueStats } from "@/lib/types/queue";
 import { getQueueHealth, getHealthColor } from "@/lib/types/queue";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,10 +10,10 @@ import { Tooltip } from "@/components/ui/tooltip";
 interface QueueStatsCardProps {
   stats: QueueStats;
   onViewDetails?: () => void;
-  onPurge?: () => void;
+  onRefresh?: () => void;
 }
 
-export function QueueStatsCard({ stats, onViewDetails, onPurge }: QueueStatsCardProps) {
+export function QueueStatsCard({ stats, onViewDetails, onRefresh }: QueueStatsCardProps) {
   const health = getQueueHealth(stats);
   const colors = getHealthColor(health.status);
 
@@ -103,20 +103,16 @@ export function QueueStatsCard({ stats, onViewDetails, onPurge }: QueueStatsCard
               onClick={onViewDetails}
               className="flex-1 px-3 py-1.5 text-xs font-medium rounded bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
             >
-              View
+              View Details
             </button>
           )}
-          {onPurge && (
+          {onRefresh && (
             <button
-              onClick={onPurge}
-              disabled={message_count === 0}
-              className={`flex-1 px-3 py-1.5 text-xs font-medium rounded border transition-colors ${
-                message_count === 0
-                  ? "border-muted-foreground text-muted-foreground cursor-not-allowed opacity-50"
-                  : "border-destructive text-destructive hover:bg-destructive/10"
-              }`}
+              onClick={onRefresh}
+              className="px-3 py-1.5 text-xs font-medium rounded border border-muted-foreground/30 hover:bg-muted transition-colors flex items-center gap-1.5"
             >
-              Purge
+              <RefreshCw className="w-3 h-3" />
+              Refresh
             </button>
           )}
         </div>
