@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { RefreshCw, AlertCircle } from "lucide-react";
+import { RefreshCw, AlertCircle, Search, Filter, TrendingUp, TrendingDown } from "lucide-react";
 import { listAllQueues } from "@/lib/api/queue-admin";
 import type { QueueStats, QueueCategory } from "@/lib/types/queue";
 import { QueueStatsCard } from "@/components/queue/QueueStatsCard";
@@ -14,6 +14,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/toast";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { LayoutToggle, type LayoutMode } from "@/components/ui/LayoutToggle";
+import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
 
 export default function QueueManagementPage() {
   const router = useRouter();
@@ -26,6 +28,11 @@ export default function QueueManagementPage() {
   const [activeCategory, setActiveCategory] = useState<QueueCategory | "all">("all");
   const [purgeQueue, setPurgeQueue] = useState<QueueStats | null>(null);
   const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid-md");
+  
+  // Search and filter states
+  const [searchQuery, setSearchQuery] = useState("");
+  const [healthFilter, setHealthFilter] = useState<"all" | "healthy" | "warning" | "critical">("all");
+  const [sortBy, setSortBy] = useState<"name" | "messages" | "consumers">("messages");
 
   // Auto-refresh interval (10 seconds)
   const [autoRefresh, setAutoRefresh] = useState(true);
@@ -66,8 +73,53 @@ export default function QueueManagementPage() {
 
   // Filter queues by category
   const filteredQueues = Object.values(queues).filter((queue) => {
-    if (activeCategory === "all") return true;
-    return queue.metadata?.category === activeCategory;
+    // Category filter
+    if (activeCategory !== "all" && queue.metadata?.category !== activeCategory) {
+      return false;
+    }
+
+    // Search filter
+    if (searchQuery) {
+      const search = searchQuery.toLowerCase();
+      const matchesName = queue.queue_name.toLowerCase().includes(search);
+      const matchesDisplay = queue.metadata?.display_name.toLowerCase().includes(search);
+      const matchesDescription = queue.metadata?.description.toLowerCase().includes(search);
+      if (!matchesName && !matchesDisplay && !matchesDescription) {
+        return false;
+      }
+    }
+
+    // Health filter
+    if (healthFilter !== "all") {
+      const isJobQueue = queue.metadata?.is_job_queue;
+      const hasMessages = queue.message_count > 0;
+      const hasConsumers = queue.consumer_count > 0;
+      
+      const currentHealth = 
+        isJobQueue && hasMessages && !hasConsumers ? "critical" :
+        queue.message_count > 1000 ? "warning" :
+        "healthy";
+      
+      if (currentHealth !== healthFilter) {
+        return false;
+      }
+    }
+
+    return true;
+  });
+
+  // Sort queues
+  const sortedQueues = [...filteredQueues].sort((a, b) => {
+    switch (sortBy) {
+      case "name":
+        return a.queue_name.localeCompare(b.queue_name);
+      case "messages":
+        return b.message_count - a.message_count;
+      case "consumers":
+        return b.consumer_count - a.consumer_count;
+      default:
+        return 0;
+    }
   });
 
   // Count queues by category
@@ -101,6 +153,12 @@ export default function QueueManagementPage() {
   const criticalQueues = Object.values(queues).filter(
     (q) => q.metadata?.is_job_queue && q.message_count > 0 && q.consumer_count === 0
   ).length;
+  const warningQueues = Object.values(queues).filter(
+    (q) => q.message_count > 1000
+  ).length;
+  const avgMessagesPerQueue = Object.values(queues).length > 0 
+    ? Math.round(totalMessages / Object.values(queues).length)
+    : 0;
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
@@ -138,28 +196,68 @@ export default function QueueManagementPage() {
 
       {/* Summary Stats */}
       {!loading && !error && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           <Card>
             <CardHeader className="pb-3">
               <CardDescription>Total Messages</CardDescription>
               <CardTitle className="text-3xl">{totalMessages.toLocaleString()}</CardTitle>
+              <p className="text-xs text-muted-foreground mt-1">
+                Avg {avgMessagesPerQueue}/queue
+              </p>
             </CardHeader>
           </Card>
           <Card>
             <CardHeader className="pb-3">
               <CardDescription>Active Consumers</CardDescription>
               <CardTitle className="text-3xl">{totalConsumers}</CardTitle>
+              <p className="text-xs text-muted-foreground mt-1">
+                Across {Object.keys(queues).length} queues
+              </p>
             </CardHeader>
           </Card>
           <Card>
             <CardHeader className="pb-3">
               <CardDescription>Critical Queues</CardDescription>
-              <CardTitle className="text-3xl">
+              <CardTitle className="text-3xl flex items-center gap-2">
                 {criticalQueues}
                 {criticalQueues > 0 && (
-                  <AlertCircle className="inline-block w-6 h-6 ml-2 text-destructive" />
+                  <AlertCircle className="w-5 h-5 text-destructive" />
                 )}
               </CardTitle>
+              <p className="text-xs text-muted-foreground mt-1">
+                {criticalQueues > 0 ? "Action required" : "All healthy"}
+              </p>
+            </CardHeader>
+          </Card>
+          <Card>
+            <CardHeader className="pb-3">
+              <CardDescription>Warning Queues</CardDescription>
+              <CardTitle className="text-3xl flex items-center gap-2">
+                {warningQueues}
+                {warningQueues > 0 && (
+                  <TrendingUp className="w-5 h-5 text-yellow-500" />
+                )}
+              </CardTitle>
+              <p className="text-xs text-muted-foreground mt-1">
+                {warningQueues > 0 ? "High load" : "Normal load"}
+              </p>
+            </CardHeader>
+          </Card>
+          <Card>
+            <CardHeader className="pb-3">
+              <CardDescription>System Health</CardDescription>
+              <CardTitle className="text-2xl">
+                {criticalQueues > 0 ? (
+                  <span className="text-destructive">Critical</span>
+                ) : warningQueues > 0 ? (
+                  <span className="text-yellow-500">Warning</span>
+                ) : (
+                  <span className="text-green-500">Healthy</span>
+                )}
+              </CardTitle>
+              <p className="text-xs text-muted-foreground mt-1">
+                {criticalQueues === 0 && warningQueues === 0 ? "All systems go" : "Monitor closely"}
+              </p>
             </CardHeader>
           </Card>
         </div>
@@ -171,6 +269,83 @@ export default function QueueManagementPage() {
         onCategoryChange={setActiveCategory}
         counts={categoryCounts}
       />
+
+      {/* Filters and Search */}
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex flex-col md:flex-row gap-4">
+            {/* Search */}
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Search queues by name or description..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+
+            {/* Health Filter */}
+            <div className="flex items-center gap-2 min-w-[180px]">
+              <Filter className="w-4 h-4 text-muted-foreground" />
+              <Select
+                value={healthFilter}
+                onChange={(v) => setHealthFilter(v as typeof healthFilter)}
+                placeholder="Filter by health"
+                options={[
+                  { value: "all", label: "All Health States" },
+                  { value: "healthy", label: "Healthy Only" },
+                  { value: "warning", label: "Warning Only" },
+                  { value: "critical", label: "Critical Only" },
+                ]}
+              />
+            </div>
+
+            {/* Sort By */}
+            <div className="flex items-center gap-2 min-w-[150px]">
+              <TrendingDown className="w-4 h-4 text-muted-foreground" />
+              <Select
+                value={sortBy}
+                onChange={(v) => setSortBy(v as typeof sortBy)}
+                placeholder="Sort by"
+                options={[
+                  { value: "messages", label: "Most Messages" },
+                  { value: "consumers", label: "Most Consumers" },
+                  { value: "name", label: "Queue Name" },
+                ]}
+              />
+            </div>
+          </div>
+          
+          {/* Active Filters Display */}
+          {(searchQuery || healthFilter !== "all") && (
+            <div className="mt-4 flex items-center gap-2 flex-wrap">
+              <span className="text-sm text-muted-foreground">Active filters:</span>
+              {searchQuery && (
+                <span className="text-xs bg-muted px-2 py-1 rounded">
+                  Search: "{searchQuery}"
+                </span>
+              )}
+              {healthFilter !== "all" && (
+                <span className="text-xs bg-muted px-2 py-1 rounded">
+                  Health: {healthFilter}
+                </span>
+              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setSearchQuery("");
+                  setHealthFilter("all");
+                }}
+                className="h-6 text-xs"
+              >
+                Clear all
+              </Button>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Queue Grid */}
       {loading ? (
@@ -187,23 +362,51 @@ export default function QueueManagementPage() {
             </Card>
           ))}
         </div>
-      ) : filteredQueues.length === 0 ? (
+      ) : sortedQueues.length === 0 ? (
         <Card>
           <CardContent className="text-center py-12">
-            <p className="text-muted-foreground">No queues found for category: {activeCategory}</p>
+            <AlertCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+            <p className="text-lg font-medium mb-2">No queues found</p>
+            <p className="text-sm text-muted-foreground">
+              {searchQuery || healthFilter !== "all"
+                ? "Try adjusting your filters or search query"
+                : `No queues found for category: ${activeCategory}`}
+            </p>
+            {(searchQuery || healthFilter !== "all") && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setSearchQuery("");
+                  setHealthFilter("all");
+                }}
+                className="mt-4"
+              >
+                Clear filters
+              </Button>
+            )}
           </CardContent>
         </Card>
       ) : (
-        <div className={getGridClass()}>
-          {filteredQueues.map((queue) => (
-            <QueueStatsCard
-              key={queue.queue_name}
-              stats={queue}
-              onViewDetails={() => router.push(`/admin/queues/${queue.queue_name}`)}
-              onPurge={() => setPurgeQueue(queue)}
-            />
-          ))}
-        </div>
+        <>
+          {/* Results count */}
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-muted-foreground">
+              Showing {sortedQueues.length} of {Object.keys(queues).length} queues
+            </p>
+          </div>
+          
+          <div className={getGridClass()}>
+            {sortedQueues.map((queue) => (
+              <QueueStatsCard
+                key={queue.queue_name}
+                stats={queue}
+                onViewDetails={() => router.push(`/admin/queues/${queue.queue_name}`)}
+                onPurge={() => setPurgeQueue(queue)}
+              />
+            ))}
+          </div>
+        </>
       )}
 
       {/* Auto-refresh indicator */}

@@ -179,7 +179,7 @@ export default function QueueDetailPage() {
       />
 
       {/* Real-time Stats Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="pb-3">
             <CardDescription className="flex items-center gap-2">
@@ -187,6 +187,11 @@ export default function QueueDetailPage() {
               Messages
             </CardDescription>
             <CardTitle className="text-3xl">{stats.message_count.toLocaleString()}</CardTitle>
+            {stats.metadata?.max_messages && (
+              <p className="text-xs text-muted-foreground mt-1">
+                {Math.round((stats.message_count / stats.metadata.max_messages) * 100)}% capacity
+              </p>
+            )}
           </CardHeader>
         </Card>
         <Card>
@@ -196,6 +201,9 @@ export default function QueueDetailPage() {
               Consumers
             </CardDescription>
             <CardTitle className="text-3xl">{stats.consumer_count}</CardTitle>
+            <p className="text-xs text-muted-foreground mt-1">
+              {stats.consumer_count > 0 ? "Active" : "Inactive"}
+            </p>
           </CardHeader>
         </Card>
         <Card>
@@ -209,6 +217,22 @@ export default function QueueDetailPage() {
             </p>
           </CardHeader>
         </Card>
+        {dlqStats && (
+          <Card className={dlqStats.message_count > 0 ? "border-destructive" : ""}>
+            <CardHeader className="pb-3">
+              <CardDescription>Dead-Letter Queue</CardDescription>
+              <CardTitle className="text-3xl flex items-center gap-2">
+                {dlqStats.message_count}
+                {dlqStats.message_count > 0 && (
+                  <AlertCircle className="w-5 h-5 text-destructive" />
+                )}
+              </CardTitle>
+              <p className="text-xs text-muted-foreground mt-1">
+                {dlqStats.message_count > 0 ? "Failed messages" : "No failures"}
+              </p>
+            </CardHeader>
+          </Card>
+        )}
       </div>
 
       {/* Tabs for different views */}
