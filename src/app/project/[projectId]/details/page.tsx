@@ -277,7 +277,7 @@ export default function ProjectDetailsPage() {
 
   const startPollingForNameSuggestions = async () => {
     let attempts = 0;
-    const maxAttempts = 20; // ~60 seconds with 3s poll interval
+    const maxAttempts = 15; // ~75 seconds with 5s poll interval
 
     const poll = async () => {
       if (attempts >= maxAttempts) {
@@ -295,7 +295,7 @@ export default function ProjectDetailsPage() {
           setLoadingAiSuggestions(false);
         } else {
           // Keep polling
-          setTimeout(poll, 3000);
+          setTimeout(poll, 5000); // Increased from 3s to 5s
         }
       } catch (error) {
         console.error("Polling error:", error);
@@ -303,8 +303,8 @@ export default function ProjectDetailsPage() {
       }
     };
 
-    // Start polling after 2 second delay
-    setTimeout(poll, 2000);
+    // Start polling after 3 second delay
+    setTimeout(poll, 3000);
   };
 
   const handleSuggestionClick = (suggestion: NameSuggestion) => {

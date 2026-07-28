@@ -76,7 +76,7 @@ export default function ComposePage() {
     if (shouldPoll && !state?.thumbnailConfirmed) {
       const interval = setInterval(() => {
         refresh(); // Refresh project state to check thumbnail status
-      }, 8000); // 8 second polling interval
+      }, 10000); // Increased from 8s to 10s polling interval
 
       return () => clearInterval(interval);
     }
@@ -106,7 +106,7 @@ export default function ComposePage() {
             state?.thumbnailCompositionError || "Failed to composite thumbnail"
           );
         }
-      }, 5000); // Reduced from 2s to 5s (fallback polling)
+      }, 8000); // Increased from 5s to 8s (fallback polling)
 
       return () => clearInterval(pollInterval);
     }
