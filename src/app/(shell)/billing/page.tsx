@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { useToast } from "@/components/ui/toast";
 import {
   Clock,
@@ -115,45 +116,46 @@ export default function BillingPage() {
   }
 
   return (
-    <div className="py-6">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-text-primary mb-2">Billing & Credits</h1>
-        <p className="text-text-muted">Manage your subscription, credits, and billing history</p>
-      </div>
+    <div className="max-w-6xl mx-auto pb-12">
+      <PageHeader
+        title="Billing & Credits"
+        description="Manage your subscription, credits, and billing history"
+      />
 
       {/* Tabs */}
-      <div className="flex gap-1 mb-8 border-b border-border-default">
-        <button
-          onClick={() => setActiveTab("overview")}
-          className={`px-4 py-2 border-b-2 text-sm font-medium transition-colors ${
-            activeTab === "overview"
-              ? "border-accent-cyan text-accent-cyan"
-              : "border-transparent text-text-muted hover:text-text-secondary"
-          }`}
-        >
-          Overview
-        </button>
-        <button
-          onClick={() => setActiveTab("history")}
-          className={`px-4 py-2 border-b-2 text-sm font-medium transition-colors ${
-            activeTab === "history"
-              ? "border-accent-cyan text-accent-cyan"
-              : "border-transparent text-text-muted hover:text-text-secondary"
-          }`}
-        >
-          Credit History
-        </button>
-        <button
-          onClick={() => setActiveTab("invoices")}
-          className={`px-4 py-2 border-b-2 text-sm font-medium transition-colors ${
-            activeTab === "invoices"
-              ? "border-accent-cyan text-accent-cyan"
-              : "border-transparent text-text-muted hover:text-text-secondary"
-          }`}
-        >
-          Invoices
-        </button>
+      <div className="mb-8">
+        <div className="inline-flex items-center gap-1 rounded-xl bg-surface-panel p-1 shadow-sm border border-border-default">
+          <button
+            onClick={() => setActiveTab("overview")}
+            className={`flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold transition-all duration-200 ${
+              activeTab === "overview"
+                ? "bg-accent-primary text-white shadow-md"
+                : "text-text-muted hover:text-text-primary hover:bg-surface-raised"
+            }`}
+          >
+            Overview
+          </button>
+          <button
+            onClick={() => setActiveTab("history")}
+            className={`flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold transition-all duration-200 ${
+              activeTab === "history"
+                ? "bg-accent-primary text-white shadow-md"
+                : "text-text-muted hover:text-text-primary hover:bg-surface-raised"
+            }`}
+          >
+            Credit History
+          </button>
+          <button
+            onClick={() => setActiveTab("invoices")}
+            className={`flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold transition-all duration-200 ${
+              activeTab === "invoices"
+                ? "bg-accent-primary text-white shadow-md"
+                : "text-text-muted hover:text-text-primary hover:bg-surface-raised"
+            }`}
+          >
+            Invoices
+          </button>
+        </div>
       </div>
 
       {activeTab === "overview" && creditStatus && (
