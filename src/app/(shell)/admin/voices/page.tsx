@@ -24,15 +24,17 @@ import {
   adminUnapproveVoice,
   adminGetVoiceRecordings,
   getAdminRecordingAudioUrl,
+  adminGetAllSharedVoices,
 } from "@/lib/api/admin";
 import type { VoiceWithCreator } from "@/lib/types/api";
 
-type ViewType = "pending" | "approved" | "all";
+type ViewType = "pending" | "approved" | "all" | "all-shared";
 
 export default function AdminVoicesPage() {
   const toast = useToast();
   const [pendingVoices, setPendingVoices] = useState<VoiceWithCreator[]>([]);
   const [approvedVoices, setApprovedVoices] = useState<VoiceWithCreator[]>([]);
+  const [allSharedVoices, setAllSharedVoices] = useState<VoiceWithCreator[]>([]);
   const [allRecordings, setAllRecordings] = useState<Record<string, unknown>[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -53,13 +55,15 @@ export default function AdminVoicesPage() {
   const loadVoices = useCallback(async () => {
     setIsLoading(true);
     try {
-      const [pending, approved, recordings] = await Promise.all([
+      const [pending, approved, allShared, recordings] = await Promise.all([
         adminGetPendingVoices(),
         adminGetApprovedVoices(),
+        adminGetAllSharedVoices(),
         adminGetVoiceRecordings(),
       ]);
       setPendingVoices(pending);
       setApprovedVoices(approved);
+      setAllSharedVoices(allShared);
       setAllRecordings(recordings);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "An error occurred";
@@ -177,6 +181,8 @@ export default function AdminVoicesPage() {
       voices = pendingVoices;
     } else if (viewType === "approved") {
       voices = approvedVoices;
+    } else if (viewType === "all-shared") {
+      voices = allSharedVoices;
     } else {
       // "all" combines both pending and approved
       voices = [...pendingVoices, ...approvedVoices];
@@ -198,6 +204,7 @@ export default function AdminVoicesPage() {
     total: allRecordings.length,
     pending: pendingVoices.length,
     approved: approvedVoices.length,
+    allShared: allSharedVoices.length,
   };
 
   return (
@@ -257,6 +264,24 @@ export default function AdminVoicesPage() {
             </span>
           </button>
           <button
+            onClick={() => setViewType("all-shared")}
+            className={`flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold transition-all ${
+              viewType === "all-shared"
+                ? "bg-gradient-to-r from-blue-500 to-cyan-600 text-white shadow-lg shadow-blue-500/30"
+                : "text-text-secondary hover:text-text-primary hover:bg-surface-panel"
+            }`}
+          >
+            <Mic className="h-4 w-4" />
+            All Shared
+            <span
+              className={`ml-1 px-2 py-0.5 rounded-full text-xs font-bold ${
+                viewType === "all-shared" ? "bg-white/20" : "bg-blue-500/20 text-blue-600"
+              }`}
+            >
+              {stats.allShared}
+            </span>
+          </button>
+          <button
             onClick={() => setViewType("all")}
             className={`flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold transition-all ${
               viewType === "all"
@@ -265,7 +290,7 @@ export default function AdminVoicesPage() {
             }`}
           >
             <User className="h-4 w-4" />
-            All Shared
+            Pending + Approved
             <span
               className={`ml-1 px-2 py-0.5 rounded-full text-xs font-bold ${
                 viewType === "all" ? "bg-white/20" : "bg-surface-raised"
@@ -358,8 +383,10 @@ export default function AdminVoicesPage() {
           icon={
             viewType === "pending" ? (
               <Clock className="h-12 w-12" />
-            ) : (
+            ) : viewType === "approved" ? (
               <CheckCircle2 className="h-12 w-12" />
+            ) : (
+              <Mic className="h-12 w-12" />
             )
           }
           title={searchTerm ? "No voices found" : `No ${viewType} voices`}
@@ -368,7 +395,11 @@ export default function AdminVoicesPage() {
               ? "Try adjusting your search criteria"
               : viewType === "pending"
                 ? "User-shared voices will appear here for your approval"
-                : "Approved voices will appear here"
+                : viewType === "approved"
+                  ? "Approved voices will appear here"
+                  : viewType === "all-shared"
+                    ? "All shared voices (pending and approved) will appear here"
+                    : "Combine pending and approved voices here"
           }
         />
       ) : (

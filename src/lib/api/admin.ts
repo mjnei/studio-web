@@ -371,6 +371,13 @@ export async function adminApproveVoice(voiceId: number): Promise<VoiceResponse>
 }
 
 /**
+ * Get all shared voices (both pending and approved).
+ */
+export async function adminGetAllSharedVoices(): Promise<VoiceWithCreator[]> {
+  return request<VoiceWithCreator[]>("/voices/admin/all-shared");
+}
+
+/**
  * Unapprove a voice (revoke public access).
  */
 export async function adminUnapproveVoice(voiceId: number): Promise<VoiceResponse> {
