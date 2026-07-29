@@ -24,11 +24,11 @@ import {
   adminUnapproveVoice,
   adminGetVoiceRecordings,
   getAdminRecordingAudioUrl,
-  adminGetAllSharedVoices,
+  adminGetAllVoices,
 } from "@/lib/api/admin";
 import type { VoiceWithCreator } from "@/lib/types/api";
 
-type ViewType = "pending" | "approved" | "all" | "all-shared";
+type ViewType = "pending" | "approved" | "all";
 
 export default function AdminVoicesPage() {
   const toast = useToast();
@@ -55,15 +55,15 @@ export default function AdminVoicesPage() {
   const loadVoices = useCallback(async () => {
     setIsLoading(true);
     try {
-      const [pending, approved, allShared, recordings] = await Promise.all([
+      const [pending, approved, allVoices, recordings] = await Promise.all([
         adminGetPendingVoices(),
         adminGetApprovedVoices(),
-        adminGetAllSharedVoices(),
+        adminGetAllVoices(),
         adminGetVoiceRecordings(),
       ]);
       setPendingVoices(pending);
       setApprovedVoices(approved);
-      setAllSharedVoices(allShared);
+      setAllSharedVoices(allVoices);
       setAllRecordings(recordings);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "An error occurred";
@@ -181,11 +181,9 @@ export default function AdminVoicesPage() {
       voices = pendingVoices;
     } else if (viewType === "approved") {
       voices = approvedVoices;
-    } else if (viewType === "all-shared") {
-      voices = allSharedVoices;
     } else {
-      // "all" combines both pending and approved
-      voices = [...pendingVoices, ...approvedVoices];
+      // "all" shows all voices
+      voices = allSharedVoices;
     }
 
     if (!searchTerm) return voices;
@@ -264,39 +262,21 @@ export default function AdminVoicesPage() {
             </span>
           </button>
           <button
-            onClick={() => setViewType("all-shared")}
+            onClick={() => setViewType("all")}
             className={`flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold transition-all ${
-              viewType === "all-shared"
+              viewType === "all"
                 ? "bg-gradient-to-r from-blue-500 to-cyan-600 text-white shadow-lg shadow-blue-500/30"
                 : "text-text-secondary hover:text-text-primary hover:bg-surface-panel"
             }`}
           >
-            <Mic className="h-4 w-4" />
-            All Shared
+            <User className="h-4 w-4" />
+            All Voices
             <span
               className={`ml-1 px-2 py-0.5 rounded-full text-xs font-bold ${
-                viewType === "all-shared" ? "bg-white/20" : "bg-blue-500/20 text-blue-600"
+                viewType === "all" ? "bg-white/20" : "bg-blue-500/20 text-blue-600"
               }`}
             >
               {stats.allShared}
-            </span>
-          </button>
-          <button
-            onClick={() => setViewType("all")}
-            className={`flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold transition-all ${
-              viewType === "all"
-                ? "bg-gradient-to-r from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30"
-                : "text-text-secondary hover:text-text-primary hover:bg-surface-panel"
-            }`}
-          >
-            <User className="h-4 w-4" />
-            Pending + Approved
-            <span
-              className={`ml-1 px-2 py-0.5 rounded-full text-xs font-bold ${
-                viewType === "all" ? "bg-white/20" : "bg-surface-raised"
-              }`}
-            >
-              {stats.pending + stats.approved}
             </span>
           </button>
         </div>
@@ -397,9 +377,7 @@ export default function AdminVoicesPage() {
                 ? "User-shared voices will appear here for your approval"
                 : viewType === "approved"
                   ? "Approved voices will appear here"
-                  : viewType === "all-shared"
-                    ? "All shared voices (pending and approved) will appear here"
-                    : "Combine pending and approved voices here"
+                  : "All voices from all users will appear here"
           }
         />
       ) : (
@@ -437,25 +415,22 @@ export default function AdminVoicesPage() {
                 </div>
                 <div className="col-span-1 md:col-span-2">
                   <div className="md:hidden text-xs font-medium text-text-muted mb-1">Status</div>
-                  <span
-                    className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${
-                      voice.is_approved
-                        ? "bg-green-500/10 text-green-600 border border-green-500/30"
-                        : "bg-orange-500/10 text-orange-600 border border-orange-500/30"
-                    }`}
-                  >
-                    {voice.is_approved ? (
-                      <>
-                        <CheckCircle2 className="h-3.5 w-3.5" />
-                        Approved
-                      </>
-                    ) : (
-                      <>
-                        <Clock className="h-3.5 w-3.5" />
-                        Pending
-                      </>
-                    )}
-                  </span>
+                  {!voice.is_shared ? (
+                    <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold bg-gray-500/10 text-gray-600 border border-gray-500/30">
+                      <User className="h-3.5 w-3.5" />
+                      Private
+                    </span>
+                  ) : voice.is_approved ? (
+                    <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold bg-green-500/10 text-green-600 border border-green-500/30">
+                      <CheckCircle2 className="h-3.5 w-3.5" />
+                      Approved
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold bg-orange-500/10 text-orange-600 border border-orange-500/30">
+                      <Clock className="h-3.5 w-3.5" />
+                      Pending
+                    </span>
+                  )}
                 </div>
                 <div className="col-span-1 md:col-span-2">
                   <div className="md:hidden text-xs font-medium text-text-muted mb-1">
@@ -498,23 +473,25 @@ export default function AdminVoicesPage() {
                     )}
                   </button>
 
-                  {!voice.is_approved ? (
-                    <button
-                      onClick={() => handleApprove(voice)}
-                      className="flex items-center gap-1.5 rounded-lg border-2 border-green-500/50 bg-green-500/10 px-3 py-2 text-sm font-medium text-green-600 hover:bg-green-500/20 transition-all"
-                    >
-                      <ThumbsUp className="h-4 w-4" />
-                      <span className="hidden md:inline">Approve</span>
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => handleUnapprove(voice)}
-                      className="flex items-center gap-1.5 rounded-lg border-2 border-orange-500/50 bg-orange-500/10 px-3 py-2 text-sm font-medium text-orange-600 hover:bg-orange-500/20 transition-all"
-                    >
-                      <XCircle className="h-4 w-4" />
-                      <span className="hidden md:inline">Revoke</span>
-                    </button>
-                  )}
+                  {voice.is_shared ? (
+                    voice.is_approved ? (
+                      <button
+                        onClick={() => handleUnapprove(voice)}
+                        className="flex items-center gap-1.5 rounded-lg border-2 border-orange-500/50 bg-orange-500/10 px-3 py-2 text-sm font-medium text-orange-600 hover:bg-orange-500/20 transition-all"
+                      >
+                        <XCircle className="h-4 w-4" />
+                        <span className="hidden md:inline">Revoke</span>
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleApprove(voice)}
+                        className="flex items-center gap-1.5 rounded-lg border-2 border-green-500/50 bg-green-500/10 px-3 py-2 text-sm font-medium text-green-600 hover:bg-green-500/20 transition-all"
+                      >
+                        <ThumbsUp className="h-4 w-4" />
+                        <span className="hidden md:inline">Approve</span>
+                      </button>
+                    )
+                  ) : null}
                 </div>
               </div>
             </div>

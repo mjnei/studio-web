@@ -371,10 +371,10 @@ export async function adminApproveVoice(voiceId: number): Promise<VoiceResponse>
 }
 
 /**
- * Get all shared voices (both pending and approved).
+ * Get ALL voices from all users (shared and non-shared, regardless of approval status).
  */
-export async function adminGetAllSharedVoices(): Promise<VoiceWithCreator[]> {
-  return request<VoiceWithCreator[]>("/voices/admin/all-shared");
+export async function adminGetAllVoices(): Promise<VoiceWithCreator[]> {
+  return request<VoiceWithCreator[]>("/voices/admin/all");
 }
 
 /**
