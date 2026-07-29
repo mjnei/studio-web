@@ -7,13 +7,7 @@ import {
   VideoGenerationResponse,
 } from "@/lib/credit-client";
 import { useToast } from "@/components/ui/toast";
-import {
-  VideoJob,
-  JobFilters,
-  JobsSummary,
-  LayoutMode,
-  ProjectWithVideos,
-} from "@/types/jobs";
+import { VideoJob, JobFilters, JobsSummary, LayoutMode, ProjectWithVideos } from "@/types/jobs";
 
 const INITIAL_FILTERS: JobFilters = {
   status: "all",

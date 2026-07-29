@@ -57,10 +57,14 @@ export const FailedJobCard: React.FC<FailedJobCardProps> = ({
           <div className="flex items-start justify-between gap-2">
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-base font-bold text-text-primary truncate">{job.projectName}</h3>
+                <h3 className="text-base font-bold text-text-primary truncate">
+                  {job.projectName}
+                </h3>
                 <Badge variant="error">Failed</Badge>
               </div>
-              {job.movieTitle && <p className="text-xs text-text-muted truncate">{job.movieTitle}</p>}
+              {job.movieTitle && (
+                <p className="text-xs text-text-muted truncate">{job.movieTitle}</p>
+              )}
             </div>
 
             <div className="text-xs text-text-muted text-right">
@@ -81,8 +85,12 @@ export const FailedJobCard: React.FC<FailedJobCardProps> = ({
 
           {/* Metadata */}
           <div className="flex flex-wrap items-center gap-4 text-xs text-text-muted">
-            <span>Voice: <strong className="text-text-secondary">{job.voice_name || "Default"}</strong></span>
-            <span>Cost: <strong className="text-text-secondary">{job.credit_cost} credit</strong></span>
+            <span>
+              Voice: <strong className="text-text-secondary">{job.voice_name || "Default"}</strong>
+            </span>
+            <span>
+              Cost: <strong className="text-text-secondary">{job.credit_cost} credit</strong>
+            </span>
             <span>Failed on: {new Date(job.updated_at || job.created_at).toLocaleString()}</span>
           </div>
 

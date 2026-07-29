@@ -36,7 +36,10 @@ export const StatusCards: React.FC<StatusCardsProps> = ({
             <div className="flex items-center gap-2">
               <span className="text-sm font-medium text-text-secondary">Active Jobs</span>
               {summary.activeCount > 0 && (
-                <Badge variant="info" className="animate-pulse flex items-center gap-1 text-[10px] py-0 px-1.5">
+                <Badge
+                  variant="info"
+                  className="animate-pulse flex items-center gap-1 text-[10px] py-0 px-1.5"
+                >
                   <span className="h-1.5 w-1.5 rounded-full bg-blue-400 animate-ping" />
                   Live
                 </Badge>
@@ -59,7 +62,9 @@ export const StatusCards: React.FC<StatusCardsProps> = ({
         interactive
         onClick={() => onSelectFilter("completed")}
         className={`relative overflow-hidden border-2 transition-all ${
-          activeFilter === "completed" ? "border-status-success shadow-glow" : "border-border-default"
+          activeFilter === "completed"
+            ? "border-status-success shadow-glow"
+            : "border-border-default"
         }`}
       >
         <div className="flex items-start justify-between">

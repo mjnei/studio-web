@@ -53,9 +53,7 @@ export default function JobsPage() {
   }
 
   // Partition filtered jobs into Active, Completed, Failed
-  const activeJobs = filteredJobs.filter(
-    (j) => j.status === "processing" || j.status === "queued"
-  );
+  const activeJobs = filteredJobs.filter((j) => j.status === "processing" || j.status === "queued");
   const completedJobs = filteredJobs.filter((j) => j.status === "completed");
   const failedJobs = filteredJobs.filter((j) => j.status === "failed");
 
@@ -73,8 +71,7 @@ export default function JobsPage() {
     }
   };
 
-  const isAllSelected =
-    filteredJobs.length > 0 && selectedJobIds.size === filteredJobs.length;
+  const isAllSelected = filteredJobs.length > 0 && selectedJobIds.size === filteredJobs.length;
 
   return (
     <div className="max-w-7xl mx-auto pb-12">
@@ -249,10 +246,7 @@ export default function JobsPage() {
       )}
 
       {/* Video Preview Modal */}
-      <JobVideoModal
-        job={activeVideoModalJob}
-        onClose={() => setActiveVideoModalJob(null)}
-      />
+      <JobVideoModal job={activeVideoModalJob} onClose={() => setActiveVideoModalJob(null)} />
     </div>
   );
 }

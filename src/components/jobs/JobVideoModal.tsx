@@ -41,12 +41,7 @@ export const JobVideoModal: React.FC<JobVideoModalProps> = ({ job, onClose }) =>
       <div className="space-y-4">
         {job.video_url ? (
           <div className="relative aspect-video w-full rounded-lg bg-black overflow-hidden border border-border-default">
-            <video
-              src={job.video_url}
-              controls
-              autoPlay
-              className="w-full h-full object-contain"
-            />
+            <video src={job.video_url} controls autoPlay className="w-full h-full object-contain" />
           </div>
         ) : (
           <div className="aspect-video w-full rounded-lg bg-surface-panel flex items-center justify-center text-text-muted">
@@ -60,8 +55,8 @@ export const JobVideoModal: React.FC<JobVideoModalProps> = ({ job, onClose }) =>
             {job.voice_name || "Default"}
           </div>
           <div>
-            <span className="font-semibold text-text-secondary">Cost:</span>{" "}
-            {job.credit_cost} credit{job.credit_cost !== 1 ? "s" : ""}
+            <span className="font-semibold text-text-secondary">Cost:</span> {job.credit_cost}{" "}
+            credit{job.credit_cost !== 1 ? "s" : ""}
           </div>
           <div>
             <span className="font-semibold text-text-secondary">Attempt:</span> #

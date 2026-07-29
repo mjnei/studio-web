@@ -69,9 +69,7 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
           <Input
             placeholder="Search project name, movie title, or voice..."
             value={filters.search}
-            onChange={(e) =>
-              onChangeFilters((prev) => ({ ...prev, search: e.target.value }))
-            }
+            onChange={(e) => onChangeFilters((prev) => ({ ...prev, search: e.target.value }))}
             icon={<Search className="h-4 w-4 text-text-muted" />}
           />
         </div>
@@ -197,7 +195,8 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
       {hasActiveFilters && (
         <div className="flex items-center justify-between text-xs text-text-muted bg-surface-panel px-3 py-1.5 rounded-md border border-border-default">
           <span>
-            Showing <strong className="text-text-primary">{totalResultsCount}</strong> matching job(s)
+            Showing <strong className="text-text-primary">{totalResultsCount}</strong> matching
+            job(s)
           </span>
           <button
             onClick={handleResetFilters}

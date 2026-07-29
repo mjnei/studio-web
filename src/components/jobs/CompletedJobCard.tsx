@@ -59,7 +59,11 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
               className="relative w-28 aspect-video rounded-md overflow-hidden bg-surface-raised border border-border-default cursor-pointer group flex-shrink-0"
             >
               {job.thumbnail_url ? (
-                <img src={job.thumbnail_url} alt={job.projectName} className="w-full h-full object-cover" />
+                <img
+                  src={job.thumbnail_url}
+                  alt={job.projectName}
+                  className="w-full h-full object-cover"
+                />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-surface-panel">
                   <Play className="h-5 w-5 text-text-muted" />
@@ -85,11 +89,18 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
                 Ready
               </Badge>
             </div>
-            {job.movieTitle && <p className="text-xs text-text-muted truncate mb-1">{job.movieTitle}</p>}
+            {job.movieTitle && (
+              <p className="text-xs text-text-muted truncate mb-1">{job.movieTitle}</p>
+            )}
 
             <div className="flex flex-wrap items-center gap-3 text-xs text-text-muted">
-              <span>Voice: <strong className="text-text-secondary">{job.voice_name || "Default"}</strong></span>
-              <span>Cost: <strong className="text-text-secondary">{job.credit_cost} credit</strong></span>
+              <span>
+                Voice:{" "}
+                <strong className="text-text-secondary">{job.voice_name || "Default"}</strong>
+              </span>
+              <span>
+                Cost: <strong className="text-text-secondary">{job.credit_cost} credit</strong>
+              </span>
               <span>Date: {new Date(job.created_at).toLocaleDateString()}</span>
             </div>
           </div>
@@ -168,7 +179,10 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
           )}
         </button>
 
-        <Badge variant="success" className="absolute top-2 right-2 z-10 text-[10px] py-0.5 px-1.5 shadow-md">
+        <Badge
+          variant="success"
+          className="absolute top-2 right-2 z-10 text-[10px] py-0.5 px-1.5 shadow-md"
+        >
           Completed
         </Badge>
 
@@ -211,8 +225,13 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
         </div>
 
         <div className="grid grid-cols-2 gap-1 text-[11px] text-text-muted pt-1 border-t border-border-default">
-          <div>Voice: <span className="font-medium text-text-secondary">{job.voice_name || "N/A"}</span></div>
-          <div className="text-right">Cost: <span className="font-medium text-text-secondary">{job.credit_cost} cr</span></div>
+          <div>
+            Voice:{" "}
+            <span className="font-medium text-text-secondary">{job.voice_name || "N/A"}</span>
+          </div>
+          <div className="text-right">
+            Cost: <span className="font-medium text-text-secondary">{job.credit_cost} cr</span>
+          </div>
           <div>Date: {new Date(job.created_at).toLocaleDateString()}</div>
           <div className="text-right">Attempt: #{job.generation_attempt}</div>
         </div>
