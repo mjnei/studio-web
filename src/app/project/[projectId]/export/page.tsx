@@ -40,6 +40,7 @@ import { CreditUsageIndicator } from "@/components/credits/CreditUsageIndicator"
 import { InsufficientCreditsModal } from "@/components/credits/InsufficientCreditsModal";
 import { CreditConfirmationModal } from "@/components/credits/CreditConfirmationModal";
 import { useNotifications } from "@/lib/notification-context";
+import { ExportFormatModal } from "@/components/project/ExportFormatModal";
 
 export default function ExportPage() {
   const params = useParams();
@@ -77,10 +78,7 @@ export default function ExportPage() {
       if (!selectedVideoId && response.videos.length > 0) {
         const firstCompleted = response.videos.find((v) => v.status === "completed");
         if (firstCompleted) {
-          console.log(
-            "🎬 [Export] Setting first completed video as selected:",
-            firstCompleted.id
-          );
+          console.log("🎬 [Export] Setting first completed video as selected:", firstCompleted.id);
           setSelectedVideoId(firstCompleted.id);
         }
       }
@@ -238,7 +236,8 @@ export default function ExportPage() {
   }
 
   const completedVideos = videos?.filter((v) => v.status === "completed") || [];
-  const processingVideos = videos?.filter((v) => v.status === "processing" || v.status === "queued") || [];
+  const processingVideos =
+    videos?.filter((v) => v.status === "processing" || v.status === "queued") || [];
   const failedVideos = videos?.filter((v) => v.status === "failed") || [];
   const displayVideo = completedVideos.find((v) => v.id === selectedVideoId) || completedVideos[0];
 
@@ -249,9 +248,7 @@ export default function ExportPage() {
         <div className="flex items-start justify-between gap-4">
           <div>
             <h2 className="text-xl font-semibold text-text-primary">Export Project</h2>
-            <p className="mt-1 text-sm text-text-muted">
-              Generate, manage, and export your video
-            </p>
+            <p className="mt-1 text-sm text-text-muted">Generate, manage, and export your video</p>
           </div>
 
           <div className="group relative">
@@ -515,7 +512,9 @@ export default function ExportPage() {
                         Version {video.generation_attempt}
                       </p>
                       <p className="text-xs text-text-muted">
-                        {video.status === "queued" ? "Queued for processing..." : "Generating video..."}
+                        {video.status === "queued"
+                          ? "Queued for processing..."
+                          : "Generating video..."}
                       </p>
                     </div>
                   </div>
@@ -745,73 +744,12 @@ export default function ExportPage() {
 
       {/* Export Format Modal */}
       {showExportFormatModal && displayVideo && (
-        <Modal
-          open={showExportFormatModal}
+        <ExportFormatModal
+          isOpen={showExportFormatModal}
           onClose={() => setShowExportFormatModal(false)}
-          title="Export Video Format"
-          size="md"
-        >
-          <div className="space-y-4">
-            <p className="text-sm text-text-muted">
-              Choose a format to export your video (additional formats coming soon)
-            </p>
-
-            <div className="space-y-3">
-              {/* MP4 Format */}
-              <button
-                onClick={() => {
-                  handleDownload(displayVideo.video_url);
-                  setShowExportFormatModal(false);
-                }}
-                className="w-full flex items-center gap-4 p-4 rounded-lg border border-border-default bg-surface-raised hover:bg-surface-raised-hover hover:border-accent-cyan/30 transition-all group"
-              >
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent-cyan-muted flex-shrink-0">
-                  <Film className="h-6 w-6 text-accent-cyan" />
-                </div>
-                <div className="flex-1 text-left">
-                  <h4 className="font-medium text-text-primary group-hover:text-accent-cyan transition-colors">
-                    MP4 (H.264)
-                  </h4>
-                  <p className="text-xs text-text-muted mt-0.5">
-                    Standard format, compatible with all devices
-                  </p>
-                </div>
-                <Check className="h-5 w-5 text-success-text" />
-              </button>
-
-              {/* Coming Soon Formats */}
-              <div className="p-4 rounded-lg border border-border-default bg-surface-base opacity-50">
-                <div className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-raised flex-shrink-0">
-                    <Film className="h-6 w-6 text-text-muted" />
-                  </div>
-                  <div className="flex-1 text-left">
-                    <h4 className="font-medium text-text-muted">WebM (VP9)</h4>
-                    <p className="text-xs text-text-muted mt-0.5">Coming soon</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="p-4 rounded-lg border border-border-default bg-surface-base opacity-50">
-                <div className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-raised flex-shrink-0">
-                    <Film className="h-6 w-6 text-text-muted" />
-                  </div>
-                  <div className="flex-1 text-left">
-                    <h4 className="font-medium text-text-muted">MOV (ProRes)</h4>
-                    <p className="text-xs text-text-muted mt-0.5">Coming soon - High quality</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="pt-4 border-t border-border-default">
-              <p className="text-xs text-text-muted text-center">
-                More export formats will be available soon
-              </p>
-            </div>
-          </div>
-        </Modal>
+          videoUrl={displayVideo.video_url}
+          onExport={handleDownload}
+        />
       )}
 
       <FloatingWorkflowNavigation
