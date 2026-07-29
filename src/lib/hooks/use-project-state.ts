@@ -231,10 +231,7 @@ export function useProjectState(projectId: string) {
   // Poll for thumbnail composition status (only while not yet completed)
   // Triggers on both QUEUED (waiting) and PROCESSING (actively processing)
   useEffect(() => {
-    if (
-      state?.thumbnailCompositionStatus === "queued" ||
-      state?.thumbnailCompositionStatus === "processing"
-    ) {
+    if (state?.thumbnailCompositionStatus === "processing") {
       const pollInterval = setInterval(() => {
         void refresh();
       }, 8000); // Poll every 8 seconds

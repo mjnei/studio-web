@@ -415,7 +415,7 @@ export default function ExportPage() {
                 variant="secondary"
                 size="lg"
                 leftIcon={<Download className="h-4 w-4" />}
-                onClick={() => handleDownload(displayVideo.video_url)}
+                onClick={() => displayVideo.video_url && handleDownload(displayVideo.video_url)}
                 className="w-full"
               >
                 Download
@@ -634,7 +634,7 @@ export default function ExportPage() {
                           )}
                           <button
                             type="button"
-                            onClick={() => handleDownload(video.video_url)}
+                            onClick={() => video.video_url && handleDownload(video.video_url)}
                             className="p-1 rounded hover:bg-surface-base transition-colors"
                             title="Download"
                           >
@@ -685,11 +685,13 @@ export default function ExportPage() {
               {/* X.com (Twitter) */}
               <button
                 onClick={() => {
-                  navigator.clipboard.writeText(displayVideo.video_url);
-                  toast.success(
-                    "Video URL copied",
-                    "Open X.com and paste the link to share your video"
-                  );
+                  if (displayVideo.video_url) {
+                    navigator.clipboard.writeText(displayVideo.video_url);
+                    toast.success(
+                      "Video URL copied",
+                      "Open X.com and paste the link to share your video"
+                    );
+                  }
                   setShowShareModal(false);
                 }}
                 className="w-full flex items-center gap-4 p-4 rounded-lg border border-border-default bg-surface-raised hover:bg-surface-raised-hover hover:border-accent-cyan/30 transition-all group"
@@ -711,11 +713,13 @@ export default function ExportPage() {
               {/* WeChat */}
               <button
                 onClick={() => {
-                  navigator.clipboard.writeText(displayVideo.video_url);
-                  toast.success(
-                    "Video URL copied",
-                    "Open WeChat and paste the link to share your video"
-                  );
+                  if (displayVideo.video_url) {
+                    navigator.clipboard.writeText(displayVideo.video_url);
+                    toast.success(
+                      "Video URL copied",
+                      "Open WeChat and paste the link to share your video"
+                    );
+                  }
                   setShowShareModal(false);
                 }}
                 className="w-full flex items-center gap-4 p-4 rounded-lg border border-border-default bg-surface-raised hover:bg-surface-raised-hover hover:border-accent-cyan/30 transition-all group"
@@ -743,7 +747,7 @@ export default function ExportPage() {
       )}
 
       {/* Export Format Modal */}
-      {showExportFormatModal && displayVideo && (
+      {showExportFormatModal && displayVideo && displayVideo.video_url && (
         <ExportFormatModal
           isOpen={showExportFormatModal}
           onClose={() => setShowExportFormatModal(false)}

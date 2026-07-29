@@ -84,9 +84,7 @@ export default function ComposePage() {
 
   // Show toast when composition completes or fails
   React.useEffect(() => {
-    const isInProgress =
-      state?.thumbnailCompositionStatus === "queued" ||
-      state?.thumbnailCompositionStatus === "processing";
+    const isInProgress = state?.thumbnailCompositionStatus === "processing";
 
     // Only show toast once per status change
     if (state?.thumbnailCompositionStatus === "completed") {
@@ -194,7 +192,7 @@ export default function ComposePage() {
   const handleContinue = async () => {
     setIsAdvancing(true);
     try {
-      await advanceProjectStep(projectId, "export");
+      await advanceProjectStep(projectId, "finalize");
       router.push(`/project/${projectId}/export`);
     } catch (error) {
       console.error("Failed to advance step:", error);
