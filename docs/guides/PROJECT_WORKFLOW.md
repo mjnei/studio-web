@@ -239,7 +239,7 @@ Generate and preview TTS audio for your selected voice with the full script.
 ### Step 6: Compose
 **Route:** `/project/[projectId]/compose`
 
-Customize and finalize your project thumbnail. **Video generation happens in the next step (Finalize).**
+Customize and finalize your project thumbnail. **Video generation happens in the next step (Export).**
 
 **Actions:**
 - **Thumbnail Customization**:
@@ -255,7 +255,7 @@ Customize and finalize your project thumbnail. **Video generation happens in the
 **Navigation:**
 - Back button: Visible (returns to Preview)
 - Home button: Visible
-- Next button: Always enabled (advances to Finalize)
+- Next button: Always enabled (advances to Export)
 
 **Display:**
 - Thumbnail preview card (clickable icons for Regenerate and Edit actions)
@@ -276,7 +276,7 @@ Customize and finalize your project thumbnail. **Video generation happens in the
    - Backend composites base image + text overlay using PIL/Pillow
    - Uploads final composite image to S3
    - Sets `final_thumbnail_url` and `thumbnail_confirmed = true`
-6. User clicks Next → advances to Finalize step
+6. User clicks Next → advances to Export step
 
 **Regenerate Thumbnail:**
 - User can click Regenerate icon at any time
@@ -290,9 +290,9 @@ Customize and finalize your project thumbnail. **Video generation happens in the
 - No credit confirmation modals
 - Next button is always enabled
 
-**Completion:** Ready to proceed to Finalize
+**Completion:** Ready to proceed to Export
 
-**Advances to:** Finalize (where video generation happens)
+**Advances to:** Export (where video generation happens)
 
 ---
 
@@ -319,11 +319,16 @@ Generate final video, manage versions, and export in different formats.
 1. User clicks "Generate Video" button
 2. Credit confirmation modal appears (shows cost, balance)
 3. After confirmation, job submitted to `video_jobs` RabbitMQ queue
-4. External video service processes job
+4. External video service processes job (internal processing steps not visible)
 5. Service publishes result to `video_results` queue
-6. Backend consumer updates database with video URL
+6. Backend consumer updates database with video URL and overall progress
 7. Frontend receives notification via SSE (or polls as fallback)
 8. Completed video appears in the list
+
+**Status Tracking:**
+- Video jobs show simple status: `queued` → `processing` → `completed`/`failed`
+- Overall progress percentage (0-100%) shown for processing jobs
+- No granular step breakdown (processing happens internally)
 
 **Display Sections (Top to Bottom):**
 
@@ -346,7 +351,8 @@ Generate final video, manage versions, and export in different formats.
 4. **Processing Videos Section**
    - Shows videos currently being generated
    - Status badge (queued/processing)
-   - No progress bar (status only)
+   - Overall progress bar (0-100%)
+   - Estimated time remaining (if available)
 
 5. **Failed Videos Section**
    - Shows failed generation attempts
@@ -564,13 +570,7 @@ Response: {
   "id": 123,
   "project_id": 456,
   "status": "queued",
-  "progress": 0,
-  "steps": [
-    { "step_number": 1, "step_name": "Analyzing audio", "status": "queued", "progress": 0 },
-    { "step_number": 2, "step_name": "Syncing with visuals", "status": "queued", "progress": 0 },
-    { "step_number": 3, "step_name": "Rendering video", "status": "queued", "progress": 0 },
-    { "step_number": 4, "step_name": "Finalizing output", "status": "queued", "progress": 0 }
-  ]
+  "progress": 0
 }
 
 # Get video job status
@@ -579,24 +579,23 @@ Response: {
   "id": 123,
   "status": "processing",
   "progress": 45,  // Overall progress 0-100
-  "video_url": null,  // Available when status = "completed"
-  "steps": [ ... ]  // 4 generation steps with individual progress
+  "video_url": null  // Available when status = "completed"
 }
 
 # List all video attempts for project
 GET /api/v1/video/project/{project_id}/list
 Response: [
-  { "id": 123, "status": "completed", "video_url": "...", ... },
-  { "id": 122, "status": "completed", "video_url": "...", ... },
-  { "id": 121, "status": "failed", "error_message": "...", ... }
+  { "id": 123, "status": "completed", "video_url": "...", "progress": 100, ... },
+  { "id": 122, "status": "completed", "video_url": "...", "progress": 100, ... },
+  { "id": 121, "status": "failed", "error_message": "...", "progress": 35, ... }
 ]
 ```
 
 **Video Job Statuses:**
-- `queued` — Job waiting to be processed
-- `processing` — Video being generated (steps 1-4 in progress)
-- `completed` — Video ready (video_url available)
-- `failed` — Generation failed (error_message available)
+- `queued` — Job waiting to be processed (progress: 0%)
+- `processing` — Video being generated (progress: 1-99%)
+- `completed` — Video ready (progress: 100%, video_url available)
+- `failed` — Generation failed (error_message available, progress shows where it stopped)
 
 ### Step 7: Finalize
 ```
@@ -892,13 +891,13 @@ The workflow navigation component (`FloatingWorkflowNavigation`) enforces these 
 - [ ] Next button always enabled (no longer dependent on thumbnail confirmation)
 - [ ] Successfully advances to Finalize step
 
-### Finalize Step (Step 7)
+### Export Step (Step 7)
 - [ ] Displays proper UI based on video generation state (A/B/C)
 - [ ] Generate Video button shows credit confirmation modal
 - [ ] Credit confirmation modal shows correct balance calculations
 - [ ] Video generation starts after modal confirmation
-- [ ] Video progress component shows 4 steps with individual progress
-- [ ] Progress updates every 3 seconds (reduced from 2s)
+- [ ] Overall progress bar displays (0-100%)
+- [ ] Progress updates every 5 seconds via SSE (fallback to polling)
 - [ ] Can leave and return - progress persists
 - [ ] Video player displays when generation complete
 - [ ] Video uses finalized thumbnail as poster image
