@@ -171,18 +171,6 @@ export interface TTSJobResponse {
 // Video Types
 // ============================================================================
 
-export interface VideoGenerationStepResponse {
-  id: string;
-  video_job_id: string;
-  step_number: number;
-  step_name: string;
-  status: "queued" | "processing" | "completed" | "failed";
-  progress: number;
-  error_message?: string;
-  created_at: string;
-  updated_at: string;
-}
-
 export interface VideoJobResponse {
   id: string;
   project_id: string;
@@ -195,7 +183,6 @@ export interface VideoJobResponse {
   error_message?: string;
   created_at: string;
   updated_at: string;
-  steps?: VideoGenerationStepResponse[];
 }
 
 // ============================================================================

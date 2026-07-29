@@ -146,7 +146,7 @@ export default function JobsPage() {
   };
 
   const handleViewProject = (projectId: string) => {
-    router.push(`/project/${projectId}/finalize`);
+    router.push(`/project/${projectId}/export`);
   };
 
   if (isLoading) {

@@ -12,7 +12,6 @@ import type {
   ProjectScriptResponse,
   TTSJobResponse,
   VideoJobResponse,
-  VideoGenerationStepResponse,
 } from "../types/api";
 
 // ============================================================================
@@ -268,18 +267,8 @@ export async function createVideoJob(
   return request<VideoJobResponse>(`/video?${params.toString()}`, { method: "POST" });
 }
 
-export async function getVideoJob(
-  jobId: string,
-  loadSteps: boolean = true
-): Promise<VideoJobResponse> {
-  return request(`/video/${jobId}?load_steps=${loadSteps}`);
-}
-
-export async function getVideoStep(
-  jobId: string,
-  stepNumber: number
-): Promise<VideoGenerationStepResponse> {
-  return request(`/video/${jobId}/steps/${stepNumber}`);
+export async function getVideoJob(jobId: string): Promise<VideoJobResponse> {
+  return request(`/video/${jobId}`);
 }
 
 export async function getActiveVideoJob(projectId: string): Promise<VideoJobResponse> {

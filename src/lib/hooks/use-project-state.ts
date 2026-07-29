@@ -130,12 +130,6 @@ function mapVideo(job?: VideoJobResponse | null) {
     videoProgress: job?.progress ?? 0,
     videoJobId: job?.id ?? undefined,
     isRendering: job?.status === "queued" || job?.status === "processing",
-    videoSteps: job?.steps?.map((step) => ({
-      id: step.id,
-      label: step.step_name,
-      status: step.status,
-      progress: step.progress,
-    })),
   };
 }
 

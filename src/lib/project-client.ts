@@ -68,15 +68,6 @@ export interface TTSJobResponse {
   created_at: string;
 }
 
-export interface VideoGenerationStepResponse {
-  id: string;
-  step_number: number;
-  step_name: string;
-  status: "pending" | "queued" | "processing" | "completed" | "failed";
-  progress: number;
-  error_message?: string | null;
-}
-
 export interface VideoJobResponse {
   id: string;
   project_id: string;
@@ -86,7 +77,6 @@ export interface VideoJobResponse {
   video_url?: string | null;
   error_message?: string | null;
   created_at: string;
-  steps: VideoGenerationStepResponse[];
 }
 
 export interface ProjectThumbnail {
@@ -348,7 +338,7 @@ export async function createVideoJob(data: {
 }
 
 export async function getVideoJob(jobId: string): Promise<VideoJobResponse> {
-  return request<VideoJobResponse>(`/video/${jobId}?load_steps=true`);
+  return request<VideoJobResponse>(`/video/${jobId}`);
 }
 
 export function tmdbImageUrl(path?: string | null, size = "w500"): string | undefined {
@@ -416,7 +406,7 @@ export async function finalizeThumbnail(
     useCustom?: boolean;
   }
 ): Promise<ProjectResponse> {
-  return request<ProjectResponse>(`/projects/${projectId}/thumbnail/finalize`, {
+  return request<ProjectResponse>(`/projects/${projectId}/thumbnail/export`, {
     method: "POST",
     body: JSON.stringify({
       overlay_text: data.thumbnailText,
