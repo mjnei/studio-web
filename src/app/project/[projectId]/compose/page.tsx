@@ -82,35 +82,46 @@ export default function ComposePage() {
     }
   }, [state?.thumbnailUrl, state?.thumbnailStatus, state?.thumbnailConfirmed, refresh]);
 
-  // Poll for composition status when processing (reduced frequency, fallback for SSE)
+  // Show toast when composition completes or fails
   React.useEffect(() => {
-    if (state?.thumbnailCompositionStatus === "processing" && !isPollingComposition) {
-      setIsPollingComposition(true);
+    const isInProgress =
+      state?.thumbnailCompositionStatus === "queued" ||
+      state?.thumbnailCompositionStatus === "processing";
 
-      const pollInterval = setInterval(async () => {
-        await refresh();
-
-        // Check current state for completion or failure
-        if (state?.thumbnailCompositionStatus === "completed") {
-          clearInterval(pollInterval);
-          setIsPollingComposition(false);
-          toast.success(
-            "Thumbnail ready!",
-            "Your thumbnail has been finalized and is ready for video generation"
-          );
-        } else if (state?.thumbnailCompositionStatus === "failed") {
-          clearInterval(pollInterval);
-          setIsPollingComposition(false);
-          toast.error(
-            "Composition failed",
-            state?.thumbnailCompositionError || "Failed to composite thumbnail"
-          );
-        }
-      }, 8000); // Increased from 5s to 8s (fallback polling)
-
-      return () => clearInterval(pollInterval);
+    // Only show toast once per status change
+    if (state?.thumbnailCompositionStatus === "completed") {
+      if (!isPollingComposition) {
+        // Avoid duplicate toasts
+        setIsPollingComposition(true);
+        console.info("[Compose] Thumbnail composition completed", {
+          confirmed: state.thumbnailConfirmed,
+          finalUrl: state.finalThumbnailUrl ? "SET" : "MISSING",
+        });
+        toast.success(
+          "Thumbnail ready!",
+          "Your thumbnail has been finalized and is ready for video generation"
+        );
+      }
+    } else if (state?.thumbnailCompositionStatus === "failed" && isPollingComposition) {
+      setIsPollingComposition(false);
+      console.error(`[Compose] Thumbnail composition failed: ${state.thumbnailCompositionError}`);
+      toast.error(
+        "Composition failed",
+        state.thumbnailCompositionError || "Failed to composite thumbnail"
+      );
+    } else if (isInProgress) {
+      // Started queuing or processing
+      if (!isPollingComposition) {
+        setIsPollingComposition(true);
+        console.debug(
+          `[Compose] Thumbnail composition ${state?.thumbnailCompositionStatus}, starting poll`
+        );
+      }
+    } else if (state?.thumbnailCompositionStatus === "idle" && isPollingComposition) {
+      // Went back to idle
+      setIsPollingComposition(false);
     }
-  }, [state?.thumbnailCompositionStatus, isPollingComposition, refresh, toast, state]);
+  }, [state?.thumbnailCompositionStatus, isPollingComposition, toast]);
 
   const handleThumbnailFinalized = async () => {
     // Start polling for completion

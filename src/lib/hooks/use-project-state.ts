@@ -234,12 +234,16 @@ export function useProjectState(projectId: string) {
     }
   }, [state?.thumbnailStatus, refresh]);
 
-  // Poll for thumbnail composition status
+  // Poll for thumbnail composition status (only while not yet completed)
+  // Triggers on both QUEUED (waiting) and PROCESSING (actively processing)
   useEffect(() => {
-    if (state?.thumbnailCompositionStatus === "processing") {
+    if (
+      state?.thumbnailCompositionStatus === "queued" ||
+      state?.thumbnailCompositionStatus === "processing"
+    ) {
       const pollInterval = setInterval(() => {
         void refresh();
-      }, 5000); // Poll every 5 seconds
+      }, 8000); // Poll every 8 seconds
 
       return () => clearInterval(pollInterval);
     }
