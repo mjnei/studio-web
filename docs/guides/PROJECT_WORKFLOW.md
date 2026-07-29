@@ -9,7 +9,7 @@
 A streamlined 7-step workflow for creating video projects from movie trailers. Each step can be revisited, and all progress is automatically saved to the database.
 
 ```
-Source → Script → Voice → Details → Preview → Compose → Finalize
+Source → Script → Voice → Details → Preview → Compose → Export
 ```
 
 **Project Creation Entry Points:**
@@ -296,183 +296,91 @@ Customize and finalize your project thumbnail. **Video generation happens in the
 
 ---
 
-### Step 7: Finalize
-**Route:** `/project/[projectId]/finalize`
+### Step 7: Export
+**Route:** `/project/[projectId]/export`
 
-Generate video (if not yet generated), review completed videos, browse generation history, and manage your project.
+Generate final video, manage versions, and export in different formats.
+
+**Actions:**
+- **Generate Video**: Schedule video generation job (submits to `video_jobs` RabbitMQ queue)
+- **View Status**: Monitor video generation status (completed/processing/failed)
+- **Version Management**: View all generated versions, switch between them
+- **Download**: Download completed videos
+- **Export Options**: Select format, resolution, FPS, quality (MP4 currently supported)
+- **Share**: Share videos to X (Twitter) and WeChat (copies URL)
+- **Delete**: Remove unwanted video versions from history
 
 **Navigation:**
 - Back button: Visible (returns to Compose)
 - Home button: Visible
 - Next button: Hidden (final step)
 
-**Primary Actions:**
-
-**A. If NO videos generated yet:**
-- Prominent "Generate Video" card with:
-  - Credit cost indicator (1 credit)
-  - Large "Generate Video" button
-  - **Credit confirmation modal** when clicked:
-    - Shows credit cost (1 credit)
-    - Shows current balance
-    - Shows balance after generation
-    - Warning if balance will be low
-    - Must confirm before generation starts
-  - Starts video generation after confirmation and shows progress
-
-**B. If video is PROCESSING:**
-- Video generation progress component showing:
-  - Overall progress (0-100%)
-  - Current step being processed (1-4)
-  - All 4 generation steps with individual status
-- User can leave and return - progress continues
-- Auto-refreshes every 3 seconds
-- Success toast when complete
-
-**C. If video COMPLETED:**
-- Success banner ("Video Complete!")
-- Large video player with:
-  - Final video playback
-  - Finalized thumbnail as poster image
-  - Download button
-  - Publish button (coming soon)
-- Video metadata in collapsible details section: date, cost, attempt #
-
-**Video Generation Steps:**
-When user clicks "Generate Video", 4 automatic steps are created:
-1. **Analyzing audio** — Parse TTS audio file
-2. **Syncing with visuals** — Sync audio to video clips
-3. **Rendering video** — Encode final video file
-4. **Finalizing output** — Upload to storage
-
-Each step tracks progress (0-100%) and status (queued → processing → completed/failed).
+**Video Generation Flow:**
+1. User clicks "Generate Video" button
+2. Credit confirmation modal appears (shows cost, balance)
+3. After confirmation, job submitted to `video_jobs` RabbitMQ queue
+4. External video service processes job
+5. Service publishes result to `video_results` queue
+6. Backend consumer updates database with video URL
+7. Frontend receives notification via SSE (or polls as fallback)
+8. Completed video appears in the list
 
 **Display Sections (Top to Bottom):**
 
-1. **Header with Info Tooltip**
+1. **Header with Status Overview**
    - Page title and description
-   - Credit status showing remaining credits
-   - Notification bell with unread badge
-   - Info icon (hover) showing:
-     - Credit cost per video
-     - Remaining credits
-     - Quick usage tips
+   - Info tooltip with credits and quick tips
+   - Status cards: Completed count, Processing count, Failed count
 
-2. **Primary Action Area** (changes based on state)
-   - See A, B, or C above
+2. **Primary Video Display** (when video exists)
+   - Version selector (if multiple versions)
+   - Video player with controls
+   - Video metadata (voice, cost, date, status)
+   - Action buttons: Download, Export Format, Share
 
-3. **Video History with Inline Regeneration**
-   - Header with "Regenerate" button (appears when history exists)
-   - Shows remaining credits in header
-   - **Regenerate button** (small, inline):
-     - Shows credit confirmation modal when clicked
-     - Displays credit cost, current balance, and post-generation balance
-     - Must confirm before creating new video attempt
-     - Creates new video attempt with same settings after confirmation
-   - List of all videos (completed, processing, failed)
-   - For each video:
-     - Thumbnail preview (smaller on mobile, 16:9 aspect)
-     - Video # and generation date/time
-     - Status badge (completed/processing/failed)
-     - Collapsible details section:
-       - Voice name
-       - Credit cost
-       - Error message (if failed)
-     - Action buttons:
-       - Download (if completed)
-       - Delete (all statuses)
+3. **Generate CTA** (when no videos exist)
+   - Credit usage indicator
+   - Generate button with credit confirmation
+   - Centered, prominent call-to-action
+
+4. **Processing Videos Section**
+   - Shows videos currently being generated
+   - Status badge (queued/processing)
+   - No progress bar (status only)
+
+5. **Failed Videos Section**
+   - Shows failed generation attempts
+   - Error message display
+   - Delete button
+
+6. **All Versions History** (collapsible)
+   - Expandable list of all video versions
+   - Thumbnail preview for each
+   - View, Download, Delete actions
    - Most recent first
-   - Empty state if no history
-   - Hover effects for better interactivity
 
-4. **Project Summary** (collapsible)
-   - Click to expand/collapse
-   - Grid showing: Title, Movie, Voice, Script (word count)
-   - Chevron icon indicates expand/collapse state
-   - Quick reference for project details
+7. **Return to Projects Button**
 
-5. **Full Script Preview Card** (expandable)
-   - Expandable card showing full script
-   - Click to open modal with complete script text
-   - Shows word count and estimated duration
+**Export Format Modal:**
+- Format selection (MP4, WebM, MOV - only MP4 active)
+- Resolution dropdown (4K, Full HD, HD, SD)
+- Frame rate dropdown (60, 30, 24 FPS)
+- Quality dropdown (High, Medium, Low)
+- Export summary with selected options
+- Note: Advanced options coming soon
 
-6. **Return to Projects Button**
-   - Navigate back to projects dashboard
+**Share Modal:**
+- X (Twitter) - Copies video URL
+- WeChat - Copies video URL  
+- More platforms coming soon
 
-**Simplified UX Changes:**
-- ✅ Removed separate "Generate New Video" section
-- ✅ Regeneration button now inline in Video History header
-- ✅ Video metadata collapsed by default (expandable with chevron)
-- ✅ Project Summary collapsed by default (click to expand)
-- ✅ Info tooltip in header for quick guidance
-- ✅ Cleaner, more focused layout
-- ✅ Less visual clutter - priority on viewing videos
+**Status Updates:**
+- Real-time via SSE (Server-Sent Events) when available
+- Fallback to 10-second polling when SSE unavailable
+- Notifications show when videos complete
+- Auto-refresh video list on completion
 
-**Video History Data:**
-Each video in history shows:
-- `id` — Unique video job ID
-- `status` — "completed", "processing", "queued", or "failed"
-- `progress` — 0-100 (overall progress across all 4 steps)
-- `video_url` — S3 URL to downloadable MP4 file (if completed)
-- `thumbnail_url` — Video thumbnail (if available)
-- `credit_cost` — Credits spent to generate this video
-- `generation_attempt` — Sequential attempt # (1, 2, 3, etc.)
-- `is_published` — Whether video was published to platform
-- `error_message` — If failed, reason why
-- `created_at` — When video job was created
-- `updated_at` — Last status update
-
-**API Endpoints Used:**
-
-```
-# Get all videos for project (ordered by creation date, newest first)
-GET /api/v1/projects/{projectId}/videos
-Response: {
-  "videos": [
-    {
-      "id": "job-789",
-      "project_id": 123,
-      "status": "completed",
-      "progress": 100,
-      "video_url": "https://storage.../video.mp4",
-      "thumbnail_url": "https://storage.../thumbnail.jpg",
-      "credit_cost": 1,
-      "generation_attempt": 1,
-      "is_published": false,
-      "voice_name": "Morgan Freeman",
-      "tts_job_id": 456,
-      "error_message": null,
-      "created_at": "2026-07-06T10:30:00Z",
-      "updated_at": "2026-07-06T10:35:00Z",
-      ...
-    }
-  ],
-  "total": 3
-}
-
-# Get credit status (to show remaining credits)
-GET /api/v1/users/me/credits
-Response: {
-  "credits_remaining": 15,
-  ...
-}
-
-# Create new video (reuses same script, voice, thumbnail)
-POST /api/v1/video?project_id=123&tts_job_id=456
-Response: {
-  "id": "job-790",
-  "status": "queued",
-  "progress": 0,
-  "generation_attempt": 2,
-  ...
-}
-
-# Delete a video from history
-DELETE /api/v1/projects/{projectId}/videos/{videoId}
-Response: 200 OK
-```
-
-**Completion:** User views and manages project
+**Completion:** User downloads video or shares to platform
 
 **Note:** This is the final step. Project status remains "completed".
 
@@ -637,7 +545,7 @@ Response: {
 ### Step 6: Compose
 ```
 # Thumbnail Finalization
-POST /api/v1/projects/{id}/thumbnail/finalize
+POST /api/v1/projects/{id}/thumbnail/export
 Body: { 
   "thumbnail_text": "Custom overlay text",  // Max 200 chars
   "base_image_url": "https://...",  // AI-generated thumbnail from Step 3
