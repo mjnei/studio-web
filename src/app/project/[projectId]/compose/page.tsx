@@ -192,7 +192,7 @@ export default function ComposePage() {
   const handleContinue = async () => {
     setIsAdvancing(true);
     try {
-      await advanceProjectStep(projectId, "finalize");
+      await advanceProjectStep(projectId, "export");
       router.push(`/project/${projectId}/export`);
     } catch (error) {
       console.error("Failed to advance step:", error);

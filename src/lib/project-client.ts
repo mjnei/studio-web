@@ -8,7 +8,7 @@ export type WorkflowStep =
   | "details" // Step 4 (was Step 3) - MOVED DOWN
   | "preview" // Step 5
   | "compose" // Step 6
-  | "finalize"; // Step 7
+  | "export"; // Step 7
 export type ProjectStatus = "draft" | "in-progress" | "completed";
 export type JobStatus = "idle" | "queued" | "processing" | "completed" | "failed";
 

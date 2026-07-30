@@ -87,7 +87,7 @@ export interface ProjectState {
   status: "draft" | "in-progress" | "completed";
   createdAt: string;
   updatedAt: string;
-  lastStep: "source" | "script" | "details" | "voice" | "preview" | "compose" | "finalize";
+  lastStep: "source" | "script" | "details" | "voice" | "preview" | "compose" | "export";
 }
 
 function genreNames(movie?: MovieResponse | null): string | undefined {
