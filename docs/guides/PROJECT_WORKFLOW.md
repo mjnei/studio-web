@@ -403,7 +403,7 @@ CREATE TABLE projects (
     project_name VARCHAR(255),
     status VARCHAR(50) DEFAULT 'draft' CHECK (status IN ('draft', 'in-progress', 'completed')),
     last_step VARCHAR(50) DEFAULT 'source' CHECK (
-        last_step IN ('source', 'script', 'voice', 'details', 'preview', 'compose', 'finalize')
+        last_step IN ('source', 'script', 'voice', 'details', 'preview', 'compose', 'export')
     ),
     
     -- AI-generated suggestions (cached)
@@ -597,9 +597,9 @@ Response: [
 - `completed` — Video ready (progress: 100%, video_url available)
 - `failed` — Generation failed (error_message available, progress shows where it stopped)
 
-### Step 7: Finalize
+### Step 7: Export
 ```
-# Get all videos for project (for Finalize page)
+# Get all videos for project
 GET /api/v1/projects/{project_id}/videos
 Response: {
   "videos": [
@@ -658,7 +658,7 @@ src/app/project/
     details/page.tsx         # Step 4 - Project naming + AI suggestions
     preview/page.tsx         # Step 5 - Audio preview
     compose/page.tsx         # Step 6 - Thumbnail editor
-    finalize/page.tsx        # Step 7 - Video generation & management
+    export/page.tsx          # Step 7 - Video generation & management
 
 src/components/project/
   floating-workflow-navigation.tsx  # Unified navigation component (all steps use this)
@@ -791,14 +791,14 @@ This updates the `last_step` field in the database.
 ### Step Access Control
 
 | Step | Always Accessible | Requires Previous Steps | Back Button | Next Button |
-|------|-------------------|-------------------------|-------------|-------------|
-| Source | ✅ Yes | None | ❌ Hidden | ✅ Visible when movie selected |
-| Script | ❌ No | Source completed | ✅ Visible | ✅ Visible when script exists |
-| Voice | ❌ No | Script completed | ✅ Visible | ✅ Visible when voice selected |
+|---------|-------------------|-------------------------|-------------|-------------|
+| Source  | ✅ Yes | None | ❌ Hidden | ✅ Visible when movie selected  |
+| Script  | ❌ No | Source completed | ✅ Visible | ✅ Visible when script exists |
+| Voice   | ❌ No | Script completed | ✅ Visible | ✅ Visible when voice selected |
 | Details | ❌ No | Voice completed | ✅ Visible | ✅ Visible when name entered |
 | Preview | ❌ No | Details completed | ✅ Visible | ✅ Visible when TTS complete |
 | Compose | ❌ No | Preview completed | ✅ Visible | ✅ Always visible |
-| Finalize | ❌ No | Compose completed | ✅ Visible | ❌ Hidden (final step) |
+| Export  | ❌ No | Compose completed | ✅ Visible | ❌ Hidden (final step) |
 
 ### Navigation Component Usage
 
@@ -889,7 +889,7 @@ The workflow navigation component (`FloatingWorkflowNavigation`) enforces these 
 - [ ] Finalize thumbnail button creates composite image
 - [ ] Composition status polling works (5s interval, fallback for SSE)
 - [ ] Next button always enabled (no longer dependent on thumbnail confirmation)
-- [ ] Successfully advances to Finalize step
+- [ ] Successfully advances to Export step
 
 ### Export Step (Step 7)
 - [ ] Displays proper UI based on video generation state (A/B/C)
@@ -1008,7 +1008,7 @@ AI jobs (project name suggestions and thumbnail generation) are handled automati
    - Polls progress (1/4, 2/4, 3/4, 4/4)
    - When complete, shows video preview
 
-8. **Step 7 - Finalize page**
+8. **Step 7 - Export page**
    - Reviews project summary
    - Views finalized thumbnail with text overlay
    - Plays final video (thumbnail as poster)
