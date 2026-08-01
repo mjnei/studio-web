@@ -29,6 +29,7 @@ const pricingTiers: PricingTier[] = [
     features: [
       "5 credits per month",
       "Rollover up to 10 credits",
+      "2 custom voice creations",
       "Basic video generation",
       "720p video quality",
       "Standard project storage",
@@ -46,6 +47,7 @@ const pricingTiers: PricingTier[] = [
     features: [
       "25 credits per month",
       "Rollover up to 50 credits",
+      "5 custom voice creations",
       "HD video generation (1080p)",
       "Priority processing",
       "Advanced analytics",
@@ -65,6 +67,7 @@ const pricingTiers: PricingTier[] = [
     features: [
       "100 credits per month",
       "Unlimited rollover",
+      "10 custom voice creations",
       "4K video quality",
       "Priority support",
       "Advanced AI features",
