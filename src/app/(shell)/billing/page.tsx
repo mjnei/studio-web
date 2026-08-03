@@ -169,10 +169,10 @@ export default function BillingPage() {
                     Current Balance
                   </p>
                   <div className="flex items-baseline gap-3">
-                    <h2 className="text-5xl font-bold text-text-primary">
+                    <h2 className="text-4xl font-bold text-text-primary">
                       {creditStatus.credits_remaining}
                     </h2>
-                    <span className="text-2xl text-text-muted">credits</span>
+                    <span className="text-xl text-text-muted">credits</span>
                   </div>
                   <p className="text-sm text-text-secondary mt-2">
                     {creditStatus.credits_used} of {creditStatus.monthly_allocation} used this month
