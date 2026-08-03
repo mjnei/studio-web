@@ -238,8 +238,9 @@ export default function ProfilePage() {
                         <span className="text-sm text-text-secondary">{user.email}</span>
                         <button
                           onClick={handleCopyEmail}
-                          className="rounded-md p-1.5 hover:bg-surface-hover transition-colors"
+                          className="rounded-md p-2 min-w-[40px] min-h-[40px] flex items-center justify-center hover:bg-surface-hover transition-colors"
                           title="Copy email address"
+                          aria-label="Copy email address"
                         >
                           {copyFeedback ? (
                             <Check className="w-4 h-4 text-status-completed" />

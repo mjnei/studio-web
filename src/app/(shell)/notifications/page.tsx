@@ -48,22 +48,40 @@ export default function NotificationsPage() {
         {/* Actions Bar */}
         <div className="flex items-start sm:items-center justify-between gap-3 flex-col sm:flex-row">
           {/* Filters */}
-          <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto">
-            <Filter size={16} className="text-text-muted" />
-            {NOTIFICATION_FILTERS.map((filterOption) => (
-              <button
-                key={filterOption.value}
-                onClick={() => setFilter(filterOption.value)}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                  filter === filterOption.value
-                    ? "bg-accent-primary text-white"
-                    : "bg-surface-raised text-text-secondary hover:bg-surface-hover hover:text-text-primary border border-border-default"
-                }`}
-                aria-label={`Filter by ${filterOption.label}`}
+          <div className="w-full sm:w-auto">
+            {/* Mobile: Dropdown */}
+            <div className="sm:hidden">
+              <select
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+                className="w-full rounded-lg border border-border-default bg-surface-panel px-3 py-2 text-sm font-medium text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent"
               >
-                {filterOption.label}
-              </button>
-            ))}
+                {NOTIFICATION_FILTERS.map((filterOption) => (
+                  <option key={filterOption.value} value={filterOption.value}>
+                    {filterOption.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Desktop: Button group */}
+            <div className="hidden sm:flex items-center gap-2 flex-wrap">
+              <Filter size={16} className="text-text-muted" />
+              {NOTIFICATION_FILTERS.map((filterOption) => (
+                <button
+                  key={filterOption.value}
+                  onClick={() => setFilter(filterOption.value)}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                    filter === filterOption.value
+                      ? "bg-accent-primary text-white"
+                      : "bg-surface-raised text-text-secondary hover:bg-surface-hover hover:text-text-primary border border-border-default"
+                  }`}
+                  aria-label={`Filter by ${filterOption.label}`}
+                >
+                  {filterOption.label}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Actions */}

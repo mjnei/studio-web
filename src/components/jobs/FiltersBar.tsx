@@ -153,39 +153,42 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
           </Button>
 
           {/* Layout Mode Toggle */}
-          <div className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-panel p-1 h-10">
+          <div className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-panel p-1">
             <button
               onClick={() => onChangeLayoutMode("grid-sm")}
-              className={`rounded p-1.5 transition-all ${
+              className={`rounded p-2 min-w-[44px] min-h-[44px] flex items-center justify-center transition-all ${
                 layoutMode === "grid-sm"
                   ? "bg-accent-primary text-white"
                   : "text-text-muted hover:text-text-primary"
               }`}
               title="Small dense grid"
+              aria-label="Small grid view"
             >
-              <Grid3x3 className="h-4 w-4" />
+              <Grid3x3 className="h-5 w-5" />
             </button>
             <button
               onClick={() => onChangeLayoutMode("grid-md")}
-              className={`rounded p-1.5 transition-all ${
+              className={`rounded p-2 min-w-[44px] min-h-[44px] flex items-center justify-center transition-all ${
                 layoutMode === "grid-md"
                   ? "bg-accent-primary text-white"
                   : "text-text-muted hover:text-text-primary"
               }`}
               title="Medium balanced grid"
+              aria-label="Medium grid view"
             >
-              <LayoutGrid className="h-4 w-4" />
+              <LayoutGrid className="h-5 w-5" />
             </button>
             <button
               onClick={() => onChangeLayoutMode("list")}
-              className={`rounded p-1.5 transition-all ${
+              className={`rounded p-2 min-w-[44px] min-h-[44px] flex items-center justify-center transition-all ${
                 layoutMode === "list"
                   ? "bg-accent-primary text-white"
                   : "text-text-muted hover:text-text-primary"
               }`}
               title="List view"
+              aria-label="List view"
             >
-              <List className="h-4 w-4" />
+              <List className="h-5 w-5" />
             </button>
           </div>
         </div>

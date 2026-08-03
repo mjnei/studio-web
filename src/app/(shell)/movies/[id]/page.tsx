@@ -362,7 +362,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                       <h2 className="text-lg font-bold text-text-primary">Crew</h2>
                       <button
                         onClick={() => setIsCrewExpanded(!isCrewExpanded)}
-                        className="p-1.5 rounded-lg hover:bg-surface-raised transition-colors text-text-secondary hover:text-text-primary"
+                        className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg hover:bg-surface-raised transition-colors text-text-secondary hover:text-text-primary"
                         aria-label={isCrewExpanded ? "Collapse crew" : "Expand crew"}
                       >
                         {isCrewExpanded ? (
@@ -478,7 +478,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                       <h2 className="text-lg font-bold text-text-primary">Top Cast</h2>
                       <button
                         onClick={() => setIsTopCastExpanded(!isTopCastExpanded)}
-                        className="p-1.5 rounded-lg hover:bg-surface-raised transition-colors text-text-secondary hover:text-text-primary"
+                        className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg hover:bg-surface-raised transition-colors text-text-secondary hover:text-text-primary"
                         aria-label={isTopCastExpanded ? "Collapse cast" : "Expand cast"}
                       >
                         {isTopCastExpanded ? (

@@ -39,23 +39,21 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
           {notifications.length > 0 && (
             <button
               onClick={handleClearAll}
-              className="p-1.5 sm:p-2 rounded-lg text-text-muted hover:bg-surface-hover hover:text-text-primary active:bg-surface-hover transition-all touch-manipulation"
+              className="p-2 min-w-[44px] min-h-[44px] rounded-lg text-text-muted hover:bg-surface-hover hover:text-text-primary active:bg-surface-hover transition-all touch-manipulation flex items-center justify-center"
               title="Clear all notifications"
               aria-label="Clear all notifications"
             >
-              <CheckCheck size={14} className="sm:hidden" />
-              <CheckCheck size={16} className="hidden sm:block" />
+              <CheckCheck size={18} />
             </button>
           )}
           <Link
             href="/settings/notifications"
             onClick={onClose}
-            className="p-1.5 sm:p-2 rounded-lg text-text-muted hover:bg-surface-hover hover:text-text-primary active:bg-surface-hover transition-all touch-manipulation"
+            className="p-2 min-w-[44px] min-h-[44px] rounded-lg text-text-muted hover:bg-surface-hover hover:text-text-primary active:bg-surface-hover transition-all touch-manipulation flex items-center justify-center"
             title="Notification settings"
             aria-label="Notification settings"
           >
-            <Settings size={14} className="sm:hidden" />
-            <Settings size={16} className="hidden sm:block" />
+            <Settings size={18} />
           </Link>
         </div>
       </div>

@@ -123,8 +123,8 @@ export default function BillingPage() {
       />
 
       {/* Tabs */}
-      <div className="mb-8">
-        <div className="inline-flex items-center gap-1 rounded-xl bg-surface-panel p-1 shadow-sm border border-border-default">
+      <div className="mb-8 overflow-x-auto">
+        <div className="inline-flex items-center gap-1 rounded-xl bg-surface-panel p-1 shadow-sm border border-border-default min-w-min">
           <button
             onClick={() => setActiveTab("overview")}
             className={`flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold transition-all duration-200 ${
