@@ -277,7 +277,7 @@ export default function ProfilePage() {
                   )}
                 </div>
               </div>
-              <div className="flex gap-2 self-start">
+              <div className="flex gap-2 self-start w-full sm:w-auto">
                 {editing ? (
                   <>
                     <Button
@@ -289,15 +289,16 @@ export default function ProfilePage() {
                         setGivenName(user.given_name || "");
                         setFamilyName(user.family_name || "");
                       }}
+                      className="w-full sm:w-auto"
                     >
                       Cancel
                     </Button>
-                    <Button variant="primary" size="sm" onClick={handleSaveProfile}>
+                    <Button variant="primary" size="sm" onClick={handleSaveProfile} className="w-full sm:w-auto">
                       Save
                     </Button>
                   </>
                 ) : (
-                  <Button variant="secondary" size="sm" onClick={() => setEditing(true)}>
+                  <Button variant="secondary" size="sm" onClick={() => setEditing(true)} className="w-full sm:w-auto">
                     <Settings className="w-4 h-4" />
                     Edit
                   </Button>
@@ -405,16 +406,16 @@ export default function ProfilePage() {
                 )}
               </div>
               <div className="flex flex-col sm:flex-row gap-3">
-                <Link href="/pricing" className="flex-1">
-                  <Button variant="primary" fullWidth>
+                <Link href="/pricing" className="w-full sm:w-auto sm:flex-1">
+                  <Button variant="primary" className="w-full sm:w-auto">
                     {isFreeUser ? "Upgrade Plan" : "View All Plans"}
                   </Button>
                 </Link>
-                <Link href="/billing" className="flex-1">
+                <Link href="/billing" className="w-full sm:w-auto sm:flex-1">
                   <Button
                     variant="secondary"
-                    fullWidth
                     leftIcon={<CreditCard className="w-4 h-4" />}
+                    className="w-full sm:w-auto"
                   >
                     Manage Billing
                   </Button>
@@ -489,7 +490,7 @@ export default function ProfilePage() {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     label="Confirm new password"
                   />
-                  <Button variant="primary" onClick={handleChangePassword}>
+                  <Button variant="primary" onClick={handleChangePassword} className="w-full sm:w-auto">
                     {user.has_password ? "Update password" : "Set password"}
                   </Button>
                 </div>
@@ -557,6 +558,7 @@ export default function ProfilePage() {
                   variant="secondary"
                   onClick={logout}
                   leftIcon={<LogOut className="w-4 h-4" />}
+                  className="w-full sm:w-auto"
                 >
                   Sign out
                 </Button>
@@ -579,6 +581,7 @@ export default function ProfilePage() {
                     onClick={handleResetOnboarding}
                     disabled={resettingOnboarding}
                     leftIcon={<RefreshCw className="w-4 h-4" />}
+                    className="w-full sm:w-auto"
                   >
                     {resettingOnboarding ? "Resetting..." : "Reset"}
                   </Button>
@@ -619,13 +622,14 @@ export default function ProfilePage() {
                   placeholder="delete my account"
                   className="max-w-sm"
                 />
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <Button
                     variant="ghost"
                     onClick={() => {
                       setShowDeleteConfirm(false);
                       setDeleteText("");
                     }}
+                    className="w-full sm:w-auto"
                   >
                     Cancel
                   </Button>
@@ -634,6 +638,7 @@ export default function ProfilePage() {
                     onClick={handleDeleteAccount}
                     disabled={deleteText !== "delete my account"}
                     leftIcon={<Trash2 className="w-4 h-4" />}
+                    className="w-full sm:w-auto"
                   >
                     Permanently delete account
                   </Button>
@@ -644,6 +649,7 @@ export default function ProfilePage() {
                 variant="danger"
                 onClick={() => setShowDeleteConfirm(true)}
                 leftIcon={<Trash2 className="w-4 h-4" />}
+                className="w-full sm:w-auto"
               >
                 Delete account
               </Button>

@@ -120,82 +120,84 @@ export default function MoviesPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto">
-      <PageHeader
-        title="Movie Library"
-        description="Discover and explore movies to create your next project"
-        action={
-          <div className="flex items-center gap-3">
-            <span className="rounded-full bg-accent-cyan/10 px-3 py-1.5 text-xs font-medium text-accent-cyan whitespace-nowrap">
-              {movies.length} {movies.length === 1 ? "movie" : "movies"}
-            </span>
-            {enrichmentProgress > 0 && enrichmentProgress < 100 && (
-              <span className="text-xs text-text-muted whitespace-nowrap">
-                Loading details... {enrichmentProgress}%
+    <div className="w-full px-4 sm:px-6">
+      <div className="max-w-7xl mx-auto">
+        <PageHeader
+          title="Movie Library"
+          description="Discover and explore movies to create your next project"
+          action={
+            <div className="flex items-center gap-3">
+              <span className="rounded-full bg-accent-cyan/10 px-3 py-1.5 text-xs font-medium text-accent-cyan whitespace-nowrap">
+                {movies.length} {movies.length === 1 ? "movie" : "movies"}
               </span>
-            )}
-          </div>
-        }
-      />
-
-      {/* Search and Layout Controls */}
-      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-        <div className="flex-1 sm:max-w-md">
-          <Input
-            type="text"
-            placeholder="Search movies by title..."
-            value={searchQuery}
-            onChange={(event) => setSearchQuery(event.target.value)}
-            icon={<Search className="h-4 w-4" />}
-          />
-        </div>
-        <LayoutToggle
-          layoutMode={layoutMode === "grid-lg" ? "grid-md" : layoutMode}
-          onLayoutChange={(mode) => setLayoutMode(mode as LayoutMode)}
-          variant="compact"
-        />
-      </div>
-
-      {/* Content */}
-      {loading ? (
-        <LoadingSpinner
-          size="lg"
-          message="Loading movies..."
-          description="Please wait while we fetch the catalog"
-          className="rounded-2xl border border-border-default bg-surface-panel"
-          fullHeight
-        />
-      ) : error ? (
-        <EmptyState
-          variant="elevated"
-          icon={<Search className="h-12 w-12 text-status-failed" />}
-          title="Unable to load movies"
-          description={error}
-          className="border-status-failed/30 bg-status-failed/5"
-        />
-      ) : movies.length === 0 ? (
-        <EmptyState
-          variant="default"
-          icon={<Film className="h-16 w-16" />}
-          title="No movies found"
-          description={
-            searchQuery.trim()
-              ? "Try adjusting your search terms"
-              : "No movies available in the catalog"
+              {enrichmentProgress > 0 && enrichmentProgress < 100 && (
+                <span className="text-xs text-text-muted whitespace-nowrap">
+                  Loading details... {enrichmentProgress}%
+                </span>
+              )}
+            </div>
           }
         />
-      ) : (
-        <div className={getGridClass()}>
-          {movies.map((movie) => (
-            <MovieCard
-              key={movie.id}
-              movie={movie}
-              layout={layoutMode === "grid-lg" ? "grid-md" : layoutMode}
-              href={`/movies/${movie.id}`}
+
+        {/* Search and Layout Controls */}
+        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="flex-1 sm:max-w-md">
+            <Input
+              type="text"
+              placeholder="Search movies by title..."
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              icon={<Search className="h-4 w-4" />}
             />
-          ))}
+          </div>
+          <LayoutToggle
+            layoutMode={layoutMode === "grid-lg" ? "grid-md" : layoutMode}
+            onLayoutChange={(mode) => setLayoutMode(mode as LayoutMode)}
+            variant="compact"
+          />
         </div>
-      )}
+
+        {/* Content */}
+        {loading ? (
+          <LoadingSpinner
+            size="lg"
+            message="Loading movies..."
+            description="Please wait while we fetch the catalog"
+            className="rounded-2xl border border-border-default bg-surface-panel"
+            fullHeight
+          />
+        ) : error ? (
+          <EmptyState
+            variant="elevated"
+            icon={<Search className="h-12 w-12 text-status-failed" />}
+            title="Unable to load movies"
+            description={error}
+            className="border-status-failed/30 bg-status-failed/5"
+          />
+        ) : movies.length === 0 ? (
+          <EmptyState
+            variant="default"
+            icon={<Film className="h-16 w-16" />}
+            title="No movies found"
+            description={
+              searchQuery.trim()
+                ? "Try adjusting your search terms"
+                : "No movies available in the catalog"
+            }
+          />
+        ) : (
+          <div className={getGridClass()}>
+            {movies.map((movie) => (
+              <MovieCard
+                key={movie.id}
+                movie={movie}
+                layout={layoutMode === "grid-lg" ? "grid-md" : layoutMode}
+                href={`/movies/${movie.id}`}
+              />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

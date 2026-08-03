@@ -90,7 +90,7 @@ export default function ProjectsPage() {
     <div className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-panel p-1">
       <button
         onClick={() => setLayoutMode("grid-sm")}
-        className={`rounded p-2 min-w-[44px] min-h-[44px] flex items-center justify-center transition-all ${
+        className={`rounded min-w-[44px] min-h-[44px] flex items-center justify-center transition-all ${
           layoutMode === "grid-sm"
             ? "bg-accent-primary text-white"
             : "text-text-muted hover:text-text-primary"
@@ -102,7 +102,7 @@ export default function ProjectsPage() {
       </button>
       <button
         onClick={() => setLayoutMode("grid-md")}
-        className={`rounded p-2 min-w-[44px] min-h-[44px] flex items-center justify-center transition-all ${
+        className={`rounded min-w-[44px] min-h-[44px] flex items-center justify-center transition-all ${
           layoutMode === "grid-md"
             ? "bg-accent-primary text-white"
             : "text-text-muted hover:text-text-primary"
@@ -114,7 +114,7 @@ export default function ProjectsPage() {
       </button>
       <button
         onClick={() => setLayoutMode("list")}
-        className={`rounded p-2 min-w-[44px] min-h-[44px] flex items-center justify-center transition-all ${
+        className={`rounded min-w-[44px] min-h-[44px] flex items-center justify-center transition-all ${
           layoutMode === "list"
             ? "bg-accent-primary text-white"
             : "text-text-muted hover:text-text-primary"
