@@ -91,7 +91,7 @@ function BillingToggle({ billingCycle, onBillingCycleChange }: BillingToggleProp
     <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-surface-raised border border-border-default shadow-sm">
       <button
         onClick={() => onBillingCycleChange("monthly")}
-        className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
+        className={`px-4 sm:px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
           billingCycle === "monthly"
             ? "bg-accent-primary text-white shadow-glow"
             : "text-text-muted hover:text-text-primary"
@@ -101,7 +101,7 @@ function BillingToggle({ billingCycle, onBillingCycleChange }: BillingToggleProp
       </button>
       <button
         onClick={() => onBillingCycleChange("annual")}
-        className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
+        className={`px-4 sm:px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
           billingCycle === "annual"
             ? "bg-accent-primary text-white shadow-glow"
             : "text-text-muted hover:text-text-primary"
@@ -194,7 +194,7 @@ export default function PricingPage() {
       </div>
 
       {/* Pricing Grid */}
-      <div className="grid gap-4 md:grid-cols-3 mb-6">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mb-6">
         {pricingTiers.map((tier) => {
           const Icon = tier.icon;
           const currentPrice = billingCycle === "annual" ? tier.annualPrice : tier.monthlyPrice;

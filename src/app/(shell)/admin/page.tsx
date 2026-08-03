@@ -4,7 +4,6 @@ import Link from "next/link";
 import { Film, Mic, ShieldCheck, Database, Users, Settings, BarChart3 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { Grid } from "@/components/ui/Grid";
 
 export default function AdminPage() {
   const adminSections = [
@@ -69,7 +68,7 @@ export default function AdminPage() {
       />
 
       {/* Stats Grid */}
-      <Grid cols={4} gap="md" className="mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {stats.map((stat) => {
           const Icon = stat.icon;
           return (
@@ -93,10 +92,10 @@ export default function AdminPage() {
             </Card>
           );
         })}
-      </Grid>
+      </div>
 
       {/* Admin Sections */}
-      <Grid cols={3} gap="md" className="mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
         {adminSections.map((section) => {
           const Icon = section.icon;
           return (
@@ -126,7 +125,7 @@ export default function AdminPage() {
             </Link>
           );
         })}
-      </Grid>
+      </div>
 
       {/* Admin Features */}
       <Card variant="elevated" padding="lg">
