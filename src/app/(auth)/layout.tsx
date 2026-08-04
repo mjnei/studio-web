@@ -47,7 +47,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           <p className="mt-2 text-sm text-text-secondary">AI-assisted video production</p>
         </div>
         {children}
-        
+
         {/* Language Switcher at bottom */}
         <div className="mt-8 flex justify-center">
           <LanguageSwitcher />
