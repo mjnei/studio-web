@@ -17,15 +17,24 @@ const NOTIFICATION_FILTERS = [
 ];
 
 export default function NotificationsPage() {
-  const { notifications, unreadCount, isLoading, clearAllNotifications, refreshNotifications } =
+  const { notifications, unreadCount, isLoading, markAllAsRead, refreshNotifications } =
     useNotifications();
 
   const [filter, setFilter] = useState("all");
   const [showPreferences, setShowPreferences] = useState(false);
 
-  const handleClearAll = async () => {
-    if (window.confirm("Clear all notifications? This action cannot be undone.")) {
-      await clearAllNotifications();
+  const handleMarkAllAsRead = async () => {
+    const unreadNotifications = notifications.filter((n) => !n.is_read);
+    if (unreadNotifications.length === 0) {
+      return;
+    }
+
+    if (
+      window.confirm(
+        `Mark ${unreadNotifications.length} notification${unreadNotifications.length !== 1 ? "s" : ""} as read?`
+      )
+    ) {
+      await markAllAsRead();
       await refreshNotifications();
     }
   };
@@ -84,16 +93,16 @@ export default function NotificationsPage() {
 
           {/* Actions */}
           <div className="flex items-center gap-2 w-full sm:w-auto">
-            {notifications.length > 0 && (
+            {unreadCount > 0 && (
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={handleClearAll}
+                onClick={handleMarkAllAsRead}
                 className="gap-2 flex-1 sm:flex-none"
-                aria-label="Clear all notifications"
+                aria-label="Mark all notifications as read"
               >
                 <CheckCheck size={16} />
-                <span>Clear All</span>
+                <span>Mark All as Read</span>
               </Button>
             )}
             <Button

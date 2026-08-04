@@ -293,12 +293,22 @@ export default function ProfilePage() {
                     >
                       Cancel
                     </Button>
-                    <Button variant="primary" size="sm" onClick={handleSaveProfile} className="w-full sm:w-auto">
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={handleSaveProfile}
+                      className="w-full sm:w-auto"
+                    >
                       Save
                     </Button>
                   </>
                 ) : (
-                  <Button variant="secondary" size="sm" onClick={() => setEditing(true)} className="w-full sm:w-auto">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => setEditing(true)}
+                    className="w-full sm:w-auto"
+                  >
                     <Settings className="w-4 h-4" />
                     Edit
                   </Button>
@@ -490,7 +500,11 @@ export default function ProfilePage() {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     label="Confirm new password"
                   />
-                  <Button variant="primary" onClick={handleChangePassword} className="w-full sm:w-auto">
+                  <Button
+                    variant="primary"
+                    onClick={handleChangePassword}
+                    className="w-full sm:w-auto"
+                  >
                     {user.has_password ? "Update password" : "Set password"}
                   </Button>
                 </div>

@@ -70,7 +70,22 @@ export function NotificationPreferencesModal({
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      await updatePreferences(localPreferences);
+      // Calculate only the changed preferences
+      const changes: Record<string, { in_app: boolean }> = {};
+
+      Object.keys(localPreferences).forEach((key) => {
+        const current = localPreferences[key];
+        const original = preferences?.[key];
+
+        if (!original || current.in_app !== original.in_app) {
+          changes[key] = current;
+        }
+      });
+
+      if (Object.keys(changes).length > 0) {
+        await updatePreferences(changes);
+      }
+
       onClose();
     } catch (error) {
       console.error("Failed to save preferences:", error);

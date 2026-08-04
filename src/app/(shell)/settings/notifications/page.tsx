@@ -81,7 +81,22 @@ export default function NotificationSettingsPage() {
     setIsSaving(true);
     setSaveSuccess(false);
     try {
-      await updatePreferences(localPreferences);
+      // Calculate only the changed preferences
+      const changes: Record<string, { in_app: boolean }> = {};
+
+      Object.keys(localPreferences).forEach((key) => {
+        const current = localPreferences[key];
+        const original = preferences?.[key];
+
+        if (!original || current.in_app !== original.in_app) {
+          changes[key] = current;
+        }
+      });
+
+      if (Object.keys(changes).length > 0) {
+        await updatePreferences(changes);
+      }
+
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (error) {

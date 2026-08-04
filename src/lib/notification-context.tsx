@@ -36,6 +36,15 @@ export interface NotificationPreferences {
   };
 }
 
+export interface BackendPreference {
+  notification_type: string;
+  enabled_in_app: boolean;
+}
+
+export interface BackendPreferencesResponse {
+  preferences: BackendPreference[];
+}
+
 interface NotificationContextValue {
   notifications: Notification[];
   unreadCount: number;
@@ -44,8 +53,8 @@ interface NotificationContextValue {
   preferencesLoading: boolean;
   isSSEConnected: boolean;
   markAsRead: (id: string) => Promise<void>;
+  markAllAsRead: () => Promise<void>;
   deleteNotification: (id: string) => Promise<void>;
-  clearAllNotifications: () => Promise<void>;
   refreshNotifications: () => Promise<void>;
   refreshUnreadCount: () => Promise<void>;
   fetchPreferences: () => Promise<void>;
@@ -121,6 +130,22 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
     [refreshUnreadCount]
   );
 
+  // Mark all notifications as read
+  const markAllAsRead = useCallback(async () => {
+    try {
+      const unreadNotifications = notifications.filter((n) => !n.is_read);
+
+      // Mark all unread notifications as read
+      await Promise.all(unreadNotifications.map((n) => markAsRead(n.id)));
+
+      // Refresh the list and count
+      await refreshNotifications();
+      await refreshUnreadCount();
+    } catch (error) {
+      console.error("Failed to mark all notifications as read:", error);
+    }
+  }, [notifications, markAsRead, refreshNotifications, refreshUnreadCount]);
+
   // Delete notification
   const deleteNotification = useCallback(
     async (id: string) => {
@@ -136,25 +161,23 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
     [refreshUnreadCount]
   );
 
-  // Clear all notifications
-  const clearAllNotifications = useCallback(async () => {
-    try {
-      await request<void>("/notifications/clear-all", { method: "POST" });
-      setNotifications([]);
-      setUnreadCount(0);
-    } catch (error) {
-      console.error("Failed to clear notifications:", error);
-    }
-  }, []);
-
   // Fetch preferences
   const fetchPreferences = useCallback(async () => {
     if (!isAuthenticated) return;
 
     try {
       setPreferencesLoading(true);
-      const response = await request<NotificationPreferences>("/notifications/preferences");
-      setPreferences(response);
+      const response = await request<BackendPreferencesResponse>("/notifications/preferences");
+
+      // Transform backend format to frontend format
+      const transformed: NotificationPreferences = {};
+      response.preferences.forEach((pref) => {
+        transformed[pref.notification_type] = {
+          in_app: pref.enabled_in_app,
+        };
+      });
+
+      setPreferences(transformed);
     } catch (error) {
       console.error("Failed to fetch preferences:", error);
     } finally {
@@ -163,22 +186,28 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
   }, [isAuthenticated]);
 
   // Update preferences
-  const updatePreferences = useCallback(
-    async (updates: Partial<NotificationPreferences>) => {
-      try {
-        const newPrefs = { ...(preferences || {}), ...updates } as NotificationPreferences;
-        await request<void>("/notifications/preferences", {
+  const updatePreferences = useCallback(async (updates: Partial<NotificationPreferences>) => {
+    try {
+      // Transform each preference update to backend format and send individually
+      const updatePromises = Object.entries(updates).map(([notificationType, pref]) => {
+        return request<void>("/notifications/preferences", {
           method: "PATCH",
-          body: JSON.stringify(newPrefs),
+          body: JSON.stringify({
+            notification_type: notificationType,
+            enabled_in_app: pref.in_app,
+          }),
         });
-        setPreferences(newPrefs);
-      } catch (error) {
-        console.error("Failed to update preferences:", error);
-        throw error;
-      }
-    },
-    [preferences]
-  );
+      });
+
+      await Promise.all(updatePromises);
+
+      // Update local state
+      setPreferences((prev) => ({ ...(prev || {}), ...updates }));
+    } catch (error) {
+      console.error("Failed to update preferences:", error);
+      throw error;
+    }
+  }, []);
 
   // Connect to SSE stream
   const connectSSE = useCallback(() => {
@@ -374,8 +403,8 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
     preferencesLoading,
     isSSEConnected,
     markAsRead,
+    markAllAsRead,
     deleteNotification,
-    clearAllNotifications,
     refreshNotifications,
     refreshUnreadCount,
     fetchPreferences,
