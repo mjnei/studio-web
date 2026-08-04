@@ -1,9 +1,14 @@
 {
   "shell": {
+    "main": "Main",
+    "utilities": "Utilities",
+    "admin": "Admin",
     "dashboard": "Dashboard",
     "projects": "Projects",
+    "movies": "Movies",
     "voices": "Voices",
     "jobs": "Jobs",
+    "pricing": "Pricing",
     "settings": "Settings",
     "help": "Help",
     "account": "Account",
@@ -11,10 +16,12 @@
     "notifications": "Notifications",
     "credits": "Credits",
     "billing": "Billing",
+    "referral": "Referral",
     "support": "Support",
     "documentation": "Documentation",
     "apiKeys": "API Keys",
     "team": "Team",
+    "queues": "Queues",
     "logout": "Logout"
   }
 }

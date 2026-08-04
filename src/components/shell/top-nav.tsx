@@ -6,9 +6,12 @@ import { useSidebar } from "@/components/shell/sidebar-context";
 import { Button } from "@/components/ui/button";
 import { CreditStatus } from "@/components/credits/CreditStatus";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
+import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
+import { useI18n } from "@/i18n";
 
 export function TopNav() {
   const { toggle, isNarrow } = useSidebar();
+  const { t } = useI18n();
 
   return (
     <>
@@ -36,10 +39,13 @@ export function TopNav() {
             </div>
             <input
               type="text"
-              placeholder="Search projects..."
+              placeholder={t("common.search") + "..."}
               className="w-64 rounded-lg border border-border-default bg-surface-raised pl-10 pr-4 py-2 text-sm text-text-primary placeholder-text-muted focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20 focus:outline-none transition-all hover:border-border-strong"
             />
           </div>
+
+          {/* Language Switcher */}
+          <LanguageSwitcher />
 
           {/* Notifications */}
           <NotificationBell />

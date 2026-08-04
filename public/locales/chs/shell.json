@@ -1,9 +1,14 @@
 {
   "shell": {
+    "main": "主要",
+    "utilities": "工具",
+    "admin": "管理",
     "dashboard": "仪表板",
     "projects": "项目",
+    "movies": "电影",
     "voices": "语音",
     "jobs": "任务",
+    "pricing": "定价",
     "settings": "设置",
     "help": "帮助",
     "account": "账户",
@@ -11,10 +16,12 @@
     "notifications": "通知",
     "credits": "积分",
     "billing": "账单",
+    "referral": "推荐",
     "support": "支持",
     "documentation": "文档",
     "apiKeys": "API 密钥",
     "team": "团队",
+    "queues": "队列",
     "logout": "退出登录"
   }
 }
