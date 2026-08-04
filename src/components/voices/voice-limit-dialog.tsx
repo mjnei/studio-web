@@ -3,6 +3,7 @@
 import { AlertCircle, Sparkles, Crown } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/i18n";
 
 interface VoiceLimitDialogProps {
   tier: string;
@@ -24,8 +25,23 @@ export function VoiceLimitDialog({
   onClose,
   onUpgrade,
 }: VoiceLimitDialogProps) {
-  const tierName = tier === "free" ? "Free" : tier === "pro" ? "Pro" : "Premium";
+  const { t } = useI18n();
+  
+  const getTierName = (tierValue: string) => {
+    switch (tierValue) {
+      case "free":
+        return t("voices.limitDialog.freePlanTitle");
+      case "pro":
+        return t("voices.limitDialog.proPlanTitle");
+      case "premium":
+        return t("voices.limitDialog.premiumPlanTitle");
+      default:
+        return tierValue;
+    }
+  };
+
   const isAtMax = tier === "premium";
+  const tierName = getTierName(tier);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
@@ -47,14 +63,19 @@ export function VoiceLimitDialog({
 
         {/* Title */}
         <h3 className="text-xl font-semibold text-text-primary text-center mb-2">
-          {isAtMax ? "Voice Limit Reached" : "Upgrade to Add More Voices"}
+          {isAtMax
+            ? t("voices.limitDialog.limitReachedTitle")
+            : t("voices.limitDialog.upgradeTitle")}
         </h3>
 
         {/* Message */}
         <p className="text-sm text-text-secondary text-center mb-6">
-          You&apos;ve created <span className="font-semibold text-text-primary">{currentCount}</span> of{" "}
-          <span className="font-semibold text-text-primary">{limit}</span> voices available on the{" "}
-          <span className="font-semibold text-accent-primary">{tierName}</span> plan.
+          <span className="font-semibold text-text-primary">
+            {t("voices.limitDialog.message")
+              .replace("{current}", currentCount.toString())
+              .replace("{limit}", limit.toString())
+              .replace("{tier}", tierName)}
+          </span>
         </p>
 
         {/* Upgrade Benefits (if applicable) */}
@@ -65,12 +86,14 @@ export function VoiceLimitDialog({
                 <Crown className="h-5 w-5 text-accent-cyan flex-shrink-0 mt-0.5" />
                 <div>
                   <h4 className="text-sm font-semibold text-text-primary mb-1">
-                    {tier === "free" ? "Pro Plan" : "Premium Plan"}
+                    {tier === "free"
+                      ? t("voices.limitDialog.proUpgradeTitle")
+                      : t("voices.limitDialog.premiumUpgradeTitle")}
                   </h4>
                   <p className="text-xs text-text-secondary">
                     {tier === "free"
-                      ? "Create up to 5 custom voices"
-                      : "Create up to 10 custom voices"}
+                      ? t("voices.limitDialog.proUpgradeDescription")
+                      : t("voices.limitDialog.premiumUpgradeDescription")}
                   </p>
                 </div>
               </div>
@@ -81,7 +104,7 @@ export function VoiceLimitDialog({
         {/* Actions */}
         <div className="flex gap-3">
           <Button variant="secondary" size="md" onClick={onClose} className="flex-1">
-            Close
+            {t("voices.limitDialog.closeButton")}
           </Button>
           {upgradeRequired && onUpgrade && (
             <Button
@@ -91,7 +114,7 @@ export function VoiceLimitDialog({
               className="flex-1 shadow-lg shadow-accent-primary/20"
             >
               <Sparkles className="h-4 w-4 mr-2" />
-              Upgrade Now
+              {t("voices.limitDialog.upgradeButton")}
             </Button>
           )}
         </div>
@@ -99,7 +122,7 @@ export function VoiceLimitDialog({
         {/* Tip for Premium users */}
         {isAtMax && (
           <p className="mt-4 text-xs text-center text-text-muted">
-            💡 Tip: You can delete unused voices to free up space for new recordings.
+            💡 {t("voices.limitDialog.premiumTip")}
           </p>
         )}
       </Card>

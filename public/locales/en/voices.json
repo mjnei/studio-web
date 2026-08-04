@@ -138,6 +138,21 @@
     "errors": {
       "loadingVoices": "Loading your voices...",
       "loadingCommunityVoices": "Loading community voices..."
+    },
+    "limitDialog": {
+      "limitReachedTitle": "Voice Limit Reached",
+      "upgradeTitle": "Upgrade to Add More Voices",
+      "message": "You've created {current} of {limit} voices available on the {tier} plan.",
+      "closeButton": "Close",
+      "upgradeButton": "Upgrade Now",
+      "freePlanTitle": "Free",
+      "proPlanTitle": "Pro",
+      "premiumPlanTitle": "Premium",
+      "proUpgradeTitle": "Pro Plan",
+      "proUpgradeDescription": "Create up to 5 custom voices",
+      "premiumUpgradeTitle": "Premium Plan",
+      "premiumUpgradeDescription": "Create up to 10 custom voices",
+      "premiumTip": "Tip: You can delete unused voices to free up space for new recordings."
     }
   }
 }

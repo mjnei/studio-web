@@ -138,6 +138,21 @@
     "errors": {
       "loadingVoices": "正在加载您的语音...",
       "loadingCommunityVoices": "正在加载社区语音..."
+    },
+    "limitDialog": {
+      "limitReachedTitle": "已达到语音限制",
+      "upgradeTitle": "升级以添加更多语音",
+      "message": "您已创建 {current} 个语音，{tier} 计划最多允许 {limit} 个。",
+      "closeButton": "关闭",
+      "upgradeButton": "立即升级",
+      "freePlanTitle": "免费",
+      "proPlanTitle": "专业版",
+      "premiumPlanTitle": "高级版",
+      "proUpgradeTitle": "专业版计划",
+      "proUpgradeDescription": "最多创建 5 个自定义语音",
+      "premiumUpgradeTitle": "高级版计划",
+      "premiumUpgradeDescription": "最多创建 10 个自定义语音",
+      "premiumTip": "提示：您可以删除未使用的语音以腾出空间来录制新语音。"
     }
   }
 }

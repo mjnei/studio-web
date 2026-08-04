@@ -156,10 +156,7 @@ export default function ProfilePage() {
 
   return (
     <div className="max-w-7xl mx-auto">
-      <PageHeader
-        title={t("profile.title")}
-        description={t("profile.description")}
-      />
+      <PageHeader title={t("profile.title")} description={t("profile.description")} />
 
       {/* Upgrade Banner for Free Tier Users */}
       {isFreeUser && (
@@ -381,7 +378,9 @@ export default function ProfilePage() {
               <div className="rounded-lg border border-border-default bg-surface-raised p-4">
                 <div className="flex items-center justify-between mb-3">
                   <div>
-                    <p className="text-sm text-text-muted">{t("profile.membershipBilling.currentPlan")}</p>
+                    <p className="text-sm text-text-muted">
+                      {t("profile.membershipBilling.currentPlan")}
+                    </p>
                     <p className="text-xl font-bold capitalize mt-1">{membershipTier}</p>
                   </div>
                   {user.subscription_status && (
@@ -427,7 +426,9 @@ export default function ProfilePage() {
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link href="/pricing" className="w-full sm:w-auto sm:flex-1">
                   <Button variant="primary" className="w-full sm:w-auto">
-                    {isFreeUser ? t("profile.membershipBilling.upgradePlan") : t("profile.membershipBilling.viewAllPlans")}
+                    {isFreeUser
+                      ? t("profile.membershipBilling.upgradePlan")
+                      : t("profile.membershipBilling.viewAllPlans")}
                   </Button>
                 </Link>
                 <Link href="/billing" className="w-full sm:w-auto sm:flex-1">
@@ -514,7 +515,9 @@ export default function ProfilePage() {
                     onClick={handleChangePassword}
                     className="w-full sm:w-auto"
                   >
-                    {user.has_password ? t("profile.passwordSecurity.updatePassword") : t("profile.passwordSecurity.setPassword")}
+                    {user.has_password
+                      ? t("profile.passwordSecurity.updatePassword")
+                      : t("profile.passwordSecurity.setPassword")}
                   </Button>
                 </div>
               )}
@@ -543,14 +546,20 @@ export default function ProfilePage() {
                     <Mail className="w-4 h-4 text-gray-700" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-text-primary">{t("profile.connectedAccounts.google")}</p>
+                    <p className="text-sm font-medium text-text-primary">
+                      {t("profile.connectedAccounts.google")}
+                    </p>
                     {user.provider === "google" && (
-                      <p className="text-xs text-status-completed">{t("profile.connectedAccounts.connected")}</p>
+                      <p className="text-xs text-status-completed">
+                        {t("profile.connectedAccounts.connected")}
+                      </p>
                     )}
                   </div>
                 </div>
                 <Badge variant={user.provider === "google" ? "success" : "default"}>
-                  {user.provider === "google" ? t("profile.connectedAccounts.primaryAccount") : t("profile.connectedAccounts.notConnected")}
+                  {user.provider === "google"
+                    ? t("profile.connectedAccounts.primaryAccount")
+                    : t("profile.connectedAccounts.notConnected")}
                 </Badge>
               </div>
             </div>
@@ -574,8 +583,12 @@ export default function ProfilePage() {
             <div className="space-y-4">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <p className="text-sm font-medium text-text-primary">{t("profile.onboarding.signOut")}</p>
-                  <p className="text-xs text-text-muted">{t("profile.onboarding.signOutDescription")}</p>
+                  <p className="text-sm font-medium text-text-primary">
+                    {t("profile.onboarding.signOut")}
+                  </p>
+                  <p className="text-xs text-text-muted">
+                    {t("profile.onboarding.signOutDescription")}
+                  </p>
                 </div>
                 <Button
                   variant="secondary"
@@ -589,13 +602,17 @@ export default function ProfilePage() {
               <div className="border-t border-border-default pt-4">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <p className="text-sm font-medium text-text-primary">{t("profile.onboarding.resetOnboarding")}</p>
+                    <p className="text-sm font-medium text-text-primary">
+                      {t("profile.onboarding.resetOnboarding")}
+                    </p>
                     <p className="text-xs text-text-muted mt-1">
                       {t("profile.onboarding.resetOnboardingDescription")}{" "}
                       <span
                         className={user.has_password ? "text-status-completed" : "text-text-muted"}
                       >
-                        {user.has_password ? t("profile.onboarding.passwordAlreadySet") : t("profile.onboarding.passwordNotSet")}
+                        {user.has_password
+                          ? t("profile.onboarding.passwordAlreadySet")
+                          : t("profile.onboarding.passwordNotSet")}
                       </span>
                     </p>
                   </div>
@@ -606,7 +623,9 @@ export default function ProfilePage() {
                     leftIcon={<RefreshCw className="w-4 h-4" />}
                     className="w-full sm:w-auto"
                   >
-                    {resettingOnboarding ? t("profile.onboarding.resetting") : t("profile.onboarding.reset")}
+                    {resettingOnboarding
+                      ? t("profile.onboarding.resetting")
+                      : t("profile.onboarding.reset")}
                   </Button>
                 </div>
               </div>
@@ -622,7 +641,9 @@ export default function ProfilePage() {
                 <AlertTriangle className="w-5 h-5 text-white" />
               </div>
               <div>
-                <CardTitle className="text-status-failed">{t("profile.dangerZone.title")}</CardTitle>
+                <CardTitle className="text-status-failed">
+                  {t("profile.dangerZone.title")}
+                </CardTitle>
                 <CardDescription>{t("profile.dangerZone.description")}</CardDescription>
               </div>
             </div>
