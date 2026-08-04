@@ -25,6 +25,7 @@ const translationFiles = [
   "voices",
   "settings",
   "shell",
+  "profile",
 ] as const;
 
 const translationsCache: Record<Locale, Translations> = {} as Record<Locale, Translations>;

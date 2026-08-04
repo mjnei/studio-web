@@ -20,13 +20,8 @@ import {
   CreditCard,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
-import {
-  updateUser,
-  changePassword,
-  setPassword,
-  resetOnboarding,
-  type UserResponse,
-} from "@/lib/api-client";
+import { useI18n } from "@/i18n";
+import { updateUser, changePassword, setPassword, resetOnboarding } from "@/lib/api-client";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,6 +29,7 @@ import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/ui/PageHeader";
 
 export default function ProfilePage() {
+  const { t } = useI18n();
   const router = useRouter();
   const { user, refreshUser, logout, deleteUser } = useAuth();
   const [editing, setEditing] = useState(false);
@@ -55,9 +51,11 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (user) {
+      /* eslint-disable react-hooks/set-state-in-effect */
       setName(user.name);
       setGivenName(user.given_name || "");
       setFamilyName(user.family_name || "");
+      /* eslint-enable react-hooks/set-state-in-effect */
     }
   }, [user]);
 
@@ -70,7 +68,9 @@ export default function ProfilePage() {
       setEditing(false);
       setProfileSuccess(true);
     } catch (err: unknown) {
-      setProfileError(err instanceof Error ? err.message : "Failed to update profile");
+      setProfileError(
+        err instanceof Error ? err.message : t("profile.accountOverview.profileUpdatedError")
+      );
     }
   }
 
@@ -78,15 +78,15 @@ export default function ProfilePage() {
     setPasswordError("");
     setPasswordSuccess(false);
     if (newPassword !== confirmPassword) {
-      setPasswordError("Passwords do not match");
+      setPasswordError(t("profile.passwordSecurity.passwordError.mismatch"));
       return;
     }
     if (newPassword.length < 8) {
-      setPasswordError("Password must be at least 8 characters");
+      setPasswordError(t("profile.passwordSecurity.passwordError.tooShort"));
       return;
     }
     if (newPassword.length > 128) {
-      setPasswordError("Password must be no more than 128 characters");
+      setPasswordError(t("profile.passwordSecurity.passwordError.tooLong"));
       return;
     }
     try {
@@ -102,7 +102,9 @@ export default function ProfilePage() {
       setConfirmPassword("");
       setPasswordSuccess(true);
     } catch (err: unknown) {
-      setPasswordError(err instanceof Error ? err.message : "Failed to change password");
+      setPasswordError(
+        err instanceof Error ? err.message : t("profile.passwordSecurity.passwordUpdatedError")
+      );
     }
   }
 
@@ -111,7 +113,9 @@ export default function ProfilePage() {
     try {
       await deleteUser();
     } catch (err: unknown) {
-      setProfileError(err instanceof Error ? err.message : "Failed to delete account");
+      setProfileError(
+        err instanceof Error ? err.message : t("profile.accountOverview.profileUpdatedError")
+      );
     }
   }
 
@@ -135,7 +139,9 @@ export default function ProfilePage() {
       // Now navigate to onboarding
       await router.push("/onboarding");
     } catch (err: unknown) {
-      setProfileError(err instanceof Error ? err.message : "Failed to reset onboarding");
+      setProfileError(
+        err instanceof Error ? err.message : t("profile.accountOverview.profileUpdatedError")
+      );
       setResettingOnboarding(false);
     }
   }
@@ -151,8 +157,8 @@ export default function ProfilePage() {
   return (
     <div className="max-w-7xl mx-auto">
       <PageHeader
-        title="Profile Settings"
-        description="Manage your account settings and preferences"
+        title={t("profile.title")}
+        description={t("profile.description")}
       />
 
       {/* Upgrade Banner for Free Tier Users */}
@@ -170,24 +176,24 @@ export default function ProfilePage() {
               </div>
               <div>
                 <h2 className="text-lg font-semibold text-text-primary mb-1 flex items-center gap-2">
-                  Unlock More with Pro or Premium
+                  {t("profile.upgradeBanner.title")}
                   <Sparkles className="w-4 h-4 text-accent-cyan" />
                 </h2>
                 <p className="text-sm text-text-secondary">
-                  Get more credits, priority support, and advanced features to create more videos.
+                  {t("profile.upgradeBanner.description")}
                 </p>
               </div>
             </div>
             <div className="flex gap-2 shrink-0">
               <Link href="/pricing">
                 <Button variant="primary" size="md">
-                  View Plans
+                  {t("profile.upgradeBanner.viewPlans")}
                 </Button>
               </Link>
               <Link href="/billing">
                 <Button variant="secondary" size="md">
                   <CreditCard className="w-4 h-4" />
-                  Billing
+                  {t("profile.upgradeBanner.billing")}
                 </Button>
               </Link>
             </div>
@@ -201,9 +207,9 @@ export default function ProfilePage() {
           <CardHeader className="pb-6">
             <CardTitle className="flex items-center gap-2">
               <User className="w-5 h-5 text-accent-primary" />
-              Account Overview
+              {t("profile.accountOverview.title")}
             </CardTitle>
-            <CardDescription>Your personal information and account status</CardDescription>
+            <CardDescription>{t("profile.accountOverview.description")}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
@@ -225,7 +231,7 @@ export default function ProfilePage() {
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      label="Display Name"
+                      label={t("profile.accountOverview.displayName")}
                       className="text-lg font-semibold"
                     />
                   </div>
@@ -239,8 +245,8 @@ export default function ProfilePage() {
                         <button
                           onClick={handleCopyEmail}
                           className="rounded-md p-2 min-w-[40px] min-h-[40px] flex items-center justify-center hover:bg-surface-hover transition-colors"
-                          title="Copy email address"
-                          aria-label="Copy email address"
+                          title={t("profile.accountOverview.copyEmail")}
+                          aria-label={t("profile.accountOverview.copyEmail")}
                         >
                           {copyFeedback ? (
                             <Check className="w-4 h-4 text-status-completed" />
@@ -291,7 +297,7 @@ export default function ProfilePage() {
                       }}
                       className="w-full sm:w-auto"
                     >
-                      Cancel
+                      {t("profile.accountOverview.cancel")}
                     </Button>
                     <Button
                       variant="primary"
@@ -299,7 +305,7 @@ export default function ProfilePage() {
                       onClick={handleSaveProfile}
                       className="w-full sm:w-auto"
                     >
-                      Save
+                      {t("profile.accountOverview.save")}
                     </Button>
                   </>
                 ) : (
@@ -310,7 +316,7 @@ export default function ProfilePage() {
                     className="w-full sm:w-auto"
                   >
                     <Settings className="w-4 h-4" />
-                    Edit
+                    {t("profile.accountOverview.edit")}
                   </Button>
                 )}
               </div>
@@ -325,7 +331,7 @@ export default function ProfilePage() {
             {profileSuccess && (
               <div className="mt-4 rounded-lg border border-status-completed/30 bg-status-completed/10 px-4 py-3 text-sm text-status-completed flex items-start gap-2">
                 <Check className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                <span>Profile updated successfully.</span>
+                <span>{t("profile.accountOverview.profileUpdatedSuccess")}</span>
               </div>
             )}
           </CardContent>
@@ -334,8 +340,8 @@ export default function ProfilePage() {
         {/* Personal Information */}
         <Card variant="elevated" padding="lg">
           <CardHeader>
-            <CardTitle>Personal Information</CardTitle>
-            <CardDescription>Manage your personal details</CardDescription>
+            <CardTitle>{t("profile.personalInformation.title")}</CardTitle>
+            <CardDescription>{t("profile.personalInformation.description")}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -344,14 +350,14 @@ export default function ProfilePage() {
                 value={givenName}
                 onChange={(e) => setGivenName(e.target.value)}
                 disabled={!editing}
-                label="First name"
+                label={t("profile.personalInformation.firstName")}
               />
               <Input
                 type="text"
                 value={familyName}
                 onChange={(e) => setFamilyName(e.target.value)}
                 disabled={!editing}
-                label="Last name"
+                label={t("profile.personalInformation.lastName")}
               />
             </div>
           </CardContent>
@@ -365,8 +371,8 @@ export default function ProfilePage() {
                 <Crown className="w-5 h-5 text-white" />
               </div>
               <div>
-                <CardTitle>Membership & Billing</CardTitle>
-                <CardDescription>Manage your subscription and billing</CardDescription>
+                <CardTitle>{t("profile.membershipBilling.title")}</CardTitle>
+                <CardDescription>{t("profile.membershipBilling.description")}</CardDescription>
               </div>
             </div>
           </CardHeader>
@@ -375,7 +381,7 @@ export default function ProfilePage() {
               <div className="rounded-lg border border-border-default bg-surface-raised p-4">
                 <div className="flex items-center justify-between mb-3">
                   <div>
-                    <p className="text-sm text-text-muted">Current Plan</p>
+                    <p className="text-sm text-text-muted">{t("profile.membershipBilling.currentPlan")}</p>
                     <p className="text-xl font-bold capitalize mt-1">{membershipTier}</p>
                   </div>
                   {user.subscription_status && (
@@ -389,14 +395,15 @@ export default function ProfilePage() {
                       }
                       size="md"
                     >
-                      {user.subscription_status.charAt(0).toUpperCase() +
-                        user.subscription_status.slice(1)}
+                      {t(
+                        `profile.membershipBilling.subscriptionStatus.${user.subscription_status}`
+                      )}
                     </Badge>
                   )}
                 </div>
                 {user.subscription_start_date && (
                   <p className="text-xs text-text-muted">
-                    Active since:{" "}
+                    {t("profile.membershipBilling.activeSince")}{" "}
                     {new Date(user.subscription_start_date).toLocaleDateString("en-US", {
                       year: "numeric",
                       month: "long",
@@ -406,7 +413,9 @@ export default function ProfilePage() {
                 )}
                 {user.subscription_end_date && (
                   <p className="text-xs text-text-muted mt-1">
-                    {user.subscription_status === "canceled" ? "Expires" : "Renews"} on:{" "}
+                    {user.subscription_status === "canceled"
+                      ? t("profile.membershipBilling.expiresOn")
+                      : t("profile.membershipBilling.renewsOn")}{" "}
                     {new Date(user.subscription_end_date).toLocaleDateString("en-US", {
                       year: "numeric",
                       month: "long",
@@ -418,7 +427,7 @@ export default function ProfilePage() {
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link href="/pricing" className="w-full sm:w-auto sm:flex-1">
                   <Button variant="primary" className="w-full sm:w-auto">
-                    {isFreeUser ? "Upgrade Plan" : "View All Plans"}
+                    {isFreeUser ? t("profile.membershipBilling.upgradePlan") : t("profile.membershipBilling.viewAllPlans")}
                   </Button>
                 </Link>
                 <Link href="/billing" className="w-full sm:w-auto sm:flex-1">
@@ -427,7 +436,7 @@ export default function ProfilePage() {
                     leftIcon={<CreditCard className="w-4 h-4" />}
                     className="w-full sm:w-auto"
                   >
-                    Manage Billing
+                    {t("profile.membershipBilling.manageBilling")}
                   </Button>
                 </Link>
               </div>
@@ -443,8 +452,8 @@ export default function ProfilePage() {
                 <Shield className="w-5 h-5 text-white" />
               </div>
               <div>
-                <CardTitle>Password & Security</CardTitle>
-                <CardDescription>Manage your password and security settings</CardDescription>
+                <CardTitle>{t("profile.passwordSecurity.title")}</CardTitle>
+                <CardDescription>{t("profile.passwordSecurity.description")}</CardDescription>
               </div>
             </div>
           </CardHeader>
@@ -459,7 +468,7 @@ export default function ProfilePage() {
               {passwordSuccess && (
                 <div className="rounded-lg border border-status-completed/30 bg-status-completed/10 px-4 py-3 text-sm text-status-completed flex items-start gap-2">
                   <Check className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                  <span>Password updated successfully.</span>
+                  <span>{t("profile.passwordSecurity.passwordUpdatedSuccess")}</span>
                 </div>
               )}
               <div>
@@ -472,10 +481,10 @@ export default function ProfilePage() {
                   className="text-sm text-accent-cyan hover:underline font-medium"
                 >
                   {showChangePassword
-                    ? "Cancel"
+                    ? t("profile.passwordSecurity.changePassword")
                     : user.has_password
-                      ? "Change password"
-                      : "Set password"}
+                      ? t("profile.passwordSecurity.changePassword")
+                      : t("profile.passwordSecurity.setPassword")}
                 </button>
               </div>
               {showChangePassword && (
@@ -485,27 +494,27 @@ export default function ProfilePage() {
                       type="password"
                       value={currentPassword}
                       onChange={(e) => setCurrentPassword(e.target.value)}
-                      label="Current password"
+                      label={t("profile.passwordSecurity.currentPassword")}
                     />
                   )}
                   <Input
                     type="password"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    label="New password"
+                    label={t("profile.passwordSecurity.newPassword")}
                   />
                   <Input
                     type="password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    label="Confirm new password"
+                    label={t("profile.passwordSecurity.confirmNewPassword")}
                   />
                   <Button
                     variant="primary"
                     onClick={handleChangePassword}
                     className="w-full sm:w-auto"
                   >
-                    {user.has_password ? "Update password" : "Set password"}
+                    {user.has_password ? t("profile.passwordSecurity.updatePassword") : t("profile.passwordSecurity.setPassword")}
                   </Button>
                 </div>
               )}
@@ -521,8 +530,8 @@ export default function ProfilePage() {
                 <Link2 className="w-5 h-5 text-white" />
               </div>
               <div>
-                <CardTitle>Connected Accounts</CardTitle>
-                <CardDescription>Manage your linked accounts</CardDescription>
+                <CardTitle>{t("profile.connectedAccounts.title")}</CardTitle>
+                <CardDescription>{t("profile.connectedAccounts.description")}</CardDescription>
               </div>
             </div>
           </CardHeader>
@@ -534,14 +543,14 @@ export default function ProfilePage() {
                     <Mail className="w-4 h-4 text-gray-700" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-text-primary">Google</p>
+                    <p className="text-sm font-medium text-text-primary">{t("profile.connectedAccounts.google")}</p>
                     {user.provider === "google" && (
-                      <p className="text-xs text-status-completed">Connected</p>
+                      <p className="text-xs text-status-completed">{t("profile.connectedAccounts.connected")}</p>
                     )}
                   </div>
                 </div>
                 <Badge variant={user.provider === "google" ? "success" : "default"}>
-                  {user.provider === "google" ? "Primary account" : "Not connected"}
+                  {user.provider === "google" ? t("profile.connectedAccounts.primaryAccount") : t("profile.connectedAccounts.notConnected")}
                 </Badge>
               </div>
             </div>
@@ -556,8 +565,8 @@ export default function ProfilePage() {
                 <RefreshCw className="w-5 h-5 text-white" />
               </div>
               <div>
-                <CardTitle>Onboarding</CardTitle>
-                <CardDescription>Manage your session and onboarding status</CardDescription>
+                <CardTitle>{t("profile.onboarding.title")}</CardTitle>
+                <CardDescription>{t("profile.onboarding.description")}</CardDescription>
               </div>
             </div>
           </CardHeader>
@@ -565,8 +574,8 @@ export default function ProfilePage() {
             <div className="space-y-4">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <p className="text-sm font-medium text-text-primary">Sign out</p>
-                  <p className="text-xs text-text-muted">End your current session on this device</p>
+                  <p className="text-sm font-medium text-text-primary">{t("profile.onboarding.signOut")}</p>
+                  <p className="text-xs text-text-muted">{t("profile.onboarding.signOutDescription")}</p>
                 </div>
                 <Button
                   variant="secondary"
@@ -574,19 +583,19 @@ export default function ProfilePage() {
                   leftIcon={<LogOut className="w-4 h-4" />}
                   className="w-full sm:w-auto"
                 >
-                  Sign out
+                  {t("profile.onboarding.signOut")}
                 </Button>
               </div>
               <div className="border-t border-border-default pt-4">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <p className="text-sm font-medium text-text-primary">Reset onboarding</p>
+                    <p className="text-sm font-medium text-text-primary">{t("profile.onboarding.resetOnboarding")}</p>
                     <p className="text-xs text-text-muted mt-1">
-                      Password:{" "}
+                      {t("profile.onboarding.resetOnboardingDescription")}{" "}
                       <span
                         className={user.has_password ? "text-status-completed" : "text-text-muted"}
                       >
-                        {user.has_password ? "Already Set" : "Not set"}
+                        {user.has_password ? t("profile.onboarding.passwordAlreadySet") : t("profile.onboarding.passwordNotSet")}
                       </span>
                     </p>
                   </div>
@@ -597,7 +606,7 @@ export default function ProfilePage() {
                     leftIcon={<RefreshCw className="w-4 h-4" />}
                     className="w-full sm:w-auto"
                   >
-                    {resettingOnboarding ? "Resetting..." : "Reset"}
+                    {resettingOnboarding ? t("profile.onboarding.resetting") : t("profile.onboarding.reset")}
                   </Button>
                 </div>
               </div>
@@ -613,27 +622,26 @@ export default function ProfilePage() {
                 <AlertTriangle className="w-5 h-5 text-white" />
               </div>
               <div>
-                <CardTitle className="text-status-failed">Danger Zone</CardTitle>
-                <CardDescription>Permanent account deletion</CardDescription>
+                <CardTitle className="text-status-failed">{t("profile.dangerZone.title")}</CardTitle>
+                <CardDescription>{t("profile.dangerZone.description")}</CardDescription>
               </div>
             </div>
           </CardHeader>
           <CardContent>
             <p className="mb-4 text-sm text-text-muted">
-              Permanently delete your account and all associated data — projects, voices, renders,
-              and referral history. This cannot be undone.
+              {t("profile.dangerZone.deleteAccountWarning")}
             </p>
             {showDeleteConfirm ? (
               <div className="space-y-4 rounded-lg border border-status-failed/30 bg-status-failed/5 p-4">
                 <p className="text-sm text-status-failed flex items-center gap-2">
                   <AlertTriangle className="w-4 h-4" />
-                  Type <strong>delete my account</strong> to confirm:
+                  {t("profile.dangerZone.confirmDelete")}
                 </p>
                 <Input
                   type="text"
                   value={deleteText}
                   onChange={(e) => setDeleteText(e.target.value)}
-                  placeholder="delete my account"
+                  placeholder={t("profile.dangerZone.deleteAccountPlaceholder")}
                   className="max-w-sm"
                 />
                 <div className="flex flex-col sm:flex-row gap-2">
@@ -645,7 +653,7 @@ export default function ProfilePage() {
                     }}
                     className="w-full sm:w-auto"
                   >
-                    Cancel
+                    {t("profile.dangerZone.deleteAccountConfirmCancel")}
                   </Button>
                   <Button
                     variant="danger"
@@ -654,7 +662,7 @@ export default function ProfilePage() {
                     leftIcon={<Trash2 className="w-4 h-4" />}
                     className="w-full sm:w-auto"
                   >
-                    Permanently delete account
+                    {t("profile.dangerZone.permanentlyDeleteAccount")}
                   </Button>
                 </div>
               </div>
@@ -665,7 +673,7 @@ export default function ProfilePage() {
                 leftIcon={<Trash2 className="w-4 h-4" />}
                 className="w-full sm:w-auto"
               >
-                Delete account
+                {t("profile.dangerZone.deleteAccount")}
               </Button>
             )}
           </CardContent>
