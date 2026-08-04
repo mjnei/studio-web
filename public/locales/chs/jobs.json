@@ -1,24 +1,123 @@
 {
   "jobs": {
-    "title": "任务",
-    "jobQueue": "任务队列",
-    "allJobs": "全部任务",
-    "activeJobs": "进行中",
-    "completedJobs": "已完成",
-    "failedJobs": "失败任务",
-    "status": "状态",
-    "pending": "等待中",
-    "running": "运行中",
-    "completed": "已完成",
-    "failed": "失败",
-    "cancelled": "已取消",
-    "progress": "进度",
-    "startTime": "开始时间",
-    "endTime": "结束时间",
-    "duration": "持续时间",
-    "retry": "重试",
-    "cancelJob": "取消任务",
-    "viewDetails": "查看详情",
-    "noJobs": "未找到任务"
+    "dashboard": {
+      "title": "视频生成任务仪表板",
+      "description": "监控、预览、下载和管理您在所有项目中的 AI 视频生成任务",
+      "newProject": "新建项目",
+      "refresh": "刷新"
+    },
+    "status": {
+      "active": "活跃任务",
+      "completed": "已完成",
+      "failed": "失败",
+      "total": "总任务数",
+      "live": "正在进行",
+      "activeDescription": "正在渲染中",
+      "noActive": "没有活跃任务",
+      "successRate": "% 成功率",
+      "noFailed": "没有失败的尝试",
+      "retryAll": "全部重试"
+    },
+    "sections": {
+      "active": "进行中的视频生成",
+      "failed": "失败的生成任务",
+      "completed": "已完成的视频"
+    },
+    "empty": {
+      "title": "还没有视频任务",
+      "message": "在任何项目中创建第一个视频，以在此处跟踪渲染进度、分析和下载。",
+      "cta": "浏览项目",
+      "noMatches": "未找到匹配的任务",
+      "noMatchesMessage": "尝试清除或调整您的搜索条件和过滤选择。",
+      "clearFilters": "清除所有过滤器"
+    },
+    "filters": {
+      "allStatuses": "所有状态",
+      "active": "活跃",
+      "completed": "已完成",
+      "failed": "失败",
+      "searchPlaceholder": "搜索项目名称、电影标题或语音...",
+      "sortByDate": "排序：创建日期",
+      "sortByStatus": "排序：状态",
+      "sortByProgress": "排序：进度",
+      "sortByCost": "排序：信用成本",
+      "allProjects": "所有项目",
+      "allVoices": "所有语音",
+      "clearFilters": "清除过滤器",
+      "sortAscending": "升序排列",
+      "sortDescending": "降序排列",
+      "smallGrid": "小网格",
+      "mediumGrid": "中等网格",
+      "listView": "列表视图"
+    },
+    "bulk": {
+      "retryFailed": "重试失败的任务",
+      "deleteSelected": "删除选中的任务",
+      "clearSelection": "清除选择"
+    },
+    "analytics": {
+      "title": "分析和洞察",
+      "monthlyOverview": "月度概览",
+      "totalJobsProcessed": "个任务已处理",
+      "showInsights": "显示洞察",
+      "hideInsights": "隐藏洞察",
+      "successRate": "成功率",
+      "creditsConsumed": "消耗的信用",
+      "topVoice": "热门语音",
+      "mostFrequently": "最常使用的",
+      "avgProcessingTime": "平均处理时间",
+      "perVideoRendering": "每个视频渲染",
+      "acrossAllAttempts": "跨所有生成尝试"
+    },
+    "activeJob": {
+      "queued": "排队中",
+      "processing": "处理中",
+      "remaining": "剩余",
+      "voice": "语音",
+      "cost": "成本",
+      "credits": "信用",
+      "credit": "信用",
+      "attempt": "尝试",
+      "started": "开始于",
+      "viewProject": "查看项目",
+      "notificationEnabled": "已启用通知",
+      "notifyWhenComplete": "完成时通知",
+      "cancelJob": "取消任务",
+      "initializing": "初始化视频生成...",
+      "processingAudio": "处理音频和同步...",
+      "renderingFrames": "渲染视频帧...",
+      "applyingEffects": "应用效果和过渡...",
+      "finalizing": "最终化和编码...",
+      "complete": "完成！视频已准备好。",
+      "mins": "分钟"
+    },
+    "completedJob": {
+      "download": "下载",
+      "share": "分享",
+      "delete": "删除",
+      "preview": "预览",
+      "viewProject": "查看项目",
+      "completedAt": "完成于",
+      "duration": "时长",
+      "processedOn": "处理于"
+    },
+    "failedJob": {
+      "retry": "重试",
+      "delete": "删除",
+      "viewProject": "查看项目",
+      "errorDetails": "错误详情",
+      "failureReason": "原因",
+      "failedAt": "失败于",
+      "retryAttempt": "重试尝试"
+    },
+    "modal": {
+      "videoPreview": "视频预览",
+      "close": "关闭",
+      "download": "下载视频",
+      "share": "分享视频"
+    },
+    "loading": "正在加载视频生成仪表板...",
+    "credit": "信用",
+    "credits": "信用"
   }
 }

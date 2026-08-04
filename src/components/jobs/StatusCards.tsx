@@ -5,6 +5,7 @@ import { Play, CheckCircle2, AlertTriangle, Video, RotateCcw } from "lucide-reac
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/i18n";
 import { JobsSummary, JobStatusFilter } from "@/types/jobs";
 
 interface StatusCardsProps {
@@ -20,6 +21,8 @@ export const StatusCards: React.FC<StatusCardsProps> = ({
   onSelectFilter,
   onRetryAllFailed,
 }) => {
+  const { t } = useI18n();
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
       {/* Active Jobs */}
@@ -34,20 +37,24 @@ export const StatusCards: React.FC<StatusCardsProps> = ({
         <div className="flex items-start justify-between">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-text-secondary">Active Jobs</span>
+              <span className="text-sm font-medium text-text-secondary">
+                {t("jobs.status.active")}
+              </span>
               {summary.activeCount > 0 && (
                 <Badge
                   variant="info"
                   className="animate-pulse flex items-center gap-1 text-[10px] py-0 px-1.5"
                 >
                   <span className="h-1.5 w-1.5 rounded-full bg-blue-400 animate-ping" />
-                  Live
+                  {t("jobs.status.live")}
                 </Badge>
               )}
             </div>
             <p className="text-3xl font-bold text-text-primary">{summary.activeCount}</p>
             <p className="text-xs text-text-muted">
-              {summary.activeCount > 0 ? "Currently rendering" : "No active jobs"}
+              {summary.activeCount > 0
+                ? t("jobs.status.activeDescription")
+                : t("jobs.status.noActive")}
             </p>
           </div>
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 text-white shadow-md">
@@ -69,10 +76,12 @@ export const StatusCards: React.FC<StatusCardsProps> = ({
       >
         <div className="flex items-start justify-between">
           <div className="space-y-1">
-            <span className="text-sm font-medium text-text-secondary">Completed</span>
+            <span className="text-sm font-medium text-text-secondary">
+              {t("jobs.status.completed")}
+            </span>
             <p className="text-3xl font-bold text-text-primary">{summary.completedCount}</p>
             <p className="text-xs text-status-success font-medium">
-              {summary.successRate}% success rate
+              {summary.successRate}% {t("jobs.status.successRate")}
             </p>
           </div>
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-md">
@@ -92,7 +101,9 @@ export const StatusCards: React.FC<StatusCardsProps> = ({
       >
         <div className="flex items-start justify-between">
           <div className="space-y-1">
-            <span className="text-sm font-medium text-text-secondary">Failed</span>
+            <span className="text-sm font-medium text-text-secondary">
+              {t("jobs.status.failed")}
+            </span>
             <p className="text-3xl font-bold text-text-primary">{summary.failedCount}</p>
             {summary.failedCount > 0 && onRetryAllFailed ? (
               <Button
@@ -105,10 +116,10 @@ export const StatusCards: React.FC<StatusCardsProps> = ({
                 className="h-6 px-1.5 text-xs text-status-failed hover:bg-status-failed/10 hover:text-status-failed flex items-center gap-1 -ml-1 mt-0.5"
               >
                 <RotateCcw className="h-3 w-3" />
-                Retry All
+                {t("jobs.status.retryAll")}
               </Button>
             ) : (
-              <p className="text-xs text-text-muted">No failed attempts</p>
+              <p className="text-xs text-text-muted">{t("jobs.status.noFailed")}</p>
             )}
           </div>
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-red-500 text-white shadow-md">
@@ -128,10 +139,13 @@ export const StatusCards: React.FC<StatusCardsProps> = ({
       >
         <div className="flex items-start justify-between">
           <div className="space-y-1">
-            <span className="text-sm font-medium text-text-secondary">Total Jobs</span>
+            <span className="text-sm font-medium text-text-secondary">
+              {t("jobs.status.total")}
+            </span>
             <p className="text-3xl font-bold text-text-primary">{summary.totalCount}</p>
             <p className="text-xs text-text-muted">
-              {summary.creditsUsed} credit{summary.creditsUsed !== 1 ? "s" : ""} used
+              {summary.creditsUsed}{" "}
+              {summary.creditsUsed !== 1 ? t("jobs.credits") : t("jobs.credit")} used
             </p>
           </div>
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 text-white shadow-md">

@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tooltip } from "@/components/ui/tooltip";
+import { useI18n } from "@/i18n";
 import { VideoJob } from "@/types/jobs";
 
 interface ActiveJobCardProps {
@@ -17,16 +18,17 @@ interface ActiveJobCardProps {
 
 export const ActiveJobCard: React.FC<ActiveJobCardProps> = ({ job, onDelete, isDeleting }) => {
   const router = useRouter();
+  const { t } = useI18n();
   const [notifyMe, setNotifyMe] = useState(true);
 
   // Contextual stage message calculation
   const getContextMessage = (progress: number) => {
-    if (progress <= 20) return "Initializing video generation...";
-    if (progress <= 40) return "Processing audio and syncing...";
-    if (progress <= 60) return "Rendering video frames...";
-    if (progress <= 80) return "Applying effects and transitions...";
-    if (progress < 100) return "Finalizing and encoding...";
-    return "Complete! Video ready.";
+    if (progress <= 20) return t("jobs.activeJob.initializing");
+    if (progress <= 40) return t("jobs.activeJob.processingAudio");
+    if (progress <= 60) return t("jobs.activeJob.renderingFrames");
+    if (progress <= 80) return t("jobs.activeJob.applyingEffects");
+    if (progress < 100) return t("jobs.activeJob.finalizing");
+    return t("jobs.activeJob.complete");
   };
 
   // Time remaining estimate calculation (~10 min baseline total duration)
@@ -34,7 +36,7 @@ export const ActiveJobCard: React.FC<ActiveJobCardProps> = ({ job, onDelete, isD
     const totalEstMinutes = 10;
     const remainingFraction = Math.max(0, (100 - progress) / 100);
     const est = Math.ceil(totalEstMinutes * remainingFraction);
-    return est <= 1 ? "1 min" : `${est} mins`;
+    return est <= 1 ? "1 min" : `${est} ${t("jobs.activeJob.mins")}`;
   };
 
   return (
@@ -72,7 +74,9 @@ export const ActiveJobCard: React.FC<ActiveJobCardProps> = ({ job, onDelete, isD
                 </h3>
                 <Badge variant="info" className="animate-pulse flex items-center gap-1">
                   <span className="h-1.5 w-1.5 rounded-full bg-blue-400 animate-ping" />
-                  {job.status === "queued" ? "Queued" : "Processing"}
+                  {job.status === "queued"
+                    ? t("jobs.activeJob.queued")
+                    : t("jobs.activeJob.processing")}
                 </Badge>
               </div>
               {job.movieTitle && (
@@ -84,7 +88,7 @@ export const ActiveJobCard: React.FC<ActiveJobCardProps> = ({ job, onDelete, isD
               <span className="font-semibold text-blue-400">
                 ~{getEstimatedMinutesLeft(job.progress)}
               </span>
-              <span className="text-text-muted"> remaining</span>
+              <span className="text-text-muted"> {t("jobs.activeJob.remaining")}</span>
             </div>
           </div>
 
@@ -107,20 +111,23 @@ export const ActiveJobCard: React.FC<ActiveJobCardProps> = ({ job, onDelete, isD
           {/* Metadata */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-text-muted pt-1">
             <div>
-              <span className="font-medium text-text-secondary">Voice:</span>{" "}
+              <span className="font-medium text-text-secondary">{t("jobs.activeJob.voice")}:</span>{" "}
               {job.voice_name || "N/A"}
             </div>
             <div>
-              <span className="font-medium text-text-secondary">Cost:</span> {job.credit_cost}{" "}
-              credit
-              {job.credit_cost !== 1 ? "s" : ""}
+              <span className="font-medium text-text-secondary">{t("jobs.activeJob.cost")}:</span>{" "}
+              {job.credit_cost} {job.credit_cost !== 1 ? t("jobs.credits") : t("jobs.credit")}
             </div>
             <div>
-              <span className="font-medium text-text-secondary">Attempt:</span> #
-              {job.generation_attempt}
+              <span className="font-medium text-text-secondary">
+                {t("jobs.activeJob.attempt")}:
+              </span>{" "}
+              #{job.generation_attempt}
             </div>
             <div>
-              <span className="font-medium text-text-secondary">Started:</span>{" "}
+              <span className="font-medium text-text-secondary">
+                {t("jobs.activeJob.started")}:
+              </span>{" "}
               {new Date(job.created_at).toLocaleTimeString([], {
                 hour: "2-digit",
                 minute: "2-digit",
@@ -136,11 +143,15 @@ export const ActiveJobCard: React.FC<ActiveJobCardProps> = ({ job, onDelete, isD
               leftIcon={<Eye className="h-3.5 w-3.5" />}
               onClick={() => router.push(`/project/${job.projectId}/export`)}
             >
-              View Project
+              {t("jobs.activeJob.viewProject")}
             </Button>
 
             <Tooltip
-              content={notifyMe ? "Notification enabled" : "Notify when complete"}
+              content={
+                notifyMe
+                  ? t("jobs.activeJob.notificationEnabled")
+                  : t("jobs.activeJob.notifyWhenComplete")
+              }
               position="top"
             >
               <Button
@@ -165,7 +176,7 @@ export const ActiveJobCard: React.FC<ActiveJobCardProps> = ({ job, onDelete, isD
               disabled={isDeleting}
               className="text-text-muted hover:text-status-failed ml-auto"
             >
-              Cancel Job
+              {t("jobs.activeJob.cancelJob")}
             </Button>
           </div>
         </div>

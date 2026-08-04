@@ -137,7 +137,8 @@ export default function ProjectsPage() {
         action={
           <div className="flex items-center gap-3">
             <span className="rounded-full bg-accent-cyan/10 px-3 py-1.5 text-xs font-medium text-accent-cyan whitespace-nowrap">
-              {projects.length} {projects.length === 1 ? t("projects.badge.singular") : t("projects.badge.plural")}
+              {projects.length}{" "}
+              {projects.length === 1 ? t("projects.badge.singular") : t("projects.badge.plural")}
             </span>
             <Link href="/project/new">
               <Button variant="primary" size="md" leftIcon={<Plus className="h-4 w-4" />}>
@@ -211,9 +212,7 @@ export default function ProjectsPage() {
                 t("projects.untitled")}
             </span>
           </p>
-          <p className="text-sm text-text-secondary">
-            {t("projects.delete.restoreInfo")}
-          </p>
+          <p className="text-sm text-text-secondary">{t("projects.delete.restoreInfo")}</p>
         </div>
       </FormModal>
     </div>

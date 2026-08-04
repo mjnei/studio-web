@@ -5,6 +5,7 @@ import { Search, Grid3x3, LayoutGrid, List, ArrowUpDown, X } from "lucide-react"
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/i18n";
 import { JobFilters, JobStatusFilter, LayoutMode } from "@/types/jobs";
 
 interface Option {
@@ -31,18 +32,20 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
   voiceOptions,
   totalResultsCount,
 }) => {
+  const { t } = useI18n();
+
   const statusOptions = [
-    { value: "all", label: "All Statuses" },
-    { value: "active", label: "Active" },
-    { value: "completed", label: "Completed" },
-    { value: "failed", label: "Failed" },
+    { value: "all", label: t("jobs.filters.allStatuses") },
+    { value: "active", label: t("jobs.filters.active") },
+    { value: "completed", label: t("jobs.filters.completed") },
+    { value: "failed", label: t("jobs.filters.failed") },
   ];
 
   const sortOptions = [
-    { value: "date", label: "Sort: Created Date" },
-    { value: "status", label: "Sort: Status" },
-    { value: "progress", label: "Sort: Progress" },
-    { value: "cost", label: "Sort: Credit Cost" },
+    { value: "date", label: t("jobs.filters.sortByDate") },
+    { value: "status", label: t("jobs.filters.sortByStatus") },
+    { value: "progress", label: t("jobs.filters.sortByProgress") },
+    { value: "cost", label: t("jobs.filters.sortByCost") },
   ];
 
   const hasActiveFilters =
@@ -67,7 +70,7 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
         {/* Search */}
         <div className="flex-1 min-w-[240px]">
           <Input
-            placeholder="Search project name, movie title, or voice..."
+            placeholder={t("jobs.filters.searchPlaceholder")}
             value={filters.search}
             onChange={(e) => onChangeFilters((prev) => ({ ...prev, search: e.target.value }))}
             icon={<Search className="h-4 w-4 text-text-muted" />}
@@ -101,7 +104,10 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
                     projects: value === "all" ? [] : [value],
                   }))
                 }
-                options={[{ value: "all", label: "All Projects" }, ...projectOptions]}
+                options={[
+                  { value: "all", label: t("jobs.filters.allProjects") },
+                  ...projectOptions,
+                ]}
               />
             </div>
           )}
@@ -117,7 +123,7 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
                     voices: value === "all" ? [] : [value],
                   }))
                 }
-                options={[{ value: "all", label: "All Voices" }, ...voiceOptions]}
+                options={[{ value: "all", label: t("jobs.filters.allVoices") }, ...voiceOptions]}
               />
             </div>
           )}
@@ -146,7 +152,7 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
                 sortOrder: prev.sortOrder === "asc" ? "desc" : "asc",
               }))
             }
-            title={`Sort ${filters.sortOrder === "asc" ? "Ascending" : "Descending"}`}
+            title={`${t("jobs.filters.sortAscending")} / ${t("jobs.filters.sortDescending")}`}
             className="px-3"
           >
             <ArrowUpDown className="h-4 w-4" />
@@ -161,8 +167,8 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
                   ? "bg-accent-primary text-white"
                   : "text-text-muted hover:text-text-primary"
               }`}
-              title="Small dense grid"
-              aria-label="Small grid view"
+              title={t("jobs.filters.smallGrid")}
+              aria-label={t("jobs.filters.smallGrid")}
             >
               <Grid3x3 className="h-5 w-5" />
             </button>
@@ -173,8 +179,8 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
                   ? "bg-accent-primary text-white"
                   : "text-text-muted hover:text-text-primary"
               }`}
-              title="Medium balanced grid"
-              aria-label="Medium grid view"
+              title={t("jobs.filters.mediumGrid")}
+              aria-label={t("jobs.filters.mediumGrid")}
             >
               <LayoutGrid className="h-5 w-5" />
             </button>
@@ -185,8 +191,8 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
                   ? "bg-accent-primary text-white"
                   : "text-text-muted hover:text-text-primary"
               }`}
-              title="List view"
-              aria-label="List view"
+              title={t("jobs.filters.listView")}
+              aria-label={t("jobs.filters.listView")}
             >
               <List className="h-5 w-5" />
             </button>
@@ -205,7 +211,7 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
             onClick={handleResetFilters}
             className="flex items-center gap-1 text-accent-cyan hover:underline font-medium"
           >
-            <X className="h-3 w-3" /> Clear Filters
+            <X className="h-3 w-3" /> {t("jobs.filters.clearFilters")}
           </button>
         </div>
       )}

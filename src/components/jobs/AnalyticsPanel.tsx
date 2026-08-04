@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { BarChart3, ChevronDown, ChevronUp, Zap, Mic, Clock, ShieldCheck } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { useI18n } from "@/i18n";
 import { JobsSummary } from "@/types/jobs";
 
 interface AnalyticsPanelProps {
@@ -10,6 +11,7 @@ interface AnalyticsPanelProps {
 }
 
 export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({ summary }) => {
+  const { t } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -23,15 +25,16 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({ summary }) => {
             <BarChart3 className="h-4 w-4" />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-text-primary">Analytics & Insights</h3>
+            <h3 className="text-sm font-semibold text-text-primary">{t("jobs.analytics.title")}</h3>
             <p className="text-xs text-text-muted">
-              Monthly overview • {summary.totalCount} total jobs processed
+              {t("jobs.analytics.monthlyOverview")} • {summary.totalCount}{" "}
+              {t("jobs.analytics.totalJobsProcessed")}
             </p>
           </div>
         </div>
         <div className="flex items-center gap-2 text-text-muted">
           <span className="text-xs font-medium hidden sm:inline">
-            {isOpen ? "Hide Insights" : "Show Insights"}
+            {isOpen ? t("jobs.analytics.hideInsights") : t("jobs.analytics.showInsights")}
           </span>
           {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
         </div>
@@ -44,7 +47,9 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({ summary }) => {
               <ShieldCheck className="h-4 w-4" />
             </div>
             <div>
-              <p className="text-xs text-text-muted font-medium">Success Rate</p>
+              <p className="text-xs text-text-muted font-medium">
+                {t("jobs.analytics.successRate")}
+              </p>
               <p className="text-lg font-bold text-text-primary">{summary.successRate}%</p>
               <p className="text-[11px] text-text-muted">
                 {summary.completedCount} of {summary.completedCount + summary.failedCount} finished
@@ -57,9 +62,11 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({ summary }) => {
               <Zap className="h-4 w-4" />
             </div>
             <div>
-              <p className="text-xs text-text-muted font-medium">Credits Consumed</p>
+              <p className="text-xs text-text-muted font-medium">
+                {t("jobs.analytics.creditsConsumed")}
+              </p>
               <p className="text-lg font-bold text-text-primary">{summary.creditsUsed}</p>
-              <p className="text-[11px] text-text-muted">Across all generation attempts</p>
+              <p className="text-[11px] text-text-muted">{t("jobs.analytics.acrossAllAttempts")}</p>
             </div>
           </div>
 
@@ -68,11 +75,11 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({ summary }) => {
               <Mic className="h-4 w-4" />
             </div>
             <div>
-              <p className="text-xs text-text-muted font-medium">Top Voice</p>
+              <p className="text-xs text-text-muted font-medium">{t("jobs.analytics.topVoice")}</p>
               <p className="text-lg font-bold text-text-primary truncate max-w-[140px]">
                 {summary.topVoice}
               </p>
-              <p className="text-[11px] text-text-muted">Most frequently selected</p>
+              <p className="text-[11px] text-text-muted">{t("jobs.analytics.mostFrequently")}</p>
             </div>
           </div>
 
@@ -81,11 +88,13 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({ summary }) => {
               <Clock className="h-4 w-4" />
             </div>
             <div>
-              <p className="text-xs text-text-muted font-medium">Avg Processing Time</p>
+              <p className="text-xs text-text-muted font-medium">
+                {t("jobs.analytics.avgProcessingTime")}
+              </p>
               <p className="text-lg font-bold text-text-primary">
                 ~{summary.avgProcessingTimeMinutes} mins
               </p>
-              <p className="text-[11px] text-text-muted">Per video rendering</p>
+              <p className="text-[11px] text-text-muted">{t("jobs.analytics.perVideoRendering")}</p>
             </div>
           </div>
         </div>

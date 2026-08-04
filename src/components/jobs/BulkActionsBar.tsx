@@ -3,6 +3,7 @@
 import React from "react";
 import { Trash2, RotateCcw, CheckSquare, Square, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useI18n } from "@/i18n";
 
 interface BulkActionsBarProps {
   selectedCount: number;
@@ -23,6 +24,8 @@ export const BulkActionsBar: React.FC<BulkActionsBarProps> = ({
   onBulkRetry,
   isAllSelected,
 }) => {
+  const { t } = useI18n();
+
   if (selectedCount === 0) return null;
 
   return (
@@ -50,7 +53,7 @@ export const BulkActionsBar: React.FC<BulkActionsBarProps> = ({
           leftIcon={<RotateCcw className="h-3.5 w-3.5" />}
           onClick={onBulkRetry}
         >
-          Retry Failed
+          {t("jobs.bulk.retryFailed")}
         </Button>
 
         <Button
@@ -59,13 +62,13 @@ export const BulkActionsBar: React.FC<BulkActionsBarProps> = ({
           leftIcon={<Trash2 className="h-3.5 w-3.5" />}
           onClick={onBulkDelete}
         >
-          Delete Selected
+          {t("jobs.bulk.deleteSelected")}
         </Button>
 
         <button
           onClick={onClearSelection}
           className="ml-2 rounded-lg p-1 text-text-muted hover:bg-surface-hover hover:text-text-primary transition-colors"
-          title="Clear selection"
+          title={t("jobs.bulk.clearSelection")}
         >
           <X className="h-4 w-4" />
         </button>

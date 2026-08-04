@@ -7,6 +7,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
+import { useI18n } from "@/i18n";
 
 import { useJobs } from "@/lib/hooks/use-jobs";
 import { StatusCards } from "@/components/jobs/StatusCards";
@@ -21,6 +22,7 @@ import { VideoJob } from "@/types/jobs";
 
 export default function JobsPage() {
   const router = useRouter();
+  const { t } = useI18n();
   const {
     allJobs,
     filteredJobs,
@@ -49,7 +51,7 @@ export default function JobsPage() {
   const [activeVideoModalJob, setActiveVideoModalJob] = useState<VideoJob | null>(null);
 
   if (isLoading) {
-    return <PageLoadingSkeleton message="Loading video generation dashboard..." />;
+    return <PageLoadingSkeleton message={t("jobs.loading")} />;
   }
 
   // Partition filtered jobs into Active, Completed, Failed
@@ -76,8 +78,8 @@ export default function JobsPage() {
   return (
     <div className="max-w-7xl mx-auto pb-12">
       <PageHeader
-        title="Video Jobs Dashboard"
-        description="Monitor, preview, download, and manage your AI video generation tasks across all projects"
+        title={t("jobs.dashboard.title")}
+        description={t("jobs.dashboard.description")}
         action={
           <div className="flex items-center gap-2">
             <Button
@@ -87,7 +89,7 @@ export default function JobsPage() {
               onClick={() => refetch()}
               disabled={isRefreshing}
             >
-              Refresh
+              {t("jobs.dashboard.refresh")}
             </Button>
             <Button
               variant="primary"
@@ -95,7 +97,7 @@ export default function JobsPage() {
               leftIcon={<Sparkles className="h-4 w-4" />}
               onClick={() => router.push("/projects")}
             >
-              New Project
+              {t("jobs.dashboard.newProject")}
             </Button>
           </div>
         }
@@ -138,11 +140,11 @@ export default function JobsPage() {
       {allJobs.length === 0 ? (
         <EmptyState
           icon={<Video className="h-16 w-16 text-accent-primary" />}
-          title="No video jobs yet"
-          description="Create your first video in any project to track rendering progress, analytics, and downloads here."
+          title={t("jobs.empty.title")}
+          description={t("jobs.empty.message")}
           action={
             <Button variant="primary" onClick={() => router.push("/projects")}>
-              Explore Projects
+              {t("jobs.empty.cta")}
             </Button>
           }
         />
@@ -150,8 +152,8 @@ export default function JobsPage() {
         /* Empty State: No matching filter results */
         <EmptyState
           icon={<Video className="h-16 w-16 text-text-muted" />}
-          title="No matching jobs found"
-          description="Try clearing or adjusting your search criteria and filter selections."
+          title={t("jobs.empty.noMatches")}
+          description={t("jobs.empty.noMatchesMessage")}
           action={
             <Button
               variant="secondary"
@@ -166,7 +168,7 @@ export default function JobsPage() {
                 })
               }
             >
-              Clear All Filters
+              {t("jobs.empty.clearFilters")}
             </Button>
           }
         />
@@ -178,7 +180,7 @@ export default function JobsPage() {
               <div className="flex items-center justify-between border-b border-border-default pb-2">
                 <h2 className="text-lg font-bold text-text-primary flex items-center gap-2">
                   <span className="h-2.5 w-2.5 rounded-full bg-blue-400 animate-ping" />
-                  Active Video Generations ({activeJobs.length})
+                  {t("jobs.sections.active")} ({activeJobs.length})
                 </h2>
               </div>
               <div className="grid grid-cols-1 gap-4">
@@ -199,7 +201,7 @@ export default function JobsPage() {
             <section className="space-y-4">
               <div className="flex items-center justify-between border-b border-border-default pb-2">
                 <h2 className="text-lg font-bold text-status-failed flex items-center gap-2">
-                  ⚠️ Failed Generation Jobs ({failedJobs.length})
+                  ⚠️ {t("jobs.sections.failed")} ({failedJobs.length})
                 </h2>
               </div>
               <div className="grid grid-cols-1 gap-4">
@@ -223,7 +225,7 @@ export default function JobsPage() {
             <section className="space-y-4">
               <div className="flex items-center justify-between border-b border-border-default pb-2">
                 <h2 className="text-lg font-bold text-text-primary flex items-center gap-2">
-                  🎬 Completed Videos ({completedJobs.length})
+                  🎬 {t("jobs.sections.completed")} ({completedJobs.length})
                 </h2>
               </div>
               <div className={getGridClass()}>
