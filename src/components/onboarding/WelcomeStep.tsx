@@ -1,10 +1,13 @@
 import { Film, Sparkles, Video, Wand2 } from "lucide-react";
+import { useI18n } from "@/i18n";
 
 interface WelcomeStepProps {
   onNext: () => void;
 }
 
 export default function WelcomeStep({ onNext }: WelcomeStepProps) {
+  const { t } = useI18n();
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       onNext();
@@ -12,9 +15,9 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
   };
 
   const features = [
-    { icon: Film, text: "Professional Templates" },
-    { icon: Wand2, text: "AI-Powered Tools" },
-    { icon: Video, text: "One-Click Publishing" },
+    { icon: Film, text: t("onboarding.welcome.features.templates") },
+    { icon: Wand2, text: t("onboarding.welcome.features.aiTools") },
+    { icon: Video, text: t("onboarding.welcome.features.publishing") },
   ];
 
   return (
@@ -33,13 +36,12 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
 
       {/* Headline */}
       <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-4 sm:mb-6 leading-tight">
-        Welcome to Huavoi Studio
+        {t("onboarding.welcome.title")}
       </h1>
 
       {/* Body Text */}
       <p className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-300 mb-8 sm:mb-10 max-w-lg mx-auto px-4 leading-relaxed">
-        Transform your ideas into stunning videos with AI-powered creativity. Professional results
-        in minutes, not hours.
+        {t("onboarding.welcome.subtitle")}
       </p>
 
       {/* Feature Pills */}
@@ -67,7 +69,7 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
         aria-label="Get started with onboarding"
       >
         <span className="flex items-center gap-2 justify-center">
-          Get Started
+          {t("onboarding.welcome.getStarted")}
           <svg
             className="w-5 h-5 group-hover:translate-x-1 transition-transform"
             fill="none"
@@ -87,7 +89,7 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
 
       {/* Subtext */}
       <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-6 px-4">
-        Takes less than 2 minutes to complete
+        {t("onboarding.welcome.subtext")}
       </p>
     </div>
   );

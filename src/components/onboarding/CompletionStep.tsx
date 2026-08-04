@@ -5,10 +5,12 @@ import { useRouter } from "next/navigation";
 import { CheckCircle, Sparkles, Rocket, AlertCircle } from "lucide-react";
 import { completeOnboarding } from "@/lib/api-client";
 import { useAuth } from "@/lib/auth-context";
+import { useI18n } from "@/i18n";
 
 export default function CompletionStep() {
   const router = useRouter();
   const { refreshUser } = useAuth();
+  const { t } = useI18n();
   const [error, setError] = useState("");
   const [isCompleting, setIsCompleting] = useState(true);
   const [countdown, setCountdown] = useState(5);
@@ -104,7 +106,7 @@ export default function CompletionStep() {
 
         {/* Error Message */}
         <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-          Something Went Wrong
+          {t("onboarding.completion.error")}
         </h2>
         <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 mb-8 px-4" role="alert">
           {error}
@@ -115,7 +117,7 @@ export default function CompletionStep() {
           onClick={handleRetry}
           className="px-8 sm:px-10 py-3.5 sm:py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 dark:from-blue-500 dark:to-purple-500 dark:hover:from-blue-600 dark:hover:to-purple-600 text-white font-semibold rounded-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/50 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-base sm:text-lg"
         >
-          Try Again
+          {t("onboarding.completion.tryAgain")}
         </button>
       </div>
     );
@@ -131,7 +133,7 @@ export default function CompletionStep() {
               <div
                 className="w-10 h-10 sm:w-12 sm:h-12 border-4 border-white border-t-transparent rounded-full animate-spin"
                 role="status"
-                aria-label="Completing onboarding"
+                aria-label={t("onboarding.completion.loadingAriaLabel")}
               />
             </div>
             <div className="absolute -top-2 -right-2">
@@ -141,10 +143,10 @@ export default function CompletionStep() {
         </div>
 
         <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">
-          Setting Up Your Account
+          {t("onboarding.completion.loading")}
         </h2>
         <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 px-4">
-          This will only take a moment...
+          {t("onboarding.completion.loadingSubtext")}
         </p>
 
         {/* Loading dots */}
@@ -187,18 +189,18 @@ export default function CompletionStep() {
 
       {/* Success Message */}
       <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-4 sm:mb-6">
-        You&apos;re All Set!
+        {t("onboarding.completion.success")}
       </h2>
       <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-8 sm:mb-10 px-4 leading-relaxed">
-        Your account is ready. Let&apos;s start creating amazing videos together.
+        {t("onboarding.completion.successSubtext")}
       </p>
 
       {/* Features Preview */}
       <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-8 sm:mb-10 px-4">
         {[
-          { emoji: "🎬", label: "Create" },
-          { emoji: "🎨", label: "Design" },
-          { emoji: "🚀", label: "Publish" },
+          { emoji: "🎬", label: t("onboarding.completion.features.create") },
+          { emoji: "🎨", label: t("onboarding.completion.features.design") },
+          { emoji: "🚀", label: t("onboarding.completion.features.publish") },
         ].map((item, idx) => (
           <div
             key={idx}
@@ -218,7 +220,7 @@ export default function CompletionStep() {
         className="group w-full sm:w-auto px-8 sm:px-10 py-3.5 sm:py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 dark:from-blue-500 dark:to-purple-500 dark:hover:from-blue-600 dark:hover:to-purple-600 text-white font-semibold rounded-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/50 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-base sm:text-lg"
       >
         <span className="flex items-center justify-center gap-2">
-          Go to Dashboard
+          {t("onboarding.completion.goToDashboard")}
           <Rocket
             className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"
             aria-hidden="true"
@@ -230,7 +232,7 @@ export default function CompletionStep() {
       <div className="mt-6 flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400">
         <div className="w-5 h-5 border-2 border-gray-400 dark:border-gray-500 border-t-transparent rounded-full animate-spin" />
         <span>
-          Redirecting in {countdown} second{countdown !== 1 ? "s" : ""}...
+          {t("onboarding.completion.redirect").replace("{seconds}", countdown.toString()).replace("{plural}", countdown === 1 ? "" : "s")}
         </span>
       </div>
     </div>

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Eye, EyeOff, Lock, CheckCircle2, Shield, AlertCircle } from "lucide-react";
 import { setUserPassword } from "@/lib/api-client";
 import { useAuth } from "@/lib/auth-context";
+import { useI18n } from "@/i18n";
 
 interface PasswordStepProps {
   onNext: () => void;
@@ -13,6 +14,7 @@ interface PasswordStepProps {
 
 export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepProps) {
   const { user } = useAuth();
+  const { t } = useI18n();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -49,12 +51,12 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
     setError("");
 
     if (password.length < 8) {
-      setError("Password must be at least 8 characters");
+      setError(t("onboarding.password.validation.tooShort"));
       return false;
     }
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      setError(t("onboarding.password.validation.mismatch"));
       return false;
     }
 
@@ -75,7 +77,7 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
       await setUserPassword(password);
       onNext();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to set password. Please try again.");
+      setError(err instanceof Error ? err.message : t("onboarding.password.error"));
     } finally {
       setLoading(false);
     }
@@ -102,28 +104,28 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
         </div>
 
         <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">
-          {hasExistingPassword ? "Update Your Password" : "Set Up Alternative Login"}
+          {hasExistingPassword ? t("onboarding.password.titleUpdate") : t("onboarding.password.title")}
         </h2>
 
         <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 mb-3 px-4">
           {hasExistingPassword ? (
-            <>You already have a password set. You can update it here if you&apos;d like.</>
+            <>{t("onboarding.password.subtitleUpdate")}</>
           ) : (
-            <>You signed in with Google. Want to add a password for email login too?</>
+            <>{t("onboarding.password.subtitle")}</>
           )}
         </p>
 
         {!hasExistingPassword && (
           <div className="flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400 px-4">
             <Shield className="w-4 h-4" aria-hidden="true" />
-            <span>Access your account even if Google is unavailable</span>
+            <span>{t("onboarding.password.securityHint")}</span>
           </div>
         )}
 
         {hasExistingPassword && (
           <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded-xl text-sm font-medium border border-green-200 dark:border-green-800">
             <CheckCircle2 className="w-5 h-5" aria-hidden="true" />
-            <span>Password already configured</span>
+            <span>{t("onboarding.password.alreadyConfigured")}</span>
           </div>
         )}
       </div>
@@ -136,7 +138,7 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
             htmlFor="password"
             className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
           >
-            Password
+            {t("onboarding.password.passwordLabel")}
           </label>
           <div className="relative">
             <input
@@ -146,7 +148,7 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
               onChange={(e) => setPassword(e.target.value)}
               disabled={hasExistingPassword}
               className="w-full px-4 py-3.5 pr-12 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-500/30 focus:border-purple-500 dark:bg-gray-700 dark:text-white disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:text-gray-400 dark:disabled:text-gray-500 disabled:cursor-not-allowed transition-all text-base"
-              placeholder="Enter password (min 8 characters)"
+              placeholder={t("onboarding.password.passwordPlaceholder")}
               aria-describedby={error ? "password-error" : undefined}
             />
             <button
@@ -154,7 +156,7 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
               onClick={() => setShowPassword(!showPassword)}
               disabled={hasExistingPassword}
               className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 rounded-lg p-1 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              aria-label={showPassword ? "Hide password" : "Show password"}
+              aria-label={showPassword ? t("onboarding.password.hidePassword") : t("onboarding.password.showPassword")}
             >
               {showPassword ? (
                 <EyeOff className="w-5 h-5" aria-hidden="true" />
@@ -169,7 +171,7 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
             <div className="mt-3">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
-                  Password Strength
+                  {t("onboarding.password.strength")}
                 </span>
                 <span
                   className={`text-xs font-semibold ${
@@ -182,7 +184,10 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
                           : "text-green-600 dark:text-green-400"
                   }`}
                 >
-                  {passwordStrength.label}
+                  {passwordStrength.label === "Weak" ? t("onboarding.password.strengthWeak") :
+                   passwordStrength.label === "Fair" ? t("onboarding.password.strengthFair") :
+                   passwordStrength.label === "Good" ? t("onboarding.password.strengthGood") :
+                   t("onboarding.password.strengthStrong")}
                 </span>
               </div>
               <div className="flex gap-1.5">
@@ -207,7 +212,7 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
             htmlFor="confirm-password"
             className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
           >
-            Confirm Password
+            {t("onboarding.password.confirmPasswordLabel")}
           </label>
           <div className="relative">
             <input
@@ -217,7 +222,7 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
               onChange={(e) => setConfirmPassword(e.target.value)}
               disabled={hasExistingPassword}
               className="w-full px-4 py-3.5 pr-12 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-500/30 focus:border-purple-500 dark:bg-gray-700 dark:text-white disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:text-gray-400 dark:disabled:text-gray-500 disabled:cursor-not-allowed transition-all text-base"
-              placeholder="Confirm password"
+              placeholder={t("onboarding.password.confirmPasswordPlaceholder")}
               aria-describedby={error ? "password-error" : undefined}
             />
             <button
@@ -225,7 +230,7 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               disabled={hasExistingPassword}
               className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 rounded-lg p-1 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
+              aria-label={showConfirmPassword ? t("onboarding.password.hideConfirmPassword") : t("onboarding.password.showConfirmPassword")}
             >
               {showConfirmPassword ? (
                 <EyeOff className="w-5 h-5" aria-hidden="true" />
@@ -245,7 +250,7 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
                     aria-hidden="true"
                   />
                   <span className="text-xs text-green-600 dark:text-green-400 font-medium">
-                    Passwords match
+                    {t("onboarding.password.match")}
                   </span>
                 </>
               ) : (
@@ -255,7 +260,7 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
                     aria-hidden="true"
                   />
                   <span className="text-xs text-red-600 dark:text-red-400 font-medium">
-                    Passwords do not match
+                    {t("onboarding.password.noMatch")}
                   </span>
                 </>
               )}
@@ -285,12 +290,12 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
           {loading ? (
             <span className="flex items-center justify-center gap-2">
               <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              {hasExistingPassword ? "Updating..." : "Setting Password..."}
+              {hasExistingPassword ? t("onboarding.password.updating") : t("onboarding.password.settingPassword")}
             </span>
           ) : hasExistingPassword ? (
-            "Password Already Set"
+            t("onboarding.password.alreadySet")
           ) : (
-            "Set Password"
+            t("onboarding.password.setPassword")
           )}
         </button>
       </form>
@@ -303,7 +308,7 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
           className="w-full sm:w-auto px-6 sm:px-8 py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-semibold rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
           aria-label="Go back to previous step"
         >
-          Back
+          {t("onboarding.password.back")}
         </button>
         <button
           onClick={onSkip}
@@ -311,7 +316,7 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
           className="w-full sm:w-auto px-6 sm:px-8 py-3 text-gray-600 dark:text-gray-400 font-semibold hover:text-gray-900 dark:hover:text-gray-200 transition-colors focus:outline-none focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
           aria-label="Skip password setup"
         >
-          Skip for Now
+          {t("onboarding.password.skipForNow")}
         </button>
       </div>
     </div>

@@ -1,47 +1,50 @@
 import { Film, FileText, Mic, Video } from "lucide-react";
+import { useI18n } from "@/i18n";
 
 interface WorkflowStepProps {
   onNext: () => void;
   onBack: () => void;
 }
 
-const workflowSteps = [
+const createWorkflowSteps = (t: (key: string) => string) => [
   {
     icon: Film,
-    title: "Source",
-    description: "Select from movie catalog",
+    title: t("onboarding.workflow.steps.source.title"),
+    description: t("onboarding.workflow.steps.source.description"),
     color: "from-blue-500 to-cyan-500",
   },
   {
     icon: FileText,
-    title: "Script",
-    description: "AI generates video scripts",
+    title: t("onboarding.workflow.steps.script.title"),
+    description: t("onboarding.workflow.steps.script.description"),
     color: "from-purple-500 to-pink-500",
   },
   {
     icon: Mic,
-    title: "Voice",
-    description: "Text-to-speech with AI",
+    title: t("onboarding.workflow.steps.voice.title"),
+    description: t("onboarding.workflow.steps.voice.description"),
     color: "from-green-500 to-emerald-500",
   },
   {
     icon: Video,
-    title: "Compose",
-    description: "Create final video",
+    title: t("onboarding.workflow.steps.compose.title"),
+    description: t("onboarding.workflow.steps.compose.description"),
     color: "from-orange-500 to-red-500",
   },
 ];
 
 export default function WorkflowStep({ onNext, onBack }: WorkflowStepProps) {
+  const { t } = useI18n();
+  const workflowSteps = createWorkflowSteps(t);
   return (
     <div className="max-w-4xl mx-auto h-full flex flex-col justify-between">
       {/* Headline - Compact */}
       <div className="text-center mb-6 sm:mb-8">
         <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">
-          Your Video Creation Journey
+          {t("onboarding.workflow.title")}
         </h2>
         <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
-          4 simple steps to create amazing videos
+          {t("onboarding.workflow.subtitle")}
         </p>
       </div>
 
@@ -67,7 +70,7 @@ export default function WorkflowStep({ onNext, onBack }: WorkflowStepProps) {
                 </div>
                 <span
                   className="absolute -top-1.5 -right-1.5 w-5 h-5 sm:w-6 sm:h-6 bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-xs font-bold rounded-full flex items-center justify-center border-2 border-gray-200 dark:border-gray-700 shadow-sm"
-                  aria-label={`Step ${index + 1}`}
+                  aria-label={t("onboarding.workflow.step").replace("{number}", `${index + 1}`)}
                 >
                   {index + 1}
                 </span>
@@ -118,14 +121,14 @@ export default function WorkflowStep({ onNext, onBack }: WorkflowStepProps) {
           className="w-full sm:w-auto px-6 py-2.5 sm:py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-semibold rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 text-sm sm:text-base"
           aria-label="Go back to previous step"
         >
-          Back
+          {t("onboarding.workflow.back")}
         </button>
         <button
           onClick={onNext}
           className="w-full sm:w-auto px-6 py-2.5 sm:py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 dark:from-blue-500 dark:to-purple-500 dark:hover:from-blue-600 dark:hover:to-purple-600 text-white font-semibold rounded-lg transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/50 shadow-lg hover:shadow-xl text-sm sm:text-base"
           aria-label="Continue to next step"
         >
-          Continue
+          {t("onboarding.workflow.continue")}
         </button>
       </div>
     </div>
