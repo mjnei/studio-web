@@ -88,3 +88,7 @@ function Header() {
 ```
 
 The selected language is persisted in `localStorage` and will be remembered across sessions.
+
+## ⚠️ Admin Pages
+
+Admin pages **do NOT require i18n or translation**. English is acceptable for all administrative interfaces.

@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { AlertCircle, Mail, Lock } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import { useI18n } from "@/i18n";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -11,6 +12,7 @@ import { useToast } from "@/components/ui/toast";
 
 export default function LoginPage() {
   const { loginWithGoogle, loginWithPassword, isAuthenticated, isLoading: authLoading } = useAuth();
+  const { t } = useI18n();
   const toast = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,11 +25,11 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await loginWithPassword(email, password);
-      toast.success("Welcome back!", "You have successfully signed in.");
+      toast.success(t("auth.login.successTitle"), t("auth.login.successMessage"));
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Invalid email or password";
+      const msg = err instanceof Error ? err.message : t("auth.login.errorDefault");
       setError(msg);
-      toast.error("Login failed", msg);
+      toast.error(t("auth.login.errorTitle"), msg);
       setLoading(false);
     }
   }
@@ -37,11 +39,11 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await loginWithGoogle();
-      toast.success("Welcome back!", "You have successfully signed in with Google.");
+      toast.success(t("auth.login.successTitle"), t("auth.login.successMessageGoogle"));
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Google sign-in failed";
+      const msg = err instanceof Error ? err.message : t("auth.login.errorGoogle");
       setError(msg);
-      toast.error("Login failed", msg);
+      toast.error(t("auth.login.errorTitle"), msg);
       setLoading(false);
     }
   }
@@ -53,7 +55,7 @@ export default function LoginPage() {
         <div className="flex flex-col items-center justify-center py-12">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-primary mb-4"></div>
           <p className="text-sm text-text-secondary">
-            {isAuthenticated ? "Redirecting..." : "Loading..."}
+            {isAuthenticated ? t("auth.login.redirecting") : t("auth.login.loading")}
           </p>
         </div>
       </Card>
@@ -63,8 +65,8 @@ export default function LoginPage() {
   return (
     <Card variant="elevated" padding="lg" className="w-full">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-text-primary mb-2">Welcome back</h2>
-        <p className="text-sm text-text-secondary">Sign in to continue to Huavoi Studio</p>
+        <h2 className="text-2xl font-bold text-text-primary mb-2">{t("auth.login.title")}</h2>
+        <p className="text-sm text-text-secondary">{t("auth.login.subtitle")}</p>
       </div>
 
       {error && (
@@ -78,22 +80,22 @@ export default function LoginPage() {
         <Input
           id="email"
           type="email"
-          label="Email"
+          label={t("auth.login.email")}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           disabled={loading}
-          placeholder="you@example.com"
+          placeholder={t("auth.placeholders.email")}
           icon={<Mail className="w-5 h-5" />}
         />
 
         <Input
           id="password"
           type="password"
-          label="Password"
+          label={t("auth.login.password")}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           disabled={loading}
-          placeholder="Enter your password"
+          placeholder={t("auth.placeholders.password")}
           icon={<Lock className="w-5 h-5" />}
         />
 
@@ -102,19 +104,19 @@ export default function LoginPage() {
             href="/forgot-password"
             className="text-sm text-accent-primary hover:text-accent-secondary transition-colors"
           >
-            Forgot password?
+            {t("auth.login.forgotPassword")}
           </Link>
         </div>
 
         <Button type="submit" variant="primary" fullWidth loading={loading} size="lg">
-          {loading ? "Signing in..." : "Sign in"}
+          {loading ? t("auth.login.signingIn") : t("auth.login.signIn")}
         </Button>
       </form>
 
       <div className="my-6 flex items-center gap-4">
         <div className="h-px flex-1 bg-border-default" />
         <span className="text-xs font-medium text-text-muted uppercase tracking-wider">
-          or continue with
+          {t("auth.login.orContinueWith")}
         </span>
         <div className="h-px flex-1 bg-border-default" />
       </div>
@@ -147,7 +149,7 @@ export default function LoginPage() {
             </svg>
           }
         >
-          Google
+          {t("auth.login.google")}
         </Button>
 
         <Button
@@ -161,18 +163,18 @@ export default function LoginPage() {
             </svg>
           }
         >
-          Apple
+          {t("auth.login.apple")}
         </Button>
       </div>
 
       <div className="mt-6 text-center">
         <p className="text-sm text-text-secondary">
-          Don&apos;t have an account?{" "}
+          {t("auth.login.noAccount")}{" "}
           <Link
             href="/signup"
             className="font-medium text-accent-primary hover:text-accent-secondary transition-colors"
           >
-            Sign up
+            {t("auth.login.signUpLink")}
           </Link>
         </p>
       </div>
