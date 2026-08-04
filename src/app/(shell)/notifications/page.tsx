@@ -47,7 +47,7 @@ export default function NotificationsPage() {
   });
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-7xl mx-auto">
       <PageHeader
         title="Notifications"
         description={`${unreadCount} unread notification${unreadCount !== 1 ? "s" : ""}`}

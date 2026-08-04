@@ -149,7 +149,7 @@ export default function ProfilePage() {
   const isFreeUser = membershipTier === "free";
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-7xl mx-auto">
       <PageHeader
         title="Profile Settings"
         description="Manage your account settings and preferences"

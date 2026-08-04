@@ -64,7 +64,7 @@ export default function NotificationSettingsPage() {
   const hasChanges = JSON.stringify(localPreferences) !== JSON.stringify(preferences);
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-7xl mx-auto">
       <PageHeader
         title="Notification Settings"
         description="Manage how you receive notifications"

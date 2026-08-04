@@ -92,7 +92,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-7xl mx-auto">
       <PageHeader
         title="Settings"
         description="Customize your experience and manage preferences"

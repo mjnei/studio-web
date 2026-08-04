@@ -61,7 +61,7 @@ export default function AdminPage() {
   ];
 
   return (
-    <div className="mx-auto max-w-6xl">
+    <div className="mx-auto max-w-7xl">
       <PageHeader
         title="Admin Dashboard"
         description="Manage movies and voices catalog for the Huavoi platform"

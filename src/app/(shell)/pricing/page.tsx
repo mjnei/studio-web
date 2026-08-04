@@ -176,7 +176,7 @@ export default function PricingPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-7xl mx-auto">
       <PageHeader
         title="Simple, Transparent Pricing"
         description="1 credit = 1 video generation. Choose the plan that fits your needs."

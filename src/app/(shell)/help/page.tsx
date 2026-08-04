@@ -97,7 +97,7 @@ const helpSections = [
 
 export default function HelpPage() {
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-7xl mx-auto">
       <PageHeader
         title="Help & Documentation"
         description="Learn how to use Huavoi Studio from start to finish"
