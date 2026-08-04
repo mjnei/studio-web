@@ -16,9 +16,11 @@ import {
 } from "@/lib/project-client";
 import { useVoices } from "@/lib/hooks/use-voices";
 import { useAuth } from "@/lib/auth-context";
+import { useI18n } from "@/i18n";
 
 export default function DashboardPage() {
   const { user } = useAuth();
+  const { t } = useI18n();
   const [projects, setProjects] = useState<ProjectResponse[]>([]);
   const [popularMovies, setPopularMovies] = useState<MovieResponse[]>([]);
   const [loadingProjects, setLoadingProjects] = useState(true);
@@ -80,25 +82,25 @@ export default function DashboardPage() {
 
   const stats = [
     {
-      title: "Recent Projects",
+      title: t("dashboard.stats.recentProjects.title"),
       value: loadingProjects ? "..." : projects.length > 0 ? projects.length.toString() : "0",
-      description: "Active projects",
+      description: t("dashboard.stats.recentProjects.description"),
       icon: <Folder className="w-6 h-6" />,
       gradient: "from-blue-500 to-cyan-500",
       href: "/projects",
     },
     {
-      title: "Movie Library",
+      title: t("dashboard.stats.movieLibrary.title"),
       value: loadingMovies ? "..." : popularMovies.length > 0 ? `${popularMovies.length}+` : "0",
-      description: "Available movies",
+      description: t("dashboard.stats.movieLibrary.description"),
       icon: <Film className="w-6 h-6" />,
       gradient: "from-purple-500 to-pink-500",
       href: "/movies",
     },
     {
-      title: "My Voices",
+      title: t("dashboard.stats.myVoices.title"),
       value: voices.length.toString(),
-      description: "Voice profiles",
+      description: t("dashboard.stats.myVoices.description"),
       icon: <Mic className="w-6 h-6" />,
       gradient: "from-green-500 to-emerald-500",
       href: "/voices",
@@ -119,24 +121,23 @@ export default function DashboardPage() {
               <div className="flex items-center gap-2 mb-2">
                 <Sparkles className="w-5 h-5 text-blue-500" />
                 <h3 className="text-lg font-semibold text-text-primary">
-                  Welcome to Huavoi Studio!
+                  {t("dashboard.welcomeBanner.title")}
                 </h3>
               </div>
               <p className="text-text-secondary mb-4">
-                Ready to create your first project? Click &quot;New Project&quot; to get started and
-                bring your ideas to life.
+                {t("dashboard.welcomeBanner.message")}
               </p>
               <Link href="/project/new">
                 <Button variant="primary" size="sm">
                   <Plus className="w-4 h-4" />
-                  Create Your First Project
+                  {t("dashboard.welcomeBanner.cta")}
                 </Button>
               </Link>
             </div>
             <button
               onClick={dismissWelcomeBanner}
               className="text-text-muted hover:text-text-primary transition-colors p-1"
-              aria-label="Dismiss welcome banner"
+              aria-label={t("dashboard.welcomeBanner.dismissAriaLabel")}
             >
               <X className="w-5 h-5" />
             </button>
@@ -144,7 +145,7 @@ export default function DashboardPage() {
         </Card>
       )}
 
-      <PageHeader title="Dashboard" description="Welcome back! Here's your overview." />
+      <PageHeader title={t("dashboard.title")} description={t("dashboard.description")} />
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-6">
@@ -181,8 +182,8 @@ export default function DashboardPage() {
       {/* Quick Actions */}
       <Card variant="elevated" padding="lg" className="mb-6 fade-in">
         <CardHeader>
-          <CardTitle>Quick Actions</CardTitle>
-          <CardDescription>Get started with these common tasks</CardDescription>
+          <CardTitle>{t("dashboard.quickActions.title")}</CardTitle>
+          <CardDescription>{t("dashboard.quickActions.description")}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -193,7 +194,7 @@ export default function DashboardPage() {
                 className="justify-start hover:bg-surface-hover transition-all"
               >
                 <Plus className="w-5 h-5" />
-                New Project
+                {t("dashboard.quickActions.newProject")}
               </Button>
             </Link>
             <Link href="/movies">
@@ -203,7 +204,7 @@ export default function DashboardPage() {
                 className="justify-start hover:bg-surface-hover transition-all"
               >
                 <Film className="w-5 h-5" />
-                Browse Movies
+                {t("dashboard.quickActions.browseMovies")}
               </Button>
             </Link>
             <Link href="/voices">
@@ -213,7 +214,7 @@ export default function DashboardPage() {
                 className="justify-start hover:bg-surface-hover transition-all"
               >
                 <Mic className="w-5 h-5" />
-                Record Voice
+                {t("dashboard.quickActions.recordVoice")}
               </Button>
             </Link>
           </div>
@@ -226,12 +227,12 @@ export default function DashboardPage() {
           <CardHeader className="mb-6">
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle>Recent Projects</CardTitle>
-                <CardDescription>Your latest work</CardDescription>
+                <CardTitle>{t("dashboard.recentProjects.title")}</CardTitle>
+                <CardDescription>{t("dashboard.recentProjects.description")}</CardDescription>
               </div>
               <Link href="/projects">
                 <Button variant="secondary" size="sm">
-                  All
+                  {t("dashboard.recentProjects.viewAll")}
                   <ArrowRight className="w-4 h-4 ml-1" />
                 </Button>
               </Link>
@@ -255,13 +256,13 @@ export default function DashboardPage() {
               <div>
                 <CardTitle className="flex items-center gap-2">
                   <Sparkles className="w-5 h-5 text-accent-primary" />
-                  Popular Movies
+                  {t("dashboard.popularMovies.title")}
                 </CardTitle>
-                <CardDescription>Trending movies to start your next project</CardDescription>
+                <CardDescription>{t("dashboard.popularMovies.description")}</CardDescription>
               </div>
               <Link href="/movies">
                 <Button variant="secondary" size="sm">
-                  Explore All
+                  {t("dashboard.popularMovies.exploreAll")}
                   <ArrowRight className="w-4 h-4 ml-1" />
                 </Button>
               </Link>
@@ -312,13 +313,13 @@ export default function DashboardPage() {
                   <Folder className="w-8 h-8 text-text-muted" />
                 </div>
                 <p className="text-lg font-medium text-text-primary mb-2">
-                  Welcome to Huavoi Studio
+                  {t("dashboard.empty.title")}
                 </p>
                 <p className="text-text-secondary mb-6 max-w-md">
-                  Start by creating a new project to see your activity here.
+                  {t("dashboard.empty.message")}
                 </p>
                 <Link href="/project/new">
-                  <Button variant="primary">Create Your First Project</Button>
+                  <Button variant="primary">{t("dashboard.empty.cta")}</Button>
                 </Link>
               </div>
             </CardContent>

@@ -18,6 +18,7 @@ const translationFiles = [
   "common",
   "auth",
   "onboarding",
+  "dashboard",
   "project",
   "jobs",
   "voices",
