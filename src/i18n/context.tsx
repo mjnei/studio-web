@@ -23,6 +23,7 @@ const translationFiles = [
   "project",
   "jobs",
   "voices",
+  "settings",
   "shell",
 ] as const;
 

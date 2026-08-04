@@ -17,6 +17,127 @@
     "pitch": "音调",
     "speed": "语速",
     "volume": "音量",
-    "noVoices": "暂无可用语音"
+    "noVoices": "暂无可用语音",
+    "library": {
+      "title": "语音库",
+      "description": "创建自定义语音并发现社区共享的语音用于您的项目"
+    },
+    "tabs": {
+      "private": "私人",
+      "community": "社区"
+    },
+    "voiceCount": "{count} / {limit} 个语音",
+    "sharedVoices": "{count} 个共享{count, plural, one {语音} other {语音}}",
+    "addVoice": "添加语音",
+    "status": {
+      "pendingReview": "待审核",
+      "private": "私人",
+      "approved": "已批准"
+    },
+    "metadata": {
+      "createdBy": "@{username}",
+      "you": "（您）",
+      "justNow": "刚刚",
+      "minutesAgo": "{count}分钟前",
+      "hoursAgo": "{count}小时前",
+      "daysAgo": "{count}天前",
+      "weeksAgo": "{count}周前",
+      "monthsAgo": "{count}月前",
+      "yearsAgo": "{count}年前"
+    },
+    "playback": {
+      "play": "播放",
+      "pause": "暂停",
+      "loading": "加载中...",
+      "audioUnavailable": "音频不可用",
+      "audioUrlNotAvailable": "音频 URL 不可用",
+      "playbackFailed": "播放失败",
+      "failedToPlayAudio": "播放音频失败",
+      "failedToLoadAudio": "加载音频失败"
+    },
+    "actions": {
+      "shareWithCommunity": "分享到社区",
+      "makePrivate": "设为私人",
+      "deleteVoice": "删除语音",
+      "delete": "删除"
+    },
+    "modals": {
+      "delete": {
+        "title": "删除语音",
+        "description": "您确定要删除此语音吗？此操作无法撤销，该语音将从您的所有项目中删除。",
+        "confirmText": "删除",
+        "cancelText": "取消"
+      },
+      "share": {
+        "title": "将语音分享到社区",
+        "description": "您的语音将提交进行管理员审核。审核通过后，它将对所有用户可用，不会占用您的语音限制。这有助于建立我们的社区库！",
+        "confirmText": "提交审核",
+        "cancelText": "取消"
+      },
+      "unshare": {
+        "title": "设为私人",
+        "description": "您的语音将被撤回审核并设为私人。它将仅供您访问，并将占用您的语音限制。",
+        "confirmText": "设为私人",
+        "cancelText": "取消"
+      }
+    },
+    "banners": {
+      "privateInfo": {
+        "title": "私人语音",
+        "description": "您的私人语音录音。将它们分享到社区进行管理员审核。审核通过后，它们将出现在社区选项卡中，不会占用您的语音限制。"
+      },
+      "communityInfo": {
+        "title": "社区语音",
+        "description": "社区分享的已批准语音。此处的所有语音都可以免费在您的项目中使用。您批准的语音会显示在此处，不会占用您的语音限制。"
+      }
+    },
+    "emptyStates": {
+      "private": {
+        "title": "无私人语音",
+        "description": "首先录制一个语音样本。您的语音将被克隆并准备在您的项目中使用。将它们与社区分享以获得额外的语音槽位！",
+        "cta": "录制您的第一个语音"
+      },
+      "community": {
+        "title": "暂无社区语音",
+        "description": "一旦用户分享他们的语音并被我们的团队批准，社区语音将显示在这里。成为第一个贡献者！"
+      }
+    },
+    "addVoiceCard": {
+      "title": "添加新语音",
+      "slotsRemaining": "剩余 {count} 个{count, plural, one {槽位} other {槽位}}",
+      "limitReached": "已达到语音限制"
+    },
+    "toasts": {
+      "voiceShared": "语音已分享",
+      "voiceShareedDescription": "您的语音已提交进行审核",
+      "voiceSharedError": "分享语音失败",
+      "voiceMadePrivate": "语音已设为私人",
+      "voiceMadePrivateDescription": "您的语音不再被分享",
+      "voiceMadePrivateError": "设为私人失败",
+      "voiceDeleted": "语音已删除",
+      "voiceDeletedDescription": "您的语音已成功删除",
+      "voiceDeletedError": "删除语音失败",
+      "anErrorOccurred": "发生错误"
+    },
+    "languages": {
+      "en": "英语",
+      "es": "西班牙语",
+      "fr": "法语",
+      "de": "德语",
+      "it": "意大利语",
+      "pt": "葡萄牙语",
+      "ru": "俄语",
+      "ja": "日语",
+      "zh": "中文",
+      "zhCN": "简体中文",
+      "zhTW": "繁体中文",
+      "ko": "韩语",
+      "ar": "阿拉伯语",
+      "hi": "印地语"
+    },
+    "errors": {
+      "loadingVoices": "正在加载您的语音...",
+      "loadingCommunityVoices": "正在加载社区语音..."
+    }
   }
 }

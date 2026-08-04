@@ -1,23 +1,16 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import {
   Plus,
   Mic,
   Globe,
-  User,
   AlertCircle,
-  CheckCircle,
-  Play,
-  Pause,
-  Clock,
-  Trash2,
-  Share2,
-  Lock,
   Info,
 } from "lucide-react";
 import { VoiceRecordingModal } from "@/components/shared/voice-recording-modal";
 import { VoiceLimitDialog } from "@/components/voices/voice-limit-dialog";
+import { VoiceCard } from "@/components/voices/VoiceCard";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -26,72 +19,11 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { ConfirmModal } from "@/components/ui/modal";
 import { useAuth } from "@/lib/auth-context";
 import { useToast } from "@/components/ui/toast";
+import { useI18n } from "@/i18n";
 import { useVoices } from "@/lib/hooks/use-voices";
 import { useVoiceLimits } from "@/lib/hooks/use-voice-limits";
 import { getAvailableVoices, getVoiceAudioUrl } from "@/lib/api/voice-client";
-import type { VoiceWithCreator, VoiceResponse } from "@/lib/types/api";
-
-/**
- * Format relative time for display
- */
-function formatRelativeTime(dateString: string): string {
-  const date = new Date(dateString);
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffSec = Math.floor(diffMs / 1000);
-  const diffMin = Math.floor(diffSec / 60);
-  const diffHours = Math.floor(diffMin / 60);
-  const diffDays = Math.floor(diffHours / 24);
-  const diffWeeks = Math.floor(diffDays / 7);
-
-  if (diffSec < 60) return "just now";
-  if (diffMin < 60) return `${diffMin}m ago`;
-  if (diffHours < 24) return `${diffHours}h ago`;
-  if (diffDays < 7) return `${diffDays}d ago`;
-  if (diffWeeks < 4) return `${diffWeeks}w ago`;
-
-  const months = Math.floor(diffDays / 30);
-  if (months < 12) return `${months}mo ago`;
-
-  const years = Math.floor(diffDays / 365);
-  return `${years}y ago`;
-}
-
-/**
- * Format duration in seconds to MM:SS format
- */
-function formatDuration(seconds: number | null | undefined): string {
-  if (!seconds) return "0:00";
-  const mins = Math.floor(seconds / 60);
-  const secs = Math.floor(seconds % 60);
-  return `${mins}:${secs.toString().padStart(2, "0")}`;
-}
-
-/**
- * Format language code to display name
- */
-function formatLanguage(language: string | null | undefined): string | null {
-  if (!language) return null;
-
-  const displayNames: Record<string, string> = {
-    en: "English",
-    es: "Spanish",
-    fr: "French",
-    de: "German",
-    it: "Italian",
-    pt: "Portuguese",
-    ru: "Russian",
-    ja: "Japanese",
-    zh: "Chinese",
-    "zh-CN": "Simplified Chinese",
-    "zh-TW": "Traditional Chinese",
-    ko: "Korean",
-    ar: "Arabic",
-    hi: "Hindi",
-  };
-
-  return displayNames[language] || language.toUpperCase();
-}
+import type { VoiceWithCreator } from "@/lib/types/api";
 
 /**
  * Fetch audio URLs for community voices in parallel
@@ -108,235 +40,10 @@ async function fetchAudioUrlsForVoices(voices: VoiceWithCreator[]): Promise<Voic
           audio_expires_in: audioUrlData.expires_in,
         };
       } catch (err) {
-        // Log but don't fail - audio URL fetch is optional
         console.error(`Failed to fetch audio URL for voice ${voice.id}:`, err);
         return voice;
       }
     })
-  );
-}
-
-/**
- * Voice Card Component - Used for both Private and Community tabs
- */
-interface VoiceCardProps {
-  voice: VoiceResponse | VoiceWithCreator;
-  variant: "private" | "community";
-  currentUserId?: string;
-  onDelete: (id: number) => void;
-  onShare?: (id: number) => void;
-  onUnshare?: (id: number) => void;
-}
-
-function VoiceCard({
-  voice,
-  variant,
-  currentUserId,
-  onDelete,
-  onShare,
-  onUnshare,
-}: VoiceCardProps) {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const toast = useToast();
-
-  const isOwnVoice = currentUserId && voice.user_id === parseInt(currentUserId, 10);
-  const creatorInfo = "creator_username" in voice ? voice : null;
-
-  const togglePlayback = async () => {
-    if (isPlaying && audioRef.current) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-      return;
-    }
-
-    if (!audioRef.current) {
-      setIsLoading(true);
-
-      try {
-        const audioUrl = voice.audio_url;
-
-        if (!audioUrl) {
-          toast.error("Audio unavailable", "Audio URL not available");
-          setIsLoading(false);
-          return;
-        }
-
-        const audio = new Audio(audioUrl);
-        audioRef.current = audio;
-
-        audio.onended = () => {
-          setIsPlaying(false);
-        };
-
-        audio.onerror = () => {
-          setIsPlaying(false);
-          setIsLoading(false);
-          toast.error("Playback failed", "Failed to play audio");
-        };
-
-        audio.oncanplay = () => {
-          setIsLoading(false);
-        };
-
-        await audio.play();
-        setIsPlaying(true);
-      } catch (error) {
-        console.error("Audio playback error:", error);
-        setIsLoading(false);
-        toast.error("Playback failed", "Failed to load audio");
-      }
-    } else {
-      audioRef.current.play();
-      setIsPlaying(true);
-    }
-  };
-
-  useEffect(() => {
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-    };
-  }, []);
-
-  const renderStatusBadge = () => {
-    if (variant === "private") {
-      if (voice.is_shared && !voice.is_approved) {
-        return (
-          <span className="inline-flex items-center gap-1 rounded-full bg-yellow-500/10 border border-yellow-500/30 px-2 py-1 text-xs font-semibold text-yellow-600">
-            <Clock className="h-3 w-3" />
-            Pending Review
-          </span>
-        );
-      }
-      return (
-        <span className="inline-flex items-center gap-1 rounded-full bg-gray-500/10 border border-gray-500/30 px-2 py-1 text-xs font-semibold text-gray-600">
-          <Lock className="h-3 w-3" />
-          Private
-        </span>
-      );
-    } else {
-      return (
-        <span className="inline-flex items-center gap-1 rounded-full bg-green-500/10 border border-green-500/30 px-2 py-1 text-xs font-semibold text-green-600">
-          <CheckCircle className="h-3 w-3" />
-          Approved
-        </span>
-      );
-    }
-  };
-
-  return (
-    <Card
-      variant="elevated"
-      padding="none"
-      className="overflow-hidden hover:border-accent-primary/40 hover:shadow-lg transition-all duration-200"
-    >
-      {/* Voice Header */}
-      <div className="p-4 pb-3">
-        <div className="flex items-start justify-between gap-3 mb-2">
-          <h3 className="font-semibold text-text-primary text-base truncate flex-1">
-            {voice.name}
-          </h3>
-          {renderStatusBadge()}
-        </div>
-
-        {/* Metadata */}
-        <div className="flex items-center gap-2 text-xs text-text-muted flex-wrap">
-          {variant === "community" && creatorInfo && (
-            <>
-              <div className="flex items-center gap-1">
-                <User className="h-3 w-3" />
-                <span>
-                  @{creatorInfo.creator_username}
-                  {isOwnVoice && <span className="text-accent-primary ml-1">(you)</span>}
-                </span>
-              </div>
-              <span>•</span>
-            </>
-          )}
-          <span>{formatRelativeTime(voice.created_at)}</span>
-          {voice.duration_seconds && (
-            <>
-              <span>•</span>
-              <span>{formatDuration(voice.duration_seconds)}</span>
-            </>
-          )}
-          {formatLanguage(voice.language) && (
-            <>
-              <span>•</span>
-              <span className="inline-flex items-center rounded-full bg-blue-500/10 border border-blue-500/30 px-2 py-0.5 text-xs font-medium text-blue-600">
-                {formatLanguage(voice.language)}
-              </span>
-            </>
-          )}
-        </div>
-      </div>
-
-      {/* Playback Controls */}
-      <div className="px-4 pb-3 border-t border-border-subtle pt-3">
-        <div className="flex items-center gap-2">
-          <button
-            onClick={togglePlayback}
-            disabled={isLoading}
-            className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-accent-primary/10 hover:bg-accent-primary/20 text-accent-primary font-medium py-2.5 transition-colors disabled:opacity-50"
-          >
-            {isLoading ? (
-              <>
-                <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                <span className="text-sm">Loading...</span>
-              </>
-            ) : isPlaying ? (
-              <>
-                <Pause className="h-4 w-4" />
-                <span className="text-sm">Pause</span>
-              </>
-            ) : (
-              <>
-                <Play className="h-4 w-4" />
-                <span className="text-sm">Play</span>
-              </>
-            )}
-          </button>
-
-          {/* Action Buttons */}
-          {variant === "private" && (
-            <>
-              {!voice.is_shared && onShare && (
-                <button
-                  onClick={() => onShare(voice.id)}
-                  className="p-2.5 rounded-lg border border-green-500/50 bg-green-500/10 text-green-600 hover:bg-green-500/20 transition-colors"
-                  title="Share with community"
-                >
-                  <Share2 className="h-4 w-4" />
-                </button>
-              )}
-              {voice.is_shared && !voice.is_approved && onUnshare && (
-                <button
-                  onClick={() => onUnshare(voice.id)}
-                  className="p-2.5 rounded-lg border border-orange-500/50 bg-orange-500/10 text-orange-600 hover:bg-orange-500/20 transition-colors"
-                  title="Make private"
-                >
-                  <Lock className="h-4 w-4" />
-                </button>
-              )}
-            </>
-          )}
-
-          {(variant === "private" || (variant === "community" && isOwnVoice)) && (
-            <button
-              onClick={() => onDelete(voice.id)}
-              className="p-2.5 rounded-lg border border-red-500/50 bg-red-500/10 text-red-600 hover:bg-red-500/20 transition-colors"
-              title="Delete voice"
-            >
-              <Trash2 className="h-4 w-4" />
-            </button>
-          )}
-        </div>
-      </div>
-    </Card>
   );
 }
 
@@ -349,6 +56,7 @@ export default function VoicesPage() {
   const [showLimitDialog, setShowLimitDialog] = useState(false);
   const { user } = useAuth();
   const toast = useToast();
+  const { t } = useI18n();
   const { voices, loading, error, deleteVoice, toggleSharing, refetch } = useVoices();
   const voiceLimits = useVoiceLimits();
 
@@ -385,7 +93,7 @@ export default function VoicesPage() {
           setCommunityVoices(voicesWithAudioUrls);
           setCommunityError(null);
         } catch (err) {
-          setCommunityError(err instanceof Error ? err.message : "Failed to load community voices");
+          setCommunityError(err instanceof Error ? err.message : t("voices.toasts.anErrorOccurred"));
         } finally {
           setCommunityLoading(false);
         }
@@ -393,7 +101,7 @@ export default function VoicesPage() {
 
       fetchCommunityVoices();
     }
-  }, [tab]);
+  }, [tab, t]);
 
   const handleRecordingSaved = async () => {
     await refetch();
@@ -426,14 +134,14 @@ export default function VoicesPage() {
     setSharing(true);
     try {
       await toggleSharing(voiceToShare, true);
-      toast.success("Voice shared", "Your voice has been submitted for review");
+      toast.success(t("voices.toasts.voiceShared"), t("voices.toasts.voiceShareedDescription"));
       setShareConfirmOpen(false);
       setVoiceToShare(null);
       await refetch();
     } catch (err) {
       toast.error(
-        "Failed to share voice",
-        err instanceof Error ? err.message : "An error occurred"
+        t("voices.toasts.voiceSharedError"),
+        err instanceof Error ? err.message : t("voices.toasts.anErrorOccurred")
       );
     } finally {
       setSharing(false);
@@ -452,14 +160,14 @@ export default function VoicesPage() {
     setUnsharing(true);
     try {
       await toggleSharing(voiceToUnshare, false);
-      toast.success("Voice made private", "Your voice is no longer shared");
+      toast.success(t("voices.toasts.voiceMadePrivate"), t("voices.toasts.voiceMadePrivateDescription"));
       setUnshareConfirmOpen(false);
       setVoiceToUnshare(null);
       await refetch();
     } catch (err) {
       toast.error(
-        "Failed to make voice private",
-        err instanceof Error ? err.message : "An error occurred"
+        t("voices.toasts.voiceMadePrivateError"),
+        err instanceof Error ? err.message : t("voices.toasts.anErrorOccurred")
       );
     } finally {
       setUnsharing(false);
@@ -478,7 +186,7 @@ export default function VoicesPage() {
     setDeleting(true);
     try {
       await deleteVoice(voiceToDelete);
-      toast.success("Voice deleted", "Your voice has been deleted successfully");
+      toast.success(t("voices.toasts.voiceDeleted"), t("voices.toasts.voiceDeletedDescription"));
       setDeleteConfirmOpen(false);
       setVoiceToDelete(null);
       await refetch();
@@ -492,8 +200,8 @@ export default function VoicesPage() {
       }
     } catch (err) {
       toast.error(
-        "Failed to delete voice",
-        err instanceof Error ? err.message : "An error occurred"
+        t("voices.toasts.voiceDeletedError"),
+        err instanceof Error ? err.message : t("voices.toasts.anErrorOccurred")
       );
     } finally {
       setDeleting(false);
@@ -503,13 +211,13 @@ export default function VoicesPage() {
   return (
     <div className="max-w-7xl mx-auto">
       <PageHeader
-        title="Voice Library"
-        description="Create custom voices and discover community-shared voices for your projects"
+        title={t("voices.library.title")}
+        description={t("voices.library.description")}
         action={
           tab === "private" ? (
             <div className="flex items-center gap-3">
               <span className="rounded-full bg-green-500/10 border border-green-500/30 px-3 py-1.5 text-xs font-medium text-green-600 whitespace-nowrap">
-                {voiceLimits.currentCount} / {voiceLimits.limit} voices
+                {voiceLimits.currentCount} / {voiceLimits.limit} {t("voices.tabs.private").toLowerCase()}
               </span>
               <Button
                 variant="primary"
@@ -517,12 +225,12 @@ export default function VoicesPage() {
                 onClick={handleAddVoiceClick}
                 leftIcon={<Plus className="h-4 w-4" />}
               >
-                Add Voice
+                {t("voices.addVoice")}
               </Button>
             </div>
           ) : (
             <span className="rounded-full bg-accent-cyan/10 border border-accent-cyan/30 px-3 py-1.5 text-xs font-medium text-accent-cyan whitespace-nowrap">
-              {communityVoices.length} shared {communityVoices.length === 1 ? "voice" : "voices"}
+              {communityVoices.length} {t("voices.tabs.community").toLowerCase()}
             </span>
           )
         }
@@ -540,7 +248,7 @@ export default function VoicesPage() {
             }`}
           >
             <Mic className="h-4 w-4" />
-            <span>Private</span>
+            <span>{t("voices.tabs.private")}</span>
             {privateVoices.length > 0 && (
               <span
                 className={`ml-1 rounded-full px-2 py-0.5 text-xs font-bold ${
@@ -563,7 +271,7 @@ export default function VoicesPage() {
             }`}
           >
             <Globe className="h-4 w-4" />
-            <span>Community</span>
+            <span>{t("voices.tabs.community")}</span>
             {communityVoices.length > 0 && (
               <span
                 className={`ml-1 rounded-full px-2 py-0.5 text-xs font-bold ${
@@ -608,11 +316,11 @@ export default function VoicesPage() {
                 <Info className="h-5 w-5 text-blue-600" />
               </div>
               <div className="flex-1">
-                <h3 className="text-sm font-semibold text-text-primary mb-1">Private Voices</h3>
+                <h3 className="text-sm font-semibold text-text-primary mb-1">
+                  {t("voices.banners.privateInfo.title")}
+                </h3>
                 <p className="text-xs text-text-secondary leading-relaxed">
-                  Your private voice recordings. Share them with the community for admin review.
-                  Once approved, they&apos;ll appear in the Community tab and won&apos;t count
-                  toward your voice limit.
+                  {t("voices.banners.privateInfo.description")}
                 </p>
               </div>
             </div>
@@ -634,15 +342,15 @@ export default function VoicesPage() {
 
           {/* Loading State */}
           {loading ? (
-            <LoadingSpinner size="lg" message="Loading your voices..." fullHeight />
+            <LoadingSpinner size="lg" message={t("voices.errors.loadingVoices")} fullHeight />
           ) : privateVoices.length === 0 ? (
             /* Empty State */
             <EmptyState
               variant="bordered"
               size="lg"
               icon={<Mic className="h-12 w-12" />}
-              title="No private voices"
-              description="Start by recording a voice sample. Your voice will be cloned and ready to use in your projects. Share them with the community to earn extra voice slots!"
+              title={t("voices.emptyStates.private.title")}
+              description={t("voices.emptyStates.private.description")}
               action={
                 <Button
                   variant="primary"
@@ -650,7 +358,7 @@ export default function VoicesPage() {
                   onClick={handleAddVoiceClick}
                   leftIcon={<Plus className="h-4 w-4" />}
                 >
-                  Record Your First Voice
+                  {t("voices.emptyStates.private.cta")}
                 </Button>
               }
             />
@@ -680,10 +388,12 @@ export default function VoicesPage() {
                   <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-accent-primary/10 group-hover:bg-accent-primary/20 transition-colors">
                     <Plus className="h-6 w-6 text-accent-primary" />
                   </div>
-                  <h3 className="text-sm font-semibold text-text-primary mb-1">Add New Voice</h3>
+                  <h3 className="text-sm font-semibold text-text-primary mb-1">
+                    {t("voices.addVoiceCard.title")}
+                  </h3>
                   <p className="text-xs text-text-muted">
                     {voiceLimits.canAdd
-                      ? `${voiceLimits.remainingCount} slot${voiceLimits.remainingCount === 1 ? "" : "s"} remaining`
+                      ? `${voiceLimits.remainingCount} ${voiceLimits.remainingCount === 1 ? t("voices.addVoiceCard.slotsRemaining").split(" ")[0] : t("voices.addVoiceCard.slotsRemaining").split(" ")[0]} ${t("voices.addVoiceCard.slotsRemaining").split(" ").slice(1).join(" ")}`
                       : voiceLimits.message}
                   </p>
                 </div>
@@ -705,11 +415,11 @@ export default function VoicesPage() {
                 <Globe className="h-5 w-5 text-accent-cyan" />
               </div>
               <div className="flex-1">
-                <h3 className="text-sm font-semibold text-text-primary mb-1">Community Voices</h3>
+                <h3 className="text-sm font-semibold text-text-primary mb-1">
+                  {t("voices.banners.communityInfo.title")}
+                </h3>
                 <p className="text-xs text-text-secondary leading-relaxed">
-                  Approved voices shared by our community. All voices here are free to use in your
-                  projects. Your approved voices appear here and don&apos;t count toward your voice
-                  limit.
+                  {t("voices.banners.communityInfo.description")}
                 </p>
               </div>
             </div>
@@ -731,15 +441,15 @@ export default function VoicesPage() {
 
           {/* Loading State */}
           {communityLoading ? (
-            <LoadingSpinner size="lg" message="Loading community voices..." fullHeight />
+            <LoadingSpinner size="lg" message={t("voices.errors.loadingCommunityVoices")} fullHeight />
           ) : communityVoices.length === 0 ? (
             /* Empty State */
             <EmptyState
               variant="bordered"
               size="lg"
               icon={<Globe className="h-12 w-12" />}
-              title="No community voices yet"
-              description="Community voices will appear here once users share their voices and they're approved by our team. Be the first to contribute!"
+              title={t("voices.emptyStates.community.title")}
+              description={t("voices.emptyStates.community.description")}
             />
           ) : (
             /* Community Voices Grid */
@@ -766,10 +476,10 @@ export default function VoicesPage() {
           setVoiceToDelete(null);
         }}
         onConfirm={handleDeleteConfirm}
-        title="Delete Voice"
-        description="Are you sure you want to delete this voice? This action cannot be undone and the voice will be removed from all your projects."
-        confirmText="Delete"
-        cancelText="Cancel"
+        title={t("voices.modals.delete.title")}
+        description={t("voices.modals.delete.description")}
+        confirmText={t("voices.modals.delete.confirmText")}
+        cancelText={t("voices.modals.delete.cancelText")}
         variant="danger"
         loading={deleting}
       />
@@ -782,10 +492,10 @@ export default function VoicesPage() {
           setVoiceToShare(null);
         }}
         onConfirm={handleShareConfirm}
-        title="Share Voice with Community"
-        description="Your voice will be submitted for admin review. Once approved, it will be available to all users and won't count toward your voice limit. This helps build our community library!"
-        confirmText="Share for Review"
-        cancelText="Cancel"
+        title={t("voices.modals.share.title")}
+        description={t("voices.modals.share.description")}
+        confirmText={t("voices.modals.share.confirmText")}
+        cancelText={t("voices.modals.share.cancelText")}
         variant="default"
         loading={sharing}
       />
@@ -798,10 +508,10 @@ export default function VoicesPage() {
           setVoiceToUnshare(null);
         }}
         onConfirm={handleUnshareConfirm}
-        title="Make Voice Private"
-        description="Your voice will be withdrawn from review and made private again. It will only be accessible to you and will count toward your voice limit."
-        confirmText="Make Private"
-        cancelText="Cancel"
+        title={t("voices.modals.unshare.title")}
+        description={t("voices.modals.unshare.description")}
+        confirmText={t("voices.modals.unshare.confirmText")}
+        cancelText={t("voices.modals.unshare.cancelText")}
         variant="default"
         loading={unsharing}
       />
