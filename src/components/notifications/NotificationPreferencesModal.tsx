@@ -4,42 +4,12 @@ import { useState, useEffect } from "react";
 import { useNotifications } from "@/lib/notification-context";
 import { X, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { NOTIFICATION_TYPE_LABELS } from "@/lib/notification-constants";
 
 interface NotificationPreferencesModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
-
-const NOTIFICATION_TYPE_LABELS: Record<string, { title: string; description: string }> = {
-  video_job_queued: {
-    title: "Video Job Queued",
-    description: "When your video generation job is queued for processing",
-  },
-  video_job_completed: {
-    title: "Video Job Completed",
-    description: "When your video generation is successfully completed",
-  },
-  video_job_failed: {
-    title: "Video Job Failed",
-    description: "When your video generation encounters an error",
-  },
-  low_credits: {
-    title: "Low Credits Warning",
-    description: "When your credit balance is running low",
-  },
-  credit_transaction: {
-    title: "Credit Transaction",
-    description: "When credits are added to or deducted from your account",
-  },
-  project_deleted: {
-    title: "Project Deleted",
-    description: "When one of your projects is deleted",
-  },
-  project_published: {
-    title: "Project Published",
-    description: "When your project is successfully published",
-  },
-};
 
 export function NotificationPreferencesModal({
   isOpen,

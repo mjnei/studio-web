@@ -1,57 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { useNotifications } from "@/lib/notification-context";
-import { Bell, Monitor, Check } from "lucide-react";
+import { Monitor, Check, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/PageHeader";
-
-const NOTIFICATION_TYPE_CONFIG = [
-  {
-    type: "video_job_queued",
-    title: "Video Job Queued",
-    description: "When your video generation job is queued for processing",
-    category: "Video Jobs",
-  },
-  {
-    type: "video_job_completed",
-    title: "Video Job Completed",
-    description: "When your video generation is successfully completed",
-    category: "Video Jobs",
-  },
-  {
-    type: "video_job_failed",
-    title: "Video Job Failed",
-    description: "When your video generation encounters an error",
-    category: "Video Jobs",
-  },
-  {
-    type: "low_credits",
-    title: "Low Credits Warning",
-    description: "When your credit balance is running low (below 100 credits)",
-    category: "Account",
-  },
-  {
-    type: "credit_transaction",
-    title: "Credit Transaction",
-    description: "When credits are added to or deducted from your account",
-    category: "Account",
-  },
-  {
-    type: "project_deleted",
-    title: "Project Deleted",
-    description: "When one of your projects is deleted",
-    category: "Projects",
-  },
-  {
-    type: "project_published",
-    title: "Project Published",
-    description: "When your project is successfully published",
-    category: "Projects",
-  },
-];
-
-const CATEGORIES = ["Video Jobs", "Account", "Projects"];
+import {
+  NOTIFICATION_TYPE_CONFIG,
+  NOTIFICATION_CATEGORIES,
+} from "@/lib/notification-constants";
 
 export default function NotificationSettingsPage() {
   const { preferences, updatePreferences, preferencesLoading } = useNotifications();
@@ -109,15 +67,24 @@ export default function NotificationSettingsPage() {
   const hasChanges = JSON.stringify(localPreferences) !== JSON.stringify(preferences);
 
   return (
-    <div className="min-h-screen bg-surface-base">
+    <div className="max-w-4xl mx-auto">
       <PageHeader
         title="Notification Settings"
         description="Manage how you receive notifications"
+        breadcrumbs={
+          <Link
+            href="/settings"
+            className="inline-flex items-center gap-2 text-sm text-text-muted hover:text-text-primary transition-colors group"
+          >
+            <ChevronLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
+            <span>Back to Settings</span>
+          </Link>
+        }
       />
 
-      <div className="max-w-4xl mx-auto p-6 space-y-8">
+      <div className="space-y-8">
         {/* Notification Preferences by Category */}
-        {CATEGORIES.map((category) => {
+        {NOTIFICATION_CATEGORIES.map((category) => {
           const categoryNotifications = NOTIFICATION_TYPE_CONFIG.filter(
             (n) => n.category === category
           );

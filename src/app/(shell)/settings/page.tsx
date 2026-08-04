@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import {
   Bell,
   Palette,
@@ -10,6 +11,7 @@ import {
   Download,
   Settings as SettingsIcon,
   Check,
+  ChevronRight,
 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -115,82 +117,29 @@ export default function SettingsPage() {
       />
 
       <div className="space-y-4">
-        {/* Notifications Card */}
-        <Card variant="elevated" padding="lg">
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center">
-                <Bell className="w-5 h-5 text-white" />
+        {/* Notifications Card - Link to dedicated page */}
+        <Link href="/settings/notifications" className="block group">
+          <Card
+            variant="elevated"
+            padding="lg"
+            className="cursor-pointer transition-all group-hover:shadow-lg group-hover:border-accent-primary/50"
+          >
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center">
+                    <Bell className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <CardTitle>Notifications</CardTitle>
+                    <CardDescription>Manage notification preferences</CardDescription>
+                  </div>
+                </div>
+                <ChevronRight className="w-5 h-5 text-text-muted group-hover:text-accent-primary transition-colors" />
               </div>
-              <div>
-                <CardTitle>Notifications</CardTitle>
-                <CardDescription>Manage how you receive alerts and updates</CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-1">
-            <div className="mb-4">
-              <h3 className="text-sm font-semibold text-text-secondary mb-3">In-app Alerts</h3>
-              <div className="space-y-1">
-                <SettingRow
-                  title="Render completion"
-                  description="Get notified when your video is ready"
-                >
-                  <Toggle
-                    checked={notifications.renderCompletion}
-                    onChange={() =>
-                      setNotifications((n) => ({ ...n, renderCompletion: !n.renderCompletion }))
-                    }
-                  />
-                </SettingRow>
-                <SettingRow title="Render failure" description="Alert me if a render fails">
-                  <Toggle
-                    checked={notifications.renderFailure}
-                    onChange={() =>
-                      setNotifications((n) => ({ ...n, renderFailure: !n.renderFailure }))
-                    }
-                  />
-                </SettingRow>
-                <SettingRow
-                  title="Project sharing"
-                  description="When someone shares a project with me"
-                >
-                  <Toggle checked={true} onChange={() => {}} />
-                </SettingRow>
-              </div>
-            </div>
-
-            <div className="pt-2">
-              <h3 className="text-sm font-semibold text-text-secondary mb-3">
-                Email Notifications
-              </h3>
-              <div className="space-y-1">
-                <SettingRow
-                  title="Email alerts"
-                  description="Receive email updates about render status"
-                >
-                  <Toggle
-                    checked={notifications.emailNotifications}
-                    onChange={() =>
-                      setNotifications((n) => ({ ...n, emailNotifications: !n.emailNotifications }))
-                    }
-                  />
-                </SettingRow>
-                <SettingRow
-                  title="Weekly summary"
-                  description="Get a weekly digest of your activity"
-                >
-                  <Toggle
-                    checked={notifications.weeklySummary}
-                    onChange={() =>
-                      setNotifications((n) => ({ ...n, weeklySummary: !n.weeklySummary }))
-                    }
-                  />
-                </SettingRow>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardHeader>
+          </Card>
+        </Link>
 
         {/* Project Defaults Card */}
         <Card variant="elevated" padding="lg">

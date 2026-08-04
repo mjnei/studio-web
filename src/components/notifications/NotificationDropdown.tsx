@@ -11,11 +11,16 @@ interface NotificationDropdownProps {
 }
 
 export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
-  const { notifications, unreadCount, isLoading, clearAllNotifications } = useNotifications();
+  const { notifications, unreadCount, isLoading, markAllAsRead } = useNotifications();
 
-  const handleClearAll = async () => {
-    if (window.confirm("Clear all notifications? This action cannot be undone.")) {
-      await clearAllNotifications();
+  const handleMarkAllAsRead = async () => {
+    const unreadCount = notifications.filter((n) => !n.is_read).length;
+    if (unreadCount === 0) return;
+
+    if (
+      window.confirm(`Mark ${unreadCount} notification${unreadCount !== 1 ? "s" : ""} as read?`)
+    ) {
+      await markAllAsRead();
     }
   };
 
@@ -36,12 +41,12 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
           )}
         </div>
         <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
-          {notifications.length > 0 && (
+          {unreadCount > 0 && (
             <button
-              onClick={handleClearAll}
+              onClick={handleMarkAllAsRead}
               className="p-2 min-w-[44px] min-h-[44px] rounded-lg text-text-muted hover:bg-surface-hover hover:text-text-primary active:bg-surface-hover transition-all touch-manipulation flex items-center justify-center"
-              title="Clear all notifications"
-              aria-label="Clear all notifications"
+              title="Mark all as read"
+              aria-label="Mark all as read"
             >
               <CheckCheck size={18} />
             </button>
