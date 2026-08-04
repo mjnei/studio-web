@@ -6,10 +6,7 @@ import { useNotifications } from "@/lib/notification-context";
 import { Monitor, Check, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/PageHeader";
-import {
-  NOTIFICATION_TYPE_CONFIG,
-  NOTIFICATION_CATEGORIES,
-} from "@/lib/notification-constants";
+import { NOTIFICATION_TYPE_CONFIG, NOTIFICATION_CATEGORIES } from "@/lib/notification-constants";
 
 export default function NotificationSettingsPage() {
   const { preferences, updatePreferences, preferencesLoading } = useNotifications();
@@ -67,7 +64,7 @@ export default function NotificationSettingsPage() {
   const hasChanges = JSON.stringify(localPreferences) !== JSON.stringify(preferences);
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-6xl mx-auto">
       <PageHeader
         title="Notification Settings"
         description="Manage how you receive notifications"

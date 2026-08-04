@@ -120,24 +120,23 @@ export default function MoviesPage() {
   };
 
   return (
-    <div className="w-full px-4 sm:px-6">
-      <div className="max-w-7xl mx-auto">
-        <PageHeader
-          title="Movie Library"
-          description="Discover and explore movies to create your next project"
-          action={
-            <div className="flex items-center gap-3">
-              <span className="rounded-full bg-accent-cyan/10 px-3 py-1.5 text-xs font-medium text-accent-cyan whitespace-nowrap">
-                {movies.length} {movies.length === 1 ? "movie" : "movies"}
+    <div className="max-w-7xl mx-auto">
+      <PageHeader
+        title="Movie Library"
+        description="Discover and explore movies to create your next project"
+        action={
+          <div className="flex items-center gap-3">
+            <span className="rounded-full bg-accent-cyan/10 px-3 py-1.5 text-xs font-medium text-accent-cyan whitespace-nowrap">
+              {movies.length} {movies.length === 1 ? "movie" : "movies"}
+            </span>
+            {enrichmentProgress > 0 && enrichmentProgress < 100 && (
+              <span className="text-xs text-text-muted whitespace-nowrap">
+                Loading details... {enrichmentProgress}%
               </span>
-              {enrichmentProgress > 0 && enrichmentProgress < 100 && (
-                <span className="text-xs text-text-muted whitespace-nowrap">
-                  Loading details... {enrichmentProgress}%
-                </span>
-              )}
-            </div>
-          }
-        />
+            )}
+          </div>
+        }
+      />
 
         {/* Search and Layout Controls */}
         <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -197,7 +196,6 @@ export default function MoviesPage() {
             ))}
           </div>
         )}
-      </div>
     </div>
   );
 }
