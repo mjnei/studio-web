@@ -10,6 +10,53 @@ export interface NotificationTypeConfig {
   category: string;
 }
 
+// Base configuration with type keys for i18n
+export const NOTIFICATION_TYPE_CONFIG_KEYS = [
+  {
+    type: "video_job_queued",
+    titleKey: "notificationSettings.types.videoJobQueued.title",
+    descriptionKey: "notificationSettings.types.videoJobQueued.description",
+    categoryKey: "notificationSettings.categories.videoJobs",
+  },
+  {
+    type: "video_job_completed",
+    titleKey: "notificationSettings.types.videoJobCompleted.title",
+    descriptionKey: "notificationSettings.types.videoJobCompleted.description",
+    categoryKey: "notificationSettings.categories.videoJobs",
+  },
+  {
+    type: "video_job_failed",
+    titleKey: "notificationSettings.types.videoJobFailed.title",
+    descriptionKey: "notificationSettings.types.videoJobFailed.description",
+    categoryKey: "notificationSettings.categories.videoJobs",
+  },
+  {
+    type: "low_credits",
+    titleKey: "notificationSettings.types.lowCredits.title",
+    descriptionKey: "notificationSettings.types.lowCredits.description",
+    categoryKey: "notificationSettings.categories.account",
+  },
+  {
+    type: "credit_transaction",
+    titleKey: "notificationSettings.types.creditTransaction.title",
+    descriptionKey: "notificationSettings.types.creditTransaction.description",
+    categoryKey: "notificationSettings.categories.account",
+  },
+  {
+    type: "project_deleted",
+    titleKey: "notificationSettings.types.projectDeleted.title",
+    descriptionKey: "notificationSettings.types.projectDeleted.description",
+    categoryKey: "notificationSettings.categories.projects",
+  },
+  {
+    type: "project_published",
+    titleKey: "notificationSettings.types.projectPublished.title",
+    descriptionKey: "notificationSettings.types.projectPublished.description",
+    categoryKey: "notificationSettings.categories.projects",
+  },
+] as const;
+
+// Legacy fallback configuration (for components that can't use i18n)
 export const NOTIFICATION_TYPE_CONFIG: NotificationTypeConfig[] = [
   {
     type: "video_job_queued",
@@ -56,6 +103,11 @@ export const NOTIFICATION_TYPE_CONFIG: NotificationTypeConfig[] = [
 ];
 
 export const NOTIFICATION_CATEGORIES = ["Video Jobs", "Account", "Projects"] as const;
+export const NOTIFICATION_CATEGORIES_I18N_KEYS = [
+  "notificationSettings.categories.videoJobs",
+  "notificationSettings.categories.account",
+  "notificationSettings.categories.projects",
+] as const;
 
 /**
  * Convert array to record format (for modal compatibility)

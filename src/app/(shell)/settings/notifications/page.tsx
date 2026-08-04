@@ -97,7 +97,7 @@ export default function NotificationSettingsPage() {
 
       <div className="space-y-8">
         {/* Notification Preferences by Category */}
-        {NOTIFICATION_CATEGORIES.map((category) => {
+        {NOTIFICATION_CATEGORIES.map((category, categoryIndex) => {
           const categoryNotifications = NOTIFICATION_TYPE_CONFIG.filter(
             (n) => n.category === category
           );
@@ -106,12 +106,32 @@ export default function NotificationSettingsPage() {
             <section key={category} className="space-y-4">
               <h2 className="text-lg font-semibold text-text-primary flex items-center gap-2">
                 <Monitor size={20} className="text-accent-primary" />
-                {category}
+                {t(
+                  [
+                    "notificationSettings.categories.videoJobs",
+                    "notificationSettings.categories.account",
+                    "notificationSettings.categories.projects",
+                  ][categoryIndex] as any
+                )}
               </h2>
 
               <div className="bg-surface-panel rounded-xl border border-border-default divide-y divide-border-default">
-                {categoryNotifications.map(({ type, title, description }) => {
+                {categoryNotifications.map(({ type }) => {
                   const pref = localPreferences[type] || { in_app: true };
+                  // Map notification type to i18n key
+                  const typeI18nMap: Record<string, string> = {
+                    video_job_queued: "notificationSettings.types.videoJobQueued",
+                    video_job_completed: "notificationSettings.types.videoJobCompleted",
+                    video_job_failed: "notificationSettings.types.videoJobFailed",
+                    low_credits: "notificationSettings.types.lowCredits",
+                    credit_transaction: "notificationSettings.types.creditTransaction",
+                    project_deleted: "notificationSettings.types.projectDeleted",
+                    project_published: "notificationSettings.types.projectPublished",
+                  };
+
+                  const typeKey = typeI18nMap[type];
+                  const title = t(`${typeKey}.title`);
+                  const description = t(`${typeKey}.description`);
 
                   return (
                     <div key={type} className="p-6">

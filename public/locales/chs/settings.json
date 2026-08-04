@@ -56,6 +56,41 @@
     "preferencesHeader": "通知偏好设置",
     "savePreferences": "保存偏好设置",
     "saving": "保存中...",
-    "preferencesSaved": "偏好设置已保存!"
+    "preferencesSaved": "偏好设置已保存!",
+    "categories": {
+      "videoJobs": "视频任务",
+      "account": "账户",
+      "projects": "项目"
+    },
+    "types": {
+      "videoJobQueued": {
+        "title": "视频任务已排队",
+        "description": "当您的视频生成任务被排队进行处理时"
+      },
+      "videoJobCompleted": {
+        "title": "视频任务已完成",
+        "description": "当您的视频生成成功完成时"
+      },
+      "videoJobFailed": {
+        "title": "视频任务失败",
+        "description": "当您的视频生成遇到错误时"
+      },
+      "lowCredits": {
+        "title": "信用额度不足警告",
+        "description": "当您的信用额度余额不足时（低于 100 个信用点）"
+      },
+      "creditTransaction": {
+        "title": "信用交易",
+        "description": "当信用点被添加到账户或从账户中扣除时"
+      },
+      "projectDeleted": {
+        "title": "项目已删除",
+        "description": "当您的一个项目被删除时"
+      },
+      "projectPublished": {
+        "title": "项目已发布",
+        "description": "当您的项目成功发布时"
+      }
+    }
   }
 }

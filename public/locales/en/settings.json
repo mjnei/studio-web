@@ -56,6 +56,41 @@
     "preferencesHeader": "Notification Preferences",
     "savePreferences": "Save Preferences",
     "saving": "Saving...",
-    "preferencesSaved": "Preferences saved!"
+    "preferencesSaved": "Preferences saved!",
+    "categories": {
+      "videoJobs": "Video Jobs",
+      "account": "Account",
+      "projects": "Projects"
+    },
+    "types": {
+      "videoJobQueued": {
+        "title": "Video Job Queued",
+        "description": "When your video generation job is queued for processing"
+      },
+      "videoJobCompleted": {
+        "title": "Video Job Completed",
+        "description": "When your video generation is successfully completed"
+      },
+      "videoJobFailed": {
+        "title": "Video Job Failed",
+        "description": "When your video generation encounters an error"
+      },
+      "lowCredits": {
+        "title": "Low Credits Warning",
+        "description": "When your credit balance is running low (below 100 credits)"
+      },
+      "creditTransaction": {
+        "title": "Credit Transaction",
+        "description": "When credits are added to or deducted from your account"
+      },
+      "projectDeleted": {
+        "title": "Project Deleted",
+        "description": "When one of your projects is deleted"
+      },
+      "projectPublished": {
+        "title": "Project Published",
+        "description": "When your project is successfully published"
+      }
+    }
   }
 }
