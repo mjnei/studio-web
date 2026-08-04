@@ -2,7 +2,7 @@
 
 ## Project
 
-Next.js 16.2.9 App Router + React 19 + TypeScript + Tailwind CSS 4 + Firebase auth.
+Next.js 16.2.9 App Router + React 19 + TypeScript + Tailwind CSS 4 + Firebase auth + i18n (next-intl).
 
 ## Commands
 
@@ -47,3 +47,25 @@ Prettier: semi: true, singleQuote: false, tabWidth: 2, trailingComma: es5, print
 - Next.js config sets COOP header `same-origin-allow-popups` for popup support
 - `public/*.mp3` files are gitignored
 - `allowScripts` field in package.json controls allowed postinstall scripts
+
+## Internationalization (i18n)
+
+**Supported languages**: English (en), Simplified Chinese (chs)
+
+**Implementation**: Custom i18n provider using client-side context and translation files in `public/locales/`
+
+**Usage**:
+```tsx
+import { useI18n } from "@/i18n";
+
+function Component() {
+  const { t, locale, setLocale } = useI18n();
+  return <button>{t("common.save")}</button>;
+}
+```
+
+**Translation files**: Organized by namespace (common, auth, project, jobs, voices, shell) in each language directory
+
+**Language switcher**: `<LanguageSwitcher />` component available in `@/components/shared/LanguageSwitcher`
+
+**Persistence**: Selected language is stored in localStorage
