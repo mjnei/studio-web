@@ -1,0 +1,97 @@
+{
+  "pricing": {
+    "title": "Simple, Transparent Pricing",
+    "description": "1 credit = 1 video generation. Choose the plan that fits your needs.",
+    "badge": "Special Launch Pricing",
+    "billingToggle": {
+      "monthly": "Monthly",
+      "annual": "Annual",
+      "savings": "Save 20%"
+    },
+    "free": {
+      "name": "Free",
+      "description": "Get started with basic video generation",
+      "price": {
+        "monthly": "$0",
+        "annual": "$0",
+        "billedAnnually": "billed annually",
+        "billedMonthly": "when billed monthly"
+      },
+      "credits": "credits/month",
+      "rollover": "Rollover:",
+      "rolloverAmount": "10 credits",
+      "features": [
+        "5 credits per month",
+        "Rollover up to 10 credits",
+        "2 custom voice creations",
+        "Basic video generation",
+        "720p video quality",
+        "Standard project storage"
+      ],
+      "whatsIncluded": "What's included",
+      "button": "Current Plan"
+    },
+    "pro": {
+      "name": "Pro",
+      "description": "For creators who need more capacity",
+      "price": {
+        "monthly": "$49/mo",
+        "annual": "$39/mo",
+        "billedAnnually": "billed annually",
+        "billedMonthly": "when billed monthly"
+      },
+      "credits": "credits/month",
+      "rollover": "Rollover:",
+      "rolloverAmount": "50 credits",
+      "badge": "Most Popular",
+      "features": [
+        "25 credits per month",
+        "Rollover up to 50 credits",
+        "5 custom voice creations",
+        "HD video generation (1080p)",
+        "Priority processing",
+        "Advanced analytics",
+        "Export customization"
+      ],
+      "whatsIncluded": "What's included",
+      "button": "Upgrade to Pro"
+    },
+    "premium": {
+      "name": "Premium",
+      "description": "Unlimited capacity for professionals",
+      "price": {
+        "monthly": "$199/mo",
+        "annual": "$159/mo",
+        "billedAnnually": "billed annually",
+        "billedMonthly": "when billed monthly"
+      },
+      "credits": "credits/month",
+      "rollover": "Rollover:",
+      "rolloverAmount": "Unlimited",
+      "features": [
+        "100 credits per month",
+        "Unlimited rollover",
+        "10 custom voice creations",
+        "4K video quality",
+        "Priority support",
+        "Advanced AI features",
+        "Team collaboration",
+        "White-label exports",
+        "API access"
+      ],
+      "whatsIncluded": "What's included",
+      "button": "Upgrade to Premium"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "creditQuestion": "What is a credit and how is it used?",
+      "creditAnswer": "A credit is used to generate one video. Each video generation consumes 1 credit, regardless of video length or complexity. Failed generations are automatically refunded.",
+      "rolloverQuestion": "How does credit rollover work?",
+      "rolloverAnswer": "Unused credits roll over to the next month, up to the maximum rollover limit for your tier (Free: 10, Pro: 50, Premium: unlimited). Credits expire after 6 months of inactivity.",
+      "changeQuestion": "Can I change or cancel my plan?",
+      "changeAnswer": "Yes, you can upgrade, downgrade, or cancel your plan at any time. When downgrading, you keep access to your current plan features until the end of your billing cycle.",
+      "teamQuestion": "Do you offer team plans?",
+      "teamAnswer": "Team plans with shared credits and collaborative features are available for Premium tier subscribers. Contact us for custom pricing."
+    }
+  }
+}

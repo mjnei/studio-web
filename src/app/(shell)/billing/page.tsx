@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
+import { useI18n } from "@/i18n";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
@@ -30,6 +31,7 @@ import { gimmeCredits } from "@/lib/api-client";
 
 export default function BillingPage() {
   const router = useRouter();
+  const { t } = useI18n();
   const [creditStatus, setCreditStatus] = React.useState<CreditStatus | null>(null);
   const [transactions, setTransactions] = React.useState<CreditTransaction[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
@@ -54,7 +56,7 @@ export default function BillingPage() {
       } catch (error) {
         console.error("Failed to load billing data:", error);
         if (isMounted) {
-          toast.error("Failed to load billing data", "Please try again later");
+          toast.error("Failed to load billing data", t("billing.loading"));
         }
       } finally {
         if (isMounted) {
@@ -112,15 +114,12 @@ export default function BillingPage() {
   };
 
   if (isLoading) {
-    return <PageLoadingSkeleton message="Loading billing information..." />;
+    return <PageLoadingSkeleton message={t("billing.loading")} />;
   }
 
   return (
     <div className="max-w-6xl mx-auto pb-12">
-      <PageHeader
-        title="Billing & Credits"
-        description="Manage your subscription, credits, and billing history"
-      />
+      <PageHeader title={t("billing.title")} description={t("billing.description")} />
 
       {/* Tabs */}
       <div className="mb-8 overflow-x-auto">

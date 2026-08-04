@@ -1,0 +1,73 @@
+{
+  "billing": {
+    "title": "Billing & Credits",
+    "description": "Manage your subscription, credits, and billing history",
+    "tabs": {
+      "overview": "Overview",
+      "history": "Credit History",
+      "invoices": "Invoices"
+    },
+    "overview": {
+      "currentBalance": "Current Balance",
+      "credits": "credits",
+      "used": "used this month",
+      "percentUsed": "% used",
+      "resets": "Resets",
+      "upgradeSection": "Need more credits?",
+      "upgradeDescription": "Upgrade to get up to 100 credits/month",
+      "upgradePlan": "Upgrade Plan",
+      "successMessage": "5 credits added successfully! 🎉",
+      "creditDetails": "Credit Details",
+      "creditDetailsDescription": "Your current credit allocation and usage",
+      "gimmeCredits": "Gimme Credits",
+      "adding": "Adding...",
+      "monthlyAllocation": "Monthly Allocation",
+      "monthlyAllocationDescription": "Credits allocated per month",
+      "creditsUsed": "Credits Used",
+      "creditsUsedDescription": "Used this billing cycle",
+      "cycleReset": "Cycle Reset",
+      "nextAllocationReset": "Next Credit Reset",
+      "nextAllocationResetDescription": "Your credits will reset on",
+      "rolloverUp": "Unused credits will roll over up to",
+      "billing": "Billing",
+      "billingDescription": "Manage your payment method and subscription",
+      "update": "Update",
+      "billingPortal": "Billing Portal",
+      "currentPlan": "Current Plan",
+      "changePlan": "Change Plan",
+      "subscriptionStatus": "Subscription Status",
+      "active": "Active",
+      "monthlyCost": "Monthly Cost",
+      "nextBillingDate": "Next Billing Date"
+    },
+    "history": {
+      "creditTransactionHistory": "Credit Transaction History",
+      "trackUsage": "Track your credit usage and allocations",
+      "noTransactions": "No credit transactions yet",
+      "noTransactionsDescription": "Your credit usage will appear here",
+      "balance": "Balance:"
+    },
+    "invoices": {
+      "invoices": "Invoices",
+      "viewDownload": "View and download your billing invoices",
+      "stripeComingSoon": "Stripe Integration Coming Soon",
+      "invoiceManagement": "Invoice management and payment processing will be available in Phase 5 with Stripe integration.",
+      "downloadSample": "Download Sample Invoice",
+      "viewStripePortal": "View Stripe Portal"
+    },
+    "help": {
+      "needHelp": "Need Help with Billing?",
+      "haveQuestions": "Have questions about your credits, subscription, or billing? We're here to help.",
+      "contactSupport": "Contact Support",
+      "viewFaqs": "View FAQs"
+    },
+    "creditsModal": {
+      "title": "Add Bonus Credits?",
+      "subtitle": "Get 5 bonus credits now",
+      "description": "You're about to add 5 bonus credits to your account. This is a one-time offer for testing and development purposes.",
+      "cancel": "Cancel",
+      "addCredits": "Add Credits"
+    },
+    "loading": "Loading billing information..."
+  }
+}

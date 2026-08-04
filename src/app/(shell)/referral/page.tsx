@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useI18n } from "@/i18n";
 import { Copy, Check, Users, Award, Gift, TrendingUp, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -9,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Grid } from "@/components/ui/Grid";
 
 export default function ReferralPage() {
+  const { t } = useI18n();
   const referralCode = "HUAVOI-ABC123";
   const referralLink = `https://huavoi.studio/r/${referralCode}`;
   const [copied, setCopied] = useState(false);
@@ -27,7 +29,7 @@ export default function ReferralPage() {
 
   return (
     <div className="max-w-7xl mx-auto">
-      <PageHeader title="Referral Program" description="Invite friends and earn credits together" />
+      <PageHeader title={t("referral.title")} description={t("referral.description")} />
 
       {/* Referral Link Card */}
       <Card
@@ -44,13 +46,10 @@ export default function ReferralPage() {
               </div>
               <div className="flex-1">
                 <CardTitle className="flex items-center gap-2">
-                  Invite friends, earn credits
+                  {t("referral.inviteCard.title")}
                   <Gift className="w-5 h-5 text-accent-cyan" />
                 </CardTitle>
-                <CardDescription>
-                  Share your referral link. When someone signs up using your link, you both earn
-                  free render credits.
-                </CardDescription>
+                <CardDescription>{t("referral.inviteCard.description")}</CardDescription>
               </div>
             </div>
           </CardHeader>
@@ -58,7 +57,9 @@ export default function ReferralPage() {
             <div className="flex flex-col gap-3">
               <div className="flex flex-col sm:flex-row gap-3">
                 <div className="flex-1 rounded-lg border border-border-default bg-surface-raised px-4 py-3">
-                  <p className="text-xs font-medium text-text-muted mb-1">Your referral link</p>
+                  <p className="text-xs font-medium text-text-muted mb-1">
+                    {t("referral.inviteCard.yourReferralLink")}
+                  </p>
                   <p className="truncate text-sm text-text-primary font-mono">{referralLink}</p>
                 </div>
                 <Button
@@ -68,11 +69,13 @@ export default function ReferralPage() {
                   leftIcon={copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                   className="shrink-0"
                 >
-                  {copied ? "Copied!" : "Copy Link"}
+                  {copied ? t("referral.inviteCard.copied") : t("referral.inviteCard.copyLink")}
                 </Button>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-medium text-text-muted">Your code:</span>
+                <span className="text-xs font-medium text-text-muted">
+                  {t("referral.inviteCard.yourCode")}
+                </span>
                 <code className="rounded-lg bg-accent-muted px-3 py-1.5 text-sm font-mono text-accent-primary font-semibold">
                   {referralCode}
                 </code>
@@ -91,7 +94,7 @@ export default function ReferralPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-text-muted mb-1">Total Referrals</p>
+              <p className="text-sm text-text-muted mb-1">{t("referral.stats.totalReferrals")}</p>
               <p className="text-3xl font-bold text-text-primary">3</p>
             </div>
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -107,7 +110,7 @@ export default function ReferralPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-text-muted mb-1">Credits Earned</p>
+              <p className="text-sm text-text-muted mb-1">{t("referral.stats.creditsEarned")}</p>
               <p className="text-3xl font-bold text-accent-cyan">6</p>
             </div>
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -123,7 +126,7 @@ export default function ReferralPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-text-muted mb-1">Pending</p>
+              <p className="text-sm text-text-muted mb-1">{t("referral.stats.pending")}</p>
               <p className="text-3xl font-bold text-text-primary">1</p>
             </div>
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -136,8 +139,8 @@ export default function ReferralPage() {
       {/* Referral History */}
       <Card variant="elevated" padding="lg">
         <CardHeader>
-          <CardTitle>Referral History</CardTitle>
-          <CardDescription>Track your referrals and rewards</CardDescription>
+          <CardTitle>{t("referral.history.title")}</CardTitle>
+          <CardDescription>{t("referral.history.description")}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
@@ -145,16 +148,16 @@ export default function ReferralPage() {
               <thead>
                 <tr className="border-b border-border-default text-left">
                   <th className="pb-3 text-xs font-semibold text-text-secondary uppercase tracking-wider">
-                    Referred
+                    {t("referral.history.referred")}
                   </th>
                   <th className="pb-3 text-xs font-semibold text-text-secondary uppercase tracking-wider">
-                    Date
+                    {t("referral.history.date")}
                   </th>
                   <th className="pb-3 text-xs font-semibold text-text-secondary uppercase tracking-wider">
-                    Status
+                    {t("referral.history.status")}
                   </th>
                   <th className="pb-3 text-xs font-semibold text-text-secondary uppercase tracking-wider text-right">
-                    Credits
+                    {t("referral.history.credits")}
                   </th>
                 </tr>
               </thead>
@@ -168,7 +171,9 @@ export default function ReferralPage() {
                     <td className="py-3 text-text-muted">{row.date}</td>
                     <td className="py-3">
                       <Badge variant={row.status === "Signed up" ? "success" : "default"}>
-                        {row.status}
+                        {row.status === "Signed up"
+                          ? t("referral.history.signedUp")
+                          : t("referral.history.pending")}
                       </Badge>
                     </td>
                     <td className="py-3 text-right">

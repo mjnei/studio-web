@@ -1,0 +1,73 @@
+{
+  "billing": {
+    "title": "账单与额度",
+    "description": "管理您的订阅、额度和账单历史",
+    "tabs": {
+      "overview": "概览",
+      "history": "额度历史",
+      "invoices": "发票"
+    },
+    "overview": {
+      "currentBalance": "当前余额",
+      "credits": "额度",
+      "used": "本月已使用",
+      "percentUsed": "% 已使用",
+      "resets": "重置于",
+      "upgradeSection": "需要更多额度？",
+      "upgradeDescription": "升级可获得每月最多 100 个额度",
+      "upgradePlan": "升级计划",
+      "successMessage": "成功添加 5 个额度！🎉",
+      "creditDetails": "额度详情",
+      "creditDetailsDescription": "您当前的额度分配和使用情况",
+      "gimmeCredits": "给我额度",
+      "adding": "添加中...",
+      "monthlyAllocation": "月度分配",
+      "monthlyAllocationDescription": "每月分配的额度",
+      "creditsUsed": "已使用额度",
+      "creditsUsedDescription": "本计费周期已使用",
+      "cycleReset": "周期重置",
+      "nextAllocationReset": "下次额度重置",
+      "nextAllocationResetDescription": "您的额度将在",
+      "rolloverUp": "未使用的额度将结转最多",
+      "billing": "账单",
+      "billingDescription": "管理您的支付方式和订阅",
+      "update": "更新",
+      "billingPortal": "账单门户",
+      "currentPlan": "当前计划",
+      "changePlan": "更改计划",
+      "subscriptionStatus": "订阅状态",
+      "active": "有效",
+      "monthlyCost": "月度费用",
+      "nextBillingDate": "下次账单日期"
+    },
+    "history": {
+      "creditTransactionHistory": "额度交易历史",
+      "trackUsage": "跟踪您的额度使用和分配",
+      "noTransactions": "还没有额度交易",
+      "noTransactionsDescription": "您的额度使用情况将显示在此处",
+      "balance": "余额:"
+    },
+    "invoices": {
+      "invoices": "发票",
+      "viewDownload": "查看和下载您的账单发票",
+      "stripeComingSoon": "Stripe 集成即将推出",
+      "invoiceManagement": "发票管理和支付处理将在第 5 阶段通过 Stripe 集成提供。",
+      "downloadSample": "下载示例发票",
+      "viewStripePortal": "查看 Stripe 门户"
+    },
+    "help": {
+      "needHelp": "需要账单帮助？",
+      "haveQuestions": "对您的额度、订阅或账单有疑问？我们随时准备帮助您。",
+      "contactSupport": "联系支持",
+      "viewFaqs": "查看常见问题"
+    },
+    "creditsModal": {
+      "title": "添加额度奖励？",
+      "subtitle": "现在获得 5 个额度奖励",
+      "description": "您即将向帐户添加 5 个额度奖励。这是用于测试和开发目的的一次性优惠。",
+      "cancel": "取消",
+      "addCredits": "添加额度"
+    },
+    "loading": "加载账单信息中..."
+  }
+}

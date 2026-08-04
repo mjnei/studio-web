@@ -1,0 +1,24 @@
+{
+  "notifications": {
+    "title": "通知",
+    "unreadCount": "条未读通知",
+    "unreadCountPlural": "条未读通知",
+    "filters": {
+      "all": "全部",
+      "unread": "未读",
+      "completedJobs": "已完成的任务",
+      "failedJobs": "失败的任务",
+      "creditWarnings": "额度警告"
+    },
+    "markAllAsRead": "标记全部为已读",
+    "preferences": "偏好设置",
+    "noNotifications": "还没有通知",
+    "noNotificationsDescription": "当您的项目有任何更新时，您会在此看到它们。",
+    "noFilteredNotifications": "没有通知",
+    "noFilteredNotificationsDescription": "尝试选择不同的过滤器来查看其他通知。",
+    "loading": "加载通知中...",
+    "loadMore": "加载更多",
+    "confirmMarkAsRead": "标记",
+    "confirmMarkAsReadPlural": "条通知为已读？"
+  }
+}

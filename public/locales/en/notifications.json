@@ -1,0 +1,24 @@
+{
+  "notifications": {
+    "title": "Notifications",
+    "unreadCount": "unread notification",
+    "unreadCountPlural": "unread notifications",
+    "filters": {
+      "all": "All",
+      "unread": "Unread",
+      "completedJobs": "Completed Jobs",
+      "failedJobs": "Failed Jobs",
+      "creditWarnings": "Credit Warnings"
+    },
+    "markAllAsRead": "Mark All as Read",
+    "preferences": "Preferences",
+    "noNotifications": "No notifications yet",
+    "noNotificationsDescription": "You'll see updates here when something happens with your projects.",
+    "noFilteredNotifications": "No notifications",
+    "noFilteredNotificationsDescription": "Try selecting a different filter to see other notifications.",
+    "loading": "Loading notifications...",
+    "loadMore": "Load More",
+    "confirmMarkAsRead": "Mark",
+    "confirmMarkAsReadPlural": "notifications as read?"
+  }
+}

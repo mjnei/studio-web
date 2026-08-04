@@ -26,7 +26,7 @@ export function VoiceLimitDialog({
   onUpgrade,
 }: VoiceLimitDialogProps) {
   const { t } = useI18n();
-  
+
   const getTierName = (tierValue: string) => {
     switch (tierValue) {
       case "free":

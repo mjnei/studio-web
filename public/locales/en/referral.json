@@ -1,0 +1,29 @@
+{
+  "referral": {
+    "title": "Referral Program",
+    "description": "Invite friends and earn credits together",
+    "inviteCard": {
+      "title": "Invite friends, earn credits",
+      "description": "Share your referral link. When someone signs up using your link, you both earn free render credits.",
+      "yourReferralLink": "Your referral link",
+      "yourCode": "Your code:",
+      "copyLink": "Copy Link",
+      "copied": "Copied!"
+    },
+    "stats": {
+      "totalReferrals": "Total Referrals",
+      "creditsEarned": "Credits Earned",
+      "pending": "Pending"
+    },
+    "history": {
+      "title": "Referral History",
+      "description": "Track your referrals and rewards",
+      "referred": "Referred",
+      "date": "Date",
+      "status": "Status",
+      "credits": "Credits",
+      "signedUp": "Signed up",
+      "pending": "Pending"
+    }
+  }
+}

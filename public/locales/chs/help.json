@@ -1,0 +1,93 @@
+{
+  "help": {
+    "title": "帮助与文档",
+    "description": "了解如何从头到尾使用 Huavoi Studio",
+    "documentation": {
+      "title": "文档",
+      "subtitle": "浏览所有指南"
+    },
+    "community": {
+      "title": "社区",
+      "subtitle": "参与讨论"
+    },
+    "apiDocs": {
+      "title": "API 文档",
+      "subtitle": "开发者资源"
+    },
+    "gettingStarted": {
+      "title": "开始使用",
+      "articles": {
+        "creatingFirstProject": {
+          "title": "创建您的第一个项目",
+          "description": "了解如何设置新视频项目并选择源剪辑。"
+        },
+        "understandingPipeline": {
+          "title": "了解工作流程",
+          "description": "源 → 脚本 → 语音 → 合成工作流程的详细介绍。"
+        },
+        "choosingMovieClip": {
+          "title": "选择电影剪辑",
+          "description": "如何从电影库中浏览、过滤和预览剪辑。"
+        }
+      },
+      "readMore": "了解更多"
+    },
+    "scriptAI": {
+      "title": "脚本与 AI",
+      "articles": {
+        "generatingScripts": {
+          "title": "生成 AI 脚本",
+          "description": "Huavoi 如何创建候选脚本以及如何选择最好的脚本。"
+        },
+        "editingScripts": {
+          "title": "按片段编辑脚本",
+          "description": "时间戳编辑、AI 辅助重写和版本历史。"
+        },
+        "toneAndLength": {
+          "title": "语调和长度选项",
+          "description": "自定义 AI 输出：叙事、宣传、简短或详细。"
+        }
+      }
+    },
+    "voiceAudio": {
+      "title": "语音与音频",
+      "articles": {
+        "selectingVoice": {
+          "title": "选择预设语音",
+          "description": "浏览和预览用于旁白的库存语音。"
+        },
+        "cloningVoice": {
+          "title": "克隆您的语音",
+          "description": "从麦克风录制样本以创建自定义语音克隆。"
+        },
+        "voicePreview": {
+          "title": "渲染前的语音预览",
+          "description": "如何在提交完整 TTS 渲染前测试短预览剪辑。"
+        }
+      }
+    },
+    "composeExport": {
+      "title": "合成与导出",
+      "articles": {
+        "multiTrackTimeline": {
+          "title": "使用多轨时间线",
+          "description": "在时间线上排列视频、旁白、音乐和音效。"
+        },
+        "renderQueue": {
+          "title": "渲染队列和等待时间",
+          "description": "渲染的工作原理、预期等待时间和安全关闭行为。"
+        },
+        "exportFormats": {
+          "title": "导出格式和分辨率",
+          "description": "为最终导出选择分辨率、帧率和格式。"
+        }
+      }
+    },
+    "contactSupport": {
+      "title": "还需要帮助？",
+      "description": "找不到您要找的内容？我们的支持团队会帮助您成功。",
+      "contact": "联系支持",
+      "liveChat": "在线聊天"
+    }
+  }
+}

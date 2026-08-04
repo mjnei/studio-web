@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useI18n } from "@/i18n";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -19,74 +20,13 @@ interface PricingTier {
   color: "blue" | "cyan" | "purple";
 }
 
-const pricingTiers: PricingTier[] = [
-  {
-    name: "Free",
-    icon: Coins,
-    description: "Get started with basic video generation",
-    monthlyPrice: "$0",
-    annualPrice: "$0",
-    features: [
-      "5 credits per month",
-      "Rollover up to 10 credits",
-      "2 custom voice creations",
-      "Basic video generation",
-      "720p video quality",
-      "Standard project storage",
-    ],
-    credits: 5,
-    rollover: "10 credits",
-    color: "blue",
-  },
-  {
-    name: "Pro",
-    icon: Zap,
-    description: "For creators who need more capacity",
-    monthlyPrice: "$49/mo",
-    annualPrice: "$39/mo",
-    features: [
-      "25 credits per month",
-      "Rollover up to 50 credits",
-      "5 custom voice creations",
-      "HD video generation (1080p)",
-      "Priority processing",
-      "Advanced analytics",
-      "Export customization",
-    ],
-    credits: 25,
-    rollover: "50 credits",
-    highlight: true,
-    color: "cyan",
-  },
-  {
-    name: "Premium",
-    icon: Crown,
-    description: "Unlimited capacity for professionals",
-    monthlyPrice: "$199/mo",
-    annualPrice: "$159/mo",
-    features: [
-      "100 credits per month",
-      "Unlimited rollover",
-      "10 custom voice creations",
-      "4K video quality",
-      "Priority support",
-      "Advanced AI features",
-      "Team collaboration",
-      "White-label exports",
-      "API access",
-    ],
-    credits: 100,
-    rollover: "Unlimited",
-    color: "purple",
-  },
-];
-
 interface BillingToggleProps {
   billingCycle: "monthly" | "annual";
   onBillingCycleChange: (cycle: "monthly" | "annual") => void;
+  t: (key: string) => string;
 }
 
-function BillingToggle({ billingCycle, onBillingCycleChange }: BillingToggleProps) {
+function BillingToggle({ billingCycle, onBillingCycleChange, t }: BillingToggleProps) {
   return (
     <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-surface-raised border border-border-default shadow-sm">
       <button
@@ -97,7 +37,7 @@ function BillingToggle({ billingCycle, onBillingCycleChange }: BillingToggleProp
             : "text-text-muted hover:text-text-primary"
         }`}
       >
-        Monthly
+        {t("pricing.billingToggle.monthly")}
       </button>
       <button
         onClick={() => onBillingCycleChange("annual")}
@@ -107,15 +47,78 @@ function BillingToggle({ billingCycle, onBillingCycleChange }: BillingToggleProp
             : "text-text-muted hover:text-text-primary"
         }`}
       >
-        <span>Annual</span>
-        <span className="ml-2 text-xs opacity-75">Save 20%</span>
+        <span>{t("pricing.billingToggle.annual")}</span>
+        <span className="ml-2 text-xs opacity-75">{t("pricing.billingToggle.savings")}</span>
       </button>
     </div>
   );
 }
 
 export default function PricingPage() {
+  const { t } = useI18n();
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
+
+  const pricingTiers: PricingTier[] = [
+    {
+      name: t("pricing.free.name"),
+      icon: Coins,
+      description: t("pricing.free.description"),
+      monthlyPrice: t("pricing.free.price.monthly"),
+      annualPrice: t("pricing.free.price.annual"),
+      features: [
+        "5 credits per month",
+        "Rollover up to 10 credits",
+        "2 custom voice creations",
+        "Basic video generation",
+        "720p video quality",
+        "Standard project storage",
+      ],
+      credits: 5,
+      rollover: t("pricing.free.rolloverAmount"),
+      color: "blue",
+    },
+    {
+      name: t("pricing.pro.name"),
+      icon: Zap,
+      description: t("pricing.pro.description"),
+      monthlyPrice: t("pricing.pro.price.monthly"),
+      annualPrice: t("pricing.pro.price.annual"),
+      features: [
+        "25 credits per month",
+        "Rollover up to 50 credits",
+        "5 custom voice creations",
+        "HD video generation (1080p)",
+        "Priority processing",
+        "Advanced analytics",
+        "Export customization",
+      ],
+      credits: 25,
+      rollover: t("pricing.pro.rolloverAmount"),
+      highlight: true,
+      color: "cyan",
+    },
+    {
+      name: t("pricing.premium.name"),
+      icon: Crown,
+      description: t("pricing.premium.description"),
+      monthlyPrice: t("pricing.premium.price.monthly"),
+      annualPrice: t("pricing.premium.price.annual"),
+      features: [
+        "100 credits per month",
+        "Unlimited rollover",
+        "10 custom voice creations",
+        "4K video quality",
+        "Priority support",
+        "Advanced AI features",
+        "Team collaboration",
+        "White-label exports",
+        "API access",
+      ],
+      credits: 100,
+      rollover: t("pricing.premium.rolloverAmount"),
+      color: "purple",
+    },
+  ];
 
   const getColorClasses = (color: PricingTier["color"]) => {
     switch (color) {
@@ -177,19 +180,16 @@ export default function PricingPage() {
 
   return (
     <div className="max-w-7xl mx-auto">
-      <PageHeader
-        title="Simple, Transparent Pricing"
-        description="1 credit = 1 video generation. Choose the plan that fits your needs."
-      />
+      <PageHeader title={t("pricing.title")} description={t("pricing.description")} />
 
       {/* Pricing Header with Badge and Billing Toggle */}
       <div className="text-center mb-6">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-muted text-accent-primary text-sm font-medium mb-4">
           <Sparkles className="w-4 h-4" />
-          Special Launch Pricing
+          {t("pricing.badge")}
         </div>
         <div className="flex justify-center">
-          <BillingToggle billingCycle={billingCycle} onBillingCycleChange={setBillingCycle} />
+          <BillingToggle billingCycle={billingCycle} onBillingCycleChange={setBillingCycle} t={t} />
         </div>
       </div>
 
@@ -213,7 +213,7 @@ export default function PricingPage() {
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                   <div className="bg-accent-cyan text-white text-xs font-bold px-4 py-1.5 rounded-full inline-flex items-center gap-1.5 shadow-lg">
                     <Sparkles className="h-3 w-3" />
-                    Most Popular
+                    {t("pricing.pro.badge")}
                   </div>
                 </div>
               )}
@@ -234,13 +234,15 @@ export default function PricingPage() {
                 <div className="mb-2">
                   <div className="flex items-baseline gap-2">
                     <span className="text-4xl font-bold text-text-primary">{currentPrice}</span>
-                    {isAnnual && tier.name !== "Free" && (
-                      <span className="text-sm text-text-muted">billed annually</span>
+                    {isAnnual && tier.name !== t("pricing.free.name") && (
+                      <span className="text-sm text-text-muted">
+                        {t("pricing.free.price.billedAnnually")}
+                      </span>
                     )}
                   </div>
-                  {isAnnual && tier.name !== "Free" && (
+                  {isAnnual && tier.name !== t("pricing.free.name") && (
                     <p className="text-sm text-text-muted line-through">
-                      {tier.monthlyPrice} when billed monthly
+                      {tier.monthlyPrice} {t("pricing.free.price.billedMonthly")}
                     </p>
                   )}
                 </div>
@@ -249,16 +251,18 @@ export default function PricingPage() {
                 <div className="flex items-center gap-2 mb-4">
                   <TrendingUp className={`h-5 w-5 ${getColorClasses(tier.color)}`} />
                   <span className={`text-sm font-semibold ${getColorClasses(tier.color)}`}>
-                    {tier.credits} credits/month
+                    {tier.credits} {t("pricing.free.credits")}
                   </span>
-                  <span className="text-xs text-text-muted">• Rollover: {tier.rollover}</span>
+                  <span className="text-xs text-text-muted">
+                    • {t("pricing.free.rollover")} {tier.rollover}
+                  </span>
                 </div>
               </div>
 
               {/* Features */}
               <div className="flex-1 mb-8">
                 <h3 className="text-sm font-semibold text-text-secondary mb-3 uppercase tracking-wide">
-                  What&apos;s included
+                  {t("pricing.free.whatsIncluded")}
                 </h3>
                 <ul className="space-y-2.5">
                   {tier.features.map((feature, idx) => (
@@ -276,9 +280,11 @@ export default function PricingPage() {
                 size="lg"
                 onClick={() => handleSubscribe(tier.name)}
                 className="w-full"
-                disabled={tier.name === "Free"}
+                disabled={tier.name === t("pricing.free.name")}
               >
-                {tier.name === "Free" ? "Current Plan" : "Upgrade to " + tier.name}
+                {tier.name === t("pricing.free.name")
+                  ? t("pricing.free.button")
+                  : `${t(tier.name === t("pricing.pro.name") ? "pricing.pro.button" : "pricing.premium.button")}`}
               </Button>
             </div>
           );
@@ -288,43 +294,33 @@ export default function PricingPage() {
       {/* FAQ Section */}
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-text-primary text-center mb-6">
-          Frequently Asked Questions
+          {t("pricing.faq.title")}
         </h2>
         <div className="space-y-4 max-w-3xl mx-auto">
           <Card variant="elevated" padding="md">
             <h3 className="font-medium text-text-primary mb-2">
-              What is a credit and how is it used?
+              {t("pricing.faq.creditQuestion")}
             </h3>
-            <p className="text-sm text-text-secondary">
-              A credit is used to generate one video. Each video generation consumes 1 credit,
-              regardless of video length or complexity. Failed generations are automatically
-              refunded.
-            </p>
+            <p className="text-sm text-text-secondary">{t("pricing.faq.creditAnswer")}</p>
           </Card>
 
           <Card variant="elevated" padding="md">
-            <h3 className="font-medium text-text-primary mb-2">How does credit rollover work?</h3>
-            <p className="text-sm text-text-secondary">
-              Unused credits roll over to the next month, up to the maximum rollover limit for your
-              tier (Free: 10, Pro: 50, Premium: unlimited). Credits expire after 6 months of
-              inactivity.
-            </p>
+            <h3 className="font-medium text-text-primary mb-2">
+              {t("pricing.faq.rolloverQuestion")}
+            </h3>
+            <p className="text-sm text-text-secondary">{t("pricing.faq.rolloverAnswer")}</p>
           </Card>
 
           <Card variant="elevated" padding="md">
-            <h3 className="font-medium text-text-primary mb-2">Can I change or cancel my plan?</h3>
-            <p className="text-sm text-text-secondary">
-              Yes, you can upgrade, downgrade, or cancel your plan at any time. When downgrading,
-              you keep access to your current plan features until the end of your billing cycle.
-            </p>
+            <h3 className="font-medium text-text-primary mb-2">
+              {t("pricing.faq.changeQuestion")}
+            </h3>
+            <p className="text-sm text-text-secondary">{t("pricing.faq.changeAnswer")}</p>
           </Card>
 
           <Card variant="elevated" padding="md">
-            <h3 className="font-medium text-text-primary mb-2">Do you offer team plans?</h3>
-            <p className="text-sm text-text-secondary">
-              Team plans with shared credits and collaborative features are available for Premium
-              tier subscribers. Contact us for custom pricing.
-            </p>
+            <h3 className="font-medium text-text-primary mb-2">{t("pricing.faq.teamQuestion")}</h3>
+            <p className="text-sm text-text-secondary">{t("pricing.faq.teamAnswer")}</p>
           </Card>
         </div>
       </div>
