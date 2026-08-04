@@ -232,7 +232,9 @@ export default function CompletionStep() {
       <div className="mt-6 flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400">
         <div className="w-5 h-5 border-2 border-gray-400 dark:border-gray-500 border-t-transparent rounded-full animate-spin" />
         <span>
-          {t("onboarding.completion.redirect").replace("{seconds}", countdown.toString()).replace("{plural}", countdown === 1 ? "" : "s")}
+          {t("onboarding.completion.redirect")
+            .replace("{seconds}", countdown.toString())
+            .replace("{plural}", countdown === 1 ? "" : "s")}
         </span>
       </div>
     </div>

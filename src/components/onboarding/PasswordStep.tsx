@@ -104,7 +104,9 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
         </div>
 
         <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">
-          {hasExistingPassword ? t("onboarding.password.titleUpdate") : t("onboarding.password.title")}
+          {hasExistingPassword
+            ? t("onboarding.password.titleUpdate")
+            : t("onboarding.password.title")}
         </h2>
 
         <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 mb-3 px-4">
@@ -156,7 +158,11 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
               onClick={() => setShowPassword(!showPassword)}
               disabled={hasExistingPassword}
               className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 rounded-lg p-1 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              aria-label={showPassword ? t("onboarding.password.hidePassword") : t("onboarding.password.showPassword")}
+              aria-label={
+                showPassword
+                  ? t("onboarding.password.hidePassword")
+                  : t("onboarding.password.showPassword")
+              }
             >
               {showPassword ? (
                 <EyeOff className="w-5 h-5" aria-hidden="true" />
@@ -184,10 +190,13 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
                           : "text-green-600 dark:text-green-400"
                   }`}
                 >
-                  {passwordStrength.label === "Weak" ? t("onboarding.password.strengthWeak") :
-                   passwordStrength.label === "Fair" ? t("onboarding.password.strengthFair") :
-                   passwordStrength.label === "Good" ? t("onboarding.password.strengthGood") :
-                   t("onboarding.password.strengthStrong")}
+                  {passwordStrength.label === "Weak"
+                    ? t("onboarding.password.strengthWeak")
+                    : passwordStrength.label === "Fair"
+                      ? t("onboarding.password.strengthFair")
+                      : passwordStrength.label === "Good"
+                        ? t("onboarding.password.strengthGood")
+                        : t("onboarding.password.strengthStrong")}
                 </span>
               </div>
               <div className="flex gap-1.5">
@@ -230,7 +239,11 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               disabled={hasExistingPassword}
               className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 rounded-lg p-1 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              aria-label={showConfirmPassword ? t("onboarding.password.hideConfirmPassword") : t("onboarding.password.showConfirmPassword")}
+              aria-label={
+                showConfirmPassword
+                  ? t("onboarding.password.hideConfirmPassword")
+                  : t("onboarding.password.showConfirmPassword")
+              }
             >
               {showConfirmPassword ? (
                 <EyeOff className="w-5 h-5" aria-hidden="true" />
@@ -290,7 +303,9 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
           {loading ? (
             <span className="flex items-center justify-center gap-2">
               <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              {hasExistingPassword ? t("onboarding.password.updating") : t("onboarding.password.settingPassword")}
+              {hasExistingPassword
+                ? t("onboarding.password.updating")
+                : t("onboarding.password.settingPassword")}
             </span>
           ) : hasExistingPassword ? (
             t("onboarding.password.alreadySet")

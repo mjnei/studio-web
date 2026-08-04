@@ -14,7 +14,15 @@ interface I18nContextType {
 
 const I18nContext = createContext<I18nContextType | undefined>(undefined);
 
-const translationFiles = ["common", "auth", "project", "jobs", "voices", "shell"] as const;
+const translationFiles = [
+  "common",
+  "auth",
+  "onboarding",
+  "project",
+  "jobs",
+  "voices",
+  "shell",
+] as const;
 
 const translationsCache: Record<Locale, Translations> = {} as Record<Locale, Translations>;
 
