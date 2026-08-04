@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { AlertCircle, User, Mail, Lock, CheckCircle } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import { useI18n } from "@/i18n";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -16,6 +17,7 @@ export default function SignupPage() {
     isAuthenticated,
     isLoading: authLoading,
   } = useAuth();
+  const { t } = useI18n();
   const toast = useToast();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,28 +31,28 @@ export default function SignupPage() {
     setError("");
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      setError(t("auth.signup.validation.passwordMismatch"));
       return;
     }
 
     if (password.length < 8) {
-      setError("Password must be at least 8 characters");
+      setError(t("auth.signup.validation.passwordTooShort"));
       return;
     }
 
     if (!name.trim()) {
-      setError("Name is required");
+      setError(t("auth.signup.validation.nameRequired"));
       return;
     }
 
     setLoading(true);
     try {
       await signupWithPassword(email, password, name);
-      toast.success("Account created!", "Welcome to Huavoi Studio.");
+      toast.success(t("auth.signup.successTitle"), t("auth.signup.successMessage"));
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Signup failed";
+      const msg = err instanceof Error ? err.message : t("auth.signup.errorDefault");
       setError(msg);
-      toast.error("Signup failed", msg);
+      toast.error(t("auth.signup.errorTitle"), msg);
       setLoading(false);
     }
   }
@@ -60,11 +62,11 @@ export default function SignupPage() {
     setLoading(true);
     try {
       await loginWithGoogle();
-      toast.success("Account created!", "Welcome to Huavoi Studio.");
+      toast.success(t("auth.signup.successTitle"), t("auth.signup.successMessage"));
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Google sign-in failed";
+      const msg = err instanceof Error ? err.message : t("auth.signup.errorGoogle");
       setError(msg);
-      toast.error("Signup failed", msg);
+      toast.error(t("auth.signup.errorTitle"), msg);
       setLoading(false);
     }
   }
@@ -76,7 +78,7 @@ export default function SignupPage() {
         <div className="flex flex-col items-center justify-center py-12">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-primary mb-4"></div>
           <p className="text-sm text-text-secondary">
-            {isAuthenticated ? "Redirecting..." : "Loading..."}
+            {isAuthenticated ? t("auth.signup.redirecting") : t("auth.signup.loading")}
           </p>
         </div>
       </Card>
@@ -86,8 +88,8 @@ export default function SignupPage() {
   return (
     <Card variant="elevated" padding="lg" className="w-full">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-text-primary mb-2">Create your account</h2>
-        <p className="text-sm text-text-secondary">Sign up to get started with Huavoi Studio</p>
+        <h2 className="text-2xl font-bold text-text-primary mb-2">{t("auth.signup.title")}</h2>
+        <p className="text-sm text-text-secondary">{t("auth.signup.subtitle")}</p>
       </div>
 
       {error && (
@@ -101,56 +103,56 @@ export default function SignupPage() {
         <Input
           id="name"
           type="text"
-          label="Full Name"
+          label={t("auth.signup.fullName")}
           value={name}
           onChange={(e) => setName(e.target.value)}
           disabled={loading}
-          placeholder="John Doe"
+          placeholder={t("auth.placeholders.fullName")}
           icon={<User className="w-5 h-5" />}
         />
 
         <Input
           id="email"
           type="email"
-          label="Email"
+          label={t("auth.signup.email")}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           disabled={loading}
-          placeholder="you@example.com"
+          placeholder={t("auth.placeholders.email")}
           icon={<Mail className="w-5 h-5" />}
         />
 
         <Input
           id="password"
           type="password"
-          label="Password"
+          label={t("auth.signup.password")}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           disabled={loading}
-          placeholder="At least 8 characters"
+          placeholder={t("auth.placeholders.passwordHint")}
           icon={<Lock className="w-5 h-5" />}
         />
 
         <Input
           id="confirmPassword"
           type="password"
-          label="Confirm Password"
+          label={t("auth.signup.confirmPassword")}
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           disabled={loading}
-          placeholder="Re-enter your password"
+          placeholder={t("auth.placeholders.confirmPassword")}
           icon={<CheckCircle className="w-5 h-5" />}
         />
 
         <Button type="submit" variant="primary" fullWidth loading={loading} size="lg">
-          {loading ? "Creating account..." : "Create account"}
+          {loading ? t("auth.signup.creating") : t("auth.signup.create")}
         </Button>
       </form>
 
       <div className="my-6 flex items-center gap-4">
         <div className="h-px flex-1 bg-border-default" />
         <span className="text-xs font-medium text-text-muted uppercase tracking-wider">
-          or continue with
+          {t("auth.signup.orContinueWith")}
         </span>
         <div className="h-px flex-1 bg-border-default" />
       </div>
@@ -183,7 +185,7 @@ export default function SignupPage() {
             </svg>
           }
         >
-          Google
+          {t("auth.signup.google")}
         </Button>
 
         <Button
@@ -197,18 +199,18 @@ export default function SignupPage() {
             </svg>
           }
         >
-          Apple
+          {t("auth.signup.apple")}
         </Button>
       </div>
 
       <div className="mt-6 text-center">
         <p className="text-sm text-text-secondary">
-          Already have an account?{" "}
+          {t("auth.signup.haveAccount")}{" "}
           <Link
             href="/login"
             className="font-medium text-accent-primary hover:text-accent-secondary transition-colors"
           >
-            Sign in
+            {t("auth.signup.signInLink")}
           </Link>
         </p>
       </div>
