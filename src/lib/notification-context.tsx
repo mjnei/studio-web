@@ -190,6 +190,9 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
     try {
       // Transform each preference update to backend format and send individually
       const updatePromises = Object.entries(updates).map(([notificationType, pref]) => {
+        if (!pref) {
+          return Promise.resolve();
+        }
         return request<void>("/notifications/preferences", {
           method: "PATCH",
           body: JSON.stringify({
@@ -201,8 +204,16 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
 
       await Promise.all(updatePromises);
 
-      // Update local state
-      setPreferences((prev) => ({ ...(prev || {}), ...updates }));
+      // Update local state - filter out undefined values
+      setPreferences((prev) => {
+        const filtered = Object.entries(updates).reduce((acc, [key, value]) => {
+          if (value !== undefined) {
+            acc[key] = value;
+          }
+          return acc;
+        }, {} as NotificationPreferences);
+        return { ...(prev || {}), ...filtered };
+      });
     } catch (error) {
       console.error("Failed to update preferences:", error);
       throw error;
