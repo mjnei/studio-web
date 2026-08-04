@@ -1,0 +1,22 @@
+{
+  "voices": {
+    "title": "Voices",
+    "voiceLibrary": "Voice Library",
+    "myVoices": "My Voices",
+    "selectVoice": "Select Voice",
+    "previewVoice": "Preview Voice",
+    "male": "Male",
+    "female": "Female",
+    "language": "Language",
+    "accent": "Accent",
+    "age": "Age",
+    "style": "Style",
+    "voiceCloning": "Voice Cloning",
+    "uploadSample": "Upload Sample",
+    "voiceSettings": "Voice Settings",
+    "pitch": "Pitch",
+    "speed": "Speed",
+    "volume": "Volume",
+    "noVoices": "No voices available"
+  }
+}

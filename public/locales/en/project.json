@@ -1,0 +1,20 @@
+{
+  "project": {
+    "title": "Project",
+    "projects": "Projects",
+    "newProject": "New Project",
+    "createProject": "Create Project",
+    "projectName": "Project Name",
+    "projectDescription": "Project Description",
+    "myProjects": "My Projects",
+    "recentProjects": "Recent Projects",
+    "allProjects": "All Projects",
+    "deleteProject": "Delete Project",
+    "editProject": "Edit Project",
+    "duplicateProject": "Duplicate Project",
+    "shareProject": "Share Project",
+    "projectSettings": "Project Settings",
+    "noProjects": "No projects yet",
+    "createFirstProject": "Create your first project to get started"
+  }
+}

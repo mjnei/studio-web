@@ -1,0 +1,20 @@
+{
+  "shell": {
+    "dashboard": "仪表板",
+    "projects": "项目",
+    "voices": "语音",
+    "jobs": "任务",
+    "settings": "设置",
+    "help": "帮助",
+    "account": "账户",
+    "profile": "个人资料",
+    "notifications": "通知",
+    "credits": "积分",
+    "billing": "账单",
+    "support": "支持",
+    "documentation": "文档",
+    "apiKeys": "API 密钥",
+    "team": "团队",
+    "logout": "退出登录"
+  }
+}

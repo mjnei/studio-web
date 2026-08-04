@@ -1,0 +1,22 @@
+{
+  "voices": {
+    "title": "语音",
+    "voiceLibrary": "语音库",
+    "myVoices": "我的语音",
+    "selectVoice": "选择语音",
+    "previewVoice": "预览语音",
+    "male": "男声",
+    "female": "女声",
+    "language": "语言",
+    "accent": "口音",
+    "age": "年龄",
+    "style": "风格",
+    "voiceCloning": "声音克隆",
+    "uploadSample": "上传样本",
+    "voiceSettings": "语音设置",
+    "pitch": "音调",
+    "speed": "语速",
+    "volume": "音量",
+    "noVoices": "暂无可用语音"
+  }
+}

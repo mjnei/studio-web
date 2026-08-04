@@ -1,0 +1,24 @@
+{
+  "jobs": {
+    "title": "Jobs",
+    "jobQueue": "Job Queue",
+    "allJobs": "All Jobs",
+    "activeJobs": "Active Jobs",
+    "completedJobs": "Completed Jobs",
+    "failedJobs": "Failed Jobs",
+    "status": "Status",
+    "pending": "Pending",
+    "running": "Running",
+    "completed": "Completed",
+    "failed": "Failed",
+    "cancelled": "Cancelled",
+    "progress": "Progress",
+    "startTime": "Start Time",
+    "endTime": "End Time",
+    "duration": "Duration",
+    "retry": "Retry",
+    "cancelJob": "Cancel Job",
+    "viewDetails": "View Details",
+    "noJobs": "No jobs found"
+  }
+}

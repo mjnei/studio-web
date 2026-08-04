@@ -1,0 +1,20 @@
+{
+  "shell": {
+    "dashboard": "Dashboard",
+    "projects": "Projects",
+    "voices": "Voices",
+    "jobs": "Jobs",
+    "settings": "Settings",
+    "help": "Help",
+    "account": "Account",
+    "profile": "Profile",
+    "notifications": "Notifications",
+    "credits": "Credits",
+    "billing": "Billing",
+    "support": "Support",
+    "documentation": "Documentation",
+    "apiKeys": "API Keys",
+    "team": "Team",
+    "logout": "Logout"
+  }
+}
