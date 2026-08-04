@@ -7,7 +7,6 @@ import { useI18n } from "@/i18n";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
 
 export default function ForgotPasswordPage() {
   const { t } = useI18n();
@@ -35,9 +34,6 @@ export default function ForgotPasswordPage() {
 
   return (
     <Card variant="elevated" padding="lg">
-      <div className="mb-4 flex justify-end">
-        <LanguageSwitcher />
-      </div>
       <div className="mb-6 text-center">
         <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-accent-secondary/20 to-accent-primary/20">
           <Lock className="w-8 h-8 text-accent-primary" />

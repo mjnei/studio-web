@@ -14,7 +14,7 @@ export function LanguageSwitcher() {
       >
         {locales.map((loc) => (
           <option key={loc} value={loc}>
-            {localeNames[loc].flag} 
+            {localeNames[loc].flag} {localeNames[loc].name}
           </option>
         ))}
       </select>

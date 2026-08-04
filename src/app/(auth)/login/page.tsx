@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/toast";
-import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
 
 export default function LoginPage() {
   const { loginWithGoogle, loginWithPassword, isAuthenticated, isLoading: authLoading } = useAuth();
@@ -65,12 +64,9 @@ export default function LoginPage() {
 
   return (
     <Card variant="elevated" padding="lg" className="w-full">
-      <div className="mb-6 flex items-start justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-text-primary mb-2">{t("auth.login.title")}</h2>
-          <p className="text-sm text-text-secondary">{t("auth.login.subtitle")}</p>
-        </div>
-        <LanguageSwitcher />
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold text-text-primary mb-2">{t("auth.login.title")}</h2>
+        <p className="text-sm text-text-secondary">{t("auth.login.subtitle")}</p>
       </div>
 
       {error && (
