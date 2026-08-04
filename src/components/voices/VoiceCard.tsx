@@ -1,16 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import {
-  Play,
-  Pause,
-  Trash2,
-  Share2,
-  Lock,
-  Clock,
-  CheckCircle,
-  User,
-} from "lucide-react";
+import { Play, Pause, Trash2, Share2, Lock, Clock, CheckCircle, User } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/toast";
 import { useI18n } from "@/i18n";
@@ -136,10 +127,7 @@ export function VoiceCard({
         audio.onerror = () => {
           setIsPlaying(false);
           setIsLoading(false);
-          toast.error(
-            t("voices.playback.playbackFailed"),
-            t("voices.playback.failedToPlayAudio")
-          );
+          toast.error(t("voices.playback.playbackFailed"), t("voices.playback.failedToPlayAudio"));
         };
 
         audio.oncanplay = () => {
@@ -151,10 +139,7 @@ export function VoiceCard({
       } catch (error) {
         console.error("Audio playback error:", error);
         setIsLoading(false);
-        toast.error(
-          t("voices.playback.playbackFailed"),
-          t("voices.playback.failedToLoadAudio")
-        );
+        toast.error(t("voices.playback.playbackFailed"), t("voices.playback.failedToLoadAudio"));
       }
     } else {
       audioRef.current.play();
@@ -220,7 +205,9 @@ export function VoiceCard({
                 <User className="h-3 w-3" />
                 <span>
                   @{creatorInfo.creator_username}
-                  {isOwnVoice && <span className="text-accent-primary ml-1">{t("voices.metadata.you")}</span>}
+                  {isOwnVoice && (
+                    <span className="text-accent-primary ml-1">{t("voices.metadata.you")}</span>
+                  )}
                 </span>
               </div>
               <span>•</span>

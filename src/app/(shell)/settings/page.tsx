@@ -6,7 +6,6 @@ import {
   Bell,
   Palette,
   FileText,
-  Video,
   Shield,
   Download,
   Settings as SettingsIcon,
@@ -15,6 +14,7 @@ import {
 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { useI18n } from "@/i18n";
 
 function Toggle({ checked, onChange }: { checked: boolean; onChange: () => void }) {
   return (
@@ -56,13 +56,7 @@ function SettingRow({ title, description, children }: SettingRowProps) {
 }
 
 export default function SettingsPage() {
-  const [notifications, setNotifications] = useState({
-    renderCompletion: true,
-    renderFailure: true,
-    weeklySummary: false,
-    emailNotifications: true,
-  });
-
+  const { t } = useI18n();
   const [defaults, setDefaults] = useState({
     voice: "none",
     resolution: "1080p",
@@ -78,12 +72,6 @@ export default function SettingsPage() {
     waveformAnimation: true,
   });
 
-  const [render, setRender] = useState({
-    autoCompose: false,
-    backgroundMusic: "none",
-    defaultVolume: "80",
-  });
-
   const [saved, setSaved] = useState(false);
 
   const handleSave = () => {
@@ -94,8 +82,8 @@ export default function SettingsPage() {
   return (
     <div className="max-w-7xl mx-auto">
       <PageHeader
-        title="Settings"
-        description="Customize your experience and manage preferences"
+        title={t("settings.title")}
+        description={t("settings.description")}
         action={
           <button
             onClick={handleSave}
@@ -104,12 +92,12 @@ export default function SettingsPage() {
             {saved ? (
               <>
                 <Check className="w-4 h-4" />
-                Saved
+                {t("settings.saved")}
               </>
             ) : (
               <>
                 <SettingsIcon className="w-4 h-4" />
-                Save Changes
+                {t("settings.saveChanges")}
               </>
             )}
           </button>
@@ -131,8 +119,8 @@ export default function SettingsPage() {
                     <Bell className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <CardTitle>Notifications</CardTitle>
-                    <CardDescription>Manage notification preferences</CardDescription>
+                    <CardTitle>{t("settings.notifications.title")}</CardTitle>
+                    <CardDescription>{t("settings.notifications.description")}</CardDescription>
                   </div>
                 </div>
                 <ChevronRight className="w-5 h-5 text-text-muted group-hover:text-accent-primary transition-colors" />
@@ -149,8 +137,8 @@ export default function SettingsPage() {
                 <FileText className="w-5 h-5 text-white" />
               </div>
               <div>
-                <CardTitle>Project Defaults</CardTitle>
-                <CardDescription>Pre-fill these values for new projects</CardDescription>
+                <CardTitle>{t("settings.projectDefaults.title")}</CardTitle>
+                <CardDescription>{t("settings.projectDefaults.description")}</CardDescription>
               </div>
             </div>
           </CardHeader>
@@ -158,58 +146,58 @@ export default function SettingsPage() {
             <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
               <div>
                 <label className="mb-2 block text-sm font-medium text-text-primary">
-                  Default Voice
+                  {t("settings.projectDefaults.defaultVoice")}
                 </label>
                 <select
                   value={defaults.voice}
                   onChange={(e) => setDefaults((d) => ({ ...d, voice: e.target.value }))}
                   className="w-full h-11 rounded-lg border border-border-default bg-surface-raised px-4 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary transition-all"
                 >
-                  <option value="none">None</option>
-                  <option value="voice-a">Voice A</option>
-                  <option value="voice-b">Voice B</option>
+                  <option value="none">{t("settings.projectDefaults.voiceNone")}</option>
+                  <option value="voice-a">{t("settings.projectDefaults.voiceA")}</option>
+                  <option value="voice-b">{t("settings.projectDefaults.voiceB")}</option>
                 </select>
               </div>
               <div>
                 <label className="mb-2 block text-sm font-medium text-text-primary">
-                  Resolution
+                  {t("settings.projectDefaults.resolution")}
                 </label>
                 <select
                   value={defaults.resolution}
                   onChange={(e) => setDefaults((d) => ({ ...d, resolution: e.target.value }))}
                   className="w-full h-11 rounded-lg border border-border-default bg-surface-raised px-4 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary transition-all"
                 >
-                  <option value="720p">720p</option>
-                  <option value="1080p">1080p (Recommended)</option>
-                  <option value="4k">4K</option>
+                  <option value="720p">{t("settings.projectDefaults.resolution720p")}</option>
+                  <option value="1080p">{t("settings.projectDefaults.resolution1080p")}</option>
+                  <option value="4k">{t("settings.projectDefaults.resolution4k")}</option>
                 </select>
               </div>
               <div>
                 <label className="mb-2 block text-sm font-medium text-text-primary">
-                  Frame Rate
+                  {t("settings.projectDefaults.frameRate")}
                 </label>
                 <select
                   value={defaults.fps}
                   onChange={(e) => setDefaults((d) => ({ ...d, fps: e.target.value }))}
                   className="w-full h-11 rounded-lg border border-border-default bg-surface-raised px-4 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary transition-all"
                 >
-                  <option value="24">24 fps (Cinematic)</option>
-                  <option value="30">30 fps (Standard)</option>
-                  <option value="60">60 fps (Smooth)</option>
+                  <option value="24">{t("settings.projectDefaults.fps24")}</option>
+                  <option value="30">{t("settings.projectDefaults.fps30")}</option>
+                  <option value="60">{t("settings.projectDefaults.fps60")}</option>
                 </select>
               </div>
               <div>
                 <label className="mb-2 block text-sm font-medium text-text-primary">
-                  Export Format
+                  {t("settings.projectDefaults.exportFormat")}
                 </label>
                 <select
                   value={defaults.exportFormat}
                   onChange={(e) => setDefaults((d) => ({ ...d, exportFormat: e.target.value }))}
                   className="w-full h-11 rounded-lg border border-border-default bg-surface-raised px-4 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary transition-all"
                 >
-                  <option value="mp4">MP4 (Recommended)</option>
-                  <option value="webm">WebM</option>
-                  <option value="mov">MOV</option>
+                  <option value="mp4">{t("settings.projectDefaults.exportMp4")}</option>
+                  <option value="webm">{t("settings.projectDefaults.exportWebm")}</option>
+                  <option value="mov">{t("settings.projectDefaults.exportMov")}</option>
                 </select>
               </div>
             </div>
@@ -224,15 +212,15 @@ export default function SettingsPage() {
                 <Palette className="w-5 h-5 text-white" />
               </div>
               <div>
-                <CardTitle>Appearance</CardTitle>
-                <CardDescription>Customize the interface to your preference</CardDescription>
+                <CardTitle>{t("settings.appearance.title")}</CardTitle>
+                <CardDescription>{t("settings.appearance.description")}</CardDescription>
               </div>
             </div>
           </CardHeader>
           <CardContent className="space-y-1">
             <SettingRow
-              title="Compact mode"
-              description="Reduce spacing and use smaller thumbnails"
+              title={t("settings.appearance.compactMode")}
+              description={t("settings.appearance.compactModeDesc")}
             >
               <Toggle
                 checked={appearance.compactMode}
@@ -240,8 +228,8 @@ export default function SettingsPage() {
               />
             </SettingRow>
             <SettingRow
-              title="Auto-play previews"
-              description="Automatically play clip and voice previews"
+              title={t("settings.appearance.autoPlayPreviews")}
+              description={t("settings.appearance.autoPlayPreviewsDesc")}
             >
               <Toggle
                 checked={appearance.autoPlayPreviews}
@@ -251,8 +239,8 @@ export default function SettingsPage() {
               />
             </SettingRow>
             <SettingRow
-              title="Waveform animations"
-              description="Animate audio waveforms when playing"
+              title={t("settings.appearance.waveformAnimations")}
+              description={t("settings.appearance.waveformAnimationsDesc")}
             >
               <Toggle
                 checked={appearance.waveformAnimation}
@@ -272,25 +260,25 @@ export default function SettingsPage() {
                 <Shield className="w-5 h-5 text-white" />
               </div>
               <div>
-                <CardTitle>Data & Privacy</CardTitle>
-                <CardDescription>Manage your data and privacy preferences</CardDescription>
+                <CardTitle>{t("settings.dataPrivacy.title")}</CardTitle>
+                <CardDescription>{t("settings.dataPrivacy.description")}</CardDescription>
               </div>
             </div>
           </CardHeader>
           <CardContent className="space-y-1">
             <SettingRow
-              title="Usage analytics"
-              description="Help us improve by sharing anonymized data"
+              title={t("settings.dataPrivacy.usageAnalytics")}
+              description={t("settings.dataPrivacy.usageAnalyticsDesc")}
             >
               <Toggle checked={true} onChange={() => {}} />
             </SettingRow>
             <SettingRow
-              title="Export my data"
-              description="Download all your projects and account info"
+              title={t("settings.dataPrivacy.exportMyData")}
+              description={t("settings.dataPrivacy.exportMyDataDesc")}
             >
               <button className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border-default bg-surface-raised text-sm font-medium text-text-primary hover:bg-surface-hover transition-all">
                 <Download className="w-4 h-4" />
-                Request Export
+                {t("settings.dataPrivacy.requestExport")}
               </button>
             </SettingRow>
           </CardContent>

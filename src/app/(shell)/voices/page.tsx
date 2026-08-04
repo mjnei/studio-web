@@ -1,13 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import {
-  Plus,
-  Mic,
-  Globe,
-  AlertCircle,
-  Info,
-} from "lucide-react";
+import { Plus, Mic, Globe, AlertCircle, Info } from "lucide-react";
 import { VoiceRecordingModal } from "@/components/shared/voice-recording-modal";
 import { VoiceLimitDialog } from "@/components/voices/voice-limit-dialog";
 import { VoiceCard } from "@/components/voices/VoiceCard";
@@ -93,7 +87,9 @@ export default function VoicesPage() {
           setCommunityVoices(voicesWithAudioUrls);
           setCommunityError(null);
         } catch (err) {
-          setCommunityError(err instanceof Error ? err.message : t("voices.toasts.anErrorOccurred"));
+          setCommunityError(
+            err instanceof Error ? err.message : t("voices.toasts.anErrorOccurred")
+          );
         } finally {
           setCommunityLoading(false);
         }
@@ -160,7 +156,10 @@ export default function VoicesPage() {
     setUnsharing(true);
     try {
       await toggleSharing(voiceToUnshare, false);
-      toast.success(t("voices.toasts.voiceMadePrivate"), t("voices.toasts.voiceMadePrivateDescription"));
+      toast.success(
+        t("voices.toasts.voiceMadePrivate"),
+        t("voices.toasts.voiceMadePrivateDescription")
+      );
       setUnshareConfirmOpen(false);
       setVoiceToUnshare(null);
       await refetch();
@@ -217,7 +216,8 @@ export default function VoicesPage() {
           tab === "private" ? (
             <div className="flex items-center gap-3">
               <span className="rounded-full bg-green-500/10 border border-green-500/30 px-3 py-1.5 text-xs font-medium text-green-600 whitespace-nowrap">
-                {voiceLimits.currentCount} / {voiceLimits.limit} {t("voices.tabs.private").toLowerCase()}
+                {voiceLimits.currentCount} / {voiceLimits.limit}{" "}
+                {t("voices.tabs.private").toLowerCase()}
               </span>
               <Button
                 variant="primary"
@@ -441,7 +441,11 @@ export default function VoicesPage() {
 
           {/* Loading State */}
           {communityLoading ? (
-            <LoadingSpinner size="lg" message={t("voices.errors.loadingCommunityVoices")} fullHeight />
+            <LoadingSpinner
+              size="lg"
+              message={t("voices.errors.loadingCommunityVoices")}
+              fullHeight
+            />
           ) : communityVoices.length === 0 ? (
             /* Empty State */
             <EmptyState

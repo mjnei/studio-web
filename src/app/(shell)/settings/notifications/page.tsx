@@ -1,26 +1,42 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useNotifications } from "@/lib/notification-context";
 import { Monitor, Check, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { NOTIFICATION_TYPE_CONFIG, NOTIFICATION_CATEGORIES } from "@/lib/notification-constants";
+import { useI18n } from "@/i18n";
 
 export default function NotificationSettingsPage() {
+  const { t } = useI18n();
   const { preferences, updatePreferences, preferencesLoading } = useNotifications();
 
   const [localPreferences, setLocalPreferences] = useState(preferences || {});
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const preferencesRef = useRef(preferences);
 
-  // Sync with context when preferences change
+  // Update ref when preferences change
   useEffect(() => {
-    if (preferences) {
-      setLocalPreferences(preferences);
+    preferencesRef.current = preferences;
+  }, [preferences]);
+
+  // Initialize local preferences from context if provided
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    if (preferences && Object.keys(preferences).length > 0) {
+      setLocalPreferences((prev) => {
+        // Only update if actually different to avoid cascading renders
+        if (JSON.stringify(prev) !== JSON.stringify(preferences)) {
+          return preferences;
+        }
+        return prev;
+      });
     }
   }, [preferences]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const handleToggle = (notificationType: string) => {
     setLocalPreferences((prev) => ({
@@ -66,15 +82,15 @@ export default function NotificationSettingsPage() {
   return (
     <div className="max-w-7xl mx-auto">
       <PageHeader
-        title="Notification Settings"
-        description="Manage how you receive notifications"
+        title={t("notificationSettings.title")}
+        description={t("notificationSettings.description")}
         breadcrumbs={
           <Link
             href="/settings"
             className="inline-flex items-center gap-2 text-sm text-text-muted hover:text-text-primary transition-colors group"
           >
             <ChevronLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
-            <span>Back to Settings</span>
+            <span>{t("notificationSettings.backToSettings")}</span>
           </Link>
         }
       />
@@ -107,7 +123,9 @@ export default function NotificationSettingsPage() {
 
                         {/* In-App Toggle */}
                         <label className="flex flex-col items-center gap-2 cursor-pointer">
-                          <span className="text-xs font-medium text-text-muted">In-App</span>
+                          <span className="text-xs font-medium text-text-muted">
+                            {t("notificationSettings.inApp")}
+                          </span>
                           <button
                             onClick={() => handleToggle(type)}
                             className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
@@ -137,11 +155,13 @@ export default function NotificationSettingsPage() {
               {saveSuccess && (
                 <span className="text-sm text-status-success font-medium flex items-center gap-2">
                   <Check size={16} />
-                  Preferences saved!
+                  {t("notificationSettings.preferencesSaved")}
                 </span>
               )}
               <Button onClick={handleSave} disabled={isSaving || preferencesLoading} size="lg">
-                {isSaving ? "Saving..." : "Save Preferences"}
+                {isSaving
+                  ? t("notificationSettings.saving")
+                  : t("notificationSettings.savePreferences")}
               </Button>
             </div>
           </div>

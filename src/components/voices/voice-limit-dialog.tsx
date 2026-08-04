@@ -52,7 +52,7 @@ export function VoiceLimitDialog({
 
         {/* Message */}
         <p className="text-sm text-text-secondary text-center mb-6">
-          You've created <span className="font-semibold text-text-primary">{currentCount}</span> of{" "}
+          You&apos;ve created <span className="font-semibold text-text-primary">{currentCount}</span> of{" "}
           <span className="font-semibold text-text-primary">{limit}</span> voices available on the{" "}
           <span className="font-semibold text-accent-primary">{tierName}</span> plan.
         </p>

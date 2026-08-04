@@ -1,0 +1,61 @@
+{
+  "settings": {
+    "title": "Settings",
+    "description": "Customize your experience and manage preferences",
+    "saveChanges": "Save Changes",
+    "saved": "Saved",
+    "notifications": {
+      "title": "Notifications",
+      "description": "Manage notification preferences"
+    },
+    "projectDefaults": {
+      "title": "Project Defaults",
+      "description": "Pre-fill these values for new projects",
+      "defaultVoice": "Default Voice",
+      "voiceNone": "None",
+      "voiceA": "Voice A",
+      "voiceB": "Voice B",
+      "resolution": "Resolution",
+      "resolution720p": "720p",
+      "resolution1080p": "1080p (Recommended)",
+      "resolution4k": "4K",
+      "frameRate": "Frame Rate",
+      "fps24": "24 fps (Cinematic)",
+      "fps30": "30 fps (Standard)",
+      "fps60": "60 fps (Smooth)",
+      "exportFormat": "Export Format",
+      "exportMp4": "MP4 (Recommended)",
+      "exportWebm": "WebM",
+      "exportMov": "MOV"
+    },
+    "appearance": {
+      "title": "Appearance",
+      "description": "Customize the interface to your preference",
+      "compactMode": "Compact mode",
+      "compactModeDesc": "Reduce spacing and use smaller thumbnails",
+      "autoPlayPreviews": "Auto-play previews",
+      "autoPlayPreviewsDesc": "Automatically play clip and voice previews",
+      "waveformAnimations": "Waveform animations",
+      "waveformAnimationsDesc": "Animate audio waveforms when playing"
+    },
+    "dataPrivacy": {
+      "title": "Data & Privacy",
+      "description": "Manage your data and privacy preferences",
+      "usageAnalytics": "Usage analytics",
+      "usageAnalyticsDesc": "Help us improve by sharing anonymized data",
+      "exportMyData": "Export my data",
+      "exportMyDataDesc": "Download all your projects and account info",
+      "requestExport": "Request Export"
+    }
+  },
+  "notificationSettings": {
+    "title": "Notification Settings",
+    "description": "Manage how you receive notifications",
+    "backToSettings": "Back to Settings",
+    "inApp": "In-App",
+    "preferencesHeader": "Notification Preferences",
+    "savePreferences": "Save Preferences",
+    "saving": "Saving...",
+    "preferencesSaved": "Preferences saved!"
+  }
+}
