@@ -9,6 +9,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { useToast } from "@/components/ui/toast";
+import { useI18n } from "@/i18n";
 import { ProjectCard } from "@/components/project/ProjectCard";
 import { listProjects, deleteProject, type ProjectResponse } from "@/lib/project-client";
 
@@ -16,6 +17,7 @@ type LayoutMode = "grid-sm" | "grid-md" | "list";
 
 export default function ProjectsPage() {
   const toast = useToast();
+  const { t } = useI18n();
   const [projects, setProjects] = useState<ProjectResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -58,12 +60,12 @@ export default function ProjectsPage() {
       await deleteProject(projectToDelete.id, false);
       setDeleteModalOpen(false);
       setProjectToDelete(null);
-      toast.success("Project deleted successfully");
+      toast.success(t("projects.delete.success"));
       // Reload projects list
       loadProjects();
     } catch (err) {
       toast.error(
-        "Failed to delete project",
+        t("projects.delete.error"),
         err instanceof Error ? err.message : "An error occurred"
       );
     } finally {
@@ -95,8 +97,8 @@ export default function ProjectsPage() {
             ? "bg-accent-primary text-white"
             : "text-text-muted hover:text-text-primary"
         }`}
-        title="Small grid (up to 4 columns)"
-        aria-label="Small grid view"
+        title={t("projects.layout.small")}
+        aria-label={t("projects.layout.small")}
       >
         <Grid3x3 className="h-5 w-5" />
       </button>
@@ -107,8 +109,8 @@ export default function ProjectsPage() {
             ? "bg-accent-primary text-white"
             : "text-text-muted hover:text-text-primary"
         }`}
-        title="Medium grid (2-3 columns)"
-        aria-label="Medium grid view"
+        title={t("projects.layout.medium")}
+        aria-label={t("projects.layout.medium")}
       >
         <LayoutGrid className="h-5 w-5" />
       </button>
@@ -119,8 +121,8 @@ export default function ProjectsPage() {
             ? "bg-accent-primary text-white"
             : "text-text-muted hover:text-text-primary"
         }`}
-        title="List view"
-        aria-label="List view"
+        title={t("projects.layout.list")}
+        aria-label={t("projects.layout.list")}
       >
         <List className="h-5 w-5" />
       </button>
@@ -130,16 +132,16 @@ export default function ProjectsPage() {
   return (
     <div className="max-w-7xl mx-auto">
       <PageHeader
-        title="Projects"
-        description="Create and manage your video projects"
+        title={t("projects.title")}
+        description={t("projects.description")}
         action={
           <div className="flex items-center gap-3">
             <span className="rounded-full bg-accent-cyan/10 px-3 py-1.5 text-xs font-medium text-accent-cyan whitespace-nowrap">
-              {projects.length} {projects.length === 1 ? "project" : "projects"}
+              {projects.length} {projects.length === 1 ? t("projects.badge.singular") : t("projects.badge.plural")}
             </span>
             <Link href="/project/new">
               <Button variant="primary" size="md" leftIcon={<Plus className="h-4 w-4" />}>
-                New Project
+                {t("projects.new")}
               </Button>
             </Link>
           </div>
@@ -156,7 +158,7 @@ export default function ProjectsPage() {
       {loading ? (
         <LoadingSpinner
           size="lg"
-          message="Loading projects..."
+          message={t("projects.loading")}
           description="Please wait while we fetch your projects"
           fullHeight
         />
@@ -164,12 +166,12 @@ export default function ProjectsPage() {
         <EmptyState
           variant="default"
           icon={<Folder className="h-12 w-12" />}
-          title="No projects yet"
-          description="Get started by creating your first project"
+          title={t("projects.empty.title")}
+          description={t("projects.empty.message")}
           action={
             <Link href="/project/new">
               <Button variant="primary" size="md">
-                Create Your First Project
+                {t("projects.empty.cta")}
               </Button>
             </Link>
           }
@@ -196,21 +198,21 @@ export default function ProjectsPage() {
           setProjectToDelete(null);
         }}
         onSubmit={handleDeleteConfirm}
-        title="Delete Project?"
-        submitText="Delete"
-        cancelText="Cancel"
+        title={t("projects.delete.title")}
+        submitText={t("common.delete")}
+        cancelText={t("common.cancel")}
         loading={deleting}
       >
         <div className="space-y-3">
           <p className="text-sm text-text-secondary">
-            You are about to delete the project:{" "}
+            {t("projects.delete.confirm")}{" "}
             <span className="font-semibold text-text-primary">
               {(projectToDelete?.project_name || projectToDelete?.movie?.title) ??
-                "Untitled project"}
+                t("projects.untitled")}
             </span>
           </p>
           <p className="text-sm text-text-secondary">
-            This project can be restored within the next 7 days.
+            {t("projects.delete.restoreInfo")}
           </p>
         </div>
       </FormModal>

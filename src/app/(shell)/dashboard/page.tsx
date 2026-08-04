@@ -124,9 +124,7 @@ export default function DashboardPage() {
                   {t("dashboard.welcomeBanner.title")}
                 </h3>
               </div>
-              <p className="text-text-secondary mb-4">
-                {t("dashboard.welcomeBanner.message")}
-              </p>
+              <p className="text-text-secondary mb-4">{t("dashboard.welcomeBanner.message")}</p>
               <Link href="/project/new">
                 <Button variant="primary" size="sm">
                   <Plus className="w-4 h-4" />
@@ -315,9 +313,7 @@ export default function DashboardPage() {
                 <p className="text-lg font-medium text-text-primary mb-2">
                   {t("dashboard.empty.title")}
                 </p>
-                <p className="text-text-secondary mb-6 max-w-md">
-                  {t("dashboard.empty.message")}
-                </p>
+                <p className="text-text-secondary mb-6 max-w-md">{t("dashboard.empty.message")}</p>
                 <Link href="/project/new">
                   <Button variant="primary">{t("dashboard.empty.cta")}</Button>
                 </Link>

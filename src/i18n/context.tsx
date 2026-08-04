@@ -19,6 +19,7 @@ const translationFiles = [
   "auth",
   "onboarding",
   "dashboard",
+  "projects",
   "project",
   "jobs",
   "voices",
