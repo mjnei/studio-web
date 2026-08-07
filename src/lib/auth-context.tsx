@@ -20,9 +20,14 @@ type AuthContextValue = {
   user: UserResponse | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  loginWithGoogle: () => Promise<void>;
+  loginWithGoogle: (referralCode?: string | null) => Promise<void>;
   loginWithPassword: (email: string, password: string) => Promise<void>;
-  signupWithPassword: (email: string, password: string, name: string) => Promise<void>;
+  signupWithPassword: (
+    email: string,
+    password: string,
+    name: string,
+    referralCode?: string | null
+  ) => Promise<void>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
   deleteUser: () => Promise<void>;
@@ -102,20 +107,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [isLoading, isAuthenticated, user, pathname, router]);
 
-  const loginWithGoogle = useCallback(async () => {
-    const credential = await signInWithPopup(auth, googleProvider);
-    const idToken = await credential.user.getIdToken();
-    await loginWithFirebase(idToken);
-    const me = await getMe();
-    setUser(me);
+  const loginWithGoogle = useCallback(
+    async (referralCode?: string | null) => {
+      const credential = await signInWithPopup(auth, googleProvider);
+      const idToken = await credential.user.getIdToken();
+      await loginWithFirebase(idToken, referralCode);
+      const me = await getMe();
+      setUser(me);
 
-    // Redirect based on onboarding status
-    if (!me.onboarding_completed) {
-      router.push(ONBOARDING_ROUTE);
-    } else {
-      router.push("/dashboard");
-    }
-  }, [router]);
+      // Redirect based on onboarding status
+      if (!me.onboarding_completed) {
+        router.push(ONBOARDING_ROUTE);
+      } else {
+        router.push("/dashboard");
+      }
+    },
+    [router]
+  );
 
   const loginWithPassword = useCallback(
     async (email: string, password: string) => {
@@ -134,8 +142,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const signupWithPassword = useCallback(
-    async (email: string, password: string, name: string) => {
-      await apiSignupWithPassword(email, password, name);
+    async (email: string, password: string, name: string, referralCode?: string | null) => {
+      await apiSignupWithPassword(email, password, name, referralCode);
       const me = await getMe();
       setUser(me);
 

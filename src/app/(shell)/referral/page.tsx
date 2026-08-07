@@ -1,31 +1,99 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useI18n } from "@/i18n";
-import { Copy, Check, Users, Award, Gift, TrendingUp, Share2 } from "lucide-react";
+import { Copy, Check, Users, Award, Gift, TrendingUp, Share2, Loader2, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Badge } from "@/components/ui/badge";
 import { Grid } from "@/components/ui/Grid";
+import {
+  getMyReferralCode,
+  getMyReferralHistory,
+  getMyReferralStats,
+  type ReferralCodeResponse,
+  type ReferralHistoryItem,
+  type ReferralStatsResponse,
+} from "@/lib/api/referral-client";
+import { useToast } from "@/components/ui/toast";
 
 export default function ReferralPage() {
   const { t } = useI18n();
-  const referralCode = "HUAVOI-ABC123";
-  const referralLink = `https://huavoi.studio/r/${referralCode}`;
+  const toast = useToast();
   const [copied, setCopied] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [codeData, setCodeData] = useState<ReferralCodeResponse | null>(null);
+  const [stats, setStats] = useState<ReferralStatsResponse | null>(null);
+  const [history, setHistory] = useState<ReferralHistoryItem[]>([]);
+  const [historyTotal, setHistoryTotal] = useState(0);
 
-  const history = [
-    { email: "j***@gmail.com", date: "Jun 10, 2026", status: "Signed up" },
-    { email: "s***@outlook.com", date: "May 28, 2026", status: "Signed up" },
-    { email: "m***@yahoo.com", date: "May 15, 2026", status: "Pending" },
-  ];
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        const [codeResponse, statsResponse, historyResponse] = await Promise.all([
+          getMyReferralCode(),
+          getMyReferralStats(),
+          getMyReferralHistory({ limit: 10, offset: 0, sort_by: "date", order: "desc" }),
+        ]);
+
+        setCodeData(codeResponse);
+        setStats(statsResponse);
+        setHistory(historyResponse.referrals);
+        setHistoryTotal(historyResponse.total);
+      } catch (error) {
+        console.error("Failed to load referral data:", error);
+        toast.error(t("referral.errorTitle"), t("referral.errorLoadingData"));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, [t, toast]);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(referralLink);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    if (codeData) {
+      navigator.clipboard.writeText(codeData.invite_link);
+      setCopied(true);
+      toast.success(t("referral.inviteCard.copied"), "");
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+  };
+
+  const getLevelBadgeVariant = (level: number) => {
+    if (level === 1) return "success";
+    if (level <= 3) return "warning";
+    return "default";
+  };
+
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto">
+        <PageHeader title={t("referral.title")} description={t("referral.description")} />
+        <div className="flex items-center justify-center py-20">
+          <Loader2 className="w-8 h-8 animate-spin text-accent-primary" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!codeData || !stats) {
+    return (
+      <div className="max-w-7xl mx-auto">
+        <PageHeader title={t("referral.title")} description={t("referral.description")} />
+        <Card variant="elevated" padding="lg">
+          <p className="text-center text-text-muted">{t("referral.errorLoadingData")}</p>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -60,7 +128,7 @@ export default function ReferralPage() {
                   <p className="text-xs font-medium text-text-muted mb-1">
                     {t("referral.inviteCard.yourReferralLink")}
                   </p>
-                  <p className="truncate text-sm text-text-primary font-mono">{referralLink}</p>
+                  <p className="truncate text-sm text-text-primary font-mono">{codeData.invite_link}</p>
                 </div>
                 <Button
                   variant="primary"
@@ -77,7 +145,7 @@ export default function ReferralPage() {
                   {t("referral.inviteCard.yourCode")}
                 </span>
                 <code className="rounded-lg bg-accent-muted px-3 py-1.5 text-sm font-mono text-accent-primary font-semibold">
-                  {referralCode}
+                  {codeData.referral_code}
                 </code>
               </div>
             </div>
@@ -94,8 +162,8 @@ export default function ReferralPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-text-muted mb-1">{t("referral.stats.totalReferrals")}</p>
-              <p className="text-3xl font-bold text-text-primary">3</p>
+              <p className="text-sm text-text-muted mb-1">{t("referral.stats.directReferrals")}</p>
+              <p className="text-3xl font-bold text-text-primary">{stats.total_direct_referrals}</p>
             </div>
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center group-hover:scale-110 transition-transform">
               <Users className="w-6 h-6 text-white" />
@@ -110,11 +178,11 @@ export default function ReferralPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-text-muted mb-1">{t("referral.stats.creditsEarned")}</p>
-              <p className="text-3xl font-bold text-accent-cyan">6</p>
+              <p className="text-sm text-text-muted mb-1">{t("referral.stats.totalReferrals")}</p>
+              <p className="text-3xl font-bold text-text-primary">{stats.total_all_levels_referrals}</p>
             </div>
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Award className="w-6 h-6 text-white" />
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <TrendingUp className="w-6 h-6 text-white" />
             </div>
           </div>
         </Card>
@@ -126,64 +194,120 @@ export default function ReferralPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-text-muted mb-1">{t("referral.stats.pending")}</p>
-              <p className="text-3xl font-bold text-text-primary">1</p>
+              <p className="text-sm text-text-muted mb-1">{t("referral.stats.rewardsEarned")}</p>
+              <p className="text-3xl font-bold text-accent-cyan">{stats.total_invite_rewards_earned}</p>
             </div>
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <TrendingUp className="w-6 h-6 text-white" />
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Award className="w-6 h-6 text-white" />
             </div>
           </div>
         </Card>
       </Grid>
 
+      {/* Achievements */}
+      {stats.achievements && stats.achievements.length > 0 && (
+        <Card variant="elevated" padding="lg" className="mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Trophy className="w-5 h-5 text-amber-500" />
+              {t("referral.achievements.title")}
+            </CardTitle>
+            <CardDescription>{t("referral.achievements.description")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {stats.achievements.map((achievement, i) => (
+                <div
+                  key={i}
+                  className="rounded-lg border border-border-default bg-surface-raised p-4 text-center hover:border-accent-cyan/40 transition-all"
+                >
+                  {achievement.icon_url ? (
+                    <img
+                      src={achievement.icon_url}
+                      alt={achievement.name}
+                      className="w-12 h-12 mx-auto mb-2"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center mx-auto mb-2">
+                      <Trophy className="w-6 h-6 text-white" />
+                    </div>
+                  )}
+                  <p className="text-sm font-semibold text-text-primary">{achievement.name}</p>
+                  <p className="text-xs text-text-muted mt-1">{achievement.description}</p>
+                  <p className="text-xs text-text-secondary mt-1">
+                    {formatDate(achievement.earned_at)}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Referral History */}
       <Card variant="elevated" padding="lg">
         <CardHeader>
           <CardTitle>{t("referral.history.title")}</CardTitle>
-          <CardDescription>{t("referral.history.description")}</CardDescription>
+          <CardDescription>
+            {t("referral.history.description")} ({historyTotal} {t("referral.history.total")})
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[420px] text-sm">
-              <thead>
-                <tr className="border-b border-border-default text-left">
-                  <th className="pb-3 text-xs font-semibold text-text-secondary uppercase tracking-wider">
-                    {t("referral.history.referred")}
-                  </th>
-                  <th className="pb-3 text-xs font-semibold text-text-secondary uppercase tracking-wider">
-                    {t("referral.history.date")}
-                  </th>
-                  <th className="pb-3 text-xs font-semibold text-text-secondary uppercase tracking-wider">
-                    {t("referral.history.status")}
-                  </th>
-                  <th className="pb-3 text-xs font-semibold text-text-secondary uppercase tracking-wider text-right">
-                    {t("referral.history.credits")}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {history.map((row, i) => (
-                  <tr
-                    key={i}
-                    className="border-b border-border-subtle hover:bg-surface-hover transition-colors"
-                  >
-                    <td className="py-3 text-text-primary font-medium">{row.email}</td>
-                    <td className="py-3 text-text-muted">{row.date}</td>
-                    <td className="py-3">
-                      <Badge variant={row.status === "Signed up" ? "success" : "default"}>
-                        {row.status === "Signed up"
-                          ? t("referral.history.signedUp")
-                          : t("referral.history.pending")}
-                      </Badge>
-                    </td>
-                    <td className="py-3 text-right">
-                      <span className="text-accent-cyan font-semibold">+2</span>
-                    </td>
+          {history.length === 0 ? (
+            <div className="text-center py-12">
+              <Users className="w-12 h-12 text-text-muted mx-auto mb-4" />
+              <p className="text-text-muted">{t("referral.history.noReferrals")}</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[600px] text-sm">
+                <thead>
+                  <tr className="border-b border-border-default text-left">
+                    <th className="pb-3 text-xs font-semibold text-text-secondary uppercase tracking-wider">
+                      {t("referral.history.referee")}
+                    </th>
+                    <th className="pb-3 text-xs font-semibold text-text-secondary uppercase tracking-wider">
+                      {t("referral.history.date")}
+                    </th>
+                    <th className="pb-3 text-xs font-semibold text-text-secondary uppercase tracking-wider">
+                      {t("referral.history.level")}
+                    </th>
+                    <th className="pb-3 text-xs font-semibold text-text-secondary uppercase tracking-wider">
+                      {t("referral.history.downstream")}
+                    </th>
+                    <th className="pb-3 text-xs font-semibold text-text-secondary uppercase tracking-wider text-right">
+                      {t("referral.history.rewards")}
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {history.map((row) => (
+                    <tr
+                      key={row.id}
+                      className="border-b border-border-subtle hover:bg-surface-hover transition-colors"
+                    >
+                      <td className="py-3">
+                        <p className="font-medium text-text-primary">{row.referee_name}</p>
+                        <p className="text-xs text-text-muted">{row.referee_email}</p>
+                      </td>
+                      <td className="py-3 text-text-muted">{formatDate(row.created_at)}</td>
+                      <td className="py-3">
+                        <Badge variant={getLevelBadgeVariant(row.referral_level)}>
+                          {t("referral.history.levelBadge", { level: row.referral_level })}
+                        </Badge>
+                      </td>
+                      <td className="py-3 text-text-muted">{row.downstream_referral_count}</td>
+                      <td className="py-3 text-right">
+                        <span className="text-accent-cyan font-semibold">
+                          +{row.rewards_earned}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

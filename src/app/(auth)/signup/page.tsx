@@ -1,26 +1,53 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { AlertCircle } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { AlertCircle, Gift } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useI18n } from "@/i18n";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/toast";
+import { validateReferralCode } from "@/lib/api/referral-client";
 
 export default function SignupPage() {
   const { loginWithGoogle, isAuthenticated, isLoading: authLoading } = useAuth();
   const { t } = useI18n();
   const toast = useToast();
+  const searchParams = useSearchParams();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [referralCode, setReferralCode] = useState<string | null>(null);
+  const [referrerName, setReferrerName] = useState<string | null>(null);
+  const [validatingCode, setValidatingCode] = useState(false);
+
+  // Check for referral code in query params
+  useEffect(() => {
+    const code = searchParams.get("code");
+    if (code) {
+      setValidatingCode(true);
+      validateReferralCode(code)
+        .then((result) => {
+          if (result.valid) {
+            setReferralCode(code);
+            setReferrerName(result.referrer_name);
+          }
+        })
+        .catch((err) => {
+          console.error("Failed to validate referral code:", err);
+        })
+        .finally(() => {
+          setValidatingCode(false);
+        });
+    }
+  }, [searchParams]);
 
   async function handleGoogleSignup() {
     setError("");
     setLoading(true);
     try {
-      await loginWithGoogle();
+      await loginWithGoogle(referralCode);
       toast.success(t("auth.signup.successTitle"), t("auth.signup.successMessage"));
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : t("auth.signup.errorGoogle");
@@ -50,6 +77,23 @@ export default function SignupPage() {
         <h2 className="text-2xl font-bold text-text-primary mb-2">{t("auth.signup.title")}</h2>
         <p className="text-sm text-text-secondary">{t("auth.signup.subtitle")}</p>
       </div>
+
+      {/* Referral Code Notice */}
+      {referralCode && referrerName && !validatingCode && (
+        <div className="mb-6 rounded-lg border border-accent-cyan/30 bg-gradient-to-br from-accent-cyan/10 to-accent-primary/10 px-4 py-3">
+          <div className="flex items-start gap-3">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent-cyan to-accent-primary flex items-center justify-center flex-shrink-0">
+              <Gift className="w-4 h-4 text-white" />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-medium text-text-primary mb-1">
+                {t("auth.signup.invitedBy", { name: referrerName })}
+              </p>
+              <p className="text-xs text-text-muted">{t("auth.signup.rewardMessage")}</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {error && (
         <div className="mb-6 rounded-lg border border-status-failed/30 bg-status-failed/10 px-4 py-3 text-sm text-status-failed flex items-start gap-2">
