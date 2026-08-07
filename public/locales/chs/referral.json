@@ -2,6 +2,9 @@
   "referral": {
     "title": "推荐计划",
     "description": "邀请朋友并一起赚取额度",
+    "viewLeaderboard": "查看排行榜",
+    "errorTitle": "错误",
+    "errorLoadingData": "加载推荐数据失败",
     "inviteCard": {
       "title": "邀请朋友，赚取额度",
       "description": "分享您的推荐链接。当有人使用您的链接注册时，你们都将获得免费渲染额度。",
@@ -11,19 +14,48 @@
       "copied": "已复制！"
     },
     "stats": {
-      "totalReferrals": "总推荐数",
+      "directReferrals": "直接推荐",
+      "totalReferrals": "总推荐数（所有级别）",
+      "rewardsEarned": "已赚取积分",
       "creditsEarned": "已赚取额度",
       "pending": "待处理"
+    },
+    "achievements": {
+      "title": "成就",
+      "description": "推荐更多用户即可解锁徽章"
     },
     "history": {
       "title": "推荐历史",
       "description": "跟踪您的推荐和奖励",
+      "total": "总计",
+      "noReferrals": "暂无推荐。分享您的链接以开始！",
+      "referee": "被推荐人",
       "referred": "推荐",
       "date": "日期",
+      "level": "级别",
+      "downstream": "下游",
+      "rewards": "奖励",
       "status": "状态",
       "credits": "额度",
       "signedUp": "已注册",
-      "pending": "待处理"
+      "pending": "待处理",
+      "levelBadge": "L{level}"
+    },
+    "leaderboard": {
+      "title": "排行榜",
+      "description": "社区顶级推荐者",
+      "errorTitle": "错误",
+      "errorMessage": "加载排行榜失败",
+      "referrals": "推荐数",
+      "rewards": "奖励",
+      "fullList": "完整排行榜",
+      "topReferrers": "前 {count} 位推荐者",
+      "lastUpdated": "最后更新",
+      "noData": "暂无排行榜数据",
+      "rank": "排名",
+      "user": "用户",
+      "direct": "直接",
+      "total": "总计"
     }
   }
 }

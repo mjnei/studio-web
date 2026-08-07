@@ -2,6 +2,9 @@
   "referral": {
     "title": "Referral Program",
     "description": "Invite friends and earn credits together",
+    "viewLeaderboard": "View Leaderboard",
+    "errorTitle": "Error",
+    "errorLoadingData": "Failed to load referral data",
     "inviteCard": {
       "title": "Invite friends, earn credits",
       "description": "Share your referral link. When someone signs up using your link, you both earn free render credits.",
@@ -11,19 +14,48 @@
       "copied": "Copied!"
     },
     "stats": {
-      "totalReferrals": "Total Referrals",
+      "directReferrals": "Direct Referrals",
+      "totalReferrals": "Total Referrals (All Levels)",
+      "rewardsEarned": "Credits Earned",
       "creditsEarned": "Credits Earned",
       "pending": "Pending"
+    },
+    "achievements": {
+      "title": "Achievements",
+      "description": "Unlock badges as you refer more users"
     },
     "history": {
       "title": "Referral History",
       "description": "Track your referrals and rewards",
+      "total": "total",
+      "noReferrals": "No referrals yet. Share your link to get started!",
+      "referee": "Referee",
       "referred": "Referred",
       "date": "Date",
+      "level": "Level",
+      "downstream": "Downstream",
+      "rewards": "Rewards",
       "status": "Status",
       "credits": "Credits",
       "signedUp": "Signed up",
-      "pending": "Pending"
+      "pending": "Pending",
+      "levelBadge": "L{level}"
+    },
+    "leaderboard": {
+      "title": "Leaderboard",
+      "description": "Top referrers in the community",
+      "errorTitle": "Error",
+      "errorMessage": "Failed to load leaderboard",
+      "referrals": "Referrals",
+      "rewards": "Rewards",
+      "fullList": "Full Leaderboard",
+      "topReferrers": "Top {count} referrers",
+      "lastUpdated": "Last updated",
+      "noData": "No leaderboard data available yet",
+      "rank": "Rank",
+      "user": "User",
+      "direct": "Direct",
+      "total": "Total"
     }
   }
 }
