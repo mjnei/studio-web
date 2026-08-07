@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { AlertCircle, Gift } from "lucide-react";
+import { AlertCircle, Gift, KeyRound } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useI18n } from "@/i18n";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 import { validateReferralCode } from "@/lib/api/referral-client";
 
@@ -21,33 +22,84 @@ export default function SignupPage() {
   const [referralCode, setReferralCode] = useState<string | null>(null);
   const [referrerName, setReferrerName] = useState<string | null>(null);
   const [validatingCode, setValidatingCode] = useState(false);
+  const [manualCode, setManualCode] = useState("");
+  const [codeError, setCodeError] = useState<string | null>(null);
 
-  // Check for referral code in query params
+  const handleCodeValidation = useCallback(
+    async (code: string): Promise<boolean> => {
+      if (!code.trim()) {
+        return false;
+      }
+
+      setValidatingCode(true);
+      setCodeError(null);
+      try {
+        const result = await validateReferralCode(code.toUpperCase());
+        if (result.valid) {
+          setReferralCode(code.toUpperCase());
+          setReferrerName(result.referrer_name);
+          setCodeError(null);
+          return true;
+        } else {
+          setReferralCode(null);
+          setReferrerName(null);
+          setCodeError(t("auth.invite.invalidCode"));
+          return false;
+        }
+      } catch (err: unknown) {
+        console.error("Failed to validate referral code:", err);
+        setReferralCode(null);
+        setReferrerName(null);
+        setCodeError(t("auth.invite.validationError"));
+        return false;
+      } finally {
+        setValidatingCode(false);
+      }
+    },
+    [t]
+  );
+
+  // Check for referral code in query params (validate immediately)
   useEffect(() => {
     const code = searchParams.get("code");
     if (code) {
-      setValidatingCode(true);
-      validateReferralCode(code)
-        .then((result) => {
-          if (result.valid) {
-            setReferralCode(code);
-            setReferrerName(result.referrer_name);
-          }
-        })
-        .catch((err) => {
-          console.error("Failed to validate referral code:", err);
-        })
-        .finally(() => {
-          setValidatingCode(false);
-        });
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      handleCodeValidation(code.toUpperCase());
     }
-  }, [searchParams]);
+  }, [searchParams, handleCodeValidation]);
+
+  const handleManualCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+    setManualCode(value);
+    // Clear any previous error when user types
+    if (codeError) {
+      setCodeError(null);
+    }
+  };
 
   async function handleGoogleSignup() {
     setError("");
     setLoading(true);
+
     try {
-      await loginWithGoogle(referralCode);
+      let codeToUse: string | null = null;
+
+      // If user entered a manual code, validate it first
+      if (manualCode.trim()) {
+        const isValid = await handleCodeValidation(manualCode);
+        if (isValid) {
+          codeToUse = manualCode;
+        } else {
+          // Invalid code - skip it and continue without referral
+          console.log("Invalid referral code, continuing without it");
+          codeToUse = null;
+        }
+      } else if (referralCode) {
+        // Use referral code from query params (already validated)
+        codeToUse = referralCode;
+      }
+
+      await loginWithGoogle(codeToUse);
       toast.success(t("auth.signup.successTitle"), t("auth.signup.successMessage"));
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : t("auth.signup.errorGoogle");
@@ -101,6 +153,25 @@ export default function SignupPage() {
           <span>{error}</span>
         </div>
       )}
+
+      {/* Referral Code Input */}
+      <div className="mb-6">
+        <Input
+          label={t("auth.invite.yourCode")}
+          placeholder="Enter referral code (optional)"
+          value={manualCode}
+          onChange={handleManualCodeChange}
+          maxLength={10}
+          icon={<KeyRound className="w-4 h-4" />}
+          error={codeError || undefined}
+          disabled={validatingCode || (referralCode !== null && referrerName !== null)}
+        />
+        {!referralCode && !referrerName && (
+          <div className="mt-2 text-xs text-text-muted">
+            Get 100 bonus credits when you sign up with a referral code! (Optional)
+          </div>
+        )}
+      </div>
 
       <Button
         onClick={handleGoogleSignup}
