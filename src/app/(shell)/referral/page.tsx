@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useI18n } from "@/i18n";
 import { Copy, Check, Users, Award, Gift, TrendingUp, Share2, Loader2, Trophy } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -97,7 +98,13 @@ export default function ReferralPage() {
 
   return (
     <div className="max-w-7xl mx-auto">
-      <PageHeader title={t("referral.title")} description={t("referral.description")} />
+      <PageHeader title={t("referral.title")} description={t("referral.description")}>
+        <Link href="/referral/leaderboard">
+          <Button variant="outline" leftIcon={<Trophy className="w-4 h-4" />}>
+            {t("referral.viewLeaderboard")}
+          </Button>
+        </Link>
+      </PageHeader>
 
       {/* Referral Link Card */}
       <Card
@@ -128,7 +135,9 @@ export default function ReferralPage() {
                   <p className="text-xs font-medium text-text-muted mb-1">
                     {t("referral.inviteCard.yourReferralLink")}
                   </p>
-                  <p className="truncate text-sm text-text-primary font-mono">{codeData.invite_link}</p>
+                  <p className="truncate text-sm text-text-primary font-mono">
+                    {codeData.invite_link}
+                  </p>
                 </div>
                 <Button
                   variant="primary"
@@ -179,7 +188,9 @@ export default function ReferralPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-text-muted mb-1">{t("referral.stats.totalReferrals")}</p>
-              <p className="text-3xl font-bold text-text-primary">{stats.total_all_levels_referrals}</p>
+              <p className="text-3xl font-bold text-text-primary">
+                {stats.total_all_levels_referrals}
+              </p>
             </div>
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center group-hover:scale-110 transition-transform">
               <TrendingUp className="w-6 h-6 text-white" />
@@ -195,7 +206,9 @@ export default function ReferralPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-text-muted mb-1">{t("referral.stats.rewardsEarned")}</p>
-              <p className="text-3xl font-bold text-accent-cyan">{stats.total_invite_rewards_earned}</p>
+              <p className="text-3xl font-bold text-accent-cyan">
+                {stats.total_invite_rewards_earned}
+              </p>
             </div>
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center group-hover:scale-110 transition-transform">
               <Award className="w-6 h-6 text-white" />

@@ -1,6 +1,6 @@
 /**
  * Referral API Client
- * 
+ *
  * Handles all referral-related API calls including:
  * - Code validation
  * - User referral stats and history
@@ -102,9 +102,7 @@ export interface ReferralConfigResponse {
  * Validate a referral code
  * Rate limited to 100 requests per minute per IP
  */
-export async function validateReferralCode(
-  code: string
-): Promise<ValidateReferralCodeResponse> {
+export async function validateReferralCode(code: string): Promise<ValidateReferralCodeResponse> {
   return request<ValidateReferralCodeResponse>(`/referrals/validate/${code.toUpperCase()}`);
 }
 
@@ -115,9 +113,7 @@ export async function getLeaderboard(
   limit: number = 100,
   offset: number = 0
 ): Promise<LeaderboardResponse> {
-  return request<LeaderboardResponse>(
-    `/referrals/leaderboard?limit=${limit}&offset=${offset}`
-  );
+  return request<LeaderboardResponse>(`/referrals/leaderboard?limit=${limit}&offset=${offset}`);
 }
 
 // ============================================================================
@@ -173,9 +169,7 @@ export async function getAdminAnalytics(params: {
   if (params.end_date) queryParams.append("end_date", params.end_date);
 
   const query = queryParams.toString();
-  return request<AdminAnalyticsResponse>(
-    `/admin/referrals/analytics${query ? `?${query}` : ""}`
-  );
+  return request<AdminAnalyticsResponse>(`/admin/referrals/analytics${query ? `?${query}` : ""}`);
 }
 
 /**

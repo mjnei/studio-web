@@ -104,9 +104,7 @@ export default function InvitePage() {
               <Button onClick={handleContinueSignup} variant="primary" fullWidth size="lg">
                 {t("auth.invite.continueSignup")}
               </Button>
-              <p className="text-xs text-text-muted">
-                {t("auth.invite.rewardMessage")}
-              </p>
+              <p className="text-xs text-text-muted">{t("auth.invite.rewardMessage")}</p>
             </div>
           </div>
         )}
