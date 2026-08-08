@@ -637,16 +637,16 @@ export default function VoicePage() {
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
                 {/* Very Slow */}
                 <button
-                  onClick={() => setRatio(0.7)}
+                  onClick={() => setRatio(0.5)}
                   className={`relative flex flex-col items-center justify-center rounded-xl p-4 transition-all ${
-                    ratio === 0.7
+                    ratio === 0.5
                       ? "bg-gradient-to-br from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30 ring-2 ring-accent-primary"
                       : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
                   }`}
                 >
-                  <span className="text-2xl font-bold mb-1">0.7x</span>
+                  <span className="text-2xl font-bold mb-1">0.5x</span>
                   <span className="text-xs font-medium">Very Slow</span>
-                  {ratio === 0.7 && (
+                  {ratio === 0.5 && (
                     <div className="absolute top-2 right-2">
                       <Check className="h-4 w-4" />
                     </div>
@@ -654,24 +654,6 @@ export default function VoicePage() {
                 </button>
 
                 {/* Slow */}
-                <button
-                  onClick={() => setRatio(0.85)}
-                  className={`relative flex flex-col items-center justify-center rounded-xl p-4 transition-all ${
-                    ratio === 0.85
-                      ? "bg-gradient-to-br from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30 ring-2 ring-accent-primary"
-                      : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
-                  }`}
-                >
-                  <span className="text-2xl font-bold mb-1">0.85x</span>
-                  <span className="text-xs font-medium">Slow</span>
-                  {ratio === 0.85 && (
-                    <div className="absolute top-2 right-2">
-                      <Check className="h-4 w-4" />
-                    </div>
-                  )}
-                </button>
-
-                {/* Normal */}
                 <button
                   onClick={() => setRatio(1.0)}
                   className={`relative flex flex-col items-center justify-center rounded-xl p-4 transition-all ${
@@ -681,8 +663,26 @@ export default function VoicePage() {
                   }`}
                 >
                   <span className="text-2xl font-bold mb-1">1.0x</span>
-                  <span className="text-xs font-medium">Normal</span>
+                  <span className="text-xs font-medium">Slow</span>
                   {ratio === 1.0 && (
+                    <div className="absolute top-2 right-2">
+                      <Check className="h-4 w-4" />
+                    </div>
+                  )}
+                </button>
+
+                {/* Normal */}
+                <button
+                  onClick={() => setRatio(1.25)}
+                  className={`relative flex flex-col items-center justify-center rounded-xl p-4 transition-all ${
+                    ratio === 1.25
+                      ? "bg-gradient-to-br from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30 ring-2 ring-accent-primary"
+                      : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
+                  }`}
+                >
+                  <span className="text-2xl font-bold mb-1">1.25x</span>
+                  <span className="text-xs font-medium">Normal</span>
+                  {ratio === 1.25 && (
                     <div className="absolute top-2 right-2">
                       <Check className="h-4 w-4" />
                     </div>
@@ -691,16 +691,16 @@ export default function VoicePage() {
 
                 {/* Fast */}
                 <button
-                  onClick={() => setRatio(1.15)}
+                  onClick={() => setRatio(1.6)}
                   className={`relative flex flex-col items-center justify-center rounded-xl p-4 transition-all ${
-                    ratio === 1.15
+                    ratio === 1.6
                       ? "bg-gradient-to-br from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30 ring-2 ring-accent-primary"
                       : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
                   }`}
                 >
-                  <span className="text-2xl font-bold mb-1">1.15x</span>
+                  <span className="text-2xl font-bold mb-1">1.6x</span>
                   <span className="text-xs font-medium">Fast</span>
-                  {ratio === 1.15 && (
+                  {ratio === 1.6 && (
                     <div className="absolute top-2 right-2">
                       <Check className="h-4 w-4" />
                     </div>
@@ -709,16 +709,16 @@ export default function VoicePage() {
 
                 {/* Very Fast */}
                 <button
-                  onClick={() => setRatio(1.3)}
+                  onClick={() => setRatio(2.0)}
                   className={`relative flex flex-col items-center justify-center rounded-xl p-4 transition-all ${
-                    ratio === 1.3
+                    ratio === 2.0
                       ? "bg-gradient-to-br from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30 ring-2 ring-accent-primary"
                       : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
                   }`}
                 >
-                  <span className="text-2xl font-bold mb-1">1.3x</span>
+                  <span className="text-2xl font-bold mb-1">2.0x</span>
                   <span className="text-xs font-medium">Very Fast</span>
-                  {ratio === 1.3 && (
+                  {ratio === 2.0 && (
                     <div className="absolute top-2 right-2">
                       <Check className="h-4 w-4" />
                     </div>
