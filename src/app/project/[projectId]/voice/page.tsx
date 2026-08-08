@@ -306,7 +306,7 @@ export default function VoicePage() {
         voiceId: String(selectedVoiceId),
         voiceName: voice?.name,
         scriptText: activeScript.content,
-        language: "zh",
+        language: "en", // Default language; backend no longer validates language match
         autoActivate: true,
       });
 
