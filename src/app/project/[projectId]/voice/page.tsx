@@ -40,35 +40,6 @@ export default function VoicePage() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const voiceLimits = useVoiceLimits();
 
-  // Add custom slider styles
-  React.useEffect(() => {
-    const style = document.createElement('style');
-    style.textContent = `
-      .slider::-webkit-slider-thumb {
-        appearance: none;
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        background: rgb(var(--color-accent-primary));
-        cursor: pointer;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-      }
-      .slider::-moz-range-thumb {
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        background: rgb(var(--color-accent-primary));
-        cursor: pointer;
-        border: none;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-      }
-    `;
-    document.head.appendChild(style);
-    return () => {
-      document.head.removeChild(style);
-    };
-  }, []);
-
   // Schedule Agnes jobs on page load (progressive scheduling) - ONCE
   useEffect(() => {
     const scheduleAgnesJobsIfNeeded = async () => {
@@ -656,39 +627,109 @@ export default function VoicePage() {
         {selectedVoiceId && (
           <Card variant="elevated" padding="lg">
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-sm font-semibold text-text-primary">Speech Rate</h3>
-                  <p className="text-xs text-text-muted mt-1">
-                    Adjust the speed of the generated voice
-                  </p>
-                </div>
-                <div className="text-right">
-                  <span className="text-lg font-bold text-accent-primary">{ratio.toFixed(1)}x</span>
-                  <p className="text-xs text-text-muted">
-                    {ratio < 0.8 ? "Slow" : ratio > 1.2 ? "Fast" : "Normal"}
-                  </p>
-                </div>
+              <div>
+                <h3 className="text-sm font-semibold text-text-primary">Speech Rate</h3>
+                <p className="text-xs text-text-muted mt-1">
+                  Select the speed of the generated voice
+                </p>
               </div>
-              
-              <div className="space-y-2">
-                <input
-                  type="range"
-                  min="0.5"
-                  max="2.0"
-                  step="0.1"
-                  value={ratio}
-                  onChange={(e) => setRatio(parseFloat(e.target.value))}
-                  className="w-full h-2 bg-surface-panel rounded-lg appearance-none cursor-pointer slider"
-                  style={{
-                    background: `linear-gradient(to right, rgb(var(--color-accent-primary)) 0%, rgb(var(--color-accent-primary)) ${((ratio - 0.5) / 1.5) * 100}%, rgb(var(--color-surface-panel)) ${((ratio - 0.5) / 1.5) * 100}%, rgb(var(--color-surface-panel)) 100%)`
-                  }}
-                />
-                <div className="flex justify-between text-xs text-text-muted">
-                  <span>0.5x (Slow)</span>
-                  <span>1.0x (Normal)</span>
-                  <span>2.0x (Fast)</span>
-                </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                {/* Very Slow */}
+                <button
+                  onClick={() => setRatio(0.7)}
+                  className={`relative flex flex-col items-center justify-center rounded-xl p-4 transition-all ${
+                    ratio === 0.7
+                      ? "bg-gradient-to-br from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30 ring-2 ring-accent-primary"
+                      : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
+                  }`}
+                >
+                  <span className="text-2xl font-bold mb-1">0.7x</span>
+                  <span className="text-xs font-medium">Very Slow</span>
+                  {ratio === 0.7 && (
+                    <div className="absolute top-2 right-2">
+                      <Check className="h-4 w-4" />
+                    </div>
+                  )}
+                </button>
+
+                {/* Slow */}
+                <button
+                  onClick={() => setRatio(0.85)}
+                  className={`relative flex flex-col items-center justify-center rounded-xl p-4 transition-all ${
+                    ratio === 0.85
+                      ? "bg-gradient-to-br from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30 ring-2 ring-accent-primary"
+                      : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
+                  }`}
+                >
+                  <span className="text-2xl font-bold mb-1">0.85x</span>
+                  <span className="text-xs font-medium">Slow</span>
+                  {ratio === 0.85 && (
+                    <div className="absolute top-2 right-2">
+                      <Check className="h-4 w-4" />
+                    </div>
+                  )}
+                </button>
+
+                {/* Normal */}
+                <button
+                  onClick={() => setRatio(1.0)}
+                  className={`relative flex flex-col items-center justify-center rounded-xl p-4 transition-all ${
+                    ratio === 1.0
+                      ? "bg-gradient-to-br from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30 ring-2 ring-accent-primary"
+                      : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
+                  }`}
+                >
+                  <span className="text-2xl font-bold mb-1">1.0x</span>
+                  <span className="text-xs font-medium">Normal</span>
+                  {ratio === 1.0 && (
+                    <div className="absolute top-2 right-2">
+                      <Check className="h-4 w-4" />
+                    </div>
+                  )}
+                </button>
+
+                {/* Fast */}
+                <button
+                  onClick={() => setRatio(1.15)}
+                  className={`relative flex flex-col items-center justify-center rounded-xl p-4 transition-all ${
+                    ratio === 1.15
+                      ? "bg-gradient-to-br from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30 ring-2 ring-accent-primary"
+                      : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
+                  }`}
+                >
+                  <span className="text-2xl font-bold mb-1">1.15x</span>
+                  <span className="text-xs font-medium">Fast</span>
+                  {ratio === 1.15 && (
+                    <div className="absolute top-2 right-2">
+                      <Check className="h-4 w-4" />
+                    </div>
+                  )}
+                </button>
+
+                {/* Very Fast */}
+                <button
+                  onClick={() => setRatio(1.3)}
+                  className={`relative flex flex-col items-center justify-center rounded-xl p-4 transition-all ${
+                    ratio === 1.3
+                      ? "bg-gradient-to-br from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30 ring-2 ring-accent-primary"
+                      : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
+                  }`}
+                >
+                  <span className="text-2xl font-bold mb-1">1.3x</span>
+                  <span className="text-xs font-medium">Very Fast</span>
+                  {ratio === 1.3 && (
+                    <div className="absolute top-2 right-2">
+                      <Check className="h-4 w-4" />
+                    </div>
+                  )}
+                </button>
+              </div>
+
+              {/* Current Selection Display */}
+              <div className="flex items-center justify-center gap-2 p-3 rounded-lg bg-accent-primary/5 border border-accent-primary/20">
+                <span className="text-sm font-medium text-text-secondary">Current speed:</span>
+                <span className="text-lg font-bold text-accent-primary">{ratio.toFixed(2)}x</span>
               </div>
             </div>
           </Card>
