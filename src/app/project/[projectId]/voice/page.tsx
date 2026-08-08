@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { Mic, Plus, FileText, ChevronDown, Globe, User, AlertCircle, Check } from "lucide-react";
@@ -35,8 +36,38 @@ export default function VoicePage() {
   const [showFullScriptModal, setShowFullScriptModal] = useState(false);
   const [isAdvancing, setIsAdvancing] = useState(false);
   const [hasScheduledAgnes, setHasScheduledAgnes] = useState(false);
+  const [ratio, setRatio] = useState(1.0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const voiceLimits = useVoiceLimits();
+
+  // Add custom slider styles
+  React.useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      .slider::-webkit-slider-thumb {
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: rgb(var(--color-accent-primary));
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      }
+      .slider::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: rgb(var(--color-accent-primary));
+        cursor: pointer;
+        border: none;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      }
+    `;
+    document.head.appendChild(style);
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
 
   // Schedule Agnes jobs on page load (progressive scheduling) - ONCE
   useEffect(() => {
@@ -307,6 +338,7 @@ export default function VoicePage() {
         voiceName: voice?.name,
         scriptText: activeScript.content,
         language: "en", // Default language; backend no longer validates language match
+        ratio: ratio,
         autoActivate: true,
       });
 
@@ -619,6 +651,48 @@ export default function VoicePage() {
             )}
           </div>
         </Card>
+
+        {/* Speech Rate Control */}
+        {selectedVoiceId && (
+          <Card variant="elevated" padding="lg">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-semibold text-text-primary">Speech Rate</h3>
+                  <p className="text-xs text-text-muted mt-1">
+                    Adjust the speed of the generated voice
+                  </p>
+                </div>
+                <div className="text-right">
+                  <span className="text-lg font-bold text-accent-primary">{ratio.toFixed(1)}x</span>
+                  <p className="text-xs text-text-muted">
+                    {ratio < 0.8 ? "Slow" : ratio > 1.2 ? "Fast" : "Normal"}
+                  </p>
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <input
+                  type="range"
+                  min="0.5"
+                  max="2.0"
+                  step="0.1"
+                  value={ratio}
+                  onChange={(e) => setRatio(parseFloat(e.target.value))}
+                  className="w-full h-2 bg-surface-panel rounded-lg appearance-none cursor-pointer slider"
+                  style={{
+                    background: `linear-gradient(to right, rgb(var(--color-accent-primary)) 0%, rgb(var(--color-accent-primary)) ${((ratio - 0.5) / 1.5) * 100}%, rgb(var(--color-surface-panel)) ${((ratio - 0.5) / 1.5) * 100}%, rgb(var(--color-surface-panel)) 100%)`
+                  }}
+                />
+                <div className="flex justify-between text-xs text-text-muted">
+                  <span>0.5x (Slow)</span>
+                  <span>1.0x (Normal)</span>
+                  <span>2.0x (Fast)</span>
+                </div>
+              </div>
+            </div>
+          </Card>
+        )}
 
         {/* Voice Recorder Modal */}
         <VoiceRecordingModal

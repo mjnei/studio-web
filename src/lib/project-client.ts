@@ -296,6 +296,7 @@ export async function createTTSJob(data: {
   voiceName?: string;
   scriptText: string;
   language?: string;
+  ratio?: number;
   autoActivate?: boolean;
 }): Promise<TTSJobResponse> {
   const params = new URLSearchParams({
@@ -311,6 +312,7 @@ export async function createTTSJob(data: {
       voice_name: data.voiceName,
       text: data.scriptText,
       language: data.language ?? "zh",
+      ratio: data.ratio ?? 1.0,
     }),
   });
 }
