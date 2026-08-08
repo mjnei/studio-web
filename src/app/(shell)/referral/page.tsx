@@ -98,13 +98,17 @@ export default function ReferralPage() {
 
   return (
     <div className="max-w-7xl mx-auto">
-      <PageHeader title={t("referral.title")} description={t("referral.description")}>
-        <Link href="/referral/leaderboard">
-          <Button variant="outline" leftIcon={<Trophy className="w-4 h-4" />}>
-            {t("referral.viewLeaderboard")}
-          </Button>
-        </Link>
-      </PageHeader>
+      <PageHeader
+        title={t("referral.title")}
+        description={t("referral.description")}
+        action={
+          <Link href="/referral/leaderboard">
+            <Button variant="outline" leftIcon={<Trophy className="w-4 h-4" />}>
+              {t("referral.viewLeaderboard")}
+            </Button>
+          </Link>
+        }
+      />
 
       {/* Referral Link Card */}
       <Card
