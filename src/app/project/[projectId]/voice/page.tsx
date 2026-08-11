@@ -112,11 +112,12 @@ export default function VoicePage() {
     };
   }, []);
 
-  // Cleanup audio on unmount
+  // Cleanup audio on unmount (when user navigates away)
   useEffect(() => {
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
+        audioRef.current.currentTime = 0; // Reset to start
         if (audioRef.current.src?.startsWith("blob:")) {
           URL.revokeObjectURL(audioRef.current.src);
         }
