@@ -210,6 +210,19 @@ export function useProjectState(projectId: string) {
     }
   }, [projectId]);
 
+  const silentRefresh = useCallback(async () => {
+    try {
+      const [project, scripts] = await Promise.all([
+        getProject(projectId),
+        listProjectScripts(projectId).catch(() => []),
+      ]);
+      setState(mapProject(project, scripts));
+    } catch (err) {
+      console.error("Silent refresh failed:", err);
+      // Don't set error state for silent refresh
+    }
+  }, [projectId]);
+
   useEffect(() => {
     // Wait for auth to initialize before fetching project data
     if (!isAuthLoading) {
@@ -221,24 +234,24 @@ export function useProjectState(projectId: string) {
   useEffect(() => {
     if (state?.thumbnailStatus === "generating") {
       const pollInterval = setInterval(() => {
-        void refresh();
+        void silentRefresh();
       }, 5000); // Poll every 5 seconds
 
       return () => clearInterval(pollInterval);
     }
-  }, [state?.thumbnailStatus, refresh]);
+  }, [state?.thumbnailStatus, silentRefresh]);
 
   // Poll for thumbnail composition status (only while not yet completed)
   // Triggers on both QUEUED (waiting) and PROCESSING (actively processing)
   useEffect(() => {
     if (state?.thumbnailCompositionStatus === "processing") {
       const pollInterval = setInterval(() => {
-        void refresh();
+        void silentRefresh();
       }, 8000); // Poll every 8 seconds
 
       return () => clearInterval(pollInterval);
     }
-  }, [state?.thumbnailCompositionStatus, refresh]);
+  }, [state?.thumbnailCompositionStatus, silentRefresh]);
 
   useEffect(() => {
     const handleProjectUpdate = (e: CustomEvent) => {

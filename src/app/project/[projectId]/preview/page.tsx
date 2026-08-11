@@ -59,6 +59,15 @@ export default function PreviewPage() {
       return;
     }
 
+    // Don't poll when audio is playing to prevent interruptions
+    if (isPlaying) {
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+        pollingIntervalRef.current = null;
+      }
+      return;
+    }
+
     // Poll every 3 seconds for active jobs
     const pollInterval = setInterval(async () => {
       try {
@@ -77,9 +86,35 @@ export default function PreviewPage() {
     pollingIntervalRef.current = pollInterval;
 
     return () => {
-      clearInterval(pollInterval);
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+        pollingIntervalRef.current = null;
+      }
     };
-  }, [ttsJob?.id, ttsJob?.status]);
+  }, [ttsJob?.id, ttsJob?.status, isPlaying]);
+
+  // Restart polling when audio stops if job is still active
+  useEffect(() => {
+    if (!isPlaying && ttsJob && pollingIntervalRef.current === null) {
+      if (ttsJob.status !== "completed" && ttsJob.status !== "failed") {
+        // Restart polling
+        const pollInterval = setInterval(async () => {
+          try {
+            const updatedJob = await getTTSJob(String(ttsJob.id));
+            setTtsJob(updatedJob);
+
+            if (updatedJob.status === "completed" || updatedJob.status === "failed") {
+              clearInterval(pollInterval);
+            }
+          } catch (error) {
+            console.error("Polling error:", error);
+          }
+        }, 3000);
+
+        pollingIntervalRef.current = pollInterval;
+      }
+    }
+  }, [isPlaying, ttsJob]);
 
   // Initialize TTS job
   useEffect(() => {
@@ -150,15 +185,21 @@ export default function PreviewPage() {
     const handleTimeUpdate = () => setCurrentTime(audio.currentTime);
     const handleLoadedMetadata = () => setDuration(audio.duration);
     const handleEnded = () => setIsPlaying(false);
+    const handlePlay = () => setIsPlaying(true);
+    const handlePause = () => setIsPlaying(false);
 
     audio.addEventListener("timeupdate", handleTimeUpdate);
     audio.addEventListener("loadedmetadata", handleLoadedMetadata);
     audio.addEventListener("ended", handleEnded);
+    audio.addEventListener("play", handlePlay);
+    audio.addEventListener("pause", handlePause);
 
     return () => {
       audio.removeEventListener("timeupdate", handleTimeUpdate);
       audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
       audio.removeEventListener("ended", handleEnded);
+      audio.removeEventListener("play", handlePlay);
+      audio.removeEventListener("pause", handlePause);
     };
   }, [ttsJob?.audio_url]);
 
@@ -231,7 +272,8 @@ export default function PreviewPage() {
     } else {
       audioRef.current.play();
     }
-    setIsPlaying(!isPlaying);
+    // Don't set isPlaying here - let the audio events handle it
+    // This prevents race conditions between user action and audio events
   };
 
   const toggleMute = () => {
@@ -264,7 +306,7 @@ export default function PreviewPage() {
     setCurrentTime(0);
     if (isPlaying) {
       audioRef.current.pause();
-      setIsPlaying(false);
+      // Don't set isPlaying here - let the pause event handle it
     }
   };
 
@@ -367,16 +409,14 @@ export default function PreviewPage() {
             </div>
 
             {/* Hidden audio element - always present */}
-            {ttsJob?.audio_url && (
-              <audio
-                ref={audioRef}
-                src={ttsJob.audio_url}
-                onPlay={() => setIsPlaying(true)}
-                onPause={() => setIsPlaying(false)}
-                preload="metadata"
-                style={{ display: "none" }}
-              />
-            )}
+            <audio
+              ref={audioRef}
+              src={ttsJob?.audio_url}
+              onPlay={() => setIsPlaying(true)}
+              onPause={() => setIsPlaying(false)}
+              preload="metadata"
+              style={{ display: "none" }}
+            />
 
             {/* Custom Audio Player */}
             {ttsJob?.status === "completed" && ttsJob.audio_url && (
