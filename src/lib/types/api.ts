@@ -227,14 +227,10 @@ export interface MovieUpdateRequest {
   popularity?: number | null;
 }
 
-export interface VoiceCreateRequest {
-  id?: number;
-  name: string;
-  audio_path: string;
-  mime_type: string;
-  language?: string | null;
-  duration_seconds?: number | null;
-}
+// ============================================================================
+// Voice Types
+// Note: All voices are user-owned. No catalog/stock voice types.
+// ============================================================================
 
 export interface VoiceUpdateRequest {
   name?: string;
@@ -249,16 +245,21 @@ export interface VoiceApprovalRequest {
   is_approved: boolean;
 }
 
-export interface VoiceAvailabilityUpdate {
-  is_available: boolean;
+export interface VoiceBulkImportRequest {
+  target_user_id: number;
+  voices: Array<{
+    name: string;
+    audio_path: string;
+    mime_type: string;
+    language?: string | null;
+    duration_seconds?: number | null;
+  }>;
 }
 
-export interface BulkImportRequest<T> {
-  items: T[];
-}
-
-export interface BulkImportResponse {
+export interface VoiceBulkImportResponse {
   success_count: number;
   failure_count: number;
   errors: string[];
+  target_user_id: number;
+  target_username: string;
 }

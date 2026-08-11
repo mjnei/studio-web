@@ -1,13 +1,5 @@
 import { request, getAccessToken } from "@/lib/api-client";
-import type {
-  MovieResponse,
-  VoiceCreateRequest,
-  VoiceUpdateRequest,
-  VoiceResponse,
-  VoiceAvailabilityUpdate,
-  BulkImportRequest,
-  BulkImportResponse,
-} from "@/lib/types/api";
+import type { MovieResponse } from "@/lib/types/api";
 
 // ============================================================================
 // Admin Movie Management (Unified TMDB + CRUD)
@@ -226,77 +218,9 @@ export async function adminDeleteMovie(movieId: number): Promise<void> {
 }
 
 // ============================================================================
-// Admin Voice Management
-// ============================================================================
-
-export async function adminGetVoices(): Promise<VoiceResponse[]> {
-  // Get ALL voices (both available and unavailable) for admin view
-  // Use dedicated admin endpoint that returns all voices
-  return request<VoiceResponse[]>("/admin/voices");
-}
-
-export async function adminCreateVoice(formData: FormData): Promise<VoiceResponse> {
-  // Get the access token from the in-memory store
-  const token = getAccessToken();
-  if (!token) {
-    throw new Error("Not authenticated");
-  }
-
-  const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020/api/v1";
-  const response = await fetch(`${apiBase}/admin/voices`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    credentials: "include",
-    body: formData,
-  });
-
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({ detail: "Failed to create voice" }));
-    throw new Error(error.detail || "Failed to create voice");
-  }
-
-  return response.json();
-}
-
-export async function adminUpdateVoice(
-  voiceId: string,
-  data: VoiceUpdateRequest
-): Promise<VoiceResponse> {
-  return request<VoiceResponse>(`/admin/voices/${voiceId}`, {
-    method: "PUT",
-    body: JSON.stringify(data),
-  });
-}
-
-export async function adminToggleVoiceAvailability(
-  voiceId: string,
-  data: VoiceAvailabilityUpdate
-): Promise<VoiceResponse> {
-  return request<VoiceResponse>(`/admin/voices/${voiceId}/availability`, {
-    method: "PATCH",
-    body: JSON.stringify(data),
-  });
-}
-
-export async function adminDeleteVoice(voiceId: string): Promise<void> {
-  return request<void>(`/admin/voices/${voiceId}`, {
-    method: "DELETE",
-  });
-}
-
-export async function adminBulkImportVoices(
-  data: BulkImportRequest<VoiceCreateRequest>
-): Promise<BulkImportResponse> {
-  return request<BulkImportResponse>("/admin/voices/bulk", {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
-}
-
-// ============================================================================
 // Admin Voice Recording Management (User Voices)
+// Note: All voices are user-owned. No catalog/stock voices.
+// Voice approval/unapproval endpoints are in the "Admin Voice Approval" section below.
 // ============================================================================
 
 export async function adminGetVoiceRecordings(): Promise<any[]> {
@@ -311,7 +235,7 @@ export async function adminDeleteVoiceRecording(recordingId: string): Promise<vo
 }
 
 /**
- * Get the presigned audio URL for an admin voice recording.
+ * Get the presigned audio URL for a user voice recording (admin access).
  * Returns JSON with audio_url, expires_in, and mime_type.
  */
 export async function getAdminRecordingAudioUrl(recordingId: string): Promise<{
@@ -326,25 +250,33 @@ export async function getAdminRecordingAudioUrl(recordingId: string): Promise<{
   }>(`/admin/voice-recordings/${recordingId}/audio`);
 }
 
+// ============================================================================
+// Admin Voice Bulk Import
+// All imported voices must be assigned to a specific user.
+// ============================================================================
+
+import type { VoiceBulkImportRequest, VoiceBulkImportResponse } from "@/lib/types/api";
+
 /**
- * Get the presigned audio URL for a stock voice preview.
- * Returns JSON with audio_url and expires_in.
+ * Bulk import voices and assign them to a specific user.
+ * Useful for importing pre-recorded voice samples or migrating voices.
  */
-export async function getAdminVoiceAudioUrl(voiceId: string): Promise<{
-  audio_url: string;
-  expires_in: number | null;
-}> {
-  return request<{
-    audio_url: string;
-    expires_in: number | null;
-  }>(`/admin/voices/${voiceId}/audio`);
+export async function adminBulkImportVoices(
+  data: VoiceBulkImportRequest
+): Promise<VoiceBulkImportResponse> {
+  return request<VoiceBulkImportResponse>("/admin/voices/bulk", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
 }
+
 
 // ============================================================================
 // Admin Voice Approval (Community Sharing)
+// All voices are user-owned. Admins can only approve/unapprove for public catalog.
 // ============================================================================
 
-import type { VoiceWithCreator } from "@/lib/types/api";
+import type { VoiceWithCreator, VoiceResponse } from "@/lib/types/api";
 
 /**
  * Get voices shared by users awaiting admin approval.
