@@ -12,11 +12,13 @@ import {
   Clock,
   ThumbsUp,
   XCircle,
+  Upload,
 } from "lucide-react";
 import { ConfirmModal } from "@/components/ui/modal";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { useToast } from "@/components/ui/toast";
+import { VoiceBulkImportModal } from "@/components/admin/VoiceBulkImportModal";
 import {
   adminGetPendingVoices,
   adminGetApprovedVoices,
@@ -51,6 +53,8 @@ export default function AdminVoicesPage() {
     open: boolean;
     voice: VoiceWithCreator | null;
   }>({ open: false, voice: null });
+
+  const [bulkImportModal, setBulkImportModal] = useState(false);
 
   const loadVoices = useCallback(async () => {
     setIsLoading(true);
@@ -221,6 +225,15 @@ export default function AdminVoicesPage() {
               Review and approve shared voices for the public catalog
             </p>
           </div>
+
+          {/* Bulk Import Button */}
+          <button
+            onClick={() => setBulkImportModal(true)}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold bg-gradient-to-r from-accent-primary to-purple-600 text-white hover:shadow-lg hover:shadow-accent-primary/30 transition-all"
+          >
+            <Upload className="h-4 w-4" />
+            Bulk Import
+          </button>
         </div>
 
         {/* View Type Tabs */}
@@ -521,6 +534,15 @@ export default function AdminVoicesPage() {
         confirmText="Revoke"
         cancelText="Cancel"
         variant="danger"
+      />
+
+      {/* Bulk Import Modal */}
+      <VoiceBulkImportModal
+        open={bulkImportModal}
+        onClose={() => setBulkImportModal(false)}
+        onSuccess={() => {
+          void loadVoices();
+        }}
       />
     </div>
   );

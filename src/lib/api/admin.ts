@@ -270,6 +270,41 @@ export async function adminBulkImportVoices(
   });
 }
 
+/**
+ * Bulk upload voice files for a specific user.
+ * Accepts multiple audio files and uploads them for the target user.
+ * All voices default to English language.
+ */
+export async function adminBulkUploadVoices(
+  targetUserId: number,
+  files: File[]
+): Promise<VoiceBulkImportResponse> {
+  const formData = new FormData();
+  formData.append("target_user_id", targetUserId.toString());
+
+  files.forEach((file) => {
+    formData.append("files", file);
+  });
+
+  const token = getAccessToken();
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020/api/v1";
+
+  const response = await fetch(`${API_BASE}/admin/voices/bulk-upload`, {
+    method: "POST",
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: formData,
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(errorText || "Failed to bulk upload voices");
+  }
+
+  return response.json();
+}
 
 // ============================================================================
 // Admin Voice Approval (Community Sharing)
@@ -317,4 +352,32 @@ export async function adminUnapproveVoice(voiceId: number): Promise<VoiceRespons
     method: "PATCH",
     body: JSON.stringify({ is_approved: false }),
   });
+}
+
+// ============================================================================
+// Admin User Search
+// ============================================================================
+
+export interface UserSearchResult {
+  id: number;
+  email: string;
+  name: string;
+  given_name: string | null;
+  family_name: string | null;
+  picture_url: string | null;
+  created_at: string | null;
+}
+
+/**
+ * Search users by name or email (admin only).
+ */
+export async function adminSearchUsers(
+  query: string = "",
+  limit: number = 20
+): Promise<UserSearchResult[]> {
+  const params = new URLSearchParams();
+  if (query) params.append("q", query);
+  if (limit) params.append("limit", limit.toString());
+
+  return request<UserSearchResult[]>(`/users/admin/search?${params.toString()}`);
 }
