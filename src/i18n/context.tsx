@@ -9,7 +9,7 @@ type Translations = { [key: string]: TranslationValue };
 interface I18nContextType {
   locale: Locale;
   setLocale: (locale: Locale) => void;
-  t: (key: string) => string;
+  t: (key: string, options?: Record<string, any>) => string;
 }
 
 const I18nContext = createContext<I18nContextType | undefined>(undefined);
@@ -98,6 +98,22 @@ function getNestedValue(obj: Translations, path: string): string | undefined {
   return typeof current === "string" ? current : undefined;
 }
 
+function replacePlaceholders(template: string, options?: Record<string, any>): string {
+  if (!options) {
+    return template;
+  }
+
+  // Replace all {key} patterns with corresponding option values
+  return template.replace(/{(\w+)}/g, (match, key) => {
+    if (key in options) {
+      const value = options[key];
+      return String(value);
+    }
+    // If placeholder not found in options, preserve the placeholder
+    return match;
+  });
+}
+
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(defaultLocale);
   const [translations, setTranslations] = useState<Translations>({});
@@ -120,20 +136,25 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("locale", newLocale);
   };
 
-  const t = (key: string): string => {
+  const t = (key: string, options?: Record<string, any>): string => {
     const value = getNestedValue(translations, key);
-    if (value !== undefined) {
-      return value;
-    }
+    let translationString = value;
 
-    if (locale !== defaultLocale) {
-      const defaultValue = getNestedValue(translationsCache[defaultLocale] || {}, key);
-      if (defaultValue !== undefined) {
-        return defaultValue;
+    if (translationString === undefined) {
+      if (locale !== defaultLocale) {
+        const defaultValue = getNestedValue(translationsCache[defaultLocale] || {}, key);
+        if (defaultValue !== undefined) {
+          translationString = defaultValue;
+        }
       }
     }
 
-    return key;
+    if (translationString === undefined) {
+      translationString = key;
+    }
+
+    // Apply placeholder replacement if options provided
+    return replacePlaceholders(translationString, options);
   };
 
   return <I18nContext.Provider value={{ locale, setLocale, t }}>{children}</I18nContext.Provider>;

@@ -411,7 +411,7 @@ export default function PreviewPage() {
             {/* Hidden audio element - always present */}
             <audio
               ref={audioRef}
-              src={ttsJob?.audio_url}
+              src={ttsJob?.audio_url ?? undefined}
               onPlay={() => setIsPlaying(true)}
               onPause={() => setIsPlaying(false)}
               preload="metadata"
