@@ -1017,29 +1017,3 @@ AI jobs (project name suggestions and thumbnail generation) are handled automati
 9. **Complete**
 
 **Total time saved:** Agnes jobs started in Step 3, results ready by Steps 4 & 6
-
----
-
-## Future Enhancements
-
-- [ ] Advanced thumbnail text styling (font, color, position, shadow)
-- [ ] Thumbnail templates library
-- [ ] Multiple thumbnail variants A/B testing
-- [ ] Multiple voice actors per project
-- [ ] Background music selection
-- [ ] Video template customization
-- [ ] Batch project creation
-- [ ] Collaborative editing
-- [ ] Voice customization parameters
-
----
-
-## Related Documentation
-
-- **Backend API:** Backend docs/API_ENDPOINTS.md
-- **Database Schema:** Backend docs/DB_SCHEMA.md
-- **Quick Reference:** `/docs/reference/WORKFLOW_QUICK_REFERENCE.md`
-
----
-
-**Version:** 4.0 (Updated navigation patterns, SSE integration, mobile improvements) | **Updated:** July 22, 2026
