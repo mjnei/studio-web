@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { validateReferralCode } from "@/lib/api/referral-client";
@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
 import { AlertCircle, CheckCircle, Loader2 } from "lucide-react";
 
-export default function InvitePage() {
+function InviteContent() {
   const { t } = useI18n();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -129,5 +129,24 @@ export default function InvitePage() {
         )}
       </Card>
     </div>
+  );
+}
+
+export default function InvitePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-surface-base p-4">
+          <Card variant="elevated" padding="lg" className="w-full max-w-md">
+            <div className="flex flex-col items-center justify-center py-12">
+              <Loader2 className="animate-spin h-12 w-12 text-accent-primary mb-4" />
+              <p className="text-sm text-text-secondary">Loading...</p>
+            </div>
+          </Card>
+        </div>
+      }
+    >
+      <InviteContent />
+    </Suspense>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { AlertCircle, Gift, KeyRound } from "lucide-react";
@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 import { validateReferralCode } from "@/lib/api/referral-client";
 
-export default function SignupPage() {
+function SignupContent() {
   const { loginWithGoogle, isAuthenticated, isLoading: authLoading } = useAuth();
   const { t } = useI18n();
   const toast = useToast();
@@ -215,5 +215,22 @@ export default function SignupPage() {
         </p>
       </div>
     </Card>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense
+      fallback={
+        <Card variant="elevated" padding="lg" className="w-full">
+          <div className="flex flex-col items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-primary mb-4"></div>
+            <p className="text-sm text-text-secondary">Loading...</p>
+          </div>
+        </Card>
+      }
+    >
+      <SignupContent />
+    </Suspense>
   );
 }
