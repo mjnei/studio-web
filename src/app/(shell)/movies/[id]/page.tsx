@@ -11,7 +11,6 @@ import {
   Play,
   Loader,
   AlertCircle,
-  CheckCircle2,
   Film,
   User,
   Globe,
@@ -98,27 +97,6 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
 
   return (
     <div className="min-h-screen bg-surface-base">
-      {/* Toasts */}
-      <div className="fixed bottom-4 right-4 z-50 space-y-2">
-        {toasts.map((toast) => (
-          <div
-            key={toast.id}
-            className={`flex items-center gap-3 rounded-lg border px-4 py-3 shadow-lg ${
-              toast.type === "success"
-                ? "border-green-500/50 bg-green-500/10 text-green-600"
-                : "border-red-500/50 bg-red-500/10 text-red-600"
-            }`}
-          >
-            {toast.type === "success" ? (
-              <CheckCircle2 className="h-5 w-5 flex-shrink-0" />
-            ) : (
-              <AlertCircle className="h-5 w-5 flex-shrink-0" />
-            )}
-            <span className="text-sm font-medium">{toast.message}</span>
-          </div>
-        ))}
-      </div>
-
       {/* Back Button */}
       <div className="sticky top-0 z-40">
         <div className="mx-auto max-w-4xl px-4 py-3 sm:px-6">

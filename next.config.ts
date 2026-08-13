@@ -5,6 +5,18 @@ const nextConfig: NextConfig = {
   devIndicators: {
     position: "bottom-right",
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+      },
+      {
+        protocol: "https",
+        hostname: "image.tmdb.org",
+      },
+    ],
+  },
   async headers() {
     return [
       {
