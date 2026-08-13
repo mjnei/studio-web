@@ -805,7 +805,7 @@ export default function AdminMoviesPage() {
                         {/* Poster Thumbnail */}
                         <div className="relative h-32 w-24 flex-shrink-0 overflow-hidden rounded-lg bg-surface-raised">
                           {posterUrl ? (
-                            <Image
+                            <ExternalImage
                               src={posterUrl}
                               alt={movie.title}
                               fill
