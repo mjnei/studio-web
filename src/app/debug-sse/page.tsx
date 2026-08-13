@@ -14,13 +14,18 @@ export default function DebugSSEPage() {
   useEffect(() => {
     const currentToken = getAccessToken();
     setToken(currentToken);
-    addLog(`Token check: ${currentToken ? "present" : "missing"}`);
+
+    const addLogLocal = (message: string) => {
+      setLogs((prev) => [...prev, `${new Date().toLocaleTimeString()}: ${message}`]);
+    };
+
+    addLogLocal(`Token check: ${currentToken ? "present" : "missing"}`);
     if (currentToken) {
-      addLog(`Token length: ${currentToken.length} characters`);
+      addLogLocal(`Token length: ${currentToken.length} characters`);
     }
-    addLog(`User: ${user ? user.email : "not logged in"}`);
-    addLog(`isAuthenticated: ${isAuthenticated}`);
-    addLog(`isSSEConnected: ${isSSEConnected}`);
+    addLogLocal(`User: ${user ? user.email : "not logged in"}`);
+    addLogLocal(`isAuthenticated: ${isAuthenticated}`);
+    addLogLocal(`isSSEConnected: ${isSSEConnected}`);
   }, [isAuthenticated, user, isSSEConnected]);
 
   const addLog = (message: string) => {

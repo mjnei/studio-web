@@ -125,20 +125,6 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
   const rafRef = useRef<number>(0);
   const mimeRef = useRef<string>("");
 
-  const stopPlayback = useCallback(() => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-    }
-    setIsPlaying(false);
-    setPlaybackProgress(0);
-    setPlaybackTime(0);
-    if (rafRef.current) {
-      cancelAnimationFrame(rafRef.current);
-      rafRef.current = 0;
-    }
-  }, []);
-
   const releaseStream = useCallback(() => {
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((t) => t.stop());
@@ -157,6 +143,20 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
     if (timerRef.current) {
       clearInterval(timerRef.current);
       timerRef.current = null;
+    }
+  }, []);
+
+  const stopPlayback = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    setIsPlaying(false);
+    setPlaybackProgress(0);
+    setPlaybackTime(0);
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = 0;
     }
   }, []);
 

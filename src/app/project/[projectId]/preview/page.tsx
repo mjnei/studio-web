@@ -310,6 +310,9 @@ export default function PreviewPage() {
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
+  const canProceed = ttsJob?.status === "completed" && !!ttsJob.audio_url;
+  const isProcessing = ttsJob?.status === "queued" || ttsJob?.status === "processing";
+
   const projectName = useMemo(() => {
     return state?.projectName || state?.movieTitle || "Your Project";
   }, [state?.projectName, state?.movieTitle]);
@@ -325,10 +328,7 @@ export default function PreviewPage() {
       return activeScript.content.substring(0, 200);
     }
     return sentences[0].trim();
-  }, [activeScript]);
-
-  const canProceed = ttsJob?.status === "completed" && !!ttsJob.audio_url;
-  const isProcessing = ttsJob?.status === "queued" || ttsJob?.status === "processing";
+  }, [activeScript?.content]);
 
   if (isLoading) {
     return <PageLoadingSkeleton message="Loading project..." />;

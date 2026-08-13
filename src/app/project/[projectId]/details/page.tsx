@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { FileText, Sparkles, Loader2, ChevronDown, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -32,39 +32,8 @@ export default function ProjectDetailsPage() {
   const [showFullScriptModal, setShowFullScriptModal] = useState(false);
   const [hasFetchedSuggestions, setHasFetchedSuggestions] = useState(false);
 
-  // Fetch AI suggestions once when page loads
-  // These should already be cached from when user advanced from Voice step (Step 3)
-  useEffect(() => {
-    const fetchAiSuggestionsOnce = async () => {
-      if (!projectId || !activeScript?.content) return;
-      if (hasFetchedSuggestions) return; // Only fetch once
-
-      await fetchAiNameSuggestionsWithScheduling();
-      setHasFetchedSuggestions(true);
-    };
-
-    fetchAiSuggestionsOnce();
-  }, [projectId, activeScript?.content, hasFetchedSuggestions]);
-
-  // Initialize project name from existing state (if already set) or use first fallback
-  useEffect(() => {
-    if (state?.movieTitle) {
-      const suggestions = generateLocalFallbackSuggestions(state.movieTitle);
-      setFallbackSuggestions(suggestions);
-
-      // Use existing project name if available, otherwise use first suggestion
-      if (!projectName) {
-        if (state.projectName) {
-          setProjectName(state.projectName);
-        } else if (suggestions.length > 0) {
-          setProjectName(suggestions[0].name);
-        }
-      }
-    }
-  }, [state?.movieTitle, state?.projectName]);
-
-  // Generate fallback suggestions locally without API call
-  const generateLocalFallbackSuggestions = (movieTitle: string): NameSuggestion[] => {
+  // Generate fallback suggestions locally without API call - BEFORE effects that use it
+  const generateLocalFallbackSuggestions = useCallback((movieTitle: string): NameSuggestion[] => {
     const suggestions: NameSuggestion[] = [];
 
     // Clean title and split into words
@@ -248,35 +217,10 @@ export default function ProjectDetailsPage() {
     }
 
     return uniqueSuggestions.slice(0, 3);
-  };
+  }, []);
 
-  // Fetch AI-powered suggestions from backend with scheduling fallback
-  const fetchAiNameSuggestionsWithScheduling = async () => {
-    if (!projectId || !activeScript?.content) return;
-
-    setLoadingAiSuggestions(true);
-    try {
-      const response = await getSuggestedProjectNames(projectId);
-
-      if (response.suggestions.length > 0) {
-        // Great! Names are ready
-        setAiSuggestions(response.suggestions);
-        setLoadingAiSuggestions(false);
-      } else {
-        // Not ready yet - schedule if needed
-        await scheduleAgnesJobs(projectId, true, false); // Names only
-
-        // Poll for results
-        startPollingForNameSuggestions();
-      }
-    } catch (error) {
-      console.error("Failed to fetch name suggestions:", error);
-      setLoadingAiSuggestions(false);
-      // Fallback suggestions still available
-    }
-  };
-
-  const startPollingForNameSuggestions = async () => {
+  // Polling for AI suggestions - BEFORE effect that uses it
+  const startPollingForNameSuggestions = useCallback(async () => {
     let attempts = 0;
     const maxAttempts = 15; // ~75 seconds with 5s poll interval
 
@@ -306,7 +250,64 @@ export default function ProjectDetailsPage() {
 
     // Start polling after 3 second delay
     setTimeout(poll, 3000);
-  };
+  }, [projectId]);
+
+  // Fetch AI suggestions with scheduling - BEFORE effect that uses it
+  const fetchAiNameSuggestionsWithScheduling = useCallback(async () => {
+    if (!projectId || !activeScript?.content) return;
+
+    setLoadingAiSuggestions(true);
+    try {
+      const response = await getSuggestedProjectNames(projectId);
+
+      if (response.suggestions.length > 0) {
+        // Great! Names are ready
+        setAiSuggestions(response.suggestions);
+        setLoadingAiSuggestions(false);
+      } else {
+        // Not ready yet - schedule if needed
+        await scheduleAgnesJobs(projectId, true, false); // Names only
+
+        // Poll for results
+        startPollingForNameSuggestions();
+      }
+    } catch (error) {
+      console.error("Failed to fetch name suggestions:", error);
+      setLoadingAiSuggestions(false);
+      // Fallback suggestions still available
+    }
+  }, [projectId, activeScript?.content, startPollingForNameSuggestions]);
+
+  // Fetch AI suggestions once when page loads
+  // These should already be cached from when user advanced from Voice step (Step 3)
+  useEffect(() => {
+    const fetchAiSuggestionsOnce = async () => {
+      if (!projectId || !activeScript?.content) return;
+      if (hasFetchedSuggestions) return; // Only fetch once
+
+      await fetchAiNameSuggestionsWithScheduling();
+      setHasFetchedSuggestions(true);
+    };
+
+    fetchAiSuggestionsOnce();
+  }, [projectId, activeScript?.content, hasFetchedSuggestions, fetchAiNameSuggestionsWithScheduling]);
+
+  // Initialize project name from existing state (if already set) or use first fallback
+  useEffect(() => {
+    if (state?.movieTitle) {
+      const suggestions = generateLocalFallbackSuggestions(state.movieTitle);
+      setFallbackSuggestions(suggestions);
+
+      // Use existing project name if available, otherwise use first suggestion
+      if (!projectName) {
+        if (state.projectName) {
+          setProjectName(state.projectName);
+        } else if (suggestions.length > 0) {
+          setProjectName(suggestions[0].name);
+        }
+      }
+    }
+  }, [state?.movieTitle, state?.projectName, projectName, generateLocalFallbackSuggestions]);
 
   const handleSuggestionClick = (suggestion: NameSuggestion) => {
     setProjectName(suggestion.name);

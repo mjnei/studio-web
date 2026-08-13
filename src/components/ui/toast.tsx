@@ -53,25 +53,6 @@ export function ToastProvider({
 }: ToastProviderProps) {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
-  const addToast = useCallback(
-    (toast: Omit<Toast, "id">) => {
-      const id = Math.random().toString(36).substring(2, 9);
-      const newToast = { ...toast, id };
-
-      setToasts((prev) => {
-        const updated = [newToast, ...prev];
-        return updated.slice(0, maxToasts);
-      });
-
-      if (toast.duration !== 0) {
-        setTimeout(() => {
-          removeToast(id);
-        }, toast.duration || 5000);
-      }
-    },
-    [maxToasts]
-  );
-
   const removeToast = useCallback((id: string) => {
     setToasts((prev) => prev.filter((toast) => toast.id !== id));
   }, []);
@@ -102,6 +83,25 @@ export function ToastProvider({
       addToast({ title, description, variant: "info", duration });
     },
     [addToast]
+  );
+
+  const addToast = useCallback(
+    (toast: Omit<Toast, "id">) => {
+      const id = Math.random().toString(36).substring(2, 9);
+      const newToast = { ...toast, id };
+
+      setToasts((prev) => {
+        const updated = [newToast, ...prev];
+        return updated.slice(0, maxToasts);
+      });
+
+      if (toast.duration !== 0) {
+        setTimeout(() => {
+          removeToast(id);
+        }, toast.duration || 5000);
+      }
+    },
+    [maxToasts]
   );
 
   const positions: Record<ToastPosition, string> = {

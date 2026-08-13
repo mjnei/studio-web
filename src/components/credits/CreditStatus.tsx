@@ -9,10 +9,6 @@ export function CreditStatus() {
   const [creditStatus, setCreditStatus] = React.useState<CreditStatusType | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
-  React.useEffect(() => {
-    loadCreditStatus();
-  }, []);
-
   const loadCreditStatus = async () => {
     try {
       const status = await getCreditStatus();
@@ -23,6 +19,10 @@ export function CreditStatus() {
       setIsLoading(false);
     }
   };
+
+  React.useEffect(() => {
+    loadCreditStatus();
+  }, []);
 
   if (isLoading || !creditStatus) {
     return null;
