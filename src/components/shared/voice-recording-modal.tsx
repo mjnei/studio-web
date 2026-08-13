@@ -160,6 +160,65 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
     }
   }, []);
 
+  const playRecording = useCallback(() => {
+    const url = audioUrlRef.current;
+    if (!url) return;
+
+    if (
+      audioRef.current &&
+      audioRef.current.paused &&
+      audioRef.current.currentTime > 0 &&
+      audioRef.current.currentTime < audioRef.current.duration
+    ) {
+      audioRef.current.play();
+      setIsPlaying(true);
+      return;
+    }
+
+    const audio = new Audio(url);
+    audioRef.current = audio;
+    setIsPlaying(true);
+    setPlaybackProgress(0);
+    setPlaybackTime(0);
+
+    const tick = () => {
+      if (audio.duration && isFinite(audio.duration)) {
+        setPlaybackProgress(audio.currentTime / audio.duration);
+        setPlaybackTime(audio.currentTime);
+      }
+      if (!audio.paused && !audio.ended) {
+        rafRef.current = requestAnimationFrame(tick);
+      }
+    };
+
+    audio.onplay = () => {
+      rafRef.current = requestAnimationFrame(tick);
+    };
+
+    audio.onended = () => {
+      setIsPlaying(false);
+      setPlaybackProgress(1);
+      setPlaybackTime(audio.duration && isFinite(audio.duration) ? audio.duration : 0);
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = 0;
+      }
+    };
+
+    audio.onerror = () => {
+      setIsPlaying(false);
+      setError("Playback failed. Please re-record your sample.");
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = 0;
+      }
+    };
+
+    audio.play().catch(() => {
+      setIsPlaying(false);
+    });
+  }, []);
+
   useEffect(() => {
     return () => {
       clearTimer();
@@ -314,65 +373,6 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
     }
     clearTimer();
   }, [clearTimer]);
-
-  const playRecording = useCallback(() => {
-    const url = audioUrlRef.current;
-    if (!url) return;
-
-    if (
-      audioRef.current &&
-      audioRef.current.paused &&
-      audioRef.current.currentTime > 0 &&
-      audioRef.current.currentTime < audioRef.current.duration
-    ) {
-      audioRef.current.play();
-      setIsPlaying(true);
-      return;
-    }
-
-    const audio = new Audio(url);
-    audioRef.current = audio;
-    setIsPlaying(true);
-    setPlaybackProgress(0);
-    setPlaybackTime(0);
-
-    const tick = () => {
-      if (audio.duration && isFinite(audio.duration)) {
-        setPlaybackProgress(audio.currentTime / audio.duration);
-        setPlaybackTime(audio.currentTime);
-      }
-      if (!audio.paused && !audio.ended) {
-        rafRef.current = requestAnimationFrame(tick);
-      }
-    };
-
-    audio.onplay = () => {
-      rafRef.current = requestAnimationFrame(tick);
-    };
-
-    audio.onended = () => {
-      setIsPlaying(false);
-      setPlaybackProgress(1);
-      setPlaybackTime(audio.duration && isFinite(audio.duration) ? audio.duration : 0);
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-        rafRef.current = 0;
-      }
-    };
-
-    audio.onerror = () => {
-      setIsPlaying(false);
-      setError("Playback failed. Please re-record your sample.");
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current);
-        rafRef.current = 0;
-      }
-    };
-
-    audio.play().catch(() => {
-      setIsPlaying(false);
-    });
-  }, []);
 
   const pausePlayback = useCallback(() => {
     if (audioRef.current && !audioRef.current.paused) {

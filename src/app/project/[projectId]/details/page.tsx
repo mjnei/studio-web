@@ -290,7 +290,12 @@ export default function ProjectDetailsPage() {
     };
 
     fetchAiSuggestionsOnce();
-  }, [projectId, activeScript?.content, hasFetchedSuggestions, fetchAiNameSuggestionsWithScheduling]);
+  }, [
+    projectId,
+    activeScript?.content,
+    hasFetchedSuggestions,
+    fetchAiNameSuggestionsWithScheduling,
+  ]);
 
   // Initialize project name from existing state (if already set) or use first fallback
   useEffect(() => {

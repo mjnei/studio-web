@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useEffect, useMemo, useState, useRef } from "react";
+import { useEffect, useMemo, useState, useRef, useCallback } from "react";
 import {
   CheckCircle,
   Mic2,
@@ -40,6 +40,61 @@ export default function PreviewPage() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const isCreatingJobRef = useRef(false);
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Define callbacks BEFORE effects that use them
+  const createNewTTSJob = useCallback(
+    async (voiceId: string, voiceName?: string) => {
+      if (!state || !activeScript || isCreatingJobRef.current) return;
+
+      if (!voiceId) {
+        setTtsError("Voice information is incomplete.");
+        return;
+      }
+
+      try {
+        isCreatingJobRef.current = true;
+        setTtsError(null);
+
+        const job = await createTTSJob({
+          projectId: String(state.id),
+          scriptId: String(activeScript.id),
+          voiceId: voiceId,
+          voiceName: voiceName,
+          scriptText: activeScript.content,
+          language: "zh",
+          autoActivate: true,
+        });
+
+        setTtsJob(job);
+      } catch (error) {
+        console.error("Failed to create TTS job:", error);
+        setTtsError(error instanceof Error ? error.message : "Failed to create TTS job");
+      } finally {
+        isCreatingJobRef.current = false;
+      }
+    },
+    [state, activeScript]
+  );
+
+  const loadTTSJob = useCallback(
+    async (jobId: string) => {
+      if (isCreatingJobRef.current) return;
+
+      // Don't reload if we already have this job
+      if (ttsJob && String(ttsJob.id) === jobId) {
+        return;
+      }
+
+      try {
+        const job = await getTTSJob(jobId);
+        setTtsJob(job);
+      } catch (error) {
+        console.error("Failed to load TTS job:", error);
+        setTtsError(error instanceof Error ? error.message : "Failed to load TTS job");
+      }
+    },
+    [ttsJob]
+  );
 
   // Polling for TTS job updates (simplified approach without SSE)
   useEffect(() => {
@@ -209,54 +264,6 @@ export default function PreviewPage() {
       }
     };
   }, []);
-
-  const createNewTTSJob = async (voiceId: string, voiceName?: string) => {
-    if (!state || !activeScript || isCreatingJobRef.current) return;
-
-    if (!voiceId) {
-      setTtsError("Voice information is incomplete.");
-      return;
-    }
-
-    try {
-      isCreatingJobRef.current = true;
-      setTtsError(null);
-
-      const job = await createTTSJob({
-        projectId: String(state.id),
-        scriptId: String(activeScript.id),
-        voiceId: voiceId,
-        voiceName: voiceName,
-        scriptText: activeScript.content,
-        language: "zh",
-        autoActivate: true,
-      });
-
-      setTtsJob(job);
-    } catch (error) {
-      console.error("Failed to create TTS job:", error);
-      setTtsError(error instanceof Error ? error.message : "Failed to create TTS job");
-    } finally {
-      isCreatingJobRef.current = false;
-    }
-  };
-
-  const loadTTSJob = async (jobId: string) => {
-    if (isCreatingJobRef.current) return;
-
-    // Don't reload if we already have this job
-    if (ttsJob && String(ttsJob.id) === jobId) {
-      return;
-    }
-
-    try {
-      const job = await getTTSJob(jobId);
-      setTtsJob(job);
-    } catch (error) {
-      console.error("Failed to load TTS job:", error);
-      setTtsError(error instanceof Error ? error.message : "Failed to load TTS job");
-    }
-  };
 
   const togglePlayPause = () => {
     if (!audioRef.current) return;

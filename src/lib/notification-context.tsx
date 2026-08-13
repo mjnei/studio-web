@@ -315,6 +315,7 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
           );
 
           reconnectTimeoutRef.current = setTimeout(() => {
+            // eslint-disable-next-line react-hooks/immutability
             connectSSE();
           }, delay);
         } else {
