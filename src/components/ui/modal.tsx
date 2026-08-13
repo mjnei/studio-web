@@ -69,12 +69,6 @@ export function Modal({
     full: "max-w-full mx-4",
   };
 
-  const variants = {
-    default: "border-border-default",
-    danger: "border-status-error/30",
-    success: "border-status-success/30",
-  };
-
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (closeOnOverlayClick && e.target === e.currentTarget) {
       onClose();
@@ -97,7 +91,13 @@ export function Modal({
       <div
         ref={modalRef}
         tabIndex={-1}
-        className={`relative w-full ${sizes[size]} rounded-xl bg-surface-elevated border ${variants[variant]} shadow-lg animate-in slide-in-from-bottom-4 duration-300 ${className}`}
+        className={`relative w-full ${sizes[size]} rounded-xl bg-surface-elevated border ${
+          variant === "danger"
+            ? "border-status-error/30"
+            : variant === "success"
+              ? "border-status-success/30"
+              : "border-border-default"
+        } shadow-lg animate-in slide-in-from-bottom-4 duration-300 ${className}`}
       >
         {/* Header */}
         {(title || showCloseButton) && (

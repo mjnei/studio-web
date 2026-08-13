@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState, useRef } from "react";
 import {
   CheckCircle,
   Mic2,
-  FileText,
   Loader2,
   AlertCircle,
   Play,
@@ -24,7 +23,6 @@ import { FloatingWorkflowNavigation } from "@/components/project/floating-workfl
 import { FullScriptModal } from "@/components/project/full-script-modal";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import {
-  advanceProjectStep,
   createTTSJob,
   getTTSJob,
   type TTSJobResponse,
@@ -33,7 +31,7 @@ import {
 export default function PreviewPage() {
   const params = useParams();
   const projectId = params.projectId as string;
-  const { state, activeScript, isLoading, refresh } = useProjectState(projectId);
+  const { state, activeScript, isLoading } = useProjectState(projectId);
 
   const [showFullScriptModal, setShowFullScriptModal] = useState(false);
   const [ttsJob, setTtsJob] = useState<TTSJobResponse | null>(null);

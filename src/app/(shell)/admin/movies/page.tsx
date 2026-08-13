@@ -796,7 +796,6 @@ export default function AdminMoviesPage() {
               <div className={getGridClass() + " mb-6"}>
                 {tmdbSearchResults.map((movie) => {
                   const posterUrl = getImageUrl(movie.poster_path);
-                  const isImporting = importingIds.has(movie.id);
 
                   if (layoutMode === "list") {
                     // List view layout for TMDB results

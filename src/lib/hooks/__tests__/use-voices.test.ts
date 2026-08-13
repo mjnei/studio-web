@@ -58,12 +58,6 @@ const mockAudioUrlResponse = {
 describe("useVoices Hook - Fetch on Mount", () => {
   test("should initialize with loading=true", () => {
     // Assertion: On initial render, loading state is true
-    const expectedInitialState = {
-      voices: [],
-      loading: true,
-      error: null,
-    };
-
     // This would be verified via renderHook in a real test framework
     console.log("✓ Initial state has loading=true");
   });
@@ -160,8 +154,6 @@ describe("useVoices Hook - Audio URL Attachment", () => {
  */
 describe("useVoices Hook - Upload Voice", () => {
   test("should accept file, name, and duration parameters", () => {
-    const mockFile = new Blob(["audio data"], { type: "audio/webm" });
-
     mockVoiceClient.uploadVoice.mockResolvedValue(mockVoiceResponse);
     mockVoiceClient.getVoiceAudioUrl.mockResolvedValue(mockAudioUrlResponse);
 
@@ -170,7 +162,6 @@ describe("useVoices Hook - Upload Voice", () => {
   });
 
   test("should call uploadVoice from voice-client", () => {
-    const mockFile = new Blob(["audio data"], { type: "audio/webm" });
     mockVoiceClient.uploadVoice.mockResolvedValue(mockVoiceResponse);
     mockVoiceClient.getVoiceAudioUrl.mockResolvedValue(mockAudioUrlResponse);
 
@@ -179,7 +170,6 @@ describe("useVoices Hook - Upload Voice", () => {
   });
 
   test("should add uploaded voice to state", () => {
-    const mockFile = new Blob(["audio data"], { type: "audio/webm" });
     mockVoiceClient.uploadVoice.mockResolvedValue(mockVoiceResponse);
     mockVoiceClient.getVoiceAudioUrl.mockResolvedValue(mockAudioUrlResponse);
 
@@ -188,7 +178,6 @@ describe("useVoices Hook - Upload Voice", () => {
   });
 
   test("should return uploaded voice", () => {
-    const mockFile = new Blob(["audio data"], { type: "audio/webm" });
     mockVoiceClient.uploadVoice.mockResolvedValue(mockVoiceResponse);
     mockVoiceClient.getVoiceAudioUrl.mockResolvedValue(mockAudioUrlResponse);
 
@@ -197,7 +186,6 @@ describe("useVoices Hook - Upload Voice", () => {
   });
 
   test("should handle upload errors and set error state", () => {
-    const mockFile = new Blob(["audio data"], { type: "audio/webm" });
     mockVoiceClient.uploadVoice.mockRejectedValue(new Error("Upload failed: File too large"));
 
     // On error, error state should contain message

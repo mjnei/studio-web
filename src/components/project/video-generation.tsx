@@ -39,7 +39,6 @@ export function VideoGeneration({
   steps = [],
   onStartGeneration,
 }: VideoGenerationProps) {
-  const [playing, setPlaying] = useState(false);
   const toast = useToast();
 
   const downloadVideo = () => {

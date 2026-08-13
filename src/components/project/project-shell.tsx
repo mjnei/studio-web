@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { PanelLeft, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { DrawerContent } from "@/components/shell/drawer-content";
 import { useSidebar } from "@/components/shell/sidebar-context";
 import { useProjectState } from "@/lib/hooks/use-project-state";

@@ -27,7 +27,6 @@ import {
 
 // Test configuration
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020/api/v1";
-const TEST_TOKEN = process.env.TEST_TOKEN || "test-token";
 
 // Color output for test results
 const colors = {
@@ -235,7 +234,6 @@ async function runAllTests() {
   info("Voice Client Integration Test Suite");
   info(`${"=".repeat(60)}`);
   info(`API Base: ${API_BASE}`);
-  info(`Token: ${TEST_TOKEN ? "Present" : "Not set"}`);
 
   await testEndpointURLs();
   await testFormDataSerialization();

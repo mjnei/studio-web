@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Coins, TrendingUp } from "lucide-react";
+import { Coins } from "lucide-react";
 import { getCreditStatus, type CreditStatus as CreditStatusType } from "@/lib/credit-client";
 
 export function CreditStatus() {
@@ -32,12 +32,6 @@ export function CreditStatus() {
     free: "text-text-muted",
     pro: "text-accent-cyan",
     premium: "text-accent-purple",
-  };
-
-  const tierLabels = {
-    free: "Free",
-    pro: "Pro",
-    premium: "Premium",
   };
 
   return (

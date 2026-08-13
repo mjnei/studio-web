@@ -21,12 +21,6 @@ import {
 import Link from "next/link";
 import { adminGetMovieDetails, type MovieDetailsResponse } from "@/lib/api/admin";
 
-type Toast = {
-  id: number;
-  type: "success" | "error";
-  message: string;
-};
-
 export default function MovieDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const [movieId, setMovieId] = useState<number | null>(null);
@@ -34,7 +28,6 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
   const [movie, setMovie] = useState<MovieDetailsResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [toasts, setToasts] = useState<Toast[]>([]);
   const [isTopCastExpanded, setIsTopCastExpanded] = useState(true);
   const [isCrewExpanded, setIsCrewExpanded] = useState(true);
 
@@ -63,13 +56,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
     loadMovieDetails();
   }, [loadMovieDetails]);
 
-  const showToast = (type: "success" | "error", message: string) => {
-    const id = Date.now();
-    setToasts((prev) => [...prev, { id, type, message }]);
-    setTimeout(() => {
-      setToasts((prev) => prev.filter((t) => t.id !== id));
-    }, 5000);
-  };
+
 
   const handleCreateProject = () => {
     if (!movie) return;

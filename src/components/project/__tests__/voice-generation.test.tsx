@@ -1,5 +1,4 @@
-import { render, screen, fireEvent, waitFor, within } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { VoiceGeneration } from "../voice-generation";
 import type { VoiceResponse, VoiceWithCreator } from "@/lib/types/api";
 

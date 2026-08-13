@@ -54,7 +54,6 @@ function section(title: string) {
 
 // Test configuration
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020/api/v1";
-const TEST_TOKEN = process.env.TEST_TOKEN || "test-token";
 
 /**
  * Mock VoiceClient for integration testing
@@ -207,7 +206,7 @@ async function runTests() {
             audio_storage_type: audioData.storage_type,
             audio_expires_in: audioData.expires_in,
           };
-        } catch (err) {
+        } catch {
           log(`  Warning: Failed to fetch audio URL for voice ${voice.id}`, colors.yellow);
           return voice;
         }

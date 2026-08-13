@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import type { QueueStats } from "@/lib/types/queue";
 import { Clock, Database, HardDrive, TrendingUp, Users } from "lucide-react";

@@ -12,7 +12,6 @@ import {
   PanelLeft,
   X,
   Activity,
-  Loader2,
   Search,
   ShieldCheck,
   DollarSign,

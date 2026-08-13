@@ -40,12 +40,6 @@ export function ScriptGeneration({
   const [copied, setCopied] = useState(false);
   const toast = useToast();
 
-  const regenerateScript = async () => {
-    if (confirm("Are you sure you want to regenerate? Current changes will be lost.")) {
-      onRegenerate();
-    }
-  };
-
   const copyToClipboard = () => {
     if (script) {
       navigator.clipboard.writeText(script);

@@ -10,8 +10,6 @@ import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import {
-  FileText,
-  ChevronDown,
   ChevronRight,
   Download,
   Share2,
@@ -22,7 +20,6 @@ import {
   Info,
   Film,
   Check,
-  X as XIcon,
   AlertCircle,
   Clock,
 } from "lucide-react";
@@ -46,7 +43,7 @@ export default function ExportPage() {
   const params = useParams();
   const router = useRouter();
   const projectId = params.projectId as string;
-  const { state, isLoading } = useProjectState(projectId);
+  const { isLoading } = useProjectState(projectId);
   const toast = useToast();
   const { refreshNotifications } = useNotifications();
 

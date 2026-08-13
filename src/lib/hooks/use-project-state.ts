@@ -452,6 +452,6 @@ export async function getAllProjects(): Promise<ProjectState[]> {
   return projects.map((project) => mapProject(project));
 }
 
-export async function deleteProject(_projectId: string): Promise<void> {
+export async function deleteProject(): Promise<void> {
   throw new Error("Project deletion is not wired to the backend yet.");
 }

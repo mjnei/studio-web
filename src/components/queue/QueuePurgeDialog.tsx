@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { AlertTriangle, Loader2 } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 import { ConfirmModal } from "@/components/ui/modal";
 import { purgeQueue } from "@/lib/api/queue-admin";
 import { useToast } from "@/lib/hooks/use-toast";

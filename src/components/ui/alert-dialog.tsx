@@ -1,10 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { Modal, ModalProps } from "./modal";
+import { Modal } from "./modal";
 
 export const AlertDialog = Modal;
-export const AlertDialogContent = ({ children, ...props }: { children: React.ReactNode }) => (
+export const AlertDialogContent = ({ children }: { children: React.ReactNode }) => (
   <>{children}</>
 );
 export const AlertDialogHeader = ({ children }: { children: React.ReactNode }) => (

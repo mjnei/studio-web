@@ -2,7 +2,7 @@
 
 import { Check, Mic, Volume2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 
 interface VoiceSelectionCardProps {
   id: string;
@@ -31,9 +31,7 @@ export function VoiceSelectionCard({
   metadata,
   isSelected,
   isPlaying,
-  previewUrl,
   onSelect,
-  onPreview,
   isPreviewLoading = false,
 }: VoiceSelectionCardProps) {
   const formatDuration = (seconds?: number) => {

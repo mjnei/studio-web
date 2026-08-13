@@ -129,7 +129,6 @@ export function FloatingWorkflowNavigation({
           {steps.map((step, index) => {
             const isCompleted = index < currentStepIndex;
             const isCurrent = index === currentStepIndex;
-            const isUpcoming = index > currentStepIndex;
 
             return (
               <div key={step.key} className="flex items-center flex-shrink-0">

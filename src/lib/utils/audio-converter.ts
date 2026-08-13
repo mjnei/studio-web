@@ -11,17 +11,17 @@
  * @param voiceName - The voice name for logging purposes
  * @returns A promise that resolves to an audio blob (WAV or MP3), or the original blob if conversion fails
  */
-export async function convertWebmToAudio(blob: Blob, voiceName: string): Promise<Blob> {
+export async function convertWebmToAudio(blob: Blob): Promise<Blob> {
   try {
     // Try to use FFmpeg if available (via FFmpeg.wasm or similar)
     if (typeof window !== "undefined" && "FFmpeg" in window) {
-      return await convertWebmUsingFFmpeg(voiceName);
+      return await convertWebmUsingFFmpeg();
     }
 
     // Fallback: Try to decode and re-encode using Web Audio API
-    return await convertWebmUsingWebAudio(blob, voiceName);
+    return await convertWebmUsingWebAudio(blob);
   } catch (error) {
-    console.warn(`[Audio Converter] Failed to convert ${voiceName}:`, error);
+    console.warn("[Audio Converter] Failed to convert audio:", error);
     // Return original blob if conversion fails
     return blob;
   }
@@ -31,7 +31,7 @@ export async function convertWebmToAudio(blob: Blob, voiceName: string): Promise
  * Convert WebM to WAV using Web Audio API
  * Decodes the WebM audio and encodes it to WAV format
  */
-async function convertWebmUsingWebAudio(blob: Blob, voiceName: string): Promise<Blob> {
+async function convertWebmUsingWebAudio(blob: Blob): Promise<Blob> {
   // Decode the audio data
   const audioContext = new (
     window.AudioContext ||
