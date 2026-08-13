@@ -21,7 +21,7 @@ import {
   X,
 } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
+import { ExternalImage } from "@/components/ui/ExternalImage";
 import {
   adminGetMovieDetails,
   adminUpdateMovie,
@@ -223,12 +223,11 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
           {/* Backdrop */}
           {backdropUrl && (
             <div className="relative h-64 overflow-hidden bg-surface-raised sm:h-80">
-              <Image
+              <ExternalImage
                 src={backdropUrl}
                 alt={movie.title || movie.original_title}
                 fill
                 className="object-cover"
-                unoptimized
               />
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-surface-base" />
             </div>
@@ -241,13 +240,12 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
               <div className="flex flex-col gap-4">
                 {/* Poster */}
                 {posterUrl ? (
-                  <Image
+                  <ExternalImage
                     src={posterUrl}
                     alt={movie.title || movie.original_title}
                     width={300}
                     height={450}
                     className="w-full rounded-2xl border border-border-default shadow-xl"
-                    unoptimized
                   />
                 ) : (
                   <div className="aspect-[2/3] rounded-2xl border border-border-default bg-surface-panel flex items-center justify-center">
@@ -477,12 +475,11 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                           >
                             {credit.person.profile_path ? (
                               <div className="relative h-20 w-20 overflow-hidden rounded-full">
-                                <Image
+                                <ExternalImage
                                   src={getImageUrl(credit.person.profile_path, "h632") || ""}
                                   alt={credit.person.display_name}
                                   fill
                                   className="object-cover"
-                                  unoptimized
                                 />
                               </div>
                             ) : (
@@ -516,12 +513,11 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                           >
                             {credit.person.profile_path ? (
                               <div className="relative h-20 w-20 overflow-hidden rounded-full">
-                                <Image
+                                <ExternalImage
                                   src={getImageUrl(credit.person.profile_path, "h632") || ""}
                                   alt={credit.person.display_name}
                                   fill
                                   className="object-cover"
-                                  unoptimized
                                 />
                               </div>
                             ) : (

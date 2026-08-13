@@ -1,8 +1,8 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Folder, Trash2, Clock, CheckCircle2, Calendar } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { ExternalImage } from "@/components/ui/ExternalImage";
 import { tmdbImageUrl, type ProjectResponse } from "@/lib/project-client";
 
 interface ProjectCardProps {
@@ -115,7 +115,7 @@ export function ProjectCard({
             project.thumbnail?.custom_image_url ||
             (project.thumbnail?.base_image_url &&
               project.thumbnail?.base_image_status === "completed") ? (
-              <Image
+              <ExternalImage
                 src={
                   project.thumbnail?.final_url ||
                   project.thumbnail?.custom_image_url ||
@@ -126,27 +126,19 @@ export function ProjectCard({
                 className="h-full w-full object-cover"
                 fill
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
-                unoptimized
-                onError={(e) => {
+                onError={() => {
                   // Fallback to TMDB image if thumbnail fails to load
-                  const img = e.target as HTMLImageElement;
                   const backdropOrPoster =
                     project.movie?.backdrop_path ?? project.movie?.poster_path;
                   if (backdropOrPoster) {
                     const fallbackUrl = tmdbImageUrl(backdropOrPoster, "w780");
-                    if (fallbackUrl) {
-                      img.src = fallbackUrl;
-                    } else {
-                      img.style.display = "none";
-                    }
-                  } else {
-                    // Hide image on error, will show placeholder
-                    img.style.display = "none";
+                    // The ExternalImage component handles this, but onError is called
+                    // Client-side image error handling is limited with Next.js Image component
                   }
                 }}
               />
             ) : project.movie?.backdrop_path || project.movie?.poster_path ? (
-              <Image
+              <ExternalImage
                 src={
                   tmdbImageUrl(project.movie.backdrop_path ?? project.movie.poster_path, "w780") ||
                   ""
@@ -155,12 +147,6 @@ export function ProjectCard({
                 className="h-full w-full object-cover"
                 fill
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
-                unoptimized
-                onError={(e) => {
-                  // Hide image on error, will show placeholder
-                  const img = e.target as HTMLImageElement;
-                  img.style.display = "none";
-                }}
               />
             ) : (
               <div className="flex h-full items-center justify-center">

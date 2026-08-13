@@ -1,7 +1,7 @@
 import React from "react";
-import Image from "next/image";
 import { Film } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
+import { ExternalImage } from "@/components/ui/ExternalImage";
 
 interface MoviePosterProps {
   posterPath?: string | null;
@@ -41,12 +41,11 @@ export const MoviePoster: React.FC<MoviePosterProps> = ({
       )}
     >
       {imageUrl ? (
-        <Image
+        <ExternalImage
           src={imageUrl}
           alt={title}
           fill
           className="object-cover"
-          unoptimized
           priority={priority}
         />
       ) : (

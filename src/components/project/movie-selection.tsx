@@ -1,12 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import { Search, Film, Check, Star } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ExternalImage } from "@/components/ui/ExternalImage";
 import {
   getPopularMovies,
   searchMovies,
@@ -144,13 +144,12 @@ export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps)
             >
               {/* Poster */}
               <div className="relative aspect-[2/3] overflow-hidden bg-surface-hover">
-                <Image
+                <ExternalImage
                   src={movie.poster}
                   alt={movie.title}
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                   fill
                   sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 200px"
-                  unoptimized
                 />
                 {/* Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

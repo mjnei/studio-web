@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Folder, Film, Mic, Plus, ArrowRight, Sparkles, X } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { ExternalImage } from "@/components/ui/ExternalImage";
 import { ProjectCard } from "@/components/project/ProjectCard";
 import {
   listProjects,
@@ -277,13 +277,12 @@ export default function DashboardPage() {
                 >
                   <div className="relative aspect-[2/3] w-full overflow-hidden bg-surface-raised">
                     {movie.poster_path ? (
-                      <Image
+                      <ExternalImage
                         src={tmdbImageUrl(movie.poster_path)}
                         alt={movie.title}
                         className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
                         fill
                         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
-                        unoptimized
                       />
                     ) : (
                       <div className="flex h-full items-center justify-center">

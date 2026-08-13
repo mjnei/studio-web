@@ -18,8 +18,8 @@ import {
   CheckCircle2,
   Loader,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
+import { ExternalImage } from "@/components/ui/ExternalImage";
 import {
   adminListMovies,
   adminUpdateMovie,
@@ -403,12 +403,11 @@ export default function AdminMoviesPage() {
                         {/* Poster Thumbnail */}
                         <div className="relative h-32 w-24 flex-shrink-0 overflow-hidden rounded-lg bg-surface-raised">
                           {posterUrl ? (
-                            <Image
+                            <ExternalImage
                               src={posterUrl}
                               alt={movie.title || movie.original_title}
                               fill
                               className="object-cover"
-                              unoptimized
                             />
                           ) : (
                             <div className="flex h-full items-center justify-center">
@@ -542,12 +541,11 @@ export default function AdminMoviesPage() {
                       {/* Poster Image */}
                       <div className="relative aspect-[2/3] w-full overflow-hidden bg-surface-raised">
                         {posterUrl ? (
-                          <Image
+                          <ExternalImage
                             src={posterUrl}
                             alt={movie.title || movie.original_title}
                             fill
                             className="object-cover transition-transform group-hover:scale-105"
-                            unoptimized
                           />
                         ) : (
                           <div className="flex h-full items-center justify-center">
@@ -812,7 +810,6 @@ export default function AdminMoviesPage() {
                               alt={movie.title}
                               fill
                               className="object-cover"
-                              unoptimized
                             />
                           ) : (
                             <div className="flex h-full items-center justify-center">
@@ -902,7 +899,6 @@ export default function AdminMoviesPage() {
                             alt={movie.title}
                             fill
                             className="object-cover transition-transform group-hover:scale-105"
-                            unoptimized
                           />
                         ) : (
                           <div className="flex h-full items-center justify-center">

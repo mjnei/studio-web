@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import {
   Star,
   ArrowLeft,
@@ -19,6 +18,7 @@ import {
   ChevronUp,
 } from "lucide-react";
 import Link from "next/link";
+import { ExternalImage } from "@/components/ui/ExternalImage";
 import { adminGetMovieDetails, type MovieDetailsResponse } from "@/lib/api/admin";
 
 export default function MovieDetailsPage({ params }: { params: Promise<{ id: string }> }) {
@@ -138,14 +138,13 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
           {/* Backdrop */}
           {backdropUrl && (
             <div className="relative h-64 w-full overflow-hidden bg-surface-raised sm:h-80">
-              <Image
+              <ExternalImage
                 src={backdropUrl}
                 alt={movie.title || movie.original_title}
                 className="h-full w-full object-cover"
                 fill
                 priority
                 sizes="100vw"
-                unoptimized
               />
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-surface-base" />
             </div>
@@ -158,13 +157,12 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
               <div className="flex flex-col gap-4 md:sticky md:top-4 md:self-start">
                 {/* Poster */}
                 {posterUrl ? (
-                  <Image
+                  <ExternalImage
                     src={posterUrl}
                     alt={movie.title || movie.original_title}
                     className="w-full rounded-2xl border border-border-default shadow-2xl"
                     width={280}
                     height={420}
-                    unoptimized
                   />
                 ) : (
                   <div className="aspect-[2/3] rounded-2xl border border-border-default bg-surface-panel flex items-center justify-center">
@@ -355,13 +353,12 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                               {directors.map((director) => (
                                 <div key={director.id} className="flex items-center gap-3">
                                   {director.person.profile_path ? (
-                                    <Image
+                                    <ExternalImage
                                       src={`https://image.tmdb.org/t/p/w185${director.person.profile_path}`}
                                       alt={director.person.display_name}
                                       className="h-12 w-12 rounded-lg object-cover ring-2 ring-border-default"
                                       width={48}
                                       height={48}
-                                      unoptimized
                                     />
                                   ) : (
                                     <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-surface-raised ring-2 ring-border-default">
@@ -389,13 +386,12 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                               {producers.slice(0, 3).map((producer) => (
                                 <div key={producer.id} className="flex items-center gap-3">
                                   {producer.person.profile_path ? (
-                                    <Image
+                                    <ExternalImage
                                       src={`https://image.tmdb.org/t/p/w185${producer.person.profile_path}`}
                                       alt={producer.person.display_name}
                                       className="h-12 w-12 rounded-lg object-cover ring-2 ring-border-default"
                                       width={48}
                                       height={48}
-                                      unoptimized
                                     />
                                   ) : (
                                     <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-surface-raised ring-2 ring-border-default">
@@ -423,13 +419,12 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                               {writers.slice(0, 3).map((writer) => (
                                 <div key={writer.id} className="flex items-center gap-3">
                                   {writer.person.profile_path ? (
-                                    <Image
+                                    <ExternalImage
                                       src={`https://image.tmdb.org/t/p/w185${writer.person.profile_path}`}
                                       alt={writer.person.display_name}
                                       className="h-12 w-12 rounded-lg object-cover ring-2 ring-border-default"
                                       width={48}
                                       height={48}
-                                      unoptimized
                                     />
                                   ) : (
                                     <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-surface-raised ring-2 ring-border-default">
@@ -480,13 +475,12 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                             >
                               <div className="relative aspect-square w-full overflow-hidden bg-surface-base">
                                 {actor.person.profile_path ? (
-                                  <Image
+                                  <ExternalImage
                                     src={`https://image.tmdb.org/t/p/w342${actor.person.profile_path}`}
                                     alt={actor.person.display_name}
                                     className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                                     fill
                                     sizes="(max-width: 640px) 25vw, (max-width: 1024px) 20vw, 150px"
-                                    unoptimized
                                   />
                                 ) : (
                                   <div className="flex h-full items-center justify-center">
@@ -517,13 +511,12 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                             >
                               <div className="relative aspect-square w-full overflow-hidden bg-surface-base">
                                 {actor.person.profile_path ? (
-                                  <Image
+                                  <ExternalImage
                                     src={`https://image.tmdb.org/t/p/w342${actor.person.profile_path}`}
                                     alt={actor.person.display_name}
                                     className="h-full w-full object-cover"
                                     fill
                                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 200px"
-                                    unoptimized
                                   />
                                 ) : (
                                   <div className="flex h-full items-center justify-center">
