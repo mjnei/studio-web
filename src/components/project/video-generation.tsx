@@ -239,6 +239,7 @@ export function VideoGeneration({
                       alt={movieTitle}
                       className="w-full h-full object-cover"
                       fill
+                      sizes="(max-width: 1024px) 100vw, 600px"
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">

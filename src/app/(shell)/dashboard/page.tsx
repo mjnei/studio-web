@@ -275,13 +275,14 @@ export default function DashboardPage() {
                   href={`/movies/${movie.id}`}
                   className="group overflow-hidden rounded-xl border border-border-default bg-surface-panel transition hover:border-accent-cyan/40 hover:shadow-lg"
                 >
-                  <div className="relative aspect-[2/3] overflow-hidden bg-surface-raised">
+                  <div className="relative aspect-[2/3] w-full overflow-hidden bg-surface-raised">
                     {movie.poster_path ? (
                       <Image
                         src={tmdbImageUrl(movie.poster_path)}
                         alt={movie.title}
                         className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
                         fill
+                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
                       />
                     ) : (
                       <div className="flex h-full items-center justify-center">

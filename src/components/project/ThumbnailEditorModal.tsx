@@ -393,6 +393,7 @@ export function ThumbnailEditorModal({
                   alt="Project thumbnail"
                   className="w-full h-full object-cover"
                   fill
+                  sizes="(max-width: 640px) 100vw, 500px"
                 />
 
                 {/* Text Overlay Preview (Client-side simulation) */}

@@ -137,13 +137,14 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
         <>
           {/* Backdrop */}
           {backdropUrl && (
-            <div className="relative h-64 overflow-hidden bg-surface-raised sm:h-80">
+            <div className="relative h-64 w-full overflow-hidden bg-surface-raised sm:h-80">
               <Image
                 src={backdropUrl}
                 alt={movie.title || movie.original_title}
                 className="h-full w-full object-cover"
                 fill
                 priority
+                sizes="100vw"
               />
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-surface-base" />
             </div>
@@ -472,13 +473,14 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                               key={actor.id}
                               className="group overflow-hidden rounded-xl border border-border-default bg-surface-raised transition-all hover:border-accent-cyan/40 hover:shadow-lg"
                             >
-                              <div className="relative aspect-square overflow-hidden bg-surface-base">
+                              <div className="relative aspect-square w-full overflow-hidden bg-surface-base">
                                 {actor.person.profile_path ? (
                                   <Image
                                     src={`https://image.tmdb.org/t/p/w342${actor.person.profile_path}`}
                                     alt={actor.person.display_name}
                                     className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                                     fill
+                                    sizes="(max-width: 640px) 25vw, (max-width: 1024px) 20vw, 150px"
                                   />
                                 ) : (
                                   <div className="flex h-full items-center justify-center">
@@ -507,13 +509,14 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                               key={actor.id}
                               className="group overflow-hidden rounded-xl border border-border-default bg-surface-raised transition-all hover:border-accent-cyan/40"
                             >
-                              <div className="relative aspect-square overflow-hidden bg-surface-base">
+                              <div className="relative aspect-square w-full overflow-hidden bg-surface-base">
                                 {actor.person.profile_path ? (
                                   <Image
                                     src={`https://image.tmdb.org/t/p/w342${actor.person.profile_path}`}
                                     alt={actor.person.display_name}
                                     className="h-full w-full object-cover"
                                     fill
+                                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 200px"
                                   />
                                 ) : (
                                   <div className="flex h-full items-center justify-center">

@@ -55,6 +55,7 @@ export const ActiveJobCard: React.FC<ActiveJobCardProps> = ({ job, onDelete, isD
               alt={job.projectName}
               className="w-full h-full object-cover"
               fill
+              sizes="(max-width: 768px) 100vw, 176px"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-surface-panel">
