@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import {
   User,
   Mail,
@@ -211,10 +212,12 @@ export default function ProfilePage() {
           <CardContent>
             <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
               {user.picture_url ? (
-                <img
+                <Image
                   src={user.picture_url}
                   alt={user.name}
                   className="flex h-24 w-24 shrink-0 items-center justify-center rounded-2xl object-cover ring-4 ring-surface-elevated"
+                  width={96}
+                  height={96}
                 />
               ) : (
                 <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-accent-primary to-accent-secondary text-3xl font-bold text-white ring-4 ring-surface-elevated">

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Loader2, Video, Eye, Bell, BellOff, XCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -49,10 +50,11 @@ export const ActiveJobCard: React.FC<ActiveJobCardProps> = ({ job, onDelete, isD
         {/* Thumbnail preview */}
         <div className="flex-shrink-0 w-full md:w-44 aspect-video rounded-lg overflow-hidden bg-black/40 border border-blue-500/20 relative group">
           {job.thumbnail_url ? (
-            <img
+            <Image
               src={job.thumbnail_url}
               alt={job.projectName}
               className="w-full h-full object-cover"
+              fill
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-surface-panel">

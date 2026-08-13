@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import {
   Settings,
   HelpCircle,
@@ -198,10 +199,12 @@ function UserSection({ collapsed, onNavigate }: { collapsed?: boolean; onNavigat
         }`}
       >
         {user?.picture_url ? (
-          <img
+          <Image
             src={user.picture_url}
             alt={displayName}
             className="h-10 w-10 shrink-0 rounded-full object-cover ring-2 ring-accent-primary/20"
+            width={40}
+            height={40}
           />
         ) : (
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-accent-secondary to-accent-primary text-sm font-bold text-white shadow-lg">

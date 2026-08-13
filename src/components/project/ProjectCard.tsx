@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Folder, Trash2, Clock, CheckCircle2, Calendar } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -114,7 +115,7 @@ export function ProjectCard({
             project.thumbnail?.custom_image_url ||
             (project.thumbnail?.base_image_url &&
               project.thumbnail?.base_image_status === "completed") ? (
-              <img
+              <Image
                 src={
                   project.thumbnail?.final_url ||
                   project.thumbnail?.custom_image_url ||
@@ -123,6 +124,7 @@ export function ProjectCard({
                 }
                 alt={project.project_name || project.movie?.title || "Project thumbnail"}
                 className="h-full w-full object-cover"
+                fill
                 onError={(e) => {
                   // Fallback to TMDB image if thumbnail fails to load
                   const img = e.target as HTMLImageElement;
@@ -142,13 +144,14 @@ export function ProjectCard({
                 }}
               />
             ) : project.movie?.backdrop_path || project.movie?.poster_path ? (
-              <img
+              <Image
                 src={
                   tmdbImageUrl(project.movie.backdrop_path ?? project.movie.poster_path, "w780") ||
                   ""
                 }
                 alt={project.movie?.title ?? "Project movie"}
                 className="h-full w-full object-cover"
+                fill
                 onError={(e) => {
                   // Hide image on error, will show placeholder
                   const img = e.target as HTMLImageElement;

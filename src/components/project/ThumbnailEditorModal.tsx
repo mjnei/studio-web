@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import Image from "next/image";
 import {
   Upload,
   Loader2,
@@ -387,10 +388,11 @@ export function ThumbnailEditorModal({
 
             {hasThumbnail && currentThumbnailUrl ? (
               <>
-                <img
+                <Image
                   src={currentThumbnailUrl}
                   alt="Project thumbnail"
                   className="w-full h-full object-cover"
+                  fill
                 />
 
                 {/* Text Overlay Preview (Client-side simulation) */}

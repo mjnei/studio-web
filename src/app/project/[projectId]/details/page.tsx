@@ -2,6 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { FileText, Sparkles, Loader2, ChevronDown, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -370,10 +371,12 @@ export default function ProjectDetailsPage() {
 
               {/* Thumbnail - Half width on medium+ screens */}
               <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default md:rounded-xl">
-                <img
+                <Image
                   src={state.thumbnailUrl}
                   alt="Project thumbnail"
                   className="w-full h-full object-cover"
+                  width={500}
+                  height={280}
                   onError={(e) => {
                     // Hide image on error
                     const img = e.target as HTMLImageElement;
@@ -423,10 +426,12 @@ export default function ProjectDetailsPage() {
             <div className="flex items-center gap-4">
               {state.moviePoster && (
                 <div className="h-24 w-16 overflow-hidden rounded-md bg-surface-raised flex-shrink-0">
-                  <img
+                  <Image
                     src={state.moviePoster}
                     alt={state.movieTitle}
                     className="h-full w-full object-cover"
+                    width={64}
+                    height={96}
                   />
                 </div>
               )}

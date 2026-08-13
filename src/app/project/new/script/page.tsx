@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, Home, Save, Edit2 } from "lucide-react";
@@ -121,10 +122,12 @@ export default function NewProjectScriptPage() {
           <div className="flex items-center gap-4">
             {selectedMovie.poster && (
               <div className="h-24 w-16 overflow-hidden rounded-md bg-surface-raised">
-                <img
+                <Image
                   src={selectedMovie.poster}
                   alt={selectedMovie.title}
                   className="h-full w-full object-cover"
+                  width={64}
+                  height={96}
                 />
               </div>
             )}

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Play, Download, Trash2, CheckCircle2, CheckSquare, Square, Eye } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -59,10 +60,11 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
               className="relative w-28 aspect-video rounded-md overflow-hidden bg-surface-raised border border-border-default cursor-pointer group flex-shrink-0"
             >
               {job.thumbnail_url ? (
-                <img
+                <Image
                   src={job.thumbnail_url}
                   alt={job.projectName}
                   className="w-full h-full object-cover"
+                  fill
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-surface-panel">
@@ -187,10 +189,11 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
         </Badge>
 
         {job.thumbnail_url ? (
-          <img
+          <Image
             src={job.thumbnail_url}
             alt={job.projectName}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            fill
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-surface-panel">

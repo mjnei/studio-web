@@ -4,9 +4,7 @@ import * as React from "react";
 import { Modal } from "./modal";
 
 export const AlertDialog = Modal;
-export const AlertDialogContent = ({ children }: { children: React.ReactNode }) => (
-  <>{children}</>
-);
+export const AlertDialogContent = ({ children }: { children: React.ReactNode }) => <>{children}</>;
 export const AlertDialogHeader = ({ children }: { children: React.ReactNode }) => (
   <div className="mb-4">{children}</div>
 );

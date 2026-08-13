@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { useI18n } from "@/i18n";
 import { Copy, Check, Users, Award, Gift, TrendingUp, Share2, Loader2, Trophy } from "lucide-react";
 import Link from "next/link";
@@ -239,10 +240,12 @@ export default function ReferralPage() {
                   className="rounded-lg border border-border-default bg-surface-raised p-4 text-center hover:border-accent-cyan/40 transition-all"
                 >
                   {achievement.icon_url ? (
-                    <img
+                    <Image
                       src={achievement.icon_url}
                       alt={achievement.name}
                       className="w-12 h-12 mx-auto mb-2"
+                      width={48}
+                      height={48}
                     />
                   ) : (
                     <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center mx-auto mb-2">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { useI18n } from "@/i18n";
 import { Trophy, Medal, Award, TrendingUp, Users, Loader2 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -96,10 +97,12 @@ export default function LeaderboardPage() {
               <div className="flex justify-center mb-3">
                 <div className="w-20 h-20 rounded-full bg-gradient-to-br from-slate-400 to-slate-600 flex items-center justify-center">
                   {leaderboard[1].avatar_url ? (
-                    <img
+                    <Image
                       src={leaderboard[1].avatar_url}
                       alt={leaderboard[1].user_name}
                       className="w-full h-full rounded-full object-cover"
+                      width={80}
+                      height={80}
                     />
                   ) : (
                     <Medal className="w-10 h-10 text-white" />
@@ -137,10 +140,12 @@ export default function LeaderboardPage() {
               <div className="flex justify-center mb-3">
                 <div className="w-24 h-24 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center">
                   {leaderboard[0].avatar_url ? (
-                    <img
+                    <Image
                       src={leaderboard[0].avatar_url}
                       alt={leaderboard[0].user_name}
                       className="w-full h-full rounded-full object-cover"
+                      width={96}
+                      height={96}
                     />
                   ) : (
                     <Trophy className="w-12 h-12 text-white" />
@@ -178,10 +183,12 @@ export default function LeaderboardPage() {
               <div className="flex justify-center mb-3">
                 <div className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-700 to-amber-900 flex items-center justify-center">
                   {leaderboard[2].avatar_url ? (
-                    <img
+                    <Image
                       src={leaderboard[2].avatar_url}
                       alt={leaderboard[2].user_name}
                       className="w-full h-full rounded-full object-cover"
+                      width={80}
+                      height={80}
                     />
                   ) : (
                     <Award className="w-10 h-10 text-white" />
@@ -273,10 +280,12 @@ export default function LeaderboardPage() {
                       <td className="py-3">
                         <div className="flex items-center gap-3">
                           {entry.avatar_url ? (
-                            <img
+                            <Image
                               src={entry.avatar_url}
                               alt={entry.user_name}
                               className="w-10 h-10 rounded-full object-cover"
+                              width={40}
+                              height={40}
                             />
                           ) : (
                             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center">

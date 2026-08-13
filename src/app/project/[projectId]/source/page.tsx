@@ -2,6 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { Film, Info } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useProjectState } from "@/lib/hooks/use-project-state";
@@ -101,10 +102,12 @@ export default function SourcePage() {
             <div className="flex items-start gap-6">
               {state.moviePoster && (
                 <div className="h-64 w-44 overflow-hidden rounded-lg bg-surface-raised">
-                  <img
+                  <Image
                     src={state.moviePoster}
                     alt={state.movieTitle}
                     className="h-full w-full object-cover"
+                    width={176}
+                    height={264}
                   />
                 </div>
               )}

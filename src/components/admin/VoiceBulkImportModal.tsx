@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import {
   Upload,
   Search,
@@ -247,10 +248,12 @@ export function VoiceBulkImportModal({ open, onClose, onSuccess }: VoiceBulkImpo
                       className="w-full flex items-center gap-3 px-4 py-3 hover:bg-surface-raised transition-colors text-left border-b border-border-default last:border-0"
                     >
                       {user.picture_url ? (
-                        <img
+                        <Image
                           src={user.picture_url}
                           alt={user.name}
                           className="w-8 h-8 rounded-full"
+                          width={32}
+                          height={32}
                         />
                       ) : (
                         <div className="w-8 h-8 rounded-full bg-accent-primary/10 flex items-center justify-center">

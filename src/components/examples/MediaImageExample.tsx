@@ -5,6 +5,7 @@
  * Remove or move to a different location if not needed.
  */
 
+import Image from "next/image";
 import { MediaImage } from "@/components/ui/MediaImage";
 import { ImageUrlUtils } from "@/lib/image-utils";
 
@@ -129,10 +130,12 @@ export function MediaImageExample() {
         </p>
 
         <div>
-          <img
+          <Image
             src={project.finalThumbnailUrl}
             alt="Direct usage"
             className="aspect-video w-full rounded-lg object-cover"
+            width={500}
+            height={280}
           />
         </div>
       </section>

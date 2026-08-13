@@ -3,6 +3,7 @@
 import * as React from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
+import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
@@ -333,10 +334,12 @@ export default function ComposePage() {
                       {state.finalThumbnailUrl && (
                         <div className="max-w-sm">
                           <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default">
-                            <img
+                            <Image
                               src={state.finalThumbnailUrl}
                               alt="Confirmed thumbnail"
                               className="w-full h-full object-cover"
+                              width={400}
+                              height={225}
                             />
                           </div>
                         </div>
@@ -375,7 +378,7 @@ export default function ComposePage() {
                         <div className="flex flex-col md:grid md:grid-cols-2 md:gap-6">
                           {/* Thumbnail - Half width on medium+ screens */}
                           <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default md:rounded-xl">
-                            <img
+                            <Image
                               src={
                                 state.finalThumbnailUrl ||
                                 state.customThumbnailUrl ||
@@ -384,6 +387,8 @@ export default function ComposePage() {
                               }
                               alt="Project thumbnail"
                               className="w-full h-full object-cover"
+                              width={500}
+                              height={280}
                             />
                           </div>
 

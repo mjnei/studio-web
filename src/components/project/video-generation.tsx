@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Video, Play, Download, Loader2, CheckCircle2, Film, Clock } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -233,10 +234,11 @@ export function VideoGeneration({
               <div className="max-w-3xl mx-auto mb-6">
                 <div className="aspect-video bg-surface-raised rounded-xl overflow-hidden border border-border-default relative group">
                   {moviePoster ? (
-                    <img
+                    <Image
                       src={moviePoster}
                       alt={movieTitle}
                       className="w-full h-full object-cover"
+                      fill
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">

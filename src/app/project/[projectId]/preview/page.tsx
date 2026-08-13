@@ -22,11 +22,7 @@ import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { FullScriptModal } from "@/components/project/full-script-modal";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
-import {
-  createTTSJob,
-  getTTSJob,
-  type TTSJobResponse,
-} from "@/lib/project-client";
+import { createTTSJob, getTTSJob, type TTSJobResponse } from "@/lib/project-client";
 
 export default function PreviewPage() {
   const params = useParams();
