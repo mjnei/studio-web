@@ -894,7 +894,7 @@ export default function AdminMoviesPage() {
                       {/* Poster Image */}
                       <div className="relative aspect-[2/3] w-full overflow-hidden bg-surface-raised">
                         {posterUrl ? (
-                          <Image
+                          <ExternalImage
                             src={posterUrl}
                             alt={movie.title}
                             fill
