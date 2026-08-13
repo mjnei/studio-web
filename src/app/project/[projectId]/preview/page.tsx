@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState, useRef, useCallback } from "react";
 import {
   CheckCircle,
+  FileText,
   Mic2,
   Loader2,
   AlertCircle,

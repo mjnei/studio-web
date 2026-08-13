@@ -145,6 +145,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                 fill
                 priority
                 sizes="100vw"
+                unoptimized
               />
               <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-surface-base" />
             </div>
@@ -163,6 +164,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                     className="w-full rounded-2xl border border-border-default shadow-2xl"
                     width={280}
                     height={420}
+                    unoptimized
                   />
                 ) : (
                   <div className="aspect-[2/3] rounded-2xl border border-border-default bg-surface-panel flex items-center justify-center">
@@ -359,6 +361,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                                       className="h-12 w-12 rounded-lg object-cover ring-2 ring-border-default"
                                       width={48}
                                       height={48}
+                                      unoptimized
                                     />
                                   ) : (
                                     <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-surface-raised ring-2 ring-border-default">
@@ -392,6 +395,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                                       className="h-12 w-12 rounded-lg object-cover ring-2 ring-border-default"
                                       width={48}
                                       height={48}
+                                      unoptimized
                                     />
                                   ) : (
                                     <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-surface-raised ring-2 ring-border-default">
@@ -425,6 +429,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                                       className="h-12 w-12 rounded-lg object-cover ring-2 ring-border-default"
                                       width={48}
                                       height={48}
+                                      unoptimized
                                     />
                                   ) : (
                                     <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-surface-raised ring-2 ring-border-default">
@@ -481,6 +486,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                                     className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                                     fill
                                     sizes="(max-width: 640px) 25vw, (max-width: 1024px) 20vw, 150px"
+                                    unoptimized
                                   />
                                 ) : (
                                   <div className="flex h-full items-center justify-center">
@@ -517,6 +523,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                                     className="h-full w-full object-cover"
                                     fill
                                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 200px"
+                                    unoptimized
                                   />
                                 ) : (
                                   <div className="flex h-full items-center justify-center">

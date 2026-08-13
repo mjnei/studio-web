@@ -126,6 +126,7 @@ export function ProjectCard({
                 className="h-full w-full object-cover"
                 fill
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
+                unoptimized
                 onError={(e) => {
                   // Fallback to TMDB image if thumbnail fails to load
                   const img = e.target as HTMLImageElement;
@@ -154,6 +155,7 @@ export function ProjectCard({
                 className="h-full w-full object-cover"
                 fill
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
+                unoptimized
                 onError={(e) => {
                   // Hide image on error, will show placeholder
                   const img = e.target as HTMLImageElement;

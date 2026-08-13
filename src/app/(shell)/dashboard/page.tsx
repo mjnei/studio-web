@@ -283,6 +283,7 @@ export default function DashboardPage() {
                         className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
                         fill
                         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
+                        unoptimized
                       />
                     ) : (
                       <div className="flex h-full items-center justify-center">
