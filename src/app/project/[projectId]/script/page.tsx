@@ -81,8 +81,9 @@ export default function ScriptPage() {
 
   return (
     <>
-      <div className="flex flex-col gap-6 pb-24">
-        <div className="flex items-center justify-between">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col gap-6 pb-24">
+          <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl font-semibold text-text-primary">Script</h2>
             <p className="mt-1 text-sm text-text-muted">Review and edit your voiceover script</p>
@@ -256,6 +257,7 @@ export default function ScriptPage() {
             </div>
           </Card>
         )}
+        </div>
       </div>
 
       <FloatingWorkflowNavigation

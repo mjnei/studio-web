@@ -212,8 +212,9 @@ export default function ComposePage() {
 
   return (
     <>
-      <div className="flex flex-col gap-6 pb-24">
-        <div>
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col gap-6 pb-24">
+          <div>
           <h2 className="text-xl font-semibold text-text-primary">Thumbnail Customization</h2>
           <p className="mt-1 text-sm text-text-muted">
             Customize and finalize your project thumbnail before video generation
@@ -490,6 +491,7 @@ export default function ComposePage() {
             </div>
           </Card>
         )}
+        </div>
       </div>
 
       {/* Thumbnail Action Confirmation Modal */}

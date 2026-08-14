@@ -334,8 +334,9 @@ export default function VoicePage() {
 
   return (
     <>
-      <div className="flex flex-col gap-6 pb-24">
-        <div className="flex items-center justify-between">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col gap-6 pb-24">
+          <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl font-semibold text-text-primary">Select Voice</h2>
             <p className="mt-1 text-sm text-text-muted">
@@ -754,6 +755,7 @@ export default function VoicePage() {
             onUpgrade={handleUpgradeClick}
           />
         )}
+        </div>
       </div>
 
       {/* Full Script Modal */}

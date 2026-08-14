@@ -345,8 +345,9 @@ export default function PreviewPage() {
 
   return (
     <>
-      <div className="flex flex-col gap-6 pb-24">
-        {/* Page Header */}
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col gap-6 pb-24">
+          {/* Page Header */}
         <div>
           <h2 className="text-2xl font-bold text-text-primary">Voice Preview</h2>
           <p className="mt-1 text-sm text-text-muted">
@@ -684,6 +685,7 @@ export default function PreviewPage() {
               </div>
             </CardContent>
           </Card>
+        </div>
         </div>
       </div>
 
