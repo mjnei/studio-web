@@ -9,7 +9,7 @@
  */
 export function formatWaitTime(seconds: number): string {
   if (seconds < 10) {
-    return "Starting soon";
+    return "Ready soon";
   } else if (seconds < 60) {
     return `~${Math.round(seconds)} seconds`;
   } else if (seconds < 120) {

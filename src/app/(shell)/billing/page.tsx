@@ -118,7 +118,7 @@ export default function BillingPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto pb-12">
+    <div className="max-w-7xl mx-auto pb-12">
       <PageHeader title={t("billing.title")} description={t("billing.description")} />
 
       {/* Tabs */}
