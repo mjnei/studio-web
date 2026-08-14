@@ -3,36 +3,30 @@
 import * as React from "react";
 import Link from "next/link";
 import { Coins } from "lucide-react";
-import { getCreditStatus, type CreditStatus as CreditStatusType } from "@/lib/credit-client";
+import { getCreditBalance, type CreditBalance } from "@/lib/credit-client";
 
 export function CreditStatus() {
-  const [creditStatus, setCreditStatus] = React.useState<CreditStatusType | null>(null);
+  const [creditBalance, setCreditBalance] = React.useState<CreditBalance | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
-  const loadCreditStatus = async () => {
+  const loadCreditBalance = async () => {
     try {
-      const status = await getCreditStatus();
-      setCreditStatus(status);
+      const balance = await getCreditBalance();
+      setCreditBalance(balance);
     } catch (error) {
-      console.error("Failed to load credit status:", error);
+      console.error("Failed to load credit balance:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
   React.useEffect(() => {
-    loadCreditStatus();
+    loadCreditBalance();
   }, []);
 
-  if (isLoading || !creditStatus) {
+  if (isLoading || !creditBalance) {
     return null;
   }
-
-  const tierColors = {
-    free: "text-text-muted",
-    pro: "text-accent-cyan",
-    premium: "text-accent-purple",
-  };
 
   return (
     <Link
@@ -41,11 +35,11 @@ export function CreditStatus() {
       title="View billing & credits"
     >
       <div className="flex items-center gap-2">
-        <Coins className={`h-4 w-4 ${tierColors[creditStatus.membership_tier]}`} />
+        <Coins className="h-4 w-4 text-accent-cyan" />
         <div className="flex flex-col">
           <div className="flex items-center gap-2">
             <span className="text-sm font-semibold text-text-primary">
-              {creditStatus.credits_remaining}
+              {creditBalance.credits_remaining}
             </span>
             <span className="text-xs text-text-muted hidden sm:inline">Credits</span>
           </div>

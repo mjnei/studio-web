@@ -13,6 +13,11 @@ export interface CreditStatus {
   last_reset_date: string | null;
 }
 
+export interface CreditBalance {
+  user_id: number;
+  credits_remaining: number;
+}
+
 export interface CreditTransaction {
   id: number;
   user_id: string;
@@ -55,6 +60,10 @@ export interface VideoGenerationResponse {
 export interface ProjectVideosResponse {
   videos: VideoGenerationResponse[];
   total: number;
+}
+
+export async function getCreditBalance(): Promise<CreditBalance> {
+  return request<CreditBalance>("/users/me/credits/balance");
 }
 
 export async function getCreditStatus(): Promise<CreditStatus> {
