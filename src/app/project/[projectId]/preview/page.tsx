@@ -199,6 +199,8 @@ export default function PreviewPage() {
     // Convert both IDs to strings for comparison
     const currentVoiceId = String(voiceId);
     const loadedVoiceId = ttsJob?.voice_id ? String(ttsJob.voice_id) : null;
+    const currentScriptId = activeScript?.id ? String(activeScript.id) : null;
+    const loadedScriptId = ttsJob?.script_id ? String(ttsJob.script_id) : null;
 
     // Check if voice has changed compared to loaded job
     if (ttsJob && loadedVoiceId && loadedVoiceId !== currentVoiceId) {
@@ -206,8 +208,15 @@ export default function PreviewPage() {
       return;
     }
 
-    // If we already have a loaded job with the same voice, don't re-create
-    if (ttsJob && loadedVoiceId === currentVoiceId) {
+    // Check if script version has changed (user selected a different script version)
+    if (ttsJob && currentScriptId && loadedScriptId && loadedScriptId !== currentScriptId) {
+      createNewTTSJob(voiceId, voiceName);
+      return;
+    }
+
+    // If we already have a loaded job with the same voice and same script, don't re-create
+    // (Backend will handle content hash matching to determine if synthesis is needed)
+    if (ttsJob && loadedVoiceId === currentVoiceId && loadedScriptId === currentScriptId) {
       return;
     }
 
@@ -225,7 +234,10 @@ export default function PreviewPage() {
     isLoading,
     projectId,
     ttsJob?.voice_id,
+    ttsJob?.script_id,
     state?.voiceId,
+    createNewTTSJob,
+    loadTTSJob,
   ]);
 
   // Audio event handlers
