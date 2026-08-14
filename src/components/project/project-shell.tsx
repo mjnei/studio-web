@@ -105,7 +105,7 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
 
       <div className="flex flex-1 flex-col overflow-hidden">
         <header className="flex shrink-0 flex-col border-b border-border-default bg-surface-panel md:h-14 md:flex-row md:items-center md:gap-4 md:px-4">
-          <div className="flex h-14 items-center gap-2 px-3 md:shrink-0 md:px-0">
+          <div className="mx-auto w-full max-w-7xl flex h-14 items-center gap-2 px-3 md:shrink-0 md:px-0 md:h-full md:gap-4">
             <Link href="/projects" className="text-text-muted hover:text-text-secondary">
               <ArrowLeft size={20} />
             </Link>
@@ -118,10 +118,10 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
             <div className="ml-auto flex items-center gap-2 md:hidden">
               {/* Export button removed */}
             </div>
-          </div>
-          <div className="ml-auto flex items-center gap-3 md:gap-4">
-            <CreditStatus />
-            <NotificationBell />
+            <div className="ml-auto flex items-center gap-3 md:gap-4">
+              <CreditStatus />
+              <NotificationBell />
+            </div>
           </div>
         </header>
         <main className="flex-1 overflow-y-auto p-4 md:p-6">{children}</main>

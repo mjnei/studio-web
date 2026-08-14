@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
-import { PanelLeft, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { DrawerContent } from "@/components/shell/drawer-content";
 import { useSidebar } from "@/components/shell/sidebar-context";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
@@ -49,15 +49,8 @@ export function NewProjectShell({ children }: { children: React.ReactNode }) {
 
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Header */}
-        <header className="flex h-14 shrink-0 items-center justify-between gap-4 border-b border-border-default bg-surface-panel px-4">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={toggle}
-              className="rounded-md p-1.5 text-text-muted hover:bg-surface-hover hover:text-text-secondary"
-              aria-label={isNarrow ? "Open navigation" : "Toggle sidebar"}
-            >
-              <PanelLeft size={20} />
-            </button>
+        <header className="flex shrink-0 items-center justify-between gap-4 border-b border-border-default bg-surface-panel px-4">
+          <div className="mx-auto w-full max-w-7xl flex h-14 items-center gap-4">
             <Link href="/projects" className="text-text-muted hover:text-text-secondary">
               <ArrowLeft size={20} />
             </Link>
@@ -65,10 +58,10 @@ export function NewProjectShell({ children }: { children: React.ReactNode }) {
               <h1 className="text-base font-semibold text-text-primary">Create New Project</h1>
               <span className="text-xs text-text-muted">{stepLabel}</span>
             </div>
-          </div>
-          <div className="flex items-center gap-3 md:gap-4">
-            <CreditStatus />
-            <NotificationBell />
+            <div className="ml-auto flex items-center gap-3 md:gap-4">
+              <CreditStatus />
+              <NotificationBell />
+            </div>
           </div>
         </header>
 
