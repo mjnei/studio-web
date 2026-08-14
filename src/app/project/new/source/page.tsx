@@ -3,9 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { MovieSelection } from "@/components/project/movie-selection";
-import { Button } from "@/components/ui/button";
-import { ArrowRight, Home } from "lucide-react";
-import { useSidebar } from "@/components/shell/sidebar-context";
+import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 
 /**
  * Movie selection page (Step 1 of project creation).
@@ -14,7 +12,6 @@ import { useSidebar } from "@/components/shell/sidebar-context";
  */
 export default function NewProjectSourcePage() {
   const router = useRouter();
-  const { collapsed, isNarrow } = useSidebar();
   const [selectedMovie, setSelectedMovie] = useState<{
     id: string;
     title: string;
@@ -24,9 +21,6 @@ export default function NewProjectSourcePage() {
     genre: string[];
     duration: string;
   } | null>(null);
-
-  // Calculate sidebar offset for floating navigation (matches FloatingWorkflowNavigation)
-  const sidebarOffsetClass = isNarrow ? "left-0" : collapsed ? "left-16" : "left-64";
 
   const handleMovieSelect = (movie: {
     id: string;
@@ -60,62 +54,28 @@ export default function NewProjectSourcePage() {
 
   return (
     <>
-      <div className="flex flex-col gap-6 pb-24">
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold text-text-primary">Select Source Movie</h2>
-          <p className="mt-1 text-sm text-text-muted">
-            Choose a movie clip to create your dubbed video project
-          </p>
-        </div>
-
-        <MovieSelection selectedMovie={selectedMovie?.id} onSelect={handleMovieSelect} />
-      </div>
-
-      {/* Floating navigation with sidebar offset */}
-      <div className={`fixed bottom-0 right-0 z-40 ${sidebarOffsetClass}`}>
-        <div className="absolute inset-0 bg-surface-panel/95 backdrop-blur-xl border-t border-border-default" />
-
-        <div className="relative mx-auto max-w-7xl px-4 pt-3 pb-4 md:px-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="md"
-                leftIcon={<Home className="h-4 w-4" />}
-                onClick={handleGoHome}
-                title="Go to Projects"
-                className="shadow-lg"
-              >
-                <span className="hidden md:inline">Projects</span>
-              </Button>
-            </div>
-
-            <div className="flex items-center gap-2 text-sm text-text-muted">
-              <span className="hidden sm:inline">Step</span>
-              <span className="font-semibold text-text-primary">1</span>
-              <span>/</span>
-              <span>5</span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              {selectedMovie ? (
-                <Button
-                  variant="primary"
-                  size="md"
-                  leftIcon={<ArrowRight className="h-4 w-4" />}
-                  onClick={handleContinue}
-                  className="shadow-lg"
-                >
-                  <span className="hidden sm:inline">Continue to Script</span>
-                  <span className="sm:hidden">Next</span>
-                </Button>
-              ) : (
-                <div className="w-24 md:w-32" />
-              )}
-            </div>
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col gap-6 pb-24">
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold text-text-primary">Select Source Movie</h2>
+            <p className="mt-1 text-sm text-text-muted">
+              Choose a movie clip to create your dubbed video project
+            </p>
           </div>
+
+          <MovieSelection selectedMovie={selectedMovie?.id} onSelect={handleMovieSelect} />
         </div>
       </div>
+
+      <FloatingWorkflowNavigation
+        projectId=""
+        currentStep="source"
+        canGoNext={!!selectedMovie}
+        canGoBack={false}
+        nextLabel="Continue to Script"
+        onNext={handleContinue}
+        onBack={handleGoHome}
+      />
     </>
   );
 }
