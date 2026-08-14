@@ -16,5 +16,16 @@
     "projectSettings": "项目设置",
     "noProjects": "暂无项目",
     "createFirstProject": "创建您的第一个项目开始使用"
+  },
+  "tts": {
+    "queue": {
+      "title": "队列中",
+      "nextInLine": "下一个 — 即将开始！",
+      "inProgress": "您的请求正在队列中",
+      "position": "位置",
+      "jobsAhead": "前方任务",
+      "estimatedWait": "预计等待",
+      "updatesAutomatically": "自动更新"
+    }
   }
 }

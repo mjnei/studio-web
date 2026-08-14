@@ -16,5 +16,16 @@
     "projectSettings": "Project Settings",
     "noProjects": "No projects yet",
     "createFirstProject": "Create your first project to get started"
+  },
+  "tts": {
+    "queue": {
+      "title": "In Queue",
+      "nextInLine": "Next in line — starting soon!",
+      "inProgress": "Your request is in the queue",
+      "position": "Position",
+      "jobsAhead": "Jobs ahead",
+      "estimatedWait": "Estimated wait",
+      "updatesAutomatically": "Updates automatically"
+    }
   }
 }

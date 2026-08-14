@@ -165,6 +165,12 @@ export interface TTSJobResponse {
   error_message?: string;
   created_at: string;
   updated_at: string;
+  
+  // Queue visibility fields (only present when status === 'queued')
+  queue_position?: number | null;         // 1-indexed (1 = next in line)
+  jobs_ahead?: number | null;             // How many jobs before this one
+  queue_depth?: number | null;            // Total queued jobs
+  estimated_wait_seconds?: number | null; // Estimated wait time
 }
 
 // ============================================================================

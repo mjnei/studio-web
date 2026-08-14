@@ -23,6 +23,7 @@ import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { FullScriptModal } from "@/components/project/full-script-modal";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
+import { TTSQueueStatus } from "@/components/project/tts-queue-status";
 import { createTTSJob, getTTSJob, type TTSJobResponse } from "@/lib/project-client";
 
 export default function PreviewPage() {
@@ -409,6 +410,13 @@ export default function PreviewPage() {
                 </p>
               )}
             </div>
+
+            {/* Queue Status - Show when job is queued */}
+            {ttsJob?.status === "queued" && (
+              <div className="mb-6 mx-auto w-full max-w-2xl">
+                <TTSQueueStatus job={ttsJob} />
+              </div>
+            )}
 
             {/* Hidden audio element - always present */}
             <audio
