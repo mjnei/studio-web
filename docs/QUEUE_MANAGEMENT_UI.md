@@ -408,7 +408,7 @@ curl -H "Authorization: Bearer <admin_token>" \
 ```bash
 # Start frontend
 cd studio-web
-npm run dev
+pnpm dev
 
 # Open browser
 open http://localhost:3020/admin/queues

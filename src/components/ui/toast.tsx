@@ -5,12 +5,7 @@ import { createContext, useContext, useState, useCallback, ReactNode } from "rea
 
 export type ToastVariant = "success" | "error" | "warning" | "info";
 export type ToastPosition =
-  | "top-right"
-  | "top-center"
-  | "top-left"
-  | "bottom-right"
-  | "bottom-center"
-  | "bottom-left";
+  "top-right" | "top-center" | "top-left" | "bottom-right" | "bottom-center" | "bottom-left";
 
 export interface Toast {
   id: string;

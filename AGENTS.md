@@ -7,11 +7,11 @@ Next.js 16.2.9 App Router + React 19 + TypeScript + Tailwind CSS 4 + Firebase au
 ## Commands
 
 ```bash
-npm run dev          # Dev server on port 3020, bound to 0.0.0.0 (network accessible)
-npm run build        # Production build (uses webpack, not Turbopack)
-npm run lint         # ESLint
-npm run format       # Prettier (write)
-npm run format:check # Prettier (check)
+pnpm dev          # Dev server on port 3020, bound to 0.0.0.0 (network accessible)
+pnpm build        # Production build (uses webpack, not Turbopack)
+pnpm lint         # ESLint
+pnpm format       # Prettier (write)
+pnpm format:check # Prettier (check)
 ```
 
 ## Architecture
