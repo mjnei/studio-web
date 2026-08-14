@@ -8,7 +8,7 @@
  * @returns Formatted string (e.g., "30 seconds", "1m 26s", "5 minutes")
  */
 export function formatWaitTime(seconds: number): string {
-  if (seconds < 30) {
+  if (seconds < 10) {
     return "Starting soon";
   } else if (seconds < 60) {
     return `~${Math.round(seconds)} seconds`;
