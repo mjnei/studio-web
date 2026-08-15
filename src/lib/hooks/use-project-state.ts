@@ -113,7 +113,7 @@ function mapScript(script: ProjectScriptResponse, activeScriptId?: string | null
 
 function mapTTS(job?: TTSJobResponse | null) {
   return {
-    voiceId: job?.voice_id ?? undefined,
+    voiceId: job?.voice_id ? String(job.voice_id) : undefined,
     voiceName: job?.voice_name ?? undefined,
     audioUrl: job?.audio_url ?? undefined,
     audioDuration: job?.audio_duration_seconds ?? undefined,
@@ -126,7 +126,7 @@ function mapTTS(job?: TTSJobResponse | null) {
 function mapVideo(job?: VideoJobResponse | null) {
   return {
     videoUrl: job?.video_url ?? undefined,
-    videoStatus: job?.status ?? "idle",
+    videoStatus: (job?.status ?? "idle") as "idle" | "queued" | "processing" | "completed" | "failed",
     videoProgress: job?.progress ?? 0,
     videoJobId: job?.id ?? undefined,
     isRendering: job?.status === "queued" || job?.status === "processing",
