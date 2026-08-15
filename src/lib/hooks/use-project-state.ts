@@ -126,7 +126,8 @@ function mapTTS(job?: TTSJobResponse | null) {
 function mapVideo(job?: VideoJobResponse | null) {
   return {
     videoUrl: job?.video_url ?? undefined,
-    videoStatus: (job?.status ?? "idle") as "idle" | "queued" | "processing" | "completed" | "failed",
+    videoStatus: (job?.status ?? "idle") as
+      "idle" | "queued" | "processing" | "completed" | "failed",
     videoProgress: job?.progress ?? 0,
     videoJobId: job?.id ?? undefined,
     isRendering: job?.status === "queued" || job?.status === "processing",

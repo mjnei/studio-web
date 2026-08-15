@@ -15,7 +15,7 @@ export async function convertWebmToAudio(blob: Blob, voiceName?: string): Promis
   try {
     // Try to use FFmpeg if available (via FFmpeg.wasm or similar)
     if (typeof window !== "undefined" && "FFmpeg" in window) {
-      return await convertWebmUsingFFmpeg(voiceName);
+      return await convertWebmUsingFFmpeg(voiceName || "unknown");
     }
 
     // Fallback: Try to decode and re-encode using Web Audio API
