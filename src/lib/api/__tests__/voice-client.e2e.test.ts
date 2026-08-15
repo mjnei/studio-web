@@ -86,8 +86,6 @@ function assert(condition: boolean, message: string) {
   }
 }
 
-
-
 /**
  * Test Suite
  */
