@@ -120,7 +120,14 @@ export default function ComposePage() {
       // Went back to idle
       setIsPollingComposition(false);
     }
-  }, [state?.thumbnailCompositionStatus, isPollingComposition, toast]);
+  }, [
+    state?.thumbnailCompositionStatus,
+    state?.finalThumbnailUrl,
+    state?.thumbnailCompositionError,
+    state?.thumbnailConfirmed,
+    isPollingComposition,
+    toast,
+  ]);
 
   const handleThumbnailFinalized = async () => {
     // Start polling for completion

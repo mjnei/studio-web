@@ -146,8 +146,6 @@ describe("VoiceGeneration Component", () => {
     it("should highlight selected voice with ring and border styling", () => {
       render(<VoiceGeneration {...defaultProps} selectedVoiceId={1} />);
 
-      // Check for selected state styling
-      const cards = document.querySelectorAll("[role='button']");
       // The voice card should have ring-2 and border styling applied
       // Note: This may require additional CSS inspection or snapshot testing
     });

@@ -365,7 +365,7 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
       setError(msg);
       setState("idle");
     }
-  }, [stopPlayback, revokeUrl, clearTimer, releaseStream]);
+  }, [stopPlayback, revokeUrl, clearTimer, releaseStream, playRecording]);
 
   const stopRecording = useCallback(() => {
     if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {

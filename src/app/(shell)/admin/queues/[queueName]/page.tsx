@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import {
   ArrowLeft,
@@ -44,38 +44,41 @@ export default function QueueDetailPage() {
   // Auto-refresh interval (5 seconds for detail page)
   const [autoRefresh, setAutoRefresh] = useState(true);
 
-  const fetchStats = async (silent = false) => {
-    if (!silent) setRefreshing(true);
-    setError(null);
+  const fetchStats = useCallback(
+    async (silent = false) => {
+      if (!silent) setRefreshing(true);
+      setError(null);
 
-    try {
-      const data = await getQueueStats(queueName);
-      setStats(data);
+      try {
+        const data = await getQueueStats(queueName);
+        setStats(data);
 
-      // Fetch DLQ stats if queue has a DLQ
-      if (data.metadata?.dlq_name) {
-        try {
-          const dlqData = await getQueueDLQStats(queueName);
-          setDLQStats(dlqData);
-        } catch {
-          // DLQ might not exist yet, that's okay
-          setDLQStats(null);
+        // Fetch DLQ stats if queue has a DLQ
+        if (data.metadata?.dlq_name) {
+          try {
+            const dlqData = await getQueueDLQStats(queueName);
+            setDLQStats(dlqData);
+          } catch {
+            // DLQ might not exist yet, that's okay
+            setDLQStats(null);
+          }
         }
+      } catch (err) {
+        const message = err instanceof Error ? err.message : "Failed to load queue stats";
+        setError(message);
+        if (!silent) toast.error(message);
+      } finally {
+        setLoading(false);
+        setRefreshing(false);
       }
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "Failed to load queue stats";
-      setError(message);
-      if (!silent) toast.error(message);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  };
+    },
+    [queueName, toast]
+  );
 
   // Initial load
   useEffect(() => {
     fetchStats();
-  }, [queueName]);
+  }, [fetchStats]);
 
   // Auto-refresh
   useEffect(() => {
@@ -86,7 +89,7 @@ export default function QueueDetailPage() {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [autoRefresh, queueName]);
+  }, [autoRefresh, fetchStats]);
 
   // Determine queue health status
   const getHealthStatus = () => {

@@ -70,7 +70,7 @@ export default function BillingPage() {
     return () => {
       isMounted = false;
     };
-  }, [toast]);
+  }, [toast, t]);
 
   const handleUpdatePayment = () => {
     alert("Updating payment method... (Stripe integration will be implemented in Phase 5)");

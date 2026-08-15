@@ -75,7 +75,7 @@ async function testFormDataSerialization() {
   try {
     // Create test audio file
     const audioData = new Uint8Array([1, 2, 3, 4, 5]);
-    const file = new Blob([audioData], { type: "audio/webm" });
+    const _file = new Blob([audioData], { type: "audio/webm" });
 
     log("Test case: Upload with file, name, and duration_seconds");
     log("  - File: Blob with audio/webm MIME type");

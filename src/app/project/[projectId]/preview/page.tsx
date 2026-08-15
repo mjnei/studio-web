@@ -142,7 +142,7 @@ export default function PreviewPage() {
         pollingIntervalRef.current = null;
       }
     };
-  }, [ttsJob?.id, ttsJob?.status, isPlaying]);
+  }, [ttsJob, isPlaying]);
 
   // Restart polling when audio stops if job is still active
   useEffect(() => {

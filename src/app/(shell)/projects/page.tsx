@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Folder, Plus, Grid3x3, LayoutGrid, List } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FormModal } from "@/components/ui/modal";
@@ -25,7 +25,7 @@ export default function ProjectsPage() {
   const [deleting, setDeleting] = useState(false);
   const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid-md");
 
-  const loadProjects = () => {
+  const loadProjects = useCallback(() => {
     setLoading(true);
     listProjects(true)
       .then((data) => {
@@ -40,11 +40,11 @@ export default function ProjectsPage() {
       .finally(() => {
         setLoading(false);
       });
-  };
+  }, [toast]);
 
   useEffect(() => {
     loadProjects();
-  }, []);
+  }, [loadProjects]);
 
   const handleDeleteClick = (project: ProjectResponse) => {
     setProjectToDelete(project);
