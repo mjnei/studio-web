@@ -276,9 +276,9 @@ export default function DashboardPage() {
                   className="group overflow-hidden rounded-xl border border-border-default bg-surface-panel transition hover:border-accent-cyan/40 hover:shadow-lg"
                 >
                   <div className="relative aspect-[2/3] w-full overflow-hidden bg-surface-raised">
-                    {movie.poster_path ? (
+                    {movie.poster_path && tmdbImageUrl(movie.poster_path) ? (
                       <ExternalImage
-                        src={tmdbImageUrl(movie.poster_path)}
+                        src={tmdbImageUrl(movie.poster_path)!}
                         alt={movie.title}
                         className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
                         fill

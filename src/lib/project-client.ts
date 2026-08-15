@@ -10,7 +10,7 @@ export type WorkflowStep =
   | "compose" // Step 6
   | "export"; // Step 7
 export type ProjectStatus = "draft" | "in-progress" | "completed";
-export type JobStatus = "idle" | "queued" | "processing" | "completed" | "failed";
+export type JobStatus = "queued" | "processing" | "completed" | "failed";
 
 export interface MovieResponse {
   id: number;
@@ -56,16 +56,23 @@ export interface ProjectScriptResponse {
 export interface TTSJobResponse {
   id: string;
   project_id: string;
-  script_id?: string | null;
-  voice_id?: string | null;
-  voice_name?: string | null;
-  preview_text?: string | null;
+  script_id: string;
+  voice_id?: number | null;
+  voice_name: string;
+  external_job_id: string;
   status: JobStatus;
   progress: number;
-  audio_url?: string | null;
-  audio_duration?: number | null;
-  error_message?: string | null;
+  audio_url?: string;
+  audio_duration_seconds?: number;
+  error_message?: string;
   created_at: string;
+  updated_at: string;
+  
+  // Queue visibility fields (only present when status === 'queued')
+  queue_position?: number | null;
+  jobs_ahead?: number | null;
+  queue_depth?: number | null;
+  estimated_wait_seconds?: number | null;
 }
 
 export interface VideoJobResponse {
