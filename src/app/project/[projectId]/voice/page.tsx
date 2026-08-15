@@ -337,424 +337,424 @@ export default function VoicePage() {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col gap-6 pb-24">
           <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-semibold text-text-primary">Select Voice</h2>
-            <p className="mt-1 text-sm text-text-muted">
-              Choose a voice and listen to its preview. Audio will be generated in the next step.
-            </p>
-          </div>
-          {selectedVoiceId && (
-            <div className="text-sm text-text-muted">
-              Selected:{" "}
-              <span className="font-medium text-text-primary">
-                {ownVoices.find((v) => v.id === selectedVoiceId)?.name ||
-                  communityVoices.find((v) => v.id === selectedVoiceId)?.name}
-              </span>
+            <div>
+              <h2 className="text-xl font-semibold text-text-primary">Select Voice</h2>
+              <p className="mt-1 text-sm text-text-muted">
+                Choose a voice and listen to its preview. Audio will be generated in the next step.
+              </p>
             </div>
-          )}
-        </div>
-
-        {/* Script Summary Card */}
-        {state?.scriptSummary && (
-          <Card
-            variant="elevated"
-            padding="md"
-            className="bg-gradient-to-br from-accent-cyan/5 to-transparent border-accent-cyan/20"
-          >
-            <div className="flex items-start gap-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted flex-shrink-0">
-                <FileText className="h-5 w-5 text-accent-cyan" />
+            {selectedVoiceId && (
+              <div className="text-sm text-text-muted">
+                Selected:{" "}
+                <span className="font-medium text-text-primary">
+                  {ownVoices.find((v) => v.id === selectedVoiceId)?.name ||
+                    communityVoices.find((v) => v.id === selectedVoiceId)?.name}
+                </span>
               </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="text-sm font-medium text-text-secondary uppercase tracking-wide mb-2">
-                  Script Tagline
-                </h3>
-                <p className="text-xl font-semibold text-accent-cyan mb-2">
-                  "{state.scriptSummary}"
-                </p>
-                <p className="text-xs text-text-muted">
-                  This hook will be used in your video's thumbnail. Now choose a voice that matches
-                  this tone.
-                </p>
-              </div>
-            </div>
-          </Card>
-        )}
-
-        {/* Expandable full script */}
-        {activeScript && (
-          <Card
-            variant="elevated"
-            padding="md"
-            className="cursor-pointer hover:border-accent-cyan/30 hover:bg-surface-raised transition-all group"
-            onClick={() => setShowFullScriptModal(true)}
-          >
-            <div className="flex items-start gap-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted flex-shrink-0">
-                <FileText className="h-5 w-5 text-accent-cyan" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-4 mb-2">
-                  <h3 className="font-medium text-text-primary">Your Script</h3>
-                  <span className="text-xs font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0 group-hover:text-accent-cyan-hover">
-                    Click to expand <ChevronDown className="h-3 w-3" />
-                  </span>
-                </div>
-                <p className="text-sm text-text-muted mb-2">
-                  {activeScript.wordCount} words • Estimated duration:{" "}
-                  {Math.floor(activeScript.duration / 60)}:
-                  {(activeScript.duration % 60).toString().padStart(2, "0")}
-                </p>
-                <p className="text-sm text-text-secondary line-clamp-2">{activeScript.content}</p>
-              </div>
-            </div>
-          </Card>
-        )}
-
-        {/* Voice Selection with Tabs */}
-        <Card variant="elevated" padding="lg">
-          <div className="space-y-4">
-            {/* Tab Navigation */}
-            <div className="inline-flex items-center gap-2 rounded-xl bg-surface-panel p-1.5 shadow-sm border border-border-default">
-              <button
-                onClick={() => setTab("my")}
-                className={`relative flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold transition-all duration-200 ${
-                  tab === "my"
-                    ? "bg-gradient-to-r from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30"
-                    : "text-text-muted hover:text-text-secondary hover:bg-surface-raised"
-                }`}
-              >
-                <Mic className="h-4 w-4" />
-                <span>My Voices</span>
-                {ownVoices.length > 0 && (
-                  <span
-                    className={`ml-1 rounded-full px-2 py-0.5 text-xs font-bold ${
-                      tab === "my" ? "bg-white/20" : "bg-surface-raised"
-                    }`}
-                  >
-                    {ownVoices.length}
-                  </span>
-                )}
-              </button>
-
-              <button
-                onClick={() => setTab("community")}
-                className={`relative flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold transition-all duration-200 ${
-                  tab === "community"
-                    ? "bg-gradient-to-r from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30"
-                    : "text-text-muted hover:text-text-secondary hover:bg-surface-raised"
-                }`}
-              >
-                <Globe className="h-4 w-4" />
-                <span>Community</span>
-                {communityVoices.length > 0 && (
-                  <span
-                    className={`ml-1 rounded-full px-2 py-0.5 text-xs font-bold ${
-                      tab === "community" ? "bg-white/20" : "bg-surface-raised"
-                    }`}
-                  >
-                    {communityVoices.length}
-                  </span>
-                )}
-              </button>
-            </div>
-
-            {/* Error State */}
-            {availableVoicesError && (
-              <Card
-                variant="elevated"
-                padding="md"
-                className="border-status-failed/30 bg-status-failed/10"
-              >
-                <div className="flex items-start gap-3">
-                  <AlertCircle className="h-5 w-5 text-status-failed flex-shrink-0 mt-0.5" />
-                  <p className="text-sm text-status-failed">{availableVoicesError}</p>
-                </div>
-              </Card>
             )}
+          </div>
 
-            {/* Loading State */}
-            {availableVoicesLoading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="h-24 animate-pulse rounded-lg bg-surface-panel border border-border-default"
-                  />
-                ))}
+          {/* Script Summary Card */}
+          {state?.scriptSummary && (
+            <Card
+              variant="elevated"
+              padding="md"
+              className="bg-gradient-to-br from-accent-cyan/5 to-transparent border-accent-cyan/20"
+            >
+              <div className="flex items-start gap-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted flex-shrink-0">
+                  <FileText className="h-5 w-5 text-accent-cyan" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-sm font-medium text-text-secondary uppercase tracking-wide mb-2">
+                    Script Tagline
+                  </h3>
+                  <p className="text-xl font-semibold text-accent-cyan mb-2">
+                    "{state.scriptSummary}"
+                  </p>
+                  <p className="text-xs text-text-muted">
+                    This hook will be used in your video's thumbnail. Now choose a voice that
+                    matches this tone.
+                  </p>
+                </div>
               </div>
-            ) : (
-              <>
-                {/* My Voices Tab */}
-                {tab === "my" && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {ownVoices.length === 0 ? (
-                      <div className="col-span-full text-center py-8 rounded-lg border border-dashed border-border-default bg-surface-panel/50">
-                        <Mic className="h-8 w-8 text-text-muted mx-auto mb-2 opacity-50" />
-                        <p className="text-sm text-text-muted mb-2">No personal voices yet</p>
-                        <p className="text-xs text-text-muted max-w-xs mx-auto mb-4">
-                          Record your first voice to get started
-                        </p>
-                        <Button variant="primary" size="sm" onClick={handleAddVoiceClick}>
-                          <Plus size={16} className="mr-2" />
-                          Record Voice
-                        </Button>
-                      </div>
-                    ) : (
-                      <>
-                        {ownVoices.map((voice) => (
+            </Card>
+          )}
+
+          {/* Expandable full script */}
+          {activeScript && (
+            <Card
+              variant="elevated"
+              padding="md"
+              className="cursor-pointer hover:border-accent-cyan/30 hover:bg-surface-raised transition-all group"
+              onClick={() => setShowFullScriptModal(true)}
+            >
+              <div className="flex items-start gap-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted flex-shrink-0">
+                  <FileText className="h-5 w-5 text-accent-cyan" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-4 mb-2">
+                    <h3 className="font-medium text-text-primary">Your Script</h3>
+                    <span className="text-xs font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0 group-hover:text-accent-cyan-hover">
+                      Click to expand <ChevronDown className="h-3 w-3" />
+                    </span>
+                  </div>
+                  <p className="text-sm text-text-muted mb-2">
+                    {activeScript.wordCount} words • Estimated duration:{" "}
+                    {Math.floor(activeScript.duration / 60)}:
+                    {(activeScript.duration % 60).toString().padStart(2, "0")}
+                  </p>
+                  <p className="text-sm text-text-secondary line-clamp-2">{activeScript.content}</p>
+                </div>
+              </div>
+            </Card>
+          )}
+
+          {/* Voice Selection with Tabs */}
+          <Card variant="elevated" padding="lg">
+            <div className="space-y-4">
+              {/* Tab Navigation */}
+              <div className="inline-flex items-center gap-2 rounded-xl bg-surface-panel p-1.5 shadow-sm border border-border-default">
+                <button
+                  onClick={() => setTab("my")}
+                  className={`relative flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold transition-all duration-200 ${
+                    tab === "my"
+                      ? "bg-gradient-to-r from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30"
+                      : "text-text-muted hover:text-text-secondary hover:bg-surface-raised"
+                  }`}
+                >
+                  <Mic className="h-4 w-4" />
+                  <span>My Voices</span>
+                  {ownVoices.length > 0 && (
+                    <span
+                      className={`ml-1 rounded-full px-2 py-0.5 text-xs font-bold ${
+                        tab === "my" ? "bg-white/20" : "bg-surface-raised"
+                      }`}
+                    >
+                      {ownVoices.length}
+                    </span>
+                  )}
+                </button>
+
+                <button
+                  onClick={() => setTab("community")}
+                  className={`relative flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold transition-all duration-200 ${
+                    tab === "community"
+                      ? "bg-gradient-to-r from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30"
+                      : "text-text-muted hover:text-text-secondary hover:bg-surface-raised"
+                  }`}
+                >
+                  <Globe className="h-4 w-4" />
+                  <span>Community</span>
+                  {communityVoices.length > 0 && (
+                    <span
+                      className={`ml-1 rounded-full px-2 py-0.5 text-xs font-bold ${
+                        tab === "community" ? "bg-white/20" : "bg-surface-raised"
+                      }`}
+                    >
+                      {communityVoices.length}
+                    </span>
+                  )}
+                </button>
+              </div>
+
+              {/* Error State */}
+              {availableVoicesError && (
+                <Card
+                  variant="elevated"
+                  padding="md"
+                  className="border-status-failed/30 bg-status-failed/10"
+                >
+                  <div className="flex items-start gap-3">
+                    <AlertCircle className="h-5 w-5 text-status-failed flex-shrink-0 mt-0.5" />
+                    <p className="text-sm text-status-failed">{availableVoicesError}</p>
+                  </div>
+                </Card>
+              )}
+
+              {/* Loading State */}
+              {availableVoicesLoading ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="h-24 animate-pulse rounded-lg bg-surface-panel border border-border-default"
+                    />
+                  ))}
+                </div>
+              ) : (
+                <>
+                  {/* My Voices Tab */}
+                  {tab === "my" && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {ownVoices.length === 0 ? (
+                        <div className="col-span-full text-center py-8 rounded-lg border border-dashed border-border-default bg-surface-panel/50">
+                          <Mic className="h-8 w-8 text-text-muted mx-auto mb-2 opacity-50" />
+                          <p className="text-sm text-text-muted mb-2">No personal voices yet</p>
+                          <p className="text-xs text-text-muted max-w-xs mx-auto mb-4">
+                            Record your first voice to get started
+                          </p>
+                          <Button variant="primary" size="sm" onClick={handleAddVoiceClick}>
+                            <Plus size={16} className="mr-2" />
+                            Record Voice
+                          </Button>
+                        </div>
+                      ) : (
+                        <>
+                          {ownVoices.map((voice) => (
+                            <Card
+                              key={voice.id}
+                              variant={selectedVoiceId === voice.id ? "elevated" : "default"}
+                              padding="md"
+                              className={`cursor-pointer transition-all ${
+                                selectedVoiceId === voice.id
+                                  ? "ring-2 ring-accent-primary border-accent-primary"
+                                  : "hover:border-accent-primary/40"
+                              }`}
+                              onClick={() => handleVoiceSelect(voice.id)}
+                            >
+                              <div className="flex items-start justify-between gap-2">
+                                <div className="flex items-start gap-2 flex-1 min-w-0">
+                                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-accent-primary to-purple-600 flex-shrink-0">
+                                    <Mic className="w-5 h-5 text-white" />
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <p className="font-semibold text-text-primary text-sm truncate">
+                                      {voice.name}
+                                    </p>
+                                    <p className="text-xs text-text-muted">Your voice</p>
+                                  </div>
+                                </div>
+                                {selectedVoiceId === voice.id && (
+                                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-primary flex-shrink-0">
+                                    <Check className="w-4 h-4 text-white" />
+                                  </div>
+                                )}
+                              </div>
+                            </Card>
+                          ))}
+
+                          {/* Add Voice Card */}
+                          <Card
+                            variant="default"
+                            padding="md"
+                            className="border-dashed hover:border-accent-primary/50 hover:bg-accent-primary/5 transition-all cursor-pointer group"
+                            onClick={handleAddVoiceClick}
+                          >
+                            <div className="flex flex-col items-center justify-center h-full min-h-[88px] text-center">
+                              <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-accent-primary/10 group-hover:bg-accent-primary/20 transition-colors">
+                                <Plus className="h-5 w-5 text-accent-primary" />
+                              </div>
+                              <p className="text-xs font-semibold text-text-primary mb-0.5">
+                                Add Voice
+                              </p>
+                              <p className="text-xs text-text-muted">
+                                {voiceLimits.canAdd
+                                  ? `${voiceLimits.remainingCount} left`
+                                  : "Limit reached"}
+                              </p>
+                            </div>
+                          </Card>
+                        </>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Community Voices Tab */}
+                  {tab === "community" && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {communityVoices.length === 0 ? (
+                        <div className="col-span-full text-center py-8 rounded-lg border border-dashed border-border-default bg-surface-panel/50">
+                          <Globe className="h-8 w-8 text-text-muted mx-auto mb-2 opacity-50" />
+                          <p className="text-sm text-text-muted mb-2">
+                            No community voices available
+                          </p>
+                          <p className="text-xs text-text-muted max-w-xs mx-auto">
+                            Approved community voices will appear here
+                          </p>
+                        </div>
+                      ) : (
+                        communityVoices.map((voice) => (
                           <Card
                             key={voice.id}
                             variant={selectedVoiceId === voice.id ? "elevated" : "default"}
                             padding="md"
                             className={`cursor-pointer transition-all ${
                               selectedVoiceId === voice.id
-                                ? "ring-2 ring-accent-primary border-accent-primary"
-                                : "hover:border-accent-primary/40"
+                                ? "ring-2 ring-accent-cyan border-accent-cyan"
+                                : "hover:border-accent-cyan/40"
                             }`}
                             onClick={() => handleVoiceSelect(voice.id)}
                           >
                             <div className="flex items-start justify-between gap-2">
                               <div className="flex items-start gap-2 flex-1 min-w-0">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-accent-primary to-purple-600 flex-shrink-0">
-                                  <Mic className="w-5 h-5 text-white" />
+                                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-accent-cyan to-blue-600 flex-shrink-0">
+                                  <Globe className="w-5 h-5 text-white" />
                                 </div>
                                 <div className="flex-1 min-w-0">
                                   <p className="font-semibold text-text-primary text-sm truncate">
                                     {voice.name}
                                   </p>
-                                  <p className="text-xs text-text-muted">Your voice</p>
+                                  <p className="text-xs text-text-muted flex items-center gap-1 truncate">
+                                    <User className="h-3 w-3 flex-shrink-0" />
+                                    <span className="truncate">@{voice.creator_username}</span>
+                                  </p>
+                                  {/* Approved badge */}
+                                  <div className="mt-1">
+                                    <span className="inline-flex items-center gap-1 rounded-full bg-green-500/10 border border-green-500/30 px-1.5 py-0.5 text-[10px] font-bold text-green-600">
+                                      <div className="h-1 w-1 rounded-full bg-green-600"></div>
+                                      Approved
+                                    </span>
+                                  </div>
                                 </div>
                               </div>
                               {selectedVoiceId === voice.id && (
-                                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-primary flex-shrink-0">
+                                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-cyan flex-shrink-0">
                                   <Check className="w-4 h-4 text-white" />
                                 </div>
                               )}
                             </div>
                           </Card>
-                        ))}
-
-                        {/* Add Voice Card */}
-                        <Card
-                          variant="default"
-                          padding="md"
-                          className="border-dashed hover:border-accent-primary/50 hover:bg-accent-primary/5 transition-all cursor-pointer group"
-                          onClick={handleAddVoiceClick}
-                        >
-                          <div className="flex flex-col items-center justify-center h-full min-h-[88px] text-center">
-                            <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-accent-primary/10 group-hover:bg-accent-primary/20 transition-colors">
-                              <Plus className="h-5 w-5 text-accent-primary" />
-                            </div>
-                            <p className="text-xs font-semibold text-text-primary mb-0.5">
-                              Add Voice
-                            </p>
-                            <p className="text-xs text-text-muted">
-                              {voiceLimits.canAdd
-                                ? `${voiceLimits.remainingCount} left`
-                                : "Limit reached"}
-                            </p>
-                          </div>
-                        </Card>
-                      </>
-                    )}
-                  </div>
-                )}
-
-                {/* Community Voices Tab */}
-                {tab === "community" && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {communityVoices.length === 0 ? (
-                      <div className="col-span-full text-center py-8 rounded-lg border border-dashed border-border-default bg-surface-panel/50">
-                        <Globe className="h-8 w-8 text-text-muted mx-auto mb-2 opacity-50" />
-                        <p className="text-sm text-text-muted mb-2">
-                          No community voices available
-                        </p>
-                        <p className="text-xs text-text-muted max-w-xs mx-auto">
-                          Approved community voices will appear here
-                        </p>
-                      </div>
-                    ) : (
-                      communityVoices.map((voice) => (
-                        <Card
-                          key={voice.id}
-                          variant={selectedVoiceId === voice.id ? "elevated" : "default"}
-                          padding="md"
-                          className={`cursor-pointer transition-all ${
-                            selectedVoiceId === voice.id
-                              ? "ring-2 ring-accent-cyan border-accent-cyan"
-                              : "hover:border-accent-cyan/40"
-                          }`}
-                          onClick={() => handleVoiceSelect(voice.id)}
-                        >
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="flex items-start gap-2 flex-1 min-w-0">
-                              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-accent-cyan to-blue-600 flex-shrink-0">
-                                <Globe className="w-5 h-5 text-white" />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <p className="font-semibold text-text-primary text-sm truncate">
-                                  {voice.name}
-                                </p>
-                                <p className="text-xs text-text-muted flex items-center gap-1 truncate">
-                                  <User className="h-3 w-3 flex-shrink-0" />
-                                  <span className="truncate">@{voice.creator_username}</span>
-                                </p>
-                                {/* Approved badge */}
-                                <div className="mt-1">
-                                  <span className="inline-flex items-center gap-1 rounded-full bg-green-500/10 border border-green-500/30 px-1.5 py-0.5 text-[10px] font-bold text-green-600">
-                                    <div className="h-1 w-1 rounded-full bg-green-600"></div>
-                                    Approved
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                            {selectedVoiceId === voice.id && (
-                              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-cyan flex-shrink-0">
-                                <Check className="w-4 h-4 text-white" />
-                              </div>
-                            )}
-                          </div>
-                        </Card>
-                      ))
-                    )}
-                  </div>
-                )}
-              </>
-            )}
-          </div>
-        </Card>
-
-        {/* Speech Rate Control */}
-        {selectedVoiceId && (
-          <Card variant="elevated" padding="lg">
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-sm font-semibold text-text-primary">Speech Rate</h3>
-                <p className="text-xs text-text-muted mt-1">
-                  Select the speed of the generated voice
-                </p>
-              </div>
-
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-                {/* Very Slow */}
-                <button
-                  onClick={() => setRatio(0.5)}
-                  className={`relative flex flex-col items-center justify-center rounded-xl p-4 transition-all ${
-                    ratio === 0.5
-                      ? "bg-gradient-to-br from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30 ring-2 ring-accent-primary"
-                      : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
-                  }`}
-                >
-                  <span className="text-2xl font-bold mb-1">0.5x</span>
-                  <span className="text-xs font-medium">Very Slow</span>
-                  {ratio === 0.5 && (
-                    <div className="absolute top-2 right-2">
-                      <Check className="h-4 w-4" />
+                        ))
+                      )}
                     </div>
                   )}
-                </button>
-
-                {/* Slow */}
-                <button
-                  onClick={() => setRatio(1.0)}
-                  className={`relative flex flex-col items-center justify-center rounded-xl p-4 transition-all ${
-                    ratio === 1.0
-                      ? "bg-gradient-to-br from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30 ring-2 ring-accent-primary"
-                      : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
-                  }`}
-                >
-                  <span className="text-2xl font-bold mb-1">1.0x</span>
-                  <span className="text-xs font-medium">Slow</span>
-                  {ratio === 1.0 && (
-                    <div className="absolute top-2 right-2">
-                      <Check className="h-4 w-4" />
-                    </div>
-                  )}
-                </button>
-
-                {/* Normal */}
-                <button
-                  onClick={() => setRatio(1.25)}
-                  className={`relative flex flex-col items-center justify-center rounded-xl p-4 transition-all ${
-                    ratio === 1.25
-                      ? "bg-gradient-to-br from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30 ring-2 ring-accent-primary"
-                      : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
-                  }`}
-                >
-                  <span className="text-2xl font-bold mb-1">1.25x</span>
-                  <span className="text-xs font-medium">Normal</span>
-                  {ratio === 1.25 && (
-                    <div className="absolute top-2 right-2">
-                      <Check className="h-4 w-4" />
-                    </div>
-                  )}
-                </button>
-
-                {/* Fast */}
-                <button
-                  onClick={() => setRatio(1.6)}
-                  className={`relative flex flex-col items-center justify-center rounded-xl p-4 transition-all ${
-                    ratio === 1.6
-                      ? "bg-gradient-to-br from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30 ring-2 ring-accent-primary"
-                      : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
-                  }`}
-                >
-                  <span className="text-2xl font-bold mb-1">1.6x</span>
-                  <span className="text-xs font-medium">Fast</span>
-                  {ratio === 1.6 && (
-                    <div className="absolute top-2 right-2">
-                      <Check className="h-4 w-4" />
-                    </div>
-                  )}
-                </button>
-
-                {/* Very Fast */}
-                <button
-                  onClick={() => setRatio(2.0)}
-                  className={`relative flex flex-col items-center justify-center rounded-xl p-4 transition-all ${
-                    ratio === 2.0
-                      ? "bg-gradient-to-br from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30 ring-2 ring-accent-primary"
-                      : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
-                  }`}
-                >
-                  <span className="text-2xl font-bold mb-1">2.0x</span>
-                  <span className="text-xs font-medium">Very Fast</span>
-                  {ratio === 2.0 && (
-                    <div className="absolute top-2 right-2">
-                      <Check className="h-4 w-4" />
-                    </div>
-                  )}
-                </button>
-              </div>
-
-              {/* Current Selection Display */}
-              <div className="flex items-center justify-center gap-2 p-3 rounded-lg bg-accent-primary/5 border border-accent-primary/20">
-                <span className="text-sm font-medium text-text-secondary">Current speed:</span>
-                <span className="text-lg font-bold text-accent-primary">{ratio.toFixed(2)}x</span>
-              </div>
+                </>
+              )}
             </div>
           </Card>
-        )}
 
-        {/* Voice Recorder Modal */}
-        <VoiceRecordingModal
-          isOpen={showRecorder}
-          onClose={() => setShowRecorder(false)}
-          onSaved={handleRecordingSaved}
-        />
+          {/* Speech Rate Control */}
+          {selectedVoiceId && (
+            <Card variant="elevated" padding="lg">
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-sm font-semibold text-text-primary">Speech Rate</h3>
+                  <p className="text-xs text-text-muted mt-1">
+                    Select the speed of the generated voice
+                  </p>
+                </div>
 
-        {/* Voice Limit Dialog */}
-        {showLimitDialog && (
-          <VoiceLimitDialog
-            tier={voiceLimits.tier}
-            currentCount={voiceLimits.currentCount}
-            limit={voiceLimits.limit}
-            upgradeRequired={voiceLimits.upgradeRequired}
-            onClose={() => setShowLimitDialog(false)}
-            onUpgrade={handleUpgradeClick}
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                  {/* Very Slow */}
+                  <button
+                    onClick={() => setRatio(0.5)}
+                    className={`relative flex flex-col items-center justify-center rounded-xl p-4 transition-all ${
+                      ratio === 0.5
+                        ? "bg-gradient-to-br from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30 ring-2 ring-accent-primary"
+                        : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
+                    }`}
+                  >
+                    <span className="text-2xl font-bold mb-1">0.5x</span>
+                    <span className="text-xs font-medium">Very Slow</span>
+                    {ratio === 0.5 && (
+                      <div className="absolute top-2 right-2">
+                        <Check className="h-4 w-4" />
+                      </div>
+                    )}
+                  </button>
+
+                  {/* Slow */}
+                  <button
+                    onClick={() => setRatio(1.0)}
+                    className={`relative flex flex-col items-center justify-center rounded-xl p-4 transition-all ${
+                      ratio === 1.0
+                        ? "bg-gradient-to-br from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30 ring-2 ring-accent-primary"
+                        : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
+                    }`}
+                  >
+                    <span className="text-2xl font-bold mb-1">1.0x</span>
+                    <span className="text-xs font-medium">Slow</span>
+                    {ratio === 1.0 && (
+                      <div className="absolute top-2 right-2">
+                        <Check className="h-4 w-4" />
+                      </div>
+                    )}
+                  </button>
+
+                  {/* Normal */}
+                  <button
+                    onClick={() => setRatio(1.25)}
+                    className={`relative flex flex-col items-center justify-center rounded-xl p-4 transition-all ${
+                      ratio === 1.25
+                        ? "bg-gradient-to-br from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30 ring-2 ring-accent-primary"
+                        : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
+                    }`}
+                  >
+                    <span className="text-2xl font-bold mb-1">1.25x</span>
+                    <span className="text-xs font-medium">Normal</span>
+                    {ratio === 1.25 && (
+                      <div className="absolute top-2 right-2">
+                        <Check className="h-4 w-4" />
+                      </div>
+                    )}
+                  </button>
+
+                  {/* Fast */}
+                  <button
+                    onClick={() => setRatio(1.6)}
+                    className={`relative flex flex-col items-center justify-center rounded-xl p-4 transition-all ${
+                      ratio === 1.6
+                        ? "bg-gradient-to-br from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30 ring-2 ring-accent-primary"
+                        : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
+                    }`}
+                  >
+                    <span className="text-2xl font-bold mb-1">1.6x</span>
+                    <span className="text-xs font-medium">Fast</span>
+                    {ratio === 1.6 && (
+                      <div className="absolute top-2 right-2">
+                        <Check className="h-4 w-4" />
+                      </div>
+                    )}
+                  </button>
+
+                  {/* Very Fast */}
+                  <button
+                    onClick={() => setRatio(2.0)}
+                    className={`relative flex flex-col items-center justify-center rounded-xl p-4 transition-all ${
+                      ratio === 2.0
+                        ? "bg-gradient-to-br from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30 ring-2 ring-accent-primary"
+                        : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
+                    }`}
+                  >
+                    <span className="text-2xl font-bold mb-1">2.0x</span>
+                    <span className="text-xs font-medium">Very Fast</span>
+                    {ratio === 2.0 && (
+                      <div className="absolute top-2 right-2">
+                        <Check className="h-4 w-4" />
+                      </div>
+                    )}
+                  </button>
+                </div>
+
+                {/* Current Selection Display */}
+                <div className="flex items-center justify-center gap-2 p-3 rounded-lg bg-accent-primary/5 border border-accent-primary/20">
+                  <span className="text-sm font-medium text-text-secondary">Current speed:</span>
+                  <span className="text-lg font-bold text-accent-primary">{ratio.toFixed(2)}x</span>
+                </div>
+              </div>
+            </Card>
+          )}
+
+          {/* Voice Recorder Modal */}
+          <VoiceRecordingModal
+            isOpen={showRecorder}
+            onClose={() => setShowRecorder(false)}
+            onSaved={handleRecordingSaved}
           />
-        )}
+
+          {/* Voice Limit Dialog */}
+          {showLimitDialog && (
+            <VoiceLimitDialog
+              tier={voiceLimits.tier}
+              currentCount={voiceLimits.currentCount}
+              limit={voiceLimits.limit}
+              upgradeRequired={voiceLimits.upgradeRequired}
+              onClose={() => setShowLimitDialog(false)}
+              onUpgrade={handleUpgradeClick}
+            />
+          )}
         </div>
       </div>
 

@@ -359,338 +359,342 @@ export default function ProjectDetailsPage() {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col gap-6 pb-24">
           <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-semibold text-text-primary">Project Details</h2>
-            <p className="mt-1 text-sm text-text-muted">
-              Name your project before selecting a voice
-            </p>
-          </div>
-        </div>
-
-        {/* Project Thumbnail Preview (if available) */}
-        {state?.thumbnailUrl && state?.thumbnailStatus === "completed" && (
-          <Card variant="elevated" padding="md">
-            <div className="flex flex-col md:grid md:grid-cols-2 md:gap-6">
-              <div className="flex items-center gap-2 mb-3 md:col-span-2">
-                <Sparkles className="h-4 w-4 text-accent-cyan" />
-                <h3 className="text-sm font-medium text-text-primary">AI-Generated Thumbnail</h3>
-              </div>
-
-              {/* Thumbnail - Half width on medium+ screens */}
-              <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default md:rounded-xl">
-                <Image
-                  src={state.thumbnailUrl}
-                  alt="Project thumbnail"
-                  className="w-full h-full object-cover"
-                  width={500}
-                  height={280}
-                  onError={(e) => {
-                    // Hide image on error
-                    const img = e.target as HTMLImageElement;
-                    img.style.display = "none";
-                  }}
-                />
-              </div>
-
-              {/* Explanatory content - Half width on medium+ screens */}
-              <div className="mt-3 md:mt-0 flex flex-col justify-center">
-                <h4 className="text-sm font-medium text-text-primary mb-2">About Your Thumbnail</h4>
-                <p className="text-sm text-text-muted mb-3">
-                  This AI-generated thumbnail is created based on your movie selection and script.
-                  It will be used as the visual preview for your final video project.
-                </p>
-                <div className="text-xs text-text-muted space-y-1">
-                  <p>• Created using movie theme and script content</p>
-                  <p>• No text overlay - purely visual design</p>
-                  <p>• Can be customized in later steps</p>
-                  <p>• Optimized for video thumbnails</p>
-                </div>
-              </div>
-            </div>
-          </Card>
-        )}
-
-        {/* Thumbnail Generating Indicator */}
-        {state?.thumbnailStatus === "generating" && (
-          <Card variant="elevated" padding="md" className="border-accent-cyan/30">
-            <div className="flex items-center gap-3">
-              <Loader2 className="h-5 w-5 text-accent-cyan animate-spin flex-shrink-0" />
-              <div className="flex-1">
-                <h3 className="text-sm font-medium text-text-primary">
-                  Generating AI Thumbnail...
-                </h3>
-                <p className="mt-1 text-xs text-text-muted">
-                  Your custom thumbnail is being created
-                </p>
-              </div>
-            </div>
-          </Card>
-        )}
-
-        {/* Movie info card */}
-        {state?.movieTitle && (
-          <Card variant="elevated" padding="md">
-            <div className="flex items-center gap-4">
-              {state.moviePoster && (
-                <div className="h-24 w-16 overflow-hidden rounded-md bg-surface-raised flex-shrink-0">
-                  <Image
-                    src={state.moviePoster}
-                    alt={state.movieTitle}
-                    className="h-full w-full object-cover"
-                    width={64}
-                    height={96}
-                  />
-                </div>
-              )}
-              <div className="flex-1 min-w-0">
-                <h3 className="font-medium text-text-primary">{state.movieTitle}</h3>
-                <p className="mt-1 text-sm text-text-muted">
-                  {state.movieGenre && `${state.movieGenre} • `}
-                  {state.movieRating && `Rating ${state.movieRating.toFixed(1)}`}
-                </p>
-              </div>
-            </div>
-          </Card>
-        )}
-
-        {/* Script summary with expand */}
-        {activeScript && (
-          <Card
-            variant="elevated"
-            padding="md"
-            className="hover:border-border-hover transition-colors cursor-pointer"
-            onClick={() => setShowFullScriptModal(true)}
-          >
-            <div className="flex items-start gap-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted flex-shrink-0">
-                <FileText className="h-5 w-5 text-accent-cyan" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-4 mb-2">
-                  <h3 className="font-medium text-text-primary">Your Script</h3>
-                  <span className="text-xs font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0">
-                    Click to expand <ChevronDown className="h-3 w-3" />
-                  </span>
-                </div>
-                <p className="text-sm text-text-muted mb-3">
-                  {activeScript.wordCount} words • Estimated duration:{" "}
-                  {Math.floor(activeScript.duration / 60)}:
-                  {(activeScript.duration % 60).toString().padStart(2, "0")}
-                </p>
-                <p className="text-sm text-text-secondary line-clamp-3 leading-relaxed">
-                  {activeScript.content}
-                </p>
-              </div>
-            </div>
-          </Card>
-        )}
-
-        {/* Project name input - More prominent */}
-        <Card
-          variant="elevated"
-          padding="lg"
-          className="border-2 border-accent-cyan/30 bg-gradient-to-br from-accent-cyan/8 via-accent-cyan/4 to-transparent shadow-lg"
-        >
-          <div className="mb-6">
-            <div className="flex items-center gap-2.5 mb-4">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-cyan shadow-sm shadow-accent-cyan/50">
-                <Pencil className="h-4 w-4 text-white" />
-              </div>
-              <div className="flex-1">
-                <label
-                  htmlFor="projectName"
-                  className="text-lg font-bold text-text-primary flex items-center gap-2"
-                >
-                  Name Your Project
-                  <span className="text-sm font-normal text-accent-cyan bg-accent-cyan/10 px-2 py-0.5 rounded-full">
-                    Required
-                  </span>
-                </label>
-                <p className="text-xs text-text-muted mt-0.5">
-                  Choose a name that represents your video project
-                </p>
-              </div>
-            </div>
-
-            <div className="relative">
-              <input
-                id="projectName"
-                type="text"
-                value={projectName}
-                onChange={(e) => setProjectName(e.target.value)}
-                placeholder="e.g., Inception Trailer Project"
-                className="w-full rounded-xl border-2 border-accent-cyan/50 bg-surface-base px-5 py-4 text-xl font-semibold text-text-primary placeholder-text-muted/60 focus:border-accent-cyan focus:outline-none focus:ring-4 focus:ring-accent-cyan/25 transition-all shadow-[0_0_20px_rgba(34,211,238,0.12)] hover:shadow-[0_0_25px_rgba(34,211,238,0.2)]"
-              />
-              {projectName.trim() && (
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-500/20">
-                    <svg
-                      className="h-4 w-4 text-green-500"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={3}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div className="mt-3 flex items-start gap-2 text-xs text-text-muted bg-accent-cyan/5 rounded-lg p-3 border border-accent-cyan/10">
-              <Sparkles className="h-4 w-4 text-accent-cyan flex-shrink-0 mt-0.5" />
-              <p>
-                <span className="font-medium text-text-secondary">Tip:</span> Click any AI
-                suggestion below or write your own creative name
+            <div>
+              <h2 className="text-xl font-semibold text-text-primary">Project Details</h2>
+              <p className="mt-1 text-sm text-text-muted">
+                Name your project before selecting a voice
               </p>
             </div>
           </div>
 
-          {/* Unified Suggestions List */}
-          {(loadingAiSuggestions || aiSuggestions.length > 0 || fallbackSuggestions.length > 0) && (
-            <div>
-              <div className="flex items-center justify-between gap-2 mb-3">
-                <div className="flex items-center gap-2">
-                  <h4 className="text-sm font-medium text-text-secondary">Suggestions</h4>
-                  {loadingAiSuggestions && (
-                    <Loader2 className="h-4 w-4 animate-spin text-accent-cyan" />
-                  )}
+          {/* Project Thumbnail Preview (if available) */}
+          {state?.thumbnailUrl && state?.thumbnailStatus === "completed" && (
+            <Card variant="elevated" padding="md">
+              <div className="flex flex-col md:grid md:grid-cols-2 md:gap-6">
+                <div className="flex items-center gap-2 mb-3 md:col-span-2">
+                  <Sparkles className="h-4 w-4 text-accent-cyan" />
+                  <h3 className="text-sm font-medium text-text-primary">AI-Generated Thumbnail</h3>
                 </div>
-                {activeScript?.content && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    disabled={loadingAiSuggestions}
-                    className="text-xs h-8 text-accent-cyan hover:bg-accent-cyan/10"
-                    title="AI suggestions are only generated once when you advance to this step"
-                  >
-                    <Sparkles className="h-3 w-3 mr-1" />
-                    AI Generated
-                  </Button>
-                )}
-              </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                {/* Loading State - Only show while AI is loading */}
-                {loadingAiSuggestions && aiSuggestions.length === 0 && activeScript?.content && (
-                  <div className="col-span-1 sm:col-span-2">
-                    <InlineLoadingSkeleton message="Generating AI suggestions..." />
+                {/* Thumbnail - Half width on medium+ screens */}
+                <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default md:rounded-xl">
+                  <Image
+                    src={state.thumbnailUrl}
+                    alt="Project thumbnail"
+                    className="w-full h-full object-cover"
+                    width={500}
+                    height={280}
+                    onError={(e) => {
+                      // Hide image on error
+                      const img = e.target as HTMLImageElement;
+                      img.style.display = "none";
+                    }}
+                  />
+                </div>
+
+                {/* Explanatory content - Half width on medium+ screens */}
+                <div className="mt-3 md:mt-0 flex flex-col justify-center">
+                  <h4 className="text-sm font-medium text-text-primary mb-2">
+                    About Your Thumbnail
+                  </h4>
+                  <p className="text-sm text-text-muted mb-3">
+                    This AI-generated thumbnail is created based on your movie selection and script.
+                    It will be used as the visual preview for your final video project.
+                  </p>
+                  <div className="text-xs text-text-muted space-y-1">
+                    <p>• Created using movie theme and script content</p>
+                    <p>• No text overlay - purely visual design</p>
+                    <p>• Can be customized in later steps</p>
+                    <p>• Optimized for video thumbnails</p>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          )}
+
+          {/* Thumbnail Generating Indicator */}
+          {state?.thumbnailStatus === "generating" && (
+            <Card variant="elevated" padding="md" className="border-accent-cyan/30">
+              <div className="flex items-center gap-3">
+                <Loader2 className="h-5 w-5 text-accent-cyan animate-spin flex-shrink-0" />
+                <div className="flex-1">
+                  <h3 className="text-sm font-medium text-text-primary">
+                    Generating AI Thumbnail...
+                  </h3>
+                  <p className="mt-1 text-xs text-text-muted">
+                    Your custom thumbnail is being created
+                  </p>
+                </div>
+              </div>
+            </Card>
+          )}
+
+          {/* Movie info card */}
+          {state?.movieTitle && (
+            <Card variant="elevated" padding="md">
+              <div className="flex items-center gap-4">
+                {state.moviePoster && (
+                  <div className="h-24 w-16 overflow-hidden rounded-md bg-surface-raised flex-shrink-0">
+                    <Image
+                      src={state.moviePoster}
+                      alt={state.movieTitle}
+                      className="h-full w-full object-cover"
+                      width={64}
+                      height={96}
+                    />
                   </div>
                 )}
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-medium text-text-primary">{state.movieTitle}</h3>
+                  <p className="mt-1 text-sm text-text-muted">
+                    {state.movieGenre && `${state.movieGenre} • `}
+                    {state.movieRating && `Rating ${state.movieRating.toFixed(1)}`}
+                  </p>
+                </div>
+              </div>
+            </Card>
+          )}
 
-                {/* AI Suggestions - with sparkle icon (from Agnes API) */}
-                {aiSuggestions.map((suggestion, idx) => (
-                  <button
-                    key={`ai-${idx}`}
-                    onClick={() => handleSuggestionClick(suggestion)}
-                    className={`group relative text-left px-4 py-3.5 rounded-lg border-2 transition-all duration-200 ${
-                      projectName === suggestion.name
-                        ? "border-accent-cyan bg-accent-cyan/15 shadow-lg ring-2 ring-accent-cyan/30"
-                        : "border-accent-cyan/30 bg-accent-cyan/5 hover:bg-accent-cyan/10 hover:border-accent-cyan hover:shadow-md"
-                    }`}
-                  >
-                    <div className="flex items-start gap-2.5">
-                      <Sparkles
-                        className={`h-4 w-4 flex-shrink-0 mt-0.5 ${
-                          projectName === suggestion.name
-                            ? "text-accent-cyan animate-pulse"
-                            : "text-accent-cyan"
-                        }`}
-                      />
-                      <div className="flex-1 min-w-0">
-                        <div
-                          className={`font-semibold transition-colors break-words ${
-                            projectName === suggestion.name
-                              ? "text-accent-cyan"
-                              : "text-text-primary group-hover:text-accent-cyan"
-                          }`}
-                        >
-                          {suggestion.name}
-                        </div>
-                        {suggestion.reason && (
-                          <div className="mt-1 text-xs text-text-secondary line-clamp-2">
-                            {suggestion.reason}
-                          </div>
-                        )}
-                      </div>
-                      {projectName === suggestion.name && (
-                        <div className="flex-shrink-0 h-5 w-5 rounded-full bg-accent-cyan flex items-center justify-center">
-                          <svg
-                            className="h-3 w-3 text-white"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={3}
-                              d="M5 13l4 4L19 7"
-                            />
-                          </svg>
-                        </div>
-                      )}
-                    </div>
-                  </button>
-                ))}
+          {/* Script summary with expand */}
+          {activeScript && (
+            <Card
+              variant="elevated"
+              padding="md"
+              className="hover:border-border-hover transition-colors cursor-pointer"
+              onClick={() => setShowFullScriptModal(true)}
+            >
+              <div className="flex items-start gap-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted flex-shrink-0">
+                  <FileText className="h-5 w-5 text-accent-cyan" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-4 mb-2">
+                    <h3 className="font-medium text-text-primary">Your Script</h3>
+                    <span className="text-xs font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0">
+                      Click to expand <ChevronDown className="h-3 w-3" />
+                    </span>
+                  </div>
+                  <p className="text-sm text-text-muted mb-3">
+                    {activeScript.wordCount} words • Estimated duration:{" "}
+                    {Math.floor(activeScript.duration / 60)}:
+                    {(activeScript.duration % 60).toString().padStart(2, "0")}
+                  </p>
+                  <p className="text-sm text-text-secondary line-clamp-3 leading-relaxed">
+                    {activeScript.content}
+                  </p>
+                </div>
+              </div>
+            </Card>
+          )}
 
-                {/* Fallback Suggestions - no icon (generated locally, no API call) */}
-                {fallbackSuggestions.map((suggestion, idx) => (
-                  <button
-                    key={`fallback-${idx}`}
-                    onClick={() => handleSuggestionClick(suggestion)}
-                    className={`group text-left px-4 py-3.5 rounded-lg border transition-all duration-200 ${
-                      projectName === suggestion.name
-                        ? "border-accent-cyan bg-accent-cyan/10 shadow-md ring-2 ring-accent-cyan/20"
-                        : "border-border-default bg-surface-base hover:bg-surface-raised hover:border-border-hover hover:shadow-sm"
-                    }`}
+          {/* Project name input - More prominent */}
+          <Card
+            variant="elevated"
+            padding="lg"
+            className="border-2 border-accent-cyan/30 bg-gradient-to-br from-accent-cyan/8 via-accent-cyan/4 to-transparent shadow-lg"
+          >
+            <div className="mb-6">
+              <div className="flex items-center gap-2.5 mb-4">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-cyan shadow-sm shadow-accent-cyan/50">
+                  <Pencil className="h-4 w-4 text-white" />
+                </div>
+                <div className="flex-1">
+                  <label
+                    htmlFor="projectName"
+                    className="text-lg font-bold text-text-primary flex items-center gap-2"
                   >
-                    <div className="flex items-start gap-2.5">
-                      <div className="flex-1 min-w-0">
-                        <div
-                          className={`font-medium transition-colors break-words ${
-                            projectName === suggestion.name
-                              ? "text-accent-cyan"
-                              : "text-text-secondary group-hover:text-text-primary"
-                          }`}
-                        >
-                          {suggestion.name}
-                        </div>
-                        {suggestion.reason && (
-                          <div className="mt-1 text-xs text-text-muted line-clamp-2">
-                            {suggestion.reason}
-                          </div>
-                        )}
-                      </div>
-                      {projectName === suggestion.name && (
-                        <div className="flex-shrink-0 h-5 w-5 rounded-full bg-accent-cyan flex items-center justify-center">
-                          <svg
-                            className="h-3 w-3 text-white"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={3}
-                              d="M5 13l4 4L19 7"
-                            />
-                          </svg>
-                        </div>
-                      )}
+                    Name Your Project
+                    <span className="text-sm font-normal text-accent-cyan bg-accent-cyan/10 px-2 py-0.5 rounded-full">
+                      Required
+                    </span>
+                  </label>
+                  <p className="text-xs text-text-muted mt-0.5">
+                    Choose a name that represents your video project
+                  </p>
+                </div>
+              </div>
+
+              <div className="relative">
+                <input
+                  id="projectName"
+                  type="text"
+                  value={projectName}
+                  onChange={(e) => setProjectName(e.target.value)}
+                  placeholder="e.g., Inception Trailer Project"
+                  className="w-full rounded-xl border-2 border-accent-cyan/50 bg-surface-base px-5 py-4 text-xl font-semibold text-text-primary placeholder-text-muted/60 focus:border-accent-cyan focus:outline-none focus:ring-4 focus:ring-accent-cyan/25 transition-all shadow-[0_0_20px_rgba(34,211,238,0.12)] hover:shadow-[0_0_25px_rgba(34,211,238,0.2)]"
+                />
+                {projectName.trim() && (
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-500/20">
+                      <svg
+                        className="h-4 w-4 text-green-500"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={3}
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
                     </div>
-                  </button>
-                ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-3 flex items-start gap-2 text-xs text-text-muted bg-accent-cyan/5 rounded-lg p-3 border border-accent-cyan/10">
+                <Sparkles className="h-4 w-4 text-accent-cyan flex-shrink-0 mt-0.5" />
+                <p>
+                  <span className="font-medium text-text-secondary">Tip:</span> Click any AI
+                  suggestion below or write your own creative name
+                </p>
               </div>
             </div>
-          )}
-        </Card>
+
+            {/* Unified Suggestions List */}
+            {(loadingAiSuggestions ||
+              aiSuggestions.length > 0 ||
+              fallbackSuggestions.length > 0) && (
+              <div>
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <div className="flex items-center gap-2">
+                    <h4 className="text-sm font-medium text-text-secondary">Suggestions</h4>
+                    {loadingAiSuggestions && (
+                      <Loader2 className="h-4 w-4 animate-spin text-accent-cyan" />
+                    )}
+                  </div>
+                  {activeScript?.content && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      disabled={loadingAiSuggestions}
+                      className="text-xs h-8 text-accent-cyan hover:bg-accent-cyan/10"
+                      title="AI suggestions are only generated once when you advance to this step"
+                    >
+                      <Sparkles className="h-3 w-3 mr-1" />
+                      AI Generated
+                    </Button>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {/* Loading State - Only show while AI is loading */}
+                  {loadingAiSuggestions && aiSuggestions.length === 0 && activeScript?.content && (
+                    <div className="col-span-1 sm:col-span-2">
+                      <InlineLoadingSkeleton message="Generating AI suggestions..." />
+                    </div>
+                  )}
+
+                  {/* AI Suggestions - with sparkle icon (from Agnes API) */}
+                  {aiSuggestions.map((suggestion, idx) => (
+                    <button
+                      key={`ai-${idx}`}
+                      onClick={() => handleSuggestionClick(suggestion)}
+                      className={`group relative text-left px-4 py-3.5 rounded-lg border-2 transition-all duration-200 ${
+                        projectName === suggestion.name
+                          ? "border-accent-cyan bg-accent-cyan/15 shadow-lg ring-2 ring-accent-cyan/30"
+                          : "border-accent-cyan/30 bg-accent-cyan/5 hover:bg-accent-cyan/10 hover:border-accent-cyan hover:shadow-md"
+                      }`}
+                    >
+                      <div className="flex items-start gap-2.5">
+                        <Sparkles
+                          className={`h-4 w-4 flex-shrink-0 mt-0.5 ${
+                            projectName === suggestion.name
+                              ? "text-accent-cyan animate-pulse"
+                              : "text-accent-cyan"
+                          }`}
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div
+                            className={`font-semibold transition-colors break-words ${
+                              projectName === suggestion.name
+                                ? "text-accent-cyan"
+                                : "text-text-primary group-hover:text-accent-cyan"
+                            }`}
+                          >
+                            {suggestion.name}
+                          </div>
+                          {suggestion.reason && (
+                            <div className="mt-1 text-xs text-text-secondary line-clamp-2">
+                              {suggestion.reason}
+                            </div>
+                          )}
+                        </div>
+                        {projectName === suggestion.name && (
+                          <div className="flex-shrink-0 h-5 w-5 rounded-full bg-accent-cyan flex items-center justify-center">
+                            <svg
+                              className="h-3 w-3 text-white"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={3}
+                                d="M5 13l4 4L19 7"
+                              />
+                            </svg>
+                          </div>
+                        )}
+                      </div>
+                    </button>
+                  ))}
+
+                  {/* Fallback Suggestions - no icon (generated locally, no API call) */}
+                  {fallbackSuggestions.map((suggestion, idx) => (
+                    <button
+                      key={`fallback-${idx}`}
+                      onClick={() => handleSuggestionClick(suggestion)}
+                      className={`group text-left px-4 py-3.5 rounded-lg border transition-all duration-200 ${
+                        projectName === suggestion.name
+                          ? "border-accent-cyan bg-accent-cyan/10 shadow-md ring-2 ring-accent-cyan/20"
+                          : "border-border-default bg-surface-base hover:bg-surface-raised hover:border-border-hover hover:shadow-sm"
+                      }`}
+                    >
+                      <div className="flex items-start gap-2.5">
+                        <div className="flex-1 min-w-0">
+                          <div
+                            className={`font-medium transition-colors break-words ${
+                              projectName === suggestion.name
+                                ? "text-accent-cyan"
+                                : "text-text-secondary group-hover:text-text-primary"
+                            }`}
+                          >
+                            {suggestion.name}
+                          </div>
+                          {suggestion.reason && (
+                            <div className="mt-1 text-xs text-text-muted line-clamp-2">
+                              {suggestion.reason}
+                            </div>
+                          )}
+                        </div>
+                        {projectName === suggestion.name && (
+                          <div className="flex-shrink-0 h-5 w-5 rounded-full bg-accent-cyan flex items-center justify-center">
+                            <svg
+                              className="h-3 w-3 text-white"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={3}
+                                d="M5 13l4 4L19 7"
+                              />
+                            </svg>
+                          </div>
+                        )}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </Card>
         </div>
       </div>
 

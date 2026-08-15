@@ -18,9 +18,7 @@ export function formatWaitTime(seconds: number): string {
   } else {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.round(seconds % 60);
-    return remainingSeconds > 0
-      ? `~${minutes}m ${remainingSeconds}s`
-      : `~${minutes} minutes`;
+    return remainingSeconds > 0 ? `~${minutes}m ${remainingSeconds}s` : `~${minutes} minutes`;
   }
 }
 

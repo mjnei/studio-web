@@ -360,101 +360,101 @@ export default function PreviewPage() {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col gap-6 pb-24">
           {/* Page Header */}
-        <div>
-          <h2 className="text-2xl font-bold text-text-primary">Voice Preview</h2>
-          <p className="mt-1 text-sm text-text-muted">
-            Listen to your narration and make sure everything sounds perfect
-          </p>
-        </div>
+          <div>
+            <h2 className="text-2xl font-bold text-text-primary">Voice Preview</h2>
+            <p className="mt-1 text-sm text-text-muted">
+              Listen to your narration and make sure everything sounds perfect
+            </p>
+          </div>
 
-        {/* Main Audio Player Card */}
-        <Card variant="elevated" padding="none" className="overflow-hidden">
-          <div className="bg-gradient-to-br from-green-500/10 via-emerald-500/5 to-green-500/10 p-8">
-            {/* Status Indicator */}
-            <div className="flex items-center justify-center mb-6">
-              <div
-                className={`flex h-24 w-24 items-center justify-center rounded-full transition-all duration-300 ${
-                  isProcessing
-                    ? "bg-accent-primary/10 shadow-glow"
-                    : ttsJob?.status === "failed"
-                      ? "bg-status-error/10"
-                      : ttsJob?.status === "completed"
-                        ? "bg-gradient-to-br from-green-500 to-emerald-500 shadow-glow-hover"
-                        : "bg-surface-elevated"
-                }`}
-              >
-                {isProcessing ? (
-                  <Loader2 className="h-12 w-12 text-accent-primary animate-spin" />
-                ) : ttsJob?.status === "failed" ? (
-                  <AlertCircle className="h-12 w-12 text-status-error" />
-                ) : ttsJob?.status === "completed" ? (
-                  <Volume2 className="h-12 w-12 text-white" />
-                ) : (
-                  <Mic2 className="h-12 w-12 text-text-muted" />
+          {/* Main Audio Player Card */}
+          <Card variant="elevated" padding="none" className="overflow-hidden">
+            <div className="bg-gradient-to-br from-green-500/10 via-emerald-500/5 to-green-500/10 p-8">
+              {/* Status Indicator */}
+              <div className="flex items-center justify-center mb-6">
+                <div
+                  className={`flex h-24 w-24 items-center justify-center rounded-full transition-all duration-300 ${
+                    isProcessing
+                      ? "bg-accent-primary/10 shadow-glow"
+                      : ttsJob?.status === "failed"
+                        ? "bg-status-error/10"
+                        : ttsJob?.status === "completed"
+                          ? "bg-gradient-to-br from-green-500 to-emerald-500 shadow-glow-hover"
+                          : "bg-surface-elevated"
+                  }`}
+                >
+                  {isProcessing ? (
+                    <Loader2 className="h-12 w-12 text-accent-primary animate-spin" />
+                  ) : ttsJob?.status === "failed" ? (
+                    <AlertCircle className="h-12 w-12 text-status-error" />
+                  ) : ttsJob?.status === "completed" ? (
+                    <Volume2 className="h-12 w-12 text-white" />
+                  ) : (
+                    <Mic2 className="h-12 w-12 text-text-muted" />
+                  )}
+                </div>
+              </div>
+
+              {/* Status Text */}
+              <div className="text-center mb-6">
+                <h3 className="text-xl font-semibold text-text-primary mb-2">
+                  {!ttsJob && !ttsError && "Initializing Preview..."}
+                  {ttsJob?.status === "queued" && "Queued for Generation"}
+                  {ttsJob?.status === "processing" &&
+                    `Generating Audio${ttsJob.progress ? ` (${ttsJob.progress}%)` : "..."}`}
+                  {ttsJob?.status === "completed" && "Audio Ready"}
+                  {ttsJob?.status === "failed" && "Generation Failed"}
+                </h3>
+
+                <p className="text-sm text-text-muted">
+                  {!ttsJob && !ttsError && "Setting up your audio preview..."}
+                  {ttsJob?.status === "queued" && "Your request is in the queue"}
+                  {ttsJob?.status === "processing" && `Using ${voiceName}`}
+                  {ttsJob?.status === "completed" && `Narrated by ${voiceName}`}
+                  {ttsJob?.status === "failed" && ttsJob.error_message}
+                  {ttsError && !ttsJob && ttsError}
+                </p>
+
+                {/* Debug info */}
+                {ttsJob?.status === "completed" && (
+                  <p className="text-xs text-accent-tertiary mt-2">
+                    Status: {ttsJob.status} | Audio URL: {ttsJob.audio_url ? "✓" : "✗"} | Duration:{" "}
+                    {duration}s
+                  </p>
                 )}
               </div>
-            </div>
 
-            {/* Status Text */}
-            <div className="text-center mb-6">
-              <h3 className="text-xl font-semibold text-text-primary mb-2">
-                {!ttsJob && !ttsError && "Initializing Preview..."}
-                {ttsJob?.status === "queued" && "Queued for Generation"}
-                {ttsJob?.status === "processing" &&
-                  `Generating Audio${ttsJob.progress ? ` (${ttsJob.progress}%)` : "..."}`}
-                {ttsJob?.status === "completed" && "Audio Ready"}
-                {ttsJob?.status === "failed" && "Generation Failed"}
-              </h3>
-
-              <p className="text-sm text-text-muted">
-                {!ttsJob && !ttsError && "Setting up your audio preview..."}
-                {ttsJob?.status === "queued" && "Your request is in the queue"}
-                {ttsJob?.status === "processing" && `Using ${voiceName}`}
-                {ttsJob?.status === "completed" && `Narrated by ${voiceName}`}
-                {ttsJob?.status === "failed" && ttsJob.error_message}
-                {ttsError && !ttsJob && ttsError}
-              </p>
-
-              {/* Debug info */}
-              {ttsJob?.status === "completed" && (
-                <p className="text-xs text-accent-tertiary mt-2">
-                  Status: {ttsJob.status} | Audio URL: {ttsJob.audio_url ? "✓" : "✗"} | Duration:{" "}
-                  {duration}s
-                </p>
+              {/* Queue Status - Show when job is queued */}
+              {ttsJob?.status === "queued" && (
+                <div className="mb-6 mx-auto w-full max-w-2xl">
+                  <TTSQueueStatus job={ttsJob} />
+                </div>
               )}
-            </div>
 
-            {/* Queue Status - Show when job is queued */}
-            {ttsJob?.status === "queued" && (
-              <div className="mb-6 mx-auto w-full max-w-2xl">
-                <TTSQueueStatus job={ttsJob} />
-              </div>
-            )}
+              {/* Hidden audio element - always present */}
+              <audio
+                ref={audioRef}
+                src={ttsJob?.audio_url ?? undefined}
+                onPlay={() => setIsPlaying(true)}
+                onPause={() => setIsPlaying(false)}
+                preload="metadata"
+                style={{ display: "none" }}
+              />
 
-            {/* Hidden audio element - always present */}
-            <audio
-              ref={audioRef}
-              src={ttsJob?.audio_url ?? undefined}
-              onPlay={() => setIsPlaying(true)}
-              onPause={() => setIsPlaying(false)}
-              preload="metadata"
-              style={{ display: "none" }}
-            />
-
-            {/* Custom Audio Player */}
-            {ttsJob?.status === "completed" && ttsJob.audio_url && (
-              <div className="space-y-4">
-                {/* Playback Controls Card */}
-                <div className="mx-auto w-full max-w-2xl rounded-xl bg-surface-elevated p-6 border border-border-default">
-                  {/* Progress Bar */}
-                  <div className="mb-6">
-                    <input
-                      type="range"
-                      min="0"
-                      max={duration || 100}
-                      value={currentTime}
-                      onChange={handleSeek}
-                      className="w-full h-2 bg-surface-panel rounded-lg appearance-none cursor-pointer
+              {/* Custom Audio Player */}
+              {ttsJob?.status === "completed" && ttsJob.audio_url && (
+                <div className="space-y-4">
+                  {/* Playback Controls Card */}
+                  <div className="mx-auto w-full max-w-2xl rounded-xl bg-surface-elevated p-6 border border-border-default">
+                    {/* Progress Bar */}
+                    <div className="mb-6">
+                      <input
+                        type="range"
+                        min="0"
+                        max={duration || 100}
+                        value={currentTime}
+                        onChange={handleSeek}
+                        className="w-full h-2 bg-surface-panel rounded-lg appearance-none cursor-pointer
                         [&::-webkit-slider-thumb]:appearance-none
                         [&::-webkit-slider-thumb]:w-4
                         [&::-webkit-slider-thumb]:h-4
@@ -474,60 +474,60 @@ export default function PreviewPage() {
                         [&::-moz-range-thumb]:to-emerald-500
                         [&::-moz-range-thumb]:border-0
                         [&::-moz-range-thumb]:cursor-pointer"
-                    />
-                    <div className="flex items-center justify-between mt-2 text-xs text-text-muted">
-                      <span>{formatTime(currentTime)}</span>
-                      <span>{duration ? formatTime(duration) : "--:--"}</span>
+                      />
+                      <div className="flex items-center justify-between mt-2 text-xs text-text-muted">
+                        <span>{formatTime(currentTime)}</span>
+                        <span>{duration ? formatTime(duration) : "--:--"}</span>
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Main Controls */}
-                  <div className="flex items-center justify-center gap-4 mb-6">
-                    <button
-                      onClick={resetAudio}
-                      title="Reset to start"
-                      className="h-10 w-10 p-0 flex items-center justify-center rounded hover:bg-surface-panel transition-colors"
-                    >
-                      <RotateCcw className="h-4 w-4 text-text-primary" />
-                    </button>
+                    {/* Main Controls */}
+                    <div className="flex items-center justify-center gap-4 mb-6">
+                      <button
+                        onClick={resetAudio}
+                        title="Reset to start"
+                        className="h-10 w-10 p-0 flex items-center justify-center rounded hover:bg-surface-panel transition-colors"
+                      >
+                        <RotateCcw className="h-4 w-4 text-text-primary" />
+                      </button>
 
-                    <button
-                      onClick={togglePlayPause}
-                      className="h-16 w-16 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 p-0 flex items-center justify-center shadow-lg hover:shadow-glow-hover transition-all text-white font-semibold flex-shrink-0"
-                      title={isPlaying ? "Pause" : "Play"}
-                    >
-                      {isPlaying ? (
-                        <Pause className="h-8 w-8 fill-white" />
-                      ) : (
-                        <Play className="h-8 w-8 ml-1 fill-white" />
-                      )}
-                    </button>
+                      <button
+                        onClick={togglePlayPause}
+                        className="h-16 w-16 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 p-0 flex items-center justify-center shadow-lg hover:shadow-glow-hover transition-all text-white font-semibold flex-shrink-0"
+                        title={isPlaying ? "Pause" : "Play"}
+                      >
+                        {isPlaying ? (
+                          <Pause className="h-8 w-8 fill-white" />
+                        ) : (
+                          <Play className="h-8 w-8 ml-1 fill-white" />
+                        )}
+                      </button>
 
-                    <button
-                      onClick={toggleMute}
-                      title={isMuted ? "Unmute" : "Mute"}
-                      className="h-10 w-10 p-0 flex items-center justify-center rounded hover:bg-surface-panel transition-colors"
-                    >
-                      {isMuted || volume === 0 ? (
-                        <VolumeX className="h-4 w-4 text-text-primary" />
-                      ) : (
-                        <Volume2 className="h-4 w-4 text-text-primary" />
-                      )}
-                    </button>
-                  </div>
+                      <button
+                        onClick={toggleMute}
+                        title={isMuted ? "Unmute" : "Mute"}
+                        className="h-10 w-10 p-0 flex items-center justify-center rounded hover:bg-surface-panel transition-colors"
+                      >
+                        {isMuted || volume === 0 ? (
+                          <VolumeX className="h-4 w-4 text-text-primary" />
+                        ) : (
+                          <Volume2 className="h-4 w-4 text-text-primary" />
+                        )}
+                      </button>
+                    </div>
 
-                  {/* Volume Control */}
-                  <div className="flex items-center gap-3">
-                    <VolumeX className="h-4 w-4 text-text-muted flex-shrink-0" />
-                    <input
-                      type="range"
-                      min="0"
-                      max="1"
-                      step="0.01"
-                      value={isMuted ? 0 : volume}
-                      onChange={handleVolumeChange}
-                      title="Volume"
-                      className="flex-1 h-1.5 bg-surface-panel rounded-lg appearance-none cursor-pointer
+                    {/* Volume Control */}
+                    <div className="flex items-center gap-3">
+                      <VolumeX className="h-4 w-4 text-text-muted flex-shrink-0" />
+                      <input
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                        value={isMuted ? 0 : volume}
+                        onChange={handleVolumeChange}
+                        title="Volume"
+                        className="flex-1 h-1.5 bg-surface-panel rounded-lg appearance-none cursor-pointer
                         [&::-webkit-slider-thumb]:appearance-none
                         [&::-webkit-slider-thumb]:w-3
                         [&::-webkit-slider-thumb]:h-3
@@ -541,163 +541,163 @@ export default function PreviewPage() {
                         [&::-moz-range-thumb]:bg-accent-primary
                         [&::-moz-range-thumb]:border-0
                         [&::-moz-range-thumb]:cursor-pointer"
-                    />
-                    <Volume2 className="h-4 w-4 text-text-muted flex-shrink-0" />
+                      />
+                      <Volume2 className="h-4 w-4 text-text-muted flex-shrink-0" />
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {/* Retry Button for Failed Jobs */}
-            {ttsJob?.status === "failed" && (
-              <div className="flex justify-center">
-                <Button
-                  variant="primary"
-                  size="lg"
-                  onClick={() => {
-                    let voiceId = state?.voiceId;
-                    let voiceName = state?.voiceName;
+              {/* Retry Button for Failed Jobs */}
+              {ttsJob?.status === "failed" && (
+                <div className="flex justify-center">
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    onClick={() => {
+                      let voiceId = state?.voiceId;
+                      let voiceName = state?.voiceName;
 
-                    if (!voiceId) {
-                      try {
-                        const storedVoice = localStorage.getItem(`project_${projectId}_voice`);
-                        if (storedVoice) {
-                          const voice = JSON.parse(storedVoice);
-                          if (voice.id) {
-                            voiceId = voice.id;
-                            voiceName = voice.name;
+                      if (!voiceId) {
+                        try {
+                          const storedVoice = localStorage.getItem(`project_${projectId}_voice`);
+                          if (storedVoice) {
+                            const voice = JSON.parse(storedVoice);
+                            if (voice.id) {
+                              voiceId = voice.id;
+                              voiceName = voice.name;
+                            }
                           }
+                        } catch (e) {
+                          console.error("Failed to read voice from localStorage:", e);
                         }
-                      } catch (e) {
-                        console.error("Failed to read voice from localStorage:", e);
                       }
-                    }
 
-                    if (voiceId) {
-                      createNewTTSJob(voiceId, voiceName);
-                    }
-                  }}
-                >
-                  <RotateCcw className="h-5 w-5 mr-2" />
-                  Retry Generation
-                </Button>
-              </div>
-            )}
-          </div>
-
-          {/* Job Details Footer */}
-          {ttsJob && (
-            <div className="bg-surface-panel px-8 py-4 border-t border-border-default">
-              <div className="flex flex-wrap items-center justify-between gap-4">
-                <div className="flex items-center gap-4 text-sm flex-wrap">
-                  <div className="flex items-center gap-2">
-                    <span className="text-text-muted">Job ID:</span>
-                    <Badge variant="outline" className="font-mono">
-                      #{ttsJob.id}
-                    </Badge>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-text-muted">Status:</span>
-                    <Badge
-                      variant={
-                        ttsJob.status === "completed"
-                          ? "success"
-                          : ttsJob.status === "failed"
-                            ? "error"
-                            : "primary"
+                      if (voiceId) {
+                        createNewTTSJob(voiceId, voiceName);
                       }
-                    >
-                      {ttsJob.status}
-                    </Badge>
-                  </div>
-                  {ttsJob.audio_duration_seconds && (
+                    }}
+                  >
+                    <RotateCcw className="h-5 w-5 mr-2" />
+                    Retry Generation
+                  </Button>
+                </div>
+              )}
+            </div>
+
+            {/* Job Details Footer */}
+            {ttsJob && (
+              <div className="bg-surface-panel px-8 py-4 border-t border-border-default">
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  <div className="flex items-center gap-4 text-sm flex-wrap">
                     <div className="flex items-center gap-2">
-                      <Volume2 className="h-4 w-4 text-text-muted" />
-                      <span className="text-text-secondary">
-                        {Math.floor(ttsJob.audio_duration_seconds / 60)}:
-                        {Math.round(ttsJob.audio_duration_seconds % 60)
-                          .toString()
-                          .padStart(2, "0")}
-                      </span>
+                      <span className="text-text-muted">Job ID:</span>
+                      <Badge variant="outline" className="font-mono">
+                        #{ttsJob.id}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-text-muted">Status:</span>
+                      <Badge
+                        variant={
+                          ttsJob.status === "completed"
+                            ? "success"
+                            : ttsJob.status === "failed"
+                              ? "error"
+                              : "primary"
+                        }
+                      >
+                        {ttsJob.status}
+                      </Badge>
+                    </div>
+                    {ttsJob.audio_duration_seconds && (
+                      <div className="flex items-center gap-2">
+                        <Volume2 className="h-4 w-4 text-text-muted" />
+                        <span className="text-text-secondary">
+                          {Math.floor(ttsJob.audio_duration_seconds / 60)}:
+                          {Math.round(ttsJob.audio_duration_seconds % 60)
+                            .toString()
+                            .padStart(2, "0")}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  {ttsJob.status === "completed" && (
+                    <div className="flex items-center gap-2 text-xs text-accent-tertiary">
+                      <Sparkles className="h-4 w-4" />
+                      <span>Cached & optimized</span>
                     </div>
                   )}
                 </div>
-                {ttsJob.status === "completed" && (
-                  <div className="flex items-center gap-2 text-xs text-accent-tertiary">
-                    <Sparkles className="h-4 w-4" />
-                    <span>Cached & optimized</span>
-                  </div>
-                )}
               </div>
-            </div>
-          )}
-        </Card>
+            )}
+          </Card>
 
-        {/* Info Cards Grid */}
-        <div className="grid gap-4 md:grid-cols-2">
-          {/* Project Summary */}
-          <Card variant="elevated" padding="md">
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500">
-                  <CheckCircle className="h-5 w-5 text-white" />
+          {/* Info Cards Grid */}
+          <div className="grid gap-4 md:grid-cols-2">
+            {/* Project Summary */}
+            <Card variant="elevated" padding="md">
+              <CardHeader>
+                <div className="flex items-center gap-2">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500">
+                    <CheckCircle className="h-5 w-5 text-white" />
+                  </div>
+                  <CardTitle>Project Details</CardTitle>
                 </div>
-                <CardTitle>Project Details</CardTitle>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <div>
-                  <p className="text-xs text-text-muted uppercase tracking-wide mb-1">
-                    Project Name
-                  </p>
-                  <p className="font-medium text-text-primary">{projectName}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-text-muted uppercase tracking-wide mb-1">Voice</p>
-                  <p className="font-medium text-text-primary">{voiceName}</p>
-                </div>
-                {activeScript && (
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
                   <div>
-                    <p className="text-xs text-text-muted uppercase tracking-wide mb-1">Script</p>
-                    <p className="text-sm text-text-secondary">
-                      {activeScript.wordCount} words • ~{Math.floor(activeScript.duration / 60)}:
-                      {(activeScript.duration % 60).toString().padStart(2, "0")}
+                    <p className="text-xs text-text-muted uppercase tracking-wide mb-1">
+                      Project Name
                     </p>
+                    <p className="font-medium text-text-primary">{projectName}</p>
                   </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Script Preview */}
-          <Card
-            variant="elevated"
-            padding="md"
-            className="cursor-pointer hover:border-accent-tertiary/40 transition-all group"
-            onClick={() => setShowFullScriptModal(true)}
-          >
-            <CardHeader>
-              <div className="flex items-center gap-2">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-cyan-500">
-                  <FileText className="h-5 w-5 text-white" />
+                  <div>
+                    <p className="text-xs text-text-muted uppercase tracking-wide mb-1">Voice</p>
+                    <p className="font-medium text-text-primary">{voiceName}</p>
+                  </div>
+                  {activeScript && (
+                    <div>
+                      <p className="text-xs text-text-muted uppercase tracking-wide mb-1">Script</p>
+                      <p className="text-sm text-text-secondary">
+                        {activeScript.wordCount} words • ~{Math.floor(activeScript.duration / 60)}:
+                        {(activeScript.duration % 60).toString().padStart(2, "0")}
+                      </p>
+                    </div>
+                  )}
                 </div>
-                <CardTitle>Script Preview</CardTitle>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="rounded-lg bg-surface-panel p-4 border border-border-default">
-                <p className="text-sm text-text-primary leading-relaxed line-clamp-3">
-                  &ldquo;{previewText}&rdquo;
-                </p>
-              </div>
-              <div className="mt-3 flex items-center gap-2 text-xs text-accent-tertiary group-hover:text-accent-tertiary-hover transition-colors">
-                <Info className="h-3.5 w-3.5" />
-                <span>Click to view full script</span>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+              </CardContent>
+            </Card>
+
+            {/* Script Preview */}
+            <Card
+              variant="elevated"
+              padding="md"
+              className="cursor-pointer hover:border-accent-tertiary/40 transition-all group"
+              onClick={() => setShowFullScriptModal(true)}
+            >
+              <CardHeader>
+                <div className="flex items-center gap-2">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-cyan-500">
+                    <FileText className="h-5 w-5 text-white" />
+                  </div>
+                  <CardTitle>Script Preview</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="rounded-lg bg-surface-panel p-4 border border-border-default">
+                  <p className="text-sm text-text-primary leading-relaxed line-clamp-3">
+                    &ldquo;{previewText}&rdquo;
+                  </p>
+                </div>
+                <div className="mt-3 flex items-center gap-2 text-xs text-accent-tertiary group-hover:text-accent-tertiary-hover transition-colors">
+                  <Info className="h-3.5 w-3.5" />
+                  <span>Click to view full script</span>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
 
