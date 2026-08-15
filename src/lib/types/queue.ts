@@ -48,11 +48,19 @@ export interface QueueHealth {
 export function getQueueHealth(stats: QueueStats): QueueHealth {
   const { message_count, consumer_count, metadata } = stats;
 
-  // Critical: No consumers on a job queue with messages
-  if (metadata?.is_job_queue && message_count > 0 && consumer_count === 0) {
+  // Critical: No consumers and messages are piling up — nothing is processing them
+  if (metadata?.is_job_queue && consumer_count === 0 && message_count > 0) {
     return {
       status: "critical",
-      message: "No active consumers processing jobs",
+      message: "No active consumers processing messages",
+    };
+  }
+
+  // Warning: No consumers and no messages — queue is idle with no workers attached
+  if (metadata?.is_job_queue && consumer_count === 0 && message_count === 0) {
+    return {
+      status: "warning",
+      message: "No active consumers",
     };
   }
 
