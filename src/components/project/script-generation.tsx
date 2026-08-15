@@ -28,7 +28,6 @@ interface ScriptGenerationProps {
 }
 
 export function ScriptGeneration({
-  movieId,
   movieTitle,
   script,
   onScriptChange,

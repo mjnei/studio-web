@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import { Video, Play, Download, Loader2, CheckCircle2, Film, Clock } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -32,8 +31,6 @@ export function VideoGeneration({
   movieTitle,
   moviePoster,
   script,
-  audioUrl,
-  voiceName,
   videoUrl,
   status = "idle",
   progress = 0,

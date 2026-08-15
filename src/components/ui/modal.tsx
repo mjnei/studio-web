@@ -271,13 +271,6 @@ export function AlertModal({
   actionText = "OK",
   icon,
 }: AlertModalProps) {
-  const variants = {
-    info: "border-blue-500/30",
-    success: "border-green-500/30",
-    warning: "border-yellow-500/30",
-    error: "border-red-500/30",
-  };
-
   const iconColors = {
     info: "text-blue-500",
     success: "text-green-500",

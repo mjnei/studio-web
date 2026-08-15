@@ -1,9 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { PanelLeft, Search } from "lucide-react";
 import { useSidebar } from "@/components/shell/sidebar-context";
-import { Button } from "@/components/ui/button";
 import { CreditStatus } from "@/components/credits/CreditStatus";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";

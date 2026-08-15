@@ -86,11 +86,7 @@ function assert(condition: boolean, message: string) {
   }
 }
 
-function assertEquals<T>(actual: T, expected: T, message: string) {
-  if (actual !== expected) {
-    throw new Error(`Assertion failed: ${message}\nExpected: ${expected}\nActual: ${actual}`);
-  }
-}
+
 
 /**
  * Test Suite
@@ -119,18 +115,6 @@ async function runTests() {
   }
 
   try {
-    // Import the voice client functions
-    const {
-      uploadVoice,
-      listVoices,
-      getVoice,
-      updateVoice,
-      deleteVoice,
-      getVoiceAudioUrl,
-      toggleVoiceSharing,
-      getAvailableVoices,
-    } = require("../voice-client");
-
     console.log("\n" + "=".repeat(70));
     console.log("VOICE CLIENT INTEGRATION TEST SUITE");
     console.log("=".repeat(70) + "\n");

@@ -2,7 +2,6 @@
 
 import { Check, Mic, Volume2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { useState } from "react";
 
 interface VoiceSelectionCardProps {
   id: string;
@@ -24,7 +23,6 @@ interface VoiceSelectionCardProps {
 }
 
 export function VoiceSelectionCard({
-  id,
   name,
   description,
   type,

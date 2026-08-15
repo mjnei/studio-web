@@ -104,7 +104,6 @@ describe("VoiceGeneration Component", () => {
 
     it("should display voice counts in tabs", () => {
       render(<VoiceGeneration {...defaultProps} />);
-      const tabs = screen.getAllByRole("button");
       expect(screen.getByText("2")).toBeInTheDocument(); // 2 own voices
     });
 
@@ -145,15 +144,11 @@ describe("VoiceGeneration Component", () => {
     });
 
     it("should highlight selected voice with ring and border styling", () => {
-      const { container } = render(<VoiceGeneration {...defaultProps} selectedVoiceId={1} />);
+      render(<VoiceGeneration {...defaultProps} selectedVoiceId={1} />);
 
       // Check for selected state styling
-      const cards = container.querySelectorAll("[role='button']");
+      const cards = document.querySelectorAll("[role='button']");
       // The voice card should have ring-2 and border styling applied
-      const hasRingClass = Array.from(cards).some(
-        (card) =>
-          card.className.includes("ring-2") && card.className.includes("ring-accent-primary")
-      );
       // Note: This may require additional CSS inspection or snapshot testing
     });
 
@@ -220,7 +215,7 @@ describe("VoiceGeneration Component", () => {
     });
 
     it("should render separate sections for own and community voices", async () => {
-      const { container } = render(<VoiceGeneration {...defaultProps} />);
+      render(<VoiceGeneration {...defaultProps} />);
 
       // Own voices section
       expect(screen.getByText("My Voice 1")).toBeInTheDocument();

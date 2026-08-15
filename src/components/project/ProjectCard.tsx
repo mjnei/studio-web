@@ -128,13 +128,8 @@ export function ProjectCard({
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
                 onError={() => {
                   // Fallback to TMDB image if thumbnail fails to load
-                  const backdropOrPoster =
-                    project.movie?.backdrop_path ?? project.movie?.poster_path;
-                  if (backdropOrPoster) {
-                    const fallbackUrl = tmdbImageUrl(backdropOrPoster, "w780");
-                    // The ExternalImage component handles this, but onError is called
-                    // Client-side image error handling is limited with Next.js Image component
-                  }
+                  // The ExternalImage component handles this, but onError is called
+                  // Client-side image error handling is limited with Next.js Image component
                 }}
               />
             ) : project.movie?.backdrop_path || project.movie?.poster_path ? (

@@ -14,17 +14,6 @@
  * 2. Run: `npx ts-node src/lib/api/__tests__/voice-client.integration.ts`
  */
 
-import {
-  uploadVoice,
-  listVoices,
-  getVoice,
-  updateVoice,
-  deleteVoice,
-  getVoiceAudioUrl,
-  toggleVoiceSharing,
-  getAvailableVoices,
-} from "../voice-client";
-
 // Test configuration
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020/api/v1";
 
