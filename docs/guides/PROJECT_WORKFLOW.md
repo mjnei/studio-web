@@ -538,7 +538,7 @@ Response: {
   "status": "completed", 
   "progress": 100,
   "audio_url": "https://storage.../audio.mp3",
-  "audio_duration": 180.5
+  "audio_duration_seconds": 180.5
 }
 ```
 

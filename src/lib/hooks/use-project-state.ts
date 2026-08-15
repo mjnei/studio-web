@@ -116,7 +116,7 @@ function mapTTS(job?: TTSJobResponse | null) {
     voiceId: job?.voice_id ?? undefined,
     voiceName: job?.voice_name ?? undefined,
     audioUrl: job?.audio_url ?? undefined,
-    audioDuration: job?.audio_duration ?? undefined,
+    audioDuration: job?.audio_duration_seconds ?? undefined,
     ttsJobId: job?.id ?? undefined,
     ttsStatus: job?.status ?? undefined,
     ttsProgress: job?.progress ?? undefined,

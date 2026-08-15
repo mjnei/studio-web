@@ -11,11 +11,11 @@
  * @param voiceName - The voice name for logging purposes
  * @returns A promise that resolves to an audio blob (WAV or MP3), or the original blob if conversion fails
  */
-export async function convertWebmToAudio(blob: Blob): Promise<Blob> {
+export async function convertWebmToAudio(blob: Blob, voiceName?: string): Promise<Blob> {
   try {
     // Try to use FFmpeg if available (via FFmpeg.wasm or similar)
     if (typeof window !== "undefined" && "FFmpeg" in window) {
-      return await convertWebmUsingFFmpeg();
+      return await convertWebmUsingFFmpeg(voiceName);
     }
 
     // Fallback: Try to decode and re-encode using Web Audio API
