@@ -152,7 +152,7 @@ export function ScriptGeneration({
                   variant="ghost"
                   size="sm"
                   leftIcon={<RefreshCw className="w-4 h-4" />}
-                  onClick={regenerateScript}
+                  onClick={onRegenerate}
                 >
                   Regenerate
                 </Button>

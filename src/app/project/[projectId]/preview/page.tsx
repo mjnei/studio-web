@@ -610,12 +610,12 @@ export default function PreviewPage() {
                       {ttsJob.status}
                     </Badge>
                   </div>
-                  {ttsJob.audio_duration && (
+                  {ttsJob.audio_duration_seconds && (
                     <div className="flex items-center gap-2">
                       <Volume2 className="h-4 w-4 text-text-muted" />
                       <span className="text-text-secondary">
-                        {Math.floor(ttsJob.audio_duration / 60)}:
-                        {Math.round(ttsJob.audio_duration % 60)
+                        {Math.floor(ttsJob.audio_duration_seconds / 60)}:
+                        {Math.round(ttsJob.audio_duration_seconds % 60)
                           .toString()
                           .padStart(2, "0")}
                       </span>

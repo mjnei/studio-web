@@ -105,7 +105,7 @@ export default function SourcePage() {
                 <div className="h-64 w-44 overflow-hidden rounded-lg bg-surface-raised">
                   <Image
                     src={state.moviePoster}
-                    alt={state.movieTitle}
+                    alt={state.movieTitle || "Poster"}
                     className="h-full w-full object-cover"
                     width={176}
                     height={264}
