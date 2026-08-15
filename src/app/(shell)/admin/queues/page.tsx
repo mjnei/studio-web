@@ -141,7 +141,7 @@ export default function QueueManagementPage() {
     <div className="max-w-7xl mx-auto space-y-6">
       {/* Header */}
       <PageHeader
-        title="兔子MQ"
+        title="LavinMQ"
         description="Monitor and manage all RabbitMQ across TTS, Video, and Agnes services"
       />
 
@@ -169,9 +169,8 @@ export default function QueueManagementPage() {
               <div className="flex items-center gap-2">
                 <CardTitle>Summary Statistics</CardTitle>
                 <ChevronDown
-                  className={`w-5 h-5 text-muted-foreground transition-transform ${
-                    statsExpanded ? "rotate-0" : "-rotate-90"
-                  }`}
+                  className={`w-5 h-5 text-muted-foreground transition-transform ${statsExpanded ? "rotate-0" : "-rotate-90"
+                    }`}
                 />
               </div>
               {/* Show compact stats in header when collapsed */}
