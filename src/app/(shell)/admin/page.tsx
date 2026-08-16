@@ -36,33 +36,6 @@ export default function AdminPage() {
     fetchStats();
   }, []);
 
-  const adminSections = [
-    {
-      title: "Movies",
-      description: "Import from TMDB or manage your existing movie library with full metadata",
-      icon: Film,
-      href: "/admin/movies",
-      gradient: "from-blue-500 to-cyan-500",
-      stats: stats ? `${stats.total_movies} movies` : "Loading...",
-    },
-    {
-      title: "Voices",
-      description: "Manage stock voices catalog and configure availability",
-      icon: Mic,
-      href: "/admin/voices",
-      gradient: "from-green-500 to-emerald-500",
-      stats: stats ? `${stats.active_voices} voices` : "Loading...",
-    },
-    {
-      title: "TMDB Import",
-      description: "Search and import movies with multi-language support",
-      icon: Database,
-      href: "/admin/tmdb",
-      gradient: "from-purple-500 to-pink-500",
-      stats: "Full metadata",
-    },
-  ];
-
   const statsDisplay = [
     {
       label: "Total Movies",
@@ -107,55 +80,30 @@ export default function AdminPage() {
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {statsDisplay.map((stat) => {
           const Icon = stat.icon;
-          return (
-            <Card
-              key={stat.label}
-              variant="elevated"
-              padding="md"
-              className="group hover:border-accent-primary/40 transition-all"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-text-muted mb-1">{stat.label}</p>
-                  <p className="text-2xl font-bold text-text-primary">{stat.value}</p>
-                </div>
-                <div
-                  className={`w-10 h-10 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center group-hover:scale-110 transition-transform`}
-                >
-                  <Icon className="w-5 h-5 text-white" />
-                </div>
-              </div>
-            </Card>
-          );
-        })}
-      </div>
+          // Map stats to navigation links
+          let href = "/admin";
+          if (stat.label === "Total Movies") href = "/admin/movies";
+          else if (stat.label === "Active Voices") href = "/admin/voices";
+          else if (stat.label === "Total Users") href = "/admin/users";
+          else if (stat.label === "Projects Created") href = "/admin/stats";
 
-      {/* Admin Sections */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-        {adminSections.map((section) => {
-          const Icon = section.icon;
           return (
-            <Link key={section.title} href={section.href}>
+            <Link key={stat.label} href={href}>
               <Card
-                variant="interactive"
-                padding="lg"
-                className="group h-full hover:border-accent-primary/50 hover:shadow-xl transition-all"
+                variant="elevated"
+                padding="md"
+                className="group hover:border-accent-primary/40 transition-all cursor-pointer"
               >
-                <div className="flex flex-col h-full">
-                  <div className="flex items-start justify-between mb-4">
-                    <div
-                      className={`w-12 h-12 rounded-xl bg-gradient-to-br ${section.gradient} flex items-center justify-center group-hover:scale-110 transition-transform`}
-                    >
-                      <Icon className="w-6 h-6 text-white" />
-                    </div>
-                    <span className="text-xs font-medium text-accent-primary bg-accent-muted px-2 py-1 rounded-full">
-                      {section.stats}
-                    </span>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-text-muted mb-1">{stat.label}</p>
+                    <p className="text-2xl font-bold text-text-primary">{stat.value}</p>
                   </div>
-                  <h2 className="text-xl font-semibold text-text-primary mb-2 group-hover:text-accent-primary transition-colors">
-                    {section.title}
-                  </h2>
-                  <p className="text-sm text-text-secondary flex-1">{section.description}</p>
+                  <div
+                    className={`w-10 h-10 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center group-hover:scale-110 transition-transform`}
+                  >
+                    <Icon className="w-5 h-5 text-white" />
+                  </div>
                 </div>
               </Card>
             </Link>
