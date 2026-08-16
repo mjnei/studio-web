@@ -10,56 +10,89 @@ interface LayoutToggleProps {
    * Use "compact" for 3-button version (grid-sm, grid-md, list) without grid-lg.
    */
   variant?: "full" | "compact";
+  /**
+   * Optional labels for accessibility and tooltips.
+   * If not provided, defaults to English labels.
+   */
+  labels?: {
+    small?: string;
+    medium?: string;
+    large?: string;
+    list?: string;
+  };
 }
 
-export function LayoutToggle({ layoutMode, onLayoutChange, variant = "full" }: LayoutToggleProps) {
+export function LayoutToggle({
+  layoutMode,
+  onLayoutChange,
+  variant = "full",
+  labels,
+}: LayoutToggleProps) {
+  const defaultLabels = {
+    small: "Small grid (up to 6 columns)",
+    medium: variant === "full" ? "Medium grid (4 columns)" : "Medium grid (4-5 columns)",
+    large: "Large grid (3 columns)",
+    list: "List view",
+  };
+
+  const finalLabels = {
+    small: labels?.small || defaultLabels.small,
+    medium: labels?.medium || defaultLabels.medium,
+    large: labels?.large || defaultLabels.large,
+    list: labels?.list || defaultLabels.list,
+  };
+
   return (
     <div className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-panel p-1">
       <button
         onClick={() => onLayoutChange("grid-sm")}
-        className={`rounded p-1.5 transition-all ${
+        className={`rounded min-w-[44px] min-h-[44px] flex items-center justify-center transition-all ${
           layoutMode === "grid-sm"
             ? "bg-accent-primary text-white"
             : "text-text-muted hover:text-text-primary"
         }`}
-        title="Small grid (up to 6 columns)"
+        title={finalLabels.small}
+        aria-label={finalLabels.small}
       >
-        <Grid3x3 className="h-4 w-4" />
+        <Grid3x3 className="h-5 w-5" />
       </button>
       <button
         onClick={() => onLayoutChange("grid-md")}
-        className={`rounded p-1.5 transition-all ${
+        className={`rounded min-w-[44px] min-h-[44px] flex items-center justify-center transition-all ${
           layoutMode === "grid-md"
             ? "bg-accent-primary text-white"
             : "text-text-muted hover:text-text-primary"
         }`}
-        title={variant === "full" ? "Medium grid (4 columns)" : "Medium grid (4-5 columns)"}
+        title={finalLabels.medium}
+        aria-label={finalLabels.medium}
       >
-        <LayoutGrid className="h-4 w-4" />
+        <LayoutGrid className="h-5 w-5" />
       </button>
       {variant === "full" && (
         <button
           onClick={() => onLayoutChange("grid-lg")}
-          className={`rounded p-1.5 transition-all ${
+          className={`rounded min-w-[44px] min-h-[44px] flex items-center justify-center transition-all ${
             layoutMode === "grid-lg"
               ? "bg-accent-primary text-white"
               : "text-text-muted hover:text-text-primary"
           }`}
-          title="Large grid (3 columns)"
+          title={finalLabels.large}
+          aria-label={finalLabels.large}
         >
-          <Grid2x2 className="h-4 w-4" />
+          <Grid2x2 className="h-5 w-5" />
         </button>
       )}
       <button
         onClick={() => onLayoutChange("list")}
-        className={`rounded p-1.5 transition-all ${
+        className={`rounded min-w-[44px] min-h-[44px] flex items-center justify-center transition-all ${
           layoutMode === "list"
             ? "bg-accent-primary text-white"
             : "text-text-muted hover:text-text-primary"
         }`}
-        title="List view"
+        title={finalLabels.list}
+        aria-label={finalLabels.list}
       >
-        <List className="h-4 w-4" />
+        <List className="h-5 w-5" />
       </button>
     </div>
   );

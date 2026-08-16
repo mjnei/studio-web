@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState, useCallback } from "react";
-import { Folder, Plus, Grid3x3, LayoutGrid, List } from "lucide-react";
+import { Folder, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { FormModal } from "@/components/ui/modal";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -12,57 +12,7 @@ import { useToast } from "@/components/ui/toast";
 import { useI18n } from "@/i18n";
 import { ProjectCard } from "@/components/project/ProjectCard";
 import { listProjects, deleteProject, type ProjectResponse } from "@/lib/project-client";
-
-type LayoutMode = "grid-sm" | "grid-md" | "list";
-
-interface LayoutToggleProps {
-  layoutMode: LayoutMode;
-  onLayoutChange: (mode: LayoutMode) => void;
-  t: ReturnType<typeof useI18n>["t"];
-}
-
-function LayoutToggle({ layoutMode, onLayoutChange, t }: LayoutToggleProps) {
-  return (
-    <div className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-panel p-1">
-      <button
-        onClick={() => onLayoutChange("grid-sm")}
-        className={`rounded min-w-[44px] min-h-[44px] flex items-center justify-center transition-all ${
-          layoutMode === "grid-sm"
-            ? "bg-accent-primary text-white"
-            : "text-text-muted hover:text-text-primary"
-        }`}
-        title={t("projects.layout.small")}
-        aria-label={t("projects.layout.small")}
-      >
-        <Grid3x3 className="h-5 w-5" />
-      </button>
-      <button
-        onClick={() => onLayoutChange("grid-md")}
-        className={`rounded min-w-[44px] min-h-[44px] flex items-center justify-center transition-all ${
-          layoutMode === "grid-md"
-            ? "bg-accent-primary text-white"
-            : "text-text-muted hover:text-text-primary"
-        }`}
-        title={t("projects.layout.medium")}
-        aria-label={t("projects.layout.medium")}
-      >
-        <LayoutGrid className="h-5 w-5" />
-      </button>
-      <button
-        onClick={() => onLayoutChange("list")}
-        className={`rounded min-w-[44px] min-h-[44px] flex items-center justify-center transition-all ${
-          layoutMode === "list"
-            ? "bg-accent-primary text-white"
-            : "text-text-muted hover:text-text-primary"
-        }`}
-        title={t("projects.layout.list")}
-        aria-label={t("projects.layout.list")}
-      >
-        <List className="h-5 w-5" />
-      </button>
-    </div>
-  );
-}
+import { LayoutToggle, type LayoutMode } from "@/components/ui/LayoutToggle";
 
 export default function ProjectsPage() {
   const toast = useToast();
@@ -185,7 +135,16 @@ export default function ProjectsPage() {
       {/* Layout Controls */}
       {!loading && projects.length > 0 && (
         <div className="mb-6 flex justify-end">
-          <LayoutToggle layoutMode={layoutMode} onLayoutChange={setLayoutMode} t={t} />
+          <LayoutToggle
+            layoutMode={layoutMode}
+            onLayoutChange={setLayoutMode}
+            variant="compact"
+            labels={{
+              small: t("projects.layout.small"),
+              medium: t("projects.layout.medium"),
+              list: t("projects.layout.list"),
+            }}
+          />
         </div>
       )}
 
