@@ -24,7 +24,10 @@ export default function ProjectDetailsPage() {
   const projectId = params.projectId as string;
   const { state, isLoading, activeScript } = useProjectState(projectId);
 
-  const [projectName, setProjectName] = useState("");
+  const [projectName, setProjectName] = useState(() => {
+    // Will be initialized from state in another effect
+    return "";
+  });
   const [fallbackSuggestions, setFallbackSuggestions] = useState<NameSuggestion[]>([]);
   const [aiSuggestions, setAiSuggestions] = useState<NameSuggestion[]>([]);
   const [loadingAiSuggestions, setLoadingAiSuggestions] = useState(false);
@@ -302,17 +305,19 @@ export default function ProjectDetailsPage() {
     if (state?.movieTitle) {
       const suggestions = generateLocalFallbackSuggestions(state.movieTitle);
       setFallbackSuggestions(suggestions);
-
-      // Use existing project name if available, otherwise use first suggestion
-      if (!projectName) {
-        if (state.projectName) {
-          setProjectName(state.projectName);
-        } else if (suggestions.length > 0) {
-          setProjectName(suggestions[0].name);
-        }
-      }
     }
-  }, [state?.movieTitle, state?.projectName, projectName, generateLocalFallbackSuggestions]);
+  }, [state?.movieTitle, generateLocalFallbackSuggestions]);
+
+  // Use existing project name if available, otherwise use first fallback suggestion
+  useEffect(() => {
+    if (projectName) return; // Already set
+    
+    if (state?.projectName) {
+      setProjectName(state.projectName);
+    } else if (fallbackSuggestions.length > 0) {
+      setProjectName(fallbackSuggestions[0].name);
+    }
+  }, [state?.projectName, fallbackSuggestions, projectName]);
 
   const handleSuggestionClick = (suggestion: NameSuggestion) => {
     setProjectName(suggestion.name);

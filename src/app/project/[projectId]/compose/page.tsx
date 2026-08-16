@@ -35,9 +35,14 @@ export default function ComposePage() {
     "regenerate"
   );
   const [isAdvancing, setIsAdvancing] = useState(false);
-  const [isPollingComposition, setIsPollingComposition] = useState(false);
-  const [hasScheduledThumbnail, setHasScheduledThumbnail] = useState(false);
   const [isRegenerating, setIsRegenerating] = useState(false);
+  
+  // Use refs to track notification state instead of useState to avoid state updates in effects
+  const toastShownRef = React.useRef<{
+    completed?: boolean;
+    failed?: boolean;
+    inProgress?: boolean;
+  }>({});
 
   // Check and schedule thumbnail if needed on page load (once)
   React.useEffect(() => {
@@ -46,12 +51,11 @@ export default function ComposePage() {
 
       // Skip if already completed or currently generating
       if (state?.thumbnailStatus === "completed" || state?.thumbnailStatus === "generating") {
-        setHasScheduledThumbnail(true);
         return;
       }
 
       // Only schedule once
-      if (hasScheduledThumbnail) {
+      if (toastShownRef.current.scheduledThumbnail) {
         return;
       }
 
@@ -59,15 +63,15 @@ export default function ComposePage() {
       try {
         const result = await scheduleAgnesJobs(projectId, false, true); // Thumbnail only
         console.log("Scheduled thumbnail generation:", result);
-        setHasScheduledThumbnail(true);
+        toastShownRef.current.scheduledThumbnail = true;
       } catch (error) {
         console.error("Failed to schedule thumbnail:", error);
-        setHasScheduledThumbnail(true); // Mark as attempted even if failed
+        toastShownRef.current.scheduledThumbnail = true; // Mark as attempted even if failed
       }
     };
 
     checkAndScheduleThumbnailIfNeeded();
-  }, [projectId, state, hasScheduledThumbnail]);
+  }, [projectId, state]);
 
   // Poll for thumbnail status if not yet completed (reduced frequency, fallback for SSE)
   React.useEffect(() => {
@@ -89,9 +93,11 @@ export default function ComposePage() {
 
     // Only show toast once per status change
     if (state?.thumbnailCompositionStatus === "completed") {
-      if (!isPollingComposition) {
+      if (!toastShownRef.current.completed) {
         // Avoid duplicate toasts
-        setIsPollingComposition(true);
+        toastShownRef.current.completed = true;
+        toastShownRef.current.inProgress = false;
+        toastShownRef.current.failed = false;
         console.info("[Compose] Thumbnail composition completed", {
           confirmed: state.thumbnailConfirmed,
           finalUrl: state.finalThumbnailUrl ? "SET" : "MISSING",
@@ -101,8 +107,9 @@ export default function ComposePage() {
           "Your thumbnail has been finalized and is ready for video generation"
         );
       }
-    } else if (state?.thumbnailCompositionStatus === "failed" && isPollingComposition) {
-      setIsPollingComposition(false);
+    } else if (state?.thumbnailCompositionStatus === "failed" && toastShownRef.current.inProgress) {
+      toastShownRef.current.failed = true;
+      toastShownRef.current.inProgress = false;
       console.error(`[Compose] Thumbnail composition failed: ${state.thumbnailCompositionError}`);
       toast.error(
         "Composition failed",
@@ -110,22 +117,22 @@ export default function ComposePage() {
       );
     } else if (isInProgress) {
       // Started queuing or processing
-      if (!isPollingComposition) {
-        setIsPollingComposition(true);
+      if (!toastShownRef.current.inProgress) {
+        toastShownRef.current.inProgress = true;
+        toastShownRef.current.completed = false;
         console.debug(
           `[Compose] Thumbnail composition ${state?.thumbnailCompositionStatus}, starting poll`
         );
       }
-    } else if (state?.thumbnailCompositionStatus === "idle" && isPollingComposition) {
-      // Went back to idle
-      setIsPollingComposition(false);
+    } else if (state?.thumbnailCompositionStatus === "idle") {
+      // Reset tracking on idle
+      toastShownRef.current.inProgress = false;
     }
   }, [
     state?.thumbnailCompositionStatus,
     state?.finalThumbnailUrl,
     state?.thumbnailCompositionError,
     state?.thumbnailConfirmed,
-    isPollingComposition,
     toast,
   ]);
 

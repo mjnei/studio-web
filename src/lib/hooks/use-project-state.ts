@@ -226,10 +226,28 @@ export function useProjectState(projectId: string) {
 
   useEffect(() => {
     // Wait for auth to initialize before fetching project data
-    if (!isAuthLoading) {
-      void refresh();
-    }
-  }, [refresh, isAuthLoading]);
+    if (isAuthLoading) return;
+
+    // Start loading immediately
+    setIsLoading(true);
+    setError(null);
+
+    // Fetch data asynchronously
+    (async () => {
+      try {
+        const [project, scripts] = await Promise.all([
+          getProject(projectId),
+          listProjectScripts(projectId).catch(() => []),
+        ]);
+        setState(mapProject(project, scripts));
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error("Unable to load project"));
+        setState(null);
+      } finally {
+        setIsLoading(false);
+      }
+    })();
+  }, [projectId, isAuthLoading]);
 
   // Poll for thumbnail generation status
   useEffect(() => {
