@@ -9,19 +9,31 @@ export function CreditStatus() {
   const [creditBalance, setCreditBalance] = React.useState<CreditBalance | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
 
-  const loadCreditBalance = async () => {
-    try {
-      const balance = await getCreditBalance();
-      setCreditBalance(balance);
-    } catch (error) {
-      console.error("Failed to load credit balance:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   React.useEffect(() => {
+    let isMounted = true;
+
+    const loadCreditBalance = async () => {
+      try {
+        const balance = await getCreditBalance();
+        if (isMounted) {
+          setCreditBalance(balance);
+        }
+      } catch (error) {
+        if (isMounted) {
+          console.error("Failed to load credit balance:", error);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
     loadCreditBalance();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   if (isLoading || !creditBalance) {
