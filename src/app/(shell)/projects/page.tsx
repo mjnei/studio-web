@@ -24,6 +24,20 @@ export default function ProjectsPage() {
   const [deleting, setDeleting] = useState(false);
   const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid-md");
 
+  // Load layout preference from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem("layoutMode");
+    if (saved && (saved === "grid-sm" || saved === "grid-md" || saved === "list")) {
+      setLayoutMode(saved as LayoutMode);
+    }
+  }, []);
+
+  // Save layout preference to localStorage when it changes
+  const handleLayoutChange = (mode: LayoutMode) => {
+    setLayoutMode(mode);
+    localStorage.setItem("layoutMode", mode);
+  };
+
   const loadProjects = useCallback(() => {
     setLoading(true);
     listProjects(true)
@@ -137,7 +151,7 @@ export default function ProjectsPage() {
         <div className="mb-6 flex justify-end">
           <LayoutToggle
             layoutMode={layoutMode}
-            onLayoutChange={setLayoutMode}
+            onLayoutChange={handleLayoutChange}
             variant="compact"
             labels={{
               small: t("projects.layout.small"),

@@ -40,6 +40,20 @@ export default function QueueManagementPage() {
   // Auto-refresh interval (10 seconds)
   const [autoRefresh, setAutoRefresh] = useState(true);
 
+  // Load layout preference from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem("layoutMode");
+    if (saved && (saved === "grid-sm" || saved === "grid-md" || saved === "list")) {
+      setLayoutMode(saved as LayoutMode);
+    }
+  }, []);
+
+  // Save layout preference to localStorage when it changes
+  const handleLayoutChange = (mode: LayoutMode) => {
+    setLayoutMode(mode);
+    localStorage.setItem("layoutMode", mode);
+  };
+
   const fetchQueues = useCallback(async (silent = false) => {
     if (!silent) setRefreshing(true);
     setError(null);
@@ -296,7 +310,7 @@ export default function QueueManagementPage() {
             </div>
             <LayoutToggle
               layoutMode={layoutMode}
-              onLayoutChange={setLayoutMode}
+              onLayoutChange={handleLayoutChange}
             />
           </div>
         </div>

@@ -36,6 +36,20 @@ export default function MoviesPage() {
   const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid-sm");
   const [enrichmentProgress, setEnrichmentProgress] = useState(0);
 
+  // Load layout preference from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem("layoutMode");
+    if (saved && (saved === "grid-sm" || saved === "grid-md" || saved === "list")) {
+      setLayoutMode(saved as LayoutMode);
+    }
+  }, []);
+
+  // Save layout preference to localStorage when it changes
+  const handleLayoutChange = (mode: LayoutMode) => {
+    setLayoutMode(mode);
+    localStorage.setItem("layoutMode", mode);
+  };
+
   useEffect(() => {
     const controller = new AbortController();
 
@@ -151,7 +165,7 @@ export default function MoviesPage() {
         </div>
         <LayoutToggle
           layoutMode={layoutMode}
-          onLayoutChange={setLayoutMode}
+          onLayoutChange={handleLayoutChange}
         />
       </div>
 

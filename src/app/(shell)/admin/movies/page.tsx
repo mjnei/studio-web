@@ -80,6 +80,20 @@ export default function AdminMoviesPage() {
   const [selectedLocales, setSelectedLocales] = useState<string[]>(SUPPORTED_LOCALES);
   const [importedMovieIds, setImportedMovieIds] = useState<Set<number>>(new Set());
 
+  // Load layout preference from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem("layoutMode");
+    if (saved && (saved === "grid-sm" || saved === "grid-md" || saved === "list")) {
+      setLayoutMode(saved as LayoutMode);
+    }
+  }, []);
+
+  // Save layout preference to localStorage when it changes
+  const handleLayoutChange = (mode: LayoutMode) => {
+    setLayoutMode(mode);
+    localStorage.setItem("layoutMode", mode);
+  };
+
   // Load movies - can be called manually from handlers
   const loadMovies = useCallback(async () => {
     setIsLoadingLibrary(true);
@@ -377,7 +391,7 @@ export default function AdminMoviesPage() {
             </div>
             <div className="flex items-center gap-2">
               {/* Layout Mode Toggle */}
-              <LayoutToggle layoutMode={layoutMode} onLayoutChange={setLayoutMode} />
+              <LayoutToggle layoutMode={layoutMode} onLayoutChange={handleLayoutChange} />
               <span className="text-sm text-text-muted">Locale:</span>
               <select
                 value={selectedLocale}
