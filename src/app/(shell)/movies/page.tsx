@@ -9,7 +9,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { MovieCard } from "@/components/movie";
 import { getPopularMovies, searchMovies } from "@/lib/project-client";
 import { adminGetMovieDetails } from "@/lib/api/admin";
-import { LayoutToggle, type LayoutMode } from "@/components/ui/LayoutToggle";
+import { LayoutToggle, type CompactLayoutMode } from "@/components/ui/LayoutToggle";
 
 interface EnrichedMovie {
   id: number;
@@ -33,7 +33,7 @@ export default function MoviesPage() {
   const [movies, setMovies] = useState<EnrichedMovie[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid-sm");
+  const [layoutMode, setLayoutMode] = useState<CompactLayoutMode>("grid-sm");
   const [enrichmentProgress, setEnrichmentProgress] = useState(0);
 
   useEffect(() => {
@@ -150,8 +150,8 @@ export default function MoviesPage() {
           />
         </div>
         <LayoutToggle
-          layoutMode={layoutMode === "grid-lg" ? "grid-md" : layoutMode}
-          onLayoutChange={(mode) => setLayoutMode(mode as LayoutMode)}
+          layoutMode={layoutMode}
+          onLayoutChange={setLayoutMode}
           variant="compact"
         />
       </div>
@@ -190,7 +190,7 @@ export default function MoviesPage() {
             <MovieCard
               key={movie.id}
               movie={movie}
-              layout={layoutMode === "grid-lg" ? "grid-md" : layoutMode}
+              layout={layoutMode}
               href={`/movies/${movie.id}`}
             />
           ))}

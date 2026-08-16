@@ -1,15 +1,22 @@
 import { Grid3x3, Grid2x2, LayoutGrid, List } from "lucide-react";
 
-export type LayoutMode = "grid-sm" | "grid-md" | "grid-lg" | "list";
+// Variant-specific layout mode types
+export type CompactLayoutMode = "grid-sm" | "grid-md" | "list";
+export type FullLayoutMode = "grid-sm" | "grid-md" | "grid-lg" | "list";
 
-interface LayoutToggleProps {
-  layoutMode: LayoutMode;
-  onLayoutChange: (mode: LayoutMode) => void;
+// Legacy type for backward compatibility (but deprecated in usage)
+export type LayoutMode = FullLayoutMode;
+
+// Conditional type based on variant
+type LayoutToggleProps<V extends "full" | "compact" = "full"> = {
+  layoutMode: V extends "compact" ? CompactLayoutMode : FullLayoutMode;
+  onLayoutChange: (mode: V extends "compact" ? CompactLayoutMode : FullLayoutMode) => void;
   /**
-   * Which layout options to show. Defaults to all 4 options.
-   * Use "compact" for 3-button version (grid-sm, grid-md, list) without grid-lg.
+   * Which layout options to show.
+   * - "full": All 4 options (grid-sm, grid-md, grid-lg, list)
+   * - "compact": 3 options (grid-sm, grid-md, list) - no grid-lg
    */
-  variant?: "full" | "compact";
+  variant?: V;
   /**
    * Optional labels for accessibility and tooltips.
    * If not provided, defaults to English labels.
@@ -20,14 +27,14 @@ interface LayoutToggleProps {
     large?: string;
     list?: string;
   };
-}
+};
 
-export function LayoutToggle({
+export function LayoutToggle<V extends "full" | "compact" = "full">({
   layoutMode,
   onLayoutChange,
-  variant = "full",
+  variant = "full" as V,
   labels,
-}: LayoutToggleProps) {
+}: LayoutToggleProps<V>) {
   const defaultLabels = {
     small: "Small grid (up to 6 columns)",
     medium: variant === "full" ? "Medium grid (4 columns)" : "Medium grid (4-5 columns)",
