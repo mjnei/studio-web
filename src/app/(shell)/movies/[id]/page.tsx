@@ -53,8 +53,35 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
   }, [movieId]);
 
   useEffect(() => {
-    loadMovieDetails();
-  }, [loadMovieDetails]);
+    if (!movieId) return;
+
+    let isMounted = true;
+
+    const load = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await adminGetMovieDetails(movieId, "en");
+        if (isMounted) {
+          setMovie(data);
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError(err instanceof Error ? err.message : "Failed to load movie details");
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    load();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [movieId]);
 
   const handleCreateProject = () => {
     if (!movie) return;

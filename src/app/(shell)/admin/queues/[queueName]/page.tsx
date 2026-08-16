@@ -77,8 +77,50 @@ export default function QueueDetailPage() {
 
   // Initial load
   useEffect(() => {
-    fetchStats();
-  }, [fetchStats]);
+    let isMounted = true;
+
+    const loadInitial = async () => {
+      setError(null);
+
+      try {
+        const data = await getQueueStats(queueName);
+        if (isMounted) {
+          setStats(data);
+
+          // Fetch DLQ stats if queue has a DLQ
+          if (data.metadata?.dlq_name) {
+            try {
+              const dlqData = await getQueueDLQStats(queueName);
+              if (isMounted) {
+                setDLQStats(dlqData);
+              }
+            } catch {
+              // DLQ might not exist yet, that's okay
+              if (isMounted) {
+                setDLQStats(null);
+              }
+            }
+          }
+        }
+      } catch (err) {
+        if (isMounted) {
+          const message = err instanceof Error ? err.message : "Failed to load queue stats";
+          setError(message);
+          toast.error(message);
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadInitial();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [queueName, toast]);
 
   // Auto-refresh
   useEffect(() => {

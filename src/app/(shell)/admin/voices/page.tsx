@@ -78,8 +78,41 @@ export default function AdminVoicesPage() {
   }, [toast]);
 
   useEffect(() => {
-    void loadVoices();
-  }, [loadVoices]);
+    let isMounted = true;
+
+    const load = async () => {
+      setIsLoading(true);
+      try {
+        const [pending, approved, allVoices, recordings] = await Promise.all([
+          adminGetPendingVoices(),
+          adminGetApprovedVoices(),
+          adminGetAllVoices(),
+          adminGetVoiceRecordings(),
+        ]);
+        if (isMounted) {
+          setPendingVoices(pending);
+          setApprovedVoices(approved);
+          setAllSharedVoices(allVoices);
+          setAllRecordings(recordings);
+        }
+      } catch (error: unknown) {
+        if (isMounted) {
+          const message = error instanceof Error ? error.message : "An error occurred";
+          toast.error("Failed to load voices", message);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    load();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [toast]);
 
   const playVoiceAudio = async (voiceId: number) => {
     try {

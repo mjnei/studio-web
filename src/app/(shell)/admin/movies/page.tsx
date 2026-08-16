@@ -80,6 +80,7 @@ export default function AdminMoviesPage() {
   const [selectedLocales, setSelectedLocales] = useState<string[]>(SUPPORTED_LOCALES);
   const [importedMovieIds, setImportedMovieIds] = useState<Set<number>>(new Set());
 
+  // Load movies - can be called manually from handlers
   const loadMovies = useCallback(async () => {
     setIsLoadingLibrary(true);
     try {
@@ -102,15 +103,50 @@ export default function AdminMoviesPage() {
     }
   }, [librarySearchTerm, selectedLocale, libraryPage, toast]);
 
+  // Trigger loads when dependencies change
   useEffect(() => {
     if (viewMode === "library") {
-      void loadMovies();
+      let isMounted = true;
+
+      const doLoad = async () => {
+        setIsLoadingLibrary(true);
+        try {
+          const response = await adminListMovies({
+            query: librarySearchTerm || undefined,
+            locale: selectedLocale,
+            page: libraryPage,
+            page_size: 24,
+            sort_by: "popularity",
+            sort_order: "desc",
+          });
+          if (isMounted) {
+            setMovies(response.movies);
+            setLibraryTotal(response.total);
+            setLibraryTotalPages(Math.ceil(response.total / response.page_size));
+          }
+        } catch (error: unknown) {
+          if (isMounted) {
+            const message = error instanceof Error ? error.message : "Failed to load movies";
+            toast.error(message);
+          }
+        } finally {
+          if (isMounted) {
+            setIsLoadingLibrary(false);
+          }
+        }
+      };
+
+      doLoad();
+
+      return () => {
+        isMounted = false;
+      };
     } else if (viewMode === "import") {
       setTimeout(() => {
         tmdbSearchInputRef.current?.focus();
       }, 100);
     }
-  }, [viewMode, libraryPage, librarySearchTerm, selectedLocale, loadMovies]);
+  }, [viewMode, libraryPage, librarySearchTerm, selectedLocale, toast]);
 
   // TMDB Search handlers
   const handleTmdbSearch = async (page: number = 1) => {

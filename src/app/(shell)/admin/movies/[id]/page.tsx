@@ -76,10 +76,35 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
   }, [params]);
 
   useEffect(() => {
-    if (movieId) {
-      loadMovieDetails();
-    }
-  }, [movieId, selectedLocale, loadMovieDetails]);
+    if (!movieId) return;
+
+    let isMounted = true;
+
+    const load = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await adminGetMovieDetails(movieId, selectedLocale);
+        if (isMounted) {
+          setMovie(data);
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError(err instanceof Error ? err.message : "Failed to load movie details");
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    load();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [movieId, selectedLocale]);
 
   const showToast = (type: "success" | "error" | "info", message: string) => {
     const id = Date.now();
