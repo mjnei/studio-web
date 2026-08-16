@@ -152,12 +152,6 @@ export default function ProjectsPage() {
           <LayoutToggle
             layoutMode={layoutMode}
             onLayoutChange={handleLayoutChange}
-            variant="compact"
-            labels={{
-              small: t("projects.layout.small"),
-              medium: t("projects.layout.medium"),
-              list: t("projects.layout.list"),
-            }}
           />
         </div>
       )}
