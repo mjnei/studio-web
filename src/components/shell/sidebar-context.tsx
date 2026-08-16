@@ -17,25 +17,18 @@ const COLLAPSED_STORAGE_KEY = "sidebar-collapsed";
 
 export function SidebarProvider({ children }: { children: ReactNode }) {
   const [isNarrow, setIsNarrow] = useState(true);
-  const [collapsed, setCollapsed] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [isHydrated, setIsHydrated] = useState(false);
-
-  // Hydrate collapsed state from localStorage
-  useEffect(() => {
+  const [collapsed, setCollapsed] = useState(() => {
+    // Initialize from localStorage on first render
+    if (typeof window === "undefined") return false;
     const stored = localStorage.getItem(COLLAPSED_STORAGE_KEY);
-    if (stored !== null) {
-      setCollapsed(stored === "true");
-    }
-    setIsHydrated(true);
-  }, []);
+    return stored === "true";
+  });
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   // Persist collapsed state to localStorage
   useEffect(() => {
-    if (isHydrated) {
-      localStorage.setItem(COLLAPSED_STORAGE_KEY, String(collapsed));
-    }
-  }, [collapsed, isHydrated]);
+    localStorage.setItem(COLLAPSED_STORAGE_KEY, String(collapsed));
+  }, [collapsed]);
 
   useEffect(() => {
     const mql = window.matchMedia(`(max-width: ${LG_BREAKPOINT - 1}px)`);

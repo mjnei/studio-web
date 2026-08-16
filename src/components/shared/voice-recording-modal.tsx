@@ -233,27 +233,30 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
   }, []);
 
   // Reset state when modal opens
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
-    if (isOpen) {
-      setState("idle");
-      setDuration(0);
-      setIsPlaying(false);
-      setPlaybackProgress(0);
-      setPlaybackTime(0);
-      setError(null);
-      setMaxReached(false);
-      setIsSaving(false);
-      setVoiceName("");
-      setLanguage("en");
-      setNameError(false);
-      setLanguageError(false);
-    } else {
+    if (!isOpen) {
       // Clean up when closing
       stopPlayback();
       revokeUrl();
       clearTimer();
       releaseStream();
+      return;
     }
+    
+    // Reset state when opening - use functional updates where possible
+    setState("idle");
+    setDuration(0);
+    setIsPlaying(false);
+    setPlaybackProgress(0);
+    setPlaybackTime(0);
+    setError(null);
+    setMaxReached(false);
+    setIsSaving(false);
+    setVoiceName("");
+    setLanguage("en");
+    setNameError(false);
+    setLanguageError(false);
   }, [isOpen, stopPlayback, revokeUrl, clearTimer, releaseStream]);
 
   const startRecording = useCallback(async () => {

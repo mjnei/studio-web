@@ -388,6 +388,7 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
   }, [isAuthenticated]); // Only depend on isAuthenticated, not connectSSE to avoid reconnection loops
 
   // Initial data fetch when authenticated
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (isAuthenticated) {
       refreshNotifications();

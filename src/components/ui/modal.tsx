@@ -334,12 +334,12 @@ export function InputModal({
   loading = false,
   inputType = "text",
 }: InputModalProps) {
-  const [value, setValue] = useState(defaultValue);
+  // Initialize state independently - open modal will reset value in useEffect
+  const [value, setValue] = useState("");
 
   useEffect(() => {
-    if (open) {
-      setValue(defaultValue);
-    }
+    // Reset to defaultValue when modal opens, clear when closes
+    setValue(open ? defaultValue : "");
   }, [open, defaultValue]);
 
   const handleSubmit = () => {
