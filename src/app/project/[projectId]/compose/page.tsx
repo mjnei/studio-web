@@ -42,6 +42,7 @@ export default function ComposePage() {
     completed?: boolean;
     failed?: boolean;
     inProgress?: boolean;
+    scheduledThumbnail?: boolean;
   }>({});
 
   // Check and schedule thumbnail if needed on page load (once)
@@ -157,7 +158,7 @@ export default function ComposePage() {
         "AI is generating a new thumbnail. This will take a few moments..."
       );
       // Reset the scheduled flag to allow re-checking
-      setHasScheduledThumbnail(false);
+      toastShownRef.current.scheduledThumbnail = false;
       // Refresh to get the updated status
       await refresh();
     } catch (error) {
