@@ -9,7 +9,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { MovieCard } from "@/components/movie";
 import { getPopularMovies, searchMovies } from "@/lib/project-client";
 import { adminGetMovieDetails } from "@/lib/api/admin";
-import { LayoutToggle, type CompactLayoutMode } from "@/components/ui/LayoutToggle";
+import { LayoutToggle, type LayoutMode } from "@/components/ui/LayoutToggle";
 
 interface EnrichedMovie {
   id: number;
@@ -33,7 +33,7 @@ export default function MoviesPage() {
   const [movies, setMovies] = useState<EnrichedMovie[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [layoutMode, setLayoutMode] = useState<CompactLayoutMode>("grid-sm");
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid-sm");
   const [enrichmentProgress, setEnrichmentProgress] = useState(0);
 
   useEffect(() => {
@@ -152,7 +152,6 @@ export default function MoviesPage() {
         <LayoutToggle
           layoutMode={layoutMode}
           onLayoutChange={setLayoutMode}
-          variant="compact"
         />
       </div>
 

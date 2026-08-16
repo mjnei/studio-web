@@ -12,7 +12,7 @@ import { useToast } from "@/components/ui/toast";
 import { useI18n } from "@/i18n";
 import { ProjectCard } from "@/components/project/ProjectCard";
 import { listProjects, deleteProject, type ProjectResponse } from "@/lib/project-client";
-import { LayoutToggle, type CompactLayoutMode } from "@/components/ui/LayoutToggle";
+import { LayoutToggle, type LayoutMode } from "@/components/ui/LayoutToggle";
 
 export default function ProjectsPage() {
   const toast = useToast();
@@ -22,7 +22,7 @@ export default function ProjectsPage() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState<ProjectResponse | null>(null);
   const [deleting, setDeleting] = useState(false);
-  const [layoutMode, setLayoutMode] = useState<CompactLayoutMode>("grid-md");
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid-md");
 
   const loadProjects = useCallback(() => {
     setLoading(true);

@@ -19,7 +19,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/toast";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { LayoutToggle, type CompactLayoutMode } from "@/components/ui/LayoutToggle";
+import { LayoutToggle, type LayoutMode } from "@/components/ui/LayoutToggle";
 import { Select } from "@/components/ui/select";
 import { HealthIndicator } from "@/components/queue/HealthIndicator";
 import { QueueDistributionChart } from "@/components/queue/QueueDistributionChart";
@@ -33,7 +33,7 @@ export default function QueueManagementPage() {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState<QueueCategory | "all">("all");
-  const [layoutMode, setLayoutMode] = useState<CompactLayoutMode>("grid-md");
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid-md");
   const [sortBy, setSortBy] = useState<"name" | "messages" | "consumers">("messages");
   const [statsExpanded, setStatsExpanded] = useState(true);
 
@@ -297,7 +297,6 @@ export default function QueueManagementPage() {
             <LayoutToggle
               layoutMode={layoutMode}
               onLayoutChange={setLayoutMode}
-              variant="compact"
             />
           </div>
         </div>

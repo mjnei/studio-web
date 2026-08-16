@@ -1,22 +1,10 @@
-import { Grid3x3, Grid2x2, LayoutGrid, List } from "lucide-react";
+import { Grid3x3, LayoutGrid, List } from "lucide-react";
 
-// Variant-specific layout mode types
-export type CompactLayoutMode = "grid-sm" | "grid-md" | "list";
-export type FullLayoutMode = "grid-sm" | "grid-md" | "grid-lg" | "list";
+export type LayoutMode = "grid-sm" | "grid-md" | "list";
 
-// Legacy type for backward compatibility (but deprecated in usage)
-export type LayoutMode = FullLayoutMode;
-
-// Conditional type based on variant
-type LayoutToggleProps<V extends "full" | "compact" = "full"> = {
-  layoutMode: V extends "compact" ? CompactLayoutMode : FullLayoutMode;
-  onLayoutChange: (mode: V extends "compact" ? CompactLayoutMode : FullLayoutMode) => void;
-  /**
-   * Which layout options to show.
-   * - "full": All 4 options (grid-sm, grid-md, grid-lg, list)
-   * - "compact": 3 options (grid-sm, grid-md, list) - no grid-lg
-   */
-  variant?: V;
+interface LayoutToggleProps {
+  layoutMode: LayoutMode;
+  onLayoutChange: (mode: LayoutMode) => void;
   /**
    * Optional labels for accessibility and tooltips.
    * If not provided, defaults to English labels.
@@ -24,28 +12,24 @@ type LayoutToggleProps<V extends "full" | "compact" = "full"> = {
   labels?: {
     small?: string;
     medium?: string;
-    large?: string;
     list?: string;
   };
-};
+}
 
-export function LayoutToggle<V extends "full" | "compact" = "full">({
+export function LayoutToggle({
   layoutMode,
   onLayoutChange,
-  variant = "full" as V,
   labels,
-}: LayoutToggleProps<V>) {
+}: LayoutToggleProps) {
   const defaultLabels = {
-    small: "Small grid (up to 6 columns)",
-    medium: variant === "full" ? "Medium grid (4 columns)" : "Medium grid (4-5 columns)",
-    large: "Large grid (3 columns)",
+    small: "Small grid",
+    medium: "Medium grid",
     list: "List view",
   };
 
   const finalLabels = {
     small: labels?.small || defaultLabels.small,
     medium: labels?.medium || defaultLabels.medium,
-    large: labels?.large || defaultLabels.large,
     list: labels?.list || defaultLabels.list,
   };
 
@@ -75,20 +59,6 @@ export function LayoutToggle<V extends "full" | "compact" = "full">({
       >
         <LayoutGrid className="h-5 w-5" />
       </button>
-      {variant === "full" && (
-        <button
-          onClick={() => onLayoutChange("grid-lg")}
-          className={`rounded min-w-[44px] min-h-[44px] flex items-center justify-center transition-all ${
-            layoutMode === "grid-lg"
-              ? "bg-accent-primary text-white"
-              : "text-text-muted hover:text-text-primary"
-          }`}
-          title={finalLabels.large}
-          aria-label={finalLabels.large}
-        >
-          <Grid2x2 className="h-5 w-5" />
-        </button>
-      )}
       <button
         onClick={() => onLayoutChange("list")}
         className={`rounded min-w-[44px] min-h-[44px] flex items-center justify-center transition-all ${

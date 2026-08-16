@@ -312,13 +312,10 @@ export default function AdminMoviesPage() {
       case "grid-md":
         // Medium cards: 2 cols (base), 3 cols (md), 4 cols (lg)
         return "grid gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4";
-      case "grid-lg":
-        // Large cards: 2 cols (base), 2 cols (md), 3 cols (lg)
-        return "grid gap-6 grid-cols-2 md:grid-cols-2 lg:grid-cols-3";
       case "list":
         return "space-y-4";
       default:
-        return "grid gap-6 grid-cols-2 md:grid-cols-2 lg:grid-cols-3";
+        return "grid gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4";
     }
   };
 
@@ -380,7 +377,7 @@ export default function AdminMoviesPage() {
             </div>
             <div className="flex items-center gap-2">
               {/* Layout Mode Toggle */}
-              <LayoutToggle layoutMode={layoutMode} onLayoutChange={setLayoutMode} variant="full" />
+              <LayoutToggle layoutMode={layoutMode} onLayoutChange={setLayoutMode} />
               <span className="text-sm text-text-muted">Locale:</span>
               <select
                 value={selectedLocale}
@@ -822,7 +819,6 @@ export default function AdminMoviesPage() {
                 <LayoutToggle
                   layoutMode={layoutMode}
                   onLayoutChange={setLayoutMode}
-                  variant="full"
                 />
               </div>
 
