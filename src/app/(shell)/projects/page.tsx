@@ -15,6 +15,55 @@ import { listProjects, deleteProject, type ProjectResponse } from "@/lib/project
 
 type LayoutMode = "grid-sm" | "grid-md" | "list";
 
+interface LayoutToggleProps {
+  layoutMode: LayoutMode;
+  onLayoutChange: (mode: LayoutMode) => void;
+  t: ReturnType<typeof useI18n>["t"];
+}
+
+function LayoutToggle({ layoutMode, onLayoutChange, t }: LayoutToggleProps) {
+  return (
+    <div className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-panel p-1">
+      <button
+        onClick={() => onLayoutChange("grid-sm")}
+        className={`rounded min-w-[44px] min-h-[44px] flex items-center justify-center transition-all ${
+          layoutMode === "grid-sm"
+            ? "bg-accent-primary text-white"
+            : "text-text-muted hover:text-text-primary"
+        }`}
+        title={t("projects.layout.small")}
+        aria-label={t("projects.layout.small")}
+      >
+        <Grid3x3 className="h-5 w-5" />
+      </button>
+      <button
+        onClick={() => onLayoutChange("grid-md")}
+        className={`rounded min-w-[44px] min-h-[44px] flex items-center justify-center transition-all ${
+          layoutMode === "grid-md"
+            ? "bg-accent-primary text-white"
+            : "text-text-muted hover:text-text-primary"
+        }`}
+        title={t("projects.layout.medium")}
+        aria-label={t("projects.layout.medium")}
+      >
+        <LayoutGrid className="h-5 w-5" />
+      </button>
+      <button
+        onClick={() => onLayoutChange("list")}
+        className={`rounded min-w-[44px] min-h-[44px] flex items-center justify-center transition-all ${
+          layoutMode === "list"
+            ? "bg-accent-primary text-white"
+            : "text-text-muted hover:text-text-primary"
+        }`}
+        title={t("projects.layout.list")}
+        aria-label={t("projects.layout.list")}
+      >
+        <List className="h-5 w-5" />
+      </button>
+    </div>
+  );
+}
+
 export default function ProjectsPage() {
   const toast = useToast();
   const { t } = useI18n();
@@ -43,8 +92,33 @@ export default function ProjectsPage() {
   }, [toast]);
 
   useEffect(() => {
-    loadProjects();
-  }, [loadProjects]);
+    let isMounted = true;
+
+    setLoading(true);
+    listProjects(true)
+      .then((data) => {
+        if (isMounted) {
+          setProjects(data);
+        }
+      })
+      .catch((err) => {
+        if (isMounted) {
+          toast.error(
+            "Failed to load projects",
+            err instanceof Error ? err.message : "Unable to load projects"
+          );
+        }
+      })
+      .finally(() => {
+        if (isMounted) {
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [toast]);
 
   const handleDeleteClick = (project: ProjectResponse) => {
     setProjectToDelete(project);
@@ -88,47 +162,6 @@ export default function ProjectsPage() {
     }
   };
 
-  const LayoutToggle = () => (
-    <div className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-panel p-1">
-      <button
-        onClick={() => setLayoutMode("grid-sm")}
-        className={`rounded min-w-[44px] min-h-[44px] flex items-center justify-center transition-all ${
-          layoutMode === "grid-sm"
-            ? "bg-accent-primary text-white"
-            : "text-text-muted hover:text-text-primary"
-        }`}
-        title={t("projects.layout.small")}
-        aria-label={t("projects.layout.small")}
-      >
-        <Grid3x3 className="h-5 w-5" />
-      </button>
-      <button
-        onClick={() => setLayoutMode("grid-md")}
-        className={`rounded min-w-[44px] min-h-[44px] flex items-center justify-center transition-all ${
-          layoutMode === "grid-md"
-            ? "bg-accent-primary text-white"
-            : "text-text-muted hover:text-text-primary"
-        }`}
-        title={t("projects.layout.medium")}
-        aria-label={t("projects.layout.medium")}
-      >
-        <LayoutGrid className="h-5 w-5" />
-      </button>
-      <button
-        onClick={() => setLayoutMode("list")}
-        className={`rounded min-w-[44px] min-h-[44px] flex items-center justify-center transition-all ${
-          layoutMode === "list"
-            ? "bg-accent-primary text-white"
-            : "text-text-muted hover:text-text-primary"
-        }`}
-        title={t("projects.layout.list")}
-        aria-label={t("projects.layout.list")}
-      >
-        <List className="h-5 w-5" />
-      </button>
-    </div>
-  );
-
   return (
     <div className="max-w-7xl mx-auto">
       <PageHeader
@@ -152,7 +185,7 @@ export default function ProjectsPage() {
       {/* Layout Controls */}
       {!loading && projects.length > 0 && (
         <div className="mb-6 flex justify-end">
-          <LayoutToggle />
+          <LayoutToggle layoutMode={layoutMode} onLayoutChange={setLayoutMode} t={t} />
         </div>
       )}
 
