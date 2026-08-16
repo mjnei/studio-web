@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { VoiceResponse } from "../types/api";
 import { request } from "../api-client";
 
@@ -7,32 +7,61 @@ export function useStockVoices() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchVoices = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      // The /voices endpoint returns a plain array, not a paginated response
-      const voicesList = await request<VoiceResponse[]>("/voices");
-
-      setVoices(voicesList || []);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to fetch stock voices");
-      setVoices([]);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
   useEffect(() => {
-    fetchVoices();
-  }, [fetchVoices]);
+    const controller = new AbortController();
+    let isMounted = true;
+
+    const load = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        // The /voices endpoint returns a plain array, not a paginated response
+        const voicesList = await request<VoiceResponse[]>("/voices");
+
+        if (isMounted) {
+          setVoices(voicesList || []);
+        }
+      } catch (err) {
+        if (isMounted) {
+          setError(err instanceof Error ? err.message : "Failed to fetch stock voices");
+          setVoices([]);
+        }
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    load();
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+  }, []);
 
   return {
     voices,
     loading,
     error,
-    refresh: fetchVoices,
+    refresh: async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        // The /voices endpoint returns a plain array, not a paginated response
+        const voicesList = await request<VoiceResponse[]>("/voices");
+
+        setVoices(voicesList || []);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to fetch stock voices");
+        setVoices([]);
+      } finally {
+        setLoading(false);
+      }
+    },
   };
 }
 
