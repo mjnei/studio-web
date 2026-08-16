@@ -233,7 +233,7 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
   }, []);
 
   // Reset state when modal opens
-  // eslint-disable-next-line react-hooks/set-state-in-effect
+   
   useEffect(() => {
     if (!isOpen) {
       // Clean up when closing

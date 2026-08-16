@@ -38,7 +38,7 @@ export function useSSE<T>({ url, enabled, onMessage, onError, shouldClose }: Use
     shouldCloseRef.current = shouldClose;
   }, [shouldClose]);
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
+   
   useEffect(() => {
     if (!enabled || !url) {
       // Cleanup if disabled or no URL

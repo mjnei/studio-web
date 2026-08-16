@@ -168,7 +168,7 @@ export default function PreviewPage() {
   }, [isPlaying, ttsJob]);
 
   // Initialize TTS job
-  // eslint-disable-next-line react-hooks/set-state-in-effect
+   
   useEffect(() => {
     if (!state || !activeScript || isLoading) return;
 

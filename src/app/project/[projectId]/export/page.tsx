@@ -110,7 +110,7 @@ export default function ExportPage() {
     }
   }, []);
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
+   
   React.useEffect(() => {
     if (projectId) {
       void loadVideos();
@@ -120,7 +120,7 @@ export default function ExportPage() {
 
   // Listen for video completion notifications
   const { notifications } = useNotifications();
-  // eslint-disable-next-line react-hooks/set-state-in-effect
+   
   React.useEffect(() => {
     const latestNotification = notifications[0];
     console.log("🔔 [Export] Notifications changed, latest:", latestNotification);
