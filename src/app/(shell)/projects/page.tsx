@@ -22,15 +22,14 @@ export default function ProjectsPage() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState<ProjectResponse | null>(null);
   const [deleting, setDeleting] = useState(false);
-  const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid-md");
-
-  // Load layout preference from localStorage on mount
-  useEffect(() => {
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>(() => {
+    if (typeof window === "undefined") return "grid-md";
     const saved = localStorage.getItem("layoutMode");
     if (saved && (saved === "grid-sm" || saved === "grid-md" || saved === "list")) {
-      setLayoutMode(saved as LayoutMode);
+      return saved as LayoutMode;
     }
-  }, []);
+    return "grid-md";
+  });
 
   // Save layout preference to localStorage when it changes
   const handleLayoutChange = (mode: LayoutMode) => {
@@ -55,6 +54,7 @@ export default function ProjectsPage() {
       });
   }, [toast]);
 
+   
   useEffect(() => {
     let isMounted = true;
 

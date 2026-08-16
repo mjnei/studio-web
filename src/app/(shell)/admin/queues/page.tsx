@@ -33,20 +33,21 @@ export default function QueueManagementPage() {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState<QueueCategory | "all">("all");
-  const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid-md");
   const [sortBy, setSortBy] = useState<"name" | "messages" | "consumers">("messages");
   const [statsExpanded, setStatsExpanded] = useState(true);
 
   // Auto-refresh interval (10 seconds)
   const [autoRefresh, setAutoRefresh] = useState(true);
 
-  // Load layout preference from localStorage on mount
-  useEffect(() => {
+  // Load layout preference from localStorage on mount (via state initializer)
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>(() => {
+    if (typeof window === "undefined") return "grid-md";
     const saved = localStorage.getItem("layoutMode");
     if (saved && (saved === "grid-sm" || saved === "grid-md" || saved === "list")) {
-      setLayoutMode(saved as LayoutMode);
+      return saved as LayoutMode;
     }
-  }, []);
+    return "grid-md";
+  });
 
   // Save layout preference to localStorage when it changes
   const handleLayoutChange = (mode: LayoutMode) => {

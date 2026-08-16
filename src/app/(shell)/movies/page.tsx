@@ -33,16 +33,15 @@ export default function MoviesPage() {
   const [movies, setMovies] = useState<EnrichedMovie[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid-sm");
-  const [enrichmentProgress, setEnrichmentProgress] = useState(0);
-
-  // Load layout preference from localStorage on mount
-  useEffect(() => {
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>(() => {
+    if (typeof window === "undefined") return "grid-sm";
     const saved = localStorage.getItem("layoutMode");
     if (saved && (saved === "grid-sm" || saved === "grid-md" || saved === "list")) {
-      setLayoutMode(saved as LayoutMode);
+      return saved as LayoutMode;
     }
-  }, []);
+    return "grid-sm";
+  });
+  const [enrichmentProgress, setEnrichmentProgress] = useState(0);
 
   // Save layout preference to localStorage when it changes
   const handleLayoutChange = (mode: LayoutMode) => {
