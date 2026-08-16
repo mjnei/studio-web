@@ -830,10 +830,7 @@ export default function AdminMoviesPage() {
                   Found {tmdbTotalResults.toLocaleString()} results • Page {tmdbPage} of{" "}
                   {tmdbTotalPages}
                 </p>
-                <LayoutToggle
-                  layoutMode={layoutMode}
-                  onLayoutChange={setLayoutMode}
-                />
+                <LayoutToggle layoutMode={layoutMode} onLayoutChange={setLayoutMode} />
               </div>
 
               {/* Results Grid */}

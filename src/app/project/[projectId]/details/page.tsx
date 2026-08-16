@@ -311,7 +311,7 @@ export default function ProjectDetailsPage() {
   // Use existing project name if available, otherwise use first fallback suggestion
   useEffect(() => {
     if (projectName) return; // Already set
-    
+
     if (state?.projectName) {
       setProjectName(state.projectName);
     } else if (fallbackSuggestions.length > 0) {

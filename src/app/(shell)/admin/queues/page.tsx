@@ -309,10 +309,7 @@ export default function QueueManagementPage() {
                 icon={<ArrowUpDown className="w-4 h-4" />}
               />
             </div>
-            <LayoutToggle
-              layoutMode={layoutMode}
-              onLayoutChange={handleLayoutChange}
-            />
+            <LayoutToggle layoutMode={layoutMode} onLayoutChange={handleLayoutChange} />
           </div>
         </div>
       </div>

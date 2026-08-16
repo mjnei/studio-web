@@ -162,10 +162,7 @@ export default function MoviesPage() {
             icon={<Search className="h-4 w-4" />}
           />
         </div>
-        <LayoutToggle
-          layoutMode={layoutMode}
-          onLayoutChange={handleLayoutChange}
-        />
+        <LayoutToggle layoutMode={layoutMode} onLayoutChange={handleLayoutChange} />
       </div>
 
       {/* Content */}

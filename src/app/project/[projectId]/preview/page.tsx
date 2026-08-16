@@ -168,7 +168,7 @@ export default function PreviewPage() {
   }, [isPlaying, ttsJob]);
 
   // Initialize TTS job
-   
+
   useEffect(() => {
     if (!state || !activeScript || isLoading) return;
 

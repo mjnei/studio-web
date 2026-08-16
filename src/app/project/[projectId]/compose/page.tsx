@@ -36,7 +36,7 @@ export default function ComposePage() {
   );
   const [isAdvancing, setIsAdvancing] = useState(false);
   const [isRegenerating, setIsRegenerating] = useState(false);
-  
+
   // Use refs to track notification state instead of useState to avoid state updates in effects
   const toastShownRef = React.useRef<{
     completed?: boolean;

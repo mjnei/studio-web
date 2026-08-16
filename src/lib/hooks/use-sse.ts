@@ -38,7 +38,6 @@ export function useSSE<T>({ url, enabled, onMessage, onError, shouldClose }: Use
     shouldCloseRef.current = shouldClose;
   }, [shouldClose]);
 
-   
   useEffect(() => {
     if (!enabled || !url) {
       // Cleanup if disabled or no URL

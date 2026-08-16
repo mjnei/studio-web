@@ -16,11 +16,7 @@ interface LayoutToggleProps {
   };
 }
 
-export function LayoutToggle({
-  layoutMode,
-  onLayoutChange,
-  labels,
-}: LayoutToggleProps) {
+export function LayoutToggle({ layoutMode, onLayoutChange, labels }: LayoutToggleProps) {
   const defaultLabels = {
     small: "Small grid",
     medium: "Medium grid",

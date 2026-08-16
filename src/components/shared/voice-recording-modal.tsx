@@ -233,7 +233,7 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
   }, []);
 
   // Reset state when modal opens
-   
+
   useEffect(() => {
     if (!isOpen) {
       // Clean up when closing
@@ -243,7 +243,7 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
       releaseStream();
       return;
     }
-    
+
     // Reset state when opening - use functional updates where possible
     setState("idle");
     setDuration(0);

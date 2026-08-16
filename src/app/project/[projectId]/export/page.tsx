@@ -110,7 +110,6 @@ export default function ExportPage() {
     }
   }, []);
 
-   
   React.useEffect(() => {
     if (projectId) {
       void loadVideos();
@@ -120,7 +119,7 @@ export default function ExportPage() {
 
   // Listen for video completion notifications
   const { notifications } = useNotifications();
-   
+
   React.useEffect(() => {
     const latestNotification = notifications[0];
     console.log("🔔 [Export] Notifications changed, latest:", latestNotification);

@@ -54,7 +54,6 @@ export default function ProjectsPage() {
       });
   }, [toast]);
 
-   
   useEffect(() => {
     let isMounted = true;
 
@@ -149,10 +148,7 @@ export default function ProjectsPage() {
       {/* Layout Controls */}
       {!loading && projects.length > 0 && (
         <div className="mb-6 flex justify-end">
-          <LayoutToggle
-            layoutMode={layoutMode}
-            onLayoutChange={handleLayoutChange}
-          />
+          <LayoutToggle layoutMode={layoutMode} onLayoutChange={handleLayoutChange} />
         </div>
       )}
 

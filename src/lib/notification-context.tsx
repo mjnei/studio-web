@@ -388,7 +388,7 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
   }, [isAuthenticated]); // Only depend on isAuthenticated, not connectSSE to avoid reconnection loops
 
   // Initial data fetch when authenticated
-   
+
   useEffect(() => {
     if (isAuthenticated) {
       refreshNotifications();
