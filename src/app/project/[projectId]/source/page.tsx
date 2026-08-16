@@ -40,6 +40,9 @@ export default function SourcePage() {
     return null;
   });
 
+  const [isChanging, setIsChanging] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
   const handleMovieSelect = (movie: {
     id: string;
     title: string;
