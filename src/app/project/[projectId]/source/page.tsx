@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { Film, Info } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -24,13 +24,10 @@ export default function SourcePage() {
     rating: number;
     genre: string[];
     duration: string;
-  } | null>(null);
-  const [isChanging, setIsChanging] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-
-  useEffect(() => {
+  } | null>(() => {
+    // Initialize from state if available
     if (state?.movieId && state?.movieTitle) {
-      setSelectedMovie({
+      return {
         id: state.movieId,
         title: state.movieTitle,
         year: 0,
@@ -38,9 +35,10 @@ export default function SourcePage() {
         rating: state.movieRating || 0,
         genre: state.movieGenre?.split(", ") || [],
         duration: state.movieDuration ? `${state.movieDuration} min` : "",
-      });
+      };
     }
-  }, [state]);
+    return null;
+  });
 
   const handleMovieSelect = (movie: {
     id: string;

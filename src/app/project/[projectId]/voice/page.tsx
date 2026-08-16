@@ -29,7 +29,12 @@ export default function VoicePage() {
   const [availableVoicesError, setAvailableVoicesError] = useState<string | null>(null);
   const [ownVoices, setOwnVoices] = useState<VoiceResponse[]>([]);
   const [communityVoices, setCommunityVoices] = useState<VoiceWithCreator[]>([]);
-  const [selectedVoiceId, setSelectedVoiceId] = useState<number | null>(null);
+  const [selectedVoiceId, setSelectedVoiceId] = useState<number | null>(() => {
+    // Initialize from saved state if available
+    const voiceId = state?.voiceId ? Number(state.voiceId) : undefined;
+    const alternateVoiceId = state?.voice?.id ? Number(state.voice.id) : undefined;
+    return voiceId || alternateVoiceId || null;
+  });
   const [tab, setTab] = useState<"my" | "community">("my");
   const [showRecorder, setShowRecorder] = useState(false);
   const [showLimitDialog, setShowLimitDialog] = useState(false);
@@ -85,7 +90,6 @@ export default function VoicePage() {
   // Fetch available voices (own + community)
   useEffect(() => {
     let cancelled = false;
-    setAvailableVoicesLoading(true);
     getAvailableVoices()
       .then((data) => {
         if (!cancelled) {
@@ -94,6 +98,7 @@ export default function VoicePage() {
           setOwnVoices(data.own_voices);
           setCommunityVoices(data.community_voices);
           setAvailableVoicesError(null);
+          setAvailableVoicesLoading(false);
         }
       })
       .catch((err) => {
@@ -101,10 +106,8 @@ export default function VoicePage() {
           setAvailableVoicesError(err instanceof Error ? err.message : "Unable to load voices");
           setOwnVoices([]);
           setCommunityVoices([]);
+          setAvailableVoicesLoading(false);
         }
-      })
-      .finally(() => {
-        if (!cancelled) setAvailableVoicesLoading(false);
       });
 
     return () => {
@@ -125,18 +128,6 @@ export default function VoicePage() {
       }
     };
   }, []);
-
-  // Initialize selectedVoiceId from saved state
-  useEffect(() => {
-    if (selectedVoiceId) return;
-    const savedId = state?.voiceId
-      ? Number(state.voiceId)
-      : state?.voice?.id
-        ? Number(state.voice.id)
-        : undefined;
-    if (!savedId) return;
-    setSelectedVoiceId(savedId);
-  }, [state?.voiceId, state?.voice, selectedVoiceId]);
 
   const playAudio = async (voiceId: number, type: "own" | "community") => {
     // Stop current audio if playing

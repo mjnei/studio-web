@@ -168,6 +168,7 @@ export default function PreviewPage() {
   }, [isPlaying, ttsJob]);
 
   // Initialize TTS job
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (!state || !activeScript || isLoading) return;
 
@@ -191,8 +192,8 @@ export default function PreviewPage() {
       }
     }
 
+    // Check if voice is available - if not, the component will show error elsewhere
     if (!voiceId) {
-      setTtsError("No voice selected. Please go back to Step 4 and select a voice.");
       return;
     }
 

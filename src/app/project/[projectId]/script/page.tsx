@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import { Edit2, FileText, Clock, Check, X, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,18 +16,11 @@ export default function ScriptPage() {
   const projectId = params.projectId as string;
   const { state, activeScript, isLoading, addScript, setActiveScript } = useProjectState(projectId);
 
-  const [scriptContent, setScriptContent] = useState("");
+  const [scriptContent, setScriptContent] = useState(() => activeScript?.content || "");
   const [isSaving, setIsSaving] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const savePromiseRef = useRef<Promise<void> | null>(null);
-
-  useEffect(() => {
-    if (activeScript) {
-      setScriptContent(activeScript.content);
-      setIsEditing(false);
-    }
-  }, [activeScript]);
 
   const saveScript = async () => {
     if (!scriptContent.trim() || scriptContent === activeScript?.content) {

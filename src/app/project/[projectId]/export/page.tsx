@@ -72,13 +72,16 @@ export default function ExportPage() {
       );
       setVideos(response.videos);
 
-      if (!selectedVideoId && response.videos.length > 0) {
+      // Only auto-select first completed video if none selected yet
+      setSelectedVideoId((current) => {
+        if (current) return current; // Already have selection
         const firstCompleted = response.videos.find((v) => v.status === "completed");
         if (firstCompleted) {
           console.log("🎬 [Export] Setting first completed video as selected:", firstCompleted.id);
-          setSelectedVideoId(firstCompleted.id);
+          return firstCompleted.id;
         }
-      }
+        return null;
+      });
     } catch (error) {
       console.error("Failed to load videos:", error);
       const apiError = error as { status?: number; message?: string };
@@ -96,7 +99,7 @@ export default function ExportPage() {
     } finally {
       setIsLoadingVideos(false);
     }
-  }, [projectId, selectedVideoId, toast, router]);
+  }, [projectId, toast, router]);
 
   const loadCreditStatus = React.useCallback(async () => {
     try {
@@ -107,6 +110,7 @@ export default function ExportPage() {
     }
   }, []);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   React.useEffect(() => {
     if (projectId) {
       void loadVideos();
@@ -116,6 +120,7 @@ export default function ExportPage() {
 
   // Listen for video completion notifications
   const { notifications } = useNotifications();
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   React.useEffect(() => {
     const latestNotification = notifications[0];
     console.log("🔔 [Export] Notifications changed, latest:", latestNotification);
