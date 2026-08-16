@@ -381,3 +381,21 @@ export async function adminSearchUsers(
 
   return request<UserSearchResult[]>(`/users/admin/search?${params.toString()}`);
 }
+
+// ============================================================================
+// Admin Dashboard Statistics
+// ============================================================================
+
+export interface AdminStatsResponse {
+  total_movies: number;
+  active_voices: number;
+  total_users: number;
+  projects_created: number;
+}
+
+/**
+ * Get admin dashboard statistics.
+ */
+export async function getAdminStats(): Promise<AdminStatsResponse> {
+  return request<AdminStatsResponse>("/admin/stats");
+}

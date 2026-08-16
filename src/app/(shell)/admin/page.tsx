@@ -1,11 +1,41 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Film, Mic, ShieldCheck, Database, Users, Settings, BarChart3 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { getAdminStats, type AdminStatsResponse } from "@/lib/api/admin";
 
 export default function AdminPage() {
+  const [stats, setStats] = useState<AdminStatsResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const data = await getAdminStats();
+        setStats(data);
+      } catch (err) {
+        console.error("Error fetching stats:", err);
+        const message = err instanceof Error ? err.message : "Failed to fetch statistics";
+        setError(message);
+        // Set default values on error
+        setStats({
+          total_movies: 0,
+          active_voices: 0,
+          total_users: 0,
+          projects_created: 0,
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
   const adminSections = [
     {
       title: "Movies",
@@ -13,7 +43,7 @@ export default function AdminPage() {
       icon: Film,
       href: "/admin/movies",
       gradient: "from-blue-500 to-cyan-500",
-      stats: "1,234 movies",
+      stats: stats ? `${stats.total_movies} movies` : "Loading...",
     },
     {
       title: "Voices",
@@ -21,7 +51,7 @@ export default function AdminPage() {
       icon: Mic,
       href: "/admin/voices",
       gradient: "from-green-500 to-emerald-500",
-      stats: "48 voices",
+      stats: stats ? `${stats.active_voices} voices` : "Loading...",
     },
     {
       title: "TMDB Import",
@@ -33,28 +63,28 @@ export default function AdminPage() {
     },
   ];
 
-  const stats = [
+  const statsDisplay = [
     {
       label: "Total Movies",
-      value: "1,234",
+      value: stats ? stats.total_movies.toLocaleString() : "-",
       icon: Film,
       color: "from-blue-500 to-cyan-500",
     },
     {
       label: "Active Voices",
-      value: "48",
+      value: stats ? stats.active_voices.toLocaleString() : "-",
       icon: Mic,
       color: "from-green-500 to-emerald-500",
     },
     {
       label: "Total Users",
-      value: "856",
+      value: stats ? stats.total_users.toLocaleString() : "-",
       icon: Users,
       color: "from-purple-500 to-pink-500",
     },
     {
       label: "Projects Created",
-      value: "2,341",
+      value: stats ? stats.projects_created.toLocaleString() : "-",
       icon: BarChart3,
       color: "from-orange-500 to-red-500",
     },
@@ -67,9 +97,15 @@ export default function AdminPage() {
         description="Manage movies and voices catalog for the Huavoi platform"
       />
 
+      {error && (
+        <div className="mb-8 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          ⚠️ {error}
+        </div>
+      )}
+
       {/* Stats Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {stats.map((stat) => {
+        {statsDisplay.map((stat) => {
           const Icon = stat.icon;
           return (
             <Card
