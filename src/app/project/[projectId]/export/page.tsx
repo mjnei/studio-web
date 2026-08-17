@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
@@ -24,7 +25,6 @@ import {
   Clock,
 } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
-import { MediaImage } from "@/components/ui/MediaImage";
 import {
   getProjectVideos,
   regenerateVideo,
@@ -585,9 +585,11 @@ export default function ExportPage() {
                       <div className="flex items-center gap-3 flex-1 min-w-0">
                         <div className="w-20 aspect-video rounded overflow-hidden bg-surface-base flex-shrink-0">
                           {video.thumbnail_url ? (
-                            <MediaImage
+                            <Image
                               src={video.thumbnail_url}
                               alt={`Version ${video.generation_attempt}`}
+                              width={80}
+                              height={45}
                               className="w-full h-full object-cover"
                             />
                           ) : (
