@@ -16,7 +16,7 @@ import {
   getTTSJobStats,
   retryTTSJob,
   cancelTTSJob,
-} from "@/lib/api/admin-tts-client";
+} from "@/lib/api/admin-studio-tts-client";
 import type {
   StaleJob,
   FailedJob,
