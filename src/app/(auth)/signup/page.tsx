@@ -159,34 +159,34 @@ function SignupContent() {
         </div>
       )}
 
-      {/* Referral Code Input */}
-      <div className="mb-6 flex flex-col items-center">
-        <label className="text-sm font-medium text-text-primary mb-2 self-start">{t("auth.invite.yourCode")}</label>
-        <InputOTP
-          maxLength={6}
-          value={manualCode}
-          onChange={handleManualCodeChange}
-          disabled={validatingCode || (referralCode !== null && referrerName !== null)}
-        >
-          <InputOTPGroup>
-            <InputOTPSlot index={0} />
-            <InputOTPSlot index={1} />
-            <InputOTPSlot index={2} />
-          </InputOTPGroup>
-          {/* <InputOTPSeparator /> */}
-          <InputOTPGroup>
-            <InputOTPSlot index={3} />
-            <InputOTPSlot index={4} />
-            <InputOTPSlot index={5} />
-          </InputOTPGroup>
-        </InputOTP>
-        {codeError && <p className="mt-2 text-xs text-status-failed self-start">{codeError}</p>}
-        {!referralCode && !referrerName && (
+      {/* Referral Code Input - Hidden when "Invited by" is displayed */}
+      {!referralCode && !referrerName && (
+        <div className="mb-6 flex flex-col items-center">
+          <label className="text-sm font-medium text-text-primary mb-2 self-start">{t("auth.invite.yourCode")}</label>
+          <InputOTP
+            maxLength={6}
+            value={manualCode}
+            onChange={handleManualCodeChange}
+            disabled={validatingCode}
+          >
+            <InputOTPGroup>
+              <InputOTPSlot index={0} />
+              <InputOTPSlot index={1} />
+              <InputOTPSlot index={2} />
+            </InputOTPGroup>
+            {/* <InputOTPSeparator /> */}
+            <InputOTPGroup>
+              <InputOTPSlot index={3} />
+              <InputOTPSlot index={4} />
+              <InputOTPSlot index={5} />
+            </InputOTPGroup>
+          </InputOTP>
+          {codeError && <p className="mt-2 text-xs text-status-failed self-start">{codeError}</p>}
           <div className="mt-2 text-xs text-text-muted self-start">
             Get 100 bonus credits when you sign up with a referral code! (Optional)
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       <Button
         onClick={handleGoogleSignup}
