@@ -185,9 +185,9 @@ New endpoints needed:
 
 Create 4 new API client modules in `src/lib/api/`:
 
-**A. Admin TTS Jobs Client** (`admin-tts-client.ts`)
+**A. Admin TTS Jobs Client** (`admin-studio-tts-client.ts`)
 ```typescript
-// Backend endpoints ready: /admin/tts-jobs/*
+// Backend endpoints ready: /admin/studio-tts-jobs/*
 export async function getStaleTTSJobs(limit = 100): Promise<StaleJob[]>
 export async function getFailedTTSJobs(limit = 100, offset = 0): Promise<FailedJob[]>
 export async function getTTSJobStats(): Promise<TTSJobStats>
@@ -246,11 +246,11 @@ export interface PreferencesListResponse { /* ... */ }
 
 **3. TTS Jobs Monitoring Dashboard** (4 hours)
 
-**Path**: `/admin/tts-jobs`
+**Path**: `/admin/studio-tts-jobs`
 
 **File Structure**:
 ```
-src/app/(shell)/admin/tts-jobs/
+src/app/(shell)/admin/studio-tts-jobs/
 ├── page.tsx                    # Main monitoring dashboard
 ├── layout.tsx                  # Breadcrumbs and layout
 └── components/
@@ -492,8 +492,8 @@ src/app/(shell)/admin/users/
 
 ### 1.1 Admin TTS Jobs Client
 
-**File**: `src/lib/api/admin-tts-client.ts`  
-**Backend Ready**: ✅ YES (`/admin/tts-jobs/*`)
+**File**: `src/lib/api/admin-studio-tts-client.ts`  
+**Backend Ready**: ✅ YES (`/admin/studio-tts-jobs/*`)
 
 ```typescript
 import { request } from "@/lib/api-client";
@@ -513,19 +513,19 @@ export interface StaleJob {
 // ============ Functions ============
 
 export async function getStaleTTSJobs(limit = 100): Promise<StaleJob[]> {
-  return request<StaleJob[]>(`/admin/tts-jobs/stale?limit=${limit}`);
+  return request<StaleJob[]>(`/admin/studio-tts-jobs/stale?limit=${limit}`);
 }
 
 export async function getFailedTTSJobs(limit = 100, offset = 0): Promise<FailedJob[]> {
-  return request<FailedJob[]>(`/admin/tts-jobs/failed?limit=${limit}&offset=${offset}`);
+  return request<FailedJob[]>(`/admin/studio-tts-jobs/failed?limit=${limit}&offset=${offset}`);
 }
 
 export async function getTTSJobStats(): Promise<TTSJobStats> {
-  return request<TTSJobStats>("/admin/tts-jobs/stats");
+  return request<TTSJobStats>("/admin/studio-tts-jobs/stats");
 }
 
 export async function getTTSJobDetails(jobId: number): Promise<TTSJob> {
-  return request<TTSJob>(`/admin/tts-jobs/${jobId}`);
+  return request<TTSJob>(`/admin/studio-tts-jobs/${jobId}`);
 }
 ```
 
@@ -866,7 +866,7 @@ export const ADMIN_NAV_ITEMS: AdminNavItem[] = [
   },
   {
     title: "TTS Jobs",
-    href: "/admin/tts-jobs",
+    href: "/admin/studio-tts-jobs",
     icon: Zap,
     badge: "New",
   },
@@ -922,7 +922,7 @@ Add links to new pages in the existing "Admin Features" card on dashboard:
     <FeatureLink href="/admin/voices" icon={<Mic />} title="Voice Catalog" />
     
     {/* New features */}
-    <FeatureLink href="/admin/tts-jobs" icon={<Zap />} title="TTS Monitoring" badge="New" />
+    <FeatureLink href="/admin/studio-tts-jobs" icon={<Zap />} title="TTS Monitoring" badge="New" />
     <FeatureLink href="/admin/playground" icon={<Play />} title="TTS Playground" badge="New" />
     <FeatureLink href="/admin/audit-logs" icon={<ClipboardList />} title="Audit Logs" badge="New" />
   </div>
@@ -936,7 +936,7 @@ Add links to new pages in the existing "Admin Features" card on dashboard:
 ### Phase 2A: API Clients & TTS Monitoring
 
 **API Client Functions**:
-- [ ] Create `src/lib/api/admin-tts-client.ts`
+- [ ] Create `src/lib/api/admin-studio-tts-client.ts`
   - [ ] `getStaleTTSJobs()`
   - [ ] `getFailedTTSJobs()`
   - [ ] `getTTSJobStats()`
@@ -962,8 +962,8 @@ Add links to new pages in the existing "Admin Features" card on dashboard:
 - [ ] Export types from API clients
 
 **TTS Jobs Page**:
-- [ ] Create `/admin/tts-jobs/page.tsx`
-- [ ] Create `/admin/tts-jobs/layout.tsx`
+- [ ] Create `/admin/studio-tts-jobs/page.tsx`
+- [ ] Create `/admin/studio-tts-jobs/layout.tsx`
 - [ ] Create `StaleJobsAlert.tsx` component
 - [ ] Create `FailedJobsTable.tsx` component
 - [ ] Create `TTSStatsWidget.tsx` component
@@ -1041,7 +1041,7 @@ Add links to new pages in the existing "Admin Features" card on dashboard:
 
 ### Phase 2A Complete When:
 - ✅ All 4 API client modules created with 16 functions total
-- ✅ `/admin/tts-jobs` page displays stale and failed jobs
+- ✅ `/admin/studio-tts-jobs` page displays stale and failed jobs
 - ✅ TTS stats refresh automatically every 5 seconds
 - ✅ Retry/cancel actions work correctly
 - ✅ CSV export generates valid files
@@ -1078,7 +1078,7 @@ Add links to new pages in the existing "Admin Features" card on dashboard:
 ### Phase 2: No Backend Changes Needed ✅
 
 All required endpoints already exist:
-- ✅ `/admin/tts-jobs/*` - TTS job monitoring (4 endpoints)
+- ✅ `/admin/studio-tts-jobs/*` - TTS job monitoring (4 endpoints)
 - ✅ `/playground/*` - Playground testing (6 endpoints)
 - ✅ `/audit-analytics/*` - Audit logs (2 endpoints)
 - ✅ `/notifications/preferences` - Notification settings (2 endpoints)
@@ -1127,17 +1127,17 @@ New endpoints needed (backend work: 4-5 hours):
 - **Modified**: `src/app/(shell)/admin/page.tsx` - Stats grid with smart navigation
 
 ### Phase 2A (To Create):
-- `src/lib/api/admin-tts-client.ts`
+- `src/lib/api/admin-studio-tts-client.ts`
 - `src/lib/api/playground-client.ts`
 - `src/lib/api/audit-client.ts`
 - `src/lib/api/notification-client.ts`
 - `src/types/admin.ts`
-- `src/app/(shell)/admin/tts-jobs/page.tsx`
-- `src/app/(shell)/admin/tts-jobs/layout.tsx`
-- `src/app/(shell)/admin/tts-jobs/components/StaleJobsAlert.tsx`
-- `src/app/(shell)/admin/tts-jobs/components/FailedJobsTable.tsx`
-- `src/app/(shell)/admin/tts-jobs/components/TTSStatsWidget.tsx`
-- `src/app/(shell)/admin/tts-jobs/components/JobDetailModal.tsx`
+- `src/app/(shell)/admin/studio-tts-jobs/page.tsx`
+- `src/app/(shell)/admin/studio-tts-jobs/layout.tsx`
+- `src/app/(shell)/admin/studio-tts-jobs/components/StaleJobsAlert.tsx`
+- `src/app/(shell)/admin/studio-tts-jobs/components/FailedJobsTable.tsx`
+- `src/app/(shell)/admin/studio-tts-jobs/components/TTSStatsWidget.tsx`
+- `src/app/(shell)/admin/studio-tts-jobs/components/JobDetailModal.tsx`
 
 ### Phase 2B (To Create):
 - `src/app/(shell)/admin/playground/page.tsx`
