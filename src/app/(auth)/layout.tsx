@@ -12,7 +12,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
     return <>{children}</>;
   }
 
-  // For other auth pages (login, signup), show the split layout with full-screen video
+  // For other auth pages (login, signup, invite), show the split layout with full-screen video
   return (
     <div className="relative flex min-h-screen bg-surface-base overflow-hidden">
       {/* Full-screen Video Background */}

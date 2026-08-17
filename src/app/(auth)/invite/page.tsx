@@ -7,7 +7,7 @@ import { validateReferralCode } from "@/lib/api/referral-client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
-import { AlertCircle, CheckCircle, Loader2 } from "lucide-react";
+import { AlertCircle, CheckCircle, Loader2, Gift } from "lucide-react";
 
 function InviteContent() {
   const { t } = useI18n();
@@ -70,65 +70,88 @@ function InviteContent() {
   // Show loading while checking auth or validating code
   if (authLoading || validating) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-surface-base p-4">
-        <Card variant="elevated" padding="lg" className="w-full max-w-md">
-          <div className="flex flex-col items-center justify-center py-12">
-            <Loader2 className="animate-spin h-12 w-12 text-accent-primary mb-4" />
-            <p className="text-sm text-text-secondary">{t("auth.invite.validating")}</p>
-          </div>
-        </Card>
-      </div>
+      <Card variant="elevated" padding="lg" className="w-full">
+        <div className="flex flex-col items-center justify-center py-12">
+          <Loader2 className="animate-spin h-12 w-12 text-accent-primary mb-4" />
+          <p className="text-sm text-text-secondary">{t("auth.invite.validating")}</p>
+        </div>
+      </Card>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-surface-base p-4">
-      <Card variant="elevated" padding="lg" className="w-full max-w-md">
-        {/* Valid Code */}
-        {isValid && referrerName && (
-          <div className="text-center">
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center mx-auto mb-4">
-              <CheckCircle className="w-8 h-8 text-white" />
-            </div>
-            <h2 className="text-2xl font-bold text-text-primary mb-2">
-              {t("auth.invite.validTitle")}
-            </h2>
-            <p className="text-text-secondary mb-6">
-              {t("auth.invite.invitedBy", { name: referrerName })}
-            </p>
-            <div className="bg-surface-raised border border-border-default rounded-lg p-4 mb-6">
-              <p className="text-sm text-text-muted mb-1">{t("auth.invite.yourCode")}</p>
-              <code className="text-lg font-mono font-bold text-accent-primary">{code}</code>
-            </div>
-            <div className="space-y-3">
-              <Button onClick={handleContinueSignup} variant="primary" fullWidth size="lg">
-                {t("auth.invite.continueSignup")}
-              </Button>
-              <p className="text-xs text-text-muted">{t("auth.invite.rewardMessage")}</p>
-            </div>
+    <Card variant="elevated" padding="lg" className="w-full">
+      {/* Valid Code */}
+      {isValid && referrerName && (
+        <div className="text-center">
+          {/* Success Icon */}
+          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center mx-auto mb-4">
+            <CheckCircle className="w-8 h-8 text-white" />
           </div>
-        )}
 
-        {/* Invalid Code */}
-        {!isValid && errorMessage && (
-          <div className="text-center">
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center mx-auto mb-4">
-              <AlertCircle className="w-8 h-8 text-white" />
-            </div>
-            <h2 className="text-2xl font-bold text-text-primary mb-2">
-              {t("auth.invite.invalidTitle")}
-            </h2>
-            <p className="text-text-secondary mb-6">{errorMessage}</p>
-            <div className="space-y-3">
-              <Button onClick={handleSignupWithoutCode} variant="primary" fullWidth size="lg">
-                {t("auth.invite.continueAnyway")}
-              </Button>
-              <p className="text-xs text-text-muted">{t("auth.invite.noCodeRequired")}</p>
+          {/* Title */}
+          <h2 className="text-2xl font-bold text-text-primary mb-2">
+            {t("auth.invite.validTitle")}
+          </h2>
+          
+          {/* Referrer Info */}
+          <p className="text-sm text-text-secondary mb-6">
+            {t("auth.invite.invitedBy", { name: referrerName })}
+          </p>
+
+          {/* Referral Code Display */}
+          <div className="bg-surface-raised border border-border-default rounded-lg p-4 mb-6">
+            <p className="text-sm text-text-muted mb-1">{t("auth.invite.yourCode")}</p>
+            <code className="text-lg font-mono font-bold text-accent-primary">{code}</code>
+          </div>
+
+          {/* Reward Notice */}
+          <div className="mb-6 rounded-lg border border-accent-cyan/30 bg-gradient-to-br from-accent-cyan/10 to-accent-primary/10 px-4 py-3">
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent-cyan to-accent-primary flex items-center justify-center flex-shrink-0">
+                <Gift className="w-4 h-4 text-white" />
+              </div>
+              <div className="flex-1 text-left">
+                <p className="text-sm font-medium text-text-primary mb-1">
+                  {t("auth.invite.rewardMessage")}
+                </p>
+              </div>
             </div>
           </div>
-        )}
-      </Card>
-    </div>
+
+          {/* Action Button */}
+          <Button onClick={handleContinueSignup} variant="primary" fullWidth size="lg">
+            {t("auth.invite.continueSignup")}
+          </Button>
+        </div>
+      )}
+
+      {/* Invalid Code */}
+      {!isValid && errorMessage && (
+        <div className="text-center">
+          {/* Error Icon */}
+          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center mx-auto mb-4">
+            <AlertCircle className="w-8 h-8 text-white" />
+          </div>
+
+          {/* Title */}
+          <h2 className="text-2xl font-bold text-text-primary mb-2">
+            {t("auth.invite.invalidTitle")}
+          </h2>
+          
+          {/* Error Message */}
+          <p className="text-sm text-text-secondary mb-6">{errorMessage}</p>
+
+          {/* Action Buttons */}
+          <div className="space-y-3">
+            <Button onClick={handleSignupWithoutCode} variant="primary" fullWidth size="lg">
+              {t("auth.invite.continueAnyway")}
+            </Button>
+            <p className="text-xs text-text-muted">{t("auth.invite.noCodeRequired")}</p>
+          </div>
+        </div>
+      )}
+    </Card>
   );
 }
 
@@ -136,14 +159,12 @@ export default function InvitePage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center bg-surface-base p-4">
-          <Card variant="elevated" padding="lg" className="w-full max-w-md">
-            <div className="flex flex-col items-center justify-center py-12">
-              <Loader2 className="animate-spin h-12 w-12 text-accent-primary mb-4" />
-              <p className="text-sm text-text-secondary">Loading...</p>
-            </div>
-          </Card>
-        </div>
+        <Card variant="elevated" padding="lg" className="w-full">
+          <div className="flex flex-col items-center justify-center py-12">
+            <Loader2 className="animate-spin h-12 w-12 text-accent-primary mb-4" />
+            <p className="text-sm text-text-secondary">Loading...</p>
+          </div>
+        </Card>
       }
     >
       <InviteContent />
