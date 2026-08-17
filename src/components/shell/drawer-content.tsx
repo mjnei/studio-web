@@ -18,6 +18,8 @@ import {
   DollarSign,
   CreditCard,
   Layers,
+  Zap,
+  Play,
 } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
@@ -101,6 +103,21 @@ const adminItems = [
     labelKey: "shell.queues",
     icon: "M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16zM3.27 6.96L12 12.01l8.73-5.05M12 22.08V12",
   },
+  {
+    href: "/admin/studio-tts-jobs",
+    labelKey: "shell.studioTTSJobs",
+    icon: "M21 15a2 2 0 0 1-2 2H7l-4 4v-4H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z",
+  },
+  {
+    href: "/admin/playground-tts-jobs",
+    labelKey: "shell.playgroundTTSJobs",
+    icon: "M21 15a2 2 0 0 1-2 2H7l-4 4v-4H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z",
+  },
+  {
+    href: "/admin/playground",
+    labelKey: "shell.playgroundTTS",
+    icon: "M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z",
+  },
 ];
 
 function isActive(pathname: string, href: string) {
@@ -126,6 +143,9 @@ const iconMap: Record<string, React.ReactNode> = {
   "/admin/movies": <Film size={20} />,
   "/admin/voices": <Mic size={20} />,
   "/admin/queues": <Layers size={20} />,
+  "/admin/studio-tts-jobs": <Zap size={20} />,
+  "/admin/playground-tts-jobs": <Zap size={20} />,
+  "/admin/playground": <Play size={20} />,
 };
 
 function RailLink({
