@@ -7,15 +7,25 @@ import { useToast } from "@/components/ui/toast";
 import { TTSStatsWidget } from "./components/TTSStatsWidget";
 import { StaleJobsAlert } from "./components/StaleJobsAlert";
 import { FailedJobsTable } from "./components/FailedJobsTable";
+import { CompletedJobsTable } from "./components/CompletedJobsTable";
 import { JobDetailModal } from "./components/JobDetailModal";
 import {
   getStaleTTSJobs,
   getFailedTTSJobs,
+  getCompletedTTSJobs,
   getTTSJobStats,
   retryTTSJob,
   cancelTTSJob,
 } from "@/lib/api/admin-tts-client";
-import type { StaleJob, FailedJob, TTSJobStats, TTSJob } from "@/types/admin";
+import type {
+  StaleJob,
+  FailedJob,
+  CompletedJob,
+  TTSJobStats,
+  TTSJob,
+} from "@/types/admin";
+
+type TabType = "failed" | "completed";
 
 export default function TTSJobsPage() {
   const toast = useToast();
@@ -23,22 +33,26 @@ export default function TTSJobsPage() {
   const [stats, setStats] = useState<TTSJobStats | null>(null);
   const [staleJobs, setStaleJobs] = useState<StaleJob[]>([]);
   const [failedJobs, setFailedJobs] = useState<FailedJob[]>([]);
+  const [completedJobs, setCompletedJobs] = useState<CompletedJob[]>([]);
   const [selectedJob, setSelectedJob] = useState<TTSJob | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
+  const [activeTab, setActiveTab] = useState<TabType>("failed");
 
   const loadData = useCallback(async () => {
     try {
-      const [statsData, staleData, failedData] = await Promise.all([
+      const [statsData, staleData, failedData, completedData] = await Promise.all([
         getTTSJobStats(),
         getStaleTTSJobs(100),
         getFailedTTSJobs(50, 0),
+        getCompletedTTSJobs(50, 0),
       ]);
 
       setStats(statsData);
       setStaleJobs(staleData);
       setFailedJobs(failedData);
+      setCompletedJobs(completedData);
       setLastRefresh(new Date());
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "An error occurred";
@@ -55,16 +69,18 @@ export default function TTSJobsPage() {
     const load = async () => {
       setIsLoading(true);
       try {
-        const [statsData, staleData, failedData] = await Promise.all([
+        const [statsData, staleData, failedData, completedData] = await Promise.all([
           getTTSJobStats(),
           getStaleTTSJobs(100),
           getFailedTTSJobs(50, 0),
+          getCompletedTTSJobs(50, 0),
         ]);
 
         if (isMounted) {
           setStats(statsData);
           setStaleJobs(staleData);
           setFailedJobs(failedData);
+          setCompletedJobs(completedData);
           setLastRefresh(new Date());
         }
       } catch (error: unknown) {
@@ -123,39 +139,71 @@ export default function TTSJobsPage() {
     }
   };
 
-  const handleViewDetails = (job: FailedJob) => {
-    // Convert FailedJob to TTSJob format for modal
+  const handleViewDetails = (job: FailedJob | CompletedJob) => {
+    // Convert job to TTSJob format for modal
     const ttsJob: TTSJob = {
       id: job.id,
       job_id: job.job_id,
       status: job.status,
       created_at: job.created_at,
       completed_at: job.completed_at,
-      error_message: job.error_message,
+      error_message: "error_message" in job ? job.error_message : undefined,
       voice_id: job.voice_id,
       text: job.text,
       project_id: job.project_id,
+      audio_url: "audio_path" in job ? job.audio_path : undefined,
+      duration_seconds:
+        "synthesis_duration_seconds" in job ? job.synthesis_duration_seconds : undefined,
     };
     setSelectedJob(ttsJob);
     setIsModalOpen(true);
   };
 
   const handleExportCSV = () => {
-    if (!failedJobs.length) {
-      toast.info("No data to export", "There are no failed jobs to export");
+    const jobsToExport = activeTab === "failed" ? failedJobs : completedJobs;
+    if (!jobsToExport.length) {
+      toast.info("No data to export", `There are no ${activeTab} jobs to export`);
       return;
     }
 
     // Create CSV content
-    const headers = ["Job ID", "Status", "Voice ID", "Error Message", "Created At", "Failed At"];
-    const rows = failedJobs.map((job) => [
-      job.job_id,
-      job.status,
-      job.voice_id,
-      job.error_message || "N/A",
-      job.created_at,
-      job.completed_at || "N/A",
-    ]);
+    const headers =
+      activeTab === "failed"
+        ? ["Job ID", "Status", "Voice ID", "Error Message", "Created At", "Failed At"]
+        : [
+            "Job ID",
+            "Status",
+            "Voice ID",
+            "Audio Duration",
+            "Synthesis Time",
+            "Created At",
+            "Completed At",
+          ];
+
+    const rows = jobsToExport.map((job) => {
+      if (activeTab === "failed") {
+        const failedJob = job as FailedJob;
+        return [
+          failedJob.job_id,
+          failedJob.status,
+          failedJob.voice_id,
+          failedJob.error_message || "N/A",
+          failedJob.created_at,
+          failedJob.completed_at || "N/A",
+        ];
+      } else {
+        const completedJob = job as CompletedJob;
+        return [
+          completedJob.job_id,
+          completedJob.status,
+          completedJob.voice_id,
+          completedJob.audio_duration || "N/A",
+          completedJob.synthesis_duration_seconds || "N/A",
+          completedJob.created_at,
+          completedJob.completed_at || "N/A",
+        ];
+      }
+    });
 
     const csvContent = [
       headers.join(","),
@@ -169,13 +217,16 @@ export default function TTSJobsPage() {
     const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
     link.setAttribute("href", url);
-    link.setAttribute("download", `tts-failed-jobs-${new Date().toISOString()}.csv`);
+    link.setAttribute(
+      "download",
+      `tts-${activeTab}-jobs-${new Date().toISOString()}.csv`
+    );
     link.style.visibility = "hidden";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 
-    toast.success("CSV exported", "Failed jobs exported successfully");
+    toast.success("CSV exported", `${activeTab} jobs exported successfully`);
   };
 
   const formatTime = (date: Date) => {
@@ -231,7 +282,9 @@ export default function TTSJobsPage() {
             {/* Export CSV */}
             <button
               onClick={handleExportCSV}
-              disabled={!failedJobs.length}
+              disabled={
+                activeTab === "failed" ? !failedJobs.length : !completedJobs.length
+              }
               className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold bg-gradient-to-r from-accent-primary to-purple-600 text-white hover:shadow-lg hover:shadow-accent-primary/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Download className="h-4 w-4" />
@@ -257,24 +310,63 @@ export default function TTSJobsPage() {
           {/* Stale Jobs Alert */}
           {staleJobs.length > 0 && <StaleJobsAlert staleJobs={staleJobs} onCancel={handleCancel} />}
 
-          {/* Failed Jobs Section */}
+          {/* Tabs Section */}
           <div>
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h2 className="text-xl font-bold text-text-primary">Failed Jobs</h2>
-                <p className="text-sm text-text-secondary">
-                  Recent TTS jobs that failed to complete
-                </p>
-              </div>
-              <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-600 border border-red-500/30">
-                {failedJobs.length} Failed
-              </span>
+            {/* Tab Navigation */}
+            <div className="flex items-center gap-2 mb-6">
+              <button
+                onClick={() => setActiveTab("failed")}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all ${
+                  activeTab === "failed"
+                    ? "bg-red-500/10 text-red-600 border-2 border-red-500/30"
+                    : "border-2 border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:bg-accent-primary/5"
+                }`}
+              >
+                Failed Jobs
+                <span
+                  className={`px-2 py-0.5 rounded-full text-xs font-bold ${
+                    activeTab === "failed"
+                      ? "bg-red-600 text-white"
+                      : "bg-text-muted/10 text-text-muted"
+                  }`}
+                >
+                  {failedJobs.length}
+                </span>
+              </button>
+              <button
+                onClick={() => setActiveTab("completed")}
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all ${
+                  activeTab === "completed"
+                    ? "bg-green-500/10 text-green-600 border-2 border-green-500/30"
+                    : "border-2 border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:bg-accent-primary/5"
+                }`}
+              >
+                Completed Jobs
+                <span
+                  className={`px-2 py-0.5 rounded-full text-xs font-bold ${
+                    activeTab === "completed"
+                      ? "bg-green-600 text-white"
+                      : "bg-text-muted/10 text-text-muted"
+                  }`}
+                >
+                  {completedJobs.length}
+                </span>
+              </button>
             </div>
-            <FailedJobsTable
-              failedJobs={failedJobs}
-              onRetry={handleRetry}
-              onViewDetails={handleViewDetails}
-            />
+
+            {/* Tab Content */}
+            {activeTab === "failed" ? (
+              <FailedJobsTable
+                failedJobs={failedJobs}
+                onRetry={handleRetry}
+                onViewDetails={handleViewDetails}
+              />
+            ) : (
+              <CompletedJobsTable
+                completedJobs={completedJobs}
+                onViewDetails={handleViewDetails}
+              />
+            )}
           </div>
         </div>
       )}

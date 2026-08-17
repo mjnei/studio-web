@@ -24,6 +24,21 @@ export interface FailedJob {
   project_id?: number;
 }
 
+export interface CompletedJob {
+  id: number;
+  job_id: string;
+  status: "completed";
+  created_at: string;
+  started_at?: string;
+  completed_at?: string;
+  voice_id: number;
+  text?: string;
+  project_id?: number;
+  audio_path?: string;
+  audio_duration?: number;
+  synthesis_duration_seconds?: number;
+}
+
 export interface TTSJobStats {
   total_jobs: number;
   completed_jobs: number;

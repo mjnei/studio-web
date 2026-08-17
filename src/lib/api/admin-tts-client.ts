@@ -2,6 +2,7 @@ import { request } from "@/lib/api-client";
 import type {
   StaleJob,
   FailedJob,
+  CompletedJob,
   TTSJobStats,
   TTSJob,
 } from "@/types/admin";
@@ -27,6 +28,16 @@ export async function getFailedTTSJobs(
   offset: number = 0
 ): Promise<FailedJob[]> {
   return request<FailedJob[]>(`/admin/tts-jobs/failed?limit=${limit}&offset=${offset}`);
+}
+
+/**
+ * Get completed TTS jobs with pagination.
+ */
+export async function getCompletedTTSJobs(
+  limit: number = 100,
+  offset: number = 0
+): Promise<CompletedJob[]> {
+  return request<CompletedJob[]>(`/admin/tts-jobs/completed?limit=${limit}&offset=${offset}`);
 }
 
 /**
