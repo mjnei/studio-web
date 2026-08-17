@@ -9,26 +9,48 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020/api/v
 
 /**
  * Playground TTS Client
- * Allows admins to test TTS functionality without creating a full project.
+ * Provides both anonymous (public) and admin-authenticated endpoints.
  */
 
+// ============================================================================
+// ADMIN ENDPOINTS (require authentication + admin role)
+// ============================================================================
+
 /**
- * Create a new playground TTS job.
+ * [ADMIN] Create a new playground TTS job (bypasses rate limiting).
  */
 export async function createPlaygroundTTSJob(
   data: PlaygroundTTSRequest
 ): Promise<PlaygroundJob> {
-  return request<PlaygroundJob>("/playground/create", {
+  return request<PlaygroundJob>("/playground/admin/tts", {
     method: "POST",
     body: JSON.stringify(data),
   });
 }
 
 /**
+ * [ADMIN] Get playground job history (last N jobs).
+ */
+export async function getPlaygroundHistory(limit: number = 20): Promise<PlaygroundJob[]> {
+  return request<PlaygroundJob[]>(`/playground/admin/history?limit=${limit}`);
+}
+
+/**
+ * [ADMIN] Get all voices available for playground testing.
+ */
+export async function getPlaygroundVoiceHistory(): Promise<PlaygroundVoice[]> {
+  return request<PlaygroundVoice[]>("/playground/admin/voices");
+}
+
+// ============================================================================
+// PUBLIC ENDPOINTS (no authentication required - shared with admin)
+// ============================================================================
+
+/**
  * Get the status and details of a playground TTS job.
  */
 export async function getPlaygroundJob(jobId: string): Promise<PlaygroundJob> {
-  return request<PlaygroundJob>(`/playground/${jobId}`);
+  return request<PlaygroundJob>(`/playground/tts/${jobId}`);
 }
 
 /**
@@ -37,7 +59,7 @@ export async function getPlaygroundJob(jobId: string): Promise<PlaygroundJob> {
  */
 export async function streamPlaygroundJobStatus(jobId: string): Promise<ReadableStream> {
   const token = getAccessToken();
-  const response = await fetch(`${API_BASE}/playground/${jobId}/stream`, {
+  const response = await fetch(`${API_BASE}/playground/tts/${jobId}/stream`, {
     headers: {
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
@@ -72,33 +94,19 @@ export async function getPlaygroundAudio(jobId: string): Promise<Blob> {
 }
 
 /**
- * Get voices recently used in playground (for quick re-selection).
- */
-export async function getPlaygroundVoiceHistory(): Promise<PlaygroundVoice[]> {
-  return request<PlaygroundVoice[]>("/playground/voices");
-}
-
-/**
- * Get playground job history (last N jobs).
- */
-export async function getPlaygroundHistory(limit: number = 20): Promise<PlaygroundJob[]> {
-  return request<PlaygroundJob[]>(`/playground/history?limit=${limit}`);
-}
-
-/**
  * Delete a playground job (if backend supports it).
  */
 export async function deletePlaygroundJob(jobId: string): Promise<void> {
-  return request<void>(`/playground/${jobId}`, {
-    method: "DELETE",
-  });
+  // Note: Delete endpoints not supported in backend yet
+  // Would need to add soft-delete field to PlaygroundTTSJob model
+  throw new Error("Delete playground job not yet implemented");
 }
 
 /**
  * Clear all playground history for the current user.
  */
 export async function clearPlaygroundHistory(): Promise<void> {
-  return request<void>("/playground/history", {
-    method: "DELETE",
-  });
+  // Note: Clear history not supported in backend yet
+  // Would need to add soft-delete field to PlaygroundTTSJob model
+  throw new Error("Clear playground history not yet implemented");
 }
