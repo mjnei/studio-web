@@ -1,0 +1,155 @@
+"use client";
+
+import { useState } from "react";
+import { ShieldAlert, RefreshCw, Eye, Clock } from "lucide-react";
+import type { PlaygroundRateLimitedJob } from "@/types/admin";
+
+interface PlaygroundRateLimitedJobsTableProps {
+  rateLimitedJobs: PlaygroundRateLimitedJob[];
+  onRetry?: (jobId: number) => void;
+  onViewDetails?: (job: PlaygroundRateLimitedJob) => void;
+}
+
+export function PlaygroundRateLimitedJobsTable({
+  rateLimitedJobs,
+  onRetry,
+  onViewDetails,
+}: PlaygroundRateLimitedJobsTableProps) {
+  const [expandedJobId, setExpandedJobId] = useState<number | null>(null);
+
+  const formatRelativeTime = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / (1000 * 60));
+
+    if (diffMins < 1) return "Just now";
+    if (diffMins < 60) return `${diffMins}m ago`;
+    const diffHours = Math.floor(diffMins / 60);
+    if (diffHours < 24) return `${diffHours}h ago`;
+    const diffDays = Math.floor(diffHours / 24);
+    return `${diffDays}d ago`;
+  };
+
+  const formatIPHash = (hash: string) => {
+    return hash.substring(0, 12) + "...";
+  };
+
+  const toggleExpand = (jobId: number) => {
+    setExpandedJobId(expandedJobId === jobId ? null : jobId);
+  };
+
+  if (rateLimitedJobs.length === 0) {
+    return (
+      <div className="rounded-xl border border-border-default bg-surface-panel p-8 text-center">
+        <div className="flex flex-col items-center justify-center gap-3">
+          <div className="flex items-center justify-center w-16 h-16 rounded-full bg-green-500/10">
+            <ShieldAlert className="h-8 w-8 text-green-600" />
+          </div>
+          <h3 className="text-lg font-semibold text-text-primary">No Rate-Limited Jobs</h3>
+          <p className="text-sm text-text-secondary max-w-md">
+            No abuse patterns detected. All requests within rate limits.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-2 rounded-2xl border border-border-default bg-surface-panel overflow-hidden">
+      {/* Table Header */}
+      <div className="hidden md:grid md:grid-cols-12 gap-4 border-b border-border-default bg-surface-raised/50 px-6 py-3 text-sm font-semibold text-text-secondary">
+        <div className="col-span-2">Job ID</div>
+        <div className="col-span-4">Text Preview</div>
+        <div className="col-span-2">Voice</div>
+        <div className="col-span-2">Client IP</div>
+        <div className="col-span-2">Actions</div>
+      </div>
+
+      {/* Table Rows */}
+      {rateLimitedJobs.map((job) => (
+        <div
+          key={job.id}
+          className="border-b border-border-default last:border-0 hover:bg-surface-raised/50 transition-colors"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-4 items-center">
+            {/* Job ID */}
+            <div className="col-span-1 md:col-span-2">
+              <p className="text-xs font-mono font-semibold text-text-primary">#{job.job_id}</p>
+              <div className="flex items-center gap-1.5 text-xs text-text-muted mt-1">
+                <Clock className="h-3 w-3" />
+                {formatRelativeTime(job.created_at)}
+              </div>
+            </div>
+
+            {/* Text Preview */}
+            <div className="col-span-1 md:col-span-4">
+              <div className="md:hidden text-xs font-medium text-text-muted mb-1">Text</div>
+              <div
+                className="flex items-start gap-2 cursor-pointer"
+                onClick={() => toggleExpand(job.id)}
+              >
+                <p
+                  className={`text-sm text-text-secondary ${expandedJobId === job.id ? "" : "line-clamp-2"}`}
+                >
+                  {job.text}
+                </p>
+              </div>
+            </div>
+
+            {/* Voice */}
+            <div className="col-span-1 md:col-span-2">
+              <div className="md:hidden text-xs font-medium text-text-muted mb-1">Voice</div>
+              <p className="text-sm text-text-secondary">
+                {job.voice_id ? `Voice #${job.voice_id}` : `Anon #${job.anonymous_voice_id}`}
+              </p>
+            </div>
+
+            {/* Client IP */}
+            <div className="col-span-1 md:col-span-2">
+              <div className="md:hidden text-xs font-medium text-text-muted mb-1">Client IP</div>
+              <p className="text-xs font-mono text-text-secondary">
+                {formatIPHash(job.client_ip_address)}
+              </p>
+            </div>
+
+            {/* Actions */}
+            <div className="col-span-1 md:col-span-2 flex flex-wrap items-center gap-2">
+              <div className="md:hidden text-xs font-medium text-text-muted mb-1 w-full">
+                Actions
+              </div>
+              {onViewDetails && (
+                <button
+                  onClick={() => onViewDetails(job)}
+                  className="flex items-center gap-1.5 rounded-lg border-2 border-border-default bg-surface-base px-3 py-1.5 text-xs font-medium text-text-secondary hover:border-accent-primary hover:text-accent-primary hover:bg-accent-primary/5 transition-all"
+                >
+                  <Eye className="h-3.5 w-3.5" />
+                  <span className="hidden sm:inline">Details</span>
+                </button>
+              )}
+              {onRetry && (
+                <button
+                  onClick={() => onRetry(job.id)}
+                  className="flex items-center gap-1.5 rounded-lg border border-green-500/50 bg-green-500/10 px-3 py-1.5 text-xs font-medium text-green-600 hover:bg-green-500/20 transition-all"
+                >
+                  <RefreshCw className="h-3.5 w-3.5" />
+                  <span className="hidden sm:inline">Retry</span>
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Expanded Text */}
+          {expandedJobId === job.id && (
+            <div className="px-6 pb-4">
+              <div className="rounded-lg border border-border-default bg-surface-base p-3">
+                <p className="text-xs font-medium text-text-muted mb-2">Full Text:</p>
+                <p className="text-sm text-text-secondary">{job.text}</p>
+              </div>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}

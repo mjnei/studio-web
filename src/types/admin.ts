@@ -66,6 +66,101 @@ export interface TTSJob {
 }
 
 // ============================================================================
+// Playground TTS Admin Types
+// ============================================================================
+
+export interface PlaygroundStaleJob {
+  id: number;
+  job_id: string;
+  status: "queued" | "processing";
+  created_at: string;
+  started_at?: string;
+  duration_seconds: number;
+  voice_id?: number;
+  anonymous_voice_id?: number;
+  text: string;
+  client_ip_address: string;
+}
+
+export interface PlaygroundFailedJob {
+  id: number;
+  job_id: string;
+  status: "failed";
+  created_at: string;
+  completed_at?: string;
+  error_message?: string;
+  voice_id?: number;
+  anonymous_voice_id?: number;
+  text: string;
+  client_ip_address: string;
+  retry_count: number;
+}
+
+export interface PlaygroundRateLimitedJob {
+  id: number;
+  job_id: string;
+  status: "rate_limited";
+  created_at: string;
+  completed_at?: string;
+  client_ip_address: string;
+  text: string;
+  voice_id?: number;
+  anonymous_voice_id?: number;
+}
+
+export interface PlaygroundCompletedJob {
+  id: number;
+  job_id: string;
+  status: "completed";
+  created_at: string;
+  started_at?: string;
+  completed_at?: string;
+  voice_id?: number;
+  anonymous_voice_id?: number;
+  text: string;
+  audio_path?: string;
+  audio_duration?: number;
+  synthesis_duration_seconds?: number;
+  client_ip_address: string;
+}
+
+export interface PlaygroundTTSJobStats {
+  total_jobs: number;
+  completed_jobs: number;
+  failed_jobs: number;
+  queued_jobs: number;
+  processing_jobs: number;
+  rate_limited_count: number;
+  success_rate: number;
+  average_duration_seconds: number;
+  stale_jobs_count: number;
+  unique_ip_count: number;
+}
+
+export interface PlaygroundTTSJob {
+  id: number;
+  job_id: string;
+  status: "queued" | "processing" | "completed" | "failed" | "rate_limited";
+  created_at: string;
+  started_at?: string;
+  completed_at?: string;
+  expires_at: string;
+  error_message?: string;
+  voice_id?: number;
+  anonymous_voice_id?: number;
+  text: string;
+  language: string;
+  ratio: number;
+  retry_count: number;
+  audio_path?: string;
+  audio_duration?: number;
+  synthesis_duration_seconds?: number;
+  correlation_id: string;
+  client_ip_address: string;
+  user_agent?: string;
+}
+
+// ============================================================================
 // Playground Types
 // ============================================================================
 
