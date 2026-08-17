@@ -10,6 +10,11 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 import { validateReferralCode } from "@/lib/api/referral-client";
 
 function SignupContent() {
@@ -68,9 +73,9 @@ function SignupContent() {
     }
   }, [searchParams, handleCodeValidation]);
 
-  const handleManualCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
-    setManualCode(value);
+  const handleManualCodeChange = (value: string) => {
+    const upperValue = value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+    setManualCode(upperValue);
     // Clear any previous error when user types
     if (codeError) {
       setCodeError(null);
@@ -155,19 +160,29 @@ function SignupContent() {
       )}
 
       {/* Referral Code Input */}
-      <div className="mb-6">
-        <Input
-          label={t("auth.invite.yourCode")}
-          placeholder="Enter referral code (optional)"
+      <div className="mb-6 flex flex-col items-center">
+        <label className="text-sm font-medium text-text-primary mb-2 self-start">{t("auth.invite.yourCode")}</label>
+        <InputOTP
+          maxLength={6}
           value={manualCode}
           onChange={handleManualCodeChange}
-          maxLength={10}
-          icon={<KeyRound className="w-4 h-4" />}
-          error={codeError || undefined}
           disabled={validatingCode || (referralCode !== null && referrerName !== null)}
-        />
+        >
+          <InputOTPGroup>
+            <InputOTPSlot index={0} />
+            <InputOTPSlot index={1} />
+            <InputOTPSlot index={2} />
+          </InputOTPGroup>
+          {/* <InputOTPSeparator /> */}
+          <InputOTPGroup>
+            <InputOTPSlot index={3} />
+            <InputOTPSlot index={4} />
+            <InputOTPSlot index={5} />
+          </InputOTPGroup>
+        </InputOTP>
+        {codeError && <p className="mt-2 text-xs text-status-failed self-start">{codeError}</p>}
         {!referralCode && !referrerName && (
-          <div className="mt-2 text-xs text-text-muted">
+          <div className="mt-2 text-xs text-text-muted self-start">
             Get 100 bonus credits when you sign up with a referral code! (Optional)
           </div>
         )}
