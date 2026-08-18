@@ -93,7 +93,7 @@ function InviteContent() {
           <h2 className="text-2xl font-bold text-text-primary mb-2">
             {t("auth.invite.validTitle")}
           </h2>
-          
+
           {/* Referrer Info */}
           <p className="text-sm text-text-secondary mb-6">
             {t("auth.invite.invitedBy", { name: referrerName })}
@@ -138,7 +138,7 @@ function InviteContent() {
           <h2 className="text-2xl font-bold text-text-primary mb-2">
             {t("auth.invite.invalidTitle")}
           </h2>
-          
+
           {/* Error Message */}
           <p className="text-sm text-text-secondary mb-6">{errorMessage}</p>
 

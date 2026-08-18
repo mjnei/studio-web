@@ -8,10 +8,7 @@ interface PlaygroundStaleJobsAlertProps {
   onCancel?: (jobId: string) => void;
 }
 
-export function PlaygroundStaleJobsAlert({
-  staleJobs,
-  onCancel,
-}: PlaygroundStaleJobsAlertProps) {
+export function PlaygroundStaleJobsAlert({ staleJobs, onCancel }: PlaygroundStaleJobsAlertProps) {
   if (staleJobs.length === 0) return null;
 
   const formatDuration = (seconds: number) => {
@@ -34,8 +31,7 @@ export function PlaygroundStaleJobsAlert({
         </div>
         <div className="flex-1">
           <h3 className="text-lg font-bold text-red-600 mb-2">
-            ⚠️ {staleJobs.length} Stale Playground Job{staleJobs.length !== 1 ? "s" : ""}{" "}
-            Detected
+            ⚠️ {staleJobs.length} Stale Playground Job{staleJobs.length !== 1 ? "s" : ""} Detected
           </h3>
           <p className="text-sm text-text-secondary mb-4">
             These playground jobs have been queued or processing for too long. They may require
@@ -70,9 +66,7 @@ export function PlaygroundStaleJobsAlert({
                       : `Anonymous Voice ID: ${job.anonymous_voice_id}`}{" "}
                     | IP: {formatIPHash(job.client_ip_address)}
                   </p>
-                  {job.text && (
-                    <p className="text-xs text-text-muted mt-1 truncate">{job.text}</p>
-                  )}
+                  {job.text && <p className="text-xs text-text-muted mt-1 truncate">{job.text}</p>}
                 </div>
                 {onCancel && (
                   <button

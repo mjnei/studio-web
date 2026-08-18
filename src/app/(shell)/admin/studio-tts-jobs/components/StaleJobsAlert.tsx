@@ -58,9 +58,7 @@ export function StaleJobsAlert({ staleJobs, onCancel }: StaleJobsAlertProps) {
                   <p className="text-xs text-text-secondary">
                     Duration: {formatDuration(job.duration_seconds)} | Voice ID: {job.voice_id}
                   </p>
-                  {job.text && (
-                    <p className="text-xs text-text-muted mt-1 truncate">{job.text}</p>
-                  )}
+                  {job.text && <p className="text-xs text-text-muted mt-1 truncate">{job.text}</p>}
                 </div>
                 {onCancel && (
                   <button

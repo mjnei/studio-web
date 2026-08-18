@@ -5,10 +5,6 @@ export const metadata: Metadata = {
   description: "View and filter system audit logs",
 };
 
-export default function AuditLogsLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function AuditLogsLayout({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }

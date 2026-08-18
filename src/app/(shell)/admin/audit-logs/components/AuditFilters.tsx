@@ -10,11 +10,7 @@ interface AuditFiltersProps {
   onClear: () => void;
 }
 
-export default function AuditFilters({
-  filters,
-  onFilterChange,
-  onClear,
-}: AuditFiltersProps) {
+export default function AuditFilters({ filters, onFilterChange, onClear }: AuditFiltersProps) {
   const [localFilters, setLocalFilters] = useState<AuditFilter>(filters);
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -54,9 +50,7 @@ export default function AuditFilters({
             </span>
           )}
         </div>
-        <span className="text-sm text-text-muted">
-          {isExpanded ? "Hide" : "Show"}
-        </span>
+        <span className="text-sm text-text-muted">{isExpanded ? "Hide" : "Show"}</span>
       </button>
 
       {/* Filter Panel */}
@@ -89,9 +83,7 @@ export default function AuditFilters({
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {/* Action Filter */}
           <div>
-            <label className="mb-1 block text-xs font-medium text-text-muted">
-              Action
-            </label>
+            <label className="mb-1 block text-xs font-medium text-text-muted">Action</label>
             <input
               type="text"
               placeholder="e.g., create, update, delete"
@@ -103,25 +95,19 @@ export default function AuditFilters({
 
           {/* User ID Filter */}
           <div>
-            <label className="mb-1 block text-xs font-medium text-text-muted">
-              User ID
-            </label>
+            <label className="mb-1 block text-xs font-medium text-text-muted">User ID</label>
             <input
               type="number"
               placeholder="Enter user ID"
               value={localFilters.user_id || ""}
-              onChange={(e) =>
-                handleInputChange("user_id", e.target.value)
-              }
+              onChange={(e) => handleInputChange("user_id", e.target.value)}
               className="w-full rounded-lg border-2 border-border bg-background px-3 py-2 text-sm text-text-primary placeholder:text-text-muted focus:border-primary focus:outline-none"
             />
           </div>
 
           {/* Resource Type Filter */}
           <div>
-            <label className="mb-1 block text-xs font-medium text-text-muted">
-              Resource Type
-            </label>
+            <label className="mb-1 block text-xs font-medium text-text-muted">Resource Type</label>
             <input
               type="text"
               placeholder="e.g., project, voice, movie"
@@ -133,9 +119,7 @@ export default function AuditFilters({
 
           {/* Date From Filter */}
           <div>
-            <label className="mb-1 block text-xs font-medium text-text-muted">
-              Date From
-            </label>
+            <label className="mb-1 block text-xs font-medium text-text-muted">Date From</label>
             <input
               type="date"
               value={localFilters.date_from || ""}
@@ -146,9 +130,7 @@ export default function AuditFilters({
 
           {/* Date To Filter */}
           <div>
-            <label className="mb-1 block text-xs font-medium text-text-muted">
-              Date To
-            </label>
+            <label className="mb-1 block text-xs font-medium text-text-muted">Date To</label>
             <input
               type="date"
               value={localFilters.date_to || ""}
@@ -159,9 +141,7 @@ export default function AuditFilters({
 
           {/* Resource ID Search */}
           <div>
-            <label className="mb-1 block text-xs font-medium text-text-muted">
-              Resource ID
-            </label>
+            <label className="mb-1 block text-xs font-medium text-text-muted">Resource ID</label>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
               <input

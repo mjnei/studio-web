@@ -33,7 +33,6 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 
       {/* Main Content Area - Split on desktop, full on mobile */}
       <div className="relative z-10 flex w-full min-h-screen">
-        
         {/* Left Side Branding (Desktop only) */}
         <div className="hidden lg:flex flex-col justify-end w-1/2 p-12 text-white">
           <div className="inline-flex items-center justify-center w-16 h-16 mb-6 rounded-2xl bg-gradient-to-br from-accent-secondary via-accent-primary to-accent-tertiary shadow-lg">
@@ -60,7 +59,6 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         {/* Right Side Form */}
         <div className="flex flex-col w-full lg:w-1/2 items-center justify-center p-4">
           <div className="w-full max-w-md relative">
-            
             {/* Mobile Branding */}
             <div className="mb-8 text-center lg:hidden">
               <div className="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-2xl bg-gradient-to-br from-accent-secondary via-accent-primary to-accent-tertiary shadow-lg">
@@ -80,17 +78,13 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
                   <polyline points="2 12 12 17 22 12" />
                 </svg>
               </div>
-              <h1 className="text-3xl font-bold text-white drop-shadow-md">
-                Huavoi Studio
-              </h1>
+              <h1 className="text-3xl font-bold text-white drop-shadow-md">Huavoi Studio</h1>
               <p className="mt-2 text-sm text-white/90 drop-shadow">AI-assisted video production</p>
             </div>
 
             {/* Form Container with Gradient Mask and Glowing Effect */}
             <div className="relative rounded-2xl p-[2px] bg-gradient-to-br from-white/40 via-white/5 to-transparent shadow-[0_0_50px_rgba(255,255,255,0.15)] lg:shadow-[0_0_80px_rgba(255,255,255,0.2)] backdrop-blur-sm transition-shadow duration-500 hover:shadow-[0_0_60px_rgba(255,255,255,0.25)]">
-              <div className="rounded-2xl overflow-hidden">
-                {children}
-              </div>
+              <div className="rounded-2xl overflow-hidden">{children}</div>
             </div>
 
             {/* Language Switcher at bottom */}

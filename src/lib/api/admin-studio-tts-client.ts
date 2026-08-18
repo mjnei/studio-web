@@ -1,11 +1,5 @@
 import { request } from "@/lib/api-client";
-import type {
-  StaleJob,
-  FailedJob,
-  CompletedJob,
-  TTSJobStats,
-  TTSJob,
-} from "@/types/admin";
+import type { StaleJob, FailedJob, CompletedJob, TTSJobStats, TTSJob } from "@/types/admin";
 
 /**
  * Admin Studio TTS Jobs Client
@@ -37,7 +31,9 @@ export async function getCompletedTTSJobs(
   limit: number = 100,
   offset: number = 0
 ): Promise<CompletedJob[]> {
-  return request<CompletedJob[]>(`/admin/studio-tts-jobs/completed?limit=${limit}&offset=${offset}`);
+  return request<CompletedJob[]>(
+    `/admin/studio-tts-jobs/completed?limit=${limit}&offset=${offset}`
+  );
 }
 
 /**

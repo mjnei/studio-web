@@ -5,6 +5,7 @@ import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Copy } from "lucide-
 import type { AuditLog } from "@/types/admin";
 import { useToast } from "@/lib/hooks/use-toast";
 import ActionBadge from "./ActionBadge";
+import SourceBadge from "./SourceBadge";
 
 interface AuditLogsTableProps {
   logs: AuditLog[];
@@ -164,6 +165,9 @@ export default function AuditLogsTable({
                   IP Address
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-text-muted">
+                  Source
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-text-muted">
                   Details
                 </th>
               </tr>
@@ -187,14 +191,10 @@ export default function AuditLogsTable({
                     </td>
                     <td className="px-4 py-3 text-sm">
                       <div className="flex items-center gap-1">
-                        <span className="text-text-primary">
-                          {log.user_id || "System"}
-                        </span>
+                        <span className="text-text-primary">{log.user_id || "System"}</span>
                         {log.user_id && (
                           <button
-                            onClick={() =>
-                              copyToClipboard(log.user_id!.toString(), "User ID")
-                            }
+                            onClick={() => copyToClipboard(log.user_id!.toString(), "User ID")}
                             className="text-text-muted hover:text-text-primary transition-colors"
                           >
                             <Copy className="h-3 w-3" />
@@ -216,9 +216,7 @@ export default function AuditLogsTable({
                               {log.resource_id}
                             </span>
                             <button
-                              onClick={() =>
-                                copyToClipboard(log.resource_id!, "Resource ID")
-                              }
+                              onClick={() => copyToClipboard(log.resource_id!, "Resource ID")}
                               className="text-text-muted hover:text-text-primary transition-colors"
                             >
                               <Copy className="h-3 w-3" />
@@ -227,8 +225,9 @@ export default function AuditLogsTable({
                         )}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-sm text-text-muted">
-                      {log.ip_address || "N/A"}
+                    <td className="px-4 py-3 text-sm text-text-muted">{log.ip_address || "N/A"}</td>
+                    <td className="px-4 py-3 text-sm">
+                      <SourceBadge source={log.source} />
                     </td>
                     <td className="px-4 py-3 text-sm">
                       {log.changes && Object.keys(log.changes).length > 0 && (
@@ -243,7 +242,7 @@ export default function AuditLogsTable({
                   </tr>
                   {expandedRows.has(log.id) && log.changes && (
                     <tr className="border-b border-border bg-surface-raised">
-                      <td colSpan={6} className="px-4 py-3">
+                      <td colSpan={7} className="px-4 py-3">
                         <div className="rounded-lg bg-background p-3">
                           <p className="mb-2 text-xs font-bold uppercase text-text-muted">
                             Changes:
@@ -273,27 +272,22 @@ export default function AuditLogsTable({
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
                   <ActionBadge action={log.action} />
+                  <SourceBadge source={log.source} />
                 </div>
-                <p className="text-sm text-text-muted">
-                  {formatRelativeTime(log.created_at)}
-                </p>
+                <p className="text-sm text-text-muted">{formatRelativeTime(log.created_at)}</p>
               </div>
             </div>
 
             <div className="space-y-2 text-sm">
               <div>
                 <span className="text-text-muted">User: </span>
-                <span className="text-text-primary font-medium">
-                  {log.user_id || "System"}
-                </span>
+                <span className="text-text-primary font-medium">{log.user_id || "System"}</span>
               </div>
 
               {log.resource_type && (
                 <div>
                   <span className="text-text-muted">Resource: </span>
-                  <span className="text-text-primary font-medium">
-                    {log.resource_type}
-                  </span>
+                  <span className="text-text-primary font-medium">{log.resource_type}</span>
                 </div>
               )}
 
@@ -345,8 +339,8 @@ export default function AuditLogsTable({
       <div className="flex items-center justify-between rounded-xl border-2 border-border bg-surface-panel px-4 py-3">
         <p className="text-sm text-text-muted">
           Showing {(pagination.page - 1) * pagination.pageSize + 1} to{" "}
-          {Math.min(pagination.page * pagination.pageSize, pagination.total)} of{" "}
-          {pagination.total} logs
+          {Math.min(pagination.page * pagination.pageSize, pagination.total)} of {pagination.total}{" "}
+          logs
         </p>
 
         <div className="flex items-center gap-2">

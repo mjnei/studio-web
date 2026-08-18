@@ -17,13 +17,7 @@ import {
   retryTTSJob,
   cancelTTSJob,
 } from "@/lib/api/admin-studio-tts-client";
-import type {
-  StaleJob,
-  FailedJob,
-  CompletedJob,
-  TTSJobStats,
-  TTSJob,
-} from "@/types/admin";
+import type { StaleJob, FailedJob, CompletedJob, TTSJobStats, TTSJob } from "@/types/admin";
 
 type TabType = "failed" | "completed";
 
@@ -207,9 +201,7 @@ export default function TTSJobsPage() {
 
     const csvContent = [
       headers.join(","),
-      ...rows.map((row) =>
-        row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(",")
-      ),
+      ...rows.map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(",")),
     ].join("\n");
 
     // Download CSV
@@ -217,10 +209,7 @@ export default function TTSJobsPage() {
     const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
     link.setAttribute("href", url);
-    link.setAttribute(
-      "download",
-      `tts-${activeTab}-jobs-${new Date().toISOString()}.csv`
-    );
+    link.setAttribute("download", `tts-${activeTab}-jobs-${new Date().toISOString()}.csv`);
     link.style.visibility = "hidden";
     document.body.appendChild(link);
     link.click();
@@ -282,9 +271,7 @@ export default function TTSJobsPage() {
             {/* Export CSV */}
             <button
               onClick={handleExportCSV}
-              disabled={
-                activeTab === "failed" ? !failedJobs.length : !completedJobs.length
-              }
+              disabled={activeTab === "failed" ? !failedJobs.length : !completedJobs.length}
               className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold bg-gradient-to-r from-accent-primary to-purple-600 text-white hover:shadow-lg hover:shadow-accent-primary/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Download className="h-4 w-4" />
@@ -362,10 +349,7 @@ export default function TTSJobsPage() {
                 onViewDetails={handleViewDetails}
               />
             ) : (
-              <CompletedJobsTable
-                completedJobs={completedJobs}
-                onViewDetails={handleViewDetails}
-              />
+              <CompletedJobsTable completedJobs={completedJobs} onViewDetails={handleViewDetails} />
             )}
           </div>
         </div>

@@ -119,9 +119,7 @@ export function JobDetailModal({ job, open, onClose }: JobDetailModalProps) {
                 Duration
               </label>
               <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
-                <p className="text-sm text-text-primary">
-                  {formatDuration(job.duration_seconds)}
-                </p>
+                <p className="text-sm text-text-primary">{formatDuration(job.duration_seconds)}</p>
               </div>
             </div>
           )}

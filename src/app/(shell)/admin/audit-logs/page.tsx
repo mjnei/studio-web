@@ -60,7 +60,14 @@ export default function AuditLogsPage() {
 
   function handleExportCSV() {
     try {
-      const headers = ["Timestamp", "User ID", "Action", "Resource Type", "Resource ID", "IP Address"];
+      const headers = [
+        "Timestamp",
+        "User ID",
+        "Action",
+        "Resource Type",
+        "Resource ID",
+        "IP Address",
+      ];
       const rows = logs.map((log) => [
         new Date(log.created_at).toLocaleString(),
         log.user_id?.toString() || "N/A",
@@ -114,9 +121,7 @@ export default function AuditLogsPage() {
             </Link>
             <div>
               <h1 className="text-2xl font-bold text-text-primary">Audit Logs</h1>
-              <p className="text-sm text-text-muted">
-                View and filter system activity logs
-              </p>
+              <p className="text-sm text-text-muted">View and filter system activity logs</p>
             </div>
           </div>
 
@@ -128,6 +133,53 @@ export default function AuditLogsPage() {
             <Download className="h-4 w-4" />
             Export CSV
           </button>
+        </div>
+
+        {/* Data Source Info Banner */}
+        <div className="mb-6 rounded-xl border-2 border-blue-500/20 bg-blue-500/5 p-4">
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0 mt-0.5">
+              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-500/20">
+                <svg
+                  className="h-4 w-4 text-blue-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-sm font-semibold text-text-primary mb-1">
+                Dual-Source Audit System
+              </h3>
+              <p className="text-sm text-text-muted mb-2">
+                Audit logs are stored in two systems for optimal performance and analytics:
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 text-sm">
+                <div className="flex items-start gap-2">
+                  <span className="inline-flex items-center gap-1 rounded-md bg-blue-500/10 px-2 py-1 text-xs font-medium text-blue-500 border border-blue-500/20">
+                    PostgreSQL
+                  </span>
+                  <span className="text-text-muted">
+                    Fast operational queries (recent 30-90 days)
+                  </span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="inline-flex items-center gap-1 rounded-md bg-purple-500/10 px-2 py-1 text-xs font-medium text-purple-500 border border-purple-500/20">
+                    Axiom
+                  </span>
+                  <span className="text-text-muted">Analytics & long-term compliance (years)</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Stats Cards */}

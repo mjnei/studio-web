@@ -10,11 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { validateReferralCode } from "@/lib/api/referral-client";
 
 function SignupContent() {
@@ -162,7 +158,9 @@ function SignupContent() {
       {/* Referral Code Input - Hidden when "Invited by" is displayed */}
       {!referralCode && !referrerName && (
         <div className="mb-6 flex flex-col items-center">
-          <label className="text-sm font-medium text-text-primary mb-2 self-start">{t("auth.invite.yourCode")}</label>
+          <label className="text-sm font-medium text-text-primary mb-2 self-start">
+            {t("auth.invite.yourCode")}
+          </label>
           <InputOTP
             maxLength={6}
             value={manualCode}

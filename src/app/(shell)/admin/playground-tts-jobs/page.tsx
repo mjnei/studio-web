@@ -46,14 +46,13 @@ export default function PlaygroundTTSJobsPage() {
 
   const loadData = useCallback(async () => {
     try {
-      const [statsData, staleData, failedData, rateLimitedData, completedData] =
-        await Promise.all([
-          getPlaygroundTTSJobStats(),
-          getPlaygroundStaleTTSJobs(100),
-          getPlaygroundFailedTTSJobs(50, 0),
-          getPlaygroundRateLimitedJobs(50, 0),
-          getPlaygroundCompletedTTSJobs(50, 0),
-        ]);
+      const [statsData, staleData, failedData, rateLimitedData, completedData] = await Promise.all([
+        getPlaygroundTTSJobStats(),
+        getPlaygroundStaleTTSJobs(100),
+        getPlaygroundFailedTTSJobs(50, 0),
+        getPlaygroundRateLimitedJobs(50, 0),
+        getPlaygroundCompletedTTSJobs(50, 0),
+      ]);
 
       setStats(statsData);
       // Combine queued and processing stale jobs
@@ -250,9 +249,7 @@ export default function PlaygroundTTSJobsPage() {
 
     const csvContent = [
       headers.join(","),
-      ...rows.map((row) =>
-        row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(",")
-      ),
+      ...rows.map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(",")),
     ].join("\n");
 
     // Download CSV

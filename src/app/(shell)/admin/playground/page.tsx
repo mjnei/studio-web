@@ -191,21 +191,24 @@ export default function PlaygroundPage() {
           )}
 
           {/* Processing Status */}
-          {currentJob && (currentJob.status === "pending" || currentJob.status === "queued" || currentJob.status === "processing") && (
-            <div className="rounded-xl border border-border-default bg-surface-panel p-6">
-              <div className="flex items-center gap-4">
-                <LoadingSpinner size="md" />
-                <div>
-                  <h3 className="text-sm font-semibold text-text-primary mb-1">
-                    Processing Audio
-                  </h3>
-                  <p className="text-xs text-text-secondary">
-                    Status: {currentJob.status} • This usually takes 10-30 seconds
-                  </p>
+          {currentJob &&
+            (currentJob.status === "pending" ||
+              currentJob.status === "queued" ||
+              currentJob.status === "processing") && (
+              <div className="rounded-xl border border-border-default bg-surface-panel p-6">
+                <div className="flex items-center gap-4">
+                  <LoadingSpinner size="md" />
+                  <div>
+                    <h3 className="text-sm font-semibold text-text-primary mb-1">
+                      Processing Audio
+                    </h3>
+                    <p className="text-xs text-text-secondary">
+                      Status: {currentJob.status} • This usually takes 10-30 seconds
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
           {/* Failed Status */}
           {currentJob?.status === "failed" && (

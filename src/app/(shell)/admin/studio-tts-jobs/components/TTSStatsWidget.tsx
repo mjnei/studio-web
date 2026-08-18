@@ -25,9 +25,7 @@ export function TTSStatsWidget({ stats }: TTSStatsWidgetProps) {
               Total Jobs
             </p>
             <p className="text-3xl font-bold text-text-primary">{stats.total_jobs}</p>
-            <p className="text-xs text-text-secondary mt-1">
-              Completed: {stats.completed_jobs}
-            </p>
+            <p className="text-xs text-text-secondary mt-1">Completed: {stats.completed_jobs}</p>
           </div>
           <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-blue-500/10">
             <Zap className="h-6 w-6 text-blue-600" />
@@ -45,9 +43,7 @@ export function TTSStatsWidget({ stats }: TTSStatsWidgetProps) {
             <p className="text-3xl font-bold text-green-600">
               {(stats.success_rate * 100).toFixed(1)}%
             </p>
-            <p className="text-xs text-text-secondary mt-1">
-              Failed: {stats.failed_jobs}
-            </p>
+            <p className="text-xs text-text-secondary mt-1">Failed: {stats.failed_jobs}</p>
           </div>
           <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-green-500/10">
             <CheckCircle2 className="h-6 w-6 text-green-600" />

@@ -29,13 +29,21 @@ export default function ActionBadge({ action }: ActionBadgeProps) {
   if (actionLower.includes("create") || actionLower.includes("add")) {
     Icon = Plus;
     colorClasses = "bg-green-500/10 text-green-600 dark:text-green-500";
-  } else if (actionLower.includes("update") || actionLower.includes("edit") || actionLower.includes("modify")) {
+  } else if (
+    actionLower.includes("update") ||
+    actionLower.includes("edit") ||
+    actionLower.includes("modify")
+  ) {
     Icon = Edit;
     colorClasses = "bg-blue-500/10 text-blue-600 dark:text-blue-500";
   } else if (actionLower.includes("delete") || actionLower.includes("remove")) {
     Icon = Trash2;
     colorClasses = "bg-red-500/10 text-red-600 dark:text-red-500";
-  } else if (actionLower.includes("view") || actionLower.includes("read") || actionLower.includes("get")) {
+  } else if (
+    actionLower.includes("view") ||
+    actionLower.includes("read") ||
+    actionLower.includes("get")
+  ) {
     Icon = Eye;
     colorClasses = "bg-purple-500/10 text-purple-600 dark:text-purple-500";
   } else if (actionLower.includes("login") || actionLower.includes("signin")) {
@@ -47,7 +55,11 @@ export default function ActionBadge({ action }: ActionBadgeProps) {
   } else if (actionLower.includes("approve") || actionLower.includes("accept")) {
     Icon = CheckCircle;
     colorClasses = "bg-green-500/10 text-green-600 dark:text-green-500";
-  } else if (actionLower.includes("reject") || actionLower.includes("decline") || actionLower.includes("cancel")) {
+  } else if (
+    actionLower.includes("reject") ||
+    actionLower.includes("decline") ||
+    actionLower.includes("cancel")
+  ) {
     Icon = XCircle;
     colorClasses = "bg-red-500/10 text-red-600 dark:text-red-500";
   } else if (actionLower.includes("upload") || actionLower.includes("import")) {

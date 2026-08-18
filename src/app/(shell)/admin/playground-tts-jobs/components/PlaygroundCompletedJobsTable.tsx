@@ -50,9 +50,7 @@ export function PlaygroundCompletedJobsTable({
           <div className="flex items-center justify-center w-16 h-16 rounded-full bg-gray-500/10">
             <CheckCircle2 className="h-8 w-8 text-gray-600" />
           </div>
-          <h3 className="text-lg font-semibold text-text-primary">
-            No Completed Playground Jobs
-          </h3>
+          <h3 className="text-lg font-semibold text-text-primary">No Completed Playground Jobs</h3>
           <p className="text-sm text-text-secondary max-w-md">
             No completed playground TTS jobs found in the system yet.
           </p>

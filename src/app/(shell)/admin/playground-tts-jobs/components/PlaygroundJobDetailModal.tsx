@@ -1,6 +1,16 @@
 "use client";
 
-import { X, Clock, CheckCircle2, XCircle, Zap, FileText, Mic, ShieldAlert, Globe } from "lucide-react";
+import {
+  X,
+  Clock,
+  CheckCircle2,
+  XCircle,
+  Zap,
+  FileText,
+  Mic,
+  ShieldAlert,
+  Globe,
+} from "lucide-react";
 import type { PlaygroundTTSJob } from "@/types/admin";
 
 interface PlaygroundJobDetailModalProps {
@@ -102,9 +112,7 @@ export function PlaygroundJobDetailModal({ job, open, onClose }: PlaygroundJobDe
             <div className="mt-2 flex items-center gap-3">
               {getStatusBadge(job.status)}
               {job.retry_count > 0 && (
-                <span className="text-xs text-text-muted">
-                  Retries: {job.retry_count}
-                </span>
+                <span className="text-xs text-text-muted">Retries: {job.retry_count}</span>
               )}
             </div>
           </div>
@@ -146,9 +154,7 @@ export function PlaygroundJobDetailModal({ job, open, onClose }: PlaygroundJobDe
                 Audio Duration
               </label>
               <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
-                <p className="text-sm text-text-primary">
-                  {formatDuration(job.audio_duration)}
-                </p>
+                <p className="text-sm text-text-primary">{formatDuration(job.audio_duration)}</p>
               </div>
             </div>
             <div>

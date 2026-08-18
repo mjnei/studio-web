@@ -1,9 +1,5 @@
 import { request, getAccessToken } from "@/lib/api-client";
-import type {
-  PlaygroundTTSRequest,
-  PlaygroundJob,
-  PlaygroundVoice,
-} from "@/types/admin";
+import type { PlaygroundTTSRequest, PlaygroundJob, PlaygroundVoice } from "@/types/admin";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020/api/v1";
 
@@ -19,9 +15,7 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020/api/v
 /**
  * [ADMIN] Create a new playground TTS job (bypasses rate limiting).
  */
-export async function createPlaygroundTTSJob(
-  data: PlaygroundTTSRequest
-): Promise<PlaygroundJob> {
+export async function createPlaygroundTTSJob(data: PlaygroundTTSRequest): Promise<PlaygroundJob> {
   return request<PlaygroundJob>("/playground/admin/tts", {
     method: "POST",
     body: JSON.stringify(data),

@@ -208,6 +208,7 @@ export interface AuditLog {
   ip_address?: string;
   user_agent?: string;
   created_at: string;
+  source?: "postgres" | "axiom"; // Track data source
 }
 
 export interface AuditStats {
