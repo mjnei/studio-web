@@ -218,12 +218,7 @@ export async function filterAuditLogs(
   source: "postgres" | "axiom",
   filter: AuditFilter
 ): Promise<AuditLogsResponse> {
-  return getAuditLogs(
-    source,
-    filter.limit || 50,
-    filter.offset || 0,
-    filter
-  );
+  return getAuditLogs(source, filter.limit || 50, filter.offset || 0, filter);
 }
 
 /**
