@@ -1,14 +1,16 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Play, Pause, Volume2, VolumeX, Download, RotateCcw } from "lucide-react";
+import { Play, Pause, Volume2, VolumeX, Download, RotateCcw, X } from "lucide-react";
 
 interface AudioPlayerProps {
   audioUrl: string;
-  jobId: string;
+  jobId?: string;
+  jobName?: string;
+  onDismiss?: () => void;
 }
 
-export function AudioPlayer({ audioUrl, jobId }: AudioPlayerProps) {
+export function AudioPlayer({ audioUrl, jobId, jobName, onDismiss }: AudioPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -16,33 +18,66 @@ export function AudioPlayer({ audioUrl, jobId }: AudioPlayerProps) {
   const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  // Auto-play when component mounts
   useEffect(() => {
-    const audio = new Audio(audioUrl);
-    audioRef.current = audio;
+    if (audioRef.current) {
+      void audioRef.current.play();
+      setIsPlaying(true);
+    }
+  }, []);
 
-    audio.addEventListener("loadedmetadata", () => {
+  // Reset player when audio URL changes
+  useEffect(() => {
+    setIsPlaying(false);
+    setCurrentTime(0);
+    setDuration(0);
+    if (audioRef.current) {
+      audioRef.current.load();
+      void audioRef.current.play();
+      setIsPlaying(true);
+    }
+  }, [audioUrl]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const handleLoadedMetadata = () => {
       setDuration(audio.duration);
-    });
+    };
 
-    audio.addEventListener("timeupdate", () => {
+    const handleTimeUpdate = () => {
       setCurrentTime(audio.currentTime);
-    });
+    };
 
-    audio.addEventListener("ended", () => {
+    const handleEnded = () => {
       setIsPlaying(false);
       setCurrentTime(0);
-    });
+      // Auto-dismiss when playback finishes
+      if (onDismiss) {
+        onDismiss();
+      }
+    };
 
-    audio.addEventListener("error", () => {
-      console.error("Audio playback error");
+    const handleError = (e: Event) => {
+      const target = e.target as HTMLAudioElement;
+      console.error("Audio playback error for URL:", target.src);
+      console.error("Error details:", target.error);
       setIsPlaying(false);
-    });
+    };
+
+    audio.addEventListener("loadedmetadata", handleLoadedMetadata);
+    audio.addEventListener("timeupdate", handleTimeUpdate);
+    audio.addEventListener("ended", handleEnded);
+    audio.addEventListener("error", handleError);
 
     return () => {
-      audio.pause();
-      audio.remove();
+      audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      audio.removeEventListener("timeupdate", handleTimeUpdate);
+      audio.removeEventListener("ended", handleEnded);
+      audio.removeEventListener("error", handleError);
     };
-  }, [audioUrl]);
+  }, [onDismiss]);
 
   const togglePlay = () => {
     if (!audioRef.current) return;
@@ -98,13 +133,24 @@ export function AudioPlayer({ audioUrl, jobId }: AudioPlayerProps) {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `playground-${jobId}.mp3`;
+      a.download = `${jobName || `job-${jobId || "audio"}`}.mp3`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
     } catch (error) {
       console.error("Download failed:", error);
+    }
+  };
+
+  const handleDismiss = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    setIsPlaying(false);
+    if (onDismiss) {
+      onDismiss();
     }
   };
 
@@ -116,88 +162,102 @@ export function AudioPlayer({ audioUrl, jobId }: AudioPlayerProps) {
   };
 
   return (
-    <div className="rounded-xl border border-border-default bg-gradient-to-br from-surface-panel to-surface-raised p-6 shadow-lg">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-bold text-text-primary">Audio Player</h3>
-        <button
-          onClick={handleDownload}
-          className="flex items-center gap-2 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-xs font-medium text-text-secondary hover:border-accent-primary hover:text-accent-primary hover:bg-accent-primary/5 transition-all"
-        >
-          <Download className="h-4 w-4" />
-          Download
-        </button>
-      </div>
-
-      {/* Waveform visualization (placeholder) */}
-      <div className="mb-4 h-20 rounded-lg bg-surface-base border border-border-default flex items-center justify-center">
-        <div className="flex items-end gap-1 h-16">
-          {Array.from({ length: 40 }).map((_, i) => (
-            <div
-              key={i}
-              className="w-1 bg-accent-primary rounded-t transition-all"
-              style={{
-                height: `${Math.random() * 100}%`,
-                opacity: currentTime > (i / 40) * duration ? 1 : 0.3,
-              }}
-            />
-          ))}
+    <>
+      <audio ref={audioRef} src={audioUrl} className="hidden" />
+      <div className="rounded-xl border border-border-default bg-gradient-to-br from-surface-panel to-surface-raised p-6 shadow-lg">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-bold text-text-primary">
+            {jobName || `Job ${jobId || ""}`}
+          </h3>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleDownload}
+              className="flex items-center gap-2 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-xs font-medium text-text-secondary hover:border-accent-primary hover:text-accent-primary hover:bg-accent-primary/5 transition-all"
+            >
+              <Download className="h-4 w-4" />
+              Download
+            </button>
+            <button
+              onClick={handleDismiss}
+              className="flex items-center justify-center w-8 h-8 rounded-lg border border-border-default bg-surface-base text-text-secondary hover:border-red-500 hover:text-red-600 hover:bg-red-500/5 transition-all"
+              title="Close player"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
         </div>
-      </div>
 
-      {/* Progress Bar */}
-      <div className="mb-4">
-        <input
-          type="range"
-          min="0"
-          max={duration || 0}
-          step="0.1"
-          value={currentTime}
-          onChange={handleSeek}
-          className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-surface-raised accent-accent-primary"
-        />
-        <div className="mt-2 flex items-center justify-between text-xs text-text-muted">
-          <span>{formatTime(currentTime)}</span>
-          <span>{formatTime(duration)}</span>
+        {/* Waveform visualization (placeholder) */}
+        <div className="mb-4 h-20 rounded-lg bg-surface-base border border-border-default flex items-center justify-center">
+          <div className="flex items-end gap-1 h-16">
+            {Array.from({ length: 40 }).map((_, i) => (
+              <div
+                key={i}
+                className="w-1 bg-accent-primary rounded-t transition-all"
+                style={{
+                  height: `${Math.random() * 100}%`,
+                  opacity: currentTime > (i / 40) * duration ? 1 : 0.3,
+                }}
+              />
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* Controls */}
-      <div className="flex items-center gap-3">
-        {/* Play/Pause */}
-        <button
-          onClick={togglePlay}
-          className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-accent-primary to-purple-600 text-white hover:shadow-lg hover:shadow-accent-primary/30 transition-all"
-        >
-          {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5 ml-0.5" />}
-        </button>
-
-        {/* Restart */}
-        <button
-          onClick={handleRestart}
-          className="flex items-center justify-center w-10 h-10 rounded-full border border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:text-accent-primary hover:bg-accent-primary/5 transition-all"
-        >
-          <RotateCcw className="h-4 w-4" />
-        </button>
-
-        {/* Volume */}
-        <div className="flex-1 flex items-center gap-3">
-          <button
-            onClick={toggleMute}
-            className="flex items-center justify-center w-10 h-10 rounded-full border border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:text-accent-primary hover:bg-accent-primary/5 transition-all"
-          >
-            {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-          </button>
+        {/* Progress Bar */}
+        <div className="mb-4">
           <input
             type="range"
             min="0"
-            max="1"
-            step="0.01"
-            value={isMuted ? 0 : volume}
-            onChange={handleVolumeChange}
-            className="flex-1 h-2 rounded-lg appearance-none cursor-pointer bg-surface-raised accent-accent-primary"
+            max={duration || 0}
+            step="0.1"
+            value={currentTime}
+            onChange={handleSeek}
+            className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-surface-raised accent-accent-primary"
           />
+          <div className="mt-2 flex items-center justify-between text-xs text-text-muted">
+            <span>{formatTime(currentTime)}</span>
+            <span>{formatTime(duration)}</span>
+          </div>
+        </div>
+
+        {/* Controls */}
+        <div className="flex items-center gap-3">
+          {/* Play/Pause */}
+          <button
+            onClick={togglePlay}
+            className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-accent-primary to-purple-600 text-white hover:shadow-lg hover:shadow-accent-primary/30 transition-all"
+          >
+            {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5 ml-0.5" />}
+          </button>
+
+          {/* Restart */}
+          <button
+            onClick={handleRestart}
+            className="flex items-center justify-center w-10 h-10 rounded-full border border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:text-accent-primary hover:bg-accent-primary/5 transition-all"
+          >
+            <RotateCcw className="h-4 w-4" />
+          </button>
+
+          {/* Volume */}
+          <div className="flex-1 flex items-center gap-3">
+            <button
+              onClick={toggleMute}
+              className="flex items-center justify-center w-10 h-10 rounded-full border border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:text-accent-primary hover:bg-accent-primary/5 transition-all"
+            >
+              {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+            </button>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value={isMuted ? 0 : volume}
+              onChange={handleVolumeChange}
+              className="flex-1 h-2 rounded-lg appearance-none cursor-pointer bg-surface-raised accent-accent-primary"
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

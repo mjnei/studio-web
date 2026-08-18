@@ -7,11 +7,13 @@ import type { PlaygroundCompletedJob } from "@/types/admin";
 interface PlaygroundCompletedJobsTableProps {
   completedJobs: PlaygroundCompletedJob[];
   onViewDetails?: (job: PlaygroundCompletedJob) => void;
+  onPlay?: (job: PlaygroundCompletedJob) => void;
 }
 
 export function PlaygroundCompletedJobsTable({
   completedJobs,
   onViewDetails,
+  onPlay,
 }: PlaygroundCompletedJobsTableProps) {
   const [expandedJobId, setExpandedJobId] = useState<number | null>(null);
 

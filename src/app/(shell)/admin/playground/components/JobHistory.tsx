@@ -1,6 +1,6 @@
 "use client";
 
-import { Clock, CheckCircle2, XCircle, Zap, Play, Trash2 } from "lucide-react";
+import { Clock, CheckCircle2, XCircle, Zap, Trash2 } from "lucide-react";
 import type { PlaygroundJob } from "@/types/admin";
 
 interface JobHistoryProps {
@@ -87,7 +87,16 @@ export function JobHistory({ jobs, onPlay, onDelete }: JobHistoryProps) {
         {jobs.map((job) => (
           <div
             key={job.id}
-            className="px-4 py-3 hover:bg-surface-raised/50 transition-colors group"
+            onClick={() => {
+              if (job.status === "completed" && job.audio_url) {
+                onPlay(job);
+              }
+            }}
+            className={`px-4 py-3 transition-all group ${
+              job.status === "completed" && job.audio_url
+                ? "cursor-pointer hover:bg-accent-primary/5 hover:border-l-4 hover:border-accent-primary"
+                : "hover:bg-surface-raised/50"
+            }`}
           >
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1 min-w-0">
@@ -100,6 +109,11 @@ export function JobHistory({ jobs, onPlay, onDelete }: JobHistoryProps) {
                   {job.duration_seconds && (
                     <span className="text-xs text-text-muted">
                       • {job.duration_seconds.toFixed(1)}s
+                    </span>
+                  )}
+                  {job.status === "completed" && job.audio_url && (
+                    <span className="text-xs text-accent-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                      • Click to play
                     </span>
                   )}
                 </div>
@@ -122,20 +136,16 @@ export function JobHistory({ jobs, onPlay, onDelete }: JobHistoryProps) {
                 )}
               </div>
 
-              {/* Actions */}
+              {/* Delete Action */}
               <div className="flex items-center gap-2 flex-shrink-0">
-                {job.status === "completed" && job.audio_url && (
-                  <button
-                    onClick={() => onPlay(job)}
-                    className="flex items-center justify-center w-8 h-8 rounded-lg border border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:text-accent-primary hover:bg-accent-primary/5 transition-all opacity-0 group-hover:opacity-100"
-                  >
-                    <Play className="h-4 w-4" />
-                  </button>
-                )}
                 {onDelete && (
                   <button
-                    onClick={() => onDelete(job.id)}
-                    className="flex items-center justify-center w-8 h-8 rounded-lg border border-border-default bg-surface-base text-text-secondary hover:border-red-500 hover:text-red-600 hover:bg-red-500/5 transition-all opacity-0 group-hover:opacity-100"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDelete(job.id);
+                    }}
+                    className="flex items-center justify-center w-8 h-8 rounded-lg border border-border-default bg-surface-base text-text-secondary hover:border-red-500 hover:text-red-600 hover:bg-red-500/5 transition-all"
+                    title="Delete job"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                   </button>

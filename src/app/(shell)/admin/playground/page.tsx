@@ -25,6 +25,7 @@ export default function PlaygroundPage() {
   const [history, setHistory] = useState<PlaygroundJob[]>([]);
   const [clearHistoryModal, setClearHistoryModal] = useState(false);
   const [pollingInterval, setPollingInterval] = useState<NodeJS.Timeout | null>(null);
+  const [showAudioPlayer, setShowAudioPlayer] = useState(false);
 
   const loadHistory = useCallback(async () => {
     try {
@@ -81,6 +82,7 @@ export default function PlaygroundPage() {
 
             if (job.status === "completed") {
               toast.success("Audio generated", "Your TTS audio is ready to play");
+              setShowAudioPlayer(true);
             } else {
               toast.error("Generation failed", job.error || "Failed to generate audio");
             }
@@ -125,7 +127,12 @@ export default function PlaygroundPage() {
 
   const handlePlayFromHistory = (job: PlaygroundJob) => {
     setCurrentJob(job);
+    setShowAudioPlayer(true);
     toast.success("Audio loaded", "Playing audio from history");
+  };
+
+  const handleDismissPlayer = () => {
+    setShowAudioPlayer(false);
   };
 
   const handleDeleteJob = async (jobId: string) => {
@@ -163,7 +170,7 @@ export default function PlaygroundPage() {
   }, [currentJob]);
 
   return (
-    <div className="mx-auto max-w-7xl">
+    <div className="mx-auto max-w-7xl pb-32">
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
@@ -184,11 +191,6 @@ export default function PlaygroundPage() {
             <h2 className="text-lg font-bold text-text-primary mb-4">Generate TTS Audio</h2>
             <PlaygroundForm onSubmit={handleSubmit} isLoading={isLoading} />
           </div>
-
-          {/* Audio Player */}
-          {currentJob?.status === "completed" && currentJob.audio_url && (
-            <AudioPlayer audioUrl={currentJob.audio_url} jobId={currentJob.id} />
-          )}
 
           {/* Processing Status */}
           {currentJob &&
@@ -247,6 +249,20 @@ export default function PlaygroundPage() {
           </div>
         </div>
       </div>
+
+      {/* Sticky Bottom Audio Player */}
+      {showAudioPlayer && currentJob?.status === "completed" && currentJob.audio_url && (
+        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-border-default bg-surface-base/95 backdrop-blur-lg shadow-2xl">
+          <div className="mx-auto max-w-7xl px-4 py-4">
+            <AudioPlayer
+              audioUrl={currentJob.audio_url}
+              jobId={currentJob.id}
+              jobName={`Job #${currentJob.id}`}
+              onDismiss={handleDismissPlayer}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Clear History Confirmation Modal */}
       <ConfirmModal

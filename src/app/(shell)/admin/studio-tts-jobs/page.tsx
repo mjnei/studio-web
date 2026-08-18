@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Zap, RefreshCw, Download, Filter } from "lucide-react";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useToast } from "@/components/ui/toast";
+import { AudioPlayer } from "@/app/(shell)/admin/playground/components/AudioPlayer";
 import { TTSStatsWidget } from "./components/TTSStatsWidget";
 import { StaleJobsAlert } from "./components/StaleJobsAlert";
 import { FailedJobsTable } from "./components/FailedJobsTable";
@@ -33,6 +34,8 @@ export default function TTSJobsPage() {
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
   const [activeTab, setActiveTab] = useState<TabType>("failed");
+  const [currentAudio, setCurrentAudio] = useState<{ url: string; jobId: string; jobName: string } | null>(null);
+  const [showAudioPlayer, setShowAudioPlayer] = useState(false);
 
   const loadData = useCallback(async () => {
     try {
@@ -153,6 +156,22 @@ export default function TTSJobsPage() {
     setIsModalOpen(true);
   };
 
+  const handlePlayAudio = (job: CompletedJob) => {
+    if (job.audio_path) {
+      setCurrentAudio({
+        url: job.audio_path,
+        jobId: job.job_id,
+        jobName: `Job #${job.job_id}`,
+      });
+      setShowAudioPlayer(true);
+    }
+  };
+
+  const handleDismissPlayer = () => {
+    setShowAudioPlayer(false);
+    setCurrentAudio(null);
+  };
+
   const handleExportCSV = () => {
     const jobsToExport = activeTab === "failed" ? failedJobs : completedJobs;
     if (!jobsToExport.length) {
@@ -227,7 +246,7 @@ export default function TTSJobsPage() {
   };
 
   return (
-    <div className="mx-auto max-w-7xl">
+    <div className="mx-auto max-w-7xl pb-32">
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-6">
@@ -349,8 +368,26 @@ export default function TTSJobsPage() {
                 onViewDetails={handleViewDetails}
               />
             ) : (
-              <CompletedJobsTable completedJobs={completedJobs} onViewDetails={handleViewDetails} />
+              <CompletedJobsTable
+                completedJobs={completedJobs}
+                onViewDetails={handleViewDetails}
+                onPlay={handlePlayAudio}
+              />
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Sticky Bottom Audio Player */}
+      {showAudioPlayer && currentAudio && (
+        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-border-default bg-surface-base/95 backdrop-blur-lg shadow-2xl">
+          <div className="mx-auto max-w-7xl px-4 py-4">
+            <AudioPlayer
+              audioUrl={currentAudio.url}
+              jobId={currentAudio.jobId}
+              jobName={currentAudio.jobName}
+              onDismiss={handleDismissPlayer}
+            />
           </div>
         </div>
       )}
