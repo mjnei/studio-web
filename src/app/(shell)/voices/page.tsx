@@ -134,6 +134,11 @@ export default function VoicesPage() {
       setShareConfirmOpen(false);
       setVoiceToShare(null);
       await refetch();
+
+      // Always refresh community voices (cache has been invalidated)
+      const data = await getAvailableVoices();
+      const voicesWithAudioUrls = await fetchAudioUrlsForVoices(data.community_voices);
+      setCommunityVoices(voicesWithAudioUrls);
     } catch (err) {
       toast.error(
         t("voices.toasts.voiceSharedError"),
@@ -163,6 +168,11 @@ export default function VoicesPage() {
       setUnshareConfirmOpen(false);
       setVoiceToUnshare(null);
       await refetch();
+
+      // Always refresh community voices (cache has been invalidated)
+      const data = await getAvailableVoices();
+      const voicesWithAudioUrls = await fetchAudioUrlsForVoices(data.community_voices);
+      setCommunityVoices(voicesWithAudioUrls);
     } catch (err) {
       toast.error(
         t("voices.toasts.voiceMadePrivateError"),
@@ -191,12 +201,10 @@ export default function VoicesPage() {
       await refetch();
       await voiceLimits.refetch();
 
-      // Refresh community voices if on community tab
-      if (tab === "community") {
-        const data = await getAvailableVoices();
-        const voicesWithAudioUrls = await fetchAudioUrlsForVoices(data.community_voices);
-        setCommunityVoices(voicesWithAudioUrls);
-      }
+      // Always refresh community voices (cache has been invalidated)
+      const data = await getAvailableVoices();
+      const voicesWithAudioUrls = await fetchAudioUrlsForVoices(data.community_voices);
+      setCommunityVoices(voicesWithAudioUrls);
     } catch (err) {
       toast.error(
         t("voices.toasts.voiceDeletedError"),
