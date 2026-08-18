@@ -15,9 +15,13 @@ export function PlaygroundForm({ onSubmit, isLoading }: PlaygroundFormProps) {
   const [voiceId, setVoiceId] = useState<number | null>(null);
   const [speedRatio, setSpeedRatio] = useState(1.0);
 
+  const maxChars = 2000;
+  const charCount = text.length;
+  const isOverLimit = charCount > maxChars;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!text.trim() || !voiceId) return;
+    if (!text.trim() || !voiceId || isOverLimit) return;
 
     await onSubmit({
       text: text.trim(),
@@ -26,7 +30,7 @@ export function PlaygroundForm({ onSubmit, isLoading }: PlaygroundFormProps) {
     });
   };
 
-  const isValid = text.trim().length > 0 && voiceId !== null;
+  const isValid = text.trim().length > 0 && voiceId !== null && !isOverLimit;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -40,15 +44,24 @@ export function PlaygroundForm({ onSubmit, isLoading }: PlaygroundFormProps) {
           onChange={(e) => setText(e.target.value)}
           placeholder="Enter the text you want to convert to speech..."
           rows={6}
+          maxLength={2000}
           className="w-full rounded-lg border-2 border-border-default bg-surface-base px-4 py-3 text-sm text-text-primary placeholder-text-muted focus:border-accent-primary focus:outline-none transition-colors resize-y"
           disabled={isLoading}
         />
         <div className="mt-2 flex items-center justify-between">
-          <p className="text-xs text-text-muted">
-            {text.length} character{text.length !== 1 ? "s" : ""}
+          <p
+            className={`text-xs ${isOverLimit ? "text-red-600 font-semibold" : "text-text-muted"}`}
+          >
+            {charCount}/{maxChars} character{charCount !== 1 ? "s" : ""}
           </p>
-          {text.length > 500 && (
-            <p className="text-xs text-orange-600">⚠️ Long text may take more time to process</p>
+          {isOverLimit ? (
+            <p className="text-xs text-red-600 font-semibold">
+              ⚠️ Text exceeds maximum length
+            </p>
+          ) : (
+            charCount > 1600 && (
+              <p className="text-xs text-orange-600">⚠️ Long text may take more time to process</p>
+            )
           )}
         </div>
       </div>
