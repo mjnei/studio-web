@@ -8,22 +8,28 @@ import type { AuditLog, AuditStats, AuditLogsResponse, AuditFilter } from "@/typ
  */
 
 /**
- * Get audit statistics from PostgreSQL (fallback when Axiom is unavailable).
- * Faster and works without external dependencies.
+ * Get action summary statistics from a specified data source.
+ * Requires mandatory source parameter: 'postgres' or 'axiom'
+ * @param source - Data source: 'postgres' or 'axiom' (mandatory)
+ * @param hours - Number of hours to look back (default: 24)
  */
-export async function getAuditStatsPostgres(hours: number = 24): Promise<AuditStats> {
+export async function getAuditStats(
+  source: "postgres" | "axiom",
+  hours: number = 24
+): Promise<AuditStats> {
   const response = await request<{
     period_hours: number;
     total_events: number;
     actions: Record<string, number>;
-    unique_users: number;
-  }>(`/audit/stats/postgres?hours=${hours}`);
+    unique_users?: number;
+  }>(`/audit/stats?source=${source}&hours=${hours}`);
 
   // Transform backend response to frontend format
   return {
     total_logs: response.total_events,
-    users_active: response.unique_users,
+    unique_users: response.unique_users || 0,
     actions_by_type: response.actions,
+    resources_by_type: {},
     date_range: {
       start: new Date(Date.now() - hours * 60 * 60 * 1000).toISOString(),
       end: new Date().toISOString(),
@@ -32,44 +38,17 @@ export async function getAuditStatsPostgres(hours: number = 24): Promise<AuditSt
 }
 
 /**
- * Get action summary statistics (aggregated audit data).
- * Uses PostgreSQL endpoint as primary source (fast, reliable).
- * Falls back to Axiom if PostgreSQL fails.
- * @param hours - Number of hours to look back (default: 24)
- */
-export async function getAuditStats(hours: number = 24): Promise<AuditStats> {
-  try {
-    // Try PostgreSQL endpoint first (fast, no external dependency)
-    return await getAuditStatsPostgres(hours);
-  } catch (error) {
-    console.warn("PostgreSQL stats endpoint failed, trying Axiom fallback...", error);
-
-    // Fallback to Axiom-based stats
-    const response = await request<{
-      period_hours: number;
-      total_events: number;
-      actions: Record<string, number>;
-    }>(`/audit/summary?hours=${hours}`);
-
-    // Transform backend response to frontend format
-    return {
-      total_logs: response.total_events,
-      users_active: 0, // Not provided by Axiom endpoint
-      actions_by_type: response.actions,
-      date_range: {
-        start: new Date(Date.now() - hours * 60 * 60 * 1000).toISOString(),
-        end: new Date().toISOString(),
-      },
-    };
-  }
-}
-
-/**
  * Get audit trail for a specific user.
+ * Requires mandatory source parameter: 'postgres' or 'axiom'
  * @param userId - User ID to get audit trail for
+ * @param source - Data source: 'postgres' or 'axiom' (mandatory)
  * @param days - Number of days to look back (default: 7)
  */
-export async function getUserAuditTrail(userId: number, days: number = 7): Promise<AuditLog[]> {
+export async function getUserAuditTrail(
+  userId: number,
+  source: "postgres" | "axiom",
+  days: number = 7
+): Promise<AuditLog[]> {
   const response = await request<{
     user_id: number;
     event_count: number;
@@ -82,11 +61,11 @@ export async function getUserAuditTrail(userId: number, days: number = 7): Promi
       environment: string;
       service: string;
     }>;
-  }>(`/audit/user/${userId}/trail?days=${days}`);
+  }>(`/audit/user/${userId}/trail?source=${source}&days=${days}`);
 
   // Transform backend events to frontend format
   return response.events.map((event, index) => ({
-    id: index, // Axiom events don't have IDs, use index
+    id: index, // Events don't have IDs, use index
     user_id: event.user_id,
     action: event.action,
     resource_type: event.detail?.resource_type || null,
@@ -94,15 +73,20 @@ export async function getUserAuditTrail(userId: number, days: number = 7): Promi
     changes: event.detail || {},
     created_at: event.timestamp,
     ip_address: event.ip_address,
-    source: "axiom" as const, // Mark source
+    source: source as const, // Mark source
   }));
 }
 
 /**
- * Get error logs (failed actions).
+ * Get error logs from a specified data source.
+ * Requires mandatory source parameter: 'postgres' or 'axiom'
+ * @param source - Data source: 'postgres' or 'axiom' (mandatory)
  * @param hours - Number of hours to look back (default: 24)
  */
-export async function getErrorLogs(hours: number = 24): Promise<AuditLog[]> {
+export async function getErrorLogs(
+  source: "postgres" | "axiom",
+  hours: number = 24
+): Promise<AuditLog[]> {
   const response = await request<{
     period_hours: number;
     total_errors: number;
@@ -115,7 +99,7 @@ export async function getErrorLogs(hours: number = 24): Promise<AuditLog[]> {
       environment: string;
       service: string;
     }>;
-  }>(`/audit/errors?hours=${hours}`);
+  }>(`/audit/errors?source=${source}&hours=${hours}`);
 
   // Transform backend errors to frontend format
   return response.errors.map((event, index) => ({
@@ -127,22 +111,28 @@ export async function getErrorLogs(hours: number = 24): Promise<AuditLog[]> {
     changes: event.detail || {},
     created_at: event.timestamp,
     ip_address: event.ip_address,
-    source: "axiom" as const, // Mark source
+    source: source as const, // Mark source
   }));
 }
 
 /**
- * Execute a custom APL query for advanced filtering.
+ * Execute a custom query against audit logs.
+ * Requires mandatory source parameter: currently only 'axiom' is supported.
  * Note: This requires knowledge of Axiom Query Language (APL).
  * @param apl - APL query string
+ * @param source - Data source (only 'axiom' supported)
  * @param limit - Maximum results (default: 1000)
  */
-export async function executeAuditQuery(apl: string, limit: number = 1000): Promise<any[]> {
+export async function executeAuditQuery(
+  apl: string,
+  source: "postgres" | "axiom" = "axiom",
+  limit: number = 1000
+): Promise<any[]> {
   const response = await request<{
     query: string;
     result_count: number;
     data: any[];
-  }>(`/audit/query?apl=${encodeURIComponent(apl)}&limit=${limit}`);
+  }>(`/audit/query?apl=${encodeURIComponent(apl)}&source=${source}&limit=${limit}`);
 
   return response.data;
 }
@@ -160,16 +150,21 @@ export async function getAuditHealth(): Promise<{
 }
 
 /**
- * Get audit logs from PostgreSQL (operational queries).
- * Best for: Pagination, list all, recent data (30-90 days), user filters.
- * Faster and works without external dependencies.
+ * Get audit logs with pagination and filtering.
+ * Requires mandatory source parameter: 'postgres' or 'axiom'
+ * @param source - Data source: 'postgres' or 'axiom' (mandatory)
+ * @param limit - Number of logs per page (default: 50)
+ * @param offset - Pagination offset (default: 0)
+ * @param filters - Optional filters (user_id, action)
  */
-export async function getAuditLogsPostgres(
+export async function getAuditLogs(
+  source: "postgres" | "axiom",
   limit: number = 50,
   offset: number = 0,
   filters?: { user_id?: number; action?: string }
 ): Promise<AuditLogsResponse> {
   const params = new URLSearchParams({
+    source: source,
     limit: limit.toString(),
     offset: offset.toString(),
   });
@@ -195,11 +190,11 @@ export async function getAuditLogsPostgres(
     limit: number;
     offset: number;
     has_more: boolean;
-  }>(`/audit/logs/postgres?${params.toString()}`);
+  }>(`/audit/logs?${params.toString()}`);
 
   return {
     items: response.items.map((event, index) => ({
-      id: offset + index, // Use offset + index for unique IDs across pages
+      id: offset + index,
       user_id: event.user_id,
       action: event.action,
       resource_type: event.detail?.resource_type || null,
@@ -207,7 +202,7 @@ export async function getAuditLogsPostgres(
       changes: event.detail || {},
       created_at: event.timestamp,
       ip_address: event.ip_address,
-      source: "postgres" as const, // Mark source
+      source: source as const, // Mark source
     })),
     total: response.total,
     limit: response.limit,
@@ -216,69 +211,32 @@ export async function getAuditLogsPostgres(
 }
 
 /**
- * Get audit logs with pagination.
- * Uses PostgreSQL endpoint as primary source (fast, reliable).
- * Falls back to Axiom-based queries if PostgreSQL fails.
- */
-export async function getAuditLogs(
-  limit: number = 50,
-  offset: number = 0,
-  filter?: AuditFilter
-): Promise<AuditLogsResponse> {
-  try {
-    // Try PostgreSQL endpoint first (fast, no external dependency)
-    return await getAuditLogsPostgres(
-      limit,
-      offset,
-      filter
-        ? {
-            user_id: filter.user_id,
-            action: filter.action,
-          }
-        : undefined
-    );
-  } catch (error) {
-    console.warn("PostgreSQL endpoint failed, trying Axiom fallback...", error);
-
-    // Fallback to Axiom-based queries
-    if (filter?.user_id) {
-      const logs = await getUserAuditTrail(filter.user_id, 30);
-      return {
-        items: logs.slice(offset, offset + limit),
-        total: logs.length,
-        limit,
-        offset,
-      };
-    }
-
-    // If all else fails, get error logs (limited data)
-    const logs = await getErrorLogs(24);
-    return {
-      items: logs.slice(offset, offset + limit),
-      total: logs.length,
-      limit,
-      offset,
-    };
-  }
-}
-
-/**
  * Filter audit logs by various criteria.
- * Note: Backend uses APL queries, so this is limited.
+ * Requires mandatory source parameter: 'postgres' or 'axiom'
  */
-export async function filterAuditLogs(filter: AuditFilter): Promise<AuditLogsResponse> {
-  return getAuditLogs(filter.limit || 50, filter.offset || 0, filter);
+export async function filterAuditLogs(
+  source: "postgres" | "axiom",
+  filter: AuditFilter
+): Promise<AuditLogsResponse> {
+  return getAuditLogs(
+    source,
+    filter.limit || 50,
+    filter.offset || 0,
+    filter
+  );
 }
 
 /**
- * Get audit logs for a specific user (alias for getUserAuditTrail).
+ * Get audit logs for a specific user.
+ * Requires mandatory source parameter: 'postgres' or 'axiom'
  */
 export async function getUserAuditLogs(
   userId: number,
+  source: "postgres" | "axiom",
   limit: number = 50,
   offset: number = 0
 ): Promise<AuditLogsResponse> {
-  const logs = await getUserAuditTrail(userId, 30);
+  const logs = await getUserAuditTrail(userId, source, 30);
   return {
     items: logs.slice(offset, offset + limit),
     total: logs.length,
@@ -289,17 +247,23 @@ export async function getUserAuditLogs(
 
 /**
  * Get audit logs for a specific resource.
- * Note: Requires custom APL query.
+ * Requires mandatory source parameter: 'postgres' or 'axiom'
+ * Note: Requires custom APL query (Axiom only).
  */
 export async function getResourceAuditLogs(
   resourceType: string,
   resourceId: string,
+  source: "postgres" | "axiom",
   limit: number = 50,
   offset: number = 0
 ): Promise<AuditLogsResponse> {
+  if (source === "postgres") {
+    throw new Error("Resource filtering requires Axiom. Use source='axiom'.");
+  }
+
   // Use APL query to filter by resource
   const apl = `['studio-back'] | where detail.resource_type == "${resourceType}" and detail.resource_id == "${resourceId}" | limit ${limit}`;
-  const data = await executeAuditQuery(apl, limit);
+  const data = await executeAuditQuery(apl, source, limit);
 
   const logs: AuditLog[] = data.map((item: any, index: number) => ({
     id: index,
@@ -310,6 +274,7 @@ export async function getResourceAuditLogs(
     changes: item.detail || {},
     created_at: item.timestamp,
     ip_address: item.ip_address,
+    source: source as const,
   }));
 
   return {
@@ -322,47 +287,36 @@ export async function getResourceAuditLogs(
 
 /**
  * Get audit logs by action type.
- * Note: Requires custom APL query.
+ * Requires mandatory source parameter: 'postgres' or 'axiom'
+ * Note: For PostgreSQL, use getAuditLogs with action filter instead.
  */
 export async function getActionAuditLogs(
   action: string,
+  source: "postgres" | "axiom",
   limit: number = 50,
   offset: number = 0
 ): Promise<AuditLogsResponse> {
-  const apl = `['studio-back'] | where action == "${action}" | limit ${limit}`;
-  const data = await executeAuditQuery(apl, limit);
-
-  const logs: AuditLog[] = data.map((item: any, index: number) => ({
-    id: index,
-    user_id: item.user_id,
-    action: item.action,
-    resource_type: item.detail?.resource_type || null,
-    resource_id: item.detail?.resource_id || null,
-    changes: item.detail || {},
-    created_at: item.timestamp,
-    ip_address: item.ip_address,
-  }));
-
-  return {
-    items: logs,
-    total: logs.length,
-    limit,
-    offset: 0,
-  };
+  return getAuditLogs(source, limit, offset, { action });
 }
 
 /**
  * Get audit logs within a date range.
- * Note: Requires custom APL query.
+ * Requires mandatory source parameter: 'postgres' or 'axiom'
+ * Note: Requires custom APL query (Axiom only for date ranges).
  */
 export async function getAuditLogsByDateRange(
   dateFrom: string,
   dateTo: string,
+  source: "postgres" | "axiom",
   limit: number = 50,
   offset: number = 0
 ): Promise<AuditLogsResponse> {
+  if (source === "postgres") {
+    throw new Error("Date range queries require Axiom. Use source='axiom'.");
+  }
+
   const apl = `['studio-back'] | where timestamp >= datetime("${dateFrom}") and timestamp <= datetime("${dateTo}") | limit ${limit}`;
-  const data = await executeAuditQuery(apl, limit);
+  const data = await executeAuditQuery(apl, source, limit);
 
   const logs: AuditLog[] = data.map((item: any, index: number) => ({
     id: index,
@@ -373,6 +327,7 @@ export async function getAuditLogsByDateRange(
     changes: item.detail || {},
     created_at: item.timestamp,
     ip_address: item.ip_address,
+    source: source as const,
   }));
 
   return {
@@ -385,14 +340,25 @@ export async function getAuditLogsByDateRange(
 
 /**
  * Export audit logs as CSV (client-side generation).
- * Backend doesn't provide CSV export endpoint.
+ * Requires mandatory source parameter: 'postgres' or 'axiom'
  */
-export async function exportAuditLogsCSV(filter?: AuditFilter): Promise<Blob> {
+export async function exportAuditLogsCSV(
+  source: "postgres" | "axiom",
+  filter?: AuditFilter
+): Promise<Blob> {
   // Get logs using filter
-  const response = await filterAuditLogs(filter || {});
+  const response = await filterAuditLogs(source, filter || {});
 
   // Generate CSV client-side
-  const headers = ["Timestamp", "User ID", "Action", "Resource Type", "Resource ID", "IP Address"];
+  const headers = [
+    "Timestamp",
+    "User ID",
+    "Action",
+    "Resource Type",
+    "Resource ID",
+    "IP Address",
+    "Source",
+  ];
   const rows = response.items.map((log) => [
     new Date(log.created_at).toLocaleString(),
     log.user_id?.toString() || "N/A",
@@ -400,6 +366,7 @@ export async function exportAuditLogsCSV(filter?: AuditFilter): Promise<Blob> {
     log.resource_type || "N/A",
     log.resource_id || "N/A",
     log.ip_address || "N/A",
+    log.source || source,
   ]);
 
   const csvContent = [

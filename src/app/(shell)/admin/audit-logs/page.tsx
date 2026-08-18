@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowLeft, Download } from "lucide-react";
+import { ArrowLeft, Download, Database, Cloud } from "lucide-react";
 import Link from "next/link";
-import { getAuditLogs, getAuditStats } from "@/lib/api/audit-client";
+import { getAuditLogs, getAuditStats, exportAuditLogsCSV } from "@/lib/api/audit-client";
 import type { AuditLog, AuditStats, AuditFilter } from "@/types/admin";
 import { useToast } from "@/lib/hooks/use-toast";
 import AuditStatsCard from "./components/AuditStatsCard";
@@ -12,6 +12,7 @@ import AuditFilters from "./components/AuditFilters";
 
 export default function AuditLogsPage() {
   const { toast } = useToast();
+  const [dataSource, setDataSource] = useState<"postgres" | "axiom">("postgres");
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [stats, setStats] = useState<AuditStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -24,14 +25,19 @@ export default function AuditLogsPage() {
 
   useEffect(() => {
     loadData();
-  }, [pagination.page, filters]);
+  }, [pagination.page, filters, dataSource]);
 
   async function loadData() {
     setIsLoading(true);
     try {
       const [logsResponse, statsData] = await Promise.all([
-        getAuditLogs(pagination.pageSize, (pagination.page - 1) * pagination.pageSize, filters),
-        getAuditStats(),
+        getAuditLogs(
+          dataSource,
+          pagination.pageSize,
+          (pagination.page - 1) * pagination.pageSize,
+          filters
+        ),
+        getAuditStats(dataSource),
       ]);
 
       setLogs(logsResponse.items);
@@ -41,7 +47,7 @@ export default function AuditLogsPage() {
       console.error("Failed to load audit logs:", error);
       toast({
         title: "Error",
-        description: "Failed to load audit logs",
+        description: `Failed to load audit logs from ${dataSource}`,
         variant: "error",
       });
     } finally {
@@ -67,6 +73,7 @@ export default function AuditLogsPage() {
         "Resource Type",
         "Resource ID",
         "IP Address",
+        "Source",
       ];
       const rows = logs.map((log) => [
         new Date(log.created_at).toLocaleString(),
@@ -75,6 +82,7 @@ export default function AuditLogsPage() {
         log.resource_type || "N/A",
         log.resource_id || "N/A",
         log.ip_address || "N/A",
+        log.source || dataSource,
       ]);
 
       const csvContent = [
@@ -86,7 +94,7 @@ export default function AuditLogsPage() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `audit-logs-${new Date().toISOString().split("T")[0]}.csv`;
+      a.download = `audit-logs-${dataSource}-${new Date().toISOString().split("T")[0]}.csv`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -111,28 +119,65 @@ export default function AuditLogsPage() {
     <div className="min-h-screen bg-background p-4 md:p-6 lg:p-8">
       <div className="mx-auto max-w-[1400px]">
         {/* Header */}
-        <div className="mb-6 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link
-              href="/admin"
-              className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-border bg-surface-panel hover:bg-surface-raised transition-colors"
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </Link>
-            <div>
-              <h1 className="text-2xl font-bold text-text-primary">Audit Logs</h1>
-              <p className="text-sm text-text-muted">View and filter system activity logs</p>
+        <div className="mb-6 flex flex-col gap-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Link
+                href="/admin"
+                className="flex h-10 w-10 items-center justify-center rounded-xl border-2 border-border bg-surface-panel hover:bg-surface-raised transition-colors"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </Link>
+              <div>
+                <h1 className="text-2xl font-bold text-text-primary">Audit Logs</h1>
+                <p className="text-sm text-text-muted">View and filter system activity logs</p>
+              </div>
             </div>
+
+            <button
+              onClick={handleExportCSV}
+              disabled={logs.length === 0}
+              className="flex items-center gap-2 rounded-xl border-2 border-border bg-surface-panel px-4 py-2 text-sm font-medium hover:bg-surface-raised disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              <Download className="h-4 w-4" />
+              Export CSV
+            </button>
           </div>
 
-          <button
-            onClick={handleExportCSV}
-            disabled={logs.length === 0}
-            className="flex items-center gap-2 rounded-xl border-2 border-border bg-surface-panel px-4 py-2 text-sm font-medium hover:bg-surface-raised disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            <Download className="h-4 w-4" />
-            Export CSV
-          </button>
+          {/* Data Source Toggle */}
+          <div className="flex items-center gap-3">
+            <span className="text-sm font-medium text-text-primary">Data Source:</span>
+            <div className="flex gap-2">
+              <button
+                onClick={() => {
+                  setDataSource("postgres");
+                  setPagination((prev) => ({ ...prev, page: 1 }));
+                }}
+                className={`flex items-center gap-2 rounded-xl border-2 px-4 py-2 text-sm font-medium transition-colors ${
+                  dataSource === "postgres"
+                    ? "border-blue-500 bg-blue-500/10 text-blue-500"
+                    : "border-border bg-surface-panel text-text-secondary hover:bg-surface-raised"
+                }`}
+              >
+                <Database className="h-4 w-4" />
+                PostgreSQL
+              </button>
+              <button
+                onClick={() => {
+                  setDataSource("axiom");
+                  setPagination((prev) => ({ ...prev, page: 1 }));
+                }}
+                className={`flex items-center gap-2 rounded-xl border-2 px-4 py-2 text-sm font-medium transition-colors ${
+                  dataSource === "axiom"
+                    ? "border-purple-500 bg-purple-500/10 text-purple-500"
+                    : "border-border bg-surface-panel text-text-secondary hover:bg-surface-raised"
+                }`}
+              >
+                <Cloud className="h-4 w-4" />
+                Axiom
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Data Source Info Banner */}
@@ -157,26 +202,17 @@ export default function AuditLogsPage() {
             </div>
             <div className="flex-1">
               <h3 className="text-sm font-semibold text-text-primary mb-1">
-                Dual-Source Audit System
+                Currently viewing: <span className="capitalize">{dataSource}</span>
               </h3>
               <p className="text-sm text-text-muted mb-2">
-                Audit logs are stored in two systems for optimal performance and analytics:
+                {dataSource === "postgres"
+                  ? "Fast operational queries for recent audit logs (30-90 days). Best for quick lookups and filtering."
+                  : "Powerful analytics engine with long-term compliance data (years). Best for detailed analysis and aggregations."}
               </p>
-              <div className="flex flex-col sm:flex-row gap-3 text-sm">
-                <div className="flex items-start gap-2">
-                  <span className="inline-flex items-center gap-1 rounded-md bg-blue-500/10 px-2 py-1 text-xs font-medium text-blue-500 border border-blue-500/20">
-                    PostgreSQL
-                  </span>
-                  <span className="text-text-muted">
-                    Fast operational queries (recent 30-90 days)
-                  </span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="inline-flex items-center gap-1 rounded-md bg-purple-500/10 px-2 py-1 text-xs font-medium text-purple-500 border border-purple-500/20">
-                    Axiom
-                  </span>
-                  <span className="text-text-muted">Analytics & long-term compliance (years)</span>
-                </div>
+              <div className="text-xs text-text-muted">
+                {dataSource === "postgres"
+                  ? "💡 Tip: Use PostgreSQL for recent activity, fast pagination, and user/action filtering."
+                  : "💡 Tip: Use Axiom for historical analysis, custom APL queries, and compliance reports."}
               </div>
             </div>
           </div>

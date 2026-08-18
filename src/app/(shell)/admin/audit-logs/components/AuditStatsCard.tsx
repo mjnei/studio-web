@@ -38,7 +38,7 @@ export default function AuditStatsCard({ stats }: AuditStatsCardProps) {
             <div>
               <p className="text-sm font-medium text-text-muted">Active Users</p>
               <p className="text-2xl font-bold text-text-primary">
-                {stats.users_active.toLocaleString()}
+                {stats.unique_users.toLocaleString()}
               </p>
             </div>
           </div>
