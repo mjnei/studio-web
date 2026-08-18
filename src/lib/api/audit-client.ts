@@ -73,7 +73,7 @@ export async function getUserAuditTrail(
     changes: event.detail || {},
     created_at: event.timestamp,
     ip_address: event.ip_address,
-    source: source as const, // Mark source
+    source: source as "postgres" | "axiom", // Mark source
   }));
 }
 
@@ -111,7 +111,7 @@ export async function getErrorLogs(
     changes: event.detail || {},
     created_at: event.timestamp,
     ip_address: event.ip_address,
-    source: source as const, // Mark source
+    source: source as "postgres" | "axiom", // Mark source
   }));
 }
 
@@ -202,7 +202,7 @@ export async function getAuditLogs(
       changes: event.detail || {},
       created_at: event.timestamp,
       ip_address: event.ip_address,
-      source: source as const, // Mark source
+      source: source as "postgres" | "axiom", // Mark source
     })),
     total: response.total,
     limit: response.limit,
@@ -269,7 +269,7 @@ export async function getResourceAuditLogs(
     changes: item.detail || {},
     created_at: item.timestamp,
     ip_address: item.ip_address,
-    source: source as const,
+    source: source as "postgres" | "axiom",
   }));
 
   return {
@@ -322,7 +322,7 @@ export async function getAuditLogsByDateRange(
     changes: item.detail || {},
     created_at: item.timestamp,
     ip_address: item.ip_address,
-    source: source as const,
+    source: source as "postgres" | "axiom",
   }));
 
   return {
