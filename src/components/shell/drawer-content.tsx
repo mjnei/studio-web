@@ -118,6 +118,11 @@ const adminItems = [
     labelKey: "shell.playgroundTTS",
     icon: "M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z",
   },
+  {
+    href: "/admin/audit-logs",
+    labelKey: "shell.auditLogs",
+    icon: "M9 12h6m-6 4h6m2-5a9 9 0 11-18 0 9 9 0 0118 0z",
+  },
 ];
 
 function isActive(pathname: string, href: string) {
@@ -146,6 +151,7 @@ const iconMap: Record<string, React.ReactNode> = {
   "/admin/studio-tts-jobs": <Zap size={20} />,
   "/admin/playground-tts-jobs": <Zap size={20} />,
   "/admin/playground": <Play size={20} />,
+  "/admin/audit-logs": <Activity size={20} />,
 };
 
 function RailLink({

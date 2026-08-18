@@ -22,6 +22,10 @@
     "apiKeys": "API Keys",
     "team": "Team",
     "queues": "Queues",
+    "studioTTSJobs": "Studio TTS Jobs",
+    "playgroundTTSJobs": "Playground TTS Jobs",
+    "playgroundTTS": "Playground TTS",
+    "auditLogs": "Audit Logs",
     "logout": "Logout"
   }
 }
