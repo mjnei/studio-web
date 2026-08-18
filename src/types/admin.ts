@@ -198,14 +198,14 @@ export interface PlaygroundVoice {
 export interface AuditLog {
   id: number;
   action: string;
-  user_id: number;
+  user_id: number | null;
   user_email?: string;
   user_name?: string;
-  resource_type: string;
-  resource_id: string;
+  resource_type: string | null;
+  resource_id: string | null;
   changes?: Record<string, any>;
   metadata?: Record<string, any>;
-  ip_address?: string;
+  ip_address?: string | null;
   user_agent?: string;
   created_at: string;
   source?: "postgres" | "axiom"; // Track data source
