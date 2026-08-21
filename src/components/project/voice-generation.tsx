@@ -90,7 +90,9 @@ export function VoiceGeneration({
             <Mic className="w-8 h-8 text-white" />
           </div>
         </div>
-        <h2 className="text-2xl sm:text-3xl font-bold text-text-primary mb-2">Generate Voice</h2>
+        <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-text-primary mb-2">
+          Generate Voice
+        </h2>
         <p className="text-text-secondary">
           Select a voice and generate TTS audio from your script
         </p>

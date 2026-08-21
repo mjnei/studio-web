@@ -91,7 +91,9 @@ export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps)
             <Film className="w-8 h-8 text-white" />
           </div>
         </div>
-        <h2 className="text-2xl sm:text-3xl font-bold text-text-primary mb-2">Select a Movie</h2>
+        <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-text-primary mb-2">
+          Select a Movie
+        </h2>
         <p className="text-text-secondary">
           Choose a movie to create a voice-over project. You can search by title or genre.
         </p>

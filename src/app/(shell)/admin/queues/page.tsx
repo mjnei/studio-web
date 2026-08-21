@@ -215,7 +215,7 @@ export default function QueueManagementPage() {
                 <Card className="border-muted">
                   <CardHeader className="pb-3">
                     <CardDescription className="text-xs">Total Messages</CardDescription>
-                    <CardTitle className="text-3xl font-bold">
+                    <CardTitle className="text-2xl font-bold">
                       {totalMessages.toLocaleString()}
                     </CardTitle>
                   </CardHeader>
@@ -223,7 +223,7 @@ export default function QueueManagementPage() {
                 <Card className="border-muted">
                   <CardHeader className="pb-3">
                     <CardDescription className="text-xs">Active Consumers</CardDescription>
-                    <CardTitle className="text-3xl font-bold">{totalConsumers}</CardTitle>
+                    <CardTitle className="text-2xl font-bold">{totalConsumers}</CardTitle>
                   </CardHeader>
                 </Card>
                 <Card
@@ -233,7 +233,7 @@ export default function QueueManagementPage() {
                 >
                   <CardHeader className="pb-3">
                     <CardDescription className="text-xs">Critical Queues</CardDescription>
-                    <CardTitle className="text-3xl font-bold flex items-center gap-2">
+                    <CardTitle className="text-2xl font-bold flex items-center gap-2">
                       {criticalQueues}
                       {criticalQueues > 0 && <AlertTriangle className="w-5 h-5 text-destructive" />}
                     </CardTitle>
@@ -246,7 +246,7 @@ export default function QueueManagementPage() {
                 >
                   <CardHeader className="pb-3">
                     <CardDescription className="text-xs">High Load Queues</CardDescription>
-                    <CardTitle className="text-3xl font-bold flex items-center gap-2">
+                    <CardTitle className="text-2xl font-bold flex items-center gap-2">
                       {warningQueues}
                       {warningQueues > 0 && <TrendingUp className="w-5 h-5 text-yellow-600" />}
                     </CardTitle>

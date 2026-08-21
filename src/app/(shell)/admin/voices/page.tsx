@@ -252,7 +252,7 @@ export default function AdminVoicesPage() {
               <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-accent-primary to-purple-600 shadow-lg">
                 <Mic className="h-6 w-6 text-white" />
               </div>
-              <h1 className="text-3xl font-bold text-text-primary">Community Voices</h1>
+              <h1 className="text-2xl font-bold text-text-primary">Community Voices</h1>
             </div>
             <p className="text-text-secondary">
               Review and approve shared voices for the public catalog
@@ -337,7 +337,7 @@ export default function AdminVoicesPage() {
                 <p className="text-xs font-medium text-text-muted uppercase tracking-wider mb-1">
                   Total User Voices
                 </p>
-                <p className="text-3xl font-bold text-text-primary">{stats.total}</p>
+                <p className="text-2xl font-bold text-text-primary">{stats.total}</p>
               </div>
               <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-purple-500/10">
                 <Mic className="h-6 w-6 text-purple-600" />
@@ -350,7 +350,7 @@ export default function AdminVoicesPage() {
                 <p className="text-xs font-medium text-text-muted uppercase tracking-wider mb-1">
                   Pending Approval
                 </p>
-                <p className="text-3xl font-bold text-orange-600">{stats.pending}</p>
+                <p className="text-2xl font-bold text-orange-600">{stats.pending}</p>
               </div>
               <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-orange-500/10">
                 <Clock className="h-6 w-6 text-orange-600" />
@@ -363,7 +363,7 @@ export default function AdminVoicesPage() {
                 <p className="text-xs font-medium text-text-muted uppercase tracking-wider mb-1">
                   Approved
                 </p>
-                <p className="text-3xl font-bold text-green-600">{stats.approved}</p>
+                <p className="text-2xl font-bold text-green-600">{stats.approved}</p>
               </div>
               <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-green-500/10">
                 <CheckCircle2 className="h-6 w-6 text-green-600" />

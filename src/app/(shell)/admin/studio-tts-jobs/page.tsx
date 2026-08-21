@@ -34,7 +34,11 @@ export default function TTSJobsPage() {
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
   const [activeTab, setActiveTab] = useState<TabType>("failed");
-  const [currentAudio, setCurrentAudio] = useState<{ url: string; jobId: string; jobName: string } | null>(null);
+  const [currentAudio, setCurrentAudio] = useState<{
+    url: string;
+    jobId: string;
+    jobName: string;
+  } | null>(null);
   const [showAudioPlayer, setShowAudioPlayer] = useState(false);
 
   const loadData = useCallback(async () => {

@@ -161,7 +161,7 @@ export default function DashboardPage() {
                 <div className="flex-1">
                   <CardHeader className="mb-3 p-0">
                     <CardDescription className="mb-1">{stat.title}</CardDescription>
-                    <CardTitle className="text-4xl font-bold text-text-primary">
+                    <CardTitle className="text-3xl font-bold text-text-primary">
                       {stat.value}
                     </CardTitle>
                   </CardHeader>

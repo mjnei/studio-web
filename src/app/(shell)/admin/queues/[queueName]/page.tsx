@@ -211,7 +211,7 @@ export default function QueueDetailPage() {
               <ArrowLeft className="w-5 h-5" />
             </Button>
             <div>
-              <h1 className="text-3xl font-bold">{stats.metadata?.display_name || queueName}</h1>
+              <h1 className="text-2xl font-bold">{stats.metadata?.display_name || queueName}</h1>
               <p className="text-sm text-muted-foreground mt-1">
                 {stats.metadata?.description || queueName}
               </p>
@@ -276,7 +276,7 @@ export default function QueueDetailPage() {
                     <Activity className="w-4 h-4" />
                     Messages
                   </CardDescription>
-                  <CardTitle className="text-3xl font-bold">
+                  <CardTitle className="text-2xl font-bold">
                     {stats.message_count.toLocaleString()}
                   </CardTitle>
                   {stats.metadata?.max_messages && (
@@ -294,7 +294,7 @@ export default function QueueDetailPage() {
                     <TrendingUp className="w-4 h-4" />
                     Consumers
                   </CardDescription>
-                  <CardTitle className="text-3xl font-bold">{stats.consumer_count}</CardTitle>
+                  <CardTitle className="text-2xl font-bold">{stats.consumer_count}</CardTitle>
                   <p className="text-xs text-muted-foreground mt-1">
                     {stats.consumer_count > 0 ? "Active" : "Inactive"}
                   </p>
@@ -323,7 +323,7 @@ export default function QueueDetailPage() {
                 >
                   <CardHeader className="pb-3">
                     <CardDescription className="text-xs">Dead-Letter Queue</CardDescription>
-                    <CardTitle className="text-3xl font-bold flex items-center gap-2">
+                    <CardTitle className="text-2xl font-bold flex items-center gap-2">
                       {dlqStats.message_count}
                       {dlqStats.message_count > 0 && (
                         <AlertCircle className="w-5 h-5 text-destructive" />

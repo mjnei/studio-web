@@ -53,7 +53,9 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             </svg>
           </div>
           <h1 className="text-3xl font-bold mb-4 drop-shadow-md">Huavoi Studio</h1>
-          <p className="text-base text-white/90 max-w-md drop-shadow">AI-assisted video production</p>
+          <p className="text-base text-white/90 max-w-md drop-shadow">
+            AI-assisted video production
+          </p>
         </div>
 
         {/* Right Side Form */}

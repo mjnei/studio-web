@@ -10,7 +10,11 @@ interface CompletedJobsTableProps {
   onPlay?: (job: CompletedJob) => void;
 }
 
-export function CompletedJobsTable({ completedJobs, onViewDetails, onPlay }: CompletedJobsTableProps) {
+export function CompletedJobsTable({
+  completedJobs,
+  onViewDetails,
+  onPlay,
+}: CompletedJobsTableProps) {
   const [expandedJobId, setExpandedJobId] = useState<number | null>(null);
 
   const formatRelativeTime = (dateString: string) => {
@@ -124,7 +128,9 @@ export function CompletedJobsTable({ completedJobs, onViewDetails, onPlay }: Com
                 <CheckCircle2 className="h-3.5 w-3.5" />
                 {formatRelativeTime(job.completed_at || job.created_at)}
                 {job.audio_path && onPlay && (
-                  <span className="text-xs text-accent-primary font-medium ml-2">• Click to play</span>
+                  <span className="text-xs text-accent-primary font-medium ml-2">
+                    • Click to play
+                  </span>
                 )}
               </div>
             </div>

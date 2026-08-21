@@ -58,7 +58,9 @@ export function VideoGeneration({
             <Video className="w-8 h-8 text-white" />
           </div>
         </div>
-        <h2 className="text-2xl sm:text-3xl font-bold text-text-primary mb-2">Generate Video</h2>
+        <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-text-primary mb-2">
+          Generate Video
+        </h2>
         <p className="text-text-secondary">
           Create your final video with synchronized audio and visuals
         </p>

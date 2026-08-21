@@ -24,7 +24,7 @@ export function PlaygroundStatsWidget({ stats }: PlaygroundStatsWidgetProps) {
             <p className="text-xs font-medium text-text-muted uppercase tracking-wider mb-1">
               Total Jobs
             </p>
-            <p className="text-3xl font-bold text-text-primary">{stats.total_jobs}</p>
+            <p className="text-2xl font-bold text-text-primary">{stats.total_jobs}</p>
             <p className="text-xs text-text-secondary mt-1">Completed: {stats.completed_jobs}</p>
           </div>
           <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-blue-500/10">
@@ -40,7 +40,7 @@ export function PlaygroundStatsWidget({ stats }: PlaygroundStatsWidgetProps) {
             <p className="text-xs font-medium text-text-muted uppercase tracking-wider mb-1">
               Success Rate
             </p>
-            <p className="text-3xl font-bold text-green-600">
+            <p className="text-2xl font-bold text-green-600">
               {(stats.success_rate * 100).toFixed(1)}%
             </p>
             <p className="text-xs text-text-secondary mt-1">
@@ -60,7 +60,7 @@ export function PlaygroundStatsWidget({ stats }: PlaygroundStatsWidgetProps) {
             <p className="text-xs font-medium text-text-muted uppercase tracking-wider mb-1">
               Unique Users
             </p>
-            <p className="text-3xl font-bold text-purple-600">{stats.unique_ip_count}</p>
+            <p className="text-2xl font-bold text-purple-600">{stats.unique_ip_count}</p>
             <p className="text-xs text-text-secondary mt-1">Anonymous IPs tracked</p>
           </div>
           <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-purple-500/10">
@@ -76,7 +76,7 @@ export function PlaygroundStatsWidget({ stats }: PlaygroundStatsWidgetProps) {
             <p className="text-xs font-medium text-text-muted uppercase tracking-wider mb-1">
               Active Jobs
             </p>
-            <p className="text-3xl font-bold text-orange-600">
+            <p className="text-2xl font-bold text-orange-600">
               {stats.queued_jobs + stats.processing_jobs}
             </p>
             <p className="text-xs text-text-secondary mt-1">

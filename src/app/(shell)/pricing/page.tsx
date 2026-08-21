@@ -233,7 +233,7 @@ export default function PricingPage() {
                 {/* Price */}
                 <div className="mb-2">
                   <div className="flex items-baseline gap-2">
-                    <span className="text-4xl font-bold text-text-primary">{currentPrice}</span>
+                    <span className="text-3xl font-bold text-text-primary">{currentPrice}</span>
                     {isAnnual && tier.name !== t("pricing.free.name") && (
                       <span className="text-sm text-text-muted">
                         {t("pricing.free.price.billedAnnually")}

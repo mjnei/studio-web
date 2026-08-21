@@ -55,9 +55,7 @@ export function PlaygroundForm({ onSubmit, isLoading }: PlaygroundFormProps) {
             {charCount}/{maxChars} character{charCount !== 1 ? "s" : ""}
           </p>
           {isOverLimit ? (
-            <p className="text-xs text-red-600 font-semibold">
-              ⚠️ Text exceeds maximum length
-            </p>
+            <p className="text-xs text-red-600 font-semibold">⚠️ Text exceeds maximum length</p>
           ) : (
             charCount > 1600 && (
               <p className="text-xs text-orange-600">⚠️ Long text may take more time to process</p>
