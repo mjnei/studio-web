@@ -169,9 +169,9 @@ function RailLink({
 function LogoMark({ collapsed }: { collapsed?: boolean }) {
   if (collapsed) return null;
   return (
-    <Link href="/dashboard" className="flex items-center gap-2.5 text-lg font-bold group">
-      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-accent-secondary via-accent-primary to-accent-tertiary shadow-lg group-hover:shadow-xl transition-all">
-        <Activity size={20} className="text-white" />
+    <Link href="/dashboard" className="flex items-center gap-2 text-lg font-bold group">
+      <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-accent-secondary via-accent-primary to-accent-tertiary shadow-md group-hover:shadow-lg transition-all">
+        <Activity size={16} className="text-white" />
       </div>
       <span className="bg-gradient-to-r from-text-primary to-text-secondary bg-clip-text text-transparent">
         Huavoi
@@ -247,7 +247,7 @@ export function DrawerContent({
   return (
     <div className="flex h-full flex-col">
       <div
-        className={`flex h-16 lg:h-14 items-center border-b border-border-default shrink-0 ${
+        className={`flex h-14 items-center border-b border-border-default shrink-0 ${
           collapsed ? "justify-center px-2 lg:px-1.5" : "px-4 lg:px-3"
         }`}
       >
