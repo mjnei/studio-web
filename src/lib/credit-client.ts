@@ -86,6 +86,11 @@ export async function getProjectVideos(projectId: string): Promise<ProjectVideos
   };
 }
 
+/** List all video jobs for the current user (avoids N+1 per-project fetches). */
+export async function getMyVideoJobs(): Promise<VideoGenerationResponse[]> {
+  return request<VideoGenerationResponse[]>("/video/jobs");
+}
+
 export async function regenerateVideo(projectId: string): Promise<VideoGenerationResponse> {
   return request<VideoGenerationResponse>(`/projects/${projectId}/regenerate-video`, {
     method: "POST",

@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { listProjects } from "@/lib/project-client";
 import {
-  getProjectVideos,
+  getMyVideoJobs,
   deleteProjectVideo,
   regenerateVideo,
   VideoGenerationResponse,
@@ -18,8 +18,34 @@ const INITIAL_FILTERS: JobFilters = {
   sortOrder: "desc",
 };
 
+function groupProjectsWithVideos(
+  projects: Awaited<ReturnType<typeof listProjects>>,
+  videos: VideoGenerationResponse[]
+): ProjectWithVideos[] {
+  const videosByProject = new Map<string, VideoGenerationResponse[]>();
+  for (const video of videos) {
+    const key = String(video.project_id);
+    const list = videosByProject.get(key);
+    if (list) {
+      list.push(video);
+    } else {
+      videosByProject.set(key, [video]);
+    }
+  }
+
+  return projects
+    .map((project) => ({
+      project,
+      videos: videosByProject.get(String(project.id)) ?? [],
+    }))
+    .filter((pwv) => pwv.videos.length > 0);
+}
+
 export function useJobs() {
   const toast = useToast();
+  const toastRef = useRef(toast);
+  toastRef.current = toast;
+
   const [projectsWithVideos, setProjectsWithVideos] = useState<ProjectWithVideos[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -27,50 +53,32 @@ export function useJobs() {
   const [selectedJobIds, setSelectedJobIds] = useState<Set<string>>(new Set());
   const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid-md");
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
-  const loadJobsData = useCallback(async () => {
-    try {
-      const projects = await listProjects(true);
-      const projectsData = await Promise.all(
-        projects.map(async (project) => {
-          try {
-            const { videos } = await getProjectVideos(project.id);
-            return { project, videos };
-          } catch {
-            return { project, videos: [] as VideoGenerationResponse[] };
-          }
-        })
-      );
 
-      const filtered = projectsData.filter((pwv) => pwv.videos.length > 0);
-      setProjectsWithVideos(filtered);
+  const loadJobsData = useCallback(async (opts?: { silent?: boolean }) => {
+    if (!opts?.silent) {
+      setIsRefreshing(true);
+    }
+    try {
+      // 2 requests total — not 1 + N per project
+      const [projects, videos] = await Promise.all([listProjects(true), getMyVideoJobs()]);
+      setProjectsWithVideos(groupProjectsWithVideos(projects, videos));
     } catch (error) {
       console.error("[useJobs] Error fetching jobs:", error);
-      toast.error("Failed to load jobs", "Could not fetch video generation data");
+      toastRef.current.error("Failed to load jobs", "Could not fetch video generation data");
     } finally {
       setIsLoading(false);
       setIsRefreshing(false);
     }
-  }, [toast]);
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
 
     async function initialLoad() {
       try {
-        const projects = await listProjects(true);
-        const projectsData = await Promise.all(
-          projects.map(async (project) => {
-            try {
-              const { videos } = await getProjectVideos(project.id);
-              return { project, videos };
-            } catch {
-              return { project, videos: [] as VideoGenerationResponse[] };
-            }
-          })
-        );
-        const filtered = projectsData.filter((pwv) => pwv.videos.length > 0);
+        const [projects, videos] = await Promise.all([listProjects(true), getMyVideoJobs()]);
         if (isMounted) {
-          setProjectsWithVideos(filtered);
+          setProjectsWithVideos(groupProjectsWithVideos(projects, videos));
         }
       } catch (error) {
         console.error("[useJobs] Error fetching jobs:", error);
@@ -89,7 +97,7 @@ export function useJobs() {
     };
   }, []);
 
-  // SSE / Polling for active jobs updates
+  // Poll only while there are active jobs — still 2 requests, not N+1
   useEffect(() => {
     const hasActiveJobs = projectsWithVideos.some((pwv) =>
       pwv.videos.some((v) => v.status === "processing" || v.status === "queued")
@@ -98,7 +106,7 @@ export function useJobs() {
     if (!hasActiveJobs) return;
 
     const interval = setInterval(() => {
-      loadJobsData();
+      loadJobsData({ silent: true });
     }, 5000);
 
     return () => clearInterval(interval);
@@ -110,7 +118,7 @@ export function useJobs() {
       pwv.videos.map((video) => ({
         ...video,
         projectName: pwv.project.project_name || "Untitled Project",
-        projectId: pwv.project.id,
+        projectId: String(pwv.project.id),
         movieTitle: pwv.project.movie?.title,
       }))
     );
