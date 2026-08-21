@@ -50,7 +50,7 @@ export const StatusCards: React.FC<StatusCardsProps> = ({
                 </Badge>
               )}
             </div>
-            <p className="text-3xl font-bold text-text-primary">{summary.activeCount}</p>
+            <p className="text-2xl font-bold text-text-primary">{summary.activeCount}</p>
             <p className="text-xs text-text-muted">
               {summary.activeCount > 0
                 ? t("jobs.status.activeDescription")
@@ -79,7 +79,7 @@ export const StatusCards: React.FC<StatusCardsProps> = ({
             <span className="text-sm font-medium text-text-secondary">
               {t("jobs.status.completed")}
             </span>
-            <p className="text-3xl font-bold text-text-primary">{summary.completedCount}</p>
+            <p className="text-2xl font-bold text-text-primary">{summary.completedCount}</p>
             <p className="text-xs text-status-success font-medium">
               {summary.successRate}% {t("jobs.status.successRate")}
             </p>
@@ -104,7 +104,7 @@ export const StatusCards: React.FC<StatusCardsProps> = ({
             <span className="text-sm font-medium text-text-secondary">
               {t("jobs.status.failed")}
             </span>
-            <p className="text-3xl font-bold text-text-primary">{summary.failedCount}</p>
+            <p className="text-2xl font-bold text-text-primary">{summary.failedCount}</p>
             {summary.failedCount > 0 && onRetryAllFailed ? (
               <Button
                 variant="ghost"
@@ -142,7 +142,7 @@ export const StatusCards: React.FC<StatusCardsProps> = ({
             <span className="text-sm font-medium text-text-secondary">
               {t("jobs.status.total")}
             </span>
-            <p className="text-3xl font-bold text-text-primary">{summary.totalCount}</p>
+            <p className="text-2xl font-bold text-text-primary">{summary.totalCount}</p>
             <p className="text-xs text-text-muted">
               {summary.creditsUsed}{" "}
               {summary.creditsUsed !== 1 ? t("jobs.credits") : t("jobs.credit")} used
