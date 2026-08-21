@@ -6,6 +6,7 @@ import { Button } from "./button";
 import { Heading } from "./heading";
 import { typography } from "./typography";
 import { cn } from "@/lib/utils/cn";
+import { useI18n } from "@/i18n";
 
 export interface ModalProps {
   open: boolean;
@@ -37,6 +38,7 @@ export function Modal({
   className = "",
 }: ModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
+  const { t } = useI18n();
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -124,7 +126,7 @@ export function Modal({
               <button
                 onClick={onClose}
                 className="ml-4 rounded-lg p-1.5 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all focus-ring"
-                aria-label="Close modal"
+                aria-label={t("common.closeModal")}
               >
                 <X size={20} />
               </button>

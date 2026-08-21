@@ -1,4 +1,7 @@
+"use client";
+
 import { Loader2, Activity } from "lucide-react";
+import { useI18n } from "@/i18n";
 
 export function LoadingSpinner({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
   const sizes = {
@@ -15,6 +18,8 @@ export function LoadingSpinner({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
 }
 
 export function LoadingScreen() {
+  const { t } = useI18n();
+
   return (
     <div className="flex h-screen items-center justify-center bg-surface-base">
       <div className="text-center">
@@ -22,7 +27,7 @@ export function LoadingScreen() {
           <Activity size={32} className="text-white" />
         </div>
         <LoadingSpinner size="lg" />
-        <p className="mt-4 text-text-secondary">Loading...</p>
+        <p className="mt-4 text-text-secondary">{t("common.loading")}</p>
       </div>
     </div>
   );

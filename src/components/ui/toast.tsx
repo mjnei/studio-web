@@ -2,6 +2,7 @@
 
 import { CheckCircle, XCircle, AlertCircle, Info, X } from "lucide-react";
 import { createContext, useContext, useState, useCallback, ReactNode } from "react";
+import { useI18n } from "@/i18n";
 
 export type ToastVariant = "success" | "error" | "warning" | "info";
 export type ToastPosition =
@@ -127,6 +128,7 @@ interface ToastItemProps {
 }
 
 function ToastItem({ toast, onClose }: ToastItemProps) {
+  const { t } = useI18n();
   const variants = {
     success: {
       icon: <CheckCircle size={20} />,
@@ -187,7 +189,7 @@ function ToastItem({ toast, onClose }: ToastItemProps) {
         <button
           onClick={onClose}
           className="shrink-0 rounded-lg p-1 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all touch-manipulation"
-          aria-label="Close notification"
+          aria-label={t("common.closeNotification")}
         >
           <X size={16} />
         </button>

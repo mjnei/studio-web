@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { useI18n } from "@/i18n";
 import { signInWithPopup, signOut as firebaseSignOut } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/firebase";
 import {
@@ -204,6 +205,7 @@ export function useAuth(): AuthContextValue {
 
 export function AuthGuard({ children }: { children: ReactNode }) {
   const { isLoading, isAuthenticated } = useAuth();
+  const { t } = useI18n();
   const pathname = usePathname();
   const router = useRouter();
   const isProtectedRoute = PROTECTED_ROUTE_PREFIXES.some((p) => pathname.startsWith(p));
@@ -217,7 +219,7 @@ export function AuthGuard({ children }: { children: ReactNode }) {
   if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center bg-surface-base">
-        <div className="text-sm text-text-muted">Loading...</div>
+        <div className="text-sm text-text-muted">{t("common.loading")}</div>
       </div>
     );
   }

@@ -2,6 +2,7 @@
 
 import { Check, ChevronDown } from "lucide-react";
 import { useState, useRef, useEffect, ReactNode } from "react";
+import { useI18n } from "@/i18n";
 
 export interface SelectOption {
   value: string;
@@ -29,7 +30,7 @@ export function Select({
   value,
   onChange,
   options,
-  placeholder = "Select an option",
+  placeholder,
   label,
   helperText,
   error,
@@ -39,6 +40,8 @@ export function Select({
   searchable = false,
   icon,
 }: SelectProps) {
+  const { t } = useI18n();
+  const resolvedPlaceholder = placeholder ?? t("common.selectOption");
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [highlightedIndex, setHighlightedIndex] = useState(0);
@@ -172,7 +175,7 @@ export function Select({
                 <span>{selectedOption.label}</span>
               </>
             ) : (
-              <span className="text-text-secondary">{placeholder}</span>
+              <span className="text-text-secondary">{resolvedPlaceholder}</span>
             )}
           </span>
           <ChevronDown
@@ -198,7 +201,7 @@ export function Select({
                     setSearchQuery(e.target.value);
                     setHighlightedIndex(0);
                   }}
-                  placeholder="Search..."
+                  placeholder={t("common.searchEllipsis")}
                   className="w-full px-3 py-2 text-sm rounded-lg border border-border-default bg-surface-raised text-text-primary placeholder:text-text-secondary focus:outline-none focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
                   onClick={(e) => e.stopPropagation()}
                 />
@@ -208,7 +211,7 @@ export function Select({
             <div className="max-h-60 overflow-y-auto p-1">
               {filteredOptions.length === 0 ? (
                 <div className="px-3 py-6 text-center text-sm text-text-secondary">
-                  No options found
+                  {t("common.noOptionsFound")}
                 </div>
               ) : (
                 filteredOptions.map((option, index) => (
@@ -264,7 +267,7 @@ export function MultiSelect({
   value = [],
   onChange,
   options,
-  placeholder = "Select options",
+  placeholder,
   label,
   helperText,
   error,
@@ -274,6 +277,8 @@ export function MultiSelect({
   searchable = false,
   maxSelections,
 }: MultiSelectProps) {
+  const { t } = useI18n();
+  const resolvedPlaceholder = placeholder ?? t("common.selectOptions");
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const selectRef = useRef<HTMLDivElement>(null);
@@ -347,7 +352,7 @@ export function MultiSelect({
         >
           <div className="flex flex-wrap gap-1 flex-1">
             {selectedOptions.length === 0 ? (
-              <span className="text-text-secondary">{placeholder}</span>
+              <span className="text-text-secondary">{resolvedPlaceholder}</span>
             ) : (
               selectedOptions.map((option) => (
                 <span
@@ -376,7 +381,7 @@ export function MultiSelect({
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search..."
+                  placeholder={t("common.searchEllipsis")}
                   className="w-full px-3 py-2 text-sm rounded-lg border border-border-default bg-surface-raised text-text-primary placeholder:text-text-secondary focus:outline-none focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
                 />
               </div>
@@ -385,7 +390,7 @@ export function MultiSelect({
             <div className="max-h-60 overflow-y-auto p-1">
               {filteredOptions.length === 0 ? (
                 <div className="px-3 py-6 text-center text-sm text-text-secondary">
-                  No options found
+                  {t("common.noOptionsFound")}
                 </div>
               ) : (
                 filteredOptions.map((option) => {

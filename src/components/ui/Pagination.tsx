@@ -1,6 +1,9 @@
+"use client";
+
 import React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
+import { useI18n } from "@/i18n";
 
 interface PaginationProps {
   currentPage: number;
@@ -17,6 +20,7 @@ export const Pagination: React.FC<PaginationProps> = ({
   totalItems,
   className,
 }) => {
+  const { t } = useI18n();
   const canGoPrevious = currentPage > 1;
   const canGoNext = currentPage < totalPages;
 
@@ -45,12 +49,12 @@ export const Pagination: React.FC<PaginationProps> = ({
     >
       <div className="flex items-center gap-2 text-sm text-text-muted">
         <span>
-          Page {currentPage} of {totalPages}
+          {t("common.pageOf", { current: currentPage, total: totalPages })}
         </span>
         {totalItems !== undefined && (
           <>
             <span className="h-1 w-1 rounded-full bg-text-muted" />
-            <span>{totalItems} total</span>
+            <span>{t("common.totalItems", { count: totalItems })}</span>
           </>
         )}
       </div>
@@ -65,10 +69,10 @@ export const Pagination: React.FC<PaginationProps> = ({
               ? "hover:bg-surface-hover hover:text-text-primary"
               : "cursor-not-allowed opacity-50"
           )}
-          aria-label="Previous page"
+          aria-label={t("common.previousPage")}
         >
           <ChevronLeft className="h-4 w-4" />
-          Previous
+          {t("common.previous")}
         </button>
         <button
           onClick={handleNext}
@@ -79,9 +83,9 @@ export const Pagination: React.FC<PaginationProps> = ({
               ? "hover:bg-surface-hover hover:text-text-primary"
               : "cursor-not-allowed opacity-50"
           )}
-          aria-label="Next page"
+          aria-label={t("common.nextPage")}
         >
-          Next
+          {t("common.next")}
           <ChevronRight className="h-4 w-4" />
         </button>
       </div>
