@@ -1,0 +1,53 @@
+{
+  "movies": {
+    "title": "电影库",
+    "description": "发现并探索电影，开启你的下一个项目",
+    "count": "{count} 部电影",
+    "countSingular": "{count} 部电影",
+    "searchPlaceholder": "按标题搜索电影...",
+    "loading": "正在加载电影...",
+    "loadingDescription": "请稍候，正在获取片库",
+    "loadingDetails": "正在加载详情... {progress}%",
+    "error": {
+      "title": "无法加载电影",
+      "unableToLoad": "无法加载电影"
+    },
+    "empty": {
+      "title": "未找到电影",
+      "searchHint": "请尝试调整搜索关键词",
+      "catalogEmpty": "片库中暂无电影"
+    },
+    "director": "导演",
+    "cast": "主演",
+    "runtimeUnit": "分钟",
+    "detail": {
+      "back": "返回电影库",
+      "return": "返回电影库",
+      "loading": "正在加载电影详情...",
+      "errorTitle": "无法加载电影",
+      "loadFailed": "加载电影详情失败",
+      "createProject": "创建项目",
+      "buttonLoading": "加载中...",
+      "statistics": "统计数据",
+      "rating": "评分",
+      "popularity": "热度",
+      "externalIds": "外部 ID",
+      "imdb": "IMDb",
+      "douban": "豆瓣",
+      "runtimeMinutes": "{runtime} 分钟",
+      "overview": "剧情简介",
+      "crew": "主创",
+      "expandCrew": "展开主创",
+      "collapseCrew": "收起主创",
+      "director": "导演",
+      "directors": "导演",
+      "producer": "制片人",
+      "producers": "制片人",
+      "writer": "编剧",
+      "writers": "编剧",
+      "topCast": "主要演员",
+      "expandCast": "展开演员",
+      "collapseCast": "收起演员"
+    }
+  }
+}

@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import { MoviePoster } from "./MoviePoster";
@@ -6,6 +8,7 @@ import { MovieMetadata } from "./MovieMetadata";
 import { cn } from "@/lib/utils/cn";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
+import { useI18n } from "@/i18n";
 
 export interface MovieCardData {
   id: number;
@@ -35,6 +38,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
   href,
   className,
 }) => {
+  const { t } = useI18n();
   const linkHref = href || `/movies/${movie.id}`;
 
   // List layout
@@ -109,13 +113,13 @@ export const MovieCard: React.FC<MovieCardProps> = ({
           <div className="space-y-1.5 text-xs">
             {movie.directors && movie.directors.length > 0 && (
               <div className="flex items-start gap-2">
-                <span className="font-medium text-text-muted">Director:</span>
+                <span className="font-medium text-text-muted">{t("movies.director")}:</span>
                 <span className="text-text-secondary">{movie.directors.join(", ")}</span>
               </div>
             )}
             {movie.topCast && movie.topCast.length > 0 && (
               <div className="flex items-start gap-2">
-                <span className="font-medium text-text-muted">Cast:</span>
+                <span className="font-medium text-text-muted">{t("movies.cast")}:</span>
                 <span className="line-clamp-1 text-text-secondary">{movie.topCast.join(", ")}</span>
               </div>
             )}
@@ -172,7 +176,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
           {/* Director */}
           {movie.directors && movie.directors.length > 0 && (
             <div className="text-[11px] leading-tight text-white">
-              <span className="font-semibold">Director: </span>
+              <span className="font-semibold">{t("movies.director")}: </span>
               <span className="text-gray-200">{movie.directors[0]}</span>
             </div>
           )}
@@ -180,7 +184,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
           {/* Top Cast */}
           {movie.topCast && movie.topCast.length > 0 && (
             <div className="text-[11px] leading-tight text-white">
-              <span className="font-semibold">Cast: </span>
+              <span className="font-semibold">{t("movies.cast")}: </span>
               <span className="line-clamp-2 text-gray-200">{movie.topCast.join(", ")}</span>
             </div>
           )}

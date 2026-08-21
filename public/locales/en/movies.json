@@ -1,0 +1,53 @@
+{
+  "movies": {
+    "title": "Movie Library",
+    "description": "Discover and explore movies to create your next project",
+    "count": "{count} movies",
+    "countSingular": "{count} movie",
+    "searchPlaceholder": "Search movies by title...",
+    "loading": "Loading movies...",
+    "loadingDescription": "Please wait while we fetch the catalog",
+    "loadingDetails": "Loading details... {progress}%",
+    "error": {
+      "title": "Unable to load movies",
+      "unableToLoad": "Unable to load movies"
+    },
+    "empty": {
+      "title": "No movies found",
+      "searchHint": "Try adjusting your search terms",
+      "catalogEmpty": "No movies available in the catalog"
+    },
+    "director": "Director",
+    "cast": "Cast",
+    "runtimeUnit": "min",
+    "detail": {
+      "back": "Back to Movies",
+      "return": "Return to Movies",
+      "loading": "Loading movie details...",
+      "errorTitle": "Unable to load movie",
+      "loadFailed": "Failed to load movie details",
+      "createProject": "Create Project",
+      "buttonLoading": "Loading...",
+      "statistics": "Statistics",
+      "rating": "Rating",
+      "popularity": "Popularity",
+      "externalIds": "External IDs",
+      "imdb": "IMDb",
+      "douban": "Douban",
+      "runtimeMinutes": "{runtime} minutes",
+      "overview": "Overview",
+      "crew": "Crew",
+      "expandCrew": "Expand crew",
+      "collapseCrew": "Collapse crew",
+      "director": "Director",
+      "directors": "Directors",
+      "producer": "Producer",
+      "producers": "Producers",
+      "writer": "Writer",
+      "writers": "Writers",
+      "topCast": "Top Cast",
+      "expandCast": "Expand cast",
+      "collapseCast": "Collapse cast"
+    }
+  }
+}

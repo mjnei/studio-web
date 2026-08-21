@@ -1,6 +1,9 @@
+"use client";
+
 import React from "react";
 import { Calendar, Clock } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
+import { useI18n } from "@/i18n";
 
 interface MovieMetadataProps {
   releaseDate?: string | null;
@@ -15,6 +18,7 @@ export const MovieMetadata: React.FC<MovieMetadataProps> = ({
   size = "md",
   className,
 }) => {
+  const { t } = useI18n();
   const hasData = releaseDate || runtime;
 
   if (!hasData) {
@@ -47,7 +51,9 @@ export const MovieMetadata: React.FC<MovieMetadataProps> = ({
           {releaseDate && <span className="h-1 w-1 rounded-full bg-text-muted" />}
           <div className="flex items-center gap-1">
             <Clock className={sizeConfig.icon} />
-            <span>{runtime} min</span>
+            <span>
+              {runtime} {t("movies.runtimeUnit")}
+            </span>
           </div>
         </>
       )}

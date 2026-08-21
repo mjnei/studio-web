@@ -22,8 +22,10 @@ import { ExternalImage } from "@/components/ui/ExternalImage";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { adminGetMovieDetails, type MovieDetailsResponse } from "@/lib/api/admin";
+import { useI18n } from "@/i18n";
 
 export default function MovieDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  const { t } = useI18n();
   const router = useRouter();
   const [movieId, setMovieId] = useState<number | null>(null);
 
@@ -48,10 +50,11 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
       const data = await adminGetMovieDetails(movieId, "en");
       setMovie(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load movie details");
+      setError(err instanceof Error ? err.message : t("movies.detail.loadFailed"));
     } finally {
       setLoading(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- t is stable enough for error fallback
   }, [movieId]);
 
   useEffect(() => {
@@ -69,7 +72,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
         }
       } catch (err) {
         if (isMounted) {
-          setError(err instanceof Error ? err.message : "Failed to load movie details");
+          setError(err instanceof Error ? err.message : t("movies.detail.loadFailed"));
         }
       } finally {
         if (isMounted) {
@@ -83,6 +86,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
     return () => {
       isMounted = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- t is stable enough for error fallback
   }, [movieId]);
 
   const handleCreateProject = () => {
@@ -96,7 +100,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
       poster: posterUrl || "",
       rating: movie.vote_average || 0,
       genre: movie.genres?.map((g) => g.name).filter(Boolean) || [],
-      duration: movie.runtime ? `${movie.runtime} min` : "",
+      duration: movie.runtime ? `${movie.runtime} ${t("movies.runtimeUnit")}` : "",
     };
 
     if (typeof window !== "undefined") {
@@ -134,7 +138,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
             className="inline-flex items-center gap-2 rounded-lg bg-surface-panel/80 backdrop-blur-md border border-border-default/50 px-3 py-2 text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-surface-panel/90 transition-all shadow-lg"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to Movies
+            {t("movies.detail.back")}
           </Link>
         </div>
       </div>
@@ -144,21 +148,21 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
         <div className="flex h-[60vh] items-center justify-center">
           <div className="flex flex-col items-center gap-2">
             <Loader className="h-8 w-8 animate-spin text-accent-cyan" />
-            <p className="text-sm text-text-muted">Loading movie details...</p>
+            <p className="text-sm text-text-muted">{t("movies.detail.loading")}</p>
           </div>
         </div>
       ) : error ? (
         <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
           <div className="rounded-lg border border-border-default bg-surface-panel p-8 text-center">
             <AlertCircle className="mx-auto h-12 w-12 text-status-failed opacity-50 mb-3" />
-            <p className="text-sm text-text-primary font-medium mb-2">Unable to load movie</p>
+            <p className="text-sm text-text-primary font-medium mb-2">{t("movies.detail.errorTitle")}</p>
             <p className="text-sm text-text-muted mb-4">{error}</p>
             <Link
               href="/movies"
               className="inline-flex items-center gap-2 rounded-lg bg-accent-cyan px-4 py-2 text-sm font-medium text-white hover:bg-accent-cyan/90 transition-colors"
             >
               <ArrowLeft className="h-4 w-4" />
-              Return to Movies
+              {t("movies.detail.return")}
             </Link>
           </div>
         </div>
@@ -208,12 +212,12 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                   {loading ? (
                     <>
                       <Loader className="h-5 w-5 animate-spin" />
-                      Loading...
+                      {t("movies.detail.buttonLoading")}
                     </>
                   ) : (
                     <>
                       <Play className="h-5 w-5" />
-                      Create Project
+                      {t("movies.detail.createProject")}
                     </>
                   )}
                 </button>
@@ -225,13 +229,15 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                     as="h3"
                     className="uppercase tracking-wide text-text-muted"
                   >
-                    Statistics
+                    {t("movies.detail.statistics")}
                   </Heading>
                   {movie.vote_average && movie.vote_average > 0 && (
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
-                        <span className="text-sm font-medium text-text-muted">Rating</span>
+                        <span className="text-sm font-medium text-text-muted">
+                          {t("movies.detail.rating")}
+                        </span>
                       </div>
                       <div className="flex items-center gap-2">
                         <Heading variant="metric" as="span" className="text-text-primary">
@@ -249,7 +255,9 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <TrendingUp className="h-4 w-4 text-accent-cyan" />
-                        <span className="text-sm font-medium text-text-muted">Popularity</span>
+                        <span className="text-sm font-medium text-text-muted">
+                          {t("movies.detail.popularity")}
+                        </span>
                       </div>
                       <Heading variant="metric" as="span" className="text-text-primary">
                         {movie.popularity.toFixed(0)}
@@ -266,17 +274,21 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                       as="h3"
                       className="uppercase tracking-wide text-text-muted"
                     >
-                      External IDs
+                      {t("movies.detail.externalIds")}
                     </Heading>
                     {movie.imdb_id && (
                       <div>
-                        <p className="mb-1 text-xs font-medium text-text-muted">IMDb</p>
+                        <p className="mb-1 text-xs font-medium text-text-muted">
+                          {t("movies.detail.imdb")}
+                        </p>
                         <p className="text-sm font-mono text-text-primary">{movie.imdb_id}</p>
                       </div>
                     )}
                     {movie.douban_id && (
                       <div>
-                        <p className="mb-1 text-xs font-medium text-text-muted">Douban</p>
+                        <p className="mb-1 text-xs font-medium text-text-muted">
+                          {t("movies.detail.douban")}
+                        </p>
                         <p className="text-sm font-mono text-text-primary">{movie.douban_id}</p>
                       </div>
                     )}
@@ -314,7 +326,9 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                         <span className="text-text-muted">•</span>
                         <div className="flex items-center gap-1.5">
                           <Clock className="h-4 w-4 text-accent-cyan" />
-                          <span className="font-medium">{movie.runtime} minutes</span>
+                          <span className="font-medium">
+                            {t("movies.detail.runtimeMinutes", { runtime: movie.runtime })}
+                          </span>
                         </div>
                       </>
                     )}
@@ -357,7 +371,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                 {movie.overview && (
                   <div className="rounded-xl border border-border-default bg-surface-panel p-6">
                     <Heading variant="subsection" as="h2" className="mb-3 text-text-primary">
-                      Overview
+                      {t("movies.detail.overview")}
                     </Heading>
                     <p className="text-sm leading-loose text-text-secondary">{movie.overview}</p>
                   </div>
@@ -368,12 +382,16 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                   <div className="rounded-xl border border-border-default bg-surface-panel p-6">
                     <div className="flex items-center justify-between mb-5">
                       <Heading variant="subsection" as="h2" className="text-text-primary">
-                        Crew
+                        {t("movies.detail.crew")}
                       </Heading>
                       <button
                         onClick={() => setIsCrewExpanded(!isCrewExpanded)}
                         className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg hover:bg-surface-raised transition-colors text-text-secondary hover:text-text-primary"
-                        aria-label={isCrewExpanded ? "Collapse crew" : "Expand crew"}
+                        aria-label={
+                          isCrewExpanded
+                            ? t("movies.detail.collapseCrew")
+                            : t("movies.detail.expandCrew")
+                        }
                       >
                         {isCrewExpanded ? (
                           <ChevronUp className="h-5 w-5" />
@@ -392,7 +410,9 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                               as="h3"
                               className="mb-3 uppercase tracking-wide text-text-muted"
                             >
-                              Director{directors.length > 1 ? "s" : ""}
+                              {directors.length > 1
+                                ? t("movies.detail.directors")
+                                : t("movies.detail.director")}
                             </Heading>
                             <div className="space-y-2">
                               {directors.map((director) => (
@@ -429,7 +449,9 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                               as="h3"
                               className="mb-3 uppercase tracking-wide text-text-muted"
                             >
-                              Producer{producers.length > 1 ? "s" : ""}
+                              {producers.length > 1
+                                ? t("movies.detail.producers")
+                                : t("movies.detail.producer")}
                             </Heading>
                             <div className="space-y-2">
                               {producers.slice(0, 3).map((producer) => (
@@ -466,7 +488,9 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                               as="h3"
                               className="mb-3 uppercase tracking-wide text-text-muted"
                             >
-                              Writer{writers.length > 1 ? "s" : ""}
+                              {writers.length > 1
+                                ? t("movies.detail.writers")
+                                : t("movies.detail.writer")}
                             </Heading>
                             <div className="space-y-2">
                               {writers.slice(0, 3).map((writer) => (
@@ -504,12 +528,16 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                   <div className="rounded-xl border border-border-default bg-surface-panel p-6">
                     <div className="flex items-center justify-between mb-5">
                       <Heading variant="subsection" as="h2" className="text-text-primary">
-                        Top Cast
+                        {t("movies.detail.topCast")}
                       </Heading>
                       <button
                         onClick={() => setIsTopCastExpanded(!isTopCastExpanded)}
                         className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg hover:bg-surface-raised transition-colors text-text-secondary hover:text-text-primary"
-                        aria-label={isTopCastExpanded ? "Collapse cast" : "Expand cast"}
+                        aria-label={
+                          isTopCastExpanded
+                            ? t("movies.detail.collapseCast")
+                            : t("movies.detail.expandCast")
+                        }
                       >
                         {isTopCastExpanded ? (
                           <ChevronUp className="h-5 w-5" />

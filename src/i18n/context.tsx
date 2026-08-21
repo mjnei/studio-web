@@ -31,6 +31,7 @@ const translationFiles = [
   "billing",
   "referral",
   "notifications",
+  "movies",
 ] as const;
 
 const translationsCache: Record<Locale, Translations> = {} as Record<Locale, Translations>;
