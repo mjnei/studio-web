@@ -10,14 +10,15 @@
 
 1. [Overview](#overview)
 2. [Design Principles](#design-principles)
-3. [Color System](#color-system)
-4. [Component Library](#component-library)
-5. [Responsive Design](#responsive-design-breakpoints)
-6. [Layout Patterns](#layout-patterns)
-7. [Animation & Transitions](#animation--transitions)
-8. [Accessibility](#accessibility)
-9. [Best Practices](#best-practices)
-10. [Quick Reference](#quick-reference)
+3. [Typography](#typography)
+4. [Color System](#color-system)
+5. [Component Library](#component-library)
+6. [Responsive Design](#responsive-design-breakpoints)
+7. [Layout Patterns](#layout-patterns)
+8. [Animation & Transitions](#animation--transitions)
+9. [Accessibility](#accessibility)
+10. [Best Practices](#best-practices)
+11. [Quick Reference](#quick-reference)
 
 ---
 
@@ -41,6 +42,19 @@ This document combines:
 3. **Consistent** - Unified component library and patterns
 4. **Accessible** - WCAG-compliant with proper contrast and focus states
 5. **Performant** - Optimized animations and transitions
+
+---
+
+## Typography
+
+**Full guide**: [TYPOGRAPHY.md](./TYPOGRAPHY.md) (roles, tokens, component API, and step-by-step refactor checklist).
+
+Summary:
+
+- Drive visual size from **type roles** (`page`, `section`, `label`, `metric`, …), not from bare `h1`–`h4` CSS alone.
+- Prefer `PageHeader`, `Heading`, and `CardTitle` over one-off `text-2xl` / `text-3xl` on headings.
+- Tune the scale in shared tokens / `typography.ts` — do not mass-edit pages to change global font sizes.
+- `@layer base` heading rules in `globals.css` are a fallback only; Tailwind utilities always win when present.
 
 ---
 
