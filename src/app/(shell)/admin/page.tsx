@@ -13,7 +13,6 @@ import {
   Play,
   Activity,
   ChevronRight,
-  Folder,
   type LucideIcon,
 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -37,36 +36,13 @@ type FeatureLink = {
   icon: LucideIcon;
 };
 
+// Movies, voices, and projects are linked from the stats cards above — omit them here.
 const ADMIN_FEATURES: FeatureLink[] = [
-  {
-    href: "/admin/movies",
-    title: "TMDB Movies",
-    description: "Catalog movies with TMDB import, cast, crew, and multi-language support",
-    icon: Film,
-  },
-  {
-    href: "/admin/projects",
-    title: "Projects",
-    description: "List all user projects, override status, and soft-delete",
-    icon: Folder,
-  },
-  {
-    href: "/admin/voices",
-    title: "Voice Catalog",
-    description: "Approve community voices, manage stock voices, and configure availability",
-    icon: Mic,
-  },
   {
     href: "/admin/queues",
     title: "Queue Management",
     description: "Monitor background job queues and inspect queue health",
     icon: Layers,
-  },
-  {
-    href: "/admin/studio-tts-jobs",
-    title: "Studio TTS Jobs",
-    description: "Track stale and failed studio TTS jobs with retry and cancel actions",
-    icon: Zap,
   },
   {
     href: "/admin/playground-tts-jobs",
@@ -75,8 +51,14 @@ const ADMIN_FEATURES: FeatureLink[] = [
     icon: Zap,
   },
   {
+    href: "/admin/studio-tts-jobs",
+    title: "Studio TTS Jobs",
+    description: "Track stale and failed studio TTS jobs with retry and cancel actions",
+    icon: Zap,
+  },
+  {
     href: "/admin/playground",
-    title: "TTS Playground",
+    title: "Playground",
     description: "Test voices and TTS settings without creating a full project",
     icon: Play,
   },
@@ -243,6 +225,11 @@ export default function AdminPage() {
               );
             })}
           </div>
+          <p className="mt-4 text-xs text-text-muted">
+            <Link href="/debug-sse" className="hover:text-accent-primary hover:underline">
+              /debug-sse
+            </Link>
+          </p>
         </CardContent>
       </Card>
     </div>

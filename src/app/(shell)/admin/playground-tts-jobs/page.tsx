@@ -289,7 +289,7 @@ export default function PlaygroundTTSJobsPage() {
                 <Gamepad2 className="h-6 w-6 text-white" />
               </div>
               <Heading variant="page" className="text-text-primary">
-                Playground TTS Jobs Monitoring
+                Playground TTS Jobs
               </Heading>
             </div>
             <p className="text-text-secondary">

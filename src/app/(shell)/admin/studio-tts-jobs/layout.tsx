@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "TTS Jobs Monitoring - Admin",
+  title: "Studio TTS Jobs - Admin",
   description: "Monitor TTS job health and diagnose failures",
 };
 

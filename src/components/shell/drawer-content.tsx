@@ -350,6 +350,15 @@ export function DrawerContent({
                 />
               ))}
             </div>
+            {!collapsed && (
+              <Link
+                href="/debug-sse"
+                onClick={onNavigate}
+                className="mt-2 block px-3 text-caption text-text-muted hover:text-accent-primary hover:underline lg:px-2.5"
+              >
+                /debug-sse
+              </Link>
+            )}
           </>
         )}
       </div>

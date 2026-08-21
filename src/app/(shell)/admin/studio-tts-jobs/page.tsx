@@ -261,7 +261,7 @@ export default function TTSJobsPage() {
                 <Zap className="h-6 w-6 text-white" />
               </div>
               <Heading variant="page" className="text-text-primary">
-                Studio TTS Jobs Monitoring
+                Studio TTS Jobs
               </Heading>
             </div>
             <p className="text-text-secondary">
