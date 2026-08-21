@@ -4,9 +4,11 @@ import { usePathname } from "next/navigation";
 import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
+import { useI18n } from "@/i18n";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const { t } = useI18n();
   const isOnboardingPage = pathname === "/onboarding";
 
   // For onboarding page, render children directly without wrapper
@@ -58,7 +60,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             Huavoi Studio
           </Heading>
           <Text variant="bodyLg" className="text-white/90 max-w-md drop-shadow">
-            AI-assisted video production
+            {t("auth.brandTagline")}
           </Text>
         </div>
 
@@ -88,7 +90,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
                 Huavoi Studio
               </Heading>
               <Text variant="body" className="mt-2 text-white/90 drop-shadow">
-                AI-assisted video production
+                {t("auth.brandTagline")}
               </Text>
             </div>
 

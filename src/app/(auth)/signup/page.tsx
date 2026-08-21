@@ -187,7 +187,7 @@ function SignupContent() {
           </InputOTP>
           {codeError && <p className="mt-2 text-xs text-status-failed self-start">{codeError}</p>}
           <div className="mt-2 text-xs text-text-muted self-start">
-            Get 100 bonus credits when you sign up with a referral code! (Optional)
+            {t("auth.signup.referralBonusOptional")}
           </div>
         </div>
       )}
@@ -238,13 +238,15 @@ function SignupContent() {
 }
 
 export default function SignupPage() {
+  const { t } = useI18n();
+
   return (
     <Suspense
       fallback={
         <Card variant="elevated" padding="lg" className="w-full">
           <div className="flex flex-col items-center justify-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-primary mb-4"></div>
-            <p className="text-sm text-text-secondary">Loading...</p>
+            <p className="text-sm text-text-secondary">{t("common.loading")}</p>
           </div>
         </Card>
       }
