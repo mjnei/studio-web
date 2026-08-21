@@ -381,18 +381,18 @@ export default function AdminMoviesPage() {
         <>
           {/* Search and Filter Bar */}
           <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex flex-1 items-center gap-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
-              <Search className="h-5 w-5 text-text-muted" />
+            <div className="flex min-w-0 flex-1 items-center gap-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
+              <Search className="h-5 w-5 shrink-0 text-text-muted" />
               <input
                 type="text"
                 placeholder="Search movies by title..."
                 value={librarySearchTerm}
                 onChange={(e) => setLibrarySearchTerm(e.target.value)}
                 onKeyPress={handleLibraryKeyPress}
-                className="flex-1 bg-transparent text-text-primary placeholder-text-muted focus:outline-none"
+                className="min-w-0 flex-1 bg-transparent text-text-primary placeholder-text-muted focus:outline-none"
               />
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex shrink-0 flex-wrap items-center gap-2">
               {/* Layout Mode Toggle */}
               <LayoutToggle layoutMode={layoutMode} onLayoutChange={handleLayoutChange} />
               <span className="text-sm text-text-muted">Locale:</span>
@@ -796,10 +796,10 @@ export default function AdminMoviesPage() {
           </div>
 
           {/* Search Bar */}
-          <div className="mb-6 rounded-2xl border border-border-default bg-surface-panel p-6">
-            <div className="flex gap-3">
-              <div className="flex flex-1 items-center gap-3 rounded-lg border border-border-default bg-surface-base px-4 py-3">
-                <Search className="h-5 w-5 text-text-muted" />
+          <div className="mb-6 rounded-2xl border border-border-default bg-surface-panel p-4 sm:p-6">
+            <div className="flex gap-2 sm:gap-3">
+              <div className="flex min-w-0 flex-1 items-center gap-2 rounded-lg border border-border-default bg-surface-base px-3 py-3 sm:gap-3 sm:px-4">
+                <Search className="h-5 w-5 shrink-0 text-text-muted" />
                 <input
                   ref={tmdbSearchInputRef}
                   type="text"
@@ -807,24 +807,19 @@ export default function AdminMoviesPage() {
                   value={tmdbSearchQuery}
                   onChange={(e) => setTmdbSearchQuery(e.target.value)}
                   onKeyPress={handleTmdbKeyPress}
-                  className="flex-1 bg-transparent text-text-primary placeholder-text-muted focus:outline-none"
+                  className="min-w-0 flex-1 bg-transparent text-text-primary placeholder-text-muted focus:outline-none"
                 />
               </div>
               <button
                 onClick={() => handleTmdbSearch(1)}
                 disabled={isSearchingTmdb || !tmdbSearchQuery.trim()}
-                className="flex items-center gap-2 rounded-lg bg-accent-primary px-6 py-3 text-sm font-medium text-white hover:bg-accent-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="flex shrink-0 items-center justify-center rounded-lg bg-accent-primary px-4 py-3 text-sm font-medium text-white hover:bg-accent-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all sm:px-6"
+                aria-label="Search TMDB"
               >
                 {isSearchingTmdb ? (
-                  <>
-                    <Loader className="h-4 w-4 animate-spin" />
-                    Searching...
-                  </>
+                  <Loader className="h-4 w-4 animate-spin" />
                 ) : (
-                  <>
-                    <Search className="h-4 w-4" />
-                    Search
-                  </>
+                  <Search className="h-4 w-4" />
                 )}
               </button>
             </div>
