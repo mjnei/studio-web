@@ -222,19 +222,6 @@ function UserSection({ collapsed, onNavigate }: { collapsed?: boolean; onNavigat
           </div>
         )}
       </Link>
-      {!collapsed && (
-        <div className="mt-3 flex gap-2 px-3">
-          <button
-            onClick={() => {
-              onNavigate?.();
-              logout();
-            }}
-            className="flex-1 rounded-lg border border-border-default bg-surface-raised px-3 py-2 text-sm font-medium text-text-secondary hover:bg-surface-hover hover:text-text-primary hover:border-accent-primary/30 transition-all"
-          >
-            {t("shell.logout")}
-          </button>
-        </div>
-      )}
     </div>
   );
 }

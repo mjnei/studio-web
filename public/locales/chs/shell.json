@@ -25,7 +25,6 @@
     "studioTTSJobs": "工作室 TTS 任务",
     "playgroundTTSJobs": "演示场 TTS 任务",
     "playgroundTTS": "演示场 TTS",
-    "auditLogs": "审计日志",
-    "logout": "退出登录"
+    "auditLogs": "审计日志"
   }
 }
