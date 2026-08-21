@@ -150,11 +150,13 @@ function RailLink({
       href={item.href}
       onClick={onClick}
       title={collapsed ? label : undefined}
-      className={`flex items-center gap-3 rounded-lg transition-all duration-200 ${collapsed ? "justify-center px-0 py-2.5" : "px-3 py-2.5 text-sm font-medium"
-        } ${active
+      className={`flex items-center gap-3 rounded-lg transition-all duration-200 ${
+        collapsed ? "justify-center px-0 py-2.5" : "px-3 py-2.5 text-sm font-medium"
+      } ${
+        active
           ? "bg-gradient-to-r from-accent-secondary/20 via-accent-primary/20 to-accent-tertiary/20 text-accent-primary shadow-sm border border-accent-primary/30"
           : "text-text-secondary hover:bg-surface-hover hover:text-text-primary hover:border hover:border-border-default"
-        }`}
+      }`}
     >
       {iconMap[item.href] || <Search size={20} />}
       {!collapsed && <span>{label}</span>}
@@ -187,16 +189,18 @@ function UserSection({ collapsed, onNavigate }: { collapsed?: boolean; onNavigat
 
   return (
     <div
-      className={`border-t border-border-default p-4 bg-surface-raised/50 ${collapsed ? "flex flex-col items-center gap-2" : ""
-        }`}
+      className={`border-t border-border-default p-4 bg-surface-raised/50 ${
+        collapsed ? "flex flex-col items-center gap-2" : ""
+      }`}
     >
       <Link
         href="/profile"
         onClick={onNavigate}
-        className={`flex items-center gap-3 rounded-lg text-sm transition-all ${collapsed
-          ? "justify-center p-0"
-          : "px-3 py-2.5 hover:bg-surface-hover border border-transparent hover:border-border-default"
-          }`}
+        className={`flex items-center gap-3 rounded-lg text-sm transition-all ${
+          collapsed
+            ? "justify-center p-0"
+            : "px-3 py-2.5 hover:bg-surface-hover border border-transparent hover:border-border-default"
+        }`}
       >
         {user?.picture_url ? (
           <Image
@@ -254,15 +258,17 @@ export function DrawerContent({
   return (
     <div className="flex h-full flex-col">
       <div
-        className={`flex h-16 items-center border-b border-border-default shrink-0 ${collapsed ? "justify-center px-2" : "px-4"
-          }`}
+        className={`flex h-16 items-center border-b border-border-default shrink-0 ${
+          collapsed ? "justify-center px-2" : "px-4"
+        }`}
       >
         <LogoMark collapsed={collapsed} />
         {onToggle && (
           <button
             onClick={onToggle}
-            className={`rounded-lg p-2 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all active:scale-95 ${collapsed ? "" : "ml-auto"
-              }`}
+            className={`rounded-lg p-2 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all active:scale-95 ${
+              collapsed ? "" : "ml-auto"
+            }`}
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
             title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
