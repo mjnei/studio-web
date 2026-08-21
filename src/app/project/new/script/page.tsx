@@ -123,7 +123,7 @@ export default function NewProjectScriptPage() {
                 </div>
               )}
               <div className="flex-1">
-                <Heading variant="label" as="h3" className="text-text-primary font-medium">{selectedMovie.title}</Heading>
+                <Heading variant="label" as="h3" className="text-text-primary">{selectedMovie.title}</Heading>
                 <p className="mt-1 text-sm text-text-muted">
                   {selectedMovie.genre && `${selectedMovie.genre.join(", ")} • `}
                   {selectedMovie.rating && `Rating ${selectedMovie.rating.toFixed(1)}`}

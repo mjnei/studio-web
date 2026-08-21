@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from "react";
 import { Mic, Plus, FileText, ChevronDown, Globe, User, AlertCircle, Check } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
+import { typography } from "@/components/ui/typography";
 import { Button } from "@/components/ui/button";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { useVoiceLimits } from "@/lib/hooks/use-voice-limits";
@@ -358,8 +359,14 @@ export default function VoicePage() {
                   <FileText className="h-5 w-5 text-accent-cyan" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <Heading variant="label" as="h3" className="text-text-secondary uppercase tracking-wide mb-2 font-medium">Script Tagline</Heading>
-                  <p className="text-xl font-semibold text-accent-cyan mb-2">
+                  <Heading
+                    variant="label"
+                    as="h3"
+                    className="mb-2 uppercase tracking-wide text-text-secondary"
+                  >
+                    Script Tagline
+                  </Heading>
+                  <p className={`${typography.section} mb-2 text-accent-cyan`}>
                     "{state.scriptSummary}"
                   </p>
                   <p className="text-xs text-text-muted">
@@ -385,7 +392,7 @@ export default function VoicePage() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-4 mb-2">
-                    <Heading variant="label" as="h3" className="text-text-primary font-medium">Your Script</Heading>
+                    <Heading variant="label" as="h3" className="text-text-primary">Your Script</Heading>
                     <span className="text-xs font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0 group-hover:text-accent-cyan-hover">
                       Click to expand <ChevronDown className="h-3 w-3" />
                     </span>
@@ -636,7 +643,7 @@ export default function VoicePage() {
                         : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
                     }`}
                   >
-                    <Heading variant="metric" as="span" className="mb-1">0.5x</Heading>
+                    <span className={`${typography.subsection} mb-1 tabular-nums`}>0.5x</span>
                     <span className="text-xs font-medium">Very Slow</span>
                     {ratio === 0.5 && (
                       <div className="absolute top-2 right-2">
@@ -654,7 +661,7 @@ export default function VoicePage() {
                         : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
                     }`}
                   >
-                    <Heading variant="metric" as="span" className="mb-1">1.0x</Heading>
+                    <span className={`${typography.subsection} mb-1 tabular-nums`}>1.0x</span>
                     <span className="text-xs font-medium">Slow</span>
                     {ratio === 1.0 && (
                       <div className="absolute top-2 right-2">
@@ -672,7 +679,7 @@ export default function VoicePage() {
                         : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
                     }`}
                   >
-                    <Heading variant="metric" as="span" className="mb-1">1.25x</Heading>
+                    <span className={`${typography.subsection} mb-1 tabular-nums`}>1.25x</span>
                     <span className="text-xs font-medium">Normal</span>
                     {ratio === 1.25 && (
                       <div className="absolute top-2 right-2">
@@ -690,7 +697,7 @@ export default function VoicePage() {
                         : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
                     }`}
                   >
-                    <Heading variant="metric" as="span" className="mb-1">1.6x</Heading>
+                    <span className={`${typography.subsection} mb-1 tabular-nums`}>1.6x</span>
                     <span className="text-xs font-medium">Fast</span>
                     {ratio === 1.6 && (
                       <div className="absolute top-2 right-2">
@@ -708,7 +715,7 @@ export default function VoicePage() {
                         : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
                     }`}
                   >
-                    <Heading variant="metric" as="span" className="mb-1">2.0x</Heading>
+                    <span className={`${typography.subsection} mb-1 tabular-nums`}>2.0x</span>
                     <span className="text-xs font-medium">Very Fast</span>
                     {ratio === 2.0 && (
                       <div className="absolute top-2 right-2">
@@ -721,7 +728,9 @@ export default function VoicePage() {
                 {/* Current Selection Display */}
                 <div className="flex items-center justify-center gap-2 p-3 rounded-lg bg-accent-primary/5 border border-accent-primary/20">
                   <span className="text-sm font-medium text-text-secondary">Current speed:</span>
-                  <span className="text-lg font-bold text-accent-primary">{ratio.toFixed(2)}x</span>
+                  <span className={`${typography.subsection} text-accent-primary tabular-nums`}>
+                    {ratio.toFixed(2)}x
+                  </span>
                 </div>
               </div>
             </Card>

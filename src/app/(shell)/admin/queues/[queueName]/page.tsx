@@ -305,9 +305,9 @@ export default function QueueDetailPage() {
               <Card className="border-muted">
                 <CardHeader className="pb-3">
                   <CardDescription className="text-xs">Queue Type</CardDescription>
-                  <CardTitle className="text-lg">
+                  <Heading variant="subsection" as="h3">
                     {stats.metadata?.is_job_queue ? "Job Queue" : "Result Queue"}
-                  </CardTitle>
+                  </Heading>
                   <p className="text-xs text-muted-foreground mt-1">
                     Category: {stats.metadata?.category?.toUpperCase()}
                   </p>

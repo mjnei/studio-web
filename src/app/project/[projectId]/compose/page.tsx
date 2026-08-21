@@ -6,6 +6,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
+import { typography } from "@/components/ui/typography";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { FullScriptModal } from "@/components/project/full-script-modal";
@@ -263,7 +264,7 @@ export default function ComposePage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-4 mb-2">
-                      <Heading variant="label" as="h3" className="text-text-primary font-medium">Project Thumbnail</Heading>
+                      <Heading variant="label" as="h3" className="text-text-primary">Project Thumbnail</Heading>
                       <div className="flex items-center gap-2 flex-shrink-0">
                         {/* Action buttons - visible when thumbnail is ready */}
                         {!isRegenerating && state.thumbnailUrl && (
@@ -411,7 +412,7 @@ export default function ComposePage() {
 
                             {/* Action/Info section - Half width on medium+ screens */}
                             <div className="mt-3 md:mt-0 flex flex-col justify-center">
-                              <Heading variant="label" as="h4" className="text-text-primary mb-2 font-medium">Customization Options</Heading>
+                              <Heading variant="label" as="h4" className="text-text-primary mb-2">Customization Options</Heading>
                               <p className="text-sm text-text-muted mb-3">
                                 Click to open the thumbnail editor where you can:
                               </p>
@@ -445,8 +446,14 @@ export default function ComposePage() {
                   <Sparkles className="h-5 w-5 text-accent-cyan" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <Heading variant="label" as="h3" className="text-text-secondary uppercase tracking-wide mb-2 font-medium">Script Tagline</Heading>
-                  <p className="text-xl font-semibold text-accent-cyan mb-2">
+                  <Heading
+                    variant="label"
+                    as="h3"
+                    className="mb-2 uppercase tracking-wide text-text-secondary"
+                  >
+                    Script Tagline
+                  </Heading>
+                  <p className={`${typography.section} mb-2 text-accent-cyan`}>
                     "{state.scriptSummary}"
                   </p>
                   <p className="text-xs text-text-muted">
@@ -493,7 +500,7 @@ export default function ComposePage() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-4 mb-2">
-                    <Heading variant="label" as="h3" className="text-text-primary font-medium">Your Script</Heading>
+                    <Heading variant="label" as="h3" className="text-text-primary">Your Script</Heading>
                     <span className="text-xs font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0 group-hover:text-accent-cyan-hover">
                       Click to expand <ChevronDown className="h-3 w-3" />
                     </span>
@@ -560,7 +567,7 @@ export default function ComposePage() {
               <div className="flex items-start gap-3 p-4 rounded-lg bg-accent-cyan/5 border border-accent-cyan/20">
                 <RotateCw className="h-5 w-5 text-accent-cyan flex-shrink-0 mt-0.5" />
                 <div>
-                  <Heading variant="label" as="h4" className="text-text-primary mb-1 font-medium">Generate New AI Image</Heading>
+                  <Heading variant="label" as="h4" className="text-text-primary mb-1">Generate New AI Image</Heading>
                   <p className="text-sm text-text-secondary leading-relaxed">
                     This will create a completely new thumbnail image using AI based on your movie
                     and script content. The current thumbnail will be replaced.
@@ -587,7 +594,7 @@ export default function ComposePage() {
               <div className="flex items-start gap-3 p-4 rounded-lg bg-status-warning/5 border border-status-warning/20">
                 <RotateCw className="h-5 w-5 text-status-warning flex-shrink-0 mt-0.5" />
                 <div>
-                  <Heading variant="label" as="h4" className="text-text-primary mb-1 font-medium">Retry Stuck Generation</Heading>
+                  <Heading variant="label" as="h4" className="text-text-primary mb-1">Retry Stuck Generation</Heading>
                   <p className="text-sm text-text-secondary leading-relaxed">
                     The thumbnail generation appears to be taking longer than usual. This will
                     restart the generation process with the same settings.
@@ -614,7 +621,7 @@ export default function ComposePage() {
               <div className="flex items-start gap-3 p-4 rounded-lg bg-accent-cyan/5 border border-accent-cyan/20">
                 <Edit className="h-5 w-5 text-accent-cyan flex-shrink-0 mt-0.5" />
                 <div>
-                  <Heading variant="label" as="h4" className="text-text-primary mb-1 font-medium">Customize Current Thumbnail</Heading>
+                  <Heading variant="label" as="h4" className="text-text-primary mb-1">Customize Current Thumbnail</Heading>
                   <p className="text-sm text-text-secondary leading-relaxed">
                     Open the thumbnail editor to customize your existing thumbnail. You can upload
                     your own image, adjust text overlays, or regenerate with custom AI prompts.

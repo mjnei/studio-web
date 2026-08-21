@@ -318,9 +318,9 @@ export default function DashboardPage() {
                 <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-surface-hover border border-border-default">
                   <Folder className="w-8 h-8 text-text-muted" />
                 </div>
-                <p className="text-lg font-medium text-text-primary mb-2">
+                <Heading variant="subsection" as="p" className="mb-2 text-text-primary">
                   {t("dashboard.empty.title")}
-                </p>
+                </Heading>
                 <p className="text-text-secondary mb-6 max-w-md">{t("dashboard.empty.message")}</p>
                 <Link href="/project/new">
                   <Button variant="primary">{t("dashboard.empty.cta")}</Button>

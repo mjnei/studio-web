@@ -6,6 +6,8 @@ import { CheckCircle, Sparkles, Rocket, AlertCircle } from "lucide-react";
 import { completeOnboarding } from "@/lib/api-client";
 import { useAuth } from "@/lib/auth-context";
 import { useI18n } from "@/i18n";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 
 export default function CompletionStep() {
   const router = useRouter();
@@ -105,12 +107,12 @@ export default function CompletionStep() {
         </div>
 
         {/* Error Message */}
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+        <Heading variant="page" as="h2" className="mb-4 text-gray-900 dark:text-white">
           {t("onboarding.completion.error")}
-        </h2>
-        <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 mb-8 px-4" role="alert">
+        </Heading>
+        <Text variant="bodyLg" className="mb-8 px-4 text-gray-600 dark:text-gray-300" role="alert">
           {error}
-        </p>
+        </Text>
 
         {/* Retry Button */}
         <button
@@ -142,12 +144,16 @@ export default function CompletionStep() {
           </div>
         </div>
 
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">
+        <Heading
+          variant="page"
+          as="h2"
+          className="mb-3 text-gray-900 sm:mb-4 dark:text-white"
+        >
           {t("onboarding.completion.loading")}
-        </h2>
-        <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 px-4">
+        </Heading>
+        <Text variant="bodyLg" className="px-4 text-gray-600 dark:text-gray-300">
           {t("onboarding.completion.loadingSubtext")}
-        </p>
+        </Text>
 
         {/* Loading dots */}
         <div className="flex justify-center gap-2 mt-6">
@@ -188,12 +194,19 @@ export default function CompletionStep() {
       </div>
 
       {/* Success Message */}
-      <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-4 sm:mb-6">
+      <Heading
+        variant="display"
+        as="h2"
+        className="mb-4 bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent sm:mb-6 dark:from-white dark:to-gray-300"
+      >
         {t("onboarding.completion.success")}
-      </h2>
-      <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-8 sm:mb-10 px-4 leading-relaxed">
+      </Heading>
+      <Text
+        variant="bodyLg"
+        className="mb-8 px-4 text-gray-600 sm:mb-10 dark:text-gray-300"
+      >
         {t("onboarding.completion.successSubtext")}
-      </p>
+      </Text>
 
       {/* Features Preview */}
       <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-8 sm:mb-10 px-4">

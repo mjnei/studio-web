@@ -316,7 +316,7 @@ export default function BillingPage() {
               <div className="flex items-start gap-3">
                 <Clock className="h-5 w-5 text-warning-text flex-shrink-0 mt-0.5" />
                 <div>
-                  <Heading variant="label" as="h4" className="text-warning-text mb-1 font-medium">
+                  <Heading variant="label" as="h4" className="text-warning-text mb-1">
                     Next Credit Reset
                   </Heading>
                   <p className="text-sm text-text-muted">
@@ -361,7 +361,7 @@ export default function BillingPage() {
             <div className="p-4 rounded-lg bg-surface-raised border border-border-default">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <Heading variant="label" as="h3" className="text-text-primary font-medium">
+                  <Heading variant="label" as="h3" className="text-text-primary">
                     Current Plan
                   </Heading>
                   <p className="text-sm text-text-secondary capitalize">
@@ -434,7 +434,7 @@ export default function BillingPage() {
                       <Heading
                         variant="label"
                         as="h4"
-                        className="text-text-primary capitalize font-medium"
+                        className="text-text-primary capitalize"
                       >
                         {transaction.transaction_type}
                       </Heading>
@@ -474,7 +474,7 @@ export default function BillingPage() {
 
           <div className="py-12 text-center">
             <Receipt className="h-16 w-16 text-text-muted mx-auto mb-4 opacity-30" />
-            <Heading variant="subsection" as="h3" className="text-text-primary mb-2 font-medium">
+            <Heading variant="subsection" as="h3" className="text-text-primary mb-2">
               Stripe Integration Coming Soon
             </Heading>
             <p className="text-text-muted max-w-md mx-auto mb-6">
@@ -500,7 +500,7 @@ export default function BillingPage() {
             <Coins className="h-5 w-5 text-accent-cyan" />
           </div>
           <div className="flex-1">
-            <Heading variant="subsection" as="h3" className="text-text-primary mb-2 font-medium">
+            <Heading variant="subsection" as="h3" className="text-text-primary mb-2">
               Need Help with Billing?
             </Heading>
             <p className="text-sm text-text-muted mb-3">

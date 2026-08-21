@@ -117,7 +117,9 @@ export default function SourcePage() {
                 <div className="flex-1">
                   <div className="mb-4 flex items-center gap-2">
                     <Film className="h-5 w-5 text-accent-cyan" />
-                    <Heading variant="page" as="h3" className="text-text-primary">{state.movieTitle}</Heading>
+                    <Heading variant="section" as="h3" className="text-text-primary">
+                      {state.movieTitle}
+                    </Heading>
                   </div>
                   {state.movieGenre && (
                     <div className="mb-3">

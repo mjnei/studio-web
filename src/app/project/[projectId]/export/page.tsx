@@ -318,7 +318,7 @@ export default function ExportPage() {
             <Card variant="elevated" padding="md">
               {/* Header with version selector */}
               <div className="flex items-center justify-between mb-4">
-                <Heading variant="label" as="h3" className="text-text-primary font-medium">Your Video</Heading>
+                <Heading variant="label" as="h3" className="text-text-primary">Your Video</Heading>
                 <div className="flex items-center gap-2">
                   {creditStatus && (
                     <div className="text-xs text-text-muted">
@@ -503,7 +503,7 @@ export default function ExportPage() {
           {/* ── Processing Videos ── */}
           {processingVideos.length > 0 && (
             <Card variant="elevated" padding="md">
-              <Heading variant="label" as="h3" className="text-text-primary mb-4 font-medium">Processing Videos</Heading>
+              <Heading variant="label" as="h3" className="text-text-primary mb-4">Processing Videos</Heading>
               <div className="space-y-3">
                 {processingVideos.map((video) => (
                   <div
@@ -535,7 +535,7 @@ export default function ExportPage() {
           {/* ── Failed Videos ── */}
           {failedVideos.length > 0 && (
             <Card variant="elevated" padding="md">
-              <Heading variant="label" as="h3" className="text-text-primary mb-4 font-medium">Failed Generations</Heading>
+              <Heading variant="label" as="h3" className="text-text-primary mb-4">Failed Generations</Heading>
               <div className="space-y-3">
                 {failedVideos.map((video) => (
                   <div
@@ -709,7 +709,7 @@ export default function ExportPage() {
                     </svg>
                   </div>
                   <div className="flex-1 text-left">
-                    <Heading variant="label" as="h4" className="text-text-primary font-medium group-hover:text-accent-cyan transition-colors">X (Twitter)</Heading>
+                    <Heading variant="label" as="h4" className="text-text-primary group-hover:text-accent-cyan transition-colors">X (Twitter)</Heading>
                     <p className="text-xs text-text-muted mt-0.5">Share to your X timeline</p>
                   </div>
                   <ChevronRight className="h-5 w-5 text-text-muted group-hover:text-accent-cyan transition-colors" />
@@ -735,7 +735,7 @@ export default function ExportPage() {
                     </svg>
                   </div>
                   <div className="flex-1 text-left">
-                    <Heading variant="label" as="h4" className="text-text-primary font-medium group-hover:text-accent-cyan transition-colors">WeChat</Heading>
+                    <Heading variant="label" as="h4" className="text-text-primary group-hover:text-accent-cyan transition-colors">WeChat</Heading>
                     <p className="text-xs text-text-muted mt-0.5">Share to WeChat moments</p>
                   </div>
                   <ChevronRight className="h-5 w-5 text-text-muted group-hover:text-accent-cyan transition-colors" />

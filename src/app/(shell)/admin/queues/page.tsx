@@ -260,7 +260,9 @@ export default function QueueManagementPage() {
                 {/* Health Indicator Chart */}
                 <Card>
                   <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-semibold">Queue Health Status</CardTitle>
+                    <Heading variant="label" as="h3">
+                      Queue Health Status
+                    </Heading>
                   </CardHeader>
                   <CardContent>
                     <HealthIndicator queues={Object.values(queues)} />
@@ -270,7 +272,9 @@ export default function QueueManagementPage() {
                 {/* Queue Distribution Chart */}
                 <Card>
                   <CardHeader className="pb-3">
-                    <CardTitle className="text-sm font-semibold">Messages by Category</CardTitle>
+                    <Heading variant="label" as="h3">
+                      Messages by Category
+                    </Heading>
                   </CardHeader>
                   <CardContent>
                     <QueueDistributionChart queues={Object.values(queues)} />
@@ -334,7 +338,9 @@ export default function QueueManagementPage() {
         <Card>
           <CardContent className="text-center py-12">
             <AlertCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-            <p className="text-lg font-medium mb-2">No queues found</p>
+            <Heading variant="subsection" as="p" className="mb-2">
+              No queues found
+            </Heading>
             <p className="text-sm text-muted-foreground">
               No queues found for category: {activeCategory}
             </p>

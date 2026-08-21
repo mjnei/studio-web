@@ -363,7 +363,9 @@ export default function PreviewPage() {
         <div className="flex flex-col gap-6 pb-24">
           {/* Page Header */}
           <div>
-            <Heading variant="page" as="h2" className="text-text-primary">Voice Preview</Heading>
+            <Heading variant="section" as="h2" className="text-text-primary">
+              Voice Preview
+            </Heading>
             <p className="mt-1 text-sm text-text-muted">
               Listen to your narration and make sure everything sounds perfect
             </p>
@@ -456,8 +458,7 @@ export default function PreviewPage() {
                         max={duration || 100}
                         value={currentTime}
                         onChange={handleSeek}
-                        className="w-full h-2 bg-surface-panel rounded-lg appearance-none cursor-pointer
-                        [&::-webkit-slider-thumb]:appearance-none
+                        className="w-full h-2 bg-surface-panel rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none
                         [&::-webkit-slider-thumb]:w-4
                         [&::-webkit-slider-thumb]:h-4
                         [&::-webkit-slider-thumb]:rounded-full
@@ -529,8 +530,7 @@ export default function PreviewPage() {
                         value={isMuted ? 0 : volume}
                         onChange={handleVolumeChange}
                         title="Volume"
-                        className="flex-1 h-1.5 bg-surface-panel rounded-lg appearance-none cursor-pointer
-                        [&::-webkit-slider-thumb]:appearance-none
+                        className="flex-1 h-1.5 bg-surface-panel rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none
                         [&::-webkit-slider-thumb]:w-3
                         [&::-webkit-slider-thumb]:h-3
                         [&::-webkit-slider-thumb]:rounded-full

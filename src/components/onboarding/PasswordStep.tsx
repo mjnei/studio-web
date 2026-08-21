@@ -5,6 +5,8 @@ import { Eye, EyeOff, Lock, CheckCircle2, Shield, AlertCircle } from "lucide-rea
 import { setUserPassword } from "@/lib/api-client";
 import { useAuth } from "@/lib/auth-context";
 import { useI18n } from "@/i18n";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 
 interface PasswordStepProps {
   onNext: () => void;
@@ -103,19 +105,23 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
           </div>
         </div>
 
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">
+        <Heading
+          variant="page"
+          as="h2"
+          className="mb-3 text-gray-900 sm:mb-4 dark:text-white"
+        >
           {hasExistingPassword
             ? t("onboarding.password.titleUpdate")
             : t("onboarding.password.title")}
-        </h2>
+        </Heading>
 
-        <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 mb-3 px-4">
+        <Text variant="bodyLg" className="mb-3 px-4 text-gray-600 dark:text-gray-300">
           {hasExistingPassword ? (
             <>{t("onboarding.password.subtitleUpdate")}</>
           ) : (
             <>{t("onboarding.password.subtitle")}</>
           )}
-        </p>
+        </Text>
 
         {!hasExistingPassword && (
           <div className="flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400 px-4">

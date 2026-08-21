@@ -1,5 +1,7 @@
 import { Film, FileText, Mic, Video } from "lucide-react";
 import { useI18n } from "@/i18n";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 
 interface WorkflowStepProps {
   onNext: () => void;
@@ -39,13 +41,13 @@ export default function WorkflowStep({ onNext, onBack }: WorkflowStepProps) {
   return (
     <div className="max-w-4xl mx-auto h-full flex flex-col justify-between">
       {/* Headline - Compact */}
-      <div className="text-center mb-6 sm:mb-8">
-        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">
+      <div className="mb-6 text-center sm:mb-8">
+        <Heading variant="page" as="h2" className="mb-2 text-gray-900 dark:text-white">
           {t("onboarding.workflow.title")}
-        </h2>
-        <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
+        </Heading>
+        <Text variant="body" className="text-gray-600 dark:text-gray-300">
           {t("onboarding.workflow.subtitle")}
-        </p>
+        </Text>
       </div>
 
       {/* Workflow Steps - Compact Grid */}
@@ -78,12 +80,12 @@ export default function WorkflowStep({ onNext, onBack }: WorkflowStepProps) {
 
               {/* Content */}
               <div className="text-center">
-                <h3 className="font-bold text-base sm:text-lg text-gray-900 dark:text-white mb-1">
+                <Heading variant="subsection" as="h3" className="mb-1 text-gray-900 dark:text-white">
                   {step.title}
-                </h3>
-                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 leading-snug">
+                </Heading>
+                <Text variant="caption" as="p" className="leading-snug text-gray-600 dark:text-gray-400">
                   {step.description}
-                </p>
+                </Text>
               </div>
             </div>
           );

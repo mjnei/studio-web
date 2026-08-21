@@ -2,7 +2,7 @@
 
 **Version**: 1.1  
 **Last Updated**: August 21, 2026  
-**Status**: Phase 2 complete — Phase 3 pending  
+**Status**: Phase 3 complete — Phase 4 pending  
 **Related**: [DESIGN_SYSTEM.md](./guides/DESIGN_SYSTEM.md), [BREAKPOINT_REFERENCE.md](./guides/BREAKPOINT_REFERENCE.md)  
 **Source of truth (after implementation)**: `src/app/globals.css` (`@theme` tokens) + `src/components/ui/heading.tsx`
 
@@ -75,7 +75,8 @@ Make typography **consistent and controllable from one place**, without fighting
 | `PageHeader` title (`text-2xl sm:text-3xl`) | `page` |
 | `CardTitle` (`text-xl`) | `section` |
 | Movie detail `<h2 className="text-sm font-semibold …">` | `label` |
-| Auth brand title | `display` |
+| Auth brand title / onboarding heroes | `display` |
+| Movie detail title | `page` |
 | Jobs `StatusCards` big counts | `metric` |
 | Form labels, button text | Keep component-owned (`text-sm`); not heading roles |
 | `CardDescription`, helper text | `body` or `caption` |
@@ -397,11 +398,11 @@ Work in **phases**. Prefer small PRs. Do not mix unrelated UI redesign into typo
 
 Update components that appear on many routes (one PR or one PR per cluster):
 
-- [x] `EmptyState` / `EmptyState.tsx`
+- [x] `EmptyState` / `EmptyState.tsx` (deleted unused duplicate `empty-state.tsx`)
 - [x] Jobs: `StatusCards`, `ActiveJobCard`, `FailedJobCard`, `AnalyticsPanel`
 - [x] Project shell: `project-shell`, `new-project-shell`, step headers (`movie-selection`, `script-generation`, `voice-generation`, `video-generation`, `tts-queue-status`)
 - [x] Notifications dropdown / preferences modal titles
-- [x] Voice / movie cards titles (card title → `section` or `label` as appropriate)
+- [x] Voice / movie / project card titles (`VoiceCard`, `MovieCard`, `ProjectCard`)
 - [x] Queue admin headers (`QueueMessagePeeker`, `DLQInspector`, `QueueStatsCard`)
 
 **Exit criteria**: Grep shows few remaining hardcoded `text-2xl|text-3xl|text-4xl` inside `src/components/`.
@@ -421,24 +422,28 @@ For each page: replace page titles and section titles with `PageHeader` / `Headi
 
 #### PR 3a — Auth
 
-- [ ] `(auth)/layout.tsx` → `display` for brand; forms keep `section` for form titles
-- [ ] login / signup / forgot-password / invite
+- [x] `(auth)/layout.tsx` → `display` for brand; forms keep `section` for form titles
+- [x] login / signup / forgot-password / invite
+- [x] onboarding (`WelcomeStep` / `WorkflowStep` / `PasswordStep` / `CompletionStep` → `display` / `page`)
 
 #### PR 3b — Core shell
 
-- [ ] dashboard, projects, movies, voices, jobs, billing, pricing, profile, help
-- [ ] notifications, settings/notifications
+- [x] dashboard, projects, movies, voices, jobs, billing, pricing, profile, help
+- [x] notifications, settings / settings/notifications
+- [x] referral, referral/leaderboard
+- [x] movies/[id] detail
 
 #### PR 3c — Admin area
 
-- [ ] admin: movies, queues, playground, TTS jobs, audit-logs, voices, tmdb
+- [x] admin hub (`admin/page.tsx`)
+- [x] admin: movies, queues, playground, TTS jobs, audit-logs, voices, tmdb
 
 #### PR 3d — Project workflow
 
-- [ ] `project/[projectId]/*` (details, source, script, voice, compose, preview, export)
-- [ ] `project/new/*`
+- [x] `project/[projectId]/*` (details, source, script, voice, compose, preview, export)
+- [x] `project/new/*`
 
-**Exit criteria**: Spot-check each area at 375px and 1280px; no obvious size regressions.
+**Exit criteria**: Spot-check each area at 375px and 1280px; no obvious size regressions. (Visual QA tracked in Phase 4.)
 
 ---
 
@@ -454,8 +459,9 @@ rg -n "<h[1-4][^>]*className=\"[^\"]*text-(xl|2xl|3xl|4xl|5xl)" src
 rg -n "text-(3xl|4xl|5xl)" src --glob "!**/typography.ts" --glob "!**/heading.tsx"
 ```
 
-- [ ] Decide allowlist for remaining `display` usages (auth, onboarding)
+- [ ] Decide allowlist for remaining `display` usages (auth layout brand, onboarding heroes)
 - [ ] Remove dead duplicate title styles
+- [ ] Spot-check shell / project / auth / admin at 375px and 1280px (Phase 3 exit criteria)
 - [ ] Optional ESLint rule or codegraph/custom check: disallow `text-3xl`+ on `<h1>`–`<h4>` outside `components/ui`
 - [ ] Update `DESIGN_SYSTEM.md` Quick Reference “Text” section to point at roles
 - [ ] Mark this guide **Status: Adopted**

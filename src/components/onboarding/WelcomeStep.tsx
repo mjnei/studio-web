@@ -1,5 +1,7 @@
 import { Film, Sparkles, Video, Wand2 } from "lucide-react";
 import { useI18n } from "@/i18n";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 
 interface WelcomeStepProps {
   onNext: () => void;
@@ -35,14 +37,20 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
       </div>
 
       {/* Headline */}
-      <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-4 sm:mb-6 leading-tight">
+      <Heading
+        variant="display"
+        className="mb-4 bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent sm:mb-6 dark:from-white dark:to-gray-300"
+      >
         {t("onboarding.welcome.title")}
-      </h1>
+      </Heading>
 
       {/* Body Text */}
-      <p className="text-base sm:text-lg lg:text-xl text-gray-600 dark:text-gray-300 mb-8 sm:mb-10 max-w-lg mx-auto px-4 leading-relaxed">
+      <Text
+        variant="bodyLg"
+        className="mx-auto mb-8 max-w-lg px-4 text-gray-600 sm:mb-10 dark:text-gray-300"
+      >
         {t("onboarding.welcome.subtitle")}
-      </p>
+      </Text>
 
       {/* Feature Pills */}
       <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-8 sm:mb-10 px-4">
@@ -88,9 +96,9 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
       </button>
 
       {/* Subtext */}
-      <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-6 px-4">
+      <Text variant="caption" as="p" className="mt-6 px-4 text-gray-500 dark:text-gray-400">
         {t("onboarding.welcome.subtext")}
-      </p>
+      </Text>
     </div>
   );
 }

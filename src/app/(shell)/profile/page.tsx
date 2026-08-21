@@ -244,7 +244,7 @@ export default function ProfilePage() {
                 ) : (
                   <>
                     <div>
-                      <Heading variant="page" as="h3" className="text-text-primary">
+                      <Heading variant="section" as="h3" className="text-text-primary">
                         {user.name}
                       </Heading>
                       <div className="flex items-center justify-center sm:justify-start gap-2 mt-2">

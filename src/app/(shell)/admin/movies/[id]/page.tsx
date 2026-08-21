@@ -370,9 +370,11 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
               <div className="space-y-6">
                 {/* Title & Metadata */}
                 <div>
-                  <Heading variant="display" className="text-text-primary mb-3">{movie.title || movie.original_title}</Heading>
+                  <Heading variant="page" className="mb-3 text-text-primary">
+                    {movie.title || movie.original_title}
+                  </Heading>
                   {movie.original_title && movie.original_title !== movie.title && (
-                    <p className="text-lg text-text-muted mb-3">{movie.original_title}</p>
+                    <p className="mb-3 text-body-lg text-text-muted">{movie.original_title}</p>
                   )}
 
                   <div className="flex flex-wrap gap-4 items-center text-sm text-text-secondary mb-4">

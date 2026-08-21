@@ -113,19 +113,21 @@ export default function LeaderboardPage() {
               <Badge variant="default" className="mb-2">
                 #{leaderboard[1].rank}
               </Badge>
-              <p className="text-lg font-bold text-text-primary mb-1">{leaderboard[1].user_name}</p>
-              <div className="flex items-center justify-center gap-4 text-sm text-text-muted mt-3">
+              <Heading variant="subsection" as="p" className="mb-1 text-text-primary">
+                {leaderboard[1].user_name}
+              </Heading>
+              <div className="mt-3 flex items-center justify-center gap-4 text-sm text-text-muted">
                 <div>
                   <p className="text-xs">{t("referral.leaderboard.referrals")}</p>
-                  <p className="text-lg font-semibold text-text-primary">
+                  <Heading variant="subsection" as="p" className="text-text-primary">
                     {leaderboard[1].total_all_levels_referrals}
-                  </p>
+                  </Heading>
                 </div>
                 <div>
                   <p className="text-xs">{t("referral.leaderboard.rewards")}</p>
-                  <p className="text-lg font-semibold text-accent-cyan">
+                  <Heading variant="subsection" as="p" className="text-accent-cyan">
                     {leaderboard[1].total_invite_rewards_earned}
-                  </p>
+                  </Heading>
                 </div>
               </div>
             </div>
@@ -156,19 +158,19 @@ export default function LeaderboardPage() {
               <Badge variant="warning" className="mb-2">
                 👑 #{leaderboard[0].rank}
               </Badge>
-              <Heading variant="section" className="text-text-primary mb-1">
+              <Heading variant="section" as="p" className="mb-1 text-text-primary">
                 {leaderboard[0].user_name}
               </Heading>
-              <div className="flex items-center justify-center gap-4 text-sm text-text-muted mt-3">
+              <div className="mt-3 flex items-center justify-center gap-4 text-sm text-text-muted">
                 <div>
                   <p className="text-xs">{t("referral.leaderboard.referrals")}</p>
-                  <Heading variant="section" className="text-text-primary">
+                  <Heading variant="metric" as="p" className="text-text-primary">
                     {leaderboard[0].total_all_levels_referrals}
                   </Heading>
                 </div>
                 <div>
                   <p className="text-xs">{t("referral.leaderboard.rewards")}</p>
-                  <Heading variant="section" className="text-accent-cyan">
+                  <Heading variant="metric" as="p" className="text-accent-cyan">
                     {leaderboard[0].total_invite_rewards_earned}
                   </Heading>
                 </div>
@@ -201,19 +203,21 @@ export default function LeaderboardPage() {
               <Badge variant="default" className="mb-2">
                 #{leaderboard[2].rank}
               </Badge>
-              <p className="text-lg font-bold text-text-primary mb-1">{leaderboard[2].user_name}</p>
-              <div className="flex items-center justify-center gap-4 text-sm text-text-muted mt-3">
+              <Heading variant="subsection" as="p" className="mb-1 text-text-primary">
+                {leaderboard[2].user_name}
+              </Heading>
+              <div className="mt-3 flex items-center justify-center gap-4 text-sm text-text-muted">
                 <div>
                   <p className="text-xs">{t("referral.leaderboard.referrals")}</p>
-                  <p className="text-lg font-semibold text-text-primary">
+                  <Heading variant="subsection" as="p" className="text-text-primary">
                     {leaderboard[2].total_all_levels_referrals}
-                  </p>
+                  </Heading>
                 </div>
                 <div>
                   <p className="text-xs">{t("referral.leaderboard.rewards")}</p>
-                  <p className="text-lg font-semibold text-accent-cyan">
+                  <Heading variant="subsection" as="p" className="text-accent-cyan">
                     {leaderboard[2].total_invite_rewards_earned}
-                  </p>
+                  </Heading>
                 </div>
               </div>
             </div>

@@ -305,33 +305,33 @@ export default function PricingPage() {
 
       {/* FAQ Section */}
       <div className="mb-6">
-        <Heading variant="page" as="h2" className="text-text-primary text-center mb-6">
+        <Heading variant="section" as="h2" className="mb-6 text-center text-text-primary">
           {t("pricing.faq.title")}
         </Heading>
-        <div className="space-y-4 max-w-3xl mx-auto">
+        <div className="mx-auto max-w-3xl space-y-4">
           <Card variant="elevated" padding="md">
-            <Heading variant="label" as="h3" className="text-text-primary mb-2 font-medium">
+            <Heading variant="label" as="h3" className="mb-2 text-text-primary">
               {t("pricing.faq.creditQuestion")}
             </Heading>
             <p className="text-sm text-text-secondary">{t("pricing.faq.creditAnswer")}</p>
           </Card>
 
           <Card variant="elevated" padding="md">
-            <Heading variant="label" as="h3" className="text-text-primary mb-2 font-medium">
+            <Heading variant="label" as="h3" className="mb-2 text-text-primary">
               {t("pricing.faq.rolloverQuestion")}
             </Heading>
             <p className="text-sm text-text-secondary">{t("pricing.faq.rolloverAnswer")}</p>
           </Card>
 
           <Card variant="elevated" padding="md">
-            <Heading variant="label" as="h3" className="text-text-primary mb-2 font-medium">
+            <Heading variant="label" as="h3" className="mb-2 text-text-primary">
               {t("pricing.faq.changeQuestion")}
             </Heading>
             <p className="text-sm text-text-secondary">{t("pricing.faq.changeAnswer")}</p>
           </Card>
 
           <Card variant="elevated" padding="md">
-            <Heading variant="label" as="h3" className="text-text-primary mb-2 font-medium">
+            <Heading variant="label" as="h3" className="mb-2 text-text-primary">
               {t("pricing.faq.teamQuestion")}
             </Heading>
             <p className="text-sm text-text-secondary">{t("pricing.faq.teamAnswer")}</p>

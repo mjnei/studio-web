@@ -234,9 +234,9 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                         <span className="text-sm font-medium text-text-muted">Rating</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-lg font-bold text-text-primary">
+                        <Heading variant="metric" as="span" className="text-text-primary">
                           {movie.vote_average.toFixed(1)}
-                        </span>
+                        </Heading>
                         {movie.vote_count && (
                           <span className="text-xs text-text-muted">
                             ({movie.vote_count.toLocaleString()})
@@ -251,9 +251,9 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                         <TrendingUp className="h-4 w-4 text-accent-cyan" />
                         <span className="text-sm font-medium text-text-muted">Popularity</span>
                       </div>
-                      <span className="text-lg font-bold text-text-primary">
+                      <Heading variant="metric" as="span" className="text-text-primary">
                         {movie.popularity.toFixed(0)}
-                      </span>
+                      </Heading>
                     </div>
                   )}
                 </div>
@@ -288,7 +288,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
               <div className="space-y-8">
                 {/* Title Section */}
                 <div>
-                  <Heading variant="display" className="mb-2 text-text-primary">
+                  <Heading variant="page" className="mb-2 text-text-primary">
                     {movie.title || movie.original_title}
                   </Heading>
                   {movie.original_title && movie.original_title !== movie.title && (

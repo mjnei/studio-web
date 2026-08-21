@@ -143,7 +143,7 @@ export default function NotificationSettingsPage() {
                     <div key={type} className="p-6">
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
-                          <Heading variant="subsection" as="h3" className="text-text-primary font-medium">
+                          <Heading variant="subsection" as="h3" className="text-text-primary">
                             {title}
                           </Heading>
                           <Text variant="body" className="text-text-muted mt-1">
