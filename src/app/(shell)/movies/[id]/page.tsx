@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Star,
@@ -11,29 +11,41 @@ import {
   Loader,
   AlertCircle,
   Film,
-  User,
   Globe,
   TrendingUp,
-  ChevronDown,
-  ChevronUp,
 } from "lucide-react";
 import Link from "next/link";
 import { ExternalImage } from "@/components/ui/ExternalImage";
 import { Heading } from "@/components/ui/heading";
-import { Text } from "@/components/ui/text";
-import { adminGetMovieDetails, type MovieDetailsResponse } from "@/lib/api/admin";
+import { getMovie, type MovieResponse } from "@/lib/project-client";
 import { useI18n } from "@/i18n";
+
+type MovieGenre = { id?: number; name?: string };
+
+function genreName(genre: MovieGenre | Record<string, unknown> | string): string | undefined {
+  if (typeof genre === "string") return genre;
+  if (genre && typeof genre === "object" && "name" in genre && typeof genre.name === "string") {
+    return genre.name;
+  }
+  return undefined;
+}
+
+function genreKey(genre: MovieGenre | Record<string, unknown> | string, index: number): string | number {
+  if (typeof genre === "string") return genre;
+  if (genre && typeof genre === "object" && "id" in genre && genre.id != null) {
+    return genre.id as string | number;
+  }
+  return index;
+}
 
 export default function MovieDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { t } = useI18n();
   const router = useRouter();
   const [movieId, setMovieId] = useState<number | null>(null);
 
-  const [movie, setMovie] = useState<MovieDetailsResponse | null>(null);
+  const [movie, setMovie] = useState<MovieResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isTopCastExpanded, setIsTopCastExpanded] = useState(true);
-  const [isCrewExpanded, setIsCrewExpanded] = useState(true);
 
   useEffect(() => {
     (async () => {
@@ -41,21 +53,6 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
       setMovieId(parseInt(resolvedParams.id));
     })();
   }, [params]);
-
-  const loadMovieDetails = useCallback(async () => {
-    if (!movieId) return;
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await adminGetMovieDetails(movieId, "en");
-      setMovie(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : t("movies.detail.loadFailed"));
-    } finally {
-      setLoading(false);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- t is stable enough for error fallback
-  }, [movieId]);
 
   useEffect(() => {
     if (!movieId) return;
@@ -66,7 +63,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
       setLoading(true);
       setError(null);
       try {
-        const data = await adminGetMovieDetails(movieId, "en");
+        const data = await getMovie(movieId, "en");
         if (isMounted) {
           setMovie(data);
         }
@@ -99,7 +96,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
       year: movie.release_date ? new Date(movie.release_date).getFullYear() : 0,
       poster: posterUrl || "",
       rating: movie.vote_average || 0,
-      genre: movie.genres?.map((g) => g.name).filter(Boolean) || [],
+      genre: (movie.genres ?? []).map(genreName).filter((name): name is string => Boolean(name)),
       duration: movie.runtime ? `${movie.runtime} ${t("movies.runtimeUnit")}` : "",
     };
 
@@ -117,16 +114,6 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
   const backdropUrl = movie?.backdrop_path
     ? `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`
     : null;
-
-  // Extract cast and crew
-  const directors = movie?.cast?.filter((c) => c.role === "director") || [];
-  const producers = movie?.cast?.filter((c) => c.role === "producer") || [];
-  const writers = movie?.cast?.filter((c) => c.role === "writer") || [];
-  const actors =
-    movie?.cast
-      ?.filter((c) => c.role === "actor" || c.role === "actress")
-      .sort((a, b) => (a.credit_order || 999) - (b.credit_order || 999))
-      .slice(0, 12) || [];
 
   return (
     <div className="min-h-screen bg-surface-base">
@@ -346,14 +333,18 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                   {/* Genres */}
                   {movie.genres && movie.genres.length > 0 && (
                     <div className="mt-4 flex flex-wrap gap-2">
-                      {movie.genres.map((genre) => (
-                        <span
-                          key={genre.id}
-                          className="rounded-lg bg-accent-cyan/10 px-3 py-1.5 text-xs font-semibold text-accent-cyan ring-1 ring-accent-cyan/20"
-                        >
-                          {genre.name}
-                        </span>
-                      ))}
+                      {movie.genres.map((genre, index) => {
+                        const name = genreName(genre);
+                        if (!name) return null;
+                        return (
+                          <span
+                            key={genreKey(genre, index)}
+                            className="rounded-lg bg-accent-cyan/10 px-3 py-1.5 text-xs font-semibold text-accent-cyan ring-1 ring-accent-cyan/20"
+                          >
+                            {name}
+                          </span>
+                        );
+                      })}
                     </div>
                   )}
                 </div>
@@ -374,254 +365,6 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                       {t("movies.detail.overview")}
                     </Heading>
                     <p className="text-sm leading-loose text-text-secondary">{movie.overview}</p>
-                  </div>
-                )}
-
-                {/* Cast & Crew */}
-                {(directors.length > 0 || producers.length > 0 || writers.length > 0) && (
-                  <div className="rounded-xl border border-border-default bg-surface-panel p-6">
-                    <div className="flex items-center justify-between mb-5">
-                      <Heading variant="subsection" as="h2" className="text-text-primary">
-                        {t("movies.detail.crew")}
-                      </Heading>
-                      <button
-                        onClick={() => setIsCrewExpanded(!isCrewExpanded)}
-                        className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg hover:bg-surface-raised transition-colors text-text-secondary hover:text-text-primary"
-                        aria-label={
-                          isCrewExpanded
-                            ? t("movies.detail.collapseCrew")
-                            : t("movies.detail.expandCrew")
-                        }
-                      >
-                        {isCrewExpanded ? (
-                          <ChevronUp className="h-5 w-5" />
-                        ) : (
-                          <ChevronDown className="h-5 w-5" />
-                        )}
-                      </button>
-                    </div>
-                    {isCrewExpanded && (
-                      <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
-                        {/* Directors */}
-                        {directors.length > 0 && (
-                          <div>
-                            <Heading
-                              variant="label"
-                              as="h3"
-                              className="mb-3 uppercase tracking-wide text-text-muted"
-                            >
-                              {directors.length > 1
-                                ? t("movies.detail.directors")
-                                : t("movies.detail.director")}
-                            </Heading>
-                            <div className="space-y-2">
-                              {directors.map((director) => (
-                                <div key={director.id} className="flex items-center gap-3">
-                                  {director.person.profile_path ? (
-                                    <ExternalImage
-                                      src={`https://image.tmdb.org/t/p/w185${director.person.profile_path}`}
-                                      alt={director.person.display_name}
-                                      className="h-12 w-12 rounded-lg object-cover ring-2 ring-border-default"
-                                      width={48}
-                                      height={48}
-                                    />
-                                  ) : (
-                                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-surface-raised ring-2 ring-border-default">
-                                      <User className="h-5 w-5 text-text-muted" />
-                                    </div>
-                                  )}
-                                  <div className="min-w-0 flex-1">
-                                    <p className="truncate text-sm font-semibold text-text-primary">
-                                      {director.person.display_name}
-                                    </p>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Producers */}
-                        {producers.length > 0 && (
-                          <div>
-                            <Heading
-                              variant="label"
-                              as="h3"
-                              className="mb-3 uppercase tracking-wide text-text-muted"
-                            >
-                              {producers.length > 1
-                                ? t("movies.detail.producers")
-                                : t("movies.detail.producer")}
-                            </Heading>
-                            <div className="space-y-2">
-                              {producers.slice(0, 3).map((producer) => (
-                                <div key={producer.id} className="flex items-center gap-3">
-                                  {producer.person.profile_path ? (
-                                    <ExternalImage
-                                      src={`https://image.tmdb.org/t/p/w185${producer.person.profile_path}`}
-                                      alt={producer.person.display_name}
-                                      className="h-12 w-12 rounded-lg object-cover ring-2 ring-border-default"
-                                      width={48}
-                                      height={48}
-                                    />
-                                  ) : (
-                                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-surface-raised ring-2 ring-border-default">
-                                      <User className="h-5 w-5 text-text-muted" />
-                                    </div>
-                                  )}
-                                  <div className="min-w-0 flex-1">
-                                    <p className="truncate text-sm font-semibold text-text-primary">
-                                      {producer.person.display_name}
-                                    </p>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Writers */}
-                        {writers.length > 0 && (
-                          <div>
-                            <Heading
-                              variant="label"
-                              as="h3"
-                              className="mb-3 uppercase tracking-wide text-text-muted"
-                            >
-                              {writers.length > 1
-                                ? t("movies.detail.writers")
-                                : t("movies.detail.writer")}
-                            </Heading>
-                            <div className="space-y-2">
-                              {writers.slice(0, 3).map((writer) => (
-                                <div key={writer.id} className="flex items-center gap-3">
-                                  {writer.person.profile_path ? (
-                                    <ExternalImage
-                                      src={`https://image.tmdb.org/t/p/w185${writer.person.profile_path}`}
-                                      alt={writer.person.display_name}
-                                      className="h-12 w-12 rounded-lg object-cover ring-2 ring-border-default"
-                                      width={48}
-                                      height={48}
-                                    />
-                                  ) : (
-                                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-surface-raised ring-2 ring-border-default">
-                                      <User className="h-5 w-5 text-text-muted" />
-                                    </div>
-                                  )}
-                                  <div className="min-w-0 flex-1">
-                                    <p className="truncate text-sm font-semibold text-text-primary">
-                                      {writer.person.display_name}
-                                    </p>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* Cast */}
-                {actors.length > 0 && (
-                  <div className="rounded-xl border border-border-default bg-surface-panel p-6">
-                    <div className="flex items-center justify-between mb-5">
-                      <Heading variant="subsection" as="h2" className="text-text-primary">
-                        {t("movies.detail.topCast")}
-                      </Heading>
-                      <button
-                        onClick={() => setIsTopCastExpanded(!isTopCastExpanded)}
-                        className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg hover:bg-surface-raised transition-colors text-text-secondary hover:text-text-primary"
-                        aria-label={
-                          isTopCastExpanded
-                            ? t("movies.detail.collapseCast")
-                            : t("movies.detail.expandCast")
-                        }
-                      >
-                        {isTopCastExpanded ? (
-                          <ChevronUp className="h-5 w-5" />
-                        ) : (
-                          <ChevronDown className="h-5 w-5" />
-                        )}
-                      </button>
-                    </div>
-
-                    {isTopCastExpanded && (
-                      <>
-                        {/* Desktop: Grid Layout */}
-                        <div className="hidden sm:grid gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                          {actors.map((actor) => (
-                            <div
-                              key={actor.id}
-                              className="group overflow-hidden rounded-xl border border-border-default bg-surface-raised transition-all hover:border-accent-cyan/40 hover:shadow-lg"
-                            >
-                              <div className="relative aspect-square w-full overflow-hidden bg-surface-base">
-                                {actor.person.profile_path ? (
-                                  <ExternalImage
-                                    src={`https://image.tmdb.org/t/p/w342${actor.person.profile_path}`}
-                                    alt={actor.person.display_name}
-                                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                                    fill
-                                    sizes="(max-width: 640px) 25vw, (max-width: 1024px) 20vw, 150px"
-                                  />
-                                ) : (
-                                  <div className="flex h-full items-center justify-center">
-                                    <User className="h-16 w-16 text-text-muted opacity-30" />
-                                  </div>
-                                )}
-                              </div>
-                              <div className="p-3">
-                                <p className="mb-1 truncate text-sm font-bold text-text-primary">
-                                  {actor.person.display_name}
-                                </p>
-                                {actor.character && (
-                                  <p className="truncate text-xs text-text-muted">
-                                    {actor.character}
-                                  </p>
-                                )}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-
-                        {/* Mobile: 2-Column Grid */}
-                        <div className="grid grid-cols-2 gap-3 sm:hidden">
-                          {actors.map((actor) => (
-                            <div
-                              key={actor.id}
-                              className="group overflow-hidden rounded-xl border border-border-default bg-surface-raised transition-all hover:border-accent-cyan/40"
-                            >
-                              <div className="relative aspect-square w-full overflow-hidden bg-surface-base">
-                                {actor.person.profile_path ? (
-                                  <ExternalImage
-                                    src={`https://image.tmdb.org/t/p/w342${actor.person.profile_path}`}
-                                    alt={actor.person.display_name}
-                                    className="h-full w-full object-cover"
-                                    fill
-                                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 200px"
-                                  />
-                                ) : (
-                                  <div className="flex h-full items-center justify-center">
-                                    <User className="h-12 w-12 text-text-muted opacity-30" />
-                                  </div>
-                                )}
-                              </div>
-                              <div className="p-2.5">
-                                <p className="mb-1 truncate text-xs font-bold text-text-primary">
-                                  {actor.person.display_name}
-                                </p>
-                                {actor.character && (
-                                  <p className="truncate text-[10px] leading-tight text-text-muted">
-                                    {actor.character}
-                                  </p>
-                                )}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </>
-                    )}
                   </div>
                 )}
               </div>

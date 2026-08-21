@@ -7,32 +7,14 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { MovieCard } from "@/components/movie";
-import { getPopularMovies, searchMovies } from "@/lib/project-client";
-import { adminGetMovieDetails } from "@/lib/api/admin";
+import { getPopularMovies, searchMovies, type MovieResponse } from "@/lib/project-client";
 import { LayoutToggle, type LayoutMode } from "@/components/ui/LayoutToggle";
 import { useI18n } from "@/i18n";
-
-interface EnrichedMovie {
-  id: number;
-  title: string;
-  original_title?: string | null;
-  overview?: string | null;
-  poster_path?: string | null;
-  backdrop_path?: string | null;
-  release_date?: string | null;
-  runtime?: number | null;
-  vote_average?: number | null;
-  imdb_id?: string | null;
-  douban_id?: string | null;
-  genres?: Array<{ id?: number; name?: string } | Record<string, unknown>> | string[] | null;
-  directors?: string[];
-  topCast?: string[];
-}
 
 export default function MoviesPage() {
   const { t } = useI18n();
   const [searchQuery, setSearchQuery] = useState("");
-  const [movies, setMovies] = useState<EnrichedMovie[]>([]);
+  const [movies, setMovies] = useState<MovieResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [layoutMode, setLayoutMode] = useState<LayoutMode>(() => {
@@ -43,7 +25,6 @@ export default function MoviesPage() {
     }
     return "grid-sm";
   });
-  const [enrichmentProgress, setEnrichmentProgress] = useState(0);
 
   // Save layout preference to localStorage when it changes
   const handleLayoutChange = (mode: LayoutMode) => {
@@ -57,52 +38,14 @@ export default function MoviesPage() {
     const loadMovies = async () => {
       setLoading(true);
       setError(null);
-      setEnrichmentProgress(0);
       try {
         const query = searchQuery.trim();
         const data = query ? (await searchMovies(query, 30)).movies : await getPopularMovies(30);
 
         if (controller.signal.aborted) return;
 
-        // Set initial movies without enrichment
         setMovies(data);
         setLoading(false);
-
-        // Enrich movies with cast/director info in the background
-        const enrichedMovies: EnrichedMovie[] = [];
-        for (let i = 0; i < data.length; i++) {
-          if (controller.signal.aborted) break;
-
-          try {
-            const details = await adminGetMovieDetails(data[i].id);
-            const directors = details.cast
-              ?.filter((c) => c.role === "director")
-              .map((c) => c.person.display_name)
-              .slice(0, 2);
-
-            const topCast = details.cast
-              ?.filter((c) => c.role === "actor" || c.role === "actress")
-              .sort((a, b) => (a.credit_order || 999) - (b.credit_order || 999))
-              .map((c) => c.person.display_name)
-              .slice(0, 3);
-
-            const genres = details.genres?.map((g) => g.name).slice(0, 3);
-
-            enrichedMovies.push({
-              ...data[i],
-              directors,
-              topCast,
-              genres,
-            });
-
-            setEnrichmentProgress(Math.round(((i + 1) / data.length) * 100));
-            setMovies([...enrichedMovies, ...data.slice(i + 1)]);
-          } catch {
-            // If enrichment fails, just use the basic movie data
-            enrichedMovies.push(data[i]);
-            setMovies([...enrichedMovies, ...data.slice(i + 1)]);
-          }
-        }
       } catch (err) {
         if (!controller.signal.aborted) {
           setError(err instanceof Error ? err.message : t("movies.error.unableToLoad"));
@@ -141,18 +84,11 @@ export default function MoviesPage() {
         title={t("movies.title")}
         description={t("movies.description")}
         action={
-          <div className="flex items-center gap-3">
-            <span className="rounded-full bg-accent-cyan/10 px-3 py-1.5 text-xs font-medium text-accent-cyan whitespace-nowrap">
-              {movies.length === 1
-                ? t("movies.countSingular", { count: movies.length })
-                : t("movies.count", { count: movies.length })}
-            </span>
-            {enrichmentProgress > 0 && enrichmentProgress < 100 && (
-              <span className="text-xs text-text-muted whitespace-nowrap">
-                {t("movies.loadingDetails", { progress: enrichmentProgress })}
-              </span>
-            )}
-          </div>
+          <span className="rounded-full bg-accent-cyan/10 px-3 py-1.5 text-xs font-medium text-accent-cyan whitespace-nowrap">
+            {movies.length === 1
+              ? t("movies.countSingular", { count: movies.length })
+              : t("movies.count", { count: movies.length })}
+          </span>
         }
       />
 

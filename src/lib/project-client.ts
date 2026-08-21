@@ -16,13 +16,17 @@ export interface MovieResponse {
   id: number;
   title: string;
   original_title?: string | null;
+  original_language?: string | null;
   overview?: string | null;
+  tagline?: string | null;
   poster_path?: string | null;
   backdrop_path?: string | null;
   genres?: Array<{ id?: number; name?: string } | Record<string, unknown>> | null;
   release_date?: string | null;
   runtime?: number | null;
+  popularity?: number | null;
   vote_average?: number | null;
+  vote_count?: number | null;
   // External identifiers exposed to authenticated users
   imdb_id?: string | null;
   douban_id?: string | null;
@@ -243,6 +247,13 @@ export async function searchMovies(query: string, pageSize = 20): Promise<MovieL
 
 export async function getPopularMovies(limit = 20): Promise<MovieResponse[]> {
   return request<MovieResponse[]>(`/movies/popular?limit=${limit}`);
+}
+
+/**
+ * Get a single movie by TMDB ID (authenticated users; not admin-only).
+ */
+export async function getMovie(movieId: number, locale: string = "en"): Promise<MovieResponse> {
+  return request<MovieResponse>(`/movies/${movieId}?locale=${encodeURIComponent(locale)}`);
 }
 
 export async function listVoices(): Promise<VoiceResponse[]> {
