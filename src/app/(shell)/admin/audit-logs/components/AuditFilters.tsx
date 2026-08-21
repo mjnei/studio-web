@@ -1,6 +1,6 @@
-import { Heading } from "@/components/ui/heading";
 "use client";
 
+import { Heading } from "@/components/ui/heading";
 import { useState } from "react";
 import { Search, X, Filter } from "lucide-react";
 import type { AuditFilter } from "@/types/admin";
@@ -63,7 +63,9 @@ export default function AuditFilters({ filters, onFilterChange, onClear }: Audit
         <div className="mb-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Filter className="h-5 w-5 text-text-muted" />
-            <Heading variant="label" as="h3" className="text-text-primary">Filter Logs</Heading>
+            <Heading variant="label" as="h3" className="text-text-primary">
+              Filter Logs
+            </Heading>
             {activeFilterCount > 0 && (
               <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">
                 {activeFilterCount}
