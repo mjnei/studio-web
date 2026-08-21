@@ -918,7 +918,7 @@ Add links to new pages in the existing "Admin Features" card on dashboard:
 <CardContent>
   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
     {/* Existing features */}
-    <FeatureLink href="/admin/movies" icon={<Film />} title="Movie Management" />
+    <FeatureLink href="/admin/movies" icon={<Film />} title="TMDB Movies" />
     <FeatureLink href="/admin/voices" icon={<Mic />} title="Voice Catalog" />
     
     {/* New features */}
@@ -1160,7 +1160,7 @@ New endpoints needed (backend work: 4-5 hours):
 ```
 /admin/
 ├── page.tsx              ✅ Dashboard (stats + smart nav)
-├── /movies/              ✅ Movie management
+├── /movies/              ✅ TMDB Movies
 ├── /voices/              ✅ Voice approval
 ├── /tmdb/                ✅ TMDB import
 └── /queues/              ✅ Queue management
@@ -1170,7 +1170,7 @@ New endpoints needed (backend work: 4-5 hours):
 ```
 /admin/
 ├── page.tsx              ✅ Dashboard
-├── /movies/              ✅ Movie management
+├── /movies/              ✅ TMDB Movies
 ├── /voices/              ✅ Voice approval
 ├── /tmdb/                ✅ TMDB import
 ├── /queues/              ✅ Queue management

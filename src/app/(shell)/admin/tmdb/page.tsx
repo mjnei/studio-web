@@ -39,9 +39,7 @@ export default function AdminTMDBPage() {
             Page Moved
           </Heading>
 
-          <p className="mb-2 text-text-secondary">
-            TMDB import has been merged with TMDB Movies
-          </p>
+          <p className="mb-2 text-text-secondary">TMDB import has been merged with TMDB Movies</p>
 
           <p className="mb-6 text-sm text-text-muted">
             Redirecting you to the unified movies page...
