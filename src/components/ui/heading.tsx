@@ -11,7 +11,7 @@
  * dense UI chrome where the heading level should be explicit. Pass `as="h2"`
  * (or any level) when the label needs to appear in the document outline.
  *
- * @see docs/guides/TYPOGRAPHY.md
+ * @see docs/TYPOGRAPHY.md
  */
 import * as React from "react";
 import { cn } from "@/lib/utils/cn";

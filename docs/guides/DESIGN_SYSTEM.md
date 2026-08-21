@@ -47,7 +47,7 @@ This document combines:
 
 ## Typography
 
-**Full guide**: [TYPOGRAPHY.md](./TYPOGRAPHY.md) (roles, tokens, component API, and step-by-step refactor checklist).
+**Full guide**: [TYPOGRAPHY.md](../TYPOGRAPHY.md) (roles, tokens, component API, and step-by-step refactor checklist).
 
 Summary:
 

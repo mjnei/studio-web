@@ -50,7 +50,7 @@ Prettier: semi: true, singleQuote: false, tabWidth: 2, trailingComma: es5, print
 
 ## Typography
 
-Role-based type scale (not bare `h1`–`h4` CSS). See `docs/guides/TYPOGRAPHY.md`. Prefer `PageHeader` / `Heading` / `CardTitle`; change sizes in shared tokens, not per page.
+Role-based type scale (not bare `h1`–`h4` CSS). See `docs/TYPOGRAPHY.md`. Prefer `PageHeader` / `Heading` / `CardTitle`; change sizes in shared tokens, not per page.
 
 ## Internationalization (i18n)
 

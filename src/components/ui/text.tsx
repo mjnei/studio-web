@@ -2,7 +2,7 @@
  * Text — body / caption variant component.
  *
  * Safe to use in React Server Components (no hooks, no event handlers).
- * @see docs/guides/TYPOGRAPHY.md
+ * @see docs/TYPOGRAPHY.md
  */
 import * as React from "react";
 import { cn } from "@/lib/utils/cn";

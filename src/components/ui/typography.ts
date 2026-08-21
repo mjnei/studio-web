@@ -7,7 +7,7 @@
  * these strings — no per-component changes required.
  *
  * Prefer these (or Heading / Text) over ad-hoc text-* sizes.
- * @see docs/guides/TYPOGRAPHY.md
+ * @see docs/TYPOGRAPHY.md
  */
 export const typography = {
   display: "text-display sm:text-display-sm leading-display font-bold tracking-tight",
