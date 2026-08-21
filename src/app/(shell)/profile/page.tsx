@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import {
   User,
   Mail,
@@ -222,7 +221,8 @@ export default function ProfilePage() {
           <CardContent>
             <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
               {user.picture_url ? (
-                <Image
+                // eslint-disable-next-line @next/next/no-img-element -- presigned S3 URLs use dynamic hosts
+                <img
                   src={user.picture_url}
                   alt={user.name}
                   className="flex h-24 w-24 shrink-0 items-center justify-center rounded-2xl object-cover ring-4 ring-surface-elevated"

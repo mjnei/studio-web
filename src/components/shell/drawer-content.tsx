@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import {
   Settings,
   HelpCircle,
@@ -221,7 +220,8 @@ function UserSection({ collapsed, onNavigate }: { collapsed?: boolean; onNavigat
         }`}
       >
         {user?.picture_url ? (
-          <Image
+          // eslint-disable-next-line @next/next/no-img-element -- presigned S3 URLs use dynamic hosts
+          <img
             src={user.picture_url}
             alt={displayName}
             className="h-10 w-10 shrink-0 rounded-full object-cover ring-2 ring-accent-primary/20"
