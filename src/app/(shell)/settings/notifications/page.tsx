@@ -6,6 +6,8 @@ import { useNotifications } from "@/lib/notification-context";
 import { Monitor, Check, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 import { NOTIFICATION_TYPE_CONFIG, NOTIFICATION_CATEGORIES } from "@/lib/notification-constants";
 import { useI18n } from "@/i18n";
 
@@ -104,7 +106,11 @@ export default function NotificationSettingsPage() {
 
           return (
             <section key={category} className="space-y-4">
-              <h2 className="text-lg font-semibold text-text-primary flex items-center gap-2">
+              <Heading
+                variant="subsection"
+                as="h2"
+                className="text-text-primary flex items-center gap-2"
+              >
                 <Monitor size={20} className="text-accent-primary" />
                 {t(
                   [
@@ -113,7 +119,7 @@ export default function NotificationSettingsPage() {
                     "notificationSettings.categories.projects",
                   ][categoryIndex] as any
                 )}
-              </h2>
+              </Heading>
 
               <div className="bg-surface-panel rounded-xl border border-border-default divide-y divide-border-default">
                 {categoryNotifications.map(({ type }) => {
@@ -137,8 +143,12 @@ export default function NotificationSettingsPage() {
                     <div key={type} className="p-6">
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
-                          <h3 className="text-base font-medium text-text-primary">{title}</h3>
-                          <p className="text-sm text-text-muted mt-1">{description}</p>
+                          <Heading variant="subsection" as="h3" className="text-text-primary font-medium">
+                            {title}
+                          </Heading>
+                          <Text variant="body" className="text-text-muted mt-1">
+                            {description}
+                          </Text>
                         </div>
 
                         {/* In-App Toggle */}

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
+import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import { useProjectState } from "@/lib/hooks/use-project-state";
@@ -249,7 +250,7 @@ export default function ExportPage() {
           {/* Page header */}
           <div className="flex items-start justify-between gap-4">
             <div>
-              <h2 className="text-xl font-semibold text-text-primary">Export Project</h2>
+              <Heading variant="section" as="h2" className="text-text-primary">Export Project</Heading>
               <p className="mt-1 text-sm text-text-muted">
                 Generate, manage, and export your video
               </p>
@@ -281,7 +282,7 @@ export default function ExportPage() {
                   <Check className="h-5 w-5 text-success-text" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-success-text">{completedVideos.length}</p>
+                  <Heading variant="metric" className="text-success-text">{completedVideos.length}</Heading>
                   <p className="text-xs text-text-muted">Completed</p>
                 </div>
               </div>
@@ -293,7 +294,7 @@ export default function ExportPage() {
                   <Clock className="h-5 w-5 text-accent-cyan" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-accent-cyan">{processingVideos.length}</p>
+                  <Heading variant="metric" className="text-accent-cyan">{processingVideos.length}</Heading>
                   <p className="text-xs text-text-muted">Processing</p>
                 </div>
               </div>
@@ -305,7 +306,7 @@ export default function ExportPage() {
                   <AlertCircle className="h-5 w-5 text-error-text" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-error-text">{failedVideos.length}</p>
+                  <Heading variant="metric" className="text-error-text">{failedVideos.length}</Heading>
                   <p className="text-xs text-text-muted">Failed</p>
                 </div>
               </div>
@@ -317,7 +318,7 @@ export default function ExportPage() {
             <Card variant="elevated" padding="md">
               {/* Header with version selector */}
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-medium text-text-primary">Your Video</h3>
+                <Heading variant="label" as="h3" className="text-text-primary font-medium">Your Video</Heading>
                 <div className="flex items-center gap-2">
                   {creditStatus && (
                     <div className="text-xs text-text-muted">
@@ -459,9 +460,7 @@ export default function ExportPage() {
                     <Video className="h-8 w-8 text-accent-cyan" />
                   </div>
                 </div>
-                <h3 className="text-lg font-semibold text-text-primary mb-2">
-                  Ready to Generate Your Video
-                </h3>
+                <Heading variant="subsection" as="h3" className="text-text-primary mb-2">Ready to Generate Your Video</Heading>
                 <p className="text-sm text-text-muted mb-6">
                   Your project is ready. Click below to start video generation.
                 </p>
@@ -504,7 +503,7 @@ export default function ExportPage() {
           {/* ── Processing Videos ── */}
           {processingVideos.length > 0 && (
             <Card variant="elevated" padding="md">
-              <h3 className="text-sm font-medium text-text-primary mb-4">Processing Videos</h3>
+              <Heading variant="label" as="h3" className="text-text-primary mb-4 font-medium">Processing Videos</Heading>
               <div className="space-y-3">
                 {processingVideos.map((video) => (
                   <div
@@ -536,7 +535,7 @@ export default function ExportPage() {
           {/* ── Failed Videos ── */}
           {failedVideos.length > 0 && (
             <Card variant="elevated" padding="md">
-              <h3 className="text-sm font-medium text-text-primary mb-4">Failed Generations</h3>
+              <Heading variant="label" as="h3" className="text-text-primary mb-4 font-medium">Failed Generations</Heading>
               <div className="space-y-3">
                 {failedVideos.map((video) => (
                   <div
@@ -710,9 +709,7 @@ export default function ExportPage() {
                     </svg>
                   </div>
                   <div className="flex-1 text-left">
-                    <h4 className="font-medium text-text-primary group-hover:text-accent-cyan transition-colors">
-                      X (Twitter)
-                    </h4>
+                    <Heading variant="label" as="h4" className="text-text-primary font-medium group-hover:text-accent-cyan transition-colors">X (Twitter)</Heading>
                     <p className="text-xs text-text-muted mt-0.5">Share to your X timeline</p>
                   </div>
                   <ChevronRight className="h-5 w-5 text-text-muted group-hover:text-accent-cyan transition-colors" />
@@ -738,9 +735,7 @@ export default function ExportPage() {
                     </svg>
                   </div>
                   <div className="flex-1 text-left">
-                    <h4 className="font-medium text-text-primary group-hover:text-accent-cyan transition-colors">
-                      WeChat
-                    </h4>
+                    <Heading variant="label" as="h4" className="text-text-primary font-medium group-hover:text-accent-cyan transition-colors">WeChat</Heading>
                     <p className="text-xs text-text-muted mt-0.5">Share to WeChat moments</p>
                   </div>
                   <ChevronRight className="h-5 w-5 text-text-muted group-hover:text-accent-cyan transition-colors" />

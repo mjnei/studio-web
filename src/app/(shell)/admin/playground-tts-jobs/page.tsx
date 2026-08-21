@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Gamepad2, RefreshCw, Download, ShieldAlert } from "lucide-react";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useToast } from "@/components/ui/toast";
+import { Heading } from "@/components/ui/heading";
 import { PlaygroundStatsWidget } from "./components/PlaygroundStatsWidget";
 import { PlaygroundStaleJobsAlert } from "./components/PlaygroundStaleJobsAlert";
 import { PlaygroundFailedJobsTable } from "./components/PlaygroundFailedJobsTable";
@@ -287,9 +288,9 @@ export default function PlaygroundTTSJobsPage() {
               <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 shadow-lg">
                 <Gamepad2 className="h-6 w-6 text-white" />
               </div>
-              <h1 className="text-3xl font-bold text-text-primary">
+              <Heading variant="page" className="text-text-primary">
                 Playground TTS Jobs Monitoring
-              </h1>
+              </Heading>
             </div>
             <p className="text-text-secondary">
               Track anonymous user activity, rate limiting, abuse patterns, and resource usage

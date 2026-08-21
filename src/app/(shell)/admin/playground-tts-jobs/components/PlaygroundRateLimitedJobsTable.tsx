@@ -1,5 +1,7 @@
 "use client";
 
+import { Heading } from "@/components/ui/heading";
+
 import { useState } from "react";
 import { ShieldAlert, RefreshCw, Eye, Clock } from "lucide-react";
 import type { PlaygroundRateLimitedJob } from "@/types/admin";
@@ -46,7 +48,7 @@ export function PlaygroundRateLimitedJobsTable({
           <div className="flex items-center justify-center w-16 h-16 rounded-full bg-green-500/10">
             <ShieldAlert className="h-8 w-8 text-green-600" />
           </div>
-          <h3 className="text-lg font-semibold text-text-primary">No Rate-Limited Jobs</h3>
+          <Heading variant="subsection" as="h3" className="text-text-primary">No Rate-Limited Jobs</Heading>
           <p className="text-sm text-text-secondary max-w-md">
             No abuse patterns detected. All requests within rate limits.
           </p>

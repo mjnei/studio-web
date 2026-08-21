@@ -6,6 +6,7 @@ import { Folder, Film, Mic, Plus, ArrowRight, Sparkles, X } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { Heading } from "@/components/ui/heading";
 import { ExternalImage } from "@/components/ui/ExternalImage";
 import { ProjectCard } from "@/components/project/ProjectCard";
 import {
@@ -121,9 +122,9 @@ export default function DashboardPage() {
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
                 <Sparkles className="w-5 h-5 text-blue-500" />
-                <h3 className="text-lg font-semibold text-text-primary">
+                <Heading variant="subsection" as="h3" className="text-text-primary">
                   {t("dashboard.welcomeBanner.title")}
-                </h3>
+                </Heading>
               </div>
               <p className="text-text-secondary mb-4">{t("dashboard.welcomeBanner.message")}</p>
               <Link href="/project/new">
@@ -161,9 +162,9 @@ export default function DashboardPage() {
                 <div className="flex-1">
                   <CardHeader className="mb-3 p-0">
                     <CardDescription className="mb-1">{stat.title}</CardDescription>
-                    <CardTitle className="text-3xl font-bold text-text-primary">
+                    <Heading variant="metric" className="text-text-primary">
                       {stat.value}
-                    </CardTitle>
+                    </Heading>
                   </CardHeader>
                   <p className="text-xs text-text-muted">{stat.description}</p>
                 </div>
@@ -291,9 +292,13 @@ export default function DashboardPage() {
                     )}
                   </div>
                   <div className="p-2">
-                    <h3 className="line-clamp-1 text-xs font-semibold text-text-primary group-hover:text-accent-cyan">
+                    <Heading
+                      variant="label"
+                      as="h3"
+                      className="line-clamp-1 text-caption text-text-primary group-hover:text-accent-cyan"
+                    >
                       {movie.title}
-                    </h3>
+                    </Heading>
                   </div>
                 </Link>
               ))}

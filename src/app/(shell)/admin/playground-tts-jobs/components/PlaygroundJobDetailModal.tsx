@@ -1,5 +1,7 @@
 "use client";
 
+import { Heading } from "@/components/ui/heading";
+
 import {
   X,
   Clock,
@@ -91,7 +93,7 @@ export function PlaygroundJobDetailModal({ job, open, onClose }: PlaygroundJobDe
         {/* Header */}
         <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border-default bg-surface-panel px-6 py-4">
           <div>
-            <h2 className="text-xl font-bold text-text-primary">Playground Job Details</h2>
+            <Heading variant="section" as="h2" className="text-text-primary">Playground Job Details</Heading>
             <p className="text-sm text-text-muted mt-1">#{job.job_id}</p>
           </div>
           <button

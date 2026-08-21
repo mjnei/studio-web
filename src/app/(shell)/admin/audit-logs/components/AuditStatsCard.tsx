@@ -1,5 +1,7 @@
 "use client";
 
+import { Heading } from "@/components/ui/heading";
+
 import { Activity, Users, BarChart3, Calendar } from "lucide-react";
 import type { AuditStats } from "@/types/admin";
 
@@ -23,9 +25,9 @@ export default function AuditStatsCard({ stats }: AuditStatsCardProps) {
             </div>
             <div>
               <p className="text-sm font-medium text-text-muted">Total Logs</p>
-              <p className="text-2xl font-bold text-text-primary">
+              <Heading variant="metric" className="text-text-primary">
                 {stats.total_logs.toLocaleString()}
-              </p>
+              </Heading>
             </div>
           </div>
         </div>
@@ -37,9 +39,9 @@ export default function AuditStatsCard({ stats }: AuditStatsCardProps) {
             </div>
             <div>
               <p className="text-sm font-medium text-text-muted">Active Users</p>
-              <p className="text-2xl font-bold text-text-primary">
+              <Heading variant="metric" className="text-text-primary">
                 {stats.unique_users.toLocaleString()}
-              </p>
+              </Heading>
             </div>
           </div>
         </div>
@@ -51,9 +53,9 @@ export default function AuditStatsCard({ stats }: AuditStatsCardProps) {
             </div>
             <div>
               <p className="text-sm font-medium text-text-muted">Action Types</p>
-              <p className="text-2xl font-bold text-text-primary">
+              <Heading variant="metric" className="text-text-primary">
                 {Object.keys(stats.actions_by_type || {}).length}
-              </p>
+              </Heading>
             </div>
           </div>
         </div>
@@ -84,9 +86,9 @@ export default function AuditStatsCard({ stats }: AuditStatsCardProps) {
       {/* Top Actions Breakdown */}
       {topActions.length > 0 && (
         <div className="rounded-xl border-2 border-border bg-surface-panel p-4">
-          <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-text-muted">
+          <Heading variant="label" as="h3" className="mb-3 uppercase tracking-wider text-text-muted">
             Top Actions
-          </h3>
+          </Heading>
           <div className="space-y-2">
             {topActions.map(([action, count]) => {
               const percentage = (count / stats.total_logs) * 100;

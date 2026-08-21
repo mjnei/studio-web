@@ -7,6 +7,8 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 import { useToast } from "@/components/ui/toast";
 import {
   Clock,
@@ -168,9 +170,9 @@ export default function BillingPage() {
                     Current Balance
                   </p>
                   <div className="flex items-baseline gap-3">
-                    <h2 className="text-3xl font-bold text-text-primary">
+                    <Heading variant="metric" as="h2" className="text-text-primary">
                       {creditStatus.credits_remaining}
-                    </h2>
+                    </Heading>
                     <span className="text-lg text-text-muted">credits</span>
                   </div>
                   <p className="text-sm text-text-secondary mt-2">
@@ -246,8 +248,12 @@ export default function BillingPage() {
           <Card variant="elevated" padding="lg">
             <div className="flex items-start justify-between mb-6">
               <div>
-                <h2 className="text-lg font-semibold text-text-primary mb-1">Credit Details</h2>
-                <p className="text-sm text-text-muted">Your current credit allocation and usage</p>
+                <Heading variant="subsection" as="h2" className="text-text-primary mb-1">
+                  Credit Details
+                </Heading>
+                <Text variant="body" className="text-text-muted">
+                  Your current credit allocation and usage
+                </Text>
               </div>
               <Button
                 variant="primary"
@@ -267,9 +273,9 @@ export default function BillingPage() {
                   </div>
                   <div>
                     <p className="text-xs text-text-muted">Monthly Allocation</p>
-                    <p className="text-2xl font-bold text-text-primary">
+                    <Heading variant="metric" className="text-text-primary">
                       {creditStatus.monthly_allocation}
-                    </p>
+                    </Heading>
                   </div>
                 </div>
                 <p className="text-xs text-text-muted">Credits allocated per month</p>
@@ -282,9 +288,9 @@ export default function BillingPage() {
                   </div>
                   <div>
                     <p className="text-xs text-text-muted">Credits Used</p>
-                    <p className="text-2xl font-bold text-text-primary">
+                    <Heading variant="metric" className="text-text-primary">
                       {creditStatus.credits_used}
-                    </p>
+                    </Heading>
                   </div>
                 </div>
                 <p className="text-xs text-text-muted">Used this billing cycle</p>
@@ -310,7 +316,9 @@ export default function BillingPage() {
               <div className="flex items-start gap-3">
                 <Clock className="h-5 w-5 text-warning-text flex-shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="text-sm font-medium text-warning-text mb-1">Next Credit Reset</h4>
+                  <Heading variant="label" as="h4" className="text-warning-text mb-1 font-medium">
+                    Next Credit Reset
+                  </Heading>
                   <p className="text-sm text-text-muted">
                     Your credits will reset on{" "}
                     <span className="font-medium text-text-secondary">
@@ -328,10 +336,12 @@ export default function BillingPage() {
           <Card variant="elevated" padding="lg">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-lg font-semibold text-text-primary mb-1">Billing</h2>
-                <p className="text-sm text-text-muted">
+                <Heading variant="subsection" as="h2" className="text-text-primary mb-1">
+                  Billing
+                </Heading>
+                <Text variant="body" className="text-text-muted">
                   Manage your payment method and subscription
-                </p>
+                </Text>
               </div>
               <div className="flex gap-2">
                 <Button
@@ -351,7 +361,9 @@ export default function BillingPage() {
             <div className="p-4 rounded-lg bg-surface-raised border border-border-default">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h3 className="font-medium text-text-primary">Current Plan</h3>
+                  <Heading variant="label" as="h3" className="text-text-primary font-medium">
+                    Current Plan
+                  </Heading>
                   <p className="text-sm text-text-secondary capitalize">
                     {creditStatus.membership_tier}
                   </p>
@@ -389,10 +401,12 @@ export default function BillingPage() {
       {activeTab === "history" && (
         <Card variant="elevated" padding="lg">
           <div className="mb-6">
-            <h2 className="text-lg font-semibold text-text-primary mb-1">
+            <Heading variant="subsection" as="h2" className="text-text-primary mb-1">
               Credit Transaction History
-            </h2>
-            <p className="text-sm text-text-muted">Track your credit usage and allocations</p>
+            </Heading>
+            <Text variant="body" className="text-text-muted">
+              Track your credit usage and allocations
+            </Text>
           </div>
 
           {transactions.length === 0 ? (
@@ -417,9 +431,13 @@ export default function BillingPage() {
                       )}
                     </div>
                     <div>
-                      <h4 className="text-sm font-medium text-text-primary capitalize">
+                      <Heading
+                        variant="label"
+                        as="h4"
+                        className="text-text-primary capitalize font-medium"
+                      >
                         {transaction.transaction_type}
-                      </h4>
+                      </Heading>
                       <p className="text-xs text-text-muted">
                         {transaction.description || "Credit transaction"}
                       </p>
@@ -446,15 +464,19 @@ export default function BillingPage() {
       {activeTab === "invoices" && (
         <Card variant="elevated" padding="lg">
           <div className="mb-6">
-            <h2 className="text-lg font-semibold text-text-primary mb-1">Invoices</h2>
-            <p className="text-sm text-text-muted">View and download your billing invoices</p>
+            <Heading variant="subsection" as="h2" className="text-text-primary mb-1">
+              Invoices
+            </Heading>
+            <Text variant="body" className="text-text-muted">
+              View and download your billing invoices
+            </Text>
           </div>
 
           <div className="py-12 text-center">
             <Receipt className="h-16 w-16 text-text-muted mx-auto mb-4 opacity-30" />
-            <h3 className="text-lg font-medium text-text-primary mb-2">
+            <Heading variant="subsection" as="h3" className="text-text-primary mb-2 font-medium">
               Stripe Integration Coming Soon
-            </h3>
+            </Heading>
             <p className="text-text-muted max-w-md mx-auto mb-6">
               Invoice management and payment processing will be available in Phase 5 with Stripe
               integration.
@@ -478,7 +500,9 @@ export default function BillingPage() {
             <Coins className="h-5 w-5 text-accent-cyan" />
           </div>
           <div className="flex-1">
-            <h3 className="font-medium text-text-primary mb-2">Need Help with Billing?</h3>
+            <Heading variant="subsection" as="h3" className="text-text-primary mb-2 font-medium">
+              Need Help with Billing?
+            </Heading>
             <p className="text-sm text-text-muted mb-3">
               Have questions about your credits, subscription, or billing? We&apos;re here to help.
             </p>
@@ -507,8 +531,12 @@ export default function BillingPage() {
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-text-primary">Add Bonus Credits?</h2>
-                <p className="text-sm text-text-muted">Get 5 bonus credits now</p>
+                <Heading variant="section" as="h2" className="text-text-primary">
+                  Add Bonus Credits?
+                </Heading>
+                <Text variant="body" className="text-text-muted">
+                  Get 5 bonus credits now
+                </Text>
               </div>
             </div>
             <p className="text-sm text-text-secondary mb-6">

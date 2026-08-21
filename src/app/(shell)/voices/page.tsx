@@ -8,6 +8,7 @@ import { VoiceCard } from "@/components/voices/VoiceCard";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { Heading } from "@/components/ui/heading";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ConfirmModal } from "@/components/ui/modal";
@@ -324,9 +325,9 @@ export default function VoicesPage() {
                 <Info className="h-5 w-5 text-blue-600" />
               </div>
               <div className="flex-1">
-                <h3 className="text-sm font-semibold text-text-primary mb-1">
+                <Heading variant="label" as="h3" className="text-text-primary mb-1">
                   {t("voices.banners.privateInfo.title")}
-                </h3>
+                </Heading>
                 <p className="text-xs text-text-secondary leading-relaxed">
                   {t("voices.banners.privateInfo.description")}
                 </p>
@@ -396,9 +397,9 @@ export default function VoicesPage() {
                   <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-accent-primary/10 group-hover:bg-accent-primary/20 transition-colors">
                     <Plus className="h-6 w-6 text-accent-primary" />
                   </div>
-                  <h3 className="text-sm font-semibold text-text-primary mb-1">
+                  <Heading variant="label" as="h3" className="text-text-primary mb-1">
                     {t("voices.addVoiceCard.title")}
-                  </h3>
+                  </Heading>
                   <p className="text-xs text-text-muted">
                     {voiceLimits.canAdd
                       ? `${voiceLimits.remainingCount} ${voiceLimits.remainingCount === 1 ? t("voices.addVoiceCard.slotsRemaining").split(" ")[0] : t("voices.addVoiceCard.slotsRemaining").split(" ")[0]} ${t("voices.addVoiceCard.slotsRemaining").split(" ").slice(1).join(" ")}`
@@ -423,9 +424,9 @@ export default function VoicesPage() {
                 <Globe className="h-5 w-5 text-accent-cyan" />
               </div>
               <div className="flex-1">
-                <h3 className="text-sm font-semibold text-text-primary mb-1">
+                <Heading variant="label" as="h3" className="text-text-primary mb-1">
                   {t("voices.banners.communityInfo.title")}
-                </h3>
+                </Heading>
                 <p className="text-xs text-text-secondary leading-relaxed">
                   {t("voices.banners.communityInfo.description")}
                 </p>

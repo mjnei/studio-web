@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { ExternalImage } from "@/components/ui/ExternalImage";
+import { Heading } from "@/components/ui/heading";
 import {
   adminGetMovieDetails,
   adminUpdateMovie,
@@ -369,9 +370,7 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
               <div className="space-y-6">
                 {/* Title & Metadata */}
                 <div>
-                  <h1 className="text-4xl font-bold text-text-primary mb-3">
-                    {movie.title || movie.original_title}
-                  </h1>
+                  <Heading variant="display" className="text-text-primary mb-3">{movie.title || movie.original_title}</Heading>
                   {movie.original_title && movie.original_title !== movie.title && (
                     <p className="text-lg text-text-muted mb-3">{movie.original_title}</p>
                   )}
@@ -400,10 +399,10 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
 
                 {/* External IDs */}
                 <div className="rounded-2xl border border-border-default bg-surface-panel p-6">
-                  <h2 className="text-sm font-semibold text-text-primary mb-4 flex items-center gap-2">
+                  <Heading variant="label" as="h2" className="text-text-primary mb-4 flex items-center gap-2">
                     <ExternalLink className="h-4 w-4" />
                     External Links
-                  </h2>
+                  </Heading>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                       <p className="text-xs text-text-muted mb-1">TMDB ID</p>
@@ -451,10 +450,10 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                 {/* Genres */}
                 {movie.genres && movie.genres.length > 0 && (
                   <div className="rounded-2xl border border-border-default bg-surface-panel p-6">
-                    <h2 className="text-sm font-semibold text-text-primary mb-3 flex items-center gap-2">
+                    <Heading variant="label" as="h2" className="text-text-primary mb-3 flex items-center gap-2">
                       <Tag className="h-4 w-4" />
                       Genres
-                    </h2>
+                    </Heading>
                     <div className="flex flex-wrap gap-2">
                       {movie.genres.map((genre) => (
                         <span
@@ -478,7 +477,7 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                 {/* Overview */}
                 {movie.overview && (
                   <div className="rounded-2xl border border-border-default bg-surface-panel p-6">
-                    <h2 className="text-sm font-semibold text-text-primary mb-3">Overview</h2>
+                    <Heading variant="label" as="h2" className="text-text-primary mb-3">Overview</Heading>
                     <p className="text-sm leading-relaxed text-text-secondary">{movie.overview}</p>
                   </div>
                 )}
@@ -488,10 +487,10 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                   {/* Directors */}
                   {directors.length > 0 && (
                     <div className="rounded-2xl border border-border-default bg-surface-panel p-6">
-                      <h2 className="text-sm font-semibold text-text-primary mb-4 flex items-center gap-2">
+                      <Heading variant="label" as="h2" className="text-text-primary mb-4 flex items-center gap-2">
                         <Film className="h-4 w-4" />
                         Directors
-                      </h2>
+                      </Heading>
                       <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
                         {directors.map((credit) => (
                           <div
@@ -526,10 +525,10 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                   {/* Cast */}
                   {actors.length > 0 && (
                     <div className="rounded-2xl border border-border-default bg-surface-panel p-6">
-                      <h2 className="text-sm font-semibold text-text-primary mb-4 flex items-center gap-2">
+                      <Heading variant="label" as="h2" className="text-text-primary mb-4 flex items-center gap-2">
                         <Users className="h-4 w-4" />
                         Cast ({actors.length})
-                      </h2>
+                      </Heading>
                       <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
                         {actors.slice(0, 20).map((credit) => (
                           <div
@@ -574,7 +573,7 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                   {/* Producers */}
                   {producers.length > 0 && (
                     <div className="rounded-2xl border border-border-default bg-surface-panel p-6">
-                      <h2 className="text-sm font-semibold text-text-primary mb-4">Producers</h2>
+                      <Heading variant="label" as="h2" className="text-text-primary mb-4">Producers</Heading>
                       <div className="flex flex-wrap gap-2">
                         {producers.map((credit) => (
                           <span
@@ -591,7 +590,7 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                   {/* Writers */}
                   {writers.length > 0 && (
                     <div className="rounded-2xl border border-border-default bg-surface-panel p-6">
-                      <h2 className="text-sm font-semibold text-text-primary mb-4">Writers</h2>
+                      <Heading variant="label" as="h2" className="text-text-primary mb-4">Writers</Heading>
                       <div className="flex flex-wrap gap-2">
                         {writers.map((credit) => (
                           <span

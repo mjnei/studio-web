@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Film, Mic, ShieldCheck, Database, Users, Settings, BarChart3 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { Heading } from "@/components/ui/heading";
 import { getAdminStats, type AdminStatsResponse } from "@/lib/api/admin";
 
 export default function AdminPage() {
@@ -97,7 +98,7 @@ export default function AdminPage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm text-text-muted mb-1">{stat.label}</p>
-                    <p className="text-2xl font-bold text-text-primary">{stat.value}</p>
+                    <Heading variant="metric" className="text-text-primary">{stat.value}</Heading>
                   </div>
                   <div
                     className={`w-10 h-10 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center group-hover:scale-110 transition-transform`}

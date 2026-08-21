@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Play, Trash2 } from "lucide-react";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useToast } from "@/components/ui/toast";
+import { Heading } from "@/components/ui/heading";
 import { ConfirmModal } from "@/components/ui/modal";
 import { PlaygroundForm } from "./components/PlaygroundForm";
 import { AudioPlayer } from "./components/AudioPlayer";
@@ -177,7 +178,7 @@ export default function PlaygroundPage() {
           <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-accent-primary to-purple-600 shadow-lg">
             <Play className="h-6 w-6 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-text-primary">TTS Playground</h1>
+          <Heading variant="page" className="text-text-primary">TTS Playground</Heading>
         </div>
         <p className="text-text-secondary">
           Test TTS functionality without creating a full project
@@ -188,7 +189,7 @@ export default function PlaygroundPage() {
         {/* Left Column: Form */}
         <div className="space-y-6">
           <div className="rounded-xl border border-border-default bg-surface-panel p-6">
-            <h2 className="text-lg font-bold text-text-primary mb-4">Generate TTS Audio</h2>
+            <Heading variant="subsection" as="h2" className="text-text-primary mb-4">Generate TTS Audio</Heading>
             <PlaygroundForm onSubmit={handleSubmit} isLoading={isLoading} />
           </div>
 
@@ -201,9 +202,7 @@ export default function PlaygroundPage() {
                 <div className="flex items-center gap-4">
                   <LoadingSpinner size="md" />
                   <div>
-                    <h3 className="text-sm font-semibold text-text-primary mb-1">
-                      Processing Audio
-                    </h3>
+                    <Heading variant="label" as="h3" className="text-text-primary mb-1">Processing Audio</Heading>
                     <p className="text-xs text-text-secondary">
                       Status: {currentJob.status} • This usually takes 10-30 seconds
                     </p>
@@ -215,7 +214,7 @@ export default function PlaygroundPage() {
           {/* Failed Status */}
           {currentJob?.status === "failed" && (
             <div className="rounded-xl border-2 border-red-500/50 bg-red-500/10 p-6">
-              <h3 className="text-sm font-semibold text-red-600 mb-2">Generation Failed</h3>
+              <Heading variant="label" as="h3" className="text-red-600 mb-2">Generation Failed</Heading>
               <p className="text-xs text-red-600">{currentJob.error || "Unknown error occurred"}</p>
             </div>
           )}
@@ -225,7 +224,7 @@ export default function PlaygroundPage() {
         <div className="space-y-6">
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-text-primary">Job History</h2>
+              <Heading variant="subsection" as="h2" className="text-text-primary">Job History</Heading>
               {history.length > 0 && (
                 <button
                   onClick={() => setClearHistoryModal(true)}

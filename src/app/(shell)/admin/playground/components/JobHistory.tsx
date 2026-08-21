@@ -1,5 +1,7 @@
 "use client";
 
+import { Heading } from "@/components/ui/heading";
+
 import { Clock, CheckCircle2, XCircle, Zap, Trash2 } from "lucide-react";
 import type { PlaygroundJob } from "@/types/admin";
 
@@ -79,7 +81,7 @@ export function JobHistory({ jobs, onPlay, onDelete }: JobHistoryProps) {
     <div className="space-y-2 rounded-xl border border-border-default bg-surface-panel overflow-hidden">
       {/* Header */}
       <div className="bg-surface-raised px-4 py-3 border-b border-border-default">
-        <h3 className="text-sm font-semibold text-text-primary">Recent Jobs</h3>
+        <Heading variant="label" as="h3" className="text-text-primary">Recent Jobs</Heading>
       </div>
 
       {/* Job List */}

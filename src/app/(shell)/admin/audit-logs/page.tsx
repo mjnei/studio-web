@@ -1,5 +1,7 @@
 "use client";
 
+import { Heading } from "@/components/ui/heading";
+
 import { useEffect, useState } from "react";
 import { ArrowLeft, Download, Database, Cloud } from "lucide-react";
 import Link from "next/link";
@@ -129,7 +131,7 @@ export default function AuditLogsPage() {
                 <ArrowLeft className="h-5 w-5" />
               </Link>
               <div>
-                <h1 className="text-2xl font-bold text-text-primary">Audit Logs</h1>
+                <Heading variant="page" className="text-text-primary">Audit Logs</Heading>
                 <p className="text-sm text-text-muted">View and filter system activity logs</p>
               </div>
             </div>
@@ -201,9 +203,7 @@ export default function AuditLogsPage() {
               </div>
             </div>
             <div className="flex-1">
-              <h3 className="text-sm font-semibold text-text-primary mb-1">
-                Currently viewing: <span className="capitalize">{dataSource}</span>
-              </h3>
+              <Heading variant="label" as="h3" className="text-text-primary mb-1">Currently viewing: <span className="capitalize">{dataSource}</span></Heading>
               <p className="text-sm text-text-muted mb-2">
                 {dataSource === "postgres"
                   ? "Fast operational queries for recent audit logs (30-90 days). Best for quick lookups and filtering."

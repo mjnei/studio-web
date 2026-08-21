@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Video, RefreshCw, Sparkles } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
@@ -178,10 +179,14 @@ export default function JobsPage() {
           {activeJobs.length > 0 && (
             <section className="space-y-4">
               <div className="flex items-center justify-between border-b border-border-default pb-2">
-                <h2 className="text-lg font-bold text-text-primary flex items-center gap-2">
+                <Heading
+                  variant="subsection"
+                  as="h2"
+                  className="text-text-primary flex items-center gap-2"
+                >
                   <span className="h-2.5 w-2.5 rounded-full bg-blue-400 animate-ping" />
                   {t("jobs.sections.active")} ({activeJobs.length})
-                </h2>
+                </Heading>
               </div>
               <div className="grid grid-cols-1 gap-4">
                 {activeJobs.map((job) => (
@@ -200,9 +205,13 @@ export default function JobsPage() {
           {failedJobs.length > 0 && (
             <section className="space-y-4">
               <div className="flex items-center justify-between border-b border-border-default pb-2">
-                <h2 className="text-lg font-bold text-status-failed flex items-center gap-2">
+                <Heading
+                  variant="subsection"
+                  as="h2"
+                  className="text-status-failed flex items-center gap-2"
+                >
                   ⚠️ {t("jobs.sections.failed")} ({failedJobs.length})
-                </h2>
+                </Heading>
               </div>
               <div className="grid grid-cols-1 gap-4">
                 {failedJobs.map((job) => (
@@ -224,9 +233,13 @@ export default function JobsPage() {
           {completedJobs.length > 0 && (
             <section className="space-y-4">
               <div className="flex items-center justify-between border-b border-border-default pb-2">
-                <h2 className="text-lg font-bold text-text-primary flex items-center gap-2">
+                <Heading
+                  variant="subsection"
+                  as="h2"
+                  className="text-text-primary flex items-center gap-2"
+                >
                   🎬 {t("jobs.sections.completed")} ({completedJobs.length})
-                </h2>
+                </Heading>
               </div>
               <div className={getGridClass()}>
                 {completedJobs.map((job) => (

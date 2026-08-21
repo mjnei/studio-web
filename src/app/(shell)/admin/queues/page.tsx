@@ -19,6 +19,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/toast";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { Heading } from "@/components/ui/heading";
 import { LayoutToggle, type LayoutMode } from "@/components/ui/LayoutToggle";
 import { Select } from "@/components/ui/select";
 import { HealthIndicator } from "@/components/queue/HealthIndicator";
@@ -215,15 +216,15 @@ export default function QueueManagementPage() {
                 <Card className="border-muted">
                   <CardHeader className="pb-3">
                     <CardDescription className="text-xs">Total Messages</CardDescription>
-                    <CardTitle className="text-2xl font-bold">
+                    <Heading variant="metric">
                       {totalMessages.toLocaleString()}
-                    </CardTitle>
+                    </Heading>
                   </CardHeader>
                 </Card>
                 <Card className="border-muted">
                   <CardHeader className="pb-3">
                     <CardDescription className="text-xs">Active Consumers</CardDescription>
-                    <CardTitle className="text-2xl font-bold">{totalConsumers}</CardTitle>
+                    <Heading variant="metric">{totalConsumers}</Heading>
                   </CardHeader>
                 </Card>
                 <Card
@@ -233,10 +234,10 @@ export default function QueueManagementPage() {
                 >
                   <CardHeader className="pb-3">
                     <CardDescription className="text-xs">Critical Queues</CardDescription>
-                    <CardTitle className="text-2xl font-bold flex items-center gap-2">
+                    <Heading variant="metric" className="flex items-center gap-2">
                       {criticalQueues}
                       {criticalQueues > 0 && <AlertTriangle className="w-5 h-5 text-destructive" />}
-                    </CardTitle>
+                    </Heading>
                   </CardHeader>
                 </Card>
                 <Card
@@ -246,10 +247,10 @@ export default function QueueManagementPage() {
                 >
                   <CardHeader className="pb-3">
                     <CardDescription className="text-xs">High Load Queues</CardDescription>
-                    <CardTitle className="text-2xl font-bold flex items-center gap-2">
+                    <Heading variant="metric" className="flex items-center gap-2">
                       {warningQueues}
                       {warningQueues > 0 && <TrendingUp className="w-5 h-5 text-yellow-600" />}
-                    </CardTitle>
+                    </Heading>
                   </CardHeader>
                 </Card>
               </div>

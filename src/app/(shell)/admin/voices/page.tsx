@@ -17,6 +17,7 @@ import {
 import { ConfirmModal } from "@/components/ui/modal";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { Heading } from "@/components/ui/heading";
 import { useToast } from "@/components/ui/toast";
 import { VoiceBulkImportModal } from "@/components/admin/VoiceBulkImportModal";
 import {
@@ -252,7 +253,7 @@ export default function AdminVoicesPage() {
               <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-accent-primary to-purple-600 shadow-lg">
                 <Mic className="h-6 w-6 text-white" />
               </div>
-              <h1 className="text-2xl font-bold text-text-primary">Community Voices</h1>
+              <Heading variant="page" className="text-text-primary">Community Voices</Heading>
             </div>
             <p className="text-text-secondary">
               Review and approve shared voices for the public catalog
@@ -337,7 +338,7 @@ export default function AdminVoicesPage() {
                 <p className="text-xs font-medium text-text-muted uppercase tracking-wider mb-1">
                   Total User Voices
                 </p>
-                <p className="text-2xl font-bold text-text-primary">{stats.total}</p>
+                <Heading variant="metric" className="text-text-primary">{stats.total}</Heading>
               </div>
               <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-purple-500/10">
                 <Mic className="h-6 w-6 text-purple-600" />
@@ -350,7 +351,7 @@ export default function AdminVoicesPage() {
                 <p className="text-xs font-medium text-text-muted uppercase tracking-wider mb-1">
                   Pending Approval
                 </p>
-                <p className="text-2xl font-bold text-orange-600">{stats.pending}</p>
+                <Heading variant="metric" className="text-orange-600">{stats.pending}</Heading>
               </div>
               <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-orange-500/10">
                 <Clock className="h-6 w-6 text-orange-600" />
@@ -363,7 +364,7 @@ export default function AdminVoicesPage() {
                 <p className="text-xs font-medium text-text-muted uppercase tracking-wider mb-1">
                   Approved
                 </p>
-                <p className="text-2xl font-bold text-green-600">{stats.approved}</p>
+                <Heading variant="metric" className="text-green-600">{stats.approved}</Heading>
               </div>
               <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-green-500/10">
                 <CheckCircle2 className="h-6 w-6 text-green-600" />

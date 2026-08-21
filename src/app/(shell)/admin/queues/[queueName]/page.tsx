@@ -23,6 +23,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/toast";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { Heading } from "@/components/ui/heading";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -211,7 +212,7 @@ export default function QueueDetailPage() {
               <ArrowLeft className="w-5 h-5" />
             </Button>
             <div>
-              <h1 className="text-2xl font-bold">{stats.metadata?.display_name || queueName}</h1>
+              <Heading variant="page">{stats.metadata?.display_name || queueName}</Heading>
               <p className="text-sm text-muted-foreground mt-1">
                 {stats.metadata?.description || queueName}
               </p>
@@ -276,9 +277,9 @@ export default function QueueDetailPage() {
                     <Activity className="w-4 h-4" />
                     Messages
                   </CardDescription>
-                  <CardTitle className="text-2xl font-bold">
+                  <Heading variant="metric">
                     {stats.message_count.toLocaleString()}
-                  </CardTitle>
+                  </Heading>
                   {stats.metadata?.max_messages && (
                     <p className="text-xs text-muted-foreground mt-1">
                       {Math.round((stats.message_count / stats.metadata.max_messages) * 100)}%
@@ -294,7 +295,7 @@ export default function QueueDetailPage() {
                     <TrendingUp className="w-4 h-4" />
                     Consumers
                   </CardDescription>
-                  <CardTitle className="text-2xl font-bold">{stats.consumer_count}</CardTitle>
+                  <Heading variant="metric">{stats.consumer_count}</Heading>
                   <p className="text-xs text-muted-foreground mt-1">
                     {stats.consumer_count > 0 ? "Active" : "Inactive"}
                   </p>
@@ -323,12 +324,12 @@ export default function QueueDetailPage() {
                 >
                   <CardHeader className="pb-3">
                     <CardDescription className="text-xs">Dead-Letter Queue</CardDescription>
-                    <CardTitle className="text-2xl font-bold flex items-center gap-2">
+                    <Heading variant="metric" className="flex items-center gap-2">
                       {dlqStats.message_count}
                       {dlqStats.message_count > 0 && (
                         <AlertCircle className="w-5 h-5 text-destructive" />
                       )}
-                    </CardTitle>
+                    </Heading>
                     <p className="text-xs text-muted-foreground mt-1">
                       {dlqStats.message_count > 0 ? "Failed messages" : "No failures"}
                     </p>

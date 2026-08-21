@@ -1,5 +1,7 @@
 "use client";
 
+import { Heading } from "@/components/ui/heading";
+
 import { useState, useRef, useEffect } from "react";
 import { Play, Pause, Volume2, VolumeX, Download, RotateCcw, X } from "lucide-react";
 
@@ -166,7 +168,7 @@ export function AudioPlayer({ audioUrl, jobId, jobName, onDismiss }: AudioPlayer
       <audio ref={audioRef} src={audioUrl} className="hidden" />
       <div className="rounded-xl border border-border-default bg-gradient-to-br from-surface-panel to-surface-raised p-6 shadow-lg">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-bold text-text-primary">{jobName || `Job ${jobId || ""}`}</h3>
+          <Heading variant="subsection" as="h3" className="text-text-primary">{jobName || `Job ${jobId || ""}`}</Heading>
           <div className="flex items-center gap-2">
             <button
               onClick={handleDownload}

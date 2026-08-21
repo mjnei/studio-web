@@ -17,6 +17,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useProjectState } from "@/lib/hooks/use-project-state";
@@ -362,7 +363,7 @@ export default function PreviewPage() {
         <div className="flex flex-col gap-6 pb-24">
           {/* Page Header */}
           <div>
-            <h2 className="text-2xl font-bold text-text-primary">Voice Preview</h2>
+            <Heading variant="page" as="h2" className="text-text-primary">Voice Preview</Heading>
             <p className="mt-1 text-sm text-text-muted">
               Listen to your narration and make sure everything sounds perfect
             </p>
@@ -398,14 +399,14 @@ export default function PreviewPage() {
 
               {/* Status Text */}
               <div className="text-center mb-6">
-                <h3 className="text-xl font-semibold text-text-primary mb-2">
+                <Heading variant="section" as="h3" className="text-text-primary mb-2">
                   {!ttsJob && !ttsError && "Initializing Preview..."}
                   {ttsJob?.status === "queued" && "Queued for Generation"}
                   {ttsJob?.status === "processing" &&
                     `Generating Audio${ttsJob.progress ? ` (${ttsJob.progress}%)` : "..."}`}
                   {ttsJob?.status === "completed" && "Audio Ready"}
                   {ttsJob?.status === "failed" && "Generation Failed"}
-                </h3>
+                </Heading>
 
                 <p className="text-sm text-text-muted">
                   {!ttsJob && !ttsError && "Setting up your audio preview..."}

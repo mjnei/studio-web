@@ -28,6 +28,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 
 export default function ProfilePage() {
   const { t } = useI18n();
@@ -173,13 +175,17 @@ export default function ProfilePage() {
                 <Crown className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-text-primary mb-1 flex items-center gap-2">
+                <Heading
+                  variant="subsection"
+                  as="h2"
+                  className="text-text-primary mb-1 flex items-center gap-2"
+                >
                   {t("profile.upgradeBanner.title")}
                   <Sparkles className="w-4 h-4 text-accent-cyan" />
-                </h2>
-                <p className="text-sm text-text-secondary">
+                </Heading>
+                <Text variant="body" className="text-text-secondary">
                   {t("profile.upgradeBanner.description")}
-                </p>
+                </Text>
               </div>
             </div>
             <div className="flex gap-2 shrink-0">
@@ -238,7 +244,9 @@ export default function ProfilePage() {
                 ) : (
                   <>
                     <div>
-                      <h3 className="text-2xl font-bold text-text-primary">{user.name}</h3>
+                      <Heading variant="page" as="h3" className="text-text-primary">
+                        {user.name}
+                      </Heading>
                       <div className="flex items-center justify-center sm:justify-start gap-2 mt-2">
                         <Mail className="w-4 h-4 text-text-muted" />
                         <span className="text-sm text-text-secondary">{user.email}</span>
@@ -384,7 +392,9 @@ export default function ProfilePage() {
                     <p className="text-sm text-text-muted">
                       {t("profile.membershipBilling.currentPlan")}
                     </p>
-                    <p className="text-xl font-bold capitalize mt-1">{membershipTier}</p>
+                    <Heading variant="subsection" className="capitalize mt-1">
+                      {membershipTier}
+                    </Heading>
                   </div>
                   {user.subscription_status && (
                     <Badge

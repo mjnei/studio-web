@@ -6,6 +6,7 @@ import { useI18n } from "@/i18n";
 import { Trophy, Medal, Award, TrendingUp, Users, Loader2 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { Heading } from "@/components/ui/heading";
 import { Badge } from "@/components/ui/badge";
 import {
   getLeaderboard,
@@ -155,19 +156,21 @@ export default function LeaderboardPage() {
               <Badge variant="warning" className="mb-2">
                 👑 #{leaderboard[0].rank}
               </Badge>
-              <p className="text-xl font-bold text-text-primary mb-1">{leaderboard[0].user_name}</p>
+              <Heading variant="section" className="text-text-primary mb-1">
+                {leaderboard[0].user_name}
+              </Heading>
               <div className="flex items-center justify-center gap-4 text-sm text-text-muted mt-3">
                 <div>
                   <p className="text-xs">{t("referral.leaderboard.referrals")}</p>
-                  <p className="text-xl font-semibold text-text-primary">
+                  <Heading variant="section" className="text-text-primary">
                     {leaderboard[0].total_all_levels_referrals}
-                  </p>
+                  </Heading>
                 </div>
                 <div>
                   <p className="text-xs">{t("referral.leaderboard.rewards")}</p>
-                  <p className="text-xl font-semibold text-accent-cyan">
+                  <Heading variant="section" className="text-accent-cyan">
                     {leaderboard[0].total_invite_rewards_earned}
-                  </p>
+                  </Heading>
                 </div>
               </div>
             </div>

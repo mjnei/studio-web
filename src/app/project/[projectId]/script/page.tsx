@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Edit2, FileText, Clock, Check, X, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Heading } from "@/components/ui/heading";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
@@ -78,7 +79,7 @@ export default function ScriptPage() {
         <div className="flex flex-col gap-6 pb-24">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-semibold text-text-primary">Script</h2>
+              <Heading variant="section" as="h2" className="text-text-primary">Script</Heading>
               <p className="mt-1 text-sm text-text-muted">Review and edit your voiceover script</p>
             </div>
           </div>
@@ -99,7 +100,7 @@ export default function ScriptPage() {
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-medium text-text-primary">{state.movieTitle}</h3>
+                  <Heading variant="label" as="h3" className="text-text-primary font-medium">{state.movieTitle}</Heading>
                   <p className="mt-1 text-sm text-text-muted">
                     {state.movieGenre && `${state.movieGenre} • `}
                     {state.movieRating && `Rating ${state.movieRating.toFixed(1)}`}
@@ -117,9 +118,7 @@ export default function ScriptPage() {
                   <FileText className="h-5 w-5 text-accent-cyan" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-medium text-text-primary">
-                    {isEditing ? "Edit Script" : "Current Script"}
-                  </h3>
+                  <Heading variant="subsection" as="h3" className="text-text-primary font-medium">{isEditing ? "Edit Script" : "Current Script"}</Heading>
                   <div className="flex items-center gap-4 text-sm text-text-muted mt-1">
                     <div className="flex items-center gap-1">
                       <FileText className="h-3.5 w-3.5" />
@@ -210,7 +209,7 @@ export default function ScriptPage() {
           {/* Script versions */}
           {state?.scripts && state.scripts.length > 1 && (
             <Card variant="elevated" padding="lg">
-              <h3 className="mb-4 text-lg font-medium text-text-primary">Script Versions</h3>
+              <Heading variant="subsection" as="h3" className="mb-4 text-text-primary font-medium">Script Versions</Heading>
               <div className="space-y-2">
                 {state.scripts.map((script, index) => (
                   <button

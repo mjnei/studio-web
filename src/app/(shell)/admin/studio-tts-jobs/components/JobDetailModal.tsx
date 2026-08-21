@@ -1,5 +1,7 @@
 "use client";
 
+import { Heading } from "@/components/ui/heading";
+
 import { X, Clock, CheckCircle2, XCircle, Zap, FileText, Mic } from "lucide-react";
 import type { TTSJob } from "@/types/admin";
 
@@ -71,7 +73,7 @@ export function JobDetailModal({ job, open, onClose }: JobDetailModalProps) {
         {/* Header */}
         <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border-default bg-surface-panel px-6 py-4">
           <div>
-            <h2 className="text-xl font-bold text-text-primary">Job Details</h2>
+            <Heading variant="section" as="h2" className="text-text-primary">Job Details</Heading>
             <p className="text-sm text-text-muted mt-1">#{job.job_id}</p>
           </div>
           <button

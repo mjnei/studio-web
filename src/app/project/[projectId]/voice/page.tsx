@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 import { Mic, Plus, FileText, ChevronDown, Globe, User, AlertCircle, Check } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { useVoiceLimits } from "@/lib/hooks/use-voice-limits";
@@ -329,7 +330,7 @@ export default function VoicePage() {
         <div className="flex flex-col gap-6 pb-24">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-semibold text-text-primary">Select Voice</h2>
+              <Heading variant="section" as="h2" className="text-text-primary">Select Voice</Heading>
               <p className="mt-1 text-sm text-text-muted">
                 Choose a voice and listen to its preview. Audio will be generated in the next step.
               </p>
@@ -357,9 +358,7 @@ export default function VoicePage() {
                   <FileText className="h-5 w-5 text-accent-cyan" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-sm font-medium text-text-secondary uppercase tracking-wide mb-2">
-                    Script Tagline
-                  </h3>
+                  <Heading variant="label" as="h3" className="text-text-secondary uppercase tracking-wide mb-2 font-medium">Script Tagline</Heading>
                   <p className="text-xl font-semibold text-accent-cyan mb-2">
                     "{state.scriptSummary}"
                   </p>
@@ -386,7 +385,7 @@ export default function VoicePage() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-4 mb-2">
-                    <h3 className="font-medium text-text-primary">Your Script</h3>
+                    <Heading variant="label" as="h3" className="text-text-primary font-medium">Your Script</Heading>
                     <span className="text-xs font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0 group-hover:text-accent-cyan-hover">
                       Click to expand <ChevronDown className="h-3 w-3" />
                     </span>
@@ -621,7 +620,7 @@ export default function VoicePage() {
             <Card variant="elevated" padding="lg">
               <div className="space-y-4">
                 <div>
-                  <h3 className="text-sm font-semibold text-text-primary">Speech Rate</h3>
+                  <Heading variant="label" as="h3" className="text-text-primary">Speech Rate</Heading>
                   <p className="text-xs text-text-muted mt-1">
                     Select the speed of the generated voice
                   </p>
@@ -637,7 +636,7 @@ export default function VoicePage() {
                         : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
                     }`}
                   >
-                    <span className="text-2xl font-bold mb-1">0.5x</span>
+                    <Heading variant="metric" as="span" className="mb-1">0.5x</Heading>
                     <span className="text-xs font-medium">Very Slow</span>
                     {ratio === 0.5 && (
                       <div className="absolute top-2 right-2">
@@ -655,7 +654,7 @@ export default function VoicePage() {
                         : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
                     }`}
                   >
-                    <span className="text-2xl font-bold mb-1">1.0x</span>
+                    <Heading variant="metric" as="span" className="mb-1">1.0x</Heading>
                     <span className="text-xs font-medium">Slow</span>
                     {ratio === 1.0 && (
                       <div className="absolute top-2 right-2">
@@ -673,7 +672,7 @@ export default function VoicePage() {
                         : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
                     }`}
                   >
-                    <span className="text-2xl font-bold mb-1">1.25x</span>
+                    <Heading variant="metric" as="span" className="mb-1">1.25x</Heading>
                     <span className="text-xs font-medium">Normal</span>
                     {ratio === 1.25 && (
                       <div className="absolute top-2 right-2">
@@ -691,7 +690,7 @@ export default function VoicePage() {
                         : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
                     }`}
                   >
-                    <span className="text-2xl font-bold mb-1">1.6x</span>
+                    <Heading variant="metric" as="span" className="mb-1">1.6x</Heading>
                     <span className="text-xs font-medium">Fast</span>
                     {ratio === 1.6 && (
                       <div className="absolute top-2 right-2">
@@ -709,7 +708,7 @@ export default function VoicePage() {
                         : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
                     }`}
                   >
-                    <span className="text-2xl font-bold mb-1">2.0x</span>
+                    <Heading variant="metric" as="span" className="mb-1">2.0x</Heading>
                     <span className="text-xs font-medium">Very Fast</span>
                     {ratio === 2.0 && (
                       <div className="absolute top-2 right-2">

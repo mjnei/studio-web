@@ -1,5 +1,7 @@
 "use client";
 
+import { Heading } from "@/components/ui/heading";
+
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Loader, ArrowRight, Database } from "lucide-react";
@@ -33,7 +35,7 @@ export default function AdminTMDBPage() {
             </div>
           </div>
 
-          <h1 className="mb-3 text-2xl font-bold text-text-primary">Page Moved</h1>
+          <Heading variant="page" className="mb-3 text-text-primary">Page Moved</Heading>
 
           <p className="mb-2 text-text-secondary">
             TMDB import has been merged with movie management

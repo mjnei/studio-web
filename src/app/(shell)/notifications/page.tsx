@@ -8,6 +8,8 @@ import { NotificationPreferencesModal } from "@/components/notifications/Notific
 import { Bell, Settings, CheckCheck, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 
 const NOTIFICATION_FILTERS = [
   { value: "all", label: "all" },
@@ -136,16 +138,16 @@ export default function NotificationsPage() {
         ) : filteredNotifications.length === 0 ? (
           <div className="p-12 flex flex-col items-center justify-center text-center">
             <Bell size={64} className="text-text-muted opacity-50 mb-4" />
-            <h3 className="text-lg font-semibold text-text-primary mb-2">
+            <Heading variant="subsection" as="h3" className="text-text-primary mb-2">
               {filter === "all"
                 ? t("notifications.noNotifications")
                 : t("notifications.noFilteredNotifications")}
-            </h3>
-            <p className="text-sm text-text-muted max-w-md">
+            </Heading>
+            <Text variant="body" className="text-text-muted max-w-md">
               {filter === "all"
                 ? t("notifications.noNotificationsDescription")
                 : t("notifications.noFilteredNotificationsDescription")}
-            </p>
+            </Text>
           </div>
         ) : (
           <div className="divide-y divide-border-default">

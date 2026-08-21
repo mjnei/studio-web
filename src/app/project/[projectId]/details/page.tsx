@@ -6,6 +6,7 @@ import Image from "next/image";
 import { FileText, Sparkles, Loader2, ChevronDown, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Heading } from "@/components/ui/heading";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { FullScriptModal } from "@/components/project/full-script-modal";
@@ -365,7 +366,7 @@ export default function ProjectDetailsPage() {
         <div className="flex flex-col gap-6 pb-24">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-semibold text-text-primary">Project Details</h2>
+              <Heading variant="section" as="h2" className="text-text-primary">Project Details</Heading>
               <p className="mt-1 text-sm text-text-muted">
                 Name your project before selecting a voice
               </p>
@@ -378,7 +379,7 @@ export default function ProjectDetailsPage() {
               <div className="flex flex-col md:grid md:grid-cols-2 md:gap-6">
                 <div className="flex items-center gap-2 mb-3 md:col-span-2">
                   <Sparkles className="h-4 w-4 text-accent-cyan" />
-                  <h3 className="text-sm font-medium text-text-primary">AI-Generated Thumbnail</h3>
+                  <Heading variant="label" as="h3" className="text-text-primary font-medium">AI-Generated Thumbnail</Heading>
                 </div>
 
                 {/* Thumbnail - Half width on medium+ screens */}
@@ -399,9 +400,7 @@ export default function ProjectDetailsPage() {
 
                 {/* Explanatory content - Half width on medium+ screens */}
                 <div className="mt-3 md:mt-0 flex flex-col justify-center">
-                  <h4 className="text-sm font-medium text-text-primary mb-2">
-                    About Your Thumbnail
-                  </h4>
+                  <Heading variant="label" as="h4" className="text-text-primary mb-2 font-medium">About Your Thumbnail</Heading>
                   <p className="text-sm text-text-muted mb-3">
                     This AI-generated thumbnail is created based on your movie selection and script.
                     It will be used as the visual preview for your final video project.
@@ -423,9 +422,7 @@ export default function ProjectDetailsPage() {
               <div className="flex items-center gap-3">
                 <Loader2 className="h-5 w-5 text-accent-cyan animate-spin flex-shrink-0" />
                 <div className="flex-1">
-                  <h3 className="text-sm font-medium text-text-primary">
-                    Generating AI Thumbnail...
-                  </h3>
+                  <Heading variant="label" as="h3" className="text-text-primary font-medium">Generating AI Thumbnail...</Heading>
                   <p className="mt-1 text-xs text-text-muted">
                     Your custom thumbnail is being created
                   </p>
@@ -450,7 +447,7 @@ export default function ProjectDetailsPage() {
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-medium text-text-primary">{state.movieTitle}</h3>
+                  <Heading variant="label" as="h3" className="text-text-primary font-medium">{state.movieTitle}</Heading>
                   <p className="mt-1 text-sm text-text-muted">
                     {state.movieGenre && `${state.movieGenre} • `}
                     {state.movieRating && `Rating ${state.movieRating.toFixed(1)}`}
@@ -474,7 +471,7 @@ export default function ProjectDetailsPage() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-4 mb-2">
-                    <h3 className="font-medium text-text-primary">Your Script</h3>
+                    <Heading variant="label" as="h3" className="text-text-primary font-medium">Your Script</Heading>
                     <span className="text-xs font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0">
                       Click to expand <ChevronDown className="h-3 w-3" />
                     </span>
@@ -565,7 +562,7 @@ export default function ProjectDetailsPage() {
               <div>
                 <div className="flex items-center justify-between gap-2 mb-3">
                   <div className="flex items-center gap-2">
-                    <h4 className="text-sm font-medium text-text-secondary">Suggestions</h4>
+                    <Heading variant="label" as="h4" className="text-text-secondary font-medium">Suggestions</Heading>
                     {loadingAiSuggestions && (
                       <Loader2 className="h-4 w-4 animate-spin text-accent-cyan" />
                     )}

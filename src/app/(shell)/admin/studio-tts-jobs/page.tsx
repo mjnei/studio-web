@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Zap, RefreshCw, Download, Filter } from "lucide-react";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useToast } from "@/components/ui/toast";
+import { Heading } from "@/components/ui/heading";
 import { AudioPlayer } from "@/app/(shell)/admin/playground/components/AudioPlayer";
 import { TTSStatsWidget } from "./components/TTSStatsWidget";
 import { StaleJobsAlert } from "./components/StaleJobsAlert";
@@ -259,7 +260,7 @@ export default function TTSJobsPage() {
               <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-accent-primary to-purple-600 shadow-lg">
                 <Zap className="h-6 w-6 text-white" />
               </div>
-              <h1 className="text-3xl font-bold text-text-primary">Studio TTS Jobs Monitoring</h1>
+              <Heading variant="page" className="text-text-primary">Studio TTS Jobs Monitoring</Heading>
             </div>
             <p className="text-text-secondary">
               Monitor Studio project TTS job health and diagnose failures in real-time

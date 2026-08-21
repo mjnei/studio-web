@@ -15,6 +15,8 @@ import {
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 import { Grid } from "@/components/ui/Grid";
 
 export default function HelpPage() {
@@ -111,10 +113,12 @@ export default function HelpPage() {
               <BookOpen className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-text-primary">
+              <Heading variant="label" as="h3" className="text-text-primary">
                 {t("help.documentation.title")}
-              </h3>
-              <p className="text-xs text-text-muted">{t("help.documentation.subtitle")}</p>
+              </Heading>
+              <Text variant="caption" className="text-text-muted">
+                {t("help.documentation.subtitle")}
+              </Text>
             </div>
           </div>
         </Card>
@@ -125,10 +129,12 @@ export default function HelpPage() {
               <MessageCircle className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-text-primary">
+              <Heading variant="label" as="h3" className="text-text-primary">
                 {t("help.community.title")}
-              </h3>
-              <p className="text-xs text-text-muted">{t("help.community.subtitle")}</p>
+              </Heading>
+              <Text variant="caption" className="text-text-muted">
+                {t("help.community.subtitle")}
+              </Text>
             </div>
           </div>
         </Card>
@@ -139,8 +145,12 @@ export default function HelpPage() {
               <ExternalLink className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-text-primary">{t("help.apiDocs.title")}</h3>
-              <p className="text-xs text-text-muted">{t("help.apiDocs.subtitle")}</p>
+              <Heading variant="label" as="h3" className="text-text-primary">
+                {t("help.apiDocs.title")}
+              </Heading>
+              <Text variant="caption" className="text-text-muted">
+                {t("help.apiDocs.subtitle")}
+              </Text>
             </div>
           </div>
         </Card>
@@ -169,9 +179,13 @@ export default function HelpPage() {
                       key={article.title}
                       className="group text-left rounded-xl border border-border-default bg-surface-raised p-4 transition-all hover:border-accent-cyan/40 hover:bg-surface-hover hover:shadow-lg"
                     >
-                      <h3 className="mb-2 text-sm font-semibold text-text-primary group-hover:text-accent-cyan transition-colors">
+                      <Heading
+                        variant="label"
+                        as="h3"
+                        className="mb-2 text-text-primary group-hover:text-accent-cyan transition-colors"
+                      >
                         {article.title}
-                      </h3>
+                      </Heading>
                       <p className="text-xs text-text-muted leading-relaxed">
                         {article.description}
                       </p>

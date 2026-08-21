@@ -5,6 +5,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { Film, Info } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Heading } from "@/components/ui/heading";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { MovieSelection } from "@/components/project/movie-selection";
@@ -87,7 +88,7 @@ export default function SourcePage() {
         <div className="flex flex-col gap-6 pb-24">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl font-semibold text-text-primary">Source Movie</h2>
+              <Heading variant="section" as="h2" className="text-text-primary">Source Movie</Heading>
               <p className="mt-1 text-sm text-text-muted">
                 {isChanging ? "Select a different movie" : "View your selected movie"}
               </p>
@@ -116,7 +117,7 @@ export default function SourcePage() {
                 <div className="flex-1">
                   <div className="mb-4 flex items-center gap-2">
                     <Film className="h-5 w-5 text-accent-cyan" />
-                    <h3 className="text-2xl font-semibold text-text-primary">{state.movieTitle}</h3>
+                    <Heading variant="page" as="h3" className="text-text-primary">{state.movieTitle}</Heading>
                   </div>
                   {state.movieGenre && (
                     <div className="mb-3">

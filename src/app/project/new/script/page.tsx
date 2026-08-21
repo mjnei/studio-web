@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
+import { Heading } from "@/components/ui/heading";
 import { Edit2 } from "lucide-react";
 import { createScript } from "@/lib/project-client";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
@@ -101,7 +102,7 @@ export default function NewProjectScriptPage() {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col gap-6 pb-24">
           <div className="mb-6">
-            <h2 className="text-xl font-semibold text-text-primary">Create Script</h2>
+            <Heading variant="section" as="h2" className="text-text-primary">Create Script</Heading>
             <p className="mt-1 text-sm text-text-muted">
               Write the voice-over script for {selectedMovie.title}
             </p>
@@ -122,7 +123,7 @@ export default function NewProjectScriptPage() {
                 </div>
               )}
               <div className="flex-1">
-                <h3 className="font-medium text-text-primary">{selectedMovie.title}</h3>
+                <Heading variant="label" as="h3" className="text-text-primary font-medium">{selectedMovie.title}</Heading>
                 <p className="mt-1 text-sm text-text-muted">
                   {selectedMovie.genre && `${selectedMovie.genre.join(", ")} • `}
                   {selectedMovie.rating && `Rating ${selectedMovie.rating.toFixed(1)}`}
@@ -137,7 +138,7 @@ export default function NewProjectScriptPage() {
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent-cyan-muted">
                 <Edit2 className="h-8 w-8 text-accent-cyan" />
               </div>
-              <h3 className="mb-2 text-lg font-semibold text-text-primary">Write Your Script</h3>
+              <Heading variant="subsection" as="h3" className="mb-2 text-text-primary">Write Your Script</Heading>
               <p className="mb-6 text-sm text-text-muted">
                 Write or paste the voice-over script. This will create your project and save the
                 script.

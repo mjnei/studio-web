@@ -1,5 +1,7 @@
 "use client";
 
+import { Heading } from "@/components/ui/heading";
+
 import { AlertTriangle, Clock, Ban } from "lucide-react";
 import type { PlaygroundStaleJob } from "@/types/admin";
 
@@ -30,9 +32,9 @@ export function PlaygroundStaleJobsAlert({ staleJobs, onCancel }: PlaygroundStal
           <AlertTriangle className="h-6 w-6 text-red-600 animate-pulse" />
         </div>
         <div className="flex-1">
-          <h3 className="text-lg font-bold text-red-600 mb-2">
+          <Heading variant="subsection" as="h3" className="text-red-600 mb-2">
             ⚠️ {staleJobs.length} Stale Playground Job{staleJobs.length !== 1 ? "s" : ""} Detected
-          </h3>
+          </Heading>
           <p className="text-sm text-text-secondary mb-4">
             These playground jobs have been queued or processing for too long. They may require
             manual intervention.

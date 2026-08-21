@@ -1,5 +1,7 @@
 "use client";
 
+import { Heading } from "@/components/ui/heading";
+
 import { useState } from "react";
 import { CheckCircle2, Eye, Clock, Play } from "lucide-react";
 import type { CompletedJob } from "@/types/admin";
@@ -48,7 +50,7 @@ export function CompletedJobsTable({
           <div className="flex items-center justify-center w-16 h-16 rounded-full bg-gray-500/10">
             <CheckCircle2 className="h-8 w-8 text-gray-600" />
           </div>
-          <h3 className="text-lg font-semibold text-text-primary">No Completed Jobs</h3>
+          <Heading variant="subsection" as="h3" className="text-text-primary">No Completed Jobs</Heading>
           <p className="text-sm text-text-secondary max-w-md">
             No completed TTS jobs found in the system yet.
           </p>

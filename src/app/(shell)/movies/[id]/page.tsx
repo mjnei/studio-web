@@ -19,6 +19,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { ExternalImage } from "@/components/ui/ExternalImage";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 import { adminGetMovieDetails, type MovieDetailsResponse } from "@/lib/api/admin";
 
 export default function MovieDetailsPage({ params }: { params: Promise<{ id: string }> }) {
@@ -218,9 +220,13 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
 
                 {/* Stats Card */}
                 <div className="space-y-3 rounded-xl border border-border-default bg-surface-panel p-4">
-                  <h3 className="text-xs font-semibold uppercase tracking-wide text-text-muted">
+                  <Heading
+                    variant="label"
+                    as="h3"
+                    className="uppercase tracking-wide text-text-muted"
+                  >
                     Statistics
-                  </h3>
+                  </Heading>
                   {movie.vote_average && movie.vote_average > 0 && (
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
@@ -255,9 +261,13 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                 {/* External IDs */}
                 {(movie.imdb_id || movie.douban_id) && (
                   <div className="space-y-3 rounded-xl border border-border-default bg-surface-panel p-4">
-                    <h3 className="text-xs font-semibold uppercase tracking-wide text-text-muted">
+                    <Heading
+                      variant="label"
+                      as="h3"
+                      className="uppercase tracking-wide text-text-muted"
+                    >
                       External IDs
-                    </h3>
+                    </Heading>
                     {movie.imdb_id && (
                       <div>
                         <p className="mb-1 text-xs font-medium text-text-muted">IMDb</p>
@@ -278,9 +288,9 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
               <div className="space-y-8">
                 {/* Title Section */}
                 <div>
-                  <h1 className="mb-2 text-3xl font-bold text-text-primary sm:text-4xl">
+                  <Heading variant="display" className="mb-2 text-text-primary">
                     {movie.title || movie.original_title}
-                  </h1>
+                  </Heading>
                   {movie.original_title && movie.original_title !== movie.title && (
                     <p className="mb-4 text-base text-text-muted italic">{movie.original_title}</p>
                   )}
@@ -346,7 +356,9 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                 {/* Overview */}
                 {movie.overview && (
                   <div className="rounded-xl border border-border-default bg-surface-panel p-6">
-                    <h2 className="mb-3 text-lg font-bold text-text-primary">Overview</h2>
+                    <Heading variant="subsection" as="h2" className="mb-3 text-text-primary">
+                      Overview
+                    </Heading>
                     <p className="text-sm leading-loose text-text-secondary">{movie.overview}</p>
                   </div>
                 )}
@@ -355,7 +367,9 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                 {(directors.length > 0 || producers.length > 0 || writers.length > 0) && (
                   <div className="rounded-xl border border-border-default bg-surface-panel p-6">
                     <div className="flex items-center justify-between mb-5">
-                      <h2 className="text-lg font-bold text-text-primary">Crew</h2>
+                      <Heading variant="subsection" as="h2" className="text-text-primary">
+                        Crew
+                      </Heading>
                       <button
                         onClick={() => setIsCrewExpanded(!isCrewExpanded)}
                         className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg hover:bg-surface-raised transition-colors text-text-secondary hover:text-text-primary"
@@ -373,9 +387,13 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                         {/* Directors */}
                         {directors.length > 0 && (
                           <div>
-                            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-text-muted">
+                            <Heading
+                              variant="label"
+                              as="h3"
+                              className="mb-3 uppercase tracking-wide text-text-muted"
+                            >
                               Director{directors.length > 1 ? "s" : ""}
-                            </h3>
+                            </Heading>
                             <div className="space-y-2">
                               {directors.map((director) => (
                                 <div key={director.id} className="flex items-center gap-3">
@@ -406,9 +424,13 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                         {/* Producers */}
                         {producers.length > 0 && (
                           <div>
-                            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-text-muted">
+                            <Heading
+                              variant="label"
+                              as="h3"
+                              className="mb-3 uppercase tracking-wide text-text-muted"
+                            >
                               Producer{producers.length > 1 ? "s" : ""}
-                            </h3>
+                            </Heading>
                             <div className="space-y-2">
                               {producers.slice(0, 3).map((producer) => (
                                 <div key={producer.id} className="flex items-center gap-3">
@@ -439,9 +461,13 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                         {/* Writers */}
                         {writers.length > 0 && (
                           <div>
-                            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wide text-text-muted">
+                            <Heading
+                              variant="label"
+                              as="h3"
+                              className="mb-3 uppercase tracking-wide text-text-muted"
+                            >
                               Writer{writers.length > 1 ? "s" : ""}
-                            </h3>
+                            </Heading>
                             <div className="space-y-2">
                               {writers.slice(0, 3).map((writer) => (
                                 <div key={writer.id} className="flex items-center gap-3">
@@ -477,7 +503,9 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                 {actors.length > 0 && (
                   <div className="rounded-xl border border-border-default bg-surface-panel p-6">
                     <div className="flex items-center justify-between mb-5">
-                      <h2 className="text-lg font-bold text-text-primary">Top Cast</h2>
+                      <Heading variant="subsection" as="h2" className="text-text-primary">
+                        Top Cast
+                      </Heading>
                       <button
                         onClick={() => setIsTopCastExpanded(!isTopCastExpanded)}
                         className="p-2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg hover:bg-surface-raised transition-colors text-text-secondary hover:text-text-primary"

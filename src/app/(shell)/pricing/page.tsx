@@ -5,6 +5,8 @@ import { useI18n } from "@/i18n";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 import { Check, Sparkles, Zap, Crown, Coins, TrendingUp } from "lucide-react";
 
 interface PricingTier {
@@ -225,15 +227,21 @@ export default function PricingPage() {
                     <Icon className={`h-6 w-6 ${getColorClasses(tier.color)}`} />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-text-primary">{tier.name}</h2>
-                    <p className="text-sm text-text-muted">{tier.description}</p>
+                    <Heading variant="section" as="h2" className="text-text-primary">
+                      {tier.name}
+                    </Heading>
+                    <Text variant="body" className="text-text-muted">
+                      {tier.description}
+                    </Text>
                   </div>
                 </div>
 
                 {/* Price */}
                 <div className="mb-2">
                   <div className="flex items-baseline gap-2">
-                    <span className="text-3xl font-bold text-text-primary">{currentPrice}</span>
+                    <Heading variant="metric" as="span" className="text-text-primary">
+                      {currentPrice}
+                    </Heading>
                     {isAnnual && tier.name !== t("pricing.free.name") && (
                       <span className="text-sm text-text-muted">
                         {t("pricing.free.price.billedAnnually")}
@@ -261,9 +269,13 @@ export default function PricingPage() {
 
               {/* Features */}
               <div className="flex-1 mb-8">
-                <h3 className="text-sm font-semibold text-text-secondary mb-3 uppercase tracking-wide">
+                <Heading
+                  variant="label"
+                  as="h3"
+                  className="text-text-secondary mb-3 uppercase tracking-wide"
+                >
                   {t("pricing.free.whatsIncluded")}
-                </h3>
+                </Heading>
                 <ul className="space-y-2.5">
                   {tier.features.map((feature, idx) => (
                     <li key={idx} className="flex items-start gap-2">
@@ -293,33 +305,35 @@ export default function PricingPage() {
 
       {/* FAQ Section */}
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-text-primary text-center mb-6">
+        <Heading variant="page" as="h2" className="text-text-primary text-center mb-6">
           {t("pricing.faq.title")}
-        </h2>
+        </Heading>
         <div className="space-y-4 max-w-3xl mx-auto">
           <Card variant="elevated" padding="md">
-            <h3 className="font-medium text-text-primary mb-2">
+            <Heading variant="label" as="h3" className="text-text-primary mb-2 font-medium">
               {t("pricing.faq.creditQuestion")}
-            </h3>
+            </Heading>
             <p className="text-sm text-text-secondary">{t("pricing.faq.creditAnswer")}</p>
           </Card>
 
           <Card variant="elevated" padding="md">
-            <h3 className="font-medium text-text-primary mb-2">
+            <Heading variant="label" as="h3" className="text-text-primary mb-2 font-medium">
               {t("pricing.faq.rolloverQuestion")}
-            </h3>
+            </Heading>
             <p className="text-sm text-text-secondary">{t("pricing.faq.rolloverAnswer")}</p>
           </Card>
 
           <Card variant="elevated" padding="md">
-            <h3 className="font-medium text-text-primary mb-2">
+            <Heading variant="label" as="h3" className="text-text-primary mb-2 font-medium">
               {t("pricing.faq.changeQuestion")}
-            </h3>
+            </Heading>
             <p className="text-sm text-text-secondary">{t("pricing.faq.changeAnswer")}</p>
           </Card>
 
           <Card variant="elevated" padding="md">
-            <h3 className="font-medium text-text-primary mb-2">{t("pricing.faq.teamQuestion")}</h3>
+            <Heading variant="label" as="h3" className="text-text-primary mb-2 font-medium">
+              {t("pricing.faq.teamQuestion")}
+            </Heading>
             <p className="text-sm text-text-secondary">{t("pricing.faq.teamAnswer")}</p>
           </Card>
         </div>

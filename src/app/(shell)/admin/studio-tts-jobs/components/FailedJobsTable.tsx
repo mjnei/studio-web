@@ -1,5 +1,7 @@
 "use client";
 
+import { Heading } from "@/components/ui/heading";
+
 import { useState } from "react";
 import { XCircle, RefreshCw, Eye, Clock, AlertCircle } from "lucide-react";
 import type { FailedJob } from "@/types/admin";
@@ -38,7 +40,7 @@ export function FailedJobsTable({ failedJobs, onRetry, onViewDetails }: FailedJo
           <div className="flex items-center justify-center w-16 h-16 rounded-full bg-green-500/10">
             <XCircle className="h-8 w-8 text-green-600" />
           </div>
-          <h3 className="text-lg font-semibold text-text-primary">No Failed Jobs</h3>
+          <Heading variant="subsection" as="h3" className="text-text-primary">No Failed Jobs</Heading>
           <p className="text-sm text-text-secondary max-w-md">
             All TTS jobs are processing successfully. Great job!
           </p>
