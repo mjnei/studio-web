@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
+import { Heading } from "@/components/ui/heading";
 import { Film, Download } from "lucide-react";
 
 interface ExportFormatModalProps {
@@ -111,7 +112,9 @@ export function ExportFormatModal({ isOpen, onClose, videoUrl, onExport }: Expor
 
         {/* Export Summary */}
         <div className="p-4 rounded-lg bg-surface-raised border border-border-default">
-          <h4 className="text-sm font-medium text-text-primary mb-3">Export Summary</h4>
+          <Heading variant="label" as="h4" className="text-text-primary mb-3 font-medium">
+            Export Summary
+          </Heading>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-text-secondary">Format:</span>

@@ -449,7 +449,7 @@ For each page: replace page titles and section titles with `PageHeader` / `Headi
 
 ### Phase 4 — Cleanup & enforcement
 
-- [ ] Repo grep audit (fix for remaining one-offs):
+- [x] Repo grep audit (search for remaining one-offs):
 
 ```bash
 # Headings that still hardcode large sizes
@@ -459,12 +459,20 @@ rg -n "<h[1-4][^>]*className=\"[^\"]*text-(xl|2xl|3xl|4xl|5xl)" src
 rg -n "text-(3xl|4xl|5xl)" src --glob "!**/typography.ts" --glob "!**/heading.tsx"
 ```
 
-- [ ] Decide allowlist for remaining `display` usages (auth layout brand, onboarding heroes)
-- [ ] Remove dead duplicate title styles
-- [ ] Spot-check shell / project / auth / admin at 375px and 1280px (Phase 3 exit criteria)
-- [ ] Optional ESLint rule or codegraph/custom check: disallow `text-3xl`+ on `<h1>`–`<h4>` outside `components/ui`
-- [ ] Update `DESIGN_SYSTEM.md` Quick Reference “Text” section to point at roles
-- [ ] Mark this guide **Status: Adopted**
+- [x] Decide allowlist for remaining `display` usages (auth layout brand, onboarding heroes)
+- [x] Remove dead duplicate title styles (modals / dialogs / debug page migrated to `Heading`)
+- [ ] Spot-check shell / project / auth / admin at 375px and 1280px (manual visual QA)
+- [x] Optional ESLint rule: warn on `text-xl`+ string classNames on `<h1>`–`<h6>` (`eslint.config.mjs`)
+- [x] Update `DESIGN_SYSTEM.md` Quick Reference “Text” section to point at roles
+- [x] Mark this guide **Status: Adopted**
+
+#### Allowlists (intentional non-role utilities)
+
+| Pattern | Locations | Reason |
+|---------|-----------|--------|
+| `Heading variant="display"` | `(auth)/layout.tsx` brand; `WelcomeStep`, `CompletionStep` heroes | Marketing / onboarding heroes only |
+| `text-3xl` (non-heading) | `profile/page.tsx` avatar initial; `CompletionStep` emoji | Decorative glyph sizing, not titles |
+| `text-sm` / `text-xs` on body chrome | Forms, buttons, meta rows | Component-owned density — not heading roles |
 
 **Exit criteria**: New UI PRs use `Heading` / `PageHeader` by default; globals tokens are the only place to tune the scale.
 

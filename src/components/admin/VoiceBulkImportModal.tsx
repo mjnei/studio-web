@@ -14,6 +14,7 @@ import {
   X,
 } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
+import { Heading } from "@/components/ui/heading";
 import { adminSearchUsers, adminBulkUploadVoices, type UserSearchResult } from "@/lib/api/admin";
 
 interface VoiceBulkImportModalProps {
@@ -195,7 +196,9 @@ export function VoiceBulkImportModal({ open, onClose, onSuccess }: VoiceBulkImpo
                 <Upload className="h-5 w-5 text-white" />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-white">Bulk Import Voices</h2>
+                <Heading variant="section" as="h2" className="text-white">
+                  Bulk Import Voices
+                </Heading>
                 <p className="text-sm text-white/80">Upload multiple audio files for a user</p>
               </div>
             </div>
@@ -388,7 +391,9 @@ export function VoiceBulkImportModal({ open, onClose, onSuccess }: VoiceBulkImpo
           {/* Import Result */}
           {importResult && (
             <div className="rounded-xl border border-border-default bg-surface-panel p-4">
-              <h3 className="text-sm font-semibold text-text-primary mb-3">Import Result</h3>
+              <Heading variant="label" as="h3" className="text-text-primary mb-3">
+                Import Result
+              </Heading>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-text-secondary">Success:</span>

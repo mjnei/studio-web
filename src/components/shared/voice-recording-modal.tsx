@@ -14,6 +14,7 @@ import {
   Globe,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Heading } from "@/components/ui/heading";
 import type { VoiceResponse } from "@/lib/types/api";
 
 type RecorderState = "idle" | "requesting" | "recording" | "recorded" | "naming";
@@ -495,7 +496,9 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
       <div className="mx-auto max-w-md w-full m-4 rounded-2xl border border-border-default bg-gradient-to-b from-surface-panel to-surface-raised p-6 shadow-2xl">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-text-primary">Record Voice</h2>
+          <Heading variant="subsection" as="h2" className="text-text-primary">
+            Record Voice
+          </Heading>
           <button
             onClick={onClose}
             disabled={isSaving || state === "recording"}
@@ -541,7 +544,9 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
                 <Mic size={48} className="text-text-muted" />
               </div>
               <div className="text-center">
-                <h3 className="text-lg font-semibold text-text-primary mb-1">Ready to Record</h3>
+                <Heading variant="subsection" as="h3" className="text-text-primary mb-1">
+                  Ready to Record
+                </Heading>
                 <p className="text-sm text-text-muted">Record 30–60s of clear speech</p>
               </div>
             </div>
@@ -575,9 +580,13 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75" />
                     <span className="relative inline-flex h-3 w-3 rounded-full bg-red-500" />
                   </span>
-                  <span className="text-2xl font-mono font-bold text-text-primary tabular-nums">
+                  <Heading
+                    variant="metric"
+                    as="span"
+                    className="font-mono text-text-primary"
+                  >
                     {formatTime(duration)}
-                  </span>
+                  </Heading>
                 </div>
                 <p className="text-xs text-text-muted">of {formatTime(MAX_DURATION_S)}</p>
               </div>
@@ -616,9 +625,9 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
                 <Check size={32} className="text-green-400" />
               </div>
               <div className="text-center">
-                <h3 className="text-lg font-semibold text-text-primary mb-1">
+                <Heading variant="subsection" as="h3" className="text-text-primary mb-1">
                   Recording Complete!
-                </h3>
+                </Heading>
                 <p className="text-sm text-text-muted">
                   {formatTime(duration)} • Tap play to listen
                 </p>
@@ -685,7 +694,9 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
         {state === "naming" && (
           <div className="flex flex-col gap-5 py-4">
             <div className="text-center">
-              <h3 className="text-lg font-semibold text-text-primary mb-1">Name Your Voice</h3>
+              <Heading variant="subsection" as="h3" className="text-text-primary mb-1">
+                Name Your Voice
+              </Heading>
               <p className="text-sm text-text-muted">Choose a memorable name and language</p>
             </div>
 

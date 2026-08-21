@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
+import { Heading } from "@/components/ui/heading";
 import { AlertCircle, Coins } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type { CreditStatus } from "@/lib/credit-client";
@@ -35,7 +36,9 @@ export function InsufficientCreditsModal({
         <div className="flex items-start gap-3 p-4 rounded-lg bg-warning-bg/10 border border-warning-border">
           <AlertCircle className="h-5 w-5 text-warning-text flex-shrink-0 mt-0.5" />
           <div>
-            <h4 className="text-sm font-medium text-warning-text">Not Enough Credits</h4>
+            <Heading variant="label" as="h4" className="text-warning-text font-medium">
+              Not Enough Credits
+            </Heading>
             <p className="mt-1 text-sm text-text-muted">
               You need {requiredCredits} credit{requiredCredits !== 1 ? "s" : ""} to generate a
               video, but you only have {creditStatus?.credits_remaining || 0} remaining.
@@ -46,7 +49,9 @@ export function InsufficientCreditsModal({
         {/* Current Status */}
         {creditStatus && (
           <div className="space-y-2">
-            <h4 className="text-sm font-medium text-text-primary">Your Current Plan</h4>
+            <Heading variant="label" as="h4" className="text-text-primary font-medium">
+              Your Current Plan
+            </Heading>
             <div className="p-4 rounded-lg bg-surface-raised border border-border-default">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium text-text-secondary capitalize">

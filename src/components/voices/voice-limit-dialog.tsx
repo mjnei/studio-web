@@ -3,6 +3,7 @@
 import { AlertCircle, Sparkles, Crown } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Heading } from "@/components/ui/heading";
 import { useI18n } from "@/i18n";
 
 interface VoiceLimitDialogProps {
@@ -62,11 +63,11 @@ export function VoiceLimitDialog({
         </div>
 
         {/* Title */}
-        <h3 className="text-xl font-semibold text-text-primary text-center mb-2">
+        <Heading variant="section" as="h3" className="text-text-primary text-center mb-2">
           {isAtMax
             ? t("voices.limitDialog.limitReachedTitle")
             : t("voices.limitDialog.upgradeTitle")}
-        </h3>
+        </Heading>
 
         {/* Message */}
         <p className="text-sm text-text-secondary text-center mb-6">
@@ -85,11 +86,11 @@ export function VoiceLimitDialog({
               <div className="flex items-start gap-3">
                 <Crown className="h-5 w-5 text-accent-cyan flex-shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="text-sm font-semibold text-text-primary mb-1">
+                  <Heading variant="label" as="h4" className="text-text-primary mb-1">
                     {tier === "free"
                       ? t("voices.limitDialog.proUpgradeTitle")
                       : t("voices.limitDialog.premiumUpgradeTitle")}
-                  </h4>
+                  </Heading>
                   <p className="text-xs text-text-secondary">
                     {tier === "free"
                       ? t("voices.limitDialog.proUpgradeDescription")

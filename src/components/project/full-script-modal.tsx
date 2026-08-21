@@ -3,6 +3,7 @@
 import { FileText, Clock } from "lucide-react";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { Heading } from "@/components/ui/heading";
 
 export interface FullScriptModalProps {
   isOpen: boolean;
@@ -61,9 +62,13 @@ export function FullScriptModal({
               <FileText className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
             </div>
             <div className="flex-1 min-w-0 pt-0.5 sm:pt-1">
-              <h3 className="text-lg sm:text-xl font-bold text-text-primary mb-1.5 sm:mb-2">
+              <Heading
+                variant="section"
+                as="h3"
+                className="text-text-primary mb-1.5 sm:mb-2"
+              >
                 Full Script
-              </h3>
+              </Heading>
               <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm">
                 <div className="flex items-center gap-1.5 text-text-secondary">
                   <FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-accent-cyan" />

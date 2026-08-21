@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { useNotifications } from "@/lib/notification-context";
 import { Bell, X, Check, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
+import { Heading } from "@/components/ui/heading";
 
 export function NotificationBell() {
   const { notifications, unreadCount, markAsRead, deleteNotification } = useNotifications();
@@ -65,7 +66,9 @@ export function NotificationBell() {
         >
           {/* Header */}
           <div className="border-b border-surface-tertiary p-4 flex justify-between items-center">
-            <h3 className="font-semibold text-text-primary">Notifications</h3>
+            <Heading variant="subsection" as="h3" className="text-text-primary">
+              Notifications
+            </Heading>
             <button
               onClick={() => setIsOpen(false)}
               className="p-1 hover:bg-surface-tertiary rounded transition-colors"

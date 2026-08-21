@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { getAccessToken } from "@/lib/api-client";
 import { useAuth } from "@/lib/auth-context";
 import { useNotifications } from "@/lib/notification-context";
+import { Heading } from "@/components/ui/heading";
 
 export default function DebugSSEPage() {
   const { isAuthenticated, user } = useAuth();
@@ -85,10 +86,14 @@ export default function DebugSSEPage() {
   return (
     <div className="min-h-screen bg-surface-base p-8">
       <div className="max-w-4xl mx-auto space-y-6">
-        <h1 className="text-2xl font-bold text-text-primary">SSE Debug Page</h1>
+        <Heading variant="page" className="text-text-primary">
+          SSE Debug Page
+        </Heading>
 
         <div className="bg-surface-float p-6 rounded-lg space-y-4">
-          <h2 className="text-lg font-semibold text-text-primary">Auth Status</h2>
+          <Heading variant="subsection" as="h2" className="text-text-primary">
+            Auth Status
+          </Heading>
           <div className="space-y-2 text-sm text-text-secondary font-mono">
             <div>Authenticated: {isAuthenticated ? "✅ Yes" : "❌ No"}</div>
             <div>User: {user ? user.email : "Not logged in"}</div>
@@ -112,7 +117,9 @@ export default function DebugSSEPage() {
 
         <div className="bg-surface-float p-6 rounded-lg space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-text-primary">Manual SSE Test</h2>
+            <Heading variant="subsection" as="h2" className="text-text-primary">
+              Manual SSE Test
+            </Heading>
             <button
               onClick={testSSEConnection}
               disabled={!token}
@@ -124,7 +131,9 @@ export default function DebugSSEPage() {
         </div>
 
         <div className="bg-surface-float p-6 rounded-lg space-y-4">
-          <h2 className="text-lg font-semibold text-text-primary">Logs</h2>
+          <Heading variant="subsection" as="h2" className="text-text-primary">
+            Logs
+          </Heading>
           <div className="bg-surface-base p-4 rounded max-h-96 overflow-y-auto">
             {logs.length === 0 ? (
               <div className="text-text-muted text-sm">No logs yet</div>
@@ -147,7 +156,9 @@ export default function DebugSSEPage() {
         </div>
 
         <div className="bg-surface-float p-6 rounded-lg space-y-4">
-          <h2 className="text-lg font-semibold text-text-primary">Instructions</h2>
+          <Heading variant="subsection" as="h2" className="text-text-primary">
+            Instructions
+          </Heading>
           <ol className="list-decimal list-inside space-y-2 text-sm text-text-secondary">
             <li>Check if you're authenticated (should show email above)</li>
             <li>Check if token is present</li>
@@ -163,9 +174,9 @@ export default function DebugSSEPage() {
           </ol>
 
           <div className="mt-4 p-4 bg-surface-base rounded border border-border-default">
-            <h3 className="text-sm font-semibold text-text-primary mb-2">
+            <Heading variant="label" as="h3" className="text-text-primary mb-2">
               🔧 Get Token from Console
-            </h3>
+            </Heading>
             <p className="text-xs text-text-secondary mb-2">
               You can also get the token from browser console (F12):
             </p>
@@ -176,7 +187,9 @@ export default function DebugSSEPage() {
         </div>
 
         <div className="bg-amber-500/10 border border-amber-500/20 p-6 rounded-lg">
-          <h3 className="text-sm font-semibold text-amber-500 mb-2">⚠️ Browser Console</h3>
+          <Heading variant="label" as="h3" className="text-amber-500 mb-2">
+            ⚠️ Browser Console
+          </Heading>
           <p className="text-sm text-text-secondary">
             Open DevTools Console (F12) to see detailed [SSE] logs from NotificationProvider
           </p>
