@@ -7,6 +7,7 @@ import { Heading } from "@/components/ui/heading";
 import { AlertCircle, Coins } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type { CreditStatus } from "@/lib/credit-client";
+import { useI18n } from "@/i18n";
 
 interface InsufficientCreditsModalProps {
   isOpen: boolean;
@@ -22,6 +23,7 @@ export function InsufficientCreditsModal({
   requiredCredits = 1,
 }: InsufficientCreditsModalProps) {
   const router = useRouter();
+  const { t, locale } = useI18n();
 
   const handleUpgrade = () => {
     router.push("/pricing");
@@ -30,18 +32,20 @@ export function InsufficientCreditsModal({
   const currentTier = creditStatus?.membership_tier || "free";
 
   return (
-    <Modal open={isOpen} onClose={onClose} title="Insufficient Credits">
+    <Modal open={isOpen} onClose={onClose} title={t("billing.credits.insufficientCredits")}>
       <div className="space-y-6">
         {/* Alert Message */}
         <div className="flex items-start gap-3 p-4 rounded-lg bg-warning-bg/10 border border-warning-border">
           <AlertCircle className="h-5 w-5 text-warning-text flex-shrink-0 mt-0.5" />
           <div>
             <Heading variant="label" as="h4" className="text-warning-text font-medium">
-              Not Enough Credits
+              {t("billing.credits.notEnoughCredits")}
             </Heading>
             <p className="mt-1 text-sm text-text-muted">
-              You need {requiredCredits} credit{requiredCredits !== 1 ? "s" : ""} to generate a
-              video, but you only have {creditStatus?.credits_remaining || 0} remaining.
+              {t("billing.credits.notEnoughMessage", {
+                needed: requiredCredits,
+                have: creditStatus?.credits_remaining || 0,
+              })}
             </p>
           </div>
         </div>
@@ -50,26 +54,33 @@ export function InsufficientCreditsModal({
         {creditStatus && (
           <div className="space-y-2">
             <Heading variant="label" as="h4" className="text-text-primary font-medium">
-              Your Current Plan
+              {t("billing.credits.yourCurrentPlan")}
             </Heading>
             <div className="p-4 rounded-lg bg-surface-raised border border-border-default">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium text-text-secondary capitalize">
-                  {currentTier} Plan
+                  {t("billing.credits.planLabel", { tier: currentTier })}
                 </span>
                 <div className="flex items-center gap-2">
                   <Coins className="h-4 w-4 text-text-muted" />
                   <span className="text-sm text-text-primary">
-                    {creditStatus.credits_remaining} / {creditStatus.monthly_allocation} credits
+                    {t("billing.credits.creditsOf", {
+                      remaining: creditStatus.credits_remaining,
+                      allocation: creditStatus.monthly_allocation,
+                    })}
                   </span>
                 </div>
               </div>
               <div className="text-xs text-text-muted">
-                Resets on{" "}
-                {new Date(creditStatus.cycle_end_date).toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                  year: "numeric",
+                {t("billing.credits.resetsOn", {
+                  date: new Date(creditStatus.cycle_end_date).toLocaleDateString(
+                    locale === "chs" ? "zh-CN" : "en-US",
+                    {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    }
+                  ),
                 })}
               </div>
             </div>
@@ -79,11 +90,11 @@ export function InsufficientCreditsModal({
         {/* Actions */}
         <div className="flex gap-3 pt-2">
           <Button variant="ghost" onClick={onClose} className="flex-1">
-            Cancel
+            {t("billing.credits.cancel")}
           </Button>
           {currentTier !== "premium" && (
             <Button variant="primary" onClick={handleUpgrade} className="flex-1">
-              Upgrade Plan
+              {t("billing.credits.upgradePlan")}
             </Button>
           )}
         </div>

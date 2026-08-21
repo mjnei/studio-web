@@ -11,6 +11,7 @@
       "currentBalance": "当前余额",
       "credits": "额度",
       "used": "本月已使用",
+      "usedOfAllocation": "本月已使用 {used} / {allocation}",
       "percentUsed": "% 已使用",
       "resets": "重置于",
       "upgradeSection": "需要更多额度？",
@@ -26,9 +27,11 @@
       "creditsUsed": "已使用额度",
       "creditsUsedDescription": "本计费周期已使用",
       "cycleReset": "周期重置",
+      "cycleResetDescription": "下次分配重置日期",
       "nextAllocationReset": "下次额度重置",
       "nextAllocationResetDescription": "您的额度将在",
       "rolloverUp": "未使用的额度将结转最多",
+      "unlimited": "无限制",
       "billing": "账单",
       "billingDescription": "管理您的支付方式和订阅",
       "update": "更新",
@@ -45,6 +48,7 @@
       "trackUsage": "跟踪您的额度使用和分配",
       "noTransactions": "还没有额度交易",
       "noTransactionsDescription": "您的额度使用情况将显示在此处",
+      "creditTransaction": "额度交易",
       "balance": "余额:"
     },
     "invoices": {
@@ -66,8 +70,39 @@
       "subtitle": "现在获得 5 个额度奖励",
       "description": "您即将向帐户添加 5 个额度奖励。这是用于测试和开发目的的一次性优惠。",
       "cancel": "取消",
-      "addCredits": "添加额度"
+      "addCredits": "添加额度",
+      "failed": "添加额度失败"
     },
-    "loading": "加载账单信息中..."
+    "loading": "加载账单信息中...",
+    "loadError": "加载账单数据失败",
+    "updatePaymentAlert": "正在更新支付方式…（Stripe 集成将在第 5 阶段实现）",
+    "credits": {
+      "generateVideoTitle": "生成视频？",
+      "generateVideoMessage": "此操作将使用您账户中的额度。",
+      "creditCost": "额度费用：",
+      "currentBalance": "当前余额：",
+      "afterGeneration": "生成后：",
+      "insufficientCredits": "额度不足",
+      "lowCreditBalance": "额度余额偏低",
+      "lowCreditMessage": "生成后您将剩余 {count} 个额度。建议升级您的套餐。",
+      "needCreditsMessage": "您需要 {needed} 个额度，但仅有 {have} 个。请升级套餐以继续。",
+      "creditSingular": "{count} 个额度",
+      "creditPlural": "{count} 个额度",
+      "cancel": "取消",
+      "viewPlans": "查看套餐",
+      "confirm": "确认",
+      "generating": "生成中...",
+      "creditsLabel": "额度",
+      "viewBillingTitle": "查看账单与额度",
+      "notEnoughCredits": "额度不足",
+      "notEnoughMessage": "生成视频需要 {needed} 个额度，但您仅剩 {have} 个。",
+      "yourCurrentPlan": "您当前的套餐",
+      "planLabel": "{tier} 套餐",
+      "creditsOf": "{remaining} / {allocation} 额度",
+      "resetsOn": "重置于 {date}",
+      "upgradePlan": "升级套餐",
+      "usageDeduct": "此操作将从您的账户扣除 {cost}。",
+      "usageRemaining": "您剩余 {remaining}。"
+    }
   }
 }

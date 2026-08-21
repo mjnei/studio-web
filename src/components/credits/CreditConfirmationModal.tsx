@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import { AlertTriangle, Coins } from "lucide-react";
+import { useI18n } from "@/i18n";
 
 interface CreditConfirmationModalProps {
   isOpen: boolean;
@@ -19,55 +20,66 @@ export function CreditConfirmationModal({
   isOpen,
   onClose,
   onConfirm,
-  title = "Generate Video?",
-  message = "This action will use credits from your account.",
+  title,
+  message,
   creditCost,
   creditsRemaining,
   isProcessing = false,
 }: CreditConfirmationModalProps) {
+  const { t } = useI18n();
   const afterGeneration = creditsRemaining - creditCost;
   const hasInsufficientCredits = creditsRemaining < creditCost;
 
+  const creditLabel = (count: number) =>
+    count === 1
+      ? t("billing.credits.creditSingular", { count })
+      : t("billing.credits.creditPlural", { count });
+
   return (
-    <Modal open={isOpen} onClose={onClose} title={title} size="sm">
+    <Modal
+      open={isOpen}
+      onClose={onClose}
+      title={title ?? t("billing.credits.generateVideoTitle")}
+      size="sm"
+    >
       <div className="space-y-4">
         {/* Message */}
-        <p className="text-sm text-text-secondary">{message}</p>
+        <p className="text-sm text-text-secondary">
+          {message ?? t("billing.credits.generateVideoMessage")}
+        </p>
 
         {/* Credit Cost Display */}
         <div className="rounded-lg bg-surface-raised border border-border-default p-4 space-y-3">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-text-muted">Credit Cost:</span>
+            <span className="text-text-muted">{t("billing.credits.creditCost")}</span>
             <div className="flex items-center gap-1.5 font-medium text-text-primary">
               <Coins className="h-4 w-4 text-warning-text" />
-              <span>
-                {creditCost} credit{creditCost !== 1 ? "s" : ""}
-              </span>
+              <span>{creditLabel(creditCost)}</span>
             </div>
           </div>
 
           <div className="flex items-center justify-between text-sm">
-            <span className="text-text-muted">Current Balance:</span>
+            <span className="text-text-muted">{t("billing.credits.currentBalance")}</span>
             <div className="flex items-center gap-1.5 font-medium text-text-primary">
               <Coins className="h-4 w-4 text-accent-cyan" />
-              <span>
-                {creditsRemaining} credit{creditsRemaining !== 1 ? "s" : ""}
-              </span>
+              <span>{creditLabel(creditsRemaining)}</span>
             </div>
           </div>
 
           <div className="pt-3 border-t border-border-subtle">
             <div className="flex items-center justify-between text-sm">
-              <span className="font-medium text-text-secondary">After Generation:</span>
+              <span className="font-medium text-text-secondary">
+                {t("billing.credits.afterGeneration")}
+              </span>
               <div className="flex items-center gap-1.5 font-semibold">
                 {hasInsufficientCredits ? (
-                  <span className="text-error-text">Insufficient Credits</span>
+                  <span className="text-error-text">
+                    {t("billing.credits.insufficientCredits")}
+                  </span>
                 ) : (
                   <>
                     <Coins className="h-4 w-4 text-success-text" />
-                    <span className="text-text-primary">
-                      {afterGeneration} credit{afterGeneration !== 1 ? "s" : ""}
-                    </span>
+                    <span className="text-text-primary">{creditLabel(afterGeneration)}</span>
                   </>
                 )}
               </div>
@@ -80,10 +92,11 @@ export function CreditConfirmationModal({
           <div className="flex items-start gap-3 p-3 rounded-lg bg-warning-bg/10 border border-warning-border">
             <AlertTriangle className="h-5 w-5 text-warning-text flex-shrink-0 mt-0.5" />
             <div className="flex-1">
-              <p className="text-sm font-medium text-warning-text">Low Credit Balance</p>
+              <p className="text-sm font-medium text-warning-text">
+                {t("billing.credits.lowCreditBalance")}
+              </p>
               <p className="text-xs text-text-muted mt-1">
-                You'll have {afterGeneration} credit{afterGeneration !== 1 ? "s" : ""} remaining
-                after this generation. Consider upgrading your plan.
+                {t("billing.credits.lowCreditMessage", { count: afterGeneration })}
               </p>
             </div>
           </div>
@@ -94,10 +107,14 @@ export function CreditConfirmationModal({
           <div className="flex items-start gap-3 p-3 rounded-lg bg-error-bg/10 border border-error-border">
             <AlertTriangle className="h-5 w-5 text-error-text flex-shrink-0 mt-0.5" />
             <div className="flex-1">
-              <p className="text-sm font-medium text-error-text">Insufficient Credits</p>
+              <p className="text-sm font-medium text-error-text">
+                {t("billing.credits.insufficientCredits")}
+              </p>
               <p className="text-xs text-text-muted mt-1">
-                You need {creditCost} credit{creditCost !== 1 ? "s" : ""} but only have{" "}
-                {creditsRemaining}. Upgrade your plan to continue.
+                {t("billing.credits.needCreditsMessage", {
+                  needed: creditCost,
+                  have: creditsRemaining,
+                })}
               </p>
             </div>
           </div>
@@ -106,7 +123,7 @@ export function CreditConfirmationModal({
         {/* Actions */}
         <div className="flex gap-3 pt-2">
           <Button variant="secondary" onClick={onClose} disabled={isProcessing} className="flex-1">
-            Cancel
+            {t("billing.credits.cancel")}
           </Button>
 
           {hasInsufficientCredits ? (
@@ -117,7 +134,7 @@ export function CreditConfirmationModal({
               }}
               className="flex-1"
             >
-              View Plans
+              {t("billing.credits.viewPlans")}
             </Button>
           ) : (
             <Button
@@ -126,7 +143,7 @@ export function CreditConfirmationModal({
               disabled={isProcessing}
               className="flex-1"
             >
-              {isProcessing ? "Generating..." : "Confirm"}
+              {isProcessing ? t("billing.credits.generating") : t("billing.credits.confirm")}
             </Button>
           )}
         </div>
