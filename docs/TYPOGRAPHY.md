@@ -2,7 +2,7 @@
 
 **Version**: 1.1  
 **Last Updated**: August 21, 2026  
-**Status**: Phase 3 complete — Phase 4 pending  
+**Status**: Adopted (Phase 4 complete)  
 **Related**: [DESIGN_SYSTEM.md](./guides/DESIGN_SYSTEM.md), [BREAKPOINT_REFERENCE.md](./guides/BREAKPOINT_REFERENCE.md)  
 **Source of truth (after implementation)**: `src/app/globals.css` (`@theme` tokens) + `src/components/ui/heading.tsx`
 

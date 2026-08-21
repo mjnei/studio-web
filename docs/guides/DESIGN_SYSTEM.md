@@ -1,7 +1,7 @@
 # Frontend UI Design System
 
-**Version**: 2.1 (Responsive Design Verification & Documentation Complete)  
-**Last Updated**: August 4, 2026  
+**Version**: 2.2  
+**Last Updated**: August 21, 2026  
 **Repository**: `/Users/aa/git/github_uncgra/huavoi/studio-web/`
 
 ---
@@ -741,15 +741,16 @@ Test these **critical viewports**:
 - `gap-3` - Gap between items (12px)
 - `gap-6` - Gap between items (24px)
 
-**Text**:
-- `text-sm` - 14px
-- `text-base` - 16px
-- `text-lg` - 18px
-- `font-semibold` - 600 weight
-- `text-text-primary` - Main text color
-- `text-text-secondary` - Secondary text
-- `truncate` - Single line truncate
-- `line-clamp-2` - Max 2 lines
+**Text** (prefer roles — see [TYPOGRAPHY.md](../TYPOGRAPHY.md)):
+- Page title → `<PageHeader>` / `<Heading variant="page">`
+- Card / section → `<CardTitle>` / `<Heading variant="section">`
+- Dense group label → `<Heading variant="label" as="h2">`
+- Hero / brand → `<Heading variant="display">` (allowlisted surfaces only)
+- Stat number → `<Heading variant="metric">`
+- Helper / meta → `<Text variant="caption">` or `text-xs text-text-muted`
+- Colors: `text-text-primary`, `text-text-secondary`, `text-text-muted`
+- Avoid new `text-2xl` / `text-3xl` / `text-4xl` on headings — tune `--text-*` tokens instead
+- Body chrome sizes still OK: `text-sm`, `text-base`, `truncate`, `line-clamp-2`
 
 **Layout**:
 - `flex` - Flex container
@@ -772,8 +773,8 @@ Test these **critical viewports**:
 <Card variant="elevated" interactive>
   <div className="flex items-start justify-between">
     <div className="flex-1">
-      <p className="text-sm text-text-secondary">Metric Title</p>
-      <p className="text-4xl font-bold text-text-primary">123</p>
+      <Text variant="caption" className="text-text-secondary">Metric Title</Text>
+      <Heading variant="metric" className="text-text-primary">123</Heading>
     </div>
     <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 text-white">
       <IconComponent className="h-6 w-6" />
@@ -784,14 +785,11 @@ Test these **critical viewports**:
 
 **Empty State:**
 ```tsx
-<Card variant="elevated" padding="lg">
-  <div className="flex flex-col items-center justify-center py-12 text-center">
-    <div className="mb-4 h-16 w-16 rounded-full bg-gradient-to-br from-accent-secondary to-accent-tertiary" />
-    <h2 className="mb-2 text-2xl font-bold text-text-primary">No Items Found</h2>
-    <p className="mb-6 text-text-secondary">Get started by creating your first item</p>
-    <Button variant="primary">Create Item</Button>
-  </div>
-</Card>
+<EmptyState
+  title="No Items Found"
+  description="Get started by creating your first item"
+  action={<Button variant="primary">Create Item</Button>}
+/>
 ```
 
 **Loading Skeleton List:**

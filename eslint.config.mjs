@@ -13,6 +13,22 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
   ]),
+  {
+    files: ["src/**/*.{ts,tsx}"],
+    rules: {
+      // Typography roles: prefer Heading / PageHeader over ad-hoc large sizes on headings.
+      // See docs/TYPOGRAPHY.md — Phase 4 enforcement.
+      "no-restricted-syntax": [
+        "warn",
+        {
+          selector:
+            "JSXOpeningElement[name.name=/^h[1-6]$/] > JSXAttribute[name.name='className'][value.value=/(?:^|\\s)text-(xl|2xl|3xl|4xl|5xl)(?:\\s|$)/]",
+          message:
+            "Use <Heading> / <PageHeader> / typography roles instead of text-xl+ on heading tags. See docs/TYPOGRAPHY.md.",
+        },
+      ],
+    },
+  },
 ]);
 
 export default eslintConfig;
