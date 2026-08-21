@@ -6,6 +6,8 @@ import { getQueueHealth, getHealthColor } from "@/lib/types/queue";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip } from "@/components/ui/tooltip";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 
 interface QueueStatsCardProps {
   stats: QueueStats;
@@ -31,7 +33,7 @@ export function QueueStatsCard({
         <div className="flex items-start justify-between">
           <div className="flex-1">
             <div className="flex items-center gap-2">
-              <CardTitle className="text-lg">{queue_name}</CardTitle>
+              <CardTitle>{queue_name}</CardTitle>
               {metadata?.description && (
                 <Tooltip content={metadata.description} position="top">
                   <div className="text-muted-foreground hover:text-foreground cursor-help">
@@ -58,8 +60,10 @@ export function QueueStatsCard({
               <Clock className="w-4 h-4 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
-              <p className="text-2xl font-bold">{message_count.toLocaleString()}</p>
-              <p className="text-xs text-muted-foreground">Messages</p>
+              <Heading variant="metric">{message_count.toLocaleString()}</Heading>
+              <Text variant="caption" className="text-muted-foreground">
+                Messages
+              </Text>
             </div>
           </div>
 
@@ -69,8 +73,10 @@ export function QueueStatsCard({
               <Users className="w-4 h-4 text-purple-600 dark:text-purple-400" />
             </div>
             <div>
-              <p className="text-2xl font-bold">{consumer_count}</p>
-              <p className="text-xs text-muted-foreground">Consumers</p>
+              <Heading variant="metric">{consumer_count}</Heading>
+              <Text variant="caption" className="text-muted-foreground">
+                Consumers
+              </Text>
             </div>
           </div>
         </div>

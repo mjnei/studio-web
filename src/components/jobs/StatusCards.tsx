@@ -5,6 +5,8 @@ import { Play, CheckCircle2, AlertTriangle, Video, RotateCcw } from "lucide-reac
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 import { useI18n } from "@/i18n";
 import { JobsSummary, JobStatusFilter } from "@/types/jobs";
 
@@ -50,12 +52,14 @@ export const StatusCards: React.FC<StatusCardsProps> = ({
                 </Badge>
               )}
             </div>
-            <p className="text-2xl font-bold text-text-primary">{summary.activeCount}</p>
-            <p className="text-xs text-text-muted">
+            <Heading variant="metric" className="text-text-primary">
+              {summary.activeCount}
+            </Heading>
+            <Text variant="caption" className="text-text-muted">
               {summary.activeCount > 0
                 ? t("jobs.status.activeDescription")
                 : t("jobs.status.noActive")}
-            </p>
+            </Text>
           </div>
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 text-white shadow-md">
             <Play className="h-5.5 w-5.5 fill-current" />
@@ -79,10 +83,12 @@ export const StatusCards: React.FC<StatusCardsProps> = ({
             <span className="text-sm font-medium text-text-secondary">
               {t("jobs.status.completed")}
             </span>
-            <p className="text-2xl font-bold text-text-primary">{summary.completedCount}</p>
-            <p className="text-xs text-status-success font-medium">
+            <Heading variant="metric" className="text-text-primary">
+              {summary.completedCount}
+            </Heading>
+            <Text variant="caption" className="text-status-success font-medium">
               {summary.successRate}% {t("jobs.status.successRate")}
-            </p>
+            </Text>
           </div>
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-md">
             <CheckCircle2 className="h-5.5 w-5.5" />
@@ -104,7 +110,9 @@ export const StatusCards: React.FC<StatusCardsProps> = ({
             <span className="text-sm font-medium text-text-secondary">
               {t("jobs.status.failed")}
             </span>
-            <p className="text-2xl font-bold text-text-primary">{summary.failedCount}</p>
+            <Heading variant="metric" className="text-text-primary">
+              {summary.failedCount}
+            </Heading>
             {summary.failedCount > 0 && onRetryAllFailed ? (
               <Button
                 variant="ghost"
@@ -119,7 +127,9 @@ export const StatusCards: React.FC<StatusCardsProps> = ({
                 {t("jobs.status.retryAll")}
               </Button>
             ) : (
-              <p className="text-xs text-text-muted">{t("jobs.status.noFailed")}</p>
+              <Text variant="caption" className="text-text-muted">
+                {t("jobs.status.noFailed")}
+              </Text>
             )}
           </div>
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-red-500 text-white shadow-md">
@@ -142,11 +152,13 @@ export const StatusCards: React.FC<StatusCardsProps> = ({
             <span className="text-sm font-medium text-text-secondary">
               {t("jobs.status.total")}
             </span>
-            <p className="text-2xl font-bold text-text-primary">{summary.totalCount}</p>
-            <p className="text-xs text-text-muted">
+            <Heading variant="metric" className="text-text-primary">
+              {summary.totalCount}
+            </Heading>
+            <Text variant="caption" className="text-text-muted">
               {summary.creditsUsed}{" "}
               {summary.creditsUsed !== 1 ? t("jobs.credits") : t("jobs.credit")} used
-            </p>
+            </Text>
           </div>
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 text-white shadow-md">
             <Video className="h-5.5 w-5.5" />

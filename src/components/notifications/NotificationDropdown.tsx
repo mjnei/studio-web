@@ -5,6 +5,7 @@ import { NotificationItem } from "./NotificationItem";
 import { Settings, CheckCheck, Bell } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { Heading } from "@/components/ui/heading";
 
 interface NotificationDropdownProps {
   onClose: () => void;
@@ -31,9 +32,9 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
         <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
           <Bell size={16} className="text-text-secondary sm:hidden shrink-0" />
           <Bell size={18} className="text-text-secondary hidden sm:block shrink-0" />
-          <h3 className="text-xs sm:text-sm font-semibold text-text-primary truncate">
+          <Heading variant="label" as="h3" className="text-text-primary truncate">
             Notifications
-          </h3>
+          </Heading>
           {unreadCount > 0 && (
             <span className="text-[10px] sm:text-xs text-text-muted shrink-0">
               ({unreadCount} new)

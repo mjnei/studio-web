@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/toast";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 
 interface ScriptGenerationProps {
   movieId: string;
@@ -60,12 +62,12 @@ export function ScriptGeneration({
             <FileText className="w-8 h-8 text-white" />
           </div>
         </div>
-        <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-text-primary mb-2">
+        <Heading variant="page" as="h2" className="text-text-primary mb-2">
           Generate Script
-        </h2>
-        <p className="text-text-secondary">
+        </Heading>
+        <Text variant="bodyLg" className="text-text-secondary">
           Let AI create a script for {movieTitle}, then review and modify as needed
-        </p>
+        </Text>
       </div>
 
       {!script ? (
@@ -77,11 +79,13 @@ export function ScriptGeneration({
                 <Sparkles className="w-10 h-10 text-white" />
               </div>
             </div>
-            <h3 className="text-xl font-bold text-text-primary mb-2">Ready to Generate Script</h3>
-            <p className="text-text-secondary mb-8 max-w-md mx-auto">
+            <Heading variant="section" as="h3" className="text-text-primary mb-2">
+              Ready to Generate Script
+            </Heading>
+            <Text variant="bodyLg" className="text-text-secondary mb-8 max-w-md mx-auto">
               Our AI will analyze {movieTitle} and create a professional voice-over script tailored
               for your project.
-            </p>
+            </Text>
             <Button
               variant="primary"
               size="lg"
@@ -100,22 +104,32 @@ export function ScriptGeneration({
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <Card variant="elevated" padding="md">
               <div className="text-center">
-                <p className="text-2xl font-bold text-accent-primary">{wordCount}</p>
-                <p className="text-xs text-text-muted">Words</p>
+                <Heading variant="metric" className="text-accent-primary">
+                  {wordCount}
+                </Heading>
+                <Text variant="caption" className="text-text-muted">
+                  Words
+                </Text>
               </div>
             </Card>
             <Card variant="elevated" padding="md">
               <div className="text-center">
-                <p className="text-2xl font-bold text-accent-secondary">~{estimatedDuration}min</p>
-                <p className="text-xs text-text-muted">Est. Duration</p>
+                <Heading variant="metric" className="text-accent-secondary">
+                  ~{estimatedDuration}min
+                </Heading>
+                <Text variant="caption" className="text-text-muted">
+                  Est. Duration
+                </Text>
               </div>
             </Card>
             <Card variant="elevated" padding="md">
               <div className="text-center">
-                <p className="text-2xl font-bold text-accent-tertiary">
+                <Heading variant="metric" className="text-accent-tertiary">
                   {script.split("\n\n").length}
-                </p>
-                <p className="text-xs text-text-muted">Paragraphs</p>
+                </Heading>
+                <Text variant="caption" className="text-text-muted">
+                  Paragraphs
+                </Text>
               </div>
             </Card>
             <Card variant="elevated" padding="md">
@@ -123,7 +137,9 @@ export function ScriptGeneration({
                 <Badge variant="success" size="md">
                   Ready
                 </Badge>
-                <p className="text-xs text-text-muted mt-1">Status</p>
+                <Text variant="caption" className="text-text-muted mt-1">
+                  Status
+                </Text>
               </div>
             </Card>
           </div>
@@ -131,7 +147,7 @@ export function ScriptGeneration({
           {/* Script Editor */}
           <Card variant="elevated" padding="none">
             <CardHeader className="flex flex-row items-center justify-between border-b border-border-default p-4">
-              <CardTitle className="text-lg">Script Content</CardTitle>
+              <CardTitle>Script Content</CardTitle>
               <div className="flex items-center gap-2">
                 <Button
                   variant="ghost"

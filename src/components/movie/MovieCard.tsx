@@ -4,6 +4,8 @@ import { MoviePoster } from "./MoviePoster";
 import { RatingBadge } from "./RatingBadge";
 import { MovieMetadata } from "./MovieMetadata";
 import { cn } from "@/lib/utils/cn";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 
 export interface MovieCardData {
   id: number;
@@ -63,9 +65,13 @@ export const MovieCard: React.FC<MovieCardProps> = ({
         {/* Movie Info */}
         <div className="flex min-w-0 flex-1 flex-col justify-between py-1">
           <div>
-            <h3 className="mb-1.5 text-base font-bold text-text-primary transition-colors group-hover:text-accent-cyan">
+            <Heading
+              variant="subsection"
+              as="h3"
+              className="mb-1.5 text-text-primary transition-colors group-hover:text-accent-cyan"
+            >
               {movie.title}
-            </h3>
+            </Heading>
 
             <MovieMetadata releaseDate={movie.release_date} runtime={movie.runtime} />
 
@@ -90,9 +96,12 @@ export const MovieCard: React.FC<MovieCardProps> = ({
 
             {/* Overview */}
             {movie.overview && (
-              <p className="mb-2 line-clamp-2 text-sm leading-relaxed text-text-secondary">
+              <Text
+                variant="body"
+                className="mb-2 line-clamp-2 leading-relaxed text-text-secondary"
+              >
                 {movie.overview}
-              </p>
+              </Text>
             )}
           </div>
 
@@ -187,9 +196,13 @@ export const MovieCard: React.FC<MovieCardProps> = ({
 
       {/* Card Footer */}
       <div className="p-3">
-        <h3 className="mb-1 line-clamp-1 text-sm font-bold text-text-primary transition-colors group-hover:text-accent-cyan">
+        <Heading
+          variant="label"
+          as="h3"
+          className="mb-1 line-clamp-1 text-text-primary transition-colors group-hover:text-accent-cyan"
+        >
           {movie.title}
-        </h3>
+        </Heading>
         <MovieMetadata releaseDate={movie.release_date} runtime={movie.runtime} size="sm" />
       </div>
     </Link>

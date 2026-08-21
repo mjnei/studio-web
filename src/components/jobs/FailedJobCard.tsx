@@ -6,6 +6,8 @@ import { AlertTriangle, RotateCcw, Trash2, Eye, CheckSquare, Square } from "luci
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 import { VideoJob } from "@/types/jobs";
 
 interface FailedJobCardProps {
@@ -57,13 +59,15 @@ export const FailedJobCard: React.FC<FailedJobCardProps> = ({
           <div className="flex items-start justify-between gap-2">
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-base font-bold text-text-primary truncate">
+                <Heading variant="subsection" as="h3" className="text-text-primary truncate">
                   {job.projectName}
-                </h3>
+                </Heading>
                 <Badge variant="error">Failed</Badge>
               </div>
               {job.movieTitle && (
-                <p className="text-xs text-text-muted truncate">{job.movieTitle}</p>
+                <Text variant="caption" className="text-text-muted truncate">
+                  {job.movieTitle}
+                </Text>
               )}
             </div>
 

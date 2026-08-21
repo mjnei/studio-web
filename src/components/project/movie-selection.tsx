@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ExternalImage } from "@/components/ui/ExternalImage";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 import {
   getPopularMovies,
   searchMovies,
@@ -91,12 +93,12 @@ export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps)
             <Film className="w-8 h-8 text-white" />
           </div>
         </div>
-        <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-text-primary mb-2">
+        <Heading variant="page" as="h2" className="text-text-primary mb-2">
           Select a Movie
-        </h2>
-        <p className="text-text-secondary">
+        </Heading>
+        <Text variant="bodyLg" className="text-text-secondary">
           Choose a movie to create a voice-over project. You can search by title or genre.
-        </p>
+        </Text>
       </div>
 
       {/* Search */}
@@ -172,9 +174,13 @@ export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps)
 
               {/* Info */}
               <CardContent className="p-3 space-y-2">
-                <h3 className="font-semibold text-text-primary text-sm line-clamp-2 group-hover:text-accent-primary transition-colors">
+                <Heading
+                  variant="label"
+                  as="h3"
+                  className="text-text-primary line-clamp-2 group-hover:text-accent-primary transition-colors"
+                >
                   {movie.title}
-                </h3>
+                </Heading>
                 <div className="flex items-center gap-2 text-xs text-text-muted">
                   <span>{movie.year}</span>
                   <span>•</span>

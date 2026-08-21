@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { Trash2, Play, Pause, Share2, Lock, CheckCircle, Clock } from "lucide-react";
 import { VoiceResponse } from "@/lib/types/api";
 import { Button } from "@/components/ui/button";
+import { Heading } from "@/components/ui/heading";
 import { ConfirmModal, AlertModal } from "@/components/ui/modal";
 
 interface VoiceRecordingCardProps {
@@ -211,7 +212,9 @@ export function VoiceRecordingCard({
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <h3 className="font-semibold text-text-primary truncate">{recording.name}</h3>
+            <Heading variant="subsection" as="h3" className="text-text-primary truncate">
+              {recording.name}
+            </Heading>
             {/* Community Voice Status Badge */}
             {(() => {
               const badgeInfo = getBadgeInfo();

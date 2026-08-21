@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/toast";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 
 interface VideoGenerationProps {
   movieTitle: string;
@@ -58,12 +60,12 @@ export function VideoGeneration({
             <Video className="w-8 h-8 text-white" />
           </div>
         </div>
-        <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-text-primary mb-2">
+        <Heading variant="page" as="h2" className="text-text-primary mb-2">
           Generate Video
-        </h2>
-        <p className="text-text-secondary">
+        </Heading>
+        <Text variant="bodyLg" className="text-text-secondary">
           Create your final video with synchronized audio and visuals
-        </p>
+        </Text>
       </div>
 
       {/* Project Summary */}
@@ -95,22 +97,36 @@ export function VideoGeneration({
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div className="text-center p-3 bg-surface-raised rounded-lg">
-              <p className="text-lg font-bold text-accent-primary">{wordCount}</p>
-              <p className="text-xs text-text-muted">Words</p>
+              <Heading variant="subsection" className="text-accent-primary">
+                {wordCount}
+              </Heading>
+              <Text variant="caption" className="text-text-muted">
+                Words
+              </Text>
             </div>
             <div className="text-center p-3 bg-surface-raised rounded-lg">
-              <p className="text-lg font-bold text-accent-secondary">
+              <Heading variant="subsection" className="text-accent-secondary">
                 {script.split("\n\n").length}
-              </p>
-              <p className="text-xs text-text-muted">Paragraphs</p>
+              </Heading>
+              <Text variant="caption" className="text-text-muted">
+                Paragraphs
+              </Text>
             </div>
             <div className="text-center p-3 bg-surface-raised rounded-lg">
-              <p className="text-lg font-bold text-accent-tertiary">1080p</p>
-              <p className="text-xs text-text-muted">Quality</p>
+              <Heading variant="subsection" className="text-accent-tertiary">
+                1080p
+              </Heading>
+              <Text variant="caption" className="text-text-muted">
+                Quality
+              </Text>
             </div>
             <div className="text-center p-3 bg-surface-raised rounded-lg">
-              <p className="text-lg font-bold text-green-500">Ready</p>
-              <p className="text-xs text-text-muted">Status</p>
+              <Heading variant="subsection" className="text-green-500">
+                Ready
+              </Heading>
+              <Text variant="caption" className="text-text-muted">
+                Status
+              </Text>
             </div>
           </div>
         </CardContent>
@@ -125,7 +141,9 @@ export function VideoGeneration({
                 <Video className="w-10 h-10 text-white" />
               </div>
             </div>
-            <h3 className="text-xl font-bold text-text-primary mb-2">Ready to Generate Video</h3>
+            <Heading variant="section" as="h3" className="text-text-primary mb-2">
+              Ready to Generate Video
+            </Heading>
             <p className="text-text-secondary mb-2">
               All components are ready. Click below to start video generation.
             </p>
@@ -222,9 +240,9 @@ export function VideoGeneration({
                   <CheckCircle2 className="w-10 h-10 text-status-completed" />
                 </div>
               </div>
-              <h3 className="text-2xl font-bold text-text-primary mb-2">
+              <Heading variant="page" as="h3" className="text-text-primary mb-2">
                 Video Generated Successfully!
-              </h3>
+              </Heading>
               <p className="text-text-secondary mb-8">
                 Your video is ready to preview and download
               </p>

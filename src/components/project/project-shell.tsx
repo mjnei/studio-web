@@ -10,6 +10,7 @@ import { useProjectState } from "@/lib/hooks/use-project-state";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { CreditStatus } from "@/components/credits/CreditStatus";
 import { useToast } from "@/components/ui/toast";
+import { Heading } from "@/components/ui/heading";
 
 type Status = "Voice Ready" | "Composing" | "Rendering" | "Completed";
 
@@ -118,7 +119,9 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
             <Link href="/projects" className="text-text-muted hover:text-text-secondary">
               <ArrowLeft size={20} />
             </Link>
-            <h1 className="text-base font-semibold">{projectTitle}</h1>
+            <Heading variant="label" as="h1" className="text-text-primary">
+              {projectTitle}
+            </Heading>
             <span
               className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium text-white ${statusColors[projectStatus]}`}
             >

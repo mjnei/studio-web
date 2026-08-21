@@ -2,8 +2,8 @@
 
 **Version**: 1.1  
 **Last Updated**: August 21, 2026  
-**Status**: Phase 1 complete — Phase 2 pending  
-**Related**: [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md), [BREAKPOINT_REFERENCE.md](./BREAKPOINT_REFERENCE.md)  
+**Status**: Phase 2 complete — Phase 3 pending  
+**Related**: [DESIGN_SYSTEM.md](./guides/DESIGN_SYSTEM.md), [BREAKPOINT_REFERENCE.md](./guides/BREAKPOINT_REFERENCE.md)  
 **Source of truth (after implementation)**: `src/app/globals.css` (`@theme` tokens) + `src/components/ui/heading.tsx`
 
 ---
@@ -353,7 +353,7 @@ Work in **phases**. Prefer small PRs. Do not mix unrelated UI redesign into typo
 
 ### Phase 0 — Align & document (this doc)
 
-- [x] Document principles, roles, tokens, and anti-patterns (`docs/guides/TYPOGRAPHY.md`)
+- [x] Document principles, roles, tokens, and anti-patterns (`docs/TYPOGRAPHY.md`)
 - [ ] Product/design sign-off on the role table and token sizes (especially `page` vs `display`, `metric`)
 - [x] Add link from `DESIGN_SYSTEM.md` → this guide
 - [x] Optional: add a one-line pointer in `AGENTS.md` under design/i18n-style notes
@@ -379,12 +379,13 @@ Work in **phases**. Prefer small PRs. Do not mix unrelated UI redesign into typo
 - [x] Wire `--leading-*` tokens into all roles in `typography.ts`
 - [x] Add `tabular-nums` to `metric` role
 - [x] Change `label` `defaultTag` from `h3` → `p` (prevent implicit a11y violations)
-- [ ] Baseline grep — run before Phase 2 starts to measure scope:
+- [x] Baseline grep — run before Phase 2 starts to measure scope:
   ```powershell
   # Headings still using hardcoded large sizes (target: 0 inside components/ui/)
-  Select-String -rn '<h[1-4][^>]*text-(xl|2xl|3xl|4xl)' src/
+  Select-String -Path src\**\*.tsx -Pattern '<h[1-4][^>]*text-(xl|2xl|3xl|4xl)'
   # Large size utilities outside the typography module
-  Select-String -rn 'text-(3xl|4xl|5xl)' src/ | Where-Object { $_ -notmatch 'typography\.ts|heading\.tsx' }
+  Select-String -Path src\**\*.tsx -Pattern 'text-(3xl|4xl|5xl)' |
+    Where-Object { $_.Path -notmatch 'typography\.ts|heading\.tsx' }
   ```
 - [ ] Visual smoke: Dashboard, Projects, Jobs, one Auth page, one Modal
 
@@ -396,12 +397,12 @@ Work in **phases**. Prefer small PRs. Do not mix unrelated UI redesign into typo
 
 Update components that appear on many routes (one PR or one PR per cluster):
 
-- [ ] `EmptyState` / `empty-state.tsx`
-- [ ] Jobs: `StatusCards`, `ActiveJobCard`, `FailedJobCard`, `AnalyticsPanel`
-- [ ] Project shell: `project-shell`, `new-project-shell`, step headers
-- [ ] Notifications dropdown / preferences modal titles
-- [ ] Voice / movie cards titles (card title → `section` or `label` as appropriate)
-- [ ] Queue admin headers (`QueueMessagePeeker`, `DLQInspector`, etc.)
+- [x] `EmptyState` / `EmptyState.tsx`
+- [x] Jobs: `StatusCards`, `ActiveJobCard`, `FailedJobCard`, `AnalyticsPanel`
+- [x] Project shell: `project-shell`, `new-project-shell`, step headers (`movie-selection`, `script-generation`, `voice-generation`, `video-generation`, `tts-queue-status`)
+- [x] Notifications dropdown / preferences modal titles
+- [x] Voice / movie cards titles (card title → `section` or `label` as appropriate)
+- [x] Queue admin headers (`QueueMessagePeeker`, `DLQInspector`, `QueueStatsCard`)
 
 **Exit criteria**: Grep shows few remaining hardcoded `text-2xl|text-3xl|text-4xl` inside `src/components/`.
 

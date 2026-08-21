@@ -16,6 +16,8 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 import { VoiceResponse, VoiceWithCreator } from "@/lib/types/api";
 
 /**
@@ -90,12 +92,12 @@ export function VoiceGeneration({
             <Mic className="w-8 h-8 text-white" />
           </div>
         </div>
-        <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-text-primary mb-2">
+        <Heading variant="page" as="h2" className="text-text-primary mb-2">
           Generate Voice
-        </h2>
-        <p className="text-text-secondary">
+        </Heading>
+        <Text variant="bodyLg" className="text-text-secondary">
           Select a voice and generate TTS audio from your script
-        </p>
+        </Text>
       </div>
 
       {/* Voice Selection */}
@@ -299,7 +301,9 @@ export function VoiceGeneration({
                 <Volume2 className="w-8 h-8 text-white" />
               </div>
             </div>
-            <h3 className="text-xl font-bold text-text-primary mb-2">Generate Audio</h3>
+            <Heading variant="section" as="h3" className="text-text-primary mb-2">
+              Generate Audio
+            </Heading>
             <p className="text-text-secondary mb-2">
               {selectedVoiceId && selectedVoice
                 ? `Ready to generate with ${selectedVoice.name}`

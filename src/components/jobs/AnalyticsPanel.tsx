@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import { BarChart3, ChevronDown, ChevronUp, Zap, Mic, Clock, ShieldCheck } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 import { useI18n } from "@/i18n";
 import { JobsSummary } from "@/types/jobs";
 
@@ -25,11 +27,13 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({ summary }) => {
             <BarChart3 className="h-4 w-4" />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-text-primary">{t("jobs.analytics.title")}</h3>
-            <p className="text-xs text-text-muted">
+            <Heading variant="label" as="h3" className="text-text-primary">
+              {t("jobs.analytics.title")}
+            </Heading>
+            <Text variant="caption" className="text-text-muted">
               {t("jobs.analytics.monthlyOverview")} • {summary.totalCount}{" "}
               {t("jobs.analytics.totalJobsProcessed")}
-            </p>
+            </Text>
           </div>
         </div>
         <div className="flex items-center gap-2 text-text-muted">
@@ -47,13 +51,15 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({ summary }) => {
               <ShieldCheck className="h-4 w-4" />
             </div>
             <div>
-              <p className="text-xs text-text-muted font-medium">
+              <Text variant="caption" className="text-text-muted font-medium">
                 {t("jobs.analytics.successRate")}
-              </p>
-              <p className="text-lg font-bold text-text-primary">{summary.successRate}%</p>
-              <p className="text-[11px] text-text-muted">
+              </Text>
+              <Heading variant="subsection" className="text-text-primary">
+                {summary.successRate}%
+              </Heading>
+              <Text variant="caption" className="text-[11px] text-text-muted">
                 {summary.completedCount} of {summary.completedCount + summary.failedCount} finished
-              </p>
+              </Text>
             </div>
           </div>
 
@@ -62,11 +68,15 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({ summary }) => {
               <Zap className="h-4 w-4" />
             </div>
             <div>
-              <p className="text-xs text-text-muted font-medium">
+              <Text variant="caption" className="text-text-muted font-medium">
                 {t("jobs.analytics.creditsConsumed")}
-              </p>
-              <p className="text-lg font-bold text-text-primary">{summary.creditsUsed}</p>
-              <p className="text-[11px] text-text-muted">{t("jobs.analytics.acrossAllAttempts")}</p>
+              </Text>
+              <Heading variant="subsection" className="text-text-primary">
+                {summary.creditsUsed}
+              </Heading>
+              <Text variant="caption" className="text-[11px] text-text-muted">
+                {t("jobs.analytics.acrossAllAttempts")}
+              </Text>
             </div>
           </div>
 
@@ -75,11 +85,15 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({ summary }) => {
               <Mic className="h-4 w-4" />
             </div>
             <div>
-              <p className="text-xs text-text-muted font-medium">{t("jobs.analytics.topVoice")}</p>
-              <p className="text-lg font-bold text-text-primary truncate max-w-[140px]">
+              <Text variant="caption" className="text-text-muted font-medium">
+                {t("jobs.analytics.topVoice")}
+              </Text>
+              <Heading variant="subsection" className="text-text-primary truncate max-w-[140px]">
                 {summary.topVoice}
-              </p>
-              <p className="text-[11px] text-text-muted">{t("jobs.analytics.mostFrequently")}</p>
+              </Heading>
+              <Text variant="caption" className="text-[11px] text-text-muted">
+                {t("jobs.analytics.mostFrequently")}
+              </Text>
             </div>
           </div>
 
@@ -88,13 +102,15 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({ summary }) => {
               <Clock className="h-4 w-4" />
             </div>
             <div>
-              <p className="text-xs text-text-muted font-medium">
+              <Text variant="caption" className="text-text-muted font-medium">
                 {t("jobs.analytics.avgProcessingTime")}
-              </p>
-              <p className="text-lg font-bold text-text-primary">
+              </Text>
+              <Heading variant="subsection" className="text-text-primary">
                 ~{summary.avgProcessingTimeMinutes} mins
-              </p>
-              <p className="text-[11px] text-text-muted">{t("jobs.analytics.perVideoRendering")}</p>
+              </Heading>
+              <Text variant="caption" className="text-[11px] text-text-muted">
+                {t("jobs.analytics.perVideoRendering")}
+              </Text>
             </div>
           </div>
         </div>

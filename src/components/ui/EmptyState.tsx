@@ -1,5 +1,7 @@
 import React from "react";
 import { cn } from "@/lib/utils/cn";
+import { Heading, type HeadingVariant } from "./heading";
+import { Text, type TextVariant } from "./text";
 
 interface EmptyStateProps {
   icon?: React.ReactNode;
@@ -11,6 +13,41 @@ interface EmptyStateProps {
   size?: "sm" | "md" | "lg";
 }
 
+const sizeClasses: Record<
+  NonNullable<EmptyStateProps["size"]>,
+  {
+    container: string;
+    icon: string;
+    titleVariant: HeadingVariant;
+    descriptionVariant: TextVariant;
+  }
+> = {
+  sm: {
+    container: "py-8 px-4",
+    icon: "h-10 w-10 mb-3",
+    titleVariant: "label",
+    descriptionVariant: "caption",
+  },
+  md: {
+    container: "py-12 px-4",
+    icon: "h-12 w-12 mb-4",
+    titleVariant: "subsection",
+    descriptionVariant: "body",
+  },
+  lg: {
+    container: "py-16 px-4",
+    icon: "h-16 w-16 mb-4",
+    titleVariant: "section",
+    descriptionVariant: "body",
+  },
+};
+
+const variantClasses = {
+  default: "",
+  bordered: "rounded-2xl border border-dashed border-border-default bg-surface-panel/50",
+  elevated: "rounded-2xl border border-border-default bg-surface-panel shadow-sm",
+};
+
 export const EmptyState: React.FC<EmptyStateProps> = ({
   icon,
   title,
@@ -20,33 +57,6 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   variant = "default",
   size = "md",
 }) => {
-  const sizeClasses = {
-    sm: {
-      container: "py-8 px-4",
-      icon: "h-10 w-10 mb-3",
-      title: "text-sm",
-      description: "text-xs",
-    },
-    md: {
-      container: "py-12 px-4",
-      icon: "h-12 w-12 mb-4",
-      title: "text-base",
-      description: "text-sm",
-    },
-    lg: {
-      container: "py-16 px-4",
-      icon: "h-16 w-16 mb-4",
-      title: "text-lg",
-      description: "text-sm",
-    },
-  };
-
-  const variantClasses = {
-    default: "",
-    bordered: "rounded-2xl border border-dashed border-border-default bg-surface-panel/50",
-    elevated: "rounded-2xl border border-border-default bg-surface-panel shadow-sm",
-  };
-
   const sizeConfig = sizeClasses[size];
 
   return (
@@ -68,11 +78,20 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
           {icon}
         </div>
       )}
-      <h3 className={cn("font-semibold text-text-primary mb-2", sizeConfig.title)}>{title}</h3>
+      <Heading
+        variant={sizeConfig.titleVariant}
+        as="h3"
+        className="text-text-primary mb-2"
+      >
+        {title}
+      </Heading>
       {description && (
-        <p className={cn("text-text-secondary max-w-md mb-6", sizeConfig.description)}>
+        <Text
+          variant={sizeConfig.descriptionVariant}
+          className="text-text-secondary max-w-md mb-6"
+        >
           {description}
-        </p>
+        </Text>
       )}
       {action && <div>{action}</div>}
     </div>

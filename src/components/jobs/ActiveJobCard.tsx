@@ -8,6 +8,8 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tooltip } from "@/components/ui/tooltip";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 import { useI18n } from "@/i18n";
 import { VideoJob } from "@/types/jobs";
 
@@ -72,9 +74,9 @@ export const ActiveJobCard: React.FC<ActiveJobCardProps> = ({ job, onDelete, isD
           <div className="flex items-start justify-between gap-3">
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-base font-bold text-text-primary truncate">
+                <Heading variant="subsection" as="h3" className="text-text-primary truncate">
                   {job.projectName}
-                </h3>
+                </Heading>
                 <Badge variant="info" className="animate-pulse flex items-center gap-1">
                   <span className="h-1.5 w-1.5 rounded-full bg-blue-400 animate-ping" />
                   {job.status === "queued"
@@ -83,7 +85,9 @@ export const ActiveJobCard: React.FC<ActiveJobCardProps> = ({ job, onDelete, isD
                 </Badge>
               </div>
               {job.movieTitle && (
-                <p className="text-xs text-text-muted truncate">{job.movieTitle}</p>
+                <Text variant="caption" className="text-text-muted truncate">
+                  {job.movieTitle}
+                </Text>
               )}
             </div>
 

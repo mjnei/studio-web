@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Play, Pause, Trash2, Share2, Lock, Clock, CheckCircle, User } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Heading } from "@/components/ui/heading";
 import { useToast } from "@/components/ui/toast";
 import { useI18n } from "@/i18n";
 import type { VoiceWithCreator, VoiceResponse } from "@/lib/types/api";
@@ -191,9 +192,9 @@ export function VoiceCard({
       {/* Voice Header */}
       <div className="p-4 pb-3">
         <div className="flex items-start justify-between gap-3 mb-2">
-          <h3 className="font-semibold text-text-primary text-base truncate flex-1">
+          <Heading variant="subsection" as="h3" className="text-text-primary truncate flex-1">
             {voice.name}
-          </h3>
+          </Heading>
           {renderStatusBadge()}
         </div>
 

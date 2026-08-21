@@ -6,6 +6,7 @@ import { AlertTriangle, Info, RefreshCw, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { purgeQueue } from "@/lib/api/queue-admin";
 import { useToast } from "@/components/ui/toast";
+import { Heading } from "@/components/ui/heading";
 
 interface DLQInspectorProps {
   queueName: string;
@@ -99,7 +100,9 @@ export function DLQInspector({ queueName, dlqStats }: DLQInspectorProps) {
             </div>
 
             <div className="space-y-2">
-              <h4 className="text-sm font-medium">Recommended Actions</h4>
+              <Heading variant="label" as="h4" className="font-medium">
+                Recommended Actions
+              </Heading>
               <ol className="list-decimal list-inside space-y-1 text-sm text-muted-foreground">
                 <li>Investigate the root cause of failures in your logs</li>
                 <li>Fix the underlying issue in your worker service</li>
@@ -150,7 +153,9 @@ export function DLQInspector({ queueName, dlqStats }: DLQInspectorProps) {
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="p-4 bg-muted/50 rounded-lg space-y-2">
-            <h4 className="text-sm font-medium">Message Flow</h4>
+            <Heading variant="label" as="h4" className="font-medium">
+              Message Flow
+            </Heading>
             <ol className="list-decimal list-inside space-y-1 text-xs text-muted-foreground">
               <li>Message is published to the main queue ({queueName})</li>
               <li>Consumer attempts to process the message</li>
@@ -161,7 +166,9 @@ export function DLQInspector({ queueName, dlqStats }: DLQInspectorProps) {
           </div>
 
           <div className="p-4 bg-muted/50 rounded-lg space-y-2">
-            <h4 className="text-sm font-medium">Typical Retry Configuration</h4>
+            <Heading variant="label" as="h4" className="font-medium">
+              Typical Retry Configuration
+            </Heading>
             <ul className="space-y-1 text-xs text-muted-foreground">
               <li>
                 <strong>Max Retries:</strong> 3 attempts

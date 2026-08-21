@@ -4,6 +4,8 @@ import React from "react";
 import { Clock, Users } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 import { useI18n } from "@/i18n";
 import { formatWaitTime } from "@/lib/utils/time-format";
 import type { TTSJobResponse } from "@/lib/types/api";
@@ -41,10 +43,12 @@ export function TTSQueueStatus({ job }: TTSQueueStatusProps) {
             <Clock className="h-5 w-5 text-blue-500" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-text-primary">{t("tts.queue.title")}</h3>
-            <p className="text-sm text-text-muted">
+            <Heading variant="subsection" as="h3" className="text-text-primary">
+              {t("tts.queue.title")}
+            </Heading>
+            <Text variant="body" className="text-text-muted">
               {isNextInLine ? t("tts.queue.nextInLine") : t("tts.queue.inProgress")}
-            </p>
+            </Text>
           </div>
         </div>
 
@@ -57,9 +61,13 @@ export function TTSQueueStatus({ job }: TTSQueueStatusProps) {
               <span>{t("tts.queue.position")}</span>
             </div>
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-blue-500">{job.queue_position}</span>
+              <Heading variant="metric" className="text-blue-500">
+                {job.queue_position}
+              </Heading>
               {job.queue_depth && (
-                <span className="text-sm text-text-muted">/ {job.queue_depth}</span>
+                <Text variant="body" className="text-text-muted">
+                  / {job.queue_depth}
+                </Text>
               )}
             </div>
           </div>
@@ -68,7 +76,9 @@ export function TTSQueueStatus({ job }: TTSQueueStatusProps) {
           {job.jobs_ahead !== null && job.jobs_ahead !== undefined && (
             <div className="space-y-1">
               <div className="text-xs text-text-muted">{t("tts.queue.jobsAhead")}</div>
-              <div className="text-2xl font-bold text-text-primary">{job.jobs_ahead}</div>
+              <Heading variant="metric" className="text-text-primary">
+                {job.jobs_ahead}
+              </Heading>
             </div>
           )}
         </div>

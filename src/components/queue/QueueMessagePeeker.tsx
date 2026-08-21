@@ -8,6 +8,7 @@ import { AlertCircle, Eye, EyeOff, RefreshCw, Copy, Check } from "lucide-react";
 import { peekQueueMessage } from "@/lib/api/queue-admin";
 import type { QueueStats } from "@/lib/types/queue";
 import { useToast } from "@/components/ui/toast";
+import { Heading } from "@/components/ui/heading";
 
 interface QueueMessage {
   body: string | Record<string, unknown>;
@@ -134,7 +135,9 @@ export function QueueMessagePeeker({ queueName, stats }: QueueMessagePeekerProps
           <CardHeader>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <CardTitle className="text-base">Message Content</CardTitle>
+                <Heading variant="subsection" as="h3">
+                  Message Content
+                </Heading>
                 <Badge variant="outline">Raw Data</Badge>
               </div>
               <Button onClick={copyToClipboard} variant="outline" size="sm" className="gap-2">
@@ -161,7 +164,9 @@ export function QueueMessagePeeker({ queueName, stats }: QueueMessagePeekerProps
 
             {message.headers && Object.keys(message.headers).length > 0 && (
               <div className="pt-4 border-t">
-                <h4 className="text-sm font-medium mb-3">Headers</h4>
+                <Heading variant="label" as="h4" className="mb-3 font-medium">
+                  Headers
+                </Heading>
                 <div className="space-y-2 bg-muted/50 rounded-lg p-3">
                   {Object.entries(message.headers).map(([key, value]) => (
                     <div key={key} className="flex items-start gap-2 text-xs">

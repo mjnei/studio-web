@@ -8,6 +8,8 @@ import { DrawerContent } from "@/components/shell/drawer-content";
 import { useSidebar } from "@/components/shell/sidebar-context";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { CreditStatus } from "@/components/credits/CreditStatus";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 
 /**
  * Shell for new project creation flow (/project/new/*).
@@ -64,8 +66,12 @@ export function NewProjectShell({ children }: { children: React.ReactNode }) {
               <ArrowLeft size={20} />
             </Link>
             <div>
-              <h1 className="text-base font-semibold text-text-primary">Create New Project</h1>
-              <span className="text-xs text-text-muted">{stepLabel}</span>
+              <Heading variant="label" as="h1" className="text-text-primary">
+                Create New Project
+              </Heading>
+              <Text variant="caption" className="text-text-muted">
+                {stepLabel}
+              </Text>
             </div>
             <div className="ml-auto flex items-center gap-3 md:gap-4">
               <CreditStatus />

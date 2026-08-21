@@ -5,6 +5,8 @@ import { useNotifications } from "@/lib/notification-context";
 import { X, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { NOTIFICATION_TYPE_LABELS } from "@/lib/notification-constants";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 
 interface NotificationPreferencesModalProps {
   isOpen: boolean;
@@ -72,8 +74,12 @@ export function NotificationPreferencesModal({
           <div className="flex items-center gap-3">
             <Bell size={24} className="text-accent-primary" />
             <div>
-              <h2 className="text-lg font-semibold text-text-primary">Notification Preferences</h2>
-              <p className="text-sm text-text-muted mt-0.5">Manage how you receive notifications</p>
+              <Heading variant="section" as="h2" className="text-text-primary">
+                Notification Preferences
+              </Heading>
+              <Text variant="body" className="text-text-muted mt-0.5">
+                Manage how you receive notifications
+              </Text>
             </div>
           </div>
           <button
@@ -89,7 +95,9 @@ export function NotificationPreferencesModal({
         <div className="p-6 max-h-[70vh] overflow-y-auto">
           {/* Notification Type Preferences */}
           <div className="space-y-4">
-            <h3 className="text-sm font-semibold text-text-primary mb-3">Notification Types</h3>
+            <Heading variant="label" as="h3" className="text-text-primary mb-3">
+              Notification Types
+            </Heading>
             {preferencesLoading ? (
               <div className="flex items-center justify-center py-12">
                 <div className="w-8 h-8 border-2 border-accent-primary border-t-transparent rounded-full animate-spin" />
@@ -106,8 +114,12 @@ export function NotificationPreferencesModal({
                   >
                     <div className="flex items-start justify-between mb-3">
                       <div>
-                        <h4 className="text-sm font-medium text-text-primary">{title}</h4>
-                        <p className="text-xs text-text-muted mt-1">{description}</p>
+                        <Heading variant="label" as="h4" className="text-text-primary font-medium">
+                          {title}
+                        </Heading>
+                        <Text variant="caption" className="text-text-muted mt-1">
+                          {description}
+                        </Text>
                       </div>
                     </div>
                     {/* In-App Toggle */}
