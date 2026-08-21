@@ -277,3 +277,78 @@ export interface UpdatePreferenceRequest {
 export interface BulkUpdatePreferencesRequest {
   preferences: Partial<NotificationPreference>[];
 }
+
+// ============================================================================
+// Admin Projects Types
+// ============================================================================
+
+export type AdminProjectStatus = "draft" | "in-progress" | "completed";
+export type AdminProjectStep =
+  | "source"
+  | "script"
+  | "details"
+  | "voice"
+  | "preview"
+  | "compose"
+  | "export";
+
+export interface AdminProject {
+  id: number;
+  user_id: number;
+  user_email?: string | null;
+  user_name?: string | null;
+  project_name?: string | null;
+  status: AdminProjectStatus;
+  last_step: AdminProjectStep;
+  movie_id?: number | null;
+  active_script_id?: number | null;
+  active_tts_job_id?: number | null;
+  script_summary?: string | null;
+  created_at: string;
+  updated_at: string;
+  is_deleted: boolean;
+  deleted_at?: string | null;
+  movie?: {
+    id: number;
+    title: string;
+    original_title?: string | null;
+    poster_path?: string | null;
+  } | null;
+  active_tts_job?: {
+    id: number;
+    status: string;
+    error_message?: string | null;
+  } | null;
+}
+
+export interface AdminProjectListResponse {
+  projects: AdminProject[];
+  total: number;
+  page: number;
+  page_size: number;
+}
+
+export interface AdminProjectStats {
+  total: number;
+  active: number;
+  deleted: number;
+  draft: number;
+  in_progress: number;
+  completed: number;
+}
+
+export interface AdminProjectFilter {
+  status?: AdminProjectStatus;
+  step?: AdminProjectStep;
+  user_id?: number;
+  q?: string;
+  include_deleted?: boolean;
+  deleted_only?: boolean;
+}
+
+export interface AdminProjectUpdate {
+  project_name?: string | null;
+  status?: AdminProjectStatus;
+  last_step?: AdminProjectStep;
+  movie_id?: number | null;
+}
