@@ -8,6 +8,8 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
 import { AlertCircle, CheckCircle, Loader2, Gift } from "lucide-react";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 
 function InviteContent() {
   const { t } = useI18n();
@@ -90,14 +92,14 @@ function InviteContent() {
           </div>
 
           {/* Title */}
-          <h2 className="text-2xl font-bold text-text-primary mb-2">
+          <Heading variant="section" as="h2" className="text-text-primary mb-2">
             {t("auth.invite.validTitle")}
-          </h2>
+          </Heading>
 
           {/* Referrer Info */}
-          <p className="text-sm text-text-secondary mb-6">
+          <Text variant="body" className="text-text-secondary mb-6">
             {t("auth.invite.invitedBy", { name: referrerName })}
-          </p>
+          </Text>
 
           {/* Referral Code Display */}
           <div className="bg-surface-raised border border-border-default rounded-lg p-4 mb-6">
@@ -135,12 +137,14 @@ function InviteContent() {
           </div>
 
           {/* Title */}
-          <h2 className="text-2xl font-bold text-text-primary mb-2">
+          <Heading variant="section" as="h2" className="text-text-primary mb-2">
             {t("auth.invite.invalidTitle")}
-          </h2>
+          </Heading>
 
           {/* Error Message */}
-          <p className="text-sm text-text-secondary mb-6">{errorMessage}</p>
+          <Text variant="body" className="text-text-secondary mb-6">
+            {errorMessage}
+          </Text>
 
           {/* Action Buttons */}
           <div className="space-y-3">

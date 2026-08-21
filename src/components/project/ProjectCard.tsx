@@ -3,6 +3,8 @@ import { Folder, Trash2, Clock, CheckCircle2, Calendar } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ExternalImage } from "@/components/ui/ExternalImage";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 import { tmdbImageUrl, type ProjectResponse } from "@/lib/project-client";
 
 interface ProjectCardProps {
@@ -47,15 +49,19 @@ export function ProjectCard({
         {/* Project Info */}
         <div className="flex min-w-0 flex-1 flex-col justify-between py-1">
           <div>
-            <h3 className="mb-1.5 text-base font-bold text-text-primary transition-colors group-hover:text-accent-cyan">
+            <Heading
+              variant="subsection"
+              as="h3"
+              className="mb-1.5 text-text-primary transition-colors group-hover:text-accent-cyan"
+            >
               {projectName}
-            </h3>
+            </Heading>
 
             {/* Movie title if different from project name */}
             {movieTitle && projectName !== movieTitle && (
-              <p className="mb-2 text-sm text-text-muted">
+              <Text variant="body" className="mb-2 text-text-muted">
                 Based on: <span className="text-text-secondary">{movieTitle}</span>
-              </p>
+              </Text>
             )}
 
             {/* Status Badge - only 1 tag */}
@@ -180,9 +186,9 @@ export function ProjectCard({
           <CardContent className="p-4">
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1 min-w-0">
-                <h2 className="font-semibold text-text-primary truncate">
+                <Heading variant="label" as="h2" className="text-text-primary truncate">
                   {project.project_name || project.movie?.title || "Untitled project"}
-                </h2>
+                </Heading>
                 {showDelete ? (
                   <div className="flex items-center gap-2 mt-2 flex-wrap">
                     <Badge
@@ -200,9 +206,9 @@ export function ProjectCard({
                     </Badge>
                   </div>
                 ) : (
-                  <p className="mt-1 text-xs text-text-muted">
+                  <Text variant="caption" className="mt-1 text-text-muted">
                     Step: {project.last_step} • {project.status}
-                  </p>
+                  </Text>
                 )}
               </div>
               {showDelete && (

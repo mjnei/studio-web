@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { MovieSelection } from "@/components/project/movie-selection";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 
 /**
  * Movie selection page (Step 1 of project creation).
@@ -57,10 +59,12 @@ export default function NewProjectSourcePage() {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col gap-6 pb-24">
           <div className="mb-6">
-            <h2 className="text-xl font-semibold text-text-primary">Select Source Movie</h2>
-            <p className="mt-1 text-sm text-text-muted">
+            <Heading variant="section" as="h2" className="text-text-primary">
+              Select Source Movie
+            </Heading>
+            <Text variant="body" className="mt-1 text-text-muted">
               Choose a movie clip to create your dubbed video project
-            </p>
+            </Text>
           </div>
 
           <MovieSelection selectedMovie={selectedMovie?.id} onSelect={handleMovieSelect} />

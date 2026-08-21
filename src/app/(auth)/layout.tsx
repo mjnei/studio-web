@@ -2,6 +2,8 @@
 
 import { usePathname } from "next/navigation";
 import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -52,10 +54,12 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
               <polyline points="2 12 12 17 22 12" />
             </svg>
           </div>
-          <h1 className="text-3xl font-bold mb-4 drop-shadow-md">Huavoi Studio</h1>
-          <p className="text-base text-white/90 max-w-md drop-shadow">
+          <Heading variant="display" className="mb-4 text-white drop-shadow-md">
+            Huavoi Studio
+          </Heading>
+          <Text variant="bodyLg" className="text-white/90 max-w-md drop-shadow">
             AI-assisted video production
-          </p>
+          </Text>
         </div>
 
         {/* Right Side Form */}
@@ -80,8 +84,12 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
                   <polyline points="2 12 12 17 22 12" />
                 </svg>
               </div>
-              <h1 className="text-2xl font-bold text-white drop-shadow-md">Huavoi Studio</h1>
-              <p className="mt-2 text-sm text-white/90 drop-shadow">AI-assisted video production</p>
+              <Heading variant="display" className="text-white drop-shadow-md">
+                Huavoi Studio
+              </Heading>
+              <Text variant="body" className="mt-2 text-white/90 drop-shadow">
+                AI-assisted video production
+              </Text>
             </div>
 
             {/* Form Container with Gradient Mask and Glowing Effect */}

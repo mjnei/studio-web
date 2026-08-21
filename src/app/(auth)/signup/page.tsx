@@ -12,6 +12,8 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { validateReferralCode } from "@/lib/api/referral-client";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 
 function SignupContent() {
   const { loginWithGoogle, isAuthenticated, isLoading: authLoading } = useAuth();
@@ -127,8 +129,12 @@ function SignupContent() {
   return (
     <Card variant="elevated" padding="lg" className="w-full">
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-text-primary mb-2">{t("auth.signup.title")}</h2>
-        <p className="text-sm text-text-secondary">{t("auth.signup.subtitle")}</p>
+        <Heading variant="section" as="h2" className="text-text-primary mb-2">
+          {t("auth.signup.title")}
+        </Heading>
+        <Text variant="body" className="text-text-secondary">
+          {t("auth.signup.subtitle")}
+        </Text>
       </div>
 
       {/* Referral Code Notice */}
