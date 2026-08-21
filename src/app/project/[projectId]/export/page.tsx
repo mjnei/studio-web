@@ -39,6 +39,7 @@ import { InsufficientCreditsModal } from "@/components/credits/InsufficientCredi
 import { CreditConfirmationModal } from "@/components/credits/CreditConfirmationModal";
 import { useNotifications } from "@/lib/notification-context";
 import { ExportFormatModal } from "@/components/project/ExportFormatModal";
+import { useI18n } from "@/i18n";
 
 export default function ExportPage() {
   const params = useParams();
@@ -47,6 +48,23 @@ export default function ExportPage() {
   const { isLoading } = useProjectState(projectId);
   const toast = useToast();
   const { refreshNotifications } = useNotifications();
+  const { t, locale } = useI18n();
+  const dateLocale = locale === "chs" ? "zh-CN" : "en-US";
+
+  const getStatusLabel = (status: string) => {
+    const statusKeys: Record<string, string> = {
+      completed: "project.status.completed",
+      processing: "project.status.processing",
+      queued: "project.status.queued",
+      failed: "project.status.failed",
+    };
+    return statusKeys[status] ? t(statusKeys[status]) : status;
+  };
+
+  const formatCredits = (count: number) =>
+    count !== 1
+      ? t("project.export.creditsPlural", { count })
+      : t("project.export.credits", { count });
 
   // ── Video state ────────────────────────────────────────────────────────────
   const [videos, setVideos] = useState<VideoGenerationResponse[]>([]);
@@ -87,20 +105,17 @@ export default function ExportPage() {
       console.error("Failed to load videos:", error);
       const apiError = error as { status?: number; message?: string };
       if (apiError.status === 404) {
-        toast.error(
-          "Project not found",
-          "This project may have been deleted. Redirecting to projects list..."
-        );
+        toast.error(t("project.common.projectNotFound"), t("project.common.projectNotFoundDesc"));
         setTimeout(() => {
           router.push("/projects");
         }, 2000);
       } else {
-        toast.error("Failed to load videos", "Could not retrieve video history");
+        toast.error(t("project.export.loadVideosFailed"), t("project.export.loadVideosFailedDesc"));
       }
     } finally {
       setIsLoadingVideos(false);
     }
-  }, [projectId, toast, router]);
+  }, [projectId, toast, router, t]);
 
   const loadCreditStatus = React.useCallback(async () => {
     try {
@@ -168,7 +183,7 @@ export default function ExportPage() {
       setShowCreditConfirmationModal(true);
     } catch (error) {
       console.error("Failed to load credit status:", error);
-      toast.error("Failed to check credits", "Could not verify your credit balance");
+      toast.error(t("project.export.checkCreditsFailed"), t("project.export.checkCreditsFailedDesc"));
     }
   };
 
@@ -177,7 +192,7 @@ export default function ExportPage() {
     setIsGeneratingVideo(true);
     try {
       await regenerateVideo(projectId);
-      toast.success("Video generation started", "Your video is being generated");
+      toast.success(t("project.export.generationStarted"), t("project.export.generationStartedDesc"));
       await loadVideos();
       await loadCreditStatus();
       await refreshNotifications();
@@ -188,14 +203,11 @@ export default function ExportPage() {
         await loadCreditStatus();
         setShowInsufficientCreditsModal(true);
       } else if (err.status === 500) {
-        toast.error(
-          "Server error",
-          "An internal error occurred. Please try again or contact support if the issue persists."
-        );
+        toast.error(t("project.export.serverError"), t("project.export.serverErrorDesc"));
       } else {
         toast.error(
-          "Generation failed",
-          err.message || "Failed to start video generation. Please check your connection."
+          t("project.export.generationFailedTitle"),
+          err.message || t("project.export.generationFailedDesc")
         );
       }
     } finally {
@@ -204,17 +216,17 @@ export default function ExportPage() {
   };
 
   const handleDeleteVideo = async (videoId: string) => {
-    if (!confirm("Are you sure you want to delete this video? This action cannot be undone.")) {
+    if (!confirm(t("project.export.deleteConfirm"))) {
       return;
     }
 
     try {
       await deleteProjectVideo(projectId, videoId);
-      toast.success("Video deleted", "The video has been removed from your history");
+      toast.success(t("project.export.videoDeleted"), t("project.export.videoDeletedDesc"));
       await loadVideos();
     } catch (error) {
       console.error("Failed to delete video:", error);
-      toast.error("Delete failed", "Failed to delete the video");
+      toast.error(t("project.export.deleteFailed"), t("project.export.deleteFailedDesc"));
     }
   };
 
@@ -234,7 +246,7 @@ export default function ExportPage() {
 
   // ── Derived values ─────────────────────────────────────────────────────────
   if (isLoading || isLoadingVideos) {
-    return <PageLoadingSkeleton message="Loading project..." />;
+    return <PageLoadingSkeleton message={t("project.common.loadingProject")} />;
   }
 
   const completedVideos = videos?.filter((v) => v.status === "completed") || [];
@@ -250,25 +262,30 @@ export default function ExportPage() {
           {/* Page header */}
           <div className="flex items-start justify-between gap-4">
             <div>
-              <Heading variant="section" as="h2" className="text-text-primary">Export Project</Heading>
-              <p className="mt-1 text-sm text-text-muted">
-                Generate, manage, and export your video
-              </p>
+              <Heading variant="section" as="h2" className="text-text-primary">
+                {t("project.export.title")}
+              </Heading>
+              <p className="mt-1 text-sm text-text-muted">{t("project.export.description")}</p>
             </div>
 
             <div className="group relative">
               <button
                 className="flex h-8 w-8 items-center justify-center rounded-full bg-surface-raised border border-border-default hover:border-accent-cyan/50 transition-all"
-                title="Project Info"
+                title={t("project.export.projectInfo")}
               >
                 <Info className="h-4 w-4 text-text-muted group-hover:text-accent-cyan" />
               </button>
               <div className="absolute right-0 top-10 z-10 hidden group-hover:block w-64 p-3 rounded-lg bg-surface-raised border border-border-default shadow-lg text-xs">
-                <p className="font-medium text-text-secondary mb-2">Quick Info:</p>
+                <p className="font-medium text-text-secondary mb-2">{t("project.export.quickInfo")}</p>
                 <div className="space-y-1 text-text-muted">
-                  <p>• Each video generation costs 1 credit</p>
-                  <p>• Credits remaining: {creditStatus?.credits_remaining ?? "—"}</p>
-                  <p>• Export in different formats (coming soon)</p>
+                  <p>• {t("project.export.infoBullet1")}</p>
+                  <p>
+                    •{" "}
+                    {t("project.export.infoCreditsRemaining", {
+                      credits: creditStatus?.credits_remaining ?? "—",
+                    })}
+                  </p>
+                  <p>• {t("project.export.infoBullet3")}</p>
                 </div>
               </div>
             </div>
@@ -283,7 +300,7 @@ export default function ExportPage() {
                 </div>
                 <div>
                   <Heading variant="metric" className="text-success-text">{completedVideos.length}</Heading>
-                  <p className="text-xs text-text-muted">Completed</p>
+                  <p className="text-xs text-text-muted">{t("project.export.completed")}</p>
                 </div>
               </div>
             </Card>
@@ -295,7 +312,7 @@ export default function ExportPage() {
                 </div>
                 <div>
                   <Heading variant="metric" className="text-accent-cyan">{processingVideos.length}</Heading>
-                  <p className="text-xs text-text-muted">Processing</p>
+                  <p className="text-xs text-text-muted">{t("project.export.processing")}</p>
                 </div>
               </div>
             </Card>
@@ -307,7 +324,7 @@ export default function ExportPage() {
                 </div>
                 <div>
                   <Heading variant="metric" className="text-error-text">{failedVideos.length}</Heading>
-                  <p className="text-xs text-text-muted">Failed</p>
+                  <p className="text-xs text-text-muted">{t("project.export.failed")}</p>
                 </div>
               </div>
             </Card>
@@ -318,12 +335,13 @@ export default function ExportPage() {
             <Card variant="elevated" padding="md">
               {/* Header with version selector */}
               <div className="flex items-center justify-between mb-4">
-                <Heading variant="label" as="h3" className="text-text-primary">Your Video</Heading>
+                <Heading variant="label" as="h3" className="text-text-primary">
+                  {t("project.export.yourVideo")}
+                </Heading>
                 <div className="flex items-center gap-2">
                   {creditStatus && (
                     <div className="text-xs text-text-muted">
-                      {creditStatus.credits_remaining} credit
-                      {creditStatus.credits_remaining !== 1 ? "s" : ""}
+                      {formatCredits(creditStatus.credits_remaining)}
                     </div>
                   )}
                   <Button
@@ -338,9 +356,9 @@ export default function ExportPage() {
                     }
                     onClick={handleGenerateVideo}
                     disabled={isGeneratingVideo}
-                    title="Generate a new video variation (1 credit)"
+                    title={t("project.export.newVersionTitle")}
                   >
-                    {isGeneratingVideo ? "Generating..." : "New Version"}
+                    {isGeneratingVideo ? t("project.export.generating") : t("project.export.newVersion")}
                   </Button>
                 </div>
               </div>
@@ -349,7 +367,7 @@ export default function ExportPage() {
               {completedVideos.length > 1 && (
                 <div className="mb-4 flex items-center gap-2">
                   <span className="text-xs font-medium text-text-muted flex-shrink-0">
-                    Version:
+                    {t("project.export.versionLabel")}
                   </span>
                   <div className="flex gap-2 overflow-x-auto">
                     {completedVideos.map((video) => (
@@ -379,7 +397,7 @@ export default function ExportPage() {
                     className="w-full h-full object-contain"
                     poster={displayVideo.thumbnail_url || undefined}
                   >
-                    Your browser does not support the video tag.
+                    {t("project.export.browserNoVideo")}
                   </video>
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
@@ -391,19 +409,19 @@ export default function ExportPage() {
               {/* Video metadata */}
               <div className="grid gap-4 grid-cols-2 lg:grid-cols-4 text-xs p-3 rounded-lg bg-surface-base border border-border-default mb-4">
                 <div>
-                  <span className="font-medium text-text-muted">Voice:</span>{" "}
-                  <span className="text-text-primary">{displayVideo.voice_name || "N/A"}</span>
-                </div>
-                <div>
-                  <span className="font-medium text-text-muted">Cost:</span>{" "}
+                  <span className="font-medium text-text-muted">{t("project.export.voiceLabel")}</span>{" "}
                   <span className="text-text-primary">
-                    {displayVideo.credit_cost} credit{displayVideo.credit_cost !== 1 ? "s" : ""}
+                    {displayVideo.voice_name || t("project.common.notAvailable")}
                   </span>
                 </div>
                 <div>
-                  <span className="font-medium text-text-muted">Generated:</span>{" "}
+                  <span className="font-medium text-text-muted">{t("project.export.costLabel")}</span>{" "}
+                  <span className="text-text-primary">{formatCredits(displayVideo.credit_cost)}</span>
+                </div>
+                <div>
+                  <span className="font-medium text-text-muted">{t("project.export.generatedLabel")}</span>{" "}
                   <span className="text-text-primary">
-                    {new Date(displayVideo.created_at).toLocaleDateString("en-US", {
+                    {new Date(displayVideo.created_at).toLocaleDateString(dateLocale, {
                       month: "short",
                       day: "numeric",
                       year: "numeric",
@@ -411,8 +429,8 @@ export default function ExportPage() {
                   </span>
                 </div>
                 <div>
-                  <span className="font-medium text-text-muted">Status:</span>{" "}
-                  <span className="text-success-text capitalize">{displayVideo.status}</span>
+                  <span className="font-medium text-text-muted">{t("project.export.statusLabel")}</span>{" "}
+                  <span className="text-success-text">{getStatusLabel(displayVideo.status)}</span>
                 </div>
               </div>
 
@@ -425,7 +443,7 @@ export default function ExportPage() {
                   onClick={() => displayVideo.video_url && handleDownload(displayVideo.video_url)}
                   className="w-full"
                 >
-                  Download
+                  {t("common.download")}
                 </Button>
                 <Button
                   variant="secondary"
@@ -434,7 +452,7 @@ export default function ExportPage() {
                   onClick={() => handleExportFormat(displayVideo)}
                   className="w-full"
                 >
-                  Export Format
+                  {t("project.export.exportFormat")}
                 </Button>
                 <Button
                   variant="primary"
@@ -443,7 +461,7 @@ export default function ExportPage() {
                   onClick={() => handleShare(displayVideo)}
                   className="w-full"
                 >
-                  Share
+                  {t("common.share")}
                 </Button>
               </div>
             </Card>
@@ -460,10 +478,10 @@ export default function ExportPage() {
                     <Video className="h-8 w-8 text-accent-cyan" />
                   </div>
                 </div>
-                <Heading variant="subsection" as="h3" className="text-text-primary mb-2">Ready to Generate Your Video</Heading>
-                <p className="text-sm text-text-muted mb-6">
-                  Your project is ready. Click below to start video generation.
-                </p>
+                <Heading variant="subsection" as="h3" className="text-text-primary mb-2">
+                  {t("project.export.readyTitle")}
+                </Heading>
+                <p className="text-sm text-text-muted mb-6">{t("project.export.readyDesc")}</p>
 
                 {creditStatus && (
                   <div className="mb-6 flex justify-center">
@@ -488,13 +506,11 @@ export default function ExportPage() {
                   disabled={isGeneratingVideo}
                   className="w-full max-w-xs"
                 >
-                  {isGeneratingVideo ? "Generating..." : "Generate Video"}
+                  {isGeneratingVideo ? t("project.export.generating") : t("project.export.generateVideo")}
                 </Button>
 
                 {creditStatus && creditStatus.credits_remaining < 1 && (
-                  <p className="mt-3 text-xs text-error-text">
-                    Insufficient credits. Click Generate to view upgrade options.
-                  </p>
+                  <p className="mt-3 text-xs text-error-text">{t("project.export.insufficientCredits")}</p>
                 )}
               </div>
             </Card>
@@ -503,7 +519,9 @@ export default function ExportPage() {
           {/* ── Processing Videos ── */}
           {processingVideos.length > 0 && (
             <Card variant="elevated" padding="md">
-              <Heading variant="label" as="h3" className="text-text-primary mb-4">Processing Videos</Heading>
+              <Heading variant="label" as="h3" className="text-text-primary mb-4">
+                {t("project.export.processingVideos")}
+              </Heading>
               <div className="space-y-3">
                 {processingVideos.map((video) => (
                   <div
@@ -514,17 +532,17 @@ export default function ExportPage() {
                       <Loader2 className="h-5 w-5 text-accent-cyan animate-spin flex-shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-text-primary">
-                          Version {video.generation_attempt}
+                          {t("project.common.version", { number: video.generation_attempt })}
                         </p>
                         <p className="text-xs text-text-muted">
                           {video.status === "queued"
-                            ? "Queued for processing..."
-                            : "Generating video..."}
+                            ? t("project.export.queuedProcessing")
+                            : t("project.export.generatingVideo")}
                         </p>
                       </div>
                     </div>
-                    <span className="text-xs px-2 py-1 rounded bg-accent-cyan/10 text-accent-cyan capitalize">
-                      {video.status}
+                    <span className="text-xs px-2 py-1 rounded bg-accent-cyan/10 text-accent-cyan">
+                      {getStatusLabel(video.status)}
                     </span>
                   </div>
                 ))}
@@ -535,7 +553,9 @@ export default function ExportPage() {
           {/* ── Failed Videos ── */}
           {failedVideos.length > 0 && (
             <Card variant="elevated" padding="md">
-              <Heading variant="label" as="h3" className="text-text-primary mb-4">Failed Generations</Heading>
+              <Heading variant="label" as="h3" className="text-text-primary mb-4">
+                {t("project.export.failedGenerations")}
+              </Heading>
               <div className="space-y-3">
                 {failedVideos.map((video) => (
                   <div
@@ -546,10 +566,10 @@ export default function ExportPage() {
                       <AlertCircle className="h-5 w-5 text-error-text flex-shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-text-primary">
-                          Version {video.generation_attempt}
+                          {t("project.common.version", { number: video.generation_attempt })}
                         </p>
                         <p className="text-xs text-error-text truncate">
-                          {video.error_message || "Generation failed"}
+                          {video.error_message || t("project.export.generationFailed")}
                         </p>
                       </div>
                     </div>
@@ -557,7 +577,7 @@ export default function ExportPage() {
                       type="button"
                       onClick={() => handleDeleteVideo(video.id)}
                       className="text-xs text-text-muted hover:text-error-text font-medium ml-2"
-                      title="Delete video"
+                      title={t("project.export.deleteVideo")}
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
@@ -573,7 +593,7 @@ export default function ExportPage() {
               <details className="group">
                 <summary className="flex items-center gap-2 cursor-pointer text-sm font-medium text-text-primary hover:text-accent-cyan transition-colors select-none py-2">
                   <ChevronRight className="h-4 w-4 group-open:rotate-90 transition-transform" />
-                  <span>View all versions ({videos.length})</span>
+                  <span>{t("project.export.viewAllVersions", { count: videos.length })}</span>
                 </summary>
                 <div className="mt-4 space-y-2">
                   {videos.map((video) => (
@@ -586,7 +606,7 @@ export default function ExportPage() {
                           {video.thumbnail_url ? (
                             <Image
                               src={video.thumbnail_url}
-                              alt={`Version ${video.generation_attempt}`}
+                              alt={t("project.common.version", { number: video.generation_attempt })}
                               width={80}
                               height={45}
                               className="w-full h-full object-cover"
@@ -600,13 +620,13 @@ export default function ExportPage() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
                             <p className="text-sm font-medium text-text-primary">
-                              Version {video.generation_attempt}
+                              {t("project.common.version", { number: video.generation_attempt })}
                             </p>
                             {(video.status === "processing" || video.status === "queued") && (
                               <Loader2 className="h-3 w-3 text-accent-cyan animate-spin" />
                             )}
                             <span
-                              className={`text-xs px-2 py-0.5 rounded capitalize ${
+                              className={`text-xs px-2 py-0.5 rounded ${
                                 video.status === "completed"
                                   ? "bg-success-bg text-success-text"
                                   : video.status === "failed"
@@ -614,11 +634,11 @@ export default function ExportPage() {
                                     : "bg-accent-cyan/10 text-accent-cyan"
                               }`}
                             >
-                              {video.status}
+                              {getStatusLabel(video.status)}
                             </span>
                           </div>
                           <p className="text-xs text-text-muted mt-1">
-                            {new Date(video.created_at).toLocaleDateString("en-US", {
+                            {new Date(video.created_at).toLocaleDateString(dateLocale, {
                               month: "short",
                               day: "numeric",
                               hour: "numeric",
@@ -636,14 +656,14 @@ export default function ExportPage() {
                                 onClick={() => setSelectedVideoId(video.id)}
                                 className="text-xs text-accent-cyan hover:text-accent-cyan-hover font-medium px-2 py-1"
                               >
-                                View
+                                {t("common.view")}
                               </button>
                             )}
                             <button
                               type="button"
                               onClick={() => video.video_url && handleDownload(video.video_url)}
                               className="p-1 rounded hover:bg-surface-base transition-colors"
-                              title="Download"
+                              title={t("common.download")}
                             >
                               <Download className="h-4 w-4 text-text-muted hover:text-accent-cyan" />
                             </button>
@@ -654,7 +674,7 @@ export default function ExportPage() {
                             type="button"
                             onClick={() => handleDeleteVideo(video.id)}
                             className="p-1 rounded hover:bg-surface-base transition-colors"
-                            title="Delete"
+                            title={t("common.delete")}
                           >
                             <Trash2 className="h-4 w-4 text-text-muted hover:text-error-text" />
                           </button>
@@ -670,7 +690,7 @@ export default function ExportPage() {
           {/* Return to Projects */}
           <div className="flex justify-center">
             <Button variant="ghost" size="md" onClick={() => router.push("/projects")}>
-              Return to Projects
+              {t("project.export.returnToProjects")}
             </Button>
           </div>
         </div>
@@ -682,11 +702,11 @@ export default function ExportPage() {
           <Modal
             open={showShareModal}
             onClose={() => setShowShareModal(false)}
-            title="Share Video"
+            title={t("project.export.shareVideo")}
             size="md"
           >
             <div className="space-y-4">
-              <p className="text-sm text-text-muted">Choose a platform to share your video</p>
+              <p className="text-sm text-text-muted">{t("project.export.choosePlatform")}</p>
 
               <div className="space-y-3">
                 {/* X.com (Twitter) */}
@@ -694,10 +714,7 @@ export default function ExportPage() {
                   onClick={() => {
                     if (displayVideo.video_url) {
                       navigator.clipboard.writeText(displayVideo.video_url);
-                      toast.success(
-                        "Video URL copied",
-                        "Open X.com and paste the link to share your video"
-                      );
+                      toast.success(t("project.export.urlCopied"), t("project.export.shareXDesc"));
                     }
                     setShowShareModal(false);
                   }}
@@ -709,8 +726,10 @@ export default function ExportPage() {
                     </svg>
                   </div>
                   <div className="flex-1 text-left">
-                    <Heading variant="label" as="h4" className="text-text-primary group-hover:text-accent-cyan transition-colors">X (Twitter)</Heading>
-                    <p className="text-xs text-text-muted mt-0.5">Share to your X timeline</p>
+                    <Heading variant="label" as="h4" className="text-text-primary group-hover:text-accent-cyan transition-colors">
+                      {t("project.export.shareXTitle")}
+                    </Heading>
+                    <p className="text-xs text-text-muted mt-0.5">{t("project.export.shareXSubtitle")}</p>
                   </div>
                   <ChevronRight className="h-5 w-5 text-text-muted group-hover:text-accent-cyan transition-colors" />
                 </button>
@@ -720,10 +739,7 @@ export default function ExportPage() {
                   onClick={() => {
                     if (displayVideo.video_url) {
                       navigator.clipboard.writeText(displayVideo.video_url);
-                      toast.success(
-                        "Video URL copied",
-                        "Open WeChat and paste the link to share your video"
-                      );
+                      toast.success(t("project.export.urlCopied"), t("project.export.shareWeChatDesc"));
                     }
                     setShowShareModal(false);
                   }}
@@ -735,15 +751,17 @@ export default function ExportPage() {
                     </svg>
                   </div>
                   <div className="flex-1 text-left">
-                    <Heading variant="label" as="h4" className="text-text-primary group-hover:text-accent-cyan transition-colors">WeChat</Heading>
-                    <p className="text-xs text-text-muted mt-0.5">Share to WeChat moments</p>
+                    <Heading variant="label" as="h4" className="text-text-primary group-hover:text-accent-cyan transition-colors">
+                      {t("project.export.shareWeChatTitle")}
+                    </Heading>
+                    <p className="text-xs text-text-muted mt-0.5">{t("project.export.shareWeChatSubtitle")}</p>
                   </div>
                   <ChevronRight className="h-5 w-5 text-text-muted group-hover:text-accent-cyan transition-colors" />
                 </button>
               </div>
 
               <div className="pt-4 border-t border-border-default">
-                <p className="text-xs text-text-muted text-center">More platforms coming soon</p>
+                <p className="text-xs text-text-muted text-center">{t("project.export.morePlatforms")}</p>
               </div>
             </div>
           </Modal>
@@ -781,8 +799,8 @@ export default function ExportPage() {
         isOpen={showCreditConfirmationModal}
         onClose={() => setShowCreditConfirmationModal(false)}
         onConfirm={handleConfirmGenerate}
-        title="Generate Video?"
-        message="This will generate a new video using your selected voice and script. You can generate multiple versions to compare."
+        title={t("project.export.confirmGenerateTitle")}
+        message={t("project.export.confirmGenerateMessage")}
         creditCost={1}
         creditsRemaining={creditStatus?.credits_remaining ?? 0}
         isProcessing={isGeneratingVideo}

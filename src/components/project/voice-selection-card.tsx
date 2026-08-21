@@ -2,6 +2,7 @@
 
 import { Check, Mic, Volume2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { useI18n } from "@/i18n";
 
 interface VoiceSelectionCardProps {
   id: string;
@@ -32,6 +33,8 @@ export function VoiceSelectionCard({
   onSelect,
   isPreviewLoading = false,
 }: VoiceSelectionCardProps) {
+  const { t } = useI18n();
+
   const formatDuration = (seconds?: number) => {
     if (!seconds) return null;
     const mins = Math.floor(seconds / 60);
@@ -85,7 +88,7 @@ export function VoiceSelectionCard({
               {isPreviewLoading && (
                 <div className="mt-2 text-xs text-text-muted flex items-center gap-1">
                   <div className="h-3 w-3 animate-spin rounded-full border-2 border-accent-cyan border-t-transparent" />
-                  <span>Loading preview...</span>
+                  <span>{t("voices.playback.loading")}</span>
                 </div>
               )}
             </div>

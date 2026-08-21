@@ -175,9 +175,7 @@ export default function PricingPage() {
   };
 
   const handleSubscribe = (tier: string) => {
-    alert(
-      `Subscribing to ${tier} tier... (Integration with Stripe will be implemented in Phase 5)`
-    );
+    alert(t("pricing.subscribeComingSoon", { tier }));
   };
 
   return (

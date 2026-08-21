@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
+import { useI18n } from "@/i18n";
 import type { VoiceResponse } from "@/lib/types/api";
 
 type RecorderState = "idle" | "requesting" | "recording" | "recorded" | "naming";
@@ -22,16 +23,16 @@ type RecorderState = "idle" | "requesting" | "recording" | "recorded" | "naming"
 const MAX_DURATION_S = 60;
 
 const LANGUAGES = [
-  { code: "en", name: "English" },
-  { code: "es", name: "Spanish" },
-  { code: "fr", name: "French" },
-  { code: "de", name: "German" },
-  { code: "ja", name: "Japanese" },
-  { code: "ko", name: "Korean" },
-  { code: "zh", name: "Chinese" },
-  { code: "pt", name: "Portuguese" },
-  { code: "it", name: "Italian" },
-  { code: "ru", name: "Russian" },
+  { code: "en" },
+  { code: "es" },
+  { code: "fr" },
+  { code: "de" },
+  { code: "ja" },
+  { code: "ko" },
+  { code: "zh" },
+  { code: "pt" },
+  { code: "it" },
+  { code: "ru" },
 ];
 
 function getSupportedMimeType(): string {
@@ -102,6 +103,7 @@ interface VoiceRecordingModalProps {
 }
 
 export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecordingModalProps) {
+  const { t } = useI18n();
   const [state, setState] = useState<RecorderState>("idle");
   const [duration, setDuration] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -128,7 +130,7 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
 
   const releaseStream = useCallback(() => {
     if (streamRef.current) {
-      streamRef.current.getTracks().forEach((t) => t.stop());
+      streamRef.current.getTracks().forEach((track) => track.stop());
       streamRef.current = null;
     }
   }, []);
@@ -208,7 +210,7 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
 
     audio.onerror = () => {
       setIsPlaying(false);
-      setError("Playback failed. Please re-record your sample.");
+      setError(t("voices.recording.errors.playbackFailed"));
       if (rafRef.current) {
         cancelAnimationFrame(rafRef.current);
         rafRef.current = 0;
@@ -218,7 +220,7 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
     audio.play().catch(() => {
       setIsPlaying(false);
     });
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     return () => {
@@ -277,7 +279,7 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
 
     const mime = getSupportedMimeType();
     if (!mime) {
-      setError("Your browser does not support audio recording.");
+      setError(t("voices.recording.errors.browserUnsupported"));
       setState("idle");
       return;
     }
@@ -314,7 +316,7 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
       };
 
       recorder.onerror = () => {
-        setError("Recording failed. Please try again.");
+        setError(t("voices.recording.errors.recordingFailed"));
         releaseStream();
         clearTimer();
         setState("idle");
@@ -348,20 +350,17 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
         }
       }, 200);
     } catch (err) {
-      let msg = "Could not start recording. Please check your microphone and try again.";
+      let msg = t("voices.recording.errors.startFailed");
 
       if (err instanceof DOMException) {
         if (err.name === "NotAllowedError") {
-          msg =
-            "Microphone access denied. Please allow microphone permissions in your browser settings and try again.";
+          msg = t("voices.recording.errors.permissionDenied");
         } else if (err.name === "NotFoundError" || err.name === "DevicesNotFoundError") {
-          msg = "No microphone found. Please connect a microphone and try again.";
+          msg = t("voices.recording.errors.notFound");
         } else if (err.name === "NotReadableError") {
-          msg =
-            "Microphone is in use by another application. Please close other apps using the microphone and try again.";
+          msg = t("voices.recording.errors.inUse");
         } else if (err.name === "SecurityError") {
-          msg =
-            "Microphone access blocked by browser security settings. Please use HTTPS or localhost.";
+          msg = t("voices.recording.errors.securityBlocked");
         }
       }
 
@@ -369,7 +368,7 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
       setError(msg);
       setState("idle");
     }
-  }, [stopPlayback, revokeUrl, clearTimer, releaseStream, playRecording]);
+  }, [stopPlayback, revokeUrl, clearTimer, releaseStream, playRecording, t]);
 
   const stopRecording = useCallback(() => {
     if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {
@@ -478,10 +477,10 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
       discardRecording();
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save recording");
+      setError(err instanceof Error ? err.message : t("voices.recording.errors.saveFailed"));
       setIsSaving(false);
     }
-  }, [duration, voiceName, language, onSaved, discardRecording, onClose]);
+  }, [duration, voiceName, language, onSaved, discardRecording, onClose, t]);
 
   const formatTime = (s: number) => {
     const clamped = Math.max(0, Math.floor(s));
@@ -490,6 +489,9 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
     return `${m}:${sec.toString().padStart(2, "0")}`;
   };
 
+  const maxDurationLabel = formatTime(MAX_DURATION_S);
+  const showHttpsTip = error === t("voices.recording.errors.securityBlocked");
+
   if (!isOpen) return null;
 
   return (
@@ -497,7 +499,7 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
       <div className="mx-auto max-w-md w-full m-4 rounded-2xl border border-border-default bg-gradient-to-b from-surface-panel to-surface-raised p-6 shadow-2xl">
         <div className="flex items-center justify-between mb-4">
           <Heading variant="subsection" as="h2" className="text-text-primary">
-            Record Voice
+            {t("voices.recording.title")}
           </Heading>
           <button
             onClick={onClose}
@@ -513,12 +515,8 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
             <X size={18} className="mt-0.5 shrink-0 text-red-400" />
             <div className="text-sm text-red-300">
               <p>{error}</p>
-              {error.includes("HTTPS") && (
-                <p className="mt-1 text-xs text-red-400">
-                  💡 Tip: Try accessing the app via{" "}
-                  <code className="bg-red-950/50 px-2 py-0.5 rounded">localhost:3020</code> instead
-                  of an IP address.
-                </p>
+              {showHttpsTip && (
+                <p className="mt-1 text-xs text-red-400">{t("voices.recording.httpsTip")}</p>
               )}
             </div>
           </div>
@@ -533,7 +531,7 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
                 size={28}
               />
             </div>
-            <p className="text-sm text-text-secondary">Requesting microphone access…</p>
+            <p className="text-sm text-text-secondary">{t("voices.recording.requestingAccess")}</p>
           </div>
         )}
 
@@ -545,22 +543,21 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
               </div>
               <div className="text-center">
                 <Heading variant="subsection" as="h3" className="text-text-primary mb-1">
-                  Ready to Record
+                  {t("voices.recording.readyTitle")}
                 </Heading>
-                <p className="text-sm text-text-muted">Record 30–60s of clear speech</p>
+                <p className="text-sm text-text-muted">{t("voices.recording.readyHint")}</p>
               </div>
             </div>
             <button
               onClick={startRecording}
               className="group relative flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-red-500 to-red-600 shadow-xl transition-all hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-red-400/50 active:scale-95"
-              title="Start recording"
+              title={t("voices.recording.startRecording")}
             >
               <div className="absolute inset-0 rounded-full bg-red-400 opacity-0 group-hover:opacity-20 transition-opacity" />
               <Circle size={32} className="fill-white text-white" />
             </button>
             <p className="text-xs text-center text-text-muted">
-              Maximum {Math.floor(MAX_DURATION_S / 60)}:
-              {(MAX_DURATION_S % 60).toString().padStart(2, "0")}
+              {t("voices.recording.maxDuration", { time: maxDurationLabel })}
             </p>
           </div>
         )}
@@ -580,15 +577,13 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75" />
                     <span className="relative inline-flex h-3 w-3 rounded-full bg-red-500" />
                   </span>
-                  <Heading
-                    variant="metric"
-                    as="span"
-                    className="font-mono text-text-primary"
-                  >
+                  <Heading variant="metric" as="span" className="font-mono text-text-primary">
                     {formatTime(duration)}
                   </Heading>
                 </div>
-                <p className="text-xs text-text-muted">of {formatTime(MAX_DURATION_S)}</p>
+                <p className="text-xs text-text-muted">
+                  {t("voices.recording.ofMax", { time: maxDurationLabel })}
+                </p>
               </div>
             </div>
             <div className="w-full max-w-xs">
@@ -602,11 +597,13 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
             <button
               onClick={stopRecording}
               className="flex h-20 w-20 items-center justify-center rounded-2xl bg-surface-raised shadow-xl transition-all hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-text-muted/30 active:scale-95"
-              title="Stop recording"
+              title={t("voices.recording.stopRecording")}
             >
               <Square size={36} className="fill-red-500 text-red-500" />
             </button>
-            <p className="text-sm text-text-secondary animate-pulse">Recording… tap to stop</p>
+            <p className="text-sm text-text-secondary animate-pulse">
+              {t("voices.recording.recordingTap")}
+            </p>
           </div>
         )}
 
@@ -614,9 +611,7 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
           <div className="flex flex-col gap-5 py-4">
             {maxReached && (
               <div className="rounded-lg bg-amber-500/10 border border-amber-500/20 px-3 py-2">
-                <p className="text-xs text-amber-300">
-                  Maximum duration reached. Recording stopped automatically.
-                </p>
+                <p className="text-xs text-amber-300">{t("voices.recording.maxReached")}</p>
               </div>
             )}
 
@@ -626,10 +621,10 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
               </div>
               <div className="text-center">
                 <Heading variant="subsection" as="h3" className="text-text-primary mb-1">
-                  Recording Complete!
+                  {t("voices.recording.completeTitle")}
                 </Heading>
                 <p className="text-sm text-text-muted">
-                  {formatTime(duration)} • Tap play to listen
+                  {t("voices.recording.completeHint", { time: formatTime(duration) })}
                 </p>
               </div>
             </div>
@@ -638,7 +633,7 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
               <button
                 onClick={isPlaying ? pausePlayback : playRecording}
                 className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-accent-cyan to-blue-500 text-white shadow-lg transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent-cyan focus:ring-offset-2 focus:ring-offset-surface-base active:scale-95"
-                title={isPlaying ? "Pause" : "Play"}
+                title={isPlaying ? t("voices.recording.pause") : t("voices.recording.play")}
               >
                 {isPlaying ? (
                   <Pause size={20} className="fill-current" />
@@ -653,7 +648,7 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
                   seekPlayback(x / rect.width);
                 }}
                 className="relative flex h-10 flex-1 cursor-pointer items-center rounded-full bg-surface-raised px-2 overflow-hidden"
-                title="Seek"
+                title={t("voices.recording.seek")}
               >
                 <div
                   className="absolute left-0 top-0 h-full rounded-full bg-gradient-to-r from-accent-cyan to-blue-500 transition-all"
@@ -676,7 +671,7 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
                 className="flex-1"
               >
                 <RotateCcw size={16} className="mr-2" />
-                Re-record
+                {t("voices.recording.reRecord")}
               </Button>
               <Button
                 variant="primary"
@@ -685,7 +680,7 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
                 disabled={isSaving}
                 className="flex-1"
               >
-                Continue
+                {t("voices.recording.continue")}
               </Button>
             </div>
           </div>
@@ -695,9 +690,9 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
           <div className="flex flex-col gap-5 py-4">
             <div className="text-center">
               <Heading variant="subsection" as="h3" className="text-text-primary mb-1">
-                Name Your Voice
+                {t("voices.recording.nameTitle")}
               </Heading>
-              <p className="text-sm text-text-muted">Choose a memorable name and language</p>
+              <p className="text-sm text-text-muted">{t("voices.recording.nameSubtitle")}</p>
             </div>
 
             <div>
@@ -705,7 +700,7 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
                 htmlFor="voice-name"
                 className="block text-sm font-medium text-text-primary mb-2"
               >
-                Voice Name *
+                {t("voices.recording.voiceName")}
               </label>
               <div className="relative">
                 <input
@@ -716,7 +711,7 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
                     setVoiceName(e.target.value);
                     if (nameError) setNameError(false);
                   }}
-                  placeholder="e.g., Professional Narrator"
+                  placeholder={t("voices.recording.namePlaceholder")}
                   className={`w-full rounded-xl border ${
                     nameError
                       ? "border-red-500 bg-red-500/5"
@@ -733,7 +728,7 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
                 {nameError && (
                   <p className="mt-2 text-xs text-red-400 flex items-center gap-1">
                     <X size={12} />
-                    Voice name is required
+                    {t("voices.recording.nameRequired")}
                   </p>
                 )}
               </div>
@@ -744,7 +739,7 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
                 className="mt-3 flex items-center gap-2 text-sm text-accent-cyan hover:text-accent-cyan/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Sparkles size={16} />
-                Generate random name
+                {t("voices.recording.generateRandom")}
               </button>
             </div>
 
@@ -753,7 +748,7 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
                 htmlFor="voice-language"
                 className="block text-sm font-medium text-text-primary mb-2"
               >
-                Language *
+                {t("voices.recording.language")}
               </label>
               <div className="relative">
                 <Globe
@@ -776,14 +771,14 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
                 >
                   {LANGUAGES.map((lang) => (
                     <option key={lang.code} value={lang.code}>
-                      {lang.name}
+                      {t(`voices.languages.${lang.code}`)}
                     </option>
                   ))}
                 </select>
                 {languageError && (
                   <p className="mt-2 text-xs text-red-400 flex items-center gap-1">
                     <X size={12} />
-                    Language is required
+                    {t("voices.recording.languageRequired")}
                   </p>
                 )}
               </div>
@@ -797,7 +792,7 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
                 disabled={isSaving}
                 className="flex-1"
               >
-                Back
+                {t("voices.recording.back")}
               </Button>
               <Button
                 variant="primary"
@@ -809,12 +804,12 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
                 {isSaving ? (
                   <>
                     <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                    Saving...
+                    {t("voices.recording.saving")}
                   </>
                 ) : (
                   <>
                     <Check size={16} className="mr-2" />
-                    Save Voice
+                    {t("voices.recording.saveVoice")}
                   </>
                 )}
               </Button>

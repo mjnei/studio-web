@@ -26,11 +26,13 @@ import { FullScriptModal } from "@/components/project/full-script-modal";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { TTSQueueStatus } from "@/components/project/tts-queue-status";
 import { createTTSJob, getTTSJob, type TTSJobResponse } from "@/lib/project-client";
+import { useI18n } from "@/i18n";
 
 export default function PreviewPage() {
   const params = useParams();
   const projectId = params.projectId as string;
   const { state, activeScript, isLoading } = useProjectState(projectId);
+  const { t } = useI18n();
 
   const [showFullScriptModal, setShowFullScriptModal] = useState(false);
   const [ttsJob, setTtsJob] = useState<TTSJobResponse | null>(null);
@@ -44,13 +46,26 @@ export default function PreviewPage() {
   const isCreatingJobRef = useRef(false);
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
+  const getStatusLabel = useCallback(
+    (status: string) => {
+      const statusKeys: Record<string, string> = {
+        completed: "project.status.completed",
+        processing: "project.status.processing",
+        queued: "project.status.queued",
+        failed: "project.status.failed",
+      };
+      return statusKeys[status] ? t(statusKeys[status]) : status;
+    },
+    [t]
+  );
+
   // Define callbacks BEFORE effects that use them
   const createNewTTSJob = useCallback(
     async (voiceId: string, voiceName?: string) => {
       if (!state || !activeScript || isCreatingJobRef.current) return;
 
       if (!voiceId) {
-        setTtsError("Voice information is incomplete.");
+        setTtsError(t("project.preview.voiceIncomplete"));
         return;
       }
 
@@ -71,12 +86,14 @@ export default function PreviewPage() {
         setTtsJob(job);
       } catch (error) {
         console.error("Failed to create TTS job:", error);
-        setTtsError(error instanceof Error ? error.message : "Failed to create TTS job");
+        setTtsError(
+          error instanceof Error ? error.message : t("project.preview.createJobFailed")
+        );
       } finally {
         isCreatingJobRef.current = false;
       }
     },
-    [state, activeScript]
+    [state, activeScript, t]
   );
 
   const loadTTSJob = useCallback(
@@ -93,10 +110,10 @@ export default function PreviewPage() {
         setTtsJob(job);
       } catch (error) {
         console.error("Failed to load TTS job:", error);
-        setTtsError(error instanceof Error ? error.message : "Failed to load TTS job");
+        setTtsError(error instanceof Error ? error.message : t("project.preview.loadJobFailed"));
       }
     },
-    [ttsJob]
+    [ttsJob, t]
   );
 
   // Polling for TTS job updates (simplified approach without SSE)
@@ -337,24 +354,28 @@ export default function PreviewPage() {
   const isProcessing = ttsJob?.status === "queued" || ttsJob?.status === "processing";
 
   const projectName = useMemo(() => {
-    return state?.projectName || state?.movieTitle || "Your Project";
-  }, [state?.projectName, state?.movieTitle]);
+    return state?.projectName || state?.movieTitle || t("project.preview.yourProject");
+  }, [state?.projectName, state?.movieTitle, t]);
 
   const voiceName = useMemo(() => {
-    return ttsJob?.voice_name || state?.voiceName || "Selected Voice";
-  }, [ttsJob?.voice_name, state?.voiceName]);
+    return ttsJob?.voice_name || state?.voiceName || t("project.preview.selectedVoice");
+  }, [ttsJob?.voice_name, state?.voiceName, t]);
 
   const previewText = useMemo(() => {
-    if (!activeScript?.content) return "Preview your script with the selected voice.";
+    if (!activeScript?.content) return t("project.preview.defaultPreviewText");
     const sentences = activeScript.content.match(/[^.!?]+[.!?]+/g);
     if (!sentences || sentences.length === 0) {
       return activeScript.content.substring(0, 200);
     }
     return sentences[0].trim();
-  }, [activeScript?.content]);
+  }, [activeScript?.content, t]);
+
+  const scriptDuration = activeScript
+    ? `${Math.floor(activeScript.duration / 60)}:${(activeScript.duration % 60).toString().padStart(2, "0")}`
+    : "";
 
   if (isLoading) {
-    return <PageLoadingSkeleton message="Loading project..." />;
+    return <PageLoadingSkeleton message={t("project.common.loadingProject")} />;
   }
 
   return (
@@ -364,11 +385,9 @@ export default function PreviewPage() {
           {/* Page Header */}
           <div>
             <Heading variant="section" as="h2" className="text-text-primary">
-              Voice Preview
+              {t("project.preview.title")}
             </Heading>
-            <p className="mt-1 text-sm text-text-muted">
-              Listen to your narration and make sure everything sounds perfect
-            </p>
+            <p className="mt-1 text-sm text-text-muted">{t("project.preview.description")}</p>
           </div>
 
           {/* Main Audio Player Card */}
@@ -402,30 +421,27 @@ export default function PreviewPage() {
               {/* Status Text */}
               <div className="text-center mb-6">
                 <Heading variant="section" as="h3" className="text-text-primary mb-2">
-                  {!ttsJob && !ttsError && "Initializing Preview..."}
-                  {ttsJob?.status === "queued" && "Queued for Generation"}
+                  {!ttsJob && !ttsError && t("project.preview.initializing")}
+                  {ttsJob?.status === "queued" && t("project.preview.queued")}
                   {ttsJob?.status === "processing" &&
-                    `Generating Audio${ttsJob.progress ? ` (${ttsJob.progress}%)` : "..."}`}
-                  {ttsJob?.status === "completed" && "Audio Ready"}
-                  {ttsJob?.status === "failed" && "Generation Failed"}
+                    (ttsJob.progress
+                      ? t("project.preview.generatingAudioProgress", { progress: ttsJob.progress })
+                      : t("project.preview.generatingAudio"))}
+                  {ttsJob?.status === "completed" && t("project.preview.audioReady")}
+                  {ttsJob?.status === "failed" && t("project.preview.generationFailed")}
                 </Heading>
 
                 <p className="text-sm text-text-muted">
-                  {!ttsJob && !ttsError && "Setting up your audio preview..."}
-                  {ttsJob?.status === "queued" && "Your request is in the queue"}
-                  {ttsJob?.status === "processing" && `Using ${voiceName}`}
-                  {ttsJob?.status === "completed" && `Narrated by ${voiceName}`}
+                  {!ttsJob && !ttsError && t("project.preview.settingUp")}
+                  {ttsJob?.status === "queued" && t("project.preview.inQueue")}
+                  {ttsJob?.status === "processing" &&
+                    t("project.preview.usingVoice", { name: voiceName })}
+                  {ttsJob?.status === "completed" &&
+                    t("project.preview.narratedBy", { name: voiceName })}
                   {ttsJob?.status === "failed" && ttsJob.error_message}
                   {ttsError && !ttsJob && ttsError}
                 </p>
 
-                {/* Debug info */}
-                {ttsJob?.status === "completed" && (
-                  <p className="text-xs text-accent-tertiary mt-2">
-                    Status: {ttsJob.status} | Audio URL: {ttsJob.audio_url ? "✓" : "✗"} | Duration:{" "}
-                    {duration}s
-                  </p>
-                )}
               </div>
 
               {/* Queue Status - Show when job is queued */}
@@ -488,7 +504,7 @@ export default function PreviewPage() {
                     <div className="flex items-center justify-center gap-4 mb-6">
                       <button
                         onClick={resetAudio}
-                        title="Reset to start"
+                        title={t("project.preview.resetToStart")}
                         className="h-10 w-10 p-0 flex items-center justify-center rounded hover:bg-surface-panel transition-colors"
                       >
                         <RotateCcw className="h-4 w-4 text-text-primary" />
@@ -497,7 +513,7 @@ export default function PreviewPage() {
                       <button
                         onClick={togglePlayPause}
                         className="h-16 w-16 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 p-0 flex items-center justify-center shadow-lg hover:shadow-glow-hover transition-all text-white font-semibold flex-shrink-0"
-                        title={isPlaying ? "Pause" : "Play"}
+                        title={isPlaying ? t("project.preview.pause") : t("project.preview.play")}
                       >
                         {isPlaying ? (
                           <Pause className="h-8 w-8 fill-white" />
@@ -508,7 +524,7 @@ export default function PreviewPage() {
 
                       <button
                         onClick={toggleMute}
-                        title={isMuted ? "Unmute" : "Mute"}
+                        title={isMuted ? t("project.preview.unmute") : t("project.preview.mute")}
                         className="h-10 w-10 p-0 flex items-center justify-center rounded hover:bg-surface-panel transition-colors"
                       >
                         {isMuted || volume === 0 ? (
@@ -529,7 +545,7 @@ export default function PreviewPage() {
                         step="0.01"
                         value={isMuted ? 0 : volume}
                         onChange={handleVolumeChange}
-                        title="Volume"
+                        title={t("project.preview.volume")}
                         className="flex-1 h-1.5 bg-surface-panel rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none
                         [&::-webkit-slider-thumb]:w-3
                         [&::-webkit-slider-thumb]:h-3
@@ -581,7 +597,7 @@ export default function PreviewPage() {
                     }}
                   >
                     <RotateCcw className="h-5 w-5 mr-2" />
-                    Retry Generation
+                    {t("project.preview.retryGeneration")}
                   </Button>
                 </div>
               )}
@@ -593,13 +609,13 @@ export default function PreviewPage() {
                 <div className="flex flex-wrap items-center justify-between gap-4">
                   <div className="flex items-center gap-4 text-sm flex-wrap">
                     <div className="flex items-center gap-2">
-                      <span className="text-text-muted">Job ID:</span>
+                      <span className="text-text-muted">{t("project.preview.jobId")}</span>
                       <Badge variant="outline" className="font-mono">
                         #{ttsJob.id}
                       </Badge>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-text-muted">Status:</span>
+                      <span className="text-text-muted">{t("project.common.status")}:</span>
                       <Badge
                         variant={
                           ttsJob.status === "completed"
@@ -609,7 +625,7 @@ export default function PreviewPage() {
                               : "primary"
                         }
                       >
-                        {ttsJob.status}
+                        {getStatusLabel(ttsJob.status)}
                       </Badge>
                     </div>
                     {ttsJob.audio_duration_seconds && (
@@ -627,7 +643,7 @@ export default function PreviewPage() {
                   {ttsJob.status === "completed" && (
                     <div className="flex items-center gap-2 text-xs text-accent-tertiary">
                       <Sparkles className="h-4 w-4" />
-                      <span>Cached & optimized</span>
+                      <span>{t("project.preview.cachedOptimized")}</span>
                     </div>
                   )}
                 </div>
@@ -644,27 +660,33 @@ export default function PreviewPage() {
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500">
                     <CheckCircle className="h-5 w-5 text-white" />
                   </div>
-                  <CardTitle>Project Details</CardTitle>
+                  <CardTitle>{t("project.preview.projectDetails")}</CardTitle>
                 </div>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
                   <div>
                     <p className="text-xs text-text-muted uppercase tracking-wide mb-1">
-                      Project Name
+                      {t("project.preview.projectName")}
                     </p>
                     <p className="font-medium text-text-primary">{projectName}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-text-muted uppercase tracking-wide mb-1">Voice</p>
+                    <p className="text-xs text-text-muted uppercase tracking-wide mb-1">
+                      {t("project.common.voice")}
+                    </p>
                     <p className="font-medium text-text-primary">{voiceName}</p>
                   </div>
                   {activeScript && (
                     <div>
-                      <p className="text-xs text-text-muted uppercase tracking-wide mb-1">Script</p>
+                      <p className="text-xs text-text-muted uppercase tracking-wide mb-1">
+                        {t("project.common.script")}
+                      </p>
                       <p className="text-sm text-text-secondary">
-                        {activeScript.wordCount} words • ~{Math.floor(activeScript.duration / 60)}:
-                        {(activeScript.duration % 60).toString().padStart(2, "0")}
+                        {t("project.common.scriptMetaShort", {
+                          count: activeScript.wordCount,
+                          duration: scriptDuration,
+                        })}
                       </p>
                     </div>
                   )}
@@ -684,7 +706,7 @@ export default function PreviewPage() {
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-cyan-500">
                     <FileText className="h-5 w-5 text-white" />
                   </div>
-                  <CardTitle>Script Preview</CardTitle>
+                  <CardTitle>{t("project.preview.scriptPreview")}</CardTitle>
                 </div>
               </CardHeader>
               <CardContent>
@@ -695,7 +717,7 @@ export default function PreviewPage() {
                 </div>
                 <div className="mt-3 flex items-center gap-2 text-xs text-accent-tertiary group-hover:text-accent-tertiary-hover transition-colors">
                   <Info className="h-3.5 w-3.5" />
-                  <span>Click to view full script</span>
+                  <span>{t("project.preview.clickFullScript")}</span>
                 </div>
               </CardContent>
             </Card>

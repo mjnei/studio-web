@@ -11,10 +11,12 @@ import { FloatingWorkflowNavigation } from "@/components/project/floating-workfl
 import { MovieSelection } from "@/components/project/movie-selection";
 import { Button } from "@/components/ui/button";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
+import { useI18n } from "@/i18n";
 
 export default function SourcePage() {
   const params = useParams();
   const projectId = params.projectId as string;
+  const { t } = useI18n();
   const { state, isLoading, updateMovie } = useProjectState(projectId);
 
   const [selectedMovie, setSelectedMovie] = useState<{
@@ -72,14 +74,14 @@ export default function SourcePage() {
       setIsChanging(false);
     } catch (error) {
       console.error("Failed to update movie:", error);
-      alert("Failed to update movie. Please try again.");
+      alert(t("project.source.updateFailed"));
     } finally {
       setIsSaving(false);
     }
   };
 
   if (isLoading) {
-    return <PageLoadingSkeleton message="Loading project..." />;
+    return <PageLoadingSkeleton message={t("project.common.loadingProject")} />;
   }
 
   return (
@@ -88,14 +90,16 @@ export default function SourcePage() {
         <div className="flex flex-col gap-6 pb-24">
           <div className="flex items-center justify-between">
             <div>
-              <Heading variant="section" as="h2" className="text-text-primary">Source Movie</Heading>
+              <Heading variant="section" as="h2" className="text-text-primary">
+                {t("project.source.title")}
+              </Heading>
               <p className="mt-1 text-sm text-text-muted">
-                {isChanging ? "Select a different movie" : "View your selected movie"}
+                {isChanging ? t("project.source.selectDifferent") : t("project.source.viewSelected")}
               </p>
             </div>
             {!isChanging && state?.movieId && (
               <Button variant="secondary" size="md" onClick={() => setIsChanging(true)}>
-                Change Movie
+                {t("project.source.changeMovie")}
               </Button>
             )}
           </div>
@@ -107,7 +111,7 @@ export default function SourcePage() {
                   <div className="h-64 w-44 overflow-hidden rounded-lg bg-surface-raised">
                     <Image
                       src={state.moviePoster}
-                      alt={state.movieTitle || "Poster"}
+                      alt={state.movieTitle || t("project.common.poster")}
                       className="h-full w-full object-cover"
                       width={176}
                       height={264}
@@ -123,13 +127,17 @@ export default function SourcePage() {
                   </div>
                   {state.movieGenre && (
                     <div className="mb-3">
-                      <span className="text-sm font-medium text-text-secondary">Genre: </span>
+                      <span className="text-sm font-medium text-text-secondary">
+                        {t("project.common.genre")}:{" "}
+                      </span>
                       <span className="text-sm text-text-muted">{state.movieGenre}</span>
                     </div>
                   )}
                   {state.movieRating && (
                     <div className="mb-3">
-                      <span className="text-sm font-medium text-text-secondary">Rating: </span>
+                      <span className="text-sm font-medium text-text-secondary">
+                        {t("project.common.rating")}:{" "}
+                      </span>
                       <span className="text-sm text-text-muted">
                         {state.movieRating.toFixed(1)}/10
                       </span>
@@ -137,18 +145,19 @@ export default function SourcePage() {
                   )}
                   {state.movieDuration && (
                     <div className="mb-3">
-                      <span className="text-sm font-medium text-text-secondary">Duration: </span>
-                      <span className="text-sm text-text-muted">{state.movieDuration} min</span>
+                      <span className="text-sm font-medium text-text-secondary">
+                        {t("project.common.duration")}:{" "}
+                      </span>
+                      <span className="text-sm text-text-muted">
+                        {t("project.common.durationMin", { minutes: state.movieDuration })}
+                      </span>
                     </div>
                   )}
                   <div className="mt-6 rounded-lg border border-border-default bg-surface-panel p-4">
                     <div className="flex items-start gap-3">
                       <Info className="h-5 w-5 text-accent-cyan" />
                       <div className="flex-1">
-                        <p className="text-sm text-text-secondary">
-                          This is the source movie for your project. You can change it, but this may
-                          require updating your script to match the new content.
-                        </p>
+                        <p className="text-sm text-text-secondary">{t("project.source.changeWarning")}</p>
                       </div>
                     </div>
                   </div>
@@ -167,7 +176,7 @@ export default function SourcePage() {
                       onClick={() => setIsChanging(false)}
                       disabled={isSaving}
                     >
-                      Cancel
+                      {t("common.cancel")}
                     </Button>
                     <Button
                       variant="primary"
@@ -176,7 +185,7 @@ export default function SourcePage() {
                       loading={isSaving}
                       disabled={!selectedMovie || selectedMovie.id === state?.movieId}
                     >
-                      Save & Continue
+                      {t("project.common.saveAndContinue")}
                     </Button>
                   </div>
                 </Card>

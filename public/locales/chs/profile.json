@@ -39,7 +39,13 @@
       "subscriptionStatus": {
         "active": "活跃",
         "canceled": "已取消",
-        "inactive": "不活跃"
+        "inactive": "不活跃",
+        "expired": "已过期"
+      },
+      "tiers": {
+        "free": "免费版",
+        "pro": "Pro",
+        "premium": "Premium"
       }
     },
     "passwordSecurity": {

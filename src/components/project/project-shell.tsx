@@ -11,6 +11,7 @@ import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { CreditStatus } from "@/components/credits/CreditStatus";
 import { useToast } from "@/components/ui/toast";
 import { Heading } from "@/components/ui/heading";
+import { useI18n } from "@/i18n";
 
 type Status = "Voice Ready" | "Composing" | "Rendering" | "Completed";
 
@@ -19,6 +20,13 @@ const statusColors: Record<Status, string> = {
   Composing: "bg-status-processing",
   Rendering: "bg-status-processing animate-pulse",
   Completed: "bg-status-completed",
+};
+
+const statusI18nKeys: Record<Status, string> = {
+  "Voice Ready": "project.shell.statusVoiceReady",
+  Composing: "project.shell.statusComposing",
+  Rendering: "project.shell.statusRendering",
+  Completed: "project.shell.statusCompleted",
 };
 
 // Determine project status based on completed steps
@@ -33,6 +41,7 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const toast = useToast();
+  const { t } = useI18n();
   const projectId = pathname.split("/")[2];
   const { collapsed, mobileOpen, setMobileOpen, toggle, isNarrow } = useSidebar();
 
@@ -50,16 +59,13 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
         error.message.includes("Project not found");
 
       if (is404) {
-        toast.error(
-          "Project not found",
-          "This project may have been deleted. Redirecting to projects list..."
-        );
+        toast.error(t("project.common.projectNotFound"), t("project.common.projectNotFoundDesc"));
         setTimeout(() => {
           router.push("/projects");
         }, 2000);
       }
     }
-  }, [isLoading, error, router, toast]);
+  }, [isLoading, error, router, toast, t]);
 
   // Determine which steps are completed based on project state
   const completedSteps = {
@@ -77,7 +83,7 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
     projectState?.projectName ||
     projectState?.title ||
     projectState?.movieTitle ||
-    "Untitled Project";
+    t("project.common.untitledProject");
 
   useEffect(() => {
     setMobileOpen(false);
@@ -111,7 +117,7 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
               <button
                 onClick={toggle}
                 className="rounded-md p-1.5 text-text-muted hover:bg-surface-hover hover:text-text-secondary"
-                aria-label="Open navigation"
+                aria-label={t("project.common.openNavigation")}
               >
                 <PanelLeft size={20} />
               </button>
@@ -125,7 +131,7 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
             <span
               className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium text-white ${statusColors[projectStatus]}`}
             >
-              {projectStatus}
+              {t(statusI18nKeys[projectStatus])}
             </span>
             <div className="ml-auto flex items-center gap-2 md:hidden">
               {/* Export button removed */}

@@ -48,7 +48,8 @@
       "sortDescending": "降序排列",
       "smallGrid": "小网格",
       "mediumGrid": "中等网格",
-      "listView": "列表视图"
+      "listView": "列表视图",
+      "showing": "显示 {count} 个匹配的任务"
     },
     "bulk": {
       "retryFailed": "重试失败的任务",
@@ -99,7 +100,20 @@
       "viewProject": "查看项目",
       "completedAt": "完成于",
       "duration": "时长",
-      "processedOn": "处理于"
+      "processedOn": "处理于",
+      "ready": "就绪",
+      "completed": "已完成",
+      "play": "播放",
+      "previewVideo": "预览视频",
+      "voice": "语音",
+      "cost": "费用",
+      "date": "日期",
+      "attempt": "尝试",
+      "default": "默认",
+      "na": "无",
+      "creditAbbr": "额度",
+      "credit": "额度",
+      "credits": "额度"
     },
     "failedJob": {
       "retry": "重试",
@@ -108,13 +122,30 @@
       "errorDetails": "错误详情",
       "failureReason": "原因",
       "failedAt": "失败于",
-      "retryAttempt": "重试尝试"
+      "retryAttempt": "重试尝试",
+      "failed": "失败",
+      "generationFailed": "生成失败（进度 {progress}%）",
+      "unexpectedError": "视频渲染过程中发生意外服务器错误。",
+      "voice": "语音",
+      "cost": "费用",
+      "failedOn": "失败于",
+      "retryGeneration": "重试生成",
+      "default": "默认",
+      "attempt": "尝试",
+      "credit": "额度",
+      "credits": "额度"
     },
     "modal": {
       "videoPreview": "视频预览",
       "close": "关闭",
       "download": "下载视频",
-      "share": "分享视频"
+      "share": "分享视频",
+      "noVideoUrl": "没有可用的视频播放地址",
+      "voice": "语音",
+      "cost": "费用",
+      "attempt": "尝试",
+      "date": "日期",
+      "default": "默认"
     },
     "loading": "正在加载视频生成仪表板...",
     "credit": "信用",

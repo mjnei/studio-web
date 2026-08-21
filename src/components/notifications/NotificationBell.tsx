@@ -4,9 +4,11 @@ import { Bell } from "lucide-react";
 import { useNotifications } from "@/lib/notification-context";
 import { NotificationDropdown } from "./NotificationDropdown";
 import { useState, useRef, useEffect } from "react";
+import { useI18n } from "@/i18n";
 
 export function NotificationBell() {
   const { unreadCount, isSSEConnected } = useNotifications();
+  const { t } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -38,8 +40,12 @@ export function NotificationBell() {
         ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
         className="relative rounded-lg p-1.5 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all focus-ring group"
-        aria-label={`Notifications${unreadCount > 0 ? ` (${displayCount} unread)` : ""}`}
-        title="Notifications"
+        aria-label={
+          unreadCount > 0
+            ? t("notifications.unreadWithCount", { count: displayCount })
+            : t("notifications.title")
+        }
+        title={t("notifications.title")}
       >
         <Bell size={20} className="group-hover:scale-110 transition-transform duration-200" />
 

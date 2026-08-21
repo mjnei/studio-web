@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/toast";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
+import { useI18n } from "@/i18n";
 
 interface VideoGenerationProps {
   movieTitle: string;
@@ -39,12 +40,13 @@ export function VideoGeneration({
   steps = [],
   onStartGeneration,
 }: VideoGenerationProps) {
+  const { t } = useI18n();
   const toast = useToast();
 
   const downloadVideo = () => {
     if (videoUrl) {
       // Implement download logic
-      toast.success("Downloaded", "Video file saved to your device");
+      toast.success(t("project.videoGen.downloaded"), t("project.videoGen.downloadedDesc"));
     }
   };
 
@@ -61,17 +63,17 @@ export function VideoGeneration({
           </div>
         </div>
         <Heading variant="page" as="h2" className="text-text-primary mb-2">
-          Generate Video
+          {t("project.videoGen.title")}
         </Heading>
         <Text variant="bodyLg" className="text-text-secondary">
-          Create your final video with synchronized audio and visuals
+          {t("project.videoGen.description")}
         </Text>
       </div>
 
       {/* Project Summary */}
       <Card variant="elevated" padding="lg">
         <CardHeader className="pb-4">
-          <CardTitle>Project Summary</CardTitle>
+          <CardTitle>{t("project.videoGen.projectSummary")}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -80,7 +82,7 @@ export function VideoGeneration({
                 <Film className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="text-sm font-medium text-text-primary">Movie</p>
+                <p className="text-sm font-medium text-text-primary">{t("project.common.movie")}</p>
                 <p className="text-sm text-text-secondary">{movieTitle}</p>
               </div>
             </div>
@@ -89,8 +91,12 @@ export function VideoGeneration({
                 <Clock className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="text-sm font-medium text-text-primary">Duration</p>
-                <p className="text-sm text-text-secondary">~{estimatedDuration} minutes</p>
+                <p className="text-sm font-medium text-text-primary">
+                  {t("project.common.duration")}
+                </p>
+                <p className="text-sm text-text-secondary">
+                  {t("project.videoGen.durationApprox", { minutes: estimatedDuration })}
+                </p>
               </div>
             </div>
           </div>
@@ -101,7 +107,7 @@ export function VideoGeneration({
                 {wordCount}
               </Heading>
               <Text variant="caption" className="text-text-muted">
-                Words
+                {t("project.common.wordsLabel")}
               </Text>
             </div>
             <div className="text-center p-3 bg-surface-raised rounded-lg">
@@ -109,7 +115,7 @@ export function VideoGeneration({
                 {script.split("\n\n").length}
               </Heading>
               <Text variant="caption" className="text-text-muted">
-                Paragraphs
+                {t("project.videoGen.paragraphs")}
               </Text>
             </div>
             <div className="text-center p-3 bg-surface-raised rounded-lg">
@@ -117,15 +123,15 @@ export function VideoGeneration({
                 1080p
               </Heading>
               <Text variant="caption" className="text-text-muted">
-                Quality
+                {t("project.videoGen.quality")}
               </Text>
             </div>
             <div className="text-center p-3 bg-surface-raised rounded-lg">
               <Heading variant="subsection" className="text-green-500">
-                Ready
+                {t("project.videoGen.ready")}
               </Heading>
               <Text variant="caption" className="text-text-muted">
-                Status
+                {t("project.common.status")}
               </Text>
             </div>
           </div>
@@ -142,21 +148,17 @@ export function VideoGeneration({
               </div>
             </div>
             <Heading variant="section" as="h3" className="text-text-primary mb-2">
-              Ready to Generate Video
+              {t("project.videoGen.readyTitle")}
             </Heading>
-            <p className="text-text-secondary mb-2">
-              All components are ready. Click below to start video generation.
-            </p>
-            <p className="text-sm text-text-muted mb-8">
-              This process may take 3-5 minutes depending on video length
-            </p>
+            <p className="text-text-secondary mb-2">{t("project.videoGen.readyDesc")}</p>
+            <p className="text-sm text-text-muted mb-8">{t("project.videoGen.processTimeHint")}</p>
             <Button
               variant="primary"
               size="lg"
               leftIcon={<Video className="w-5 h-5" />}
               onClick={onStartGeneration}
             >
-              Start Video Generation
+              {t("project.videoGen.startButton")}
             </Button>
           </div>
         </Card>
@@ -166,7 +168,7 @@ export function VideoGeneration({
         <Card variant="elevated" padding="lg">
           <CardHeader className="pb-4">
             <div className="flex items-center justify-between">
-              <CardTitle>Generating Video</CardTitle>
+              <CardTitle>{t("project.videoGen.generatingTitle")}</CardTitle>
               <Badge variant="info">{Math.round(progress)}%</Badge>
             </div>
           </CardHeader>
@@ -180,7 +182,7 @@ export function VideoGeneration({
                 />
               </div>
               <p className="text-sm text-text-secondary mt-2 text-center">
-                Processing... This may take a few minutes
+                {t("project.videoGen.processingHint")}
               </p>
             </div>
 
@@ -241,11 +243,9 @@ export function VideoGeneration({
                 </div>
               </div>
               <Heading variant="page" as="h3" className="text-text-primary mb-2">
-                Video Generated Successfully!
+                {t("project.videoGen.successTitle")}
               </Heading>
-              <p className="text-text-secondary mb-8">
-                Your video is ready to preview and download
-              </p>
+              <p className="text-text-secondary mb-8">{t("project.videoGen.successDesc")}</p>
 
               {/* Video Preview */}
               <div className="max-w-3xl mx-auto mb-6">
@@ -277,10 +277,10 @@ export function VideoGeneration({
                   leftIcon={<Download className="w-5 h-5" />}
                   onClick={downloadVideo}
                 >
-                  Download Video
+                  {t("project.videoGen.downloadVideo")}
                 </Button>
                 <Button variant="secondary" size="lg" leftIcon={<Play className="w-5 h-5" />}>
-                  Preview Video
+                  {t("project.videoGen.previewVideo")}
                 </Button>
               </div>
             </div>
@@ -293,11 +293,13 @@ export function VideoGeneration({
                 <CheckCircle2 className="w-4 h-4 text-accent-primary" />
               </div>
               <div>
-                <p className="text-sm font-medium text-text-primary mb-1">🎉 What's Next?</p>
+                <p className="text-sm font-medium text-text-primary mb-1">
+                  {t("project.videoGen.whatsNext")}
+                </p>
                 <ul className="text-xs text-text-secondary space-y-1">
-                  <li>• Download your video and share it on social media</li>
-                  <li>• Create another project with a different movie</li>
-                  <li>• Explore advanced editing options in your project dashboard</li>
+                  <li>• {t("project.videoGen.nextTip1")}</li>
+                  <li>• {t("project.videoGen.nextTip2")}</li>
+                  <li>• {t("project.videoGen.nextTip3")}</li>
                 </ul>
               </div>
             </div>

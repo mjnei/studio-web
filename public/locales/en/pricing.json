@@ -92,6 +92,7 @@
       "changeAnswer": "Yes, you can upgrade, downgrade, or cancel your plan at any time. When downgrading, you keep access to your current plan features until the end of your billing cycle.",
       "teamQuestion": "Do you offer team plans?",
       "teamAnswer": "Team plans with shared credits and collaborative features are available for Premium tier subscribers. Contact us for custom pricing."
-    }
+    },
+    "subscribeComingSoon": "Subscribing to {tier} tier... (Payment integration coming soon)"
   }
 }

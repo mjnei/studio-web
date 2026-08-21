@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useI18n } from "@/i18n";
 import WelcomeStep from "@/components/onboarding/WelcomeStep";
 import WorkflowStep from "@/components/onboarding/WorkflowStep";
 import PasswordStep from "@/components/onboarding/PasswordStep";
 import CompletionStep from "@/components/onboarding/CompletionStep";
 
 export default function OnboardingPage() {
+  const { t } = useI18n();
   const [currentStep, setCurrentStep] = useState(0);
 
   const steps = [
@@ -40,7 +42,10 @@ export default function OnboardingPage() {
         <div
           className="mb-4 sm:mb-6"
           role="status"
-          aria-label={`Step ${currentStep + 1} of ${totalSteps}`}
+          aria-label={t("onboarding.progress.ariaLabel", {
+            current: currentStep + 1,
+            total: totalSteps,
+          })}
         >
           {/* Step Dots for Desktop */}
           <div className="hidden sm:flex items-center justify-center mb-6">
@@ -79,7 +84,7 @@ export default function OnboardingPage() {
           <div className="sm:hidden">
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-                Step {currentStep + 1} of {totalSteps}
+                {t("onboarding.progress.stepOf", { current: currentStep + 1, total: totalSteps })}
               </span>
               <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
                 {Math.round(((currentStep + 1) / totalSteps) * 100)}%

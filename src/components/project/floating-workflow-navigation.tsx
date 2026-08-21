@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Home, Check } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSidebar } from "@/components/shell/sidebar-context";
+import { useI18n } from "@/i18n";
 
 interface FloatingWorkflowNavigationProps {
   projectId: string;
@@ -18,26 +19,26 @@ interface FloatingWorkflowNavigationProps {
   isProcessing?: boolean;
 }
 
-const steps = [
-  { key: "source", label: "Source" },
-  { key: "script", label: "Script" },
-  { key: "voice", label: "Voice" },
-  { key: "details", label: "Details" },
-  { key: "preview", label: "Preview" },
-  { key: "compose", label: "Compose" },
-  { key: "export", label: "Export" },
+const stepKeys = [
+  "source",
+  "script",
+  "voice",
+  "details",
+  "preview",
+  "compose",
+  "export",
 ] as const;
 
-const stepOrder: Record<string, number> = Object.fromEntries(steps.map(({ key }, i) => [key, i]));
+const stepOrder: Record<string, number> = Object.fromEntries(stepKeys.map((key, i) => [key, i]));
 
-const nextStepLabels: Record<string, string> = {
-  source: "Continue to Script",
-  script: "Continue to Voice",
-  voice: "Continue to Details",
-  details: "Continue to Preview",
-  preview: "Continue to Compose",
-  compose: "Continue to Export",
-  export: "Complete Project",
+const nextStepLabelKeys: Record<string, string> = {
+  source: "project.nav.continueToScript",
+  script: "project.nav.continueToVoice",
+  voice: "project.nav.continueToDetails",
+  details: "project.nav.continueToPreview",
+  preview: "project.nav.continueToCompose",
+  compose: "project.nav.continueToExport",
+  export: "project.nav.completeProject",
 };
 
 export function FloatingWorkflowNavigation({
@@ -52,6 +53,7 @@ export function FloatingWorkflowNavigation({
   isProcessing = false,
 }: FloatingWorkflowNavigationProps) {
   const router = useRouter();
+  const { t } = useI18n();
   const { collapsed, isNarrow } = useSidebar();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -62,7 +64,15 @@ export function FloatingWorkflowNavigation({
 
   const currentStepIndex = stepOrder[currentStep];
   const isFirstStep = currentStepIndex === 0;
-  const isLastStep = currentStepIndex === steps.length - 1;
+  const isLastStep = currentStepIndex === stepKeys.length - 1;
+
+  const steps = stepKeys.map((key) => ({
+    key,
+    label: t(`project.nav.${key}`),
+  }));
+
+  const resolvedNextLabel =
+    nextLabel || t(nextStepLabelKeys[currentStep] || "common.continue");
 
   // Auto-hide on scroll down, show on scroll up
   useEffect(() => {
@@ -141,7 +151,7 @@ export function FloatingWorkflowNavigation({
                         ? "bg-accent-cyan text-white ring-2 sm:ring-4 ring-accent-cyan/20"
                         : "bg-surface-raised border border-border-default text-text-muted"
                   }`}
-                  aria-label={`Step ${index + 1}: ${step.label}${isCurrent ? " (current)" : ""}${isCompleted ? " (completed)" : ""}`}
+                  aria-label={`${t("project.nav.stepAria", { number: index + 1, label: step.label })}${isCurrent ? t("project.nav.stepCurrent") : ""}${isCompleted ? t("project.nav.stepCompleted") : ""}`}
                   role="status"
                 >
                   {isCompleted ? (
@@ -186,9 +196,9 @@ export function FloatingWorkflowNavigation({
                 leftIcon={<ArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
                 onClick={handleBack}
                 className="shadow-lg sm:size-md text-xs sm:text-sm touch-manipulation"
-                aria-label={backLabel || "Go back"}
+                aria-label={backLabel || t("project.nav.goBack")}
               >
-                <span className="hidden sm:inline">{backLabel || "Back"}</span>
+                <span className="hidden sm:inline">{backLabel || t("common.back")}</span>
               </Button>
             )}
 
@@ -199,10 +209,10 @@ export function FloatingWorkflowNavigation({
               leftIcon={<Home className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
               onClick={handleGoHome}
               className="shadow-lg sm:size-md text-xs sm:text-sm touch-manipulation"
-              title="Go to Projects"
-              aria-label="Go to Projects home"
+              title={t("project.nav.goToProjects")}
+              aria-label={t("project.nav.goToProjectsHome")}
             >
-              <span className="hidden md:inline">Projects</span>
+              <span className="hidden md:inline">{t("project.projects")}</span>
             </Button>
           </div>
 
@@ -218,12 +228,12 @@ export function FloatingWorkflowNavigation({
                 onClick={handleNext}
                 disabled={isProcessing}
                 className="shadow-lg sm:size-md text-xs sm:text-sm touch-manipulation"
-                aria-label={nextLabel || nextStepLabels[currentStep] || "Continue to next step"}
+                aria-label={resolvedNextLabel || t("project.nav.continueToNextStep")}
               >
-                <span className="hidden sm:inline">
-                  {nextLabel || nextStepLabels[currentStep] || "Continue"}
+                <span className="hidden sm:inline">{resolvedNextLabel}</span>
+                <span className="sm:hidden">
+                  {isLastStep ? t("common.complete") : t("common.next")}
                 </span>
-                <span className="sm:hidden">{isLastStep ? "Complete" : "Next"}</span>
               </Button>
             )}
 

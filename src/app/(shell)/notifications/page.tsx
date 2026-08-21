@@ -38,11 +38,7 @@ export default function NotificationsPage() {
       return;
     }
 
-    if (
-      window.confirm(
-        `${t("notifications.confirmMarkAsRead")} ${unreadNotifications.length} ${unreadNotifications.length !== 1 ? t("notifications.confirmMarkAsReadPlural") : "notification"}?`
-      )
-    ) {
+    if (window.confirm(t("notifications.markAllConfirm", { count: unreadNotifications.length }))) {
       await markAllAsRead();
       await refreshNotifications();
     }
@@ -92,7 +88,7 @@ export default function NotificationsPage() {
                       ? "bg-accent-primary text-white"
                       : "bg-surface-raised text-text-secondary hover:bg-surface-hover hover:text-text-primary border border-border-default"
                   }`}
-                  aria-label={`Filter by ${filterOption.label}`}
+                  aria-label={t("notifications.filterBy", { label: filterOption.label })}
                 >
                   {filterOption.label}
                 </button>
@@ -108,7 +104,7 @@ export default function NotificationsPage() {
                 size="sm"
                 onClick={handleMarkAllAsRead}
                 className="gap-2 flex-1 sm:flex-none"
-                aria-label="Mark all notifications as read"
+                aria-label={t("notifications.markAllAsRead")}
               >
                 <CheckCheck size={16} />
                 <span>{t("notifications.markAllAsRead")}</span>
@@ -119,7 +115,7 @@ export default function NotificationsPage() {
               size="sm"
               onClick={() => setShowPreferences(true)}
               className="gap-2 flex-1 sm:flex-none"
-              aria-label="Open notification preferences"
+              aria-label={t("notifications.notificationSettings")}
             >
               <Settings size={16} />
               <span>{t("notifications.preferences")}</span>

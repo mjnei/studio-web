@@ -5,6 +5,7 @@ import { useNotifications } from "@/lib/notification-context";
 import { formatDistanceToNow } from "date-fns";
 import { CheckCircle, AlertCircle, Info, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useI18n } from "@/i18n";
 
 interface NotificationItemProps {
   notification: Notification;
@@ -34,6 +35,7 @@ const colorMap = {
 export function NotificationItem({ notification, onClose }: NotificationItemProps) {
   const { markAsRead, deleteNotification } = useNotifications();
   const router = useRouter();
+  const { t } = useI18n();
 
   const handleClick = async (e: React.MouseEvent<HTMLDivElement>) => {
     // Don't navigate if clicking on action buttons
@@ -113,8 +115,8 @@ export function NotificationItem({ notification, onClose }: NotificationItemProp
                 <button
                   onClick={handleMarkAsRead}
                   className="p-1 sm:p-1 rounded text-text-muted hover:text-accent-primary hover:bg-surface-raised active:bg-surface-raised transition-all touch-manipulation"
-                  title="Mark as read"
-                  aria-label="Mark as read"
+                  title={t("notifications.markAsRead")}
+                  aria-label={t("notifications.markAsRead")}
                 >
                   <CheckCircle size={13} className="sm:hidden" />
                   <CheckCircle size={14} className="hidden sm:block" />
@@ -123,8 +125,8 @@ export function NotificationItem({ notification, onClose }: NotificationItemProp
               <button
                 onClick={handleDelete}
                 className="p-1 sm:p-1 rounded text-text-muted hover:text-status-failed hover:bg-surface-raised active:bg-surface-raised transition-all touch-manipulation"
-                title="Delete notification"
-                aria-label="Delete notification"
+                title={t("notifications.deleteNotification")}
+                aria-label={t("notifications.deleteNotification")}
               >
                 <Trash2 size={13} className="sm:hidden" />
                 <Trash2 size={14} className="hidden sm:block" />

@@ -8,16 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/toast";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
-
-interface ScriptGenerationProps {
-  movieId: string;
-  movieTitle: string;
-  script?: string;
-  onScriptChange: (script: string) => void;
-  onGenerate: () => void;
-  onRegenerate: () => void;
-  isGenerating?: boolean;
-}
+import { useI18n } from "@/i18n";
 
 interface ScriptGenerationProps {
   movieId: string;
@@ -37,6 +28,7 @@ export function ScriptGeneration({
   onRegenerate,
   isGenerating = false,
 }: ScriptGenerationProps) {
+  const { t } = useI18n();
   const [editing, setEditing] = useState(false);
   const [copied, setCopied] = useState(false);
   const toast = useToast();
@@ -45,7 +37,7 @@ export function ScriptGeneration({
     if (script) {
       navigator.clipboard.writeText(script);
       setCopied(true);
-      toast.success("Copied", "Script copied to clipboard");
+      toast.success(t("project.scriptGen.copied"), t("project.scriptGen.copiedDesc"));
       setTimeout(() => setCopied(false), 2000);
     }
   };
@@ -63,10 +55,10 @@ export function ScriptGeneration({
           </div>
         </div>
         <Heading variant="page" as="h2" className="text-text-primary mb-2">
-          Generate Script
+          {t("project.scriptGen.title")}
         </Heading>
         <Text variant="bodyLg" className="text-text-secondary">
-          Let AI create a script for {movieTitle}, then review and modify as needed
+          {t("project.scriptGen.description", { title: movieTitle })}
         </Text>
       </div>
 
@@ -80,11 +72,10 @@ export function ScriptGeneration({
               </div>
             </div>
             <Heading variant="section" as="h3" className="text-text-primary mb-2">
-              Ready to Generate Script
+              {t("project.scriptGen.readyTitle")}
             </Heading>
             <Text variant="bodyLg" className="text-text-secondary mb-8 max-w-md mx-auto">
-              Our AI will analyze {movieTitle} and create a professional voice-over script tailored
-              for your project.
+              {t("project.scriptGen.readyDescription", { title: movieTitle })}
             </Text>
             <Button
               variant="primary"
@@ -93,7 +84,7 @@ export function ScriptGeneration({
               onClick={onGenerate}
               loading={isGenerating}
             >
-              {isGenerating ? "Generating Script..." : "Generate Script with AI"}
+              {isGenerating ? t("project.scriptGen.generating") : t("project.scriptGen.generateButton")}
             </Button>
           </div>
         </Card>
@@ -108,7 +99,7 @@ export function ScriptGeneration({
                   {wordCount}
                 </Heading>
                 <Text variant="caption" className="text-text-muted">
-                  Words
+                  {t("project.common.wordsLabel")}
                 </Text>
               </div>
             </Card>
@@ -118,7 +109,7 @@ export function ScriptGeneration({
                   ~{estimatedDuration}min
                 </Heading>
                 <Text variant="caption" className="text-text-muted">
-                  Est. Duration
+                  {t("project.scriptGen.estDuration")}
                 </Text>
               </div>
             </Card>
@@ -128,17 +119,17 @@ export function ScriptGeneration({
                   {script.split("\n\n").length}
                 </Heading>
                 <Text variant="caption" className="text-text-muted">
-                  Paragraphs
+                  {t("project.scriptGen.paragraphs")}
                 </Text>
               </div>
             </Card>
             <Card variant="elevated" padding="md">
               <div className="text-center">
                 <Badge variant="success" size="md">
-                  Ready
+                  {t("project.scriptGen.ready")}
                 </Badge>
                 <Text variant="caption" className="text-text-muted mt-1">
-                  Status
+                  {t("project.common.status")}
                 </Text>
               </div>
             </Card>
@@ -147,7 +138,7 @@ export function ScriptGeneration({
           {/* Script Editor */}
           <Card variant="elevated" padding="none">
             <CardHeader className="flex flex-row items-center justify-between border-b border-border-default p-4">
-              <CardTitle>Script Content</CardTitle>
+              <CardTitle>{t("project.scriptGen.scriptContent")}</CardTitle>
               <div className="flex items-center gap-2">
                 <Button
                   variant="ghost"
@@ -155,7 +146,7 @@ export function ScriptGeneration({
                   leftIcon={copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                   onClick={copyToClipboard}
                 >
-                  {copied ? "Copied" : "Copy"}
+                  {copied ? t("project.scriptGen.copied") : t("project.scriptGen.copy")}
                 </Button>
                 <Button
                   variant="ghost"
@@ -163,7 +154,7 @@ export function ScriptGeneration({
                   leftIcon={<Edit3 className="w-4 h-4" />}
                   onClick={() => setEditing(!editing)}
                 >
-                  {editing ? "Preview" : "Edit"}
+                  {editing ? t("project.scriptGen.preview") : t("project.scriptGen.edit")}
                 </Button>
                 <Button
                   variant="ghost"
@@ -171,7 +162,7 @@ export function ScriptGeneration({
                   leftIcon={<RefreshCw className="w-4 h-4" />}
                   onClick={onRegenerate}
                 >
-                  Regenerate
+                  {t("project.scriptGen.regenerate")}
                 </Button>
               </div>
             </CardHeader>
@@ -181,7 +172,7 @@ export function ScriptGeneration({
                   value={script}
                   onChange={(e) => onScriptChange(e.target.value)}
                   className="w-full min-h-[400px] p-6 bg-surface-base text-text-primary font-mono text-sm border-none focus:outline-none focus:ring-0 resize-none"
-                  placeholder="Enter your script here..."
+                  placeholder={t("project.script.placeholder")}
                 />
               ) : (
                 <div className="p-6 prose prose-invert max-w-none">
@@ -202,11 +193,13 @@ export function ScriptGeneration({
                 <Sparkles className="w-4 h-4 text-accent-primary" />
               </div>
               <div>
-                <p className="text-sm font-medium text-text-primary mb-1">💡 Pro Tips</p>
+                <p className="text-sm font-medium text-text-primary mb-1">
+                  {t("project.scriptGen.proTips")}
+                </p>
                 <ul className="text-xs text-text-secondary space-y-1">
-                  <li>• Keep sentences short and clear for better voice generation</li>
-                  <li>• Add pauses with commas and periods for natural pacing</li>
-                  <li>• Review pronunciation of unique names or technical terms</li>
+                  <li>• {t("project.scriptGen.tip1")}</li>
+                  <li>• {t("project.scriptGen.tip2")}</li>
+                  <li>• {t("project.scriptGen.tip3")}</li>
                 </ul>
               </div>
             </div>

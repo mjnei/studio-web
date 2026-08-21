@@ -194,7 +194,7 @@ function UserSection({ collapsed, onNavigate }: { collapsed?: boolean; onNavigat
   const initials = user
     ? (user.given_name?.[0] || user.name?.[0] || user.email[0]).toUpperCase()
     : "U";
-  const displayName = user?.name || "User";
+  const displayName = user?.name || t("common.unknown");
   const displayEmail = user?.email || "";
 
   return (
@@ -266,8 +266,8 @@ export function DrawerContent({
             className={`rounded-lg p-2 lg:p-1.5 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all active:scale-95 focus-ring ${
               collapsed ? "" : "ml-auto"
             }`}
-            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-            title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-label={collapsed ? t("shell.expandSidebar") : t("shell.collapseSidebar")}
+            title={collapsed ? t("shell.expandSidebar") : t("shell.collapseSidebar")}
           >
             <PanelLeft size={18} />
           </button>
@@ -276,8 +276,8 @@ export function DrawerContent({
           <button
             onClick={onClose}
             className="ml-auto rounded-lg p-2 lg:p-1.5 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all active:scale-95 focus-ring"
-            aria-label="Close menu"
-            title="Close menu"
+            aria-label={t("shell.closeMenu")}
+            title={t("shell.closeMenu")}
           >
             <X size={20} />
           </button>

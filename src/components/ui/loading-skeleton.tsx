@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils/cn";
+import { useI18n } from "@/i18n";
 
 interface LoadingSkeletonProps {
   className?: string;
@@ -91,12 +92,14 @@ export function LoadingSkeleton({ className, variant = "card", count = 1 }: Load
  * PageLoadingSkeleton - Full page loading state
  * Used for initial page loads
  */
-export function PageLoadingSkeleton({ message = "Loading..." }: { message?: string }) {
+export function PageLoadingSkeleton({ message }: { message?: string }) {
+  const { t } = useI18n();
+
   return (
     <div className="flex h-full items-center justify-center">
       <div className="text-center">
         <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-accent-cyan border-r-transparent" />
-        <p className="text-text-secondary">{message}</p>
+        <p className="text-text-secondary">{message ?? t("common.loading")}</p>
       </div>
     </div>
   );
@@ -106,11 +109,13 @@ export function PageLoadingSkeleton({ message = "Loading..." }: { message?: stri
  * InlineLoadingSkeleton - Inline loading indicator
  * Used for inline loading states (e.g., generating AI suggestions)
  */
-export function InlineLoadingSkeleton({ message = "Loading..." }: { message?: string }) {
+export function InlineLoadingSkeleton({ message }: { message?: string }) {
+  const { t } = useI18n();
+
   return (
     <div className="flex items-center justify-center py-8 text-text-muted text-sm border border-dashed border-border-default rounded-lg bg-surface-base/50">
       <div className="inline-block h-5 w-5 animate-spin rounded-full border-3 border-solid border-accent-cyan border-r-transparent mr-2" />
-      {message}
+      {message ?? t("common.loading")}
     </div>
   );
 }

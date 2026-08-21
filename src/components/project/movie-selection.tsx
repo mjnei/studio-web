@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { ExternalImage } from "@/components/ui/ExternalImage";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
+import { useI18n } from "@/i18n";
 import {
   getPopularMovies,
   searchMovies,
@@ -31,12 +32,12 @@ interface MovieSelectionProps {
   onSelect: (movie: Movie) => void;
 }
 
-function formatRuntime(minutes?: number | null): string {
-  if (!minutes) return "Unknown";
+function formatRuntime(minutes: number | null | undefined, unknownLabel: string): string {
+  if (!minutes) return unknownLabel;
   return `${Math.floor(minutes / 60)}h ${minutes % 60}m`;
 }
 
-function mapMovie(movie: MovieResponse): Movie {
+function mapMovie(movie: MovieResponse, unknownLabel: string, uncategorizedLabel: string): Movie {
   const genres = movie.genres
     ?.map((genre) => ("name" in genre && typeof genre.name === "string" ? genre.name : undefined))
     .filter(Boolean) as string[] | undefined;
@@ -47,16 +48,20 @@ function mapMovie(movie: MovieResponse): Movie {
     year: movie.release_date ? new Date(movie.release_date).getUTCFullYear() : 0,
     poster: tmdbImageUrl(movie.poster_path) ?? "",
     rating: movie.vote_average ?? 0,
-    genre: genres?.length ? genres : ["Uncategorized"],
-    duration: formatRuntime(movie.runtime),
+    genre: genres?.length ? genres : [uncategorizedLabel],
+    duration: formatRuntime(movie.runtime, unknownLabel),
   };
 }
 
 export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps) {
+  const { t } = useI18n();
   const [searchQuery, setSearchQuery] = useState("");
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const unknownLabel = t("project.common.unknown");
+  const uncategorizedLabel = t("project.movieSelection.uncategorized");
 
   useEffect(() => {
     const controller = new AbortController();
@@ -66,10 +71,12 @@ export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps)
       try {
         const query = searchQuery.trim();
         const results = query ? (await searchMovies(query, 20)).movies : await getPopularMovies(20);
-        if (!controller.signal.aborted) setMovies(results.map(mapMovie));
+        if (!controller.signal.aborted) {
+          setMovies(results.map((movie) => mapMovie(movie, unknownLabel, uncategorizedLabel)));
+        }
       } catch (err) {
         if (!controller.signal.aborted) {
-          setError(err instanceof Error ? err.message : "Unable to load movies");
+          setError(err instanceof Error ? err.message : t("project.movieSelection.unableToLoad"));
           setMovies([]);
         }
       } finally {
@@ -82,7 +89,7 @@ export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps)
       controller.abort();
       window.clearTimeout(timeout);
     };
-  }, [searchQuery]);
+  }, [searchQuery, t, unknownLabel, uncategorizedLabel]);
 
   return (
     <div className="space-y-6 fade-in">
@@ -94,10 +101,10 @@ export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps)
           </div>
         </div>
         <Heading variant="page" as="h2" className="text-text-primary mb-2">
-          Select a Movie
+          {t("project.movieSelection.title")}
         </Heading>
         <Text variant="bodyLg" className="text-text-secondary">
-          Choose a movie to create a voice-over project. You can search by title or genre.
+          {t("project.movieSelection.description")}
         </Text>
       </div>
 
@@ -105,7 +112,7 @@ export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps)
       <div className="max-w-2xl mx-auto">
         <Input
           type="text"
-          placeholder="Search movies by title or genre..."
+          placeholder={t("project.movieSelection.searchPlaceholder")}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           icon={<Search className="w-5 h-5" />}
@@ -201,7 +208,9 @@ export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps)
         <Card variant="elevated" padding="lg">
           <div className="text-center py-12">
             <Film className="w-12 h-12 text-text-muted mx-auto mb-4" />
-            <p className="text-text-secondary">No movies found matching "{searchQuery}"</p>
+            <p className="text-text-secondary">
+              {t("project.movieSelection.noMoviesFound", { query: searchQuery })}
+            </p>
           </div>
         </Card>
       )}
@@ -214,7 +223,9 @@ export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps)
               <Check className="w-5 h-5 text-accent-primary" />
             </div>
             <div>
-              <p className="text-sm font-medium text-text-primary">Movie Selected</p>
+              <p className="text-sm font-medium text-text-primary">
+                {t("project.movieSelection.movieSelected")}
+              </p>
               <p className="text-xs text-text-secondary">
                 {movies.find((m) => m.id === selectedMovie)?.title}
               </p>

@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
+import { useI18n } from "@/i18n";
 import { VoiceResponse, VoiceWithCreator } from "@/lib/types/api";
 
 /**
@@ -54,13 +55,14 @@ export function VoiceGeneration({
   isLoadingVoices = false,
   voicesError = null,
 }: VoiceGenerationProps) {
+  const { t } = useI18n();
   const [playing, setPlaying] = useState(false);
   const [tab, setTab] = useState<"own" | "community">("own");
   const toast = useToast();
 
   const handleGenerate = () => {
     if (!selectedVoiceId) {
-      toast.warning("Select Voice", "Please select a voice before generating");
+      toast.warning(t("project.voiceGen.selectVoiceTitle"), t("project.voiceGen.selectVoiceDesc"));
       return;
     }
     onGenerate(selectedVoiceId);
@@ -73,7 +75,7 @@ export function VoiceGeneration({
 
   const downloadAudio = () => {
     if (audioUrl) {
-      toast.success("Downloaded", "Audio file saved to your device");
+      toast.success(t("project.voiceGen.downloaded"), t("project.voiceGen.downloadedDesc"));
     }
   };
 
@@ -93,20 +95,18 @@ export function VoiceGeneration({
           </div>
         </div>
         <Heading variant="page" as="h2" className="text-text-primary mb-2">
-          Generate Voice
+          {t("project.voiceGen.title")}
         </Heading>
         <Text variant="bodyLg" className="text-text-secondary">
-          Select a voice and generate TTS audio from your script
+          {t("project.voiceGen.description")}
         </Text>
       </div>
 
       {/* Voice Selection */}
       <Card variant="elevated" padding="lg">
         <CardHeader className="pb-4">
-          <CardTitle>Select Voice</CardTitle>
-          <p className="text-sm text-text-secondary mt-1">
-            Choose from your voices or discover community-approved voices
-          </p>
+          <CardTitle>{t("project.voice.title")}</CardTitle>
+          <p className="text-sm text-text-secondary mt-1">{t("project.voiceGen.selectHint")}</p>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Tab Navigation */}
@@ -120,7 +120,7 @@ export function VoiceGeneration({
               }`}
             >
               <Mic className="h-4 w-4" />
-              <span>My Voices</span>
+              <span>{t("project.voice.myVoices")}</span>
               {ownVoices.length > 0 && (
                 <span
                   className={`text-xs font-bold ${tab === "own" ? "bg-white/20" : "bg-surface-raised"} px-2 py-0.5 rounded-full`}
@@ -139,7 +139,7 @@ export function VoiceGeneration({
               }`}
             >
               <Globe className="h-4 w-4" />
-              <span>Community</span>
+              <span>{t("project.voice.community")}</span>
               {communityVoices.length > 0 && (
                 <span
                   className={`text-xs font-bold ${tab === "community" ? "bg-white/20" : "bg-surface-raised"} px-2 py-0.5 rounded-full`}
@@ -182,9 +182,11 @@ export function VoiceGeneration({
                   {ownVoices.length === 0 ? (
                     <div className="text-center py-8 rounded-lg border border-dashed border-border-default bg-surface-panel/50">
                       <Mic className="h-8 w-8 text-text-muted mx-auto mb-2 opacity-50" />
-                      <p className="text-sm text-text-muted mb-2">No personal voices yet</p>
+                      <p className="text-sm text-text-muted mb-2">
+                        {t("project.voice.noPersonalVoices")}
+                      </p>
                       <p className="text-xs text-text-muted max-w-xs mx-auto">
-                        Record a voice in your Voice Library to use it here
+                        {t("project.voiceGen.recordInLibrary")}
                       </p>
                     </div>
                   ) : (
@@ -211,7 +213,7 @@ export function VoiceGeneration({
                                 <p className="font-semibold text-text-primary text-sm truncate">
                                   {voice.name}
                                 </p>
-                                <p className="text-xs text-text-muted">Your voice</p>
+                                <p className="text-xs text-text-muted">{t("project.voice.yourVoice")}</p>
                               </div>
                             </div>
                             {selectedVoiceId === voice.id && (
@@ -233,9 +235,11 @@ export function VoiceGeneration({
                   {communityVoices.length === 0 ? (
                     <div className="text-center py-8 rounded-lg border border-dashed border-border-default bg-surface-panel/50">
                       <Globe className="h-8 w-8 text-text-muted mx-auto mb-2 opacity-50" />
-                      <p className="text-sm text-text-muted mb-2">No community voices available</p>
+                      <p className="text-sm text-text-muted mb-2">
+                        {t("project.voice.noCommunityVoices")}
+                      </p>
                       <p className="text-xs text-text-muted max-w-xs mx-auto">
-                        Community voices will appear here once they&apos;re shared and approved
+                        {t("project.voice.communityHint")}
                       </p>
                     </div>
                   ) : (
@@ -262,15 +266,15 @@ export function VoiceGeneration({
                                 <p className="font-semibold text-text-primary text-sm truncate">
                                   {voice.name}
                                 </p>
-                                {/* Creator username from VoiceWithCreator */}
                                 <p className="text-xs text-text-muted flex items-center gap-1">
                                   <User className="h-3 w-3" />
                                   <span>@{voice.creator_username}</span>
                                 </p>
-                                {/* Approval status - show if approved */}
                                 {voice.is_approved && voice.admin_approved_at && (
                                   <p className="text-xs text-status-completed mt-1">
-                                    ✓ Approved {voice.admin_approved_at}
+                                    {t("project.voiceGen.approved", {
+                                      date: voice.admin_approved_at,
+                                    })}
                                   </p>
                                 )}
                               </div>
@@ -302,22 +306,27 @@ export function VoiceGeneration({
               </div>
             </div>
             <Heading variant="section" as="h3" className="text-text-primary mb-2">
-              Generate Audio
+              {t("project.voiceGen.generateAudio")}
             </Heading>
             <p className="text-text-secondary mb-2">
               {selectedVoiceId && selectedVoice
-                ? `Ready to generate with ${selectedVoice.name}`
-                : "Select a voice to continue"}
+                ? t("project.voiceGen.readyWithVoice", { name: selectedVoice.name })
+                : t("project.voiceGen.selectToContinue")}
             </p>
             <p className="text-sm text-text-muted mb-6">
-              Estimated duration: ~{estimatedDuration} minutes ({wordCount} words)
+              {t("project.voiceGen.estimatedDuration", {
+                minutes: estimatedDuration,
+                words: wordCount,
+              })}
             </p>
 
             {isGenerating ? (
               <div className="space-y-4">
                 <div className="flex items-center justify-center gap-3">
                   <Loader2 className="w-5 h-5 text-accent-primary animate-spin" />
-                  <span className="text-text-secondary">Generating audio... {progress}%</span>
+                  <span className="text-text-secondary">
+                    {t("project.voiceGen.generatingAudio", { progress })}
+                  </span>
                 </div>
                 <div className="max-w-md mx-auto">
                   <div className="h-2 bg-surface-hover rounded-full overflow-hidden">
@@ -336,7 +345,7 @@ export function VoiceGeneration({
                 onClick={handleGenerate}
                 disabled={!selectedVoiceId}
               >
-                Generate Voice Audio
+                {t("project.voiceGen.generateButton")}
               </Button>
             )}
           </div>
@@ -350,9 +359,13 @@ export function VoiceGeneration({
                 <Check className="w-5 h-5 text-status-completed" />
               </div>
               <div>
-                <p className="font-semibold text-text-primary">Audio Generated Successfully</p>
+                <p className="font-semibold text-text-primary">
+                  {t("project.voiceGen.audioGenerated")}
+                </p>
                 <p className="text-sm text-text-secondary">
-                  Voice: {selectedVoice?.name || "Unknown"}
+                  {t("project.voiceGen.voiceLabel", {
+                    name: selectedVoice?.name || t("project.common.unknown"),
+                  })}
                 </p>
               </div>
             </div>
@@ -384,7 +397,7 @@ export function VoiceGeneration({
                   leftIcon={<Download className="w-5 h-5" />}
                   onClick={downloadAudio}
                 >
-                  <span className="hidden sm:inline">Download</span>
+                  <span className="hidden sm:inline">{t("project.voiceGen.download")}</span>
                 </Button>
               </div>
             </div>
@@ -399,13 +412,13 @@ export function VoiceGeneration({
                 </div>
                 <div>
                   <p className="text-sm font-medium text-text-primary">
-                    Not satisfied with the result?
+                    {t("project.voiceGen.notSatisfied")}
                   </p>
-                  <p className="text-xs text-text-secondary">Try a different voice or regenerate</p>
+                  <p className="text-xs text-text-secondary">{t("project.voiceGen.tryDifferent")}</p>
                 </div>
               </div>
               <Button variant="secondary" size="sm" onClick={onChangeVoice}>
-                Change Voice
+                {t("project.voiceGen.changeVoice")}
               </Button>
             </div>
           </Card>

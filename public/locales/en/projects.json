@@ -25,6 +25,9 @@
       "error": "Failed to delete project"
     },
     "loading": "Loading projects...",
-    "untitled": "Untitled project"
+    "loadingDescription": "Please wait while we fetch your projects",
+    "untitled": "Untitled project",
+    "loadError": "Failed to load projects",
+    "loadErrorDescription": "Unable to load projects"
   }
 }

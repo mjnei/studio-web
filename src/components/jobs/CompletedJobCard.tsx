@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tooltip } from "@/components/ui/tooltip";
+import { useI18n } from "@/i18n";
 import { VideoJob, LayoutMode } from "@/types/jobs";
 
 interface CompletedJobCardProps {
@@ -30,6 +31,7 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
   isDeleting,
 }) => {
   const router = useRouter();
+  const { t } = useI18n();
 
   // List View Layout
   if (layoutMode === "list") {
@@ -89,7 +91,7 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
               </h3>
               <Badge variant="success" className="text-[10px] py-0 px-1.5 flex items-center gap-1">
                 <CheckCircle2 className="h-3 w-3" />
-                Ready
+                {t("jobs.completedJob.ready")}
               </Badge>
             </div>
             {job.movieTitle && (
@@ -98,26 +100,33 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
 
             <div className="flex flex-wrap items-center gap-3 text-xs text-text-muted">
               <span>
-                Voice:{" "}
-                <strong className="text-text-secondary">{job.voice_name || "Default"}</strong>
+                {t("jobs.completedJob.voice")}:{" "}
+                <strong className="text-text-secondary">
+                  {job.voice_name || t("jobs.completedJob.default")}
+                </strong>
               </span>
               <span>
-                Cost: <strong className="text-text-secondary">{job.credit_cost} credit</strong>
+                {t("jobs.completedJob.cost")}:{" "}
+                <strong className="text-text-secondary">
+                  {job.credit_cost} {t("jobs.completedJob.credit")}
+                </strong>
               </span>
-              <span>Date: {new Date(job.created_at).toLocaleDateString()}</span>
+              <span>
+                {t("jobs.completedJob.date")}: {new Date(job.created_at).toLocaleDateString()}
+              </span>
             </div>
           </div>
 
           {/* Quick Actions */}
           <div className="flex items-center gap-1.5 self-end sm:self-center">
-            <Tooltip content="Preview Video" position="top">
+            <Tooltip content={t("jobs.completedJob.previewVideo")} position="top">
               <Button variant="ghost" size="sm" onClick={() => onPlay(job)} className="px-2">
                 <Play className="h-4 w-4" />
               </Button>
             </Tooltip>
 
             {job.video_url && (
-              <Tooltip content="Download" position="top">
+              <Tooltip content={t("jobs.completedJob.download")} position="top">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -129,7 +138,7 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
               </Tooltip>
             )}
 
-            <Tooltip content="View Project" position="top">
+            <Tooltip content={t("jobs.completedJob.viewProject")} position="top">
               <Button
                 variant="ghost"
                 size="sm"
@@ -140,7 +149,7 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
               </Button>
             </Tooltip>
 
-            <Tooltip content="Delete" position="top">
+            <Tooltip content={t("jobs.completedJob.delete")} position="top">
               <Button
                 variant="ghost"
                 size="sm"
@@ -186,7 +195,7 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
           variant="success"
           className="absolute top-2 right-2 z-10 text-[10px] py-0.5 px-1.5 shadow-md"
         >
-          Completed
+          {t("jobs.completedJob.completed")}
         </Badge>
 
         {job.thumbnail_url ? (
@@ -231,14 +240,23 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
 
         <div className="grid grid-cols-2 gap-1 text-[11px] text-text-muted pt-1 border-t border-border-default">
           <div>
-            Voice:{" "}
-            <span className="font-medium text-text-secondary">{job.voice_name || "N/A"}</span>
+            {t("jobs.completedJob.voice")}:{" "}
+            <span className="font-medium text-text-secondary">
+              {job.voice_name || t("jobs.completedJob.na")}
+            </span>
           </div>
           <div className="text-right">
-            Cost: <span className="font-medium text-text-secondary">{job.credit_cost} cr</span>
+            {t("jobs.completedJob.cost")}:{" "}
+            <span className="font-medium text-text-secondary">
+              {job.credit_cost} {t("jobs.completedJob.creditAbbr")}
+            </span>
           </div>
-          <div>Date: {new Date(job.created_at).toLocaleDateString()}</div>
-          <div className="text-right">Attempt: #{job.generation_attempt}</div>
+          <div>
+            {t("jobs.completedJob.date")}: {new Date(job.created_at).toLocaleDateString()}
+          </div>
+          <div className="text-right">
+            {t("jobs.completedJob.attempt")}: #{job.generation_attempt}
+          </div>
         </div>
 
         {/* Actions Footer */}
@@ -250,11 +268,11 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
             leftIcon={<Play className="h-3.5 w-3.5" />}
             className="flex-1 text-xs"
           >
-            Play
+            {t("jobs.completedJob.play")}
           </Button>
 
           {job.video_url && (
-            <Tooltip content="Download" position="top">
+            <Tooltip content={t("jobs.completedJob.download")} position="top">
               <Button
                 variant="ghost"
                 size="sm"
@@ -266,7 +284,7 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
             </Tooltip>
           )}
 
-          <Tooltip content="Delete" position="top">
+          <Tooltip content={t("jobs.completedJob.delete")} position="top">
             <Button
               variant="ghost"
               size="sm"

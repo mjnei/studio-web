@@ -22,6 +22,7 @@ import {
   finalizeThumbnail,
 } from "@/lib/project-client";
 import type { ProjectState } from "@/lib/hooks/use-project-state";
+import { useI18n } from "@/i18n";
 
 interface ThumbnailEditorModalProps {
   isOpen: boolean;
@@ -30,31 +31,31 @@ interface ThumbnailEditorModalProps {
   onThumbnailFinalized: () => void;
 }
 
-// Font options
-const FONT_OPTIONS = [
-  { value: "bold", label: "Bold" },
-  { value: "elegant", label: "Elegant" },
-  { value: "modern", label: "Modern" },
-];
-
-// Color presets
-const COLOR_PRESETS = [
-  { value: "#FFFFFF", label: "White" },
-  { value: "#000000", label: "Black" },
-  { value: "#FF0000", label: "Red" },
-  { value: "#00FF00", label: "Green" },
-  { value: "#0000FF", label: "Blue" },
-  { value: "#FFFF00", label: "Yellow" },
-  { value: "#FF00FF", label: "Magenta" },
-  { value: "#00FFFF", label: "Cyan" },
-];
-
 export function ThumbnailEditorModal({
   isOpen,
   onClose,
   project,
   onThumbnailFinalized,
 }: ThumbnailEditorModalProps) {
+  const { t } = useI18n();
+
+  const FONT_OPTIONS = [
+    { value: "bold", label: t("project.thumbnailEditor.fontBold") },
+    { value: "elegant", label: t("project.thumbnailEditor.fontElegant") },
+    { value: "modern", label: t("project.thumbnailEditor.fontModern") },
+  ];
+
+  const COLOR_PRESETS = [
+    { value: "#FFFFFF", label: t("project.thumbnailEditor.colorWhite") },
+    { value: "#000000", label: t("project.thumbnailEditor.colorBlack") },
+    { value: "#FF0000", label: t("project.thumbnailEditor.colorRed") },
+    { value: "#00FF00", label: t("project.thumbnailEditor.colorGreen") },
+    { value: "#0000FF", label: t("project.thumbnailEditor.colorBlue") },
+    { value: "#FFFF00", label: t("project.thumbnailEditor.colorYellow") },
+    { value: "#FF00FF", label: t("project.thumbnailEditor.colorMagenta") },
+    { value: "#00FFFF", label: t("project.thumbnailEditor.colorCyan") },
+  ];
+
   const [thumbnailText, setThumbnailText] = useState(
     project.thumbnailText || project.scriptSummary || ""
   );
@@ -97,7 +98,7 @@ export function ThumbnailEditorModal({
       onThumbnailFinalized();
     } catch (error) {
       console.error("Failed to regenerate thumbnail:", error);
-      alert("Failed to regenerate thumbnail. Please try again.");
+      alert(t("project.thumbnailEditor.regenFailed"));
     } finally {
       setIsRegenerating(false);
     }
@@ -108,12 +109,12 @@ export function ThumbnailEditorModal({
     if (!file || !project.id) return;
 
     if (!file.type.startsWith("image/")) {
-      alert("Please upload an image file (JPG, PNG, or WEBP)");
+      alert(t("project.thumbnailEditor.uploadImageOnly"));
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      alert("Image size must be less than 5MB");
+      alert(t("project.thumbnailEditor.imageTooLarge"));
       return;
     }
 
@@ -134,7 +135,7 @@ export function ThumbnailEditorModal({
       onThumbnailFinalized();
     } catch (error: any) {
       console.error("Failed to upload thumbnail:", error);
-      alert(error.message || "Failed to upload thumbnail. Please try again.");
+      alert(error.message || t("project.thumbnailEditor.uploadFailed"));
     } finally {
       setIsUploading(false);
     }
@@ -159,7 +160,7 @@ export function ThumbnailEditorModal({
       onThumbnailFinalized();
     } catch (error) {
       console.error("Failed to queue thumbnail composition:", error);
-      alert("Failed to start thumbnail composition. Please try again.");
+      alert(t("project.thumbnailEditor.composeFailed"));
       setIsFinalizing(false);
     }
   };
@@ -171,12 +172,12 @@ export function ThumbnailEditorModal({
     <Modal
       open={isOpen}
       onClose={onClose}
-      title="Thumbnail Editor"
+      title={t("project.thumbnailEditor.title")}
       size="xl"
       footer={
         <>
           <Button variant="secondary" onClick={onClose} disabled={isFinalizing}>
-            Cancel
+            {t("common.cancel")}
           </Button>
           <Button
             variant="primary"
@@ -186,7 +187,9 @@ export function ThumbnailEditorModal({
             disabled={!hasThumbnail || isFinalizing}
             loading={isFinalizing}
           >
-            {isFinalizing ? "Finalizing..." : "Save & Finalize"}
+            {isFinalizing
+              ? t("project.thumbnailEditor.finalizing")
+              : t("project.thumbnailEditor.saveAndFinalize")}
           </Button>
         </>
       }
@@ -198,7 +201,7 @@ export function ThumbnailEditorModal({
             type="text"
             value={thumbnailText}
             onChange={(e) => setThumbnailText(e.target.value)}
-            placeholder="Enter overlay text (optional, max 200 chars)"
+            placeholder={t("project.thumbnailEditor.overlayPlaceholder")}
             maxLength={200}
             className="w-full rounded-lg border border-border-default bg-surface-base px-4 py-2.5 text-base text-text-primary placeholder-text-muted focus:border-accent-cyan focus:outline-none focus:ring-2 focus:ring-accent-cyan/20 transition-all"
           />
@@ -215,7 +218,7 @@ export function ThumbnailEditorModal({
                   ? "bg-accent-cyan text-white"
                   : "bg-surface-raised text-text-muted hover:bg-surface-base"
               }`}
-              title="Align Left"
+              title={t("project.thumbnailEditor.alignLeft")}
             >
               <AlignLeft className="h-4 w-4" />
             </button>
@@ -226,7 +229,7 @@ export function ThumbnailEditorModal({
                   ? "bg-accent-cyan text-white"
                   : "bg-surface-raised text-text-muted hover:bg-surface-base"
               }`}
-              title="Align Right"
+              title={t("project.thumbnailEditor.alignRight")}
             >
               <AlignRight className="h-4 w-4" />
             </button>
@@ -238,7 +241,7 @@ export function ThumbnailEditorModal({
               onClick={() => setTextSize(Math.max(0.8, textSize - 0.1))}
               disabled={textSize <= 0.8}
               className="p-2 hover:bg-surface-base disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-              title="Decrease Font Size"
+              title={t("project.thumbnailEditor.decreaseFontSize")}
             >
               <Minus className="h-4 w-4 text-text-secondary" />
             </button>
@@ -249,7 +252,7 @@ export function ThumbnailEditorModal({
               onClick={() => setTextSize(Math.min(2.0, textSize + 0.1))}
               disabled={textSize >= 2.0}
               className="p-2 hover:bg-surface-base disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-              title="Increase Font Size"
+              title={t("project.thumbnailEditor.increaseFontSize")}
             >
               <Plus className="h-4 w-4 text-text-secondary" />
             </button>
@@ -260,7 +263,7 @@ export function ThumbnailEditorModal({
             value={textFont}
             onChange={(e) => setTextFont(e.target.value)}
             className="px-3 py-2 rounded-lg border border-border-default bg-surface-raised text-sm text-text-primary focus:border-accent-cyan focus:outline-none focus:ring-2 focus:ring-accent-cyan/20 transition-all cursor-pointer"
-            title="Font Style"
+            title={t("project.thumbnailEditor.fontStyle")}
           >
             {FONT_OPTIONS.map((font) => (
               <option key={font.value} value={font.value}>
@@ -279,7 +282,7 @@ export function ThumbnailEditorModal({
               value={textColor}
               onChange={(e) => setTextColor(e.target.value)}
               className="w-8 h-8 cursor-pointer border-0 bg-transparent"
-              title="Text Color"
+              title={t("project.thumbnailEditor.textColor")}
             />
             <select
               value={textColor}
@@ -302,7 +305,11 @@ export function ThumbnailEditorModal({
                 ? "border-accent-cyan bg-accent-cyan text-white"
                 : "border-border-default bg-surface-raised text-text-muted hover:bg-surface-base"
             }`}
-            title={textBackgroundBlur ? "Blur Enabled" : "Blur Disabled"}
+            title={
+              textBackgroundBlur
+                ? t("project.thumbnailEditor.blurEnabled")
+                : t("project.thumbnailEditor.blurDisabled")
+            }
           >
             <Droplets className="h-4 w-4" />
           </button>
@@ -318,7 +325,7 @@ export function ThumbnailEditorModal({
             onClick={() => setShowPromptInput(!showPromptInput)}
             disabled={isRegenerating || isUploading}
             className="p-2"
-            title="Regenerate with AI"
+            title={t("project.thumbnailEditor.regenerateAi")}
           />
 
           {/* Upload (icon only) */}
@@ -329,7 +336,7 @@ export function ThumbnailEditorModal({
             onClick={() => fileInputRef.current?.click()}
             disabled={isUploading || isRegenerating}
             className="p-2"
-            title="Upload Custom Image"
+            title={t("project.thumbnailEditor.uploadCustom")}
           />
           <input
             ref={fileInputRef}
@@ -346,7 +353,7 @@ export function ThumbnailEditorModal({
             <textarea
               value={customPrompt}
               onChange={(e) => setCustomPrompt(e.target.value)}
-              placeholder="Enter custom prompt (optional, leave empty for default)"
+              placeholder={t("project.thumbnailEditor.customPromptPlaceholder")}
               rows={3}
               className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary placeholder-text-muted focus:border-accent-cyan focus:outline-none focus:ring-2 focus:ring-accent-cyan/20 transition-all resize-none"
             />
@@ -357,7 +364,9 @@ export function ThumbnailEditorModal({
               disabled={isRegenerating}
               className="w-full sm:w-auto"
             >
-              {isRegenerating ? "Generating..." : "Generate"}
+              {isRegenerating
+                ? t("project.thumbnailEditor.generating")
+                : t("project.thumbnailEditor.generate")}
             </Button>
           </div>
         )}
@@ -365,14 +374,16 @@ export function ThumbnailEditorModal({
         {/* Live Preview */}
         <div className="space-y-2">
           <label className="text-xs font-medium text-text-muted uppercase tracking-wide">
-            Live Preview
+            {t("project.thumbnailEditor.livePreview")}
           </label>
           <div className="relative aspect-video rounded-lg overflow-hidden bg-surface-raised border-2 border-border-default">
             {isRegenerating && !useCustom && (
               <div className="absolute inset-0 flex items-center justify-center bg-surface-base/80 z-10">
                 <div className="text-center">
                   <Loader2 className="h-8 w-8 text-accent-cyan animate-spin mx-auto mb-2" />
-                  <p className="text-sm text-text-muted">Generating new thumbnail...</p>
+                  <p className="text-sm text-text-muted">
+                    {t("project.thumbnailEditor.generatingNew")}
+                  </p>
                 </div>
               </div>
             )}
@@ -381,7 +392,9 @@ export function ThumbnailEditorModal({
               <div className="absolute inset-0 flex items-center justify-center bg-surface-base/80 z-10">
                 <div className="text-center">
                   <Loader2 className="h-8 w-8 text-accent-cyan animate-spin mx-auto mb-2" />
-                  <p className="text-sm text-text-muted">AI is generating your thumbnail...</p>
+                  <p className="text-sm text-text-muted">
+                    {t("project.thumbnailEditor.aiGenerating")}
+                  </p>
                 </div>
               </div>
             )}
@@ -390,7 +403,7 @@ export function ThumbnailEditorModal({
               <>
                 <Image
                   src={currentThumbnailUrl}
-                  alt="Project thumbnail"
+                  alt={t("project.thumbnailEditor.projectThumbnail")}
                   className="w-full h-full object-cover"
                   fill
                   sizes="(max-width: 640px) 100vw, 500px"
@@ -426,8 +439,8 @@ export function ThumbnailEditorModal({
               <div className="flex items-center justify-center h-full text-text-muted">
                 <div className="text-center">
                   <Sparkles className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                  <p className="text-sm">No thumbnail available</p>
-                  <p className="text-xs">Generate AI thumbnail or upload custom image</p>
+                  <p className="text-sm">{t("project.thumbnailEditor.noThumbnail")}</p>
+                  <p className="text-xs">{t("project.thumbnailEditor.noThumbnailHint")}</p>
                 </div>
               </div>
             )}

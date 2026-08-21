@@ -327,7 +327,7 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
           onClick={onBack}
           disabled={loading}
           className="w-full sm:w-auto px-6 sm:px-8 py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-semibold rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
-          aria-label="Go back to previous step"
+          aria-label={t("onboarding.password.goBack")}
         >
           {t("onboarding.password.back")}
         </button>
@@ -335,7 +335,7 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
           onClick={onSkip}
           disabled={loading}
           className="w-full sm:w-auto px-6 sm:px-8 py-3 text-gray-600 dark:text-gray-400 font-semibold hover:text-gray-900 dark:hover:text-gray-200 transition-colors focus:outline-none focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
-          aria-label="Skip password setup"
+          aria-label={t("onboarding.password.skipPassword")}
         >
           {t("onboarding.password.skipForNow")}
         </button>

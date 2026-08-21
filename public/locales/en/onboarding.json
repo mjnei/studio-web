@@ -9,7 +9,12 @@
         "publishing": "One-Click Publishing"
       },
       "getStarted": "Get Started",
-      "subtext": "Takes less than 2 minutes to complete"
+      "subtext": "Takes less than 2 minutes to complete",
+      "getStartedAria": "Get started with onboarding"
+    },
+    "progress": {
+      "stepOf": "Step {current} of {total}",
+      "ariaLabel": "Step {current} of {total}"
     },
     "workflow": {
       "title": "Your Video Creation Journey",

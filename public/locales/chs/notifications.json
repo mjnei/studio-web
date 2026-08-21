@@ -19,6 +19,22 @@
     "loading": "加载通知中...",
     "loadMore": "加载更多",
     "confirmMarkAsRead": "标记",
-    "confirmMarkAsReadPlural": "条通知为已读？"
+    "confirmMarkAsReadPlural": "条通知为已读？",
+    "unreadWithCount": "通知（{count} 条未读）",
+    "newCount": "（{count} 条新通知）",
+    "markAsRead": "标为已读",
+    "markAllConfirm": "将 {count} 条通知标为已读？",
+    "filterBy": "按 {label} 筛选",
+    "notificationSettings": "通知设置",
+    "deleteNotification": "删除通知",
+    "viewAll": "查看全部通知",
+    "noNotificationsYet": "暂无通知",
+    "noNotificationsHint": "有项目更新时会显示在这里",
+    "preferencesTitle": "通知偏好设置",
+    "preferencesSubtitle": "管理您接收通知的方式",
+    "notificationTypes": "通知类型",
+    "inApp": "应用内",
+    "saving": "保存中...",
+    "savePreferences": "保存偏好"
   }
 }

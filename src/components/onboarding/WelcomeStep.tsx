@@ -74,7 +74,7 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
       <button
         onClick={onNext}
         className="group relative px-8 sm:px-10 py-3.5 sm:py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 dark:from-blue-500 dark:to-purple-500 dark:hover:from-blue-600 dark:hover:to-purple-600 text-white font-semibold rounded-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/50 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:-translate-y-0.5 text-base sm:text-lg"
-        aria-label="Get started with onboarding"
+        aria-label={t("onboarding.welcome.getStartedAria")}
       >
         <span className="flex items-center gap-2 justify-center">
           {t("onboarding.welcome.getStarted")}

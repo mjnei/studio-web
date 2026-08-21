@@ -19,6 +19,22 @@
     "loading": "Loading notifications...",
     "loadMore": "Load More",
     "confirmMarkAsRead": "Mark",
-    "confirmMarkAsReadPlural": "notifications as read?"
+    "confirmMarkAsReadPlural": "notifications as read?",
+    "unreadWithCount": "Notifications ({count} unread)",
+    "newCount": "({count} new)",
+    "markAsRead": "Mark as read",
+    "markAllConfirm": "Mark {count} notification(s) as read?",
+    "filterBy": "Filter by {label}",
+    "notificationSettings": "Notification settings",
+    "deleteNotification": "Delete notification",
+    "viewAll": "View all notifications",
+    "noNotificationsYet": "No notifications yet",
+    "noNotificationsHint": "You'll see updates here when something happens",
+    "preferencesTitle": "Notification Preferences",
+    "preferencesSubtitle": "Manage how you receive notifications",
+    "notificationTypes": "Notification Types",
+    "inApp": "In-App",
+    "saving": "Saving...",
+    "savePreferences": "Save Preferences"
   }
 }

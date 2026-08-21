@@ -6,6 +6,7 @@ import { MovieSelection } from "@/components/project/movie-selection";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
+import { useI18n } from "@/i18n";
 
 /**
  * Movie selection page (Step 1 of project creation).
@@ -14,6 +15,7 @@ import { Text } from "@/components/ui/text";
  */
 export default function NewProjectSourcePage() {
   const router = useRouter();
+  const { t } = useI18n();
   const [selectedMovie, setSelectedMovie] = useState<{
     id: string;
     title: string;
@@ -60,10 +62,10 @@ export default function NewProjectSourcePage() {
         <div className="flex flex-col gap-6 pb-24">
           <div className="mb-6">
             <Heading variant="section" as="h2" className="text-text-primary">
-              Select Source Movie
+              {t("project.source.selectTitle")}
             </Heading>
             <Text variant="body" className="mt-1 text-text-muted">
-              Choose a movie clip to create your dubbed video project
+              {t("project.source.selectDescription")}
             </Text>
           </div>
 
@@ -76,7 +78,7 @@ export default function NewProjectSourcePage() {
         currentStep="source"
         canGoNext={!!selectedMovie}
         canGoBack={false}
-        nextLabel="Continue to Script"
+        nextLabel={t("project.common.continueToScript")}
         onNext={handleContinue}
         onBack={handleGoHome}
       />

@@ -10,10 +10,13 @@ import { Heading } from "@/components/ui/heading";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
+import { useI18n } from "@/i18n";
+import { formatDuration } from "@/lib/utils/time-format";
 
 export default function ScriptPage() {
   const params = useParams();
   const router = useRouter();
+  const { t } = useI18n();
   const projectId = params.projectId as string;
   const { state, activeScript, isLoading, addScript, setActiveScript } = useProjectState(projectId);
 
@@ -70,7 +73,7 @@ export default function ScriptPage() {
   const hasChanges = activeScript?.content !== scriptContent;
 
   if (isLoading) {
-    return <PageLoadingSkeleton message="Loading project..." />;
+    return <PageLoadingSkeleton message={t("project.common.loadingProject")} />;
   }
 
   return (
@@ -79,8 +82,10 @@ export default function ScriptPage() {
         <div className="flex flex-col gap-6 pb-24">
           <div className="flex items-center justify-between">
             <div>
-              <Heading variant="section" as="h2" className="text-text-primary">Script</Heading>
-              <p className="mt-1 text-sm text-text-muted">Review and edit your voiceover script</p>
+              <Heading variant="section" as="h2" className="text-text-primary">
+                {t("project.script.title")}
+              </Heading>
+              <p className="mt-1 text-sm text-text-muted">{t("project.script.description")}</p>
             </div>
           </div>
 
@@ -103,7 +108,8 @@ export default function ScriptPage() {
                   <Heading variant="label" as="h3" className="text-text-primary">{state.movieTitle}</Heading>
                   <p className="mt-1 text-sm text-text-muted">
                     {state.movieGenre && `${state.movieGenre} • `}
-                    {state.movieRating && `Rating ${state.movieRating.toFixed(1)}`}
+                    {state.movieRating &&
+                      t("project.common.ratingValue", { value: state.movieRating.toFixed(1) })}
                   </p>
                 </div>
               </div>
@@ -118,18 +124,17 @@ export default function ScriptPage() {
                   <FileText className="h-5 w-5 text-accent-cyan" />
                 </div>
                 <div>
-                  <Heading variant="subsection" as="h3" className="text-text-primary">{isEditing ? "Edit Script" : "Current Script"}</Heading>
+                  <Heading variant="subsection" as="h3" className="text-text-primary">
+                    {isEditing ? t("project.script.editTitle") : t("project.script.currentTitle")}
+                  </Heading>
                   <div className="flex items-center gap-4 text-sm text-text-muted mt-1">
                     <div className="flex items-center gap-1">
                       <FileText className="h-3.5 w-3.5" />
-                      <span>{wordCount} words</span>
+                      <span>{t("project.common.words", { count: wordCount })}</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <Clock className="h-3.5 w-3.5" />
-                      <span>
-                        {Math.floor(estimatedDuration / 60)}:
-                        {(estimatedDuration % 60).toString().padStart(2, "0")}
-                      </span>
+                      <span>{formatDuration(estimatedDuration)}</span>
                     </div>
                   </div>
                 </div>
@@ -142,6 +147,7 @@ export default function ScriptPage() {
                   size="md"
                   leftIcon={<Edit2 className="h-4 w-4" />}
                   onClick={() => setIsEditing(true)}
+                  aria-label={t("common.edit")}
                 ></Button>
               ) : (
                 <Button
@@ -178,7 +184,7 @@ export default function ScriptPage() {
                     className="group flex items-center gap-2 px-4 py-2.5 rounded-lg bg-surface-raised hover:bg-surface-hover border border-border-default hover:border-accent-cyan/40 text-text-secondary hover:text-accent-cyan transition-all duration-200 shadow-sm hover:shadow-md"
                   >
                     <span className="text-sm font-medium">
-                      {isExpanded ? "Show Less" : "Show Full Script"}
+                      {isExpanded ? t("project.script.showLess") : t("project.script.showFull")}
                     </span>
                     {isExpanded ? (
                       <ChevronUp className="h-4 w-4 group-hover:-translate-y-0.5 transition-transform" />
@@ -194,14 +200,14 @@ export default function ScriptPage() {
                 value={scriptContent}
                 onChange={(e) => setScriptContent(e.target.value)}
                 className="min-h-[400px] w-full rounded-lg border-2 border-accent-cyan/50 bg-surface-raised p-4 text-sm text-text-primary placeholder-text-muted focus:outline-none focus:border-accent-cyan focus:ring-4 focus:ring-accent-cyan/20 transition-all"
-                placeholder="Enter your script here..."
+                placeholder={t("project.script.placeholder")}
               />
             )}
 
             {isEditing && hasChanges && (
               <div className="mt-3 flex items-center gap-2 text-xs text-accent-cyan bg-accent-cyan/5 rounded-lg p-3 border border-accent-cyan/10">
                 <FileText className="h-4 w-4 flex-shrink-0" />
-                <p>Your changes will be saved automatically when you continue to the next step.</p>
+                <p>{t("project.script.autoSaveHint")}</p>
               </div>
             )}
           </Card>
@@ -209,7 +215,9 @@ export default function ScriptPage() {
           {/* Script versions */}
           {state?.scripts && state.scripts.length > 1 && (
             <Card variant="elevated" padding="lg">
-              <Heading variant="subsection" as="h3" className="mb-4 text-text-primary">Script Versions</Heading>
+              <Heading variant="subsection" as="h3" className="mb-4 text-text-primary">
+                {t("project.script.versions")}
+              </Heading>
               <div className="space-y-2">
                 {state.scripts.map((script, index) => (
                   <button
@@ -225,21 +233,20 @@ export default function ScriptPage() {
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
                           <span className="font-medium text-text-primary">
-                            Version {state.scripts.length - index}
+                            {t("project.common.version", {
+                              number: state.scripts.length - index,
+                            })}
                           </span>
                           {script.isActive && (
                             <span className="flex items-center gap-1 text-xs text-accent-cyan">
                               <Check className="h-3 w-3" />
-                              Active
+                              {t("project.common.active")}
                             </span>
                           )}
                         </div>
                         <div className="mt-1 flex items-center gap-4 text-sm text-text-muted">
-                          <span>{script.wordCount} words</span>
-                          <span>
-                            {Math.floor(script.duration / 60)}:
-                            {(script.duration % 60).toString().padStart(2, "0")}
-                          </span>
+                          <span>{t("project.common.words", { count: script.wordCount })}</span>
+                          <span>{formatDuration(script.duration)}</span>
                           <span>{new Date(script.createdAt).toLocaleDateString()}</span>
                         </div>
                       </div>

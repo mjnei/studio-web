@@ -10,6 +10,7 @@ import { MovieCard } from "@/components/movie";
 import { getPopularMovies, searchMovies } from "@/lib/project-client";
 import { adminGetMovieDetails } from "@/lib/api/admin";
 import { LayoutToggle, type LayoutMode } from "@/components/ui/LayoutToggle";
+import { useI18n } from "@/i18n";
 
 interface EnrichedMovie {
   id: number;
@@ -29,6 +30,7 @@ interface EnrichedMovie {
 }
 
 export default function MoviesPage() {
+  const { t } = useI18n();
   const [searchQuery, setSearchQuery] = useState("");
   const [movies, setMovies] = useState<EnrichedMovie[]>([]);
   const [loading, setLoading] = useState(true);
@@ -103,7 +105,7 @@ export default function MoviesPage() {
         }
       } catch (err) {
         if (!controller.signal.aborted) {
-          setError(err instanceof Error ? err.message : "Unable to load movies");
+          setError(err instanceof Error ? err.message : t("movies.error.unableToLoad"));
           setMovies([]);
           setLoading(false);
         }
@@ -115,6 +117,7 @@ export default function MoviesPage() {
       controller.abort();
       window.clearTimeout(timeout);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- t is stable enough for error fallback
   }, [searchQuery]);
 
   const getGridClass = () => {
@@ -135,16 +138,18 @@ export default function MoviesPage() {
   return (
     <div className="max-w-7xl mx-auto">
       <PageHeader
-        title="Movie Library"
-        description="Discover and explore movies to create your next project"
+        title={t("movies.title")}
+        description={t("movies.description")}
         action={
           <div className="flex items-center gap-3">
             <span className="rounded-full bg-accent-cyan/10 px-3 py-1.5 text-xs font-medium text-accent-cyan whitespace-nowrap">
-              {movies.length} {movies.length === 1 ? "movie" : "movies"}
+              {movies.length === 1
+                ? t("movies.countSingular", { count: movies.length })
+                : t("movies.count", { count: movies.length })}
             </span>
             {enrichmentProgress > 0 && enrichmentProgress < 100 && (
               <span className="text-xs text-text-muted whitespace-nowrap">
-                Loading details... {enrichmentProgress}%
+                {t("movies.loadingDetails", { progress: enrichmentProgress })}
               </span>
             )}
           </div>
@@ -156,7 +161,7 @@ export default function MoviesPage() {
         <div className="flex-1 sm:max-w-md">
           <Input
             type="text"
-            placeholder="Search movies by title..."
+            placeholder={t("movies.searchPlaceholder")}
             value={searchQuery}
             onChange={(event) => setSearchQuery(event.target.value)}
             icon={<Search className="h-4 w-4" />}
@@ -169,8 +174,8 @@ export default function MoviesPage() {
       {loading ? (
         <LoadingSpinner
           size="lg"
-          message="Loading movies..."
-          description="Please wait while we fetch the catalog"
+          message={t("movies.loading")}
+          description={t("movies.loadingDescription")}
           className="rounded-2xl border border-border-default bg-surface-panel"
           fullHeight
         />
@@ -178,7 +183,7 @@ export default function MoviesPage() {
         <EmptyState
           variant="elevated"
           icon={<Search className="h-12 w-12 text-status-failed" />}
-          title="Unable to load movies"
+          title={t("movies.error.title")}
           description={error}
           className="border-status-failed/30 bg-status-failed/5"
         />
@@ -186,11 +191,9 @@ export default function MoviesPage() {
         <EmptyState
           variant="default"
           icon={<Film className="h-16 w-16" />}
-          title="No movies found"
+          title={t("movies.empty.title")}
           description={
-            searchQuery.trim()
-              ? "Try adjusting your search terms"
-              : "No movies available in the catalog"
+            searchQuery.trim() ? t("movies.empty.searchHint") : t("movies.empty.catalogEmpty")
           }
         />
       ) : (

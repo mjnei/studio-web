@@ -8,6 +8,7 @@ import { Heading } from "@/components/ui/heading";
 import { Edit2 } from "lucide-react";
 import { createScript } from "@/lib/project-client";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
+import { useI18n } from "@/i18n";
 
 /**
  * Script creation page (Step 2 of project creation).
@@ -16,6 +17,7 @@ import { FloatingWorkflowNavigation } from "@/components/project/floating-workfl
  */
 export default function NewProjectScriptPage() {
   const router = useRouter();
+  const { t } = useI18n();
   const [selectedMovie, setSelectedMovie] = useState<{
     id: string;
     title: string;
@@ -80,7 +82,7 @@ export default function NewProjectScriptPage() {
       router.push(`/project/${script.project_id}/voice`);
     } catch (error) {
       console.error("Failed to create script:", error);
-      alert("Failed to create script. Please try again.");
+      alert(t("project.script.createFailed"));
     } finally {
       setIsSaving(false);
     }
@@ -91,7 +93,7 @@ export default function NewProjectScriptPage() {
       <div className="flex h-screen items-center justify-center">
         <div className="text-center">
           <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-accent-cyan border-r-transparent" />
-          <p className="text-text-secondary">Loading...</p>
+          <p className="text-text-secondary">{t("common.loading")}</p>
         </div>
       </div>
     );
@@ -102,9 +104,11 @@ export default function NewProjectScriptPage() {
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col gap-6 pb-24">
           <div className="mb-6">
-            <Heading variant="section" as="h2" className="text-text-primary">Create Script</Heading>
+            <Heading variant="section" as="h2" className="text-text-primary">
+              {t("project.script.createTitle")}
+            </Heading>
             <p className="mt-1 text-sm text-text-muted">
-              Write the voice-over script for {selectedMovie.title}
+              {t("project.script.createDescription", { title: selectedMovie.title })}
             </p>
           </div>
 
@@ -123,10 +127,15 @@ export default function NewProjectScriptPage() {
                 </div>
               )}
               <div className="flex-1">
-                <Heading variant="label" as="h3" className="text-text-primary">{selectedMovie.title}</Heading>
+                <Heading variant="label" as="h3" className="text-text-primary">
+                  {selectedMovie.title}
+                </Heading>
                 <p className="mt-1 text-sm text-text-muted">
                   {selectedMovie.genre && `${selectedMovie.genre.join(", ")} • `}
-                  {selectedMovie.rating && `Rating ${selectedMovie.rating.toFixed(1)}`}
+                  {selectedMovie.rating &&
+                    t("project.common.ratingValue", {
+                      value: selectedMovie.rating.toFixed(1),
+                    })}
                 </p>
               </div>
             </div>
@@ -138,16 +147,15 @@ export default function NewProjectScriptPage() {
               <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent-cyan-muted">
                 <Edit2 className="h-8 w-8 text-accent-cyan" />
               </div>
-              <Heading variant="subsection" as="h3" className="mb-2 text-text-primary">Write Your Script</Heading>
-              <p className="mb-6 text-sm text-text-muted">
-                Write or paste the voice-over script. This will create your project and save the
-                script.
-              </p>
+              <Heading variant="subsection" as="h3" className="mb-2 text-text-primary">
+                {t("project.script.writeTitle")}
+              </Heading>
+              <p className="mb-6 text-sm text-text-muted">{t("project.script.writeDescription")}</p>
               <textarea
                 value={scriptContent}
                 onChange={(e) => setScriptContent(e.target.value)}
                 className="mb-4 min-h-[300px] w-full rounded-md border border-border-default bg-surface-raised p-4 text-left text-sm text-text-primary placeholder-text-muted focus:border-accent-cyan focus:outline-none"
-                placeholder="Enter your script here..."
+                placeholder={t("project.script.placeholder")}
               />
             </div>
           </Card>
@@ -159,7 +167,7 @@ export default function NewProjectScriptPage() {
         currentStep="script"
         canGoNext={!!scriptContent.trim()}
         canGoBack={true}
-        nextLabel="Save & Continue"
+        nextLabel={t("project.common.saveAndContinue")}
         onNext={handleSaveScript}
         onBack={handleBack}
         isProcessing={isSaving}

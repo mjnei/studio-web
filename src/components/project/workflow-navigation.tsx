@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { useI18n } from "@/i18n";
 
 interface WorkflowNavigationProps {
   projectId: string;
@@ -31,11 +32,11 @@ const stepRoutes: Record<string, string> = {
   compose: "compose",
 };
 
-const nextStepLabels: Record<string, string> = {
-  source: "Continue to Script",
-  script: "Continue to Voice",
-  voice: "Continue to Compose",
-  compose: "Complete Project",
+const nextStepLabelKeys: Record<string, string> = {
+  source: "project.nav.continueToScript",
+  script: "project.nav.continueToVoice",
+  voice: "project.nav.continueToCompose",
+  compose: "project.nav.completeProject",
 };
 
 export function WorkflowNavigation({
@@ -45,12 +46,13 @@ export function WorkflowNavigation({
   nextLabel,
   onNext,
   canGoBack = true,
-  backLabel = "Back",
+  backLabel,
   onBack,
   isProcessing = false,
   additionalActions,
 }: WorkflowNavigationProps) {
   const router = useRouter();
+  const { t } = useI18n();
 
   const currentStepIndex = stepOrder[currentStep];
   const isFirstStep = currentStepIndex === 0;
@@ -100,7 +102,7 @@ export function WorkflowNavigation({
           leftIcon={<ArrowLeft className="h-4 w-4" />}
           onClick={handleBack}
         >
-          {backLabel}
+          {backLabel || t("common.back")}
         </Button>
       )}
 
@@ -113,7 +115,8 @@ export function WorkflowNavigation({
           onClick={handleNext}
           disabled={isProcessing}
         >
-          {nextLabel || nextStepLabels[currentStep] || "Continue"}
+          {nextLabel ||
+            t(nextStepLabelKeys[currentStep] || "common.continue")}
         </Button>
       )}
     </div>

@@ -25,6 +25,9 @@
       "error": "删除项目失败"
     },
     "loading": "正在加载项目...",
-    "untitled": "无标题项目"
+    "loadingDescription": "请稍候，正在获取您的项目",
+    "untitled": "无标题项目",
+    "loadError": "加载项目失败",
+    "loadErrorDescription": "无法加载项目"
   }
 }

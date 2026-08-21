@@ -19,10 +19,13 @@ import {
   scheduleAgnesJobs,
   type NameSuggestion,
 } from "@/lib/project-client";
+import { useI18n } from "@/i18n";
+import { formatDuration } from "@/lib/utils/time-format";
 
 export default function ProjectDetailsPage() {
   const params = useParams();
   const router = useRouter();
+  const { t } = useI18n();
   const projectId = params.projectId as string;
   const { state, isLoading, activeScript } = useProjectState(projectId);
 
@@ -38,8 +41,9 @@ export default function ProjectDetailsPage() {
   const [hasFetchedSuggestions, setHasFetchedSuggestions] = useState(false);
 
   // Generate fallback suggestions locally without API call - BEFORE effects that use it
-  const generateLocalFallbackSuggestions = useCallback((movieTitle: string): NameSuggestion[] => {
-    const suggestions: NameSuggestion[] = [];
+  const generateLocalFallbackSuggestions = useCallback(
+    (movieTitle: string): NameSuggestion[] => {
+      const suggestions: NameSuggestion[] = [];
 
     // Clean title and split into words
     const cleanTitle = movieTitle.trim();
@@ -113,9 +117,9 @@ export default function ProjectDetailsPage() {
     // Strategy 1: Project name suggestion (Direct/Clean name)
     let projName = "";
     if (isReallyShort) {
-      projName = `${cleanTitle} Project`;
+      projName = t("project.details.nameSuffixProject", { title: cleanTitle });
     } else if (baseWords.length <= 3) {
-      projName = `${baseWords.join(" ")} Project`;
+      projName = t("project.details.nameSuffixProject", { title: baseWords.join(" ") });
     } else {
       // If base title is too long, build a smart suggestion using first few words
       const sliceCount = baseStartsWithArticle ? 4 : 3;
@@ -123,12 +127,12 @@ export default function ProjectDetailsPage() {
 
       // Fallback if all words were popped (unlikely)
       const finalWords = slicedWords.length > 0 ? slicedWords : baseWords.slice(0, 2);
-      projName = `${finalWords.join(" ")} Project`;
+      projName = t("project.details.nameSuffixProject", { title: finalWords.join(" ") });
     }
 
     suggestions.push({
       name: projName,
-      reason: "Simple and direct name based on the title",
+      reason: t("project.details.reasonDirect"),
     });
 
     // Strategy 2: Acronym / Production name (if not really short)
@@ -150,19 +154,19 @@ export default function ProjectDetailsPage() {
 
       if (acronym.length >= 2) {
         suggestions.push({
-          name: `${acronym} Production`,
-          reason: "Classic production name using title initials",
+          name: t("project.details.nameSuffixProduction", { title: acronym }),
+          reason: t("project.details.reasonAcronym"),
         });
       } else {
         suggestions.push({
-          name: `${firstSignificantWord} Production`,
-          reason: "Classic production designation",
+          name: t("project.details.nameSuffixProduction", { title: firstSignificantWord }),
+          reason: t("project.details.reasonProduction"),
         });
       }
     } else {
       suggestions.push({
-        name: `${cleanTitle} Film`,
-        reason: "Classic film designation",
+        name: t("project.details.nameSuffixFilm", { title: cleanTitle }),
+        reason: t("project.details.reasonFilm"),
       });
     }
 
@@ -171,21 +175,21 @@ export default function ProjectDetailsPage() {
       // For very long titles, use the clean base title prefix + Chronicles
       // e.g. "Star Wars: Episode IV" -> "Star Wars Chronicles"
       suggestions.push({
-        name: `${cleanBaseTitle} Chronicles`,
-        reason: "Epic chronicle adaptation",
+        name: t("project.details.nameSuffixChronicles", { title: cleanBaseTitle }),
+        reason: t("project.details.reasonChronicles"),
       });
     } else if (words.length > 1) {
       // e.g. "The Matrix" -> "Matrix Story" (uses significant word or last word)
       const lastWordClean = words[words.length - 1].replace(/[^a-zA-Z0-9]/g, "");
       const themeWord = lastWordClean.length > 1 ? lastWordClean : firstSignificantWord;
       suggestions.push({
-        name: `${themeWord} Story`,
-        reason: "Focused on key theme",
+        name: t("project.details.nameSuffixStory", { title: themeWord }),
+        reason: t("project.details.reasonStory"),
       });
     } else {
       suggestions.push({
-        name: `${cleanTitle} Chronicles`,
-        reason: "Epic and memorable",
+        name: t("project.details.nameSuffixChronicles", { title: cleanTitle }),
+        reason: t("project.details.reasonMemorable"),
       });
     }
 
@@ -210,10 +214,22 @@ export default function ProjectDetailsPage() {
 
     // If we have less than 3, pad with nice fallbacks
     const fallbacks = [
-      { name: `${cleanBaseTitle} Venture`, reason: "Creative venture" },
-      { name: `${firstSignificantWord} Studio`, reason: "Studio production name" },
-      { name: `Project ${firstSignificantWord}`, reason: "Classic project naming" },
-      { name: `${cleanTitle} Chronicles`, reason: "Epic chronicle adaptation" },
+      {
+        name: t("project.details.nameSuffixVenture", { title: cleanBaseTitle }),
+        reason: t("project.details.reasonVenture"),
+      },
+      {
+        name: t("project.details.nameSuffixStudio", { title: firstSignificantWord }),
+        reason: t("project.details.reasonStudio"),
+      },
+      {
+        name: t("project.details.nameSuffixProjectWord", { title: firstSignificantWord }),
+        reason: t("project.details.reasonClassic"),
+      },
+      {
+        name: t("project.details.nameSuffixChronicles", { title: cleanTitle }),
+        reason: t("project.details.reasonChronicles"),
+      },
     ];
 
     for (const f of fallbacks) {
@@ -222,7 +238,9 @@ export default function ProjectDetailsPage() {
     }
 
     return uniqueSuggestions.slice(0, 3);
-  }, []);
+  },
+  [t]
+);
 
   // Polling for AI suggestions - BEFORE effect that uses it
   const startPollingForNameSuggestions = useCallback(async () => {
@@ -358,7 +376,7 @@ export default function ProjectDetailsPage() {
   };
 
   if (isLoading) {
-    return <PageLoadingSkeleton message="Loading project..." />;
+    return <PageLoadingSkeleton message={t("project.common.loadingProject")} />;
   }
 
   return (
@@ -367,10 +385,10 @@ export default function ProjectDetailsPage() {
         <div className="flex flex-col gap-6 pb-24">
           <div className="flex items-center justify-between">
             <div>
-              <Heading variant="section" as="h2" className="text-text-primary">Project Details</Heading>
-              <p className="mt-1 text-sm text-text-muted">
-                Name your project before selecting a voice
-              </p>
+              <Heading variant="section" as="h2" className="text-text-primary">
+                {t("project.details.title")}
+              </Heading>
+              <p className="mt-1 text-sm text-text-muted">{t("project.details.description")}</p>
             </div>
           </div>
 
@@ -380,14 +398,16 @@ export default function ProjectDetailsPage() {
               <div className="flex flex-col md:grid md:grid-cols-2 md:gap-6">
                 <div className="flex items-center gap-2 mb-3 md:col-span-2">
                   <Sparkles className="h-4 w-4 text-accent-cyan" />
-                  <Heading variant="label" as="h3" className="text-text-primary">AI-Generated Thumbnail</Heading>
+                  <Heading variant="label" as="h3" className="text-text-primary">
+                    {t("project.details.aiThumbnail")}
+                  </Heading>
                 </div>
 
                 {/* Thumbnail - Half width on medium+ screens */}
                 <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default md:rounded-xl">
                   <Image
                     src={state.thumbnailUrl}
-                    alt="Project thumbnail"
+                    alt={t("project.details.thumbnailAlt")}
                     className="w-full h-full object-cover"
                     width={500}
                     height={280}
@@ -401,16 +421,15 @@ export default function ProjectDetailsPage() {
 
                 {/* Explanatory content - Half width on medium+ screens */}
                 <div className="mt-3 md:mt-0 flex flex-col justify-center">
-                  <Heading variant="label" as="h4" className="text-text-primary mb-2">About Your Thumbnail</Heading>
-                  <p className="text-sm text-text-muted mb-3">
-                    This AI-generated thumbnail is created based on your movie selection and script.
-                    It will be used as the visual preview for your final video project.
-                  </p>
+                  <Heading variant="label" as="h4" className="text-text-primary mb-2">
+                    {t("project.details.aboutThumbnail")}
+                  </Heading>
+                  <p className="text-sm text-text-muted mb-3">{t("project.details.aboutThumbnailDesc")}</p>
                   <div className="text-xs text-text-muted space-y-1">
-                    <p>• Created using movie theme and script content</p>
-                    <p>• No text overlay - purely visual design</p>
-                    <p>• Can be customized in later steps</p>
-                    <p>• Optimized for video thumbnails</p>
+                    <p>• {t("project.details.aboutBullet1")}</p>
+                    <p>• {t("project.details.aboutBullet2")}</p>
+                    <p>• {t("project.details.aboutBullet3")}</p>
+                    <p>• {t("project.details.aboutBullet4")}</p>
                   </div>
                 </div>
               </div>
@@ -423,9 +442,11 @@ export default function ProjectDetailsPage() {
               <div className="flex items-center gap-3">
                 <Loader2 className="h-5 w-5 text-accent-cyan animate-spin flex-shrink-0" />
                 <div className="flex-1">
-                  <Heading variant="label" as="h3" className="text-text-primary">Generating AI Thumbnail...</Heading>
+                  <Heading variant="label" as="h3" className="text-text-primary">
+                    {t("project.details.generatingThumbnail")}
+                  </Heading>
                   <p className="mt-1 text-xs text-text-muted">
-                    Your custom thumbnail is being created
+                    {t("project.details.generatingThumbnailDesc")}
                   </p>
                 </div>
               </div>
@@ -451,7 +472,8 @@ export default function ProjectDetailsPage() {
                   <Heading variant="label" as="h3" className="text-text-primary">{state.movieTitle}</Heading>
                   <p className="mt-1 text-sm text-text-muted">
                     {state.movieGenre && `${state.movieGenre} • `}
-                    {state.movieRating && `Rating ${state.movieRating.toFixed(1)}`}
+                    {state.movieRating &&
+                      t("project.common.ratingValue", { value: state.movieRating.toFixed(1) })}
                   </p>
                 </div>
               </div>
@@ -472,15 +494,18 @@ export default function ProjectDetailsPage() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-4 mb-2">
-                    <Heading variant="label" as="h3" className="text-text-primary">Your Script</Heading>
+                    <Heading variant="label" as="h3" className="text-text-primary">
+                      {t("project.common.yourScript")}
+                    </Heading>
                     <span className="text-xs font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0">
-                      Click to expand <ChevronDown className="h-3 w-3" />
+                      {t("project.common.clickToExpand")} <ChevronDown className="h-3 w-3" />
                     </span>
                   </div>
                   <p className="text-sm text-text-muted mb-3">
-                    {activeScript.wordCount} words • Estimated duration:{" "}
-                    {Math.floor(activeScript.duration / 60)}:
-                    {(activeScript.duration % 60).toString().padStart(2, "0")}
+                    {t("project.common.scriptMeta", {
+                      count: activeScript.wordCount,
+                      duration: formatDuration(activeScript.duration),
+                    })}
                   </p>
                   <p className="text-sm text-text-secondary line-clamp-3 leading-relaxed">
                     {activeScript.content}
@@ -506,14 +531,12 @@ export default function ProjectDetailsPage() {
                     htmlFor="projectName"
                     className={`${typography.subsection} flex items-center gap-2 text-text-primary`}
                   >
-                    Name Your Project
+                    {t("project.details.nameYourProject")}
                     <span className="rounded-full bg-accent-cyan/10 px-2 py-0.5 text-sm font-normal text-accent-cyan">
-                      Required
+                      {t("common.required")}
                     </span>
                   </label>
-                  <p className="mt-0.5 text-xs text-text-muted">
-                    Choose a name that represents your video project
-                  </p>
+                  <p className="mt-0.5 text-xs text-text-muted">{t("project.details.nameHint")}</p>
                 </div>
               </div>
 
@@ -523,7 +546,7 @@ export default function ProjectDetailsPage() {
                   type="text"
                   value={projectName}
                   onChange={(e) => setProjectName(e.target.value)}
-                  placeholder="e.g., Inception Trailer Project"
+                  placeholder={t("project.details.namePlaceholder")}
                   className={`${typography.section} w-full rounded-xl border-2 border-accent-cyan/50 bg-surface-base px-5 py-4 text-text-primary placeholder-text-muted/60 shadow-[0_0_20px_rgba(34,211,238,0.12)] transition-all hover:shadow-[0_0_25px_rgba(34,211,238,0.2)] focus:border-accent-cyan focus:outline-none focus:ring-4 focus:ring-accent-cyan/25`}
                 />
                 {projectName.trim() && (
@@ -550,8 +573,10 @@ export default function ProjectDetailsPage() {
               <div className="mt-3 flex items-start gap-2 text-xs text-text-muted bg-accent-cyan/5 rounded-lg p-3 border border-accent-cyan/10">
                 <Sparkles className="h-4 w-4 text-accent-cyan flex-shrink-0 mt-0.5" />
                 <p>
-                  <span className="font-medium text-text-secondary">Tip:</span> Click any AI
-                  suggestion below or write your own creative name
+                  <span className="font-medium text-text-secondary">
+                    {t("project.details.nameTip")}
+                  </span>{" "}
+                  {t("project.details.nameTipDesc")}
                 </p>
               </div>
             </div>
@@ -563,7 +588,9 @@ export default function ProjectDetailsPage() {
               <div>
                 <div className="flex items-center justify-between gap-2 mb-3">
                   <div className="flex items-center gap-2">
-                    <Heading variant="label" as="h4" className="text-text-secondary">Suggestions</Heading>
+                    <Heading variant="label" as="h4" className="text-text-secondary">
+                      {t("project.details.suggestions")}
+                    </Heading>
                     {loadingAiSuggestions && (
                       <Loader2 className="h-4 w-4 animate-spin text-accent-cyan" />
                     )}
@@ -574,10 +601,10 @@ export default function ProjectDetailsPage() {
                       size="sm"
                       disabled={loadingAiSuggestions}
                       className="text-xs h-8 text-accent-cyan hover:bg-accent-cyan/10"
-                      title="AI suggestions are only generated once when you advance to this step"
+                      title={t("project.details.aiGeneratedOnce")}
                     >
                       <Sparkles className="h-3 w-3 mr-1" />
-                      AI Generated
+                      {t("project.details.aiGenerated")}
                     </Button>
                   )}
                 </div>
@@ -586,7 +613,7 @@ export default function ProjectDetailsPage() {
                   {/* Loading State - Only show while AI is loading */}
                   {loadingAiSuggestions && aiSuggestions.length === 0 && activeScript?.content && (
                     <div className="col-span-1 sm:col-span-2">
-                      <InlineLoadingSkeleton message="Generating AI suggestions..." />
+                      <InlineLoadingSkeleton message={t("project.details.generatingSuggestions")} />
                     </div>
                   )}
 

@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { Folder, Trash2, Clock, CheckCircle2, Calendar } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -6,6 +8,7 @@ import { ExternalImage } from "@/components/ui/ExternalImage";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { tmdbImageUrl, type ProjectResponse } from "@/lib/project-client";
+import { useI18n } from "@/i18n";
 
 interface ProjectCardProps {
   project: ProjectResponse;
@@ -14,12 +17,30 @@ interface ProjectCardProps {
   layoutMode?: "grid-sm" | "grid-md" | "list";
 }
 
+function formatProjectStatus(
+  status: string,
+  t: (key: string, options?: Record<string, any>) => string
+) {
+  const statusMap: Record<string, string> = {
+    completed: "project.status.completed",
+    "in-progress": "project.status.inProgress",
+    draft: "project.status.draft",
+    processing: "project.status.processing",
+    queued: "project.status.queued",
+    failed: "project.status.failed",
+    generating: "project.status.generating",
+  };
+  return statusMap[status] ? t(statusMap[status]) : status;
+}
+
 export function ProjectCard({
   project,
   showDelete = false,
   onDelete,
   layoutMode = "grid-md",
 }: ProjectCardProps) {
+  const { t } = useI18n();
+
   const handleDeleteClick = (e: React.MouseEvent | React.PointerEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -36,8 +57,12 @@ export function ProjectCard({
     onDelete?.(project);
   };
 
-  const projectName = project.project_name || project.movie?.title || "Untitled project";
+  const projectName =
+    project.project_name || project.movie?.title || t("project.common.untitledProjectLower");
   const movieTitle = project.movie?.title;
+  const statusLabel = formatProjectStatus(project.status, t);
+  const createdDate = new Date(project.created_at).toLocaleDateString();
+  const updatedDate = new Date(project.updated_at).toLocaleDateString();
 
   // Render list view
   if (layoutMode === "list") {
@@ -60,7 +85,8 @@ export function ProjectCard({
             {/* Movie title if different from project name */}
             {movieTitle && projectName !== movieTitle && (
               <Text variant="body" className="mb-2 text-text-muted">
-                Based on: <span className="text-text-secondary">{movieTitle}</span>
+                {t("project.card.basedOn")}{" "}
+                <span className="text-text-secondary">{movieTitle}</span>
               </Text>
             )}
 
@@ -77,7 +103,7 @@ export function ProjectCard({
                 size="sm"
               >
                 {project.status === "completed" && <CheckCircle2 className="w-3 h-3" />}
-                {project.status}
+                {statusLabel}
               </Badge>
             </div>
           </div>
@@ -86,11 +112,11 @@ export function ProjectCard({
           <div className="flex items-center gap-3 text-xs text-text-muted">
             <div className="flex items-center gap-1">
               <Calendar className="h-3.5 w-3.5" />
-              <span>Created {new Date(project.created_at).toLocaleDateString()}</span>
+              <span>{t("project.card.created", { date: createdDate })}</span>
             </div>
             <div className="flex items-center gap-1">
               <Clock className="h-3.5 w-3.5" />
-              <span>Updated {new Date(project.updated_at).toLocaleDateString()}</span>
+              <span>{t("project.card.updated", { date: updatedDate })}</span>
             </div>
           </div>
         </div>
@@ -100,8 +126,8 @@ export function ProjectCard({
           <button
             onPointerDown={handleDeleteClick}
             className="flex-shrink-0 self-start rounded-lg border border-border-default bg-surface-elevated/90 p-2 text-text-secondary backdrop-blur-sm transition-all duration-200 hover:border-status-error hover:bg-status-error/10 hover:text-status-error focus-ring touch-none"
-            aria-label="Delete project"
-            title="Delete project"
+            aria-label={t("project.card.deleteProject")}
+            title={t("project.card.deleteProject")}
           >
             <Trash2 className="h-4 w-4" />
           </button>
@@ -128,7 +154,11 @@ export function ProjectCard({
                   project.thumbnail?.base_image_url ||
                   ""
                 }
-                alt={project.project_name || project.movie?.title || "Project thumbnail"}
+                alt={
+                  project.project_name ||
+                  project.movie?.title ||
+                  t("project.card.projectThumbnail")
+                }
                 className="h-full w-full object-cover"
                 fill
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
@@ -144,7 +174,7 @@ export function ProjectCard({
                   tmdbImageUrl(project.movie.backdrop_path ?? project.movie.poster_path, "w780") ||
                   ""
                 }
-                alt={project.movie?.title ?? "Project movie"}
+                alt={project.movie?.title ?? t("project.card.projectMovie")}
                 className="h-full w-full object-cover"
                 fill
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
@@ -178,7 +208,9 @@ export function ProjectCard({
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     />
                   </svg>
-                  <span className="text-xs font-medium">Generating thumbnail...</span>
+                  <span className="text-xs font-medium">
+                    {t("project.card.generatingThumbnail")}
+                  </span>
                 </div>
               </div>
             )}
@@ -187,7 +219,9 @@ export function ProjectCard({
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1 min-w-0">
                 <Heading variant="label" as="h2" className="text-text-primary truncate">
-                  {project.project_name || project.movie?.title || "Untitled project"}
+                  {project.project_name ||
+                    project.movie?.title ||
+                    t("project.common.untitledProjectLower")}
                 </Heading>
                 {showDelete ? (
                   <div className="flex items-center gap-2 mt-2 flex-wrap">
@@ -202,19 +236,22 @@ export function ProjectCard({
                       size="sm"
                     >
                       {project.status === "completed" && <CheckCircle2 className="w-3 h-3" />}
-                      {project.status}
+                      {statusLabel}
                     </Badge>
                   </div>
                 ) : (
                   <Text variant="caption" className="mt-1 text-text-muted">
-                    Step: {project.last_step} • {project.status}
+                    {t("project.card.stepStatus", {
+                      step: project.last_step,
+                      status: statusLabel,
+                    })}
                   </Text>
                 )}
               </div>
               {showDelete && (
                 <div className="flex items-center gap-1 text-xs text-text-muted flex-shrink-0">
                   <Clock className="w-3 h-3" />
-                  {new Date(project.updated_at).toLocaleDateString()}
+                  {updatedDate}
                 </div>
               )}
             </div>
@@ -227,8 +264,8 @@ export function ProjectCard({
         <button
           onPointerDown={handleDeleteClick}
           className="absolute top-2 right-2 p-2 rounded-lg bg-surface-elevated/90 backdrop-blur-sm border border-border-default opacity-100 md:opacity-0 md:group-hover:opacity-100 hover:bg-status-error/10 hover:border-status-error hover:text-status-error text-text-secondary transition-all duration-200 focus-ring touch-none"
-          aria-label="Delete project"
-          title="Delete project"
+          aria-label={t("project.card.deleteProject")}
+          title={t("project.card.deleteProject")}
         >
           <Trash2 className="h-4 w-4" />
         </button>

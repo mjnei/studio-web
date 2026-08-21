@@ -48,7 +48,8 @@
       "sortDescending": "Sort Descending",
       "smallGrid": "Small dense grid",
       "mediumGrid": "Medium balanced grid",
-      "listView": "List view"
+      "listView": "List view",
+      "showing": "Showing {count} matching job(s)"
     },
     "bulk": {
       "retryFailed": "Retry Failed",
@@ -99,7 +100,20 @@
       "viewProject": "View Project",
       "completedAt": "Completed at",
       "duration": "Duration",
-      "processedOn": "Processed on"
+      "processedOn": "Processed on",
+      "ready": "Ready",
+      "completed": "Completed",
+      "play": "Play",
+      "previewVideo": "Preview Video",
+      "voice": "Voice",
+      "cost": "Cost",
+      "date": "Date",
+      "attempt": "Attempt",
+      "default": "Default",
+      "na": "N/A",
+      "creditAbbr": "cr",
+      "credit": "credit",
+      "credits": "credits"
     },
     "failedJob": {
       "retry": "Retry",
@@ -108,13 +122,30 @@
       "errorDetails": "Error Details",
       "failureReason": "Reason",
       "failedAt": "Failed at",
-      "retryAttempt": "Retry Attempt"
+      "retryAttempt": "Retry Attempt",
+      "failed": "Failed",
+      "generationFailed": "Generation Failed (at {progress}%)",
+      "unexpectedError": "An unexpected server error occurred during video rendering.",
+      "voice": "Voice",
+      "cost": "Cost",
+      "failedOn": "Failed on",
+      "retryGeneration": "Retry Generation",
+      "default": "Default",
+      "attempt": "Attempt",
+      "credit": "credit",
+      "credits": "credits"
     },
     "modal": {
       "videoPreview": "Video Preview",
       "close": "Close",
       "download": "Download Video",
-      "share": "Share Video"
+      "share": "Share Video",
+      "noVideoUrl": "No video playback URL available",
+      "voice": "Voice",
+      "cost": "Cost",
+      "attempt": "Attempt",
+      "date": "Date",
+      "default": "Default"
     },
     "loading": "Loading video generation dashboard...",
     "credit": "credit",

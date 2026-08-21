@@ -45,8 +45,8 @@ export default function ProjectsPage() {
       })
       .catch((err) => {
         toast.error(
-          "Failed to load projects",
-          err instanceof Error ? err.message : "Unable to load projects"
+          t("projects.loadError"),
+          err instanceof Error ? err.message : t("projects.loadErrorDescription")
         );
       })
       .finally(() => {
@@ -67,8 +67,8 @@ export default function ProjectsPage() {
       .catch((err) => {
         if (isMounted) {
           toast.error(
-            "Failed to load projects",
-            err instanceof Error ? err.message : "Unable to load projects"
+            t("projects.loadError"),
+            err instanceof Error ? err.message : t("projects.loadErrorDescription")
           );
         }
       })
@@ -103,7 +103,7 @@ export default function ProjectsPage() {
     } catch (err) {
       toast.error(
         t("projects.delete.error"),
-        err instanceof Error ? err.message : "An error occurred"
+        err instanceof Error ? err.message : t("common.anErrorOccurred")
       );
     } finally {
       setDeleting(false);
@@ -156,7 +156,7 @@ export default function ProjectsPage() {
         <LoadingSpinner
           size="lg"
           message={t("projects.loading")}
-          description="Please wait while we fetch your projects"
+          description={t("projects.loadingDescription")}
           fullHeight
         />
       ) : projects.length === 0 ? (

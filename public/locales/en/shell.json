@@ -25,6 +25,10 @@
     "studioTTSJobs": "Studio TTS Jobs",
     "playgroundTTSJobs": "Playground TTS Jobs",
     "playgroundTTS": "Playground TTS",
-    "auditLogs": "Audit Logs"
+    "auditLogs": "Audit Logs",
+    "expandSidebar": "Expand sidebar",
+    "collapseSidebar": "Collapse sidebar",
+    "closeMenu": "Close menu",
+    "openNavMenu": "Open navigation menu"
   }
 }

@@ -5,9 +5,11 @@ import { useNotifications } from "@/lib/notification-context";
 import { Bell, X, Check, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { Heading } from "@/components/ui/heading";
+import { useI18n } from "@/i18n";
 
 export function NotificationBell() {
   const { notifications, unreadCount, markAsRead, deleteNotification } = useNotifications();
+  const { t } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -37,7 +39,7 @@ export function NotificationBell() {
           "hover:bg-surface-secondary text-text-primary",
           "focus:outline-none focus:ring-2 focus:ring-primary"
         )}
-        aria-label="Notifications"
+        aria-label={t("notifications.title")}
       >
         <Bell size={20} />
 
@@ -67,11 +69,12 @@ export function NotificationBell() {
           {/* Header */}
           <div className="border-b border-surface-tertiary p-4 flex justify-between items-center">
             <Heading variant="subsection" as="h3" className="text-text-primary">
-              Notifications
+              {t("notifications.title")}
             </Heading>
             <button
               onClick={() => setIsOpen(false)}
               className="p-1 hover:bg-surface-tertiary rounded transition-colors"
+              aria-label={t("common.close")}
             >
               <X size={18} className="text-text-muted" />
             </button>
@@ -81,7 +84,7 @@ export function NotificationBell() {
           <div className="max-h-96 overflow-y-auto">
             {displayedNotifications.length === 0 ? (
               <div className="p-6 text-center text-text-muted">
-                <p className="text-sm">No notifications yet</p>
+                <p className="text-sm">{t("notifications.noNotificationsYet")}</p>
               </div>
             ) : (
               displayedNotifications.map((notification) => (
@@ -119,7 +122,7 @@ export function NotificationBell() {
                             "p-1 rounded transition-colors",
                             "hover:bg-surface-secondary text-text-muted hover:text-primary"
                           )}
-                          title="Mark as read"
+                          title={t("notifications.markAsRead")}
                         >
                           <Check size={16} />
                         </button>
@@ -133,7 +136,7 @@ export function NotificationBell() {
                           "p-1 rounded transition-colors",
                           "hover:bg-surface-secondary text-text-muted hover:text-destructive"
                         )}
-                        title="Delete notification"
+                        title={t("notifications.deleteNotification")}
                       >
                         <Trash2 size={16} />
                       </button>
@@ -154,7 +157,7 @@ export function NotificationBell() {
                   "hover:text-primary-dark transition-colors"
                 )}
               >
-                View all notifications
+                {t("notifications.viewAll")}
               </a>
             </div>
           )}

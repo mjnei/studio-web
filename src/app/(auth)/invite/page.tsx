@@ -160,13 +160,15 @@ function InviteContent() {
 }
 
 export default function InvitePage() {
+  const { t } = useI18n();
+
   return (
     <Suspense
       fallback={
         <Card variant="elevated" padding="lg" className="w-full">
           <div className="flex flex-col items-center justify-center py-12">
             <Loader2 className="animate-spin h-12 w-12 text-accent-primary mb-4" />
-            <p className="text-sm text-text-secondary">Loading...</p>
+            <p className="text-sm text-text-secondary">{t("common.loading")}</p>
           </div>
         </Card>
       }

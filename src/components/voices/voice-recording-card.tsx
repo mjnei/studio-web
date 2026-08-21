@@ -6,6 +6,7 @@ import { VoiceResponse } from "@/lib/types/api";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { ConfirmModal, AlertModal } from "@/components/ui/modal";
+import { useI18n } from "@/i18n";
 
 interface VoiceRecordingCardProps {
   recording: VoiceResponse;
@@ -20,6 +21,7 @@ export function VoiceRecordingCard({
   onToggleSharing,
   onSharingToggled,
 }: VoiceRecordingCardProps) {
+  const { t } = useI18n();
   const [isDeleting, setIsDeleting] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -42,7 +44,7 @@ export function VoiceRecordingCard({
       await onDelete(recording.id);
       setDeleteConfirmOpen(false);
     } catch {
-      setAudioErrorAlert({ open: true, message: "Failed to delete recording" });
+      setAudioErrorAlert({ open: true, message: t("voices.recordingCard.deleteFailed") });
       setIsDeleting(false);
     }
   };
@@ -55,7 +57,7 @@ export function VoiceRecordingCard({
       onSharingToggled?.(recording.id, !isShared);
     } catch (error) {
       const errorMessage =
-        error instanceof Error ? error.message : "Failed to update sharing status";
+        error instanceof Error ? error.message : t("voices.recordingCard.updateSharingFailed");
       console.error("Failed to toggle sharing:", error);
       setAudioErrorAlert({
         open: true,
@@ -82,7 +84,10 @@ export function VoiceRecordingCard({
         const audioUrl = recording.audio_url;
 
         if (!audioUrl) {
-          setAudioErrorAlert({ open: true, message: "Audio URL not available" });
+          setAudioErrorAlert({
+            open: true,
+            message: t("voices.recordingCard.audioUrlUnavailable"),
+          });
           setIsLoading(false);
           return;
         }
@@ -99,7 +104,7 @@ export function VoiceRecordingCard({
           setIsLoading(false);
           setAudioErrorAlert({
             open: true,
-            message: "Failed to play audio. The file may be unavailable.",
+            message: t("voices.recordingCard.playFailed"),
           });
         };
 
@@ -112,7 +117,7 @@ export function VoiceRecordingCard({
       } catch (error) {
         console.error("Audio playback error:", error);
         setIsLoading(false);
-        setAudioErrorAlert({ open: true, message: "Failed to load audio" });
+        setAudioErrorAlert({ open: true, message: t("voices.recordingCard.loadFailed") });
       }
     } else {
       audioRef.current.play();
@@ -130,7 +135,7 @@ export function VoiceRecordingCard({
   }, []);
 
   const formatDuration = (seconds: number | null | undefined) => {
-    if (!seconds) return "Unknown";
+    if (!seconds) return t("voices.recordingCard.unknown");
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs.toString().padStart(2, "0")}`;
@@ -156,7 +161,7 @@ export function VoiceRecordingCard({
   const getBadgeInfo = () => {
     if (!isShared) {
       return {
-        label: "🔒 Private",
+        label: `🔒 ${t("voices.recordingCard.private")}`,
         color: "bg-gray-500/10 text-gray-600 border-gray-500/30",
         icon: <Lock className="h-3 w-3" />,
       };
@@ -165,7 +170,7 @@ export function VoiceRecordingCard({
     // Handle optional is_approved field gracefully (could be undefined, null, or false)
     if (!recording.is_approved) {
       return {
-        label: "⏳ Pending Approval",
+        label: `⏳ ${t("voices.recordingCard.pendingApproval")}`,
         color: "bg-yellow-500/10 text-yellow-600 border-yellow-500/30",
         icon: <Clock className="h-3 w-3" />,
       };
@@ -173,10 +178,10 @@ export function VoiceRecordingCard({
 
     // Approved community voice - handle optional admin_approved_at gracefully
     const approvalDate = recording.admin_approved_at
-      ? ` • Approved ${formatDate(recording.admin_approved_at)}`
+      ? ` • ${t("voices.recordingCard.approvedOn", { date: formatDate(recording.admin_approved_at) })}`
       : "";
     return {
-      label: `✅ Community${approvalDate}`,
+      label: `✅ ${t("voices.recordingCard.community")}${approvalDate}`,
       color: "bg-green-500/10 text-green-600 border-green-500/30",
       icon: <CheckCircle className="h-3 w-3" />,
     };
@@ -186,25 +191,11 @@ export function VoiceRecordingCard({
     // Handle null and undefined explicitly per Requirement 7.4
     if (!language) return null;
 
-    // Format language code to display name
-    const displayNames: Record<string, string> = {
-      en: "English",
-      es: "Spanish",
-      fr: "French",
-      de: "German",
-      it: "Italian",
-      pt: "Portuguese",
-      ru: "Russian",
-      ja: "Japanese",
-      zh: "Chinese",
-      "zh-CN": "Simplified Chinese",
-      "zh-TW": "Traditional Chinese",
-      ko: "Korean",
-      ar: "Arabic",
-      hi: "Hindi",
-    };
-
-    return displayNames[language] || language.toUpperCase();
+    const normalized =
+      language === "zh-CN" ? "zhCN" : language === "zh-TW" ? "zhTW" : language;
+    const key = `voices.languages.${normalized}`;
+    const translated = t(key);
+    return translated === key ? language.toUpperCase() : translated;
   };
 
   return (
@@ -234,7 +225,7 @@ export function VoiceRecordingCard({
           onClick={handleDeleteClick}
           disabled={isDeleting}
           className="shrink-0 p-1.5 text-text-muted hover:text-red-400 transition-colors disabled:opacity-50"
-          title="Delete recording"
+          title={t("voices.recordingCard.deleteRecording")}
         >
           <Trash2 size={16} />
         </button>
@@ -268,17 +259,17 @@ export function VoiceRecordingCard({
           {isLoading ? (
             <>
               <div className="mr-1 h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
-              Loading...
+              {t("voices.playback.loading")}
             </>
           ) : isPlaying ? (
             <>
               <Pause size={14} className="mr-1" />
-              Pause
+              {t("voices.playback.pause")}
             </>
           ) : (
             <>
               <Play size={14} className="mr-1" />
-              Play
+              {t("voices.playback.play")}
             </>
           )}
         </Button>
@@ -291,7 +282,11 @@ export function VoiceRecordingCard({
               ? "border border-orange-500/50 bg-orange-500/10 text-orange-600 hover:bg-orange-500/20"
               : "border border-green-500/50 bg-green-500/10 text-green-600 hover:bg-green-500/20"
           } disabled:opacity-50`}
-          title={isShared ? "Stop sharing (make private)" : "Share with community"}
+          title={
+            isShared
+              ? t("voices.recordingCard.stopSharing")
+              : t("voices.recordingCard.shareCommunity")
+          }
         >
           {isTogglingSharing ? (
             <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
@@ -308,10 +303,10 @@ export function VoiceRecordingCard({
         open={deleteConfirmOpen}
         onClose={() => setDeleteConfirmOpen(false)}
         onConfirm={handleConfirmDelete}
-        title="Delete Recording"
-        description={`Are you sure you want to delete "${recording.name}"? This action cannot be undone.`}
-        confirmText="Delete"
-        cancelText="Cancel"
+        title={t("voices.recordingCard.deleteTitle")}
+        description={t("voices.recordingCard.deleteDescription", { name: recording.name })}
+        confirmText={t("common.delete")}
+        cancelText={t("common.cancel")}
         variant="danger"
         loading={isDeleting}
       />
@@ -320,10 +315,10 @@ export function VoiceRecordingCard({
       <AlertModal
         open={audioErrorAlert.open}
         onClose={() => setAudioErrorAlert({ open: false, message: "" })}
-        title="Error"
+        title={t("voices.recordingCard.errorTitle")}
         message={audioErrorAlert.message}
         variant="error"
-        actionText="OK"
+        actionText={t("common.ok")}
       />
     </div>
   );

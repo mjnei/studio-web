@@ -10,6 +10,7 @@ import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { CreditStatus } from "@/components/credits/CreditStatus";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
+import { useI18n } from "@/i18n";
 
 /**
  * Shell for new project creation flow (/project/new/*).
@@ -17,11 +18,15 @@ import { Text } from "@/components/ui/text";
  */
 export function NewProjectShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const { t } = useI18n();
   const { collapsed, mobileOpen, setMobileOpen, toggle, isNarrow } = useSidebar();
 
   // Determine current step from pathname
   const currentPath = pathname.split("/").pop();
-  const stepLabel = currentPath === "source" ? "Step 1: Select Movie" : "Step 2: Write Script";
+  const stepLabel =
+    currentPath === "source"
+      ? t("project.shell.stepSelectMovie")
+      : t("project.shell.stepWriteScript");
 
   useEffect(() => {
     setMobileOpen(false);
@@ -57,7 +62,7 @@ export function NewProjectShell({ children }: { children: React.ReactNode }) {
               <button
                 onClick={toggle}
                 className="rounded-md p-1.5 text-text-muted hover:bg-surface-hover hover:text-text-secondary"
-                aria-label="Open navigation"
+                aria-label={t("project.common.openNavigation")}
               >
                 <PanelLeft size={20} />
               </button>
@@ -67,7 +72,7 @@ export function NewProjectShell({ children }: { children: React.ReactNode }) {
             </Link>
             <div>
               <Heading variant="label" as="h1" className="text-text-primary">
-                Create New Project
+                {t("project.shell.createNewProject")}
               </Heading>
               <Text variant="caption" className="text-text-muted">
                 {stepLabel}

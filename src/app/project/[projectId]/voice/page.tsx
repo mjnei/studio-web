@@ -19,10 +19,13 @@ import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { getAvailableVoices, getVoiceAudioUrl } from "@/lib/api/voice-client";
 import { scheduleAgnesJobs, createTTSJob, advanceProjectStep } from "@/lib/project-client";
 import type { VoiceResponse, VoiceWithCreator } from "@/lib/types/api";
+import { useI18n } from "@/i18n";
+import { formatDuration } from "@/lib/utils/time-format";
 
 export default function VoicePage() {
   const params = useParams();
   const router = useRouter();
+  const { t } = useI18n();
   const projectId = params.projectId as string;
   const { state, updateVoice, activeScript, isLoading } = useProjectState(projectId);
   const { error: toastError, success: toastSuccess } = useToast();
@@ -68,26 +71,6 @@ export default function VoicePage() {
 
     scheduleAgnesJobsIfNeeded();
   }, [projectId, activeScript?.content, hasScheduledAgnes]);
-  useEffect(() => {
-    const scheduleAgnesJobsIfNeeded = async () => {
-      if (!projectId || !activeScript?.content) return;
-      if (hasScheduledAgnes) return; // Only schedule once
-
-      try {
-        // Backend checks state and schedules only what's missing
-        const result = await scheduleAgnesJobs(projectId);
-        if (result.scheduled.length > 0) {
-          console.log("[Voice Page] Agnes jobs scheduled:", result.scheduled);
-        }
-        setHasScheduledAgnes(true);
-      } catch (error) {
-        console.error("[Voice Page] Failed to schedule Agnes jobs:", error);
-        setHasScheduledAgnes(true); // Mark as attempted even if failed
-      }
-    };
-
-    scheduleAgnesJobsIfNeeded();
-  }, [projectId, activeScript?.content, hasScheduledAgnes]);
 
   // Fetch available voices (own + community)
   useEffect(() => {
@@ -105,7 +88,9 @@ export default function VoicePage() {
       })
       .catch((err) => {
         if (!cancelled) {
-          setAvailableVoicesError(err instanceof Error ? err.message : "Unable to load voices");
+          setAvailableVoicesError(
+            err instanceof Error ? err.message : t("project.voice.unableToLoad")
+          );
           setOwnVoices([]);
           setCommunityVoices([]);
           setAvailableVoicesLoading(false);
@@ -115,7 +100,7 @@ export default function VoicePage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [t]);
 
   // Cleanup audio on unmount (when user navigates away)
   useEffect(() => {
@@ -149,7 +134,7 @@ export default function VoicePage() {
           : communityVoices.find((v) => v.id === voiceId);
 
       if (!voiceData) {
-        toastError("Voice not found", "Unable to find the selected voice.");
+        toastError(t("project.voice.voiceNotFound"), t("project.voice.voiceNotFoundDesc"));
         return;
       }
 
@@ -161,13 +146,19 @@ export default function VoicePage() {
           audioUrl = audioUrlData.audio_url;
         } catch (err) {
           console.error("Failed to get audio URL:", err);
-          toastError("Preview unavailable", "Audio preview is not available for this voice.");
+          toastError(
+            t("project.voice.previewUnavailable"),
+            t("project.voice.previewUnavailableDesc")
+          );
           return;
         }
       }
 
       if (!audioUrl) {
-        toastError("Preview unavailable", "Audio preview is not available for this voice.");
+        toastError(
+          t("project.voice.previewUnavailable"),
+          t("project.voice.previewUnavailableDesc")
+        );
         return;
       }
 
@@ -184,14 +175,14 @@ export default function VoicePage() {
       };
       audioRef.current.onerror = (e) => {
         console.error("Audio playback error:", audioRef.current?.error, e);
-        toastError("Playback failed", "Failed to play the audio preview.");
+        toastError(t("project.voice.playbackFailed"), t("project.voice.playbackFailedPlay"));
         URL.revokeObjectURL(blobUrl);
       };
 
       await audioRef.current.play();
     } catch (err) {
       console.error("Failed to load/play audio:", err);
-      toastError("Playback failed", "Failed to load the audio preview.");
+      toastError(t("project.voice.playbackFailed"), t("project.voice.playbackFailedLoad"));
     }
   };
 
@@ -239,7 +230,7 @@ export default function VoicePage() {
       const recordingWithUrl: VoiceResponse = {
         id: newRecording.id,
         user_id: newRecording.user_id,
-        name: newRecording.name || newRecording.title || "Recorded Voice",
+        name: newRecording.name || newRecording.title || t("project.voice.recordedVoice"),
         audio_path: newRecording.audio_path || newRecording.file_path || "",
         mime_type: newRecording.mime_type,
         duration_seconds: newRecording.duration_seconds,
@@ -260,13 +251,10 @@ export default function VoicePage() {
       // Auto-select the newly recorded voice
       await handleVoiceSelect(recordingWithUrl.id);
 
-      toastSuccess("Voice recorded", "Your new voice has been added");
+      toastSuccess(t("project.voice.voiceRecorded"), t("project.voice.voiceRecordedDesc"));
     } catch (error) {
       console.error("Failed to get audio URL for new recording:", error);
-      toastError(
-        "Recording saved",
-        "Voice recorded but audio URL retrieval failed. You can still use it."
-      );
+      toastError(t("project.voice.recordingSaved"), t("project.voice.recordingSavedDesc"));
       setShowRecorder(false);
     }
   };
@@ -312,17 +300,17 @@ export default function VoicePage() {
 
       // Navigate to details page
       router.push(`/project/${projectId}/details`);
-      toastSuccess("Voice selected", "Proceeding to project details");
+      toastSuccess(t("project.voice.voiceSelected"), t("project.voice.voiceSelectedDesc"));
     } catch (error) {
       console.error("Failed to schedule TTS job:", error);
-      toastError("Failed to schedule audio generation", "Please try again");
+      toastError(t("project.voice.scheduleFailed"), t("common.pleaseTryAgain"));
     } finally {
       setIsAdvancing(false);
     }
   };
 
   if (isLoading) {
-    return <PageLoadingSkeleton message="Loading project..." />;
+    return <PageLoadingSkeleton message={t("project.common.loadingProject")} />;
   }
 
   return (
@@ -331,14 +319,14 @@ export default function VoicePage() {
         <div className="flex flex-col gap-6 pb-24">
           <div className="flex items-center justify-between">
             <div>
-              <Heading variant="section" as="h2" className="text-text-primary">Select Voice</Heading>
-              <p className="mt-1 text-sm text-text-muted">
-                Choose a voice and listen to its preview. Audio will be generated in the next step.
-              </p>
+              <Heading variant="section" as="h2" className="text-text-primary">
+                {t("project.voice.title")}
+              </Heading>
+              <p className="mt-1 text-sm text-text-muted">{t("project.voice.description")}</p>
             </div>
             {selectedVoiceId && (
               <div className="text-sm text-text-muted">
-                Selected:{" "}
+                {t("project.voice.selected")}{" "}
                 <span className="font-medium text-text-primary">
                   {ownVoices.find((v) => v.id === selectedVoiceId)?.name ||
                     communityVoices.find((v) => v.id === selectedVoiceId)?.name}
@@ -364,15 +352,12 @@ export default function VoicePage() {
                     as="h3"
                     className="mb-2 uppercase tracking-wide text-text-secondary"
                   >
-                    Script Tagline
+                    {t("project.common.scriptTagline")}
                   </Heading>
                   <p className={`${typography.section} mb-2 text-accent-cyan`}>
                     "{state.scriptSummary}"
                   </p>
-                  <p className="text-xs text-text-muted">
-                    This hook will be used in your video's thumbnail. Now choose a voice that
-                    matches this tone.
-                  </p>
+                  <p className="text-xs text-text-muted">{t("project.voice.taglineHint")}</p>
                 </div>
               </div>
             </Card>
@@ -392,15 +377,18 @@ export default function VoicePage() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-4 mb-2">
-                    <Heading variant="label" as="h3" className="text-text-primary">Your Script</Heading>
+                    <Heading variant="label" as="h3" className="text-text-primary">
+                      {t("project.common.yourScript")}
+                    </Heading>
                     <span className="text-xs font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0 group-hover:text-accent-cyan-hover">
-                      Click to expand <ChevronDown className="h-3 w-3" />
+                      {t("project.common.clickToExpand")} <ChevronDown className="h-3 w-3" />
                     </span>
                   </div>
                   <p className="text-sm text-text-muted mb-2">
-                    {activeScript.wordCount} words • Estimated duration:{" "}
-                    {Math.floor(activeScript.duration / 60)}:
-                    {(activeScript.duration % 60).toString().padStart(2, "0")}
+                    {t("project.common.scriptMeta", {
+                      count: activeScript.wordCount,
+                      duration: formatDuration(activeScript.duration),
+                    })}
                   </p>
                   <p className="text-sm text-text-secondary line-clamp-2">{activeScript.content}</p>
                 </div>
@@ -422,7 +410,7 @@ export default function VoicePage() {
                   }`}
                 >
                   <Mic className="h-4 w-4" />
-                  <span>My Voices</span>
+                  <span>{t("project.voice.myVoices")}</span>
                   {ownVoices.length > 0 && (
                     <span
                       className={`ml-1 rounded-full px-2 py-0.5 text-xs font-bold ${
@@ -443,7 +431,7 @@ export default function VoicePage() {
                   }`}
                 >
                   <Globe className="h-4 w-4" />
-                  <span>Community</span>
+                  <span>{t("project.voice.community")}</span>
                   {communityVoices.length > 0 && (
                     <span
                       className={`ml-1 rounded-full px-2 py-0.5 text-xs font-bold ${
@@ -488,13 +476,15 @@ export default function VoicePage() {
                       {ownVoices.length === 0 ? (
                         <div className="col-span-full text-center py-8 rounded-lg border border-dashed border-border-default bg-surface-panel/50">
                           <Mic className="h-8 w-8 text-text-muted mx-auto mb-2 opacity-50" />
-                          <p className="text-sm text-text-muted mb-2">No personal voices yet</p>
+                          <p className="text-sm text-text-muted mb-2">
+                            {t("project.voice.noPersonalVoices")}
+                          </p>
                           <p className="text-xs text-text-muted max-w-xs mx-auto mb-4">
-                            Record your first voice to get started
+                            {t("project.voice.recordFirst")}
                           </p>
                           <Button variant="primary" size="sm" onClick={handleAddVoiceClick}>
                             <Plus size={16} className="mr-2" />
-                            Record Voice
+                            {t("project.voice.recordVoice")}
                           </Button>
                         </div>
                       ) : (
@@ -520,7 +510,9 @@ export default function VoicePage() {
                                     <p className="font-semibold text-text-primary text-sm truncate">
                                       {voice.name}
                                     </p>
-                                    <p className="text-xs text-text-muted">Your voice</p>
+                                    <p className="text-xs text-text-muted">
+                                      {t("project.voice.yourVoice")}
+                                    </p>
                                   </div>
                                 </div>
                                 {selectedVoiceId === voice.id && (
@@ -544,12 +536,14 @@ export default function VoicePage() {
                                 <Plus className="h-5 w-5 text-accent-primary" />
                               </div>
                               <p className="text-xs font-semibold text-text-primary mb-0.5">
-                                Add Voice
+                                {t("project.voice.addVoice")}
                               </p>
                               <p className="text-xs text-text-muted">
                                 {voiceLimits.canAdd
-                                  ? `${voiceLimits.remainingCount} left`
-                                  : "Limit reached"}
+                                  ? t("project.voice.remainingLeft", {
+                                      count: voiceLimits.remainingCount,
+                                    })
+                                  : t("project.voice.limitReached")}
                               </p>
                             </div>
                           </Card>
@@ -565,10 +559,10 @@ export default function VoicePage() {
                         <div className="col-span-full text-center py-8 rounded-lg border border-dashed border-border-default bg-surface-panel/50">
                           <Globe className="h-8 w-8 text-text-muted mx-auto mb-2 opacity-50" />
                           <p className="text-sm text-text-muted mb-2">
-                            No community voices available
+                            {t("project.voice.noCommunityVoices")}
                           </p>
                           <p className="text-xs text-text-muted max-w-xs mx-auto">
-                            Approved community voices will appear here
+                            {t("project.voice.communityHint")}
                           </p>
                         </div>
                       ) : (
@@ -601,7 +595,7 @@ export default function VoicePage() {
                                   <div className="mt-1">
                                     <span className="inline-flex items-center gap-1 rounded-full bg-green-500/10 border border-green-500/30 px-1.5 py-0.5 text-[10px] font-bold text-green-600">
                                       <div className="h-1 w-1 rounded-full bg-green-600"></div>
-                                      Approved
+                                      {t("project.voice.approved")}
                                     </span>
                                   </div>
                                 </div>
@@ -627,10 +621,10 @@ export default function VoicePage() {
             <Card variant="elevated" padding="lg">
               <div className="space-y-4">
                 <div>
-                  <Heading variant="label" as="h3" className="text-text-primary">Speech Rate</Heading>
-                  <p className="text-xs text-text-muted mt-1">
-                    Select the speed of the generated voice
-                  </p>
+                  <Heading variant="label" as="h3" className="text-text-primary">
+                    {t("project.voice.speechRate")}
+                  </Heading>
+                  <p className="text-xs text-text-muted mt-1">{t("project.voice.speechRateHint")}</p>
                 </div>
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
@@ -644,7 +638,7 @@ export default function VoicePage() {
                     }`}
                   >
                     <span className={`${typography.subsection} mb-1 tabular-nums`}>0.5x</span>
-                    <span className="text-xs font-medium">Very Slow</span>
+                    <span className="text-xs font-medium">{t("project.voice.verySlow")}</span>
                     {ratio === 0.5 && (
                       <div className="absolute top-2 right-2">
                         <Check className="h-4 w-4" />
@@ -662,7 +656,7 @@ export default function VoicePage() {
                     }`}
                   >
                     <span className={`${typography.subsection} mb-1 tabular-nums`}>1.0x</span>
-                    <span className="text-xs font-medium">Slow</span>
+                    <span className="text-xs font-medium">{t("project.voice.slow")}</span>
                     {ratio === 1.0 && (
                       <div className="absolute top-2 right-2">
                         <Check className="h-4 w-4" />
@@ -680,7 +674,7 @@ export default function VoicePage() {
                     }`}
                   >
                     <span className={`${typography.subsection} mb-1 tabular-nums`}>1.25x</span>
-                    <span className="text-xs font-medium">Normal</span>
+                    <span className="text-xs font-medium">{t("project.voice.normal")}</span>
                     {ratio === 1.25 && (
                       <div className="absolute top-2 right-2">
                         <Check className="h-4 w-4" />
@@ -698,7 +692,7 @@ export default function VoicePage() {
                     }`}
                   >
                     <span className={`${typography.subsection} mb-1 tabular-nums`}>1.6x</span>
-                    <span className="text-xs font-medium">Fast</span>
+                    <span className="text-xs font-medium">{t("project.voice.fast")}</span>
                     {ratio === 1.6 && (
                       <div className="absolute top-2 right-2">
                         <Check className="h-4 w-4" />
@@ -716,7 +710,7 @@ export default function VoicePage() {
                     }`}
                   >
                     <span className={`${typography.subsection} mb-1 tabular-nums`}>2.0x</span>
-                    <span className="text-xs font-medium">Very Fast</span>
+                    <span className="text-xs font-medium">{t("project.voice.veryFast")}</span>
                     {ratio === 2.0 && (
                       <div className="absolute top-2 right-2">
                         <Check className="h-4 w-4" />
@@ -727,7 +721,9 @@ export default function VoicePage() {
 
                 {/* Current Selection Display */}
                 <div className="flex items-center justify-center gap-2 p-3 rounded-lg bg-accent-primary/5 border border-accent-primary/20">
-                  <span className="text-sm font-medium text-text-secondary">Current speed:</span>
+                  <span className="text-sm font-medium text-text-secondary">
+                    {t("project.voice.currentSpeed")}
+                  </span>
                   <span className={`${typography.subsection} text-accent-primary tabular-nums`}>
                     {ratio.toFixed(2)}x
                   </span>

@@ -156,6 +156,10 @@ export default function ProfilePage() {
   // Normalize membership_tier to handle null/undefined cases
   const membershipTier = user.membership_tier || "free";
   const isFreeUser = membershipTier === "free";
+  const tierLabel = t(`profile.membershipBilling.tiers.${membershipTier}`);
+  const subscriptionStatusLabel = user.subscription_status
+    ? t(`profile.membershipBilling.subscriptionStatus.${user.subscription_status}`)
+    : null;
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -273,7 +277,7 @@ export default function ProfilePage() {
                   </Badge>
                   <Badge variant={membershipTier === "free" ? "default" : "success"} size="md">
                     <Crown className="w-3 h-3" />
-                    {membershipTier}
+                    {tierLabel}
                   </Badge>
                   {user.subscription_status && (
                     <Badge
@@ -286,7 +290,7 @@ export default function ProfilePage() {
                       }
                       size="md"
                     >
-                      {user.subscription_status}
+                      {subscriptionStatusLabel}
                     </Badge>
                   )}
                 </div>
@@ -393,7 +397,7 @@ export default function ProfilePage() {
                       {t("profile.membershipBilling.currentPlan")}
                     </p>
                     <Heading variant="subsection" className="capitalize mt-1">
-                      {membershipTier}
+                      {tierLabel}
                     </Heading>
                   </div>
                   {user.subscription_status && (
@@ -407,9 +411,7 @@ export default function ProfilePage() {
                       }
                       size="md"
                     >
-                      {t(
-                        `profile.membershipBilling.subscriptionStatus.${user.subscription_status}`
-                      )}
+                      {subscriptionStatusLabel}
                     </Badge>
                   )}
                 </div>

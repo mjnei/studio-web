@@ -110,8 +110,7 @@ export default function WorkflowStep({ onNext, onBack }: WorkflowStepProps) {
             />
           </svg>
           <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
-            <span className="font-semibold">Switch between steps anytime.</span> Work at your own
-            pace—your progress is auto-saved.
+            {t("onboarding.workflow.info")}
           </p>
         </div>
       </div>
@@ -121,14 +120,14 @@ export default function WorkflowStep({ onNext, onBack }: WorkflowStepProps) {
         <button
           onClick={onBack}
           className="w-full sm:w-auto px-6 py-2.5 sm:py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-semibold rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 text-sm sm:text-base"
-          aria-label="Go back to previous step"
+          aria-label={t("onboarding.workflow.goBack")}
         >
           {t("onboarding.workflow.back")}
         </button>
         <button
           onClick={onNext}
           className="w-full sm:w-auto px-6 py-2.5 sm:py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 dark:from-blue-500 dark:to-purple-500 dark:hover:from-blue-600 dark:hover:to-purple-600 text-white font-semibold rounded-lg transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/50 shadow-lg hover:shadow-xl text-sm sm:text-base"
-          aria-label="Continue to next step"
+          aria-label={t("onboarding.workflow.continueTakeStep")}
         >
           {t("onboarding.workflow.continue")}
         </button>

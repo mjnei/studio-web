@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
+import { useI18n } from "@/i18n";
 import { VideoJob } from "@/types/jobs";
 
 interface FailedJobCardProps {
@@ -28,6 +29,7 @@ export const FailedJobCard: React.FC<FailedJobCardProps> = ({
   isActionLoading,
 }) => {
   const router = useRouter();
+  const { t } = useI18n();
 
   return (
     <Card
@@ -62,7 +64,7 @@ export const FailedJobCard: React.FC<FailedJobCardProps> = ({
                 <Heading variant="subsection" as="h3" className="text-text-primary truncate">
                   {job.projectName}
                 </Heading>
-                <Badge variant="error">Failed</Badge>
+                <Badge variant="error">{t("jobs.failedJob.failed")}</Badge>
               </div>
               {job.movieTitle && (
                 <Text variant="caption" className="text-text-muted truncate">
@@ -72,7 +74,9 @@ export const FailedJobCard: React.FC<FailedJobCardProps> = ({
             </div>
 
             <div className="text-xs text-text-muted text-right">
-              <span>Attempt #{job.generation_attempt}</span>
+              <span>
+                {t("jobs.failedJob.attempt")} #{job.generation_attempt}
+              </span>
             </div>
           </div>
 
@@ -80,22 +84,31 @@ export const FailedJobCard: React.FC<FailedJobCardProps> = ({
           <div className="p-2.5 rounded-md bg-status-failed/10 border border-status-failed/20 text-xs text-status-failed space-y-0.5">
             <p className="font-semibold flex items-center gap-1.5">
               <AlertTriangle className="h-3.5 w-3.5 flex-shrink-0" />
-              Generation Failed (at {job.progress}%)
+              {t("jobs.failedJob.generationFailed", { progress: job.progress })}
             </p>
             <p className="text-text-secondary line-clamp-2 pl-5">
-              {job.error_message || "An unexpected server error occurred during video rendering."}
+              {job.error_message || t("jobs.failedJob.unexpectedError")}
             </p>
           </div>
 
           {/* Metadata */}
           <div className="flex flex-wrap items-center gap-4 text-xs text-text-muted">
             <span>
-              Voice: <strong className="text-text-secondary">{job.voice_name || "Default"}</strong>
+              {t("jobs.failedJob.voice")}:{" "}
+              <strong className="text-text-secondary">
+                {job.voice_name || t("jobs.failedJob.default")}
+              </strong>
             </span>
             <span>
-              Cost: <strong className="text-text-secondary">{job.credit_cost} credit</strong>
+              {t("jobs.failedJob.cost")}:{" "}
+              <strong className="text-text-secondary">
+                {job.credit_cost} {t("jobs.failedJob.credit")}
+              </strong>
             </span>
-            <span>Failed on: {new Date(job.updated_at || job.created_at).toLocaleString()}</span>
+            <span>
+              {t("jobs.failedJob.failedOn")}:{" "}
+              {new Date(job.updated_at || job.created_at).toLocaleString()}
+            </span>
           </div>
 
           {/* Actions */}
@@ -107,7 +120,7 @@ export const FailedJobCard: React.FC<FailedJobCardProps> = ({
               onClick={() => onRetry(job.projectId, job.id)}
               disabled={isActionLoading}
             >
-              Retry Generation
+              {t("jobs.failedJob.retryGeneration")}
             </Button>
 
             <Button
@@ -116,7 +129,7 @@ export const FailedJobCard: React.FC<FailedJobCardProps> = ({
               leftIcon={<Eye className="h-3.5 w-3.5" />}
               onClick={() => router.push(`/project/${job.projectId}/export`)}
             >
-              View Project
+              {t("jobs.failedJob.viewProject")}
             </Button>
 
             <Button
@@ -127,7 +140,7 @@ export const FailedJobCard: React.FC<FailedJobCardProps> = ({
               disabled={isActionLoading}
               className="text-status-failed hover:bg-status-failed/10 ml-auto"
             >
-              Delete
+              {t("jobs.failedJob.delete")}
             </Button>
           </div>
         </div>

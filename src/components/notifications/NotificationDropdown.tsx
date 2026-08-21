@@ -6,6 +6,7 @@ import { Settings, CheckCheck, Bell } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
+import { useI18n } from "@/i18n";
 
 interface NotificationDropdownProps {
   onClose: () => void;
@@ -13,14 +14,13 @@ interface NotificationDropdownProps {
 
 export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
   const { notifications, unreadCount, isLoading, markAllAsRead } = useNotifications();
+  const { t } = useI18n();
 
   const handleMarkAllAsRead = async () => {
-    const unreadCount = notifications.filter((n) => !n.is_read).length;
-    if (unreadCount === 0) return;
+    const count = notifications.filter((n) => !n.is_read).length;
+    if (count === 0) return;
 
-    if (
-      window.confirm(`Mark ${unreadCount} notification${unreadCount !== 1 ? "s" : ""} as read?`)
-    ) {
+    if (window.confirm(t("notifications.markAllConfirm", { count }))) {
       await markAllAsRead();
     }
   };
@@ -33,11 +33,11 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
           <Bell size={16} className="text-text-secondary sm:hidden shrink-0" />
           <Bell size={18} className="text-text-secondary hidden sm:block shrink-0" />
           <Heading variant="label" as="h3" className="text-text-primary truncate">
-            Notifications
+            {t("notifications.title")}
           </Heading>
           {unreadCount > 0 && (
             <span className="text-[10px] sm:text-xs text-text-muted shrink-0">
-              ({unreadCount} new)
+              {t("notifications.newCount", { count: unreadCount })}
             </span>
           )}
         </div>
@@ -46,8 +46,8 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
             <button
               onClick={handleMarkAllAsRead}
               className="p-2 min-w-[44px] min-h-[44px] rounded-lg text-text-muted hover:bg-surface-hover hover:text-text-primary active:bg-surface-hover transition-all touch-manipulation flex items-center justify-center"
-              title="Mark all as read"
-              aria-label="Mark all as read"
+              title={t("notifications.markAllAsRead")}
+              aria-label={t("notifications.markAllAsRead")}
             >
               <CheckCheck size={18} />
             </button>
@@ -56,8 +56,8 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
             href="/settings/notifications"
             onClick={onClose}
             className="p-2 min-w-[44px] min-h-[44px] rounded-lg text-text-muted hover:bg-surface-hover hover:text-text-primary active:bg-surface-hover transition-all touch-manipulation flex items-center justify-center"
-            title="Notification settings"
-            aria-label="Notification settings"
+            title={t("notifications.notificationSettings")}
+            aria-label={t("notifications.notificationSettings")}
           >
             <Settings size={18} />
           </Link>
@@ -69,15 +69,15 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
         {isLoading ? (
           <div className="p-6 sm:p-8 flex flex-col items-center justify-center text-text-muted">
             <div className="w-6 h-6 sm:w-8 sm:h-8 border-2 border-accent-primary border-t-transparent rounded-full animate-spin mb-2 sm:mb-3" />
-            <p className="text-xs sm:text-sm">Loading notifications...</p>
+            <p className="text-xs sm:text-sm">{t("notifications.loading")}</p>
           </div>
         ) : notifications.length === 0 ? (
           <div className="p-6 sm:p-8 flex flex-col items-center justify-center text-text-muted">
             <Bell size={40} className="mb-2 sm:mb-3 opacity-50 sm:hidden" />
             <Bell size={48} className="mb-3 opacity-50 hidden sm:block" />
-            <p className="text-xs sm:text-sm font-medium">No notifications yet</p>
+            <p className="text-xs sm:text-sm font-medium">{t("notifications.noNotificationsYet")}</p>
             <p className="text-[10px] sm:text-xs mt-1 text-center px-4">
-              You'll see updates here when something happens
+              {t("notifications.noNotificationsHint")}
             </p>
           </div>
         ) : (
@@ -98,7 +98,7 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
         <div className="p-2 sm:p-3 border-t border-border-default bg-surface-raised">
           <Link href="/notifications" onClick={onClose}>
             <Button variant="ghost" className="w-full text-xs sm:text-sm" size="sm">
-              View all notifications
+              {t("notifications.viewAll")}
             </Button>
           </Link>
         </div>

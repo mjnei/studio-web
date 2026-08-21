@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { NOTIFICATION_TYPE_LABELS } from "@/lib/notification-constants";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
+import { useI18n } from "@/i18n";
 
 interface NotificationPreferencesModalProps {
   isOpen: boolean;
@@ -18,6 +19,7 @@ export function NotificationPreferencesModal({
   onClose,
 }: NotificationPreferencesModalProps) {
   const { preferences, updatePreferences, preferencesLoading } = useNotifications();
+  const { t } = useI18n();
   const [localPreferences, setLocalPreferences] = useState(preferences || {});
   const [isSaving, setIsSaving] = useState(false);
 
@@ -75,17 +77,17 @@ export function NotificationPreferencesModal({
             <Bell size={24} className="text-accent-primary" />
             <div>
               <Heading variant="section" as="h2" className="text-text-primary">
-                Notification Preferences
+                {t("notifications.preferencesTitle")}
               </Heading>
               <Text variant="body" className="text-text-muted mt-0.5">
-                Manage how you receive notifications
+                {t("notifications.preferencesSubtitle")}
               </Text>
             </div>
           </div>
           <button
             onClick={onClose}
             className="p-2 rounded-lg text-text-muted hover:bg-surface-hover hover:text-text-primary transition-all"
-            aria-label="Close"
+            aria-label={t("common.close")}
           >
             <X size={20} />
           </button>
@@ -96,7 +98,7 @@ export function NotificationPreferencesModal({
           {/* Notification Type Preferences */}
           <div className="space-y-4">
             <Heading variant="label" as="h3" className="text-text-primary mb-3">
-              Notification Types
+              {t("notifications.notificationTypes")}
             </Heading>
             {preferencesLoading ? (
               <div className="flex items-center justify-center py-12">
@@ -130,7 +132,7 @@ export function NotificationPreferencesModal({
                         onChange={() => handleToggle(notificationType)}
                         className="w-4 h-4 rounded border-border-default text-accent-primary focus:ring-accent-primary focus:ring-offset-0 cursor-pointer"
                       />
-                      <span className="text-xs text-text-secondary">In-App</span>
+                      <span className="text-xs text-text-secondary">{t("notifications.inApp")}</span>
                     </label>
                   </div>
                 );
@@ -142,10 +144,10 @@ export function NotificationPreferencesModal({
         {/* Footer */}
         <div className="p-4 border-t border-border-default bg-surface-raised flex items-center justify-end gap-2">
           <Button variant="ghost" onClick={onClose} disabled={isSaving}>
-            Cancel
+            {t("common.cancel")}
           </Button>
           <Button onClick={handleSave} disabled={isSaving || preferencesLoading}>
-            {isSaving ? "Saving..." : "Save Preferences"}
+            {isSaving ? t("notifications.saving") : t("notifications.savePreferences")}
           </Button>
         </div>
       </div>

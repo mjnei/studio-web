@@ -4,6 +4,7 @@ import { FileText, Clock } from "lucide-react";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
+import { useI18n } from "@/i18n";
 
 export interface FullScriptModalProps {
   isOpen: boolean;
@@ -20,6 +21,7 @@ export function FullScriptModal({
   wordCount,
   duration,
 }: FullScriptModalProps) {
+  const { t } = useI18n();
   const minutes = Math.floor(duration / 60);
   const seconds = duration % 60;
 
@@ -62,18 +64,14 @@ export function FullScriptModal({
               <FileText className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
             </div>
             <div className="flex-1 min-w-0 pt-0.5 sm:pt-1">
-              <Heading
-                variant="section"
-                as="h3"
-                className="text-text-primary mb-1.5 sm:mb-2"
-              >
-                Full Script
+              <Heading variant="section" as="h3" className="text-text-primary mb-1.5 sm:mb-2">
+                {t("project.fullScript.title")}
               </Heading>
               <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm">
                 <div className="flex items-center gap-1.5 text-text-secondary">
                   <FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-accent-cyan" />
                   <span className="font-medium">{wordCount}</span>
-                  <span className="text-text-muted">words</span>
+                  <span className="text-text-muted">{t("project.fullScript.words")}</span>
                 </div>
                 <div className="w-px h-3 sm:h-4 bg-border-default" />
                 <div className="flex items-center gap-1.5 text-text-secondary">
@@ -81,7 +79,7 @@ export function FullScriptModal({
                   <span className="font-medium">
                     {minutes}:{seconds.toString().padStart(2, "0")}
                   </span>
-                  <span className="text-text-muted">duration</span>
+                  <span className="text-text-muted">{t("project.fullScript.duration")}</span>
                 </div>
               </div>
             </div>
@@ -108,15 +106,22 @@ export function FullScriptModal({
 
           <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3">
             <p className="text-xs text-text-muted text-center sm:text-left">
-              Press{" "}
-              <kbd className="px-2 py-1 text-xs font-semibold text-text-secondary bg-surface-raised border border-border-default rounded">
-                ESC
-              </kbd>{" "}
-              or click outside to close
+              {(() => {
+                const parts = t("project.fullScript.closeHint", { key: "{key}" }).split("{key}");
+                return (
+                  <>
+                    {parts[0]}
+                    <kbd className="px-2 py-1 text-xs font-semibold text-text-secondary bg-surface-raised border border-border-default rounded">
+                      ESC
+                    </kbd>
+                    {parts[1]}
+                  </>
+                );
+              })()}
             </p>
 
             <Button variant="secondary" size="md" onClick={onClose} className="w-full sm:w-auto">
-              Close
+              {t("common.close")}
             </Button>
           </div>
         </div>

@@ -9,7 +9,12 @@
         "publishing": "一键发布"
       },
       "getStarted": "开始使用",
-      "subtext": "只需不到 2 分钟即可完成"
+      "subtext": "只需不到 2 分钟即可完成",
+      "getStartedAria": "开始引导流程"
+    },
+    "progress": {
+      "stepOf": "第 {current} 步，共 {total} 步",
+      "ariaLabel": "第 {current} 步，共 {total} 步"
     },
     "workflow": {
       "title": "您的视频创作之旅",

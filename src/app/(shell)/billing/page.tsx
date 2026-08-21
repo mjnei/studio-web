@@ -33,7 +33,7 @@ import { gimmeCredits } from "@/lib/api-client";
 
 export default function BillingPage() {
   const router = useRouter();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [creditStatus, setCreditStatus] = React.useState<CreditStatus | null>(null);
   const [transactions, setTransactions] = React.useState<CreditTransaction[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
@@ -58,7 +58,7 @@ export default function BillingPage() {
       } catch (error) {
         console.error("Failed to load billing data:", error);
         if (isMounted) {
-          toast.error("Failed to load billing data", t("billing.loading"));
+          toast.error(t("billing.loadError"), t("billing.loading"));
         }
       } finally {
         if (isMounted) {
@@ -75,7 +75,7 @@ export default function BillingPage() {
   }, [toast, t]);
 
   const handleUpdatePayment = () => {
-    alert("Updating payment method... (Stripe integration will be implemented in Phase 5)");
+    alert(t("billing.updatePaymentAlert"));
   };
 
   async function handleGimmeCredits() {
@@ -93,14 +93,14 @@ export default function BillingPage() {
       // Clear success message after 3 seconds
       setTimeout(() => setCreditsSuccess(false), 3000);
     } catch (err: unknown) {
-      setCreditsError(err instanceof Error ? err.message : "Failed to add credits");
+      setCreditsError(err instanceof Error ? err.message : t("billing.creditsModal.failed"));
     } finally {
       setAddingCredits(false);
     }
   }
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
+    return new Date(dateString).toLocaleDateString(locale === "chs" ? "zh-CN" : "en-US", {
       month: "short",
       day: "numeric",
       year: "numeric",
@@ -134,7 +134,7 @@ export default function BillingPage() {
                 : "text-text-muted hover:text-text-primary hover:bg-surface-raised"
             }`}
           >
-            Overview
+            {t("billing.tabs.overview")}
           </button>
           <button
             onClick={() => setActiveTab("history")}
@@ -144,7 +144,7 @@ export default function BillingPage() {
                 : "text-text-muted hover:text-text-primary hover:bg-surface-raised"
             }`}
           >
-            Credit History
+            {t("billing.tabs.history")}
           </button>
           <button
             onClick={() => setActiveTab("invoices")}
@@ -154,7 +154,7 @@ export default function BillingPage() {
                 : "text-text-muted hover:text-text-primary hover:bg-surface-raised"
             }`}
           >
-            Invoices
+            {t("billing.tabs.invoices")}
           </button>
         </div>
       </div>
@@ -167,16 +167,19 @@ export default function BillingPage() {
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <p className="text-sm text-text-muted mb-2 uppercase tracking-wide font-medium">
-                    Current Balance
+                    {t("billing.overview.currentBalance")}
                   </p>
                   <div className="flex items-baseline gap-3">
                     <Heading variant="metric" as="h2" className="text-text-primary">
                       {creditStatus.credits_remaining}
                     </Heading>
-                    <span className="text-lg text-text-muted">credits</span>
+                    <span className="text-lg text-text-muted">{t("billing.overview.credits")}</span>
                   </div>
                   <p className="text-sm text-text-secondary mt-2">
-                    {creditStatus.credits_used} of {creditStatus.monthly_allocation} used this month
+                    {t("billing.overview.usedOfAllocation", {
+                      used: creditStatus.credits_used,
+                      allocation: creditStatus.monthly_allocation,
+                    })}
                   </p>
                 </div>
                 <div className="p-4 rounded-full bg-accent-cyan/20 border-2 border-accent-cyan/30">
@@ -202,9 +205,11 @@ export default function BillingPage() {
                     {Math.round(
                       (creditStatus.credits_used / creditStatus.monthly_allocation) * 100
                     )}
-                    % used
+                    {t("billing.overview.percentUsed")}
                   </span>
-                  <span>Resets {formatDate(creditStatus.cycle_end_date)}</span>
+                  <span>
+                    {t("billing.overview.resets")} {formatDate(creditStatus.cycle_end_date)}
+                  </span>
                 </div>
               </div>
 
@@ -213,9 +218,11 @@ export default function BillingPage() {
                 <div className="flex items-center gap-3">
                   <TrendingUp className="h-5 w-5 text-accent-cyan" />
                   <div>
-                    <p className="text-sm font-medium text-text-primary">Need more credits?</p>
+                    <p className="text-sm font-medium text-text-primary">
+                      {t("billing.overview.upgradeSection")}
+                    </p>
                     <p className="text-xs text-text-muted">
-                      Upgrade to get up to 100 credits/month
+                      {t("billing.overview.upgradeDescription")}
                     </p>
                   </div>
                 </div>
@@ -225,7 +232,7 @@ export default function BillingPage() {
                   leftIcon={<ArrowRight className="h-4 w-4" />}
                   onClick={() => router.push("/pricing")}
                 >
-                  Upgrade Plan
+                  {t("billing.overview.upgradePlan")}
                 </Button>
               </div>
 
@@ -233,7 +240,7 @@ export default function BillingPage() {
               {creditsSuccess && (
                 <div className="mt-4 rounded-lg border border-status-completed/30 bg-status-completed/10 px-4 py-3 text-sm text-status-completed flex items-start gap-2">
                   <Check className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                  <span>5 credits added successfully! 🎉</span>
+                  <span>{t("billing.overview.successMessage")}</span>
                 </div>
               )}
               {creditsError && (
@@ -249,10 +256,10 @@ export default function BillingPage() {
             <div className="flex items-start justify-between mb-6">
               <div>
                 <Heading variant="subsection" as="h2" className="text-text-primary mb-1">
-                  Credit Details
+                  {t("billing.overview.creditDetails")}
                 </Heading>
                 <Text variant="body" className="text-text-muted">
-                  Your current credit allocation and usage
+                  {t("billing.overview.creditDetailsDescription")}
                 </Text>
               </div>
               <Button
@@ -261,7 +268,9 @@ export default function BillingPage() {
                 disabled={addingCredits}
                 leftIcon={<Sparkles className="w-4 h-4" />}
               >
-                {addingCredits ? "Adding..." : "Gimme Credits"}
+                {addingCredits
+                  ? t("billing.overview.adding")
+                  : t("billing.overview.gimmeCredits")}
               </Button>
             </div>
 
@@ -272,13 +281,17 @@ export default function BillingPage() {
                     <TrendingUp className="h-5 w-5 text-accent-cyan" />
                   </div>
                   <div>
-                    <p className="text-xs text-text-muted">Monthly Allocation</p>
+                    <p className="text-xs text-text-muted">
+                      {t("billing.overview.monthlyAllocation")}
+                    </p>
                     <Heading variant="metric" className="text-text-primary">
                       {creditStatus.monthly_allocation}
                     </Heading>
                   </div>
                 </div>
-                <p className="text-xs text-text-muted">Credits allocated per month</p>
+                <p className="text-xs text-text-muted">
+                  {t("billing.overview.monthlyAllocationDescription")}
+                </p>
               </div>
 
               <div className="p-4 rounded-lg bg-surface-raised border border-border-default">
@@ -287,13 +300,15 @@ export default function BillingPage() {
                     <Coins className="h-5 w-5 text-accent-cyan" />
                   </div>
                   <div>
-                    <p className="text-xs text-text-muted">Credits Used</p>
+                    <p className="text-xs text-text-muted">{t("billing.overview.creditsUsed")}</p>
                     <Heading variant="metric" className="text-text-primary">
                       {creditStatus.credits_used}
                     </Heading>
                   </div>
                 </div>
-                <p className="text-xs text-text-muted">Used this billing cycle</p>
+                <p className="text-xs text-text-muted">
+                  {t("billing.overview.creditsUsedDescription")}
+                </p>
               </div>
 
               <div className="p-4 rounded-lg bg-surface-raised border border-border-default">
@@ -302,13 +317,15 @@ export default function BillingPage() {
                     <Clock className="h-5 w-5 text-accent-cyan" />
                   </div>
                   <div>
-                    <p className="text-xs text-text-muted">Cycle Reset</p>
+                    <p className="text-xs text-text-muted">{t("billing.overview.cycleReset")}</p>
                     <p className="text-sm font-semibold text-text-primary">
                       {formatDate(creditStatus.cycle_end_date)}
                     </p>
                   </div>
                 </div>
-                <p className="text-xs text-text-muted">Next allocation reset date</p>
+                <p className="text-xs text-text-muted">
+                  {t("billing.overview.cycleResetDescription")}
+                </p>
               </div>
             </div>
 
@@ -317,15 +334,16 @@ export default function BillingPage() {
                 <Clock className="h-5 w-5 text-warning-text flex-shrink-0 mt-0.5" />
                 <div>
                   <Heading variant="label" as="h4" className="text-warning-text mb-1">
-                    Next Credit Reset
+                    {t("billing.overview.nextAllocationReset")}
                   </Heading>
                   <p className="text-sm text-text-muted">
-                    Your credits will reset on{" "}
+                    {t("billing.overview.nextAllocationResetDescription")}{" "}
                     <span className="font-medium text-text-secondary">
                       {formatDate(creditStatus.cycle_end_date)}
                     </span>
-                    . Unused credits will roll over up to {creditStatus.max_rollover || "unlimited"}{" "}
-                    credits.
+                    . {t("billing.overview.rolloverUp")}{" "}
+                    {creditStatus.max_rollover || t("billing.overview.unlimited")}{" "}
+                    {t("billing.overview.credits")}.
                   </p>
                 </div>
               </div>
@@ -337,10 +355,10 @@ export default function BillingPage() {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <Heading variant="subsection" as="h2" className="text-text-primary mb-1">
-                  Billing
+                  {t("billing.overview.billing")}
                 </Heading>
                 <Text variant="body" className="text-text-muted">
-                  Manage your payment method and subscription
+                  {t("billing.overview.billingDescription")}
                 </Text>
               </div>
               <div className="flex gap-2">
@@ -350,10 +368,10 @@ export default function BillingPage() {
                   leftIcon={<Settings className="h-4 w-4" />}
                   onClick={handleUpdatePayment}
                 >
-                  Update
+                  {t("billing.overview.update")}
                 </Button>
                 <Button variant="primary" size="sm" leftIcon={<CreditCard className="h-4 w-4" />}>
-                  Billing Portal
+                  {t("billing.overview.billingPortal")}
                 </Button>
               </div>
             </div>
@@ -362,24 +380,26 @@ export default function BillingPage() {
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <Heading variant="label" as="h3" className="text-text-primary">
-                    Current Plan
+                    {t("billing.overview.currentPlan")}
                   </Heading>
                   <p className="text-sm text-text-secondary capitalize">
                     {creditStatus.membership_tier}
                   </p>
                 </div>
                 <Button variant="ghost" size="sm" onClick={() => router.push("/pricing")}>
-                  Change Plan
+                  {t("billing.overview.changePlan")}
                 </Button>
               </div>
 
               <div className="grid gap-4 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-text-muted">Subscription Status</span>
-                  <span className="font-medium text-status-success">Active</span>
+                  <span className="text-text-muted">{t("billing.overview.subscriptionStatus")}</span>
+                  <span className="font-medium text-status-success">
+                    {t("billing.overview.active")}
+                  </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-text-muted">Monthly Cost</span>
+                  <span className="text-text-muted">{t("billing.overview.monthlyCost")}</span>
                   <span className="font-medium text-text-primary">
                     {creditStatus.membership_tier === "free" && "$0"}
                     {creditStatus.membership_tier === "pro" && "$49"}
@@ -387,7 +407,7 @@ export default function BillingPage() {
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-text-muted">Next Billing Date</span>
+                  <span className="text-text-muted">{t("billing.overview.nextBillingDate")}</span>
                   <span className="font-medium text-text-primary">
                     {formatDate(creditStatus.cycle_end_date)}
                   </span>
@@ -402,18 +422,20 @@ export default function BillingPage() {
         <Card variant="elevated" padding="lg">
           <div className="mb-6">
             <Heading variant="subsection" as="h2" className="text-text-primary mb-1">
-              Credit Transaction History
+              {t("billing.history.creditTransactionHistory")}
             </Heading>
             <Text variant="body" className="text-text-muted">
-              Track your credit usage and allocations
+              {t("billing.history.trackUsage")}
             </Text>
           </div>
 
           {transactions.length === 0 ? (
             <div className="py-12 text-center">
               <History className="h-12 w-12 text-text-muted mx-auto mb-4 opacity-50" />
-              <p className="text-text-muted">No credit transactions yet</p>
-              <p className="text-xs text-text-muted mt-2">Your credit usage will appear here</p>
+              <p className="text-text-muted">{t("billing.history.noTransactions")}</p>
+              <p className="text-xs text-text-muted mt-2">
+                {t("billing.history.noTransactionsDescription")}
+              </p>
             </div>
           ) : (
             <div className="space-y-3">
@@ -439,7 +461,7 @@ export default function BillingPage() {
                         {transaction.transaction_type}
                       </Heading>
                       <p className="text-xs text-text-muted">
-                        {transaction.description || "Credit transaction"}
+                        {transaction.description || t("billing.history.creditTransaction")}
                       </p>
                       <p className="text-xs text-text-muted mt-0.5">
                         {formatDate(transaction.created_at)}
@@ -450,9 +472,11 @@ export default function BillingPage() {
                     <p
                       className={`text-sm font-semibold ${getTransactionColor(transaction.amount)}`}
                     >
-                      {formatAmount(transaction.amount)} credits
+                      {formatAmount(transaction.amount)} {t("billing.overview.credits")}
                     </p>
-                    <p className="text-xs text-text-muted">Balance: {transaction.balance_after}</p>
+                    <p className="text-xs text-text-muted">
+                      {t("billing.history.balance")} {transaction.balance_after}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -465,28 +489,27 @@ export default function BillingPage() {
         <Card variant="elevated" padding="lg">
           <div className="mb-6">
             <Heading variant="subsection" as="h2" className="text-text-primary mb-1">
-              Invoices
+              {t("billing.invoices.invoices")}
             </Heading>
             <Text variant="body" className="text-text-muted">
-              View and download your billing invoices
+              {t("billing.invoices.viewDownload")}
             </Text>
           </div>
 
           <div className="py-12 text-center">
             <Receipt className="h-16 w-16 text-text-muted mx-auto mb-4 opacity-30" />
             <Heading variant="subsection" as="h3" className="text-text-primary mb-2">
-              Stripe Integration Coming Soon
+              {t("billing.invoices.stripeComingSoon")}
             </Heading>
             <p className="text-text-muted max-w-md mx-auto mb-6">
-              Invoice management and payment processing will be available in Phase 5 with Stripe
-              integration.
+              {t("billing.invoices.invoiceManagement")}
             </p>
             <div className="flex gap-3 justify-center">
               <Button variant="ghost" size="lg" leftIcon={<Download className="h-4 w-4" />}>
-                Download Sample Invoice
+                {t("billing.invoices.downloadSample")}
               </Button>
               <Button variant="primary" size="lg" leftIcon={<CreditCard className="h-4 w-4" />}>
-                View Stripe Portal
+                {t("billing.invoices.viewStripePortal")}
               </Button>
             </div>
           </div>
@@ -501,17 +524,15 @@ export default function BillingPage() {
           </div>
           <div className="flex-1">
             <Heading variant="subsection" as="h3" className="text-text-primary mb-2">
-              Need Help with Billing?
+              {t("billing.help.needHelp")}
             </Heading>
-            <p className="text-sm text-text-muted mb-3">
-              Have questions about your credits, subscription, or billing? We&apos;re here to help.
-            </p>
+            <p className="text-sm text-text-muted mb-3">{t("billing.help.haveQuestions")}</p>
             <div className="flex gap-3">
               <Button variant="ghost" size="sm">
-                Contact Support
+                {t("billing.help.contactSupport")}
               </Button>
               <Button variant="ghost" size="sm">
-                View FAQs
+                {t("billing.help.viewFaqs")}
               </Button>
             </div>
           </div>
@@ -532,20 +553,19 @@ export default function BillingPage() {
               </div>
               <div>
                 <Heading variant="section" as="h2" className="text-text-primary">
-                  Add Bonus Credits?
+                  {t("billing.creditsModal.title")}
                 </Heading>
                 <Text variant="body" className="text-text-muted">
-                  Get 5 bonus credits now
+                  {t("billing.creditsModal.subtitle")}
                 </Text>
               </div>
             </div>
             <p className="text-sm text-text-secondary mb-6">
-              You're about to add 5 bonus credits to your account. This is a one-time offer for
-              testing and development purposes.
+              {t("billing.creditsModal.description")}
             </p>
             <div className="flex gap-3">
               <Button variant="ghost" onClick={() => setShowCreditsConfirm(false)} fullWidth>
-                Cancel
+                {t("billing.creditsModal.cancel")}
               </Button>
               <Button
                 variant="primary"
@@ -554,7 +574,9 @@ export default function BillingPage() {
                 fullWidth
                 leftIcon={<Sparkles className="w-4 h-4" />}
               >
-                {addingCredits ? "Adding..." : "Add Credits"}
+                {addingCredits
+                  ? t("billing.overview.adding")
+                  : t("billing.creditsModal.addCredits")}
               </Button>
             </div>
           </Card>
