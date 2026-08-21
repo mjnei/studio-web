@@ -373,15 +373,15 @@ Work in **phases**. Prefer small PRs. Do not mix unrelated UI redesign into typo
 
 **PR scope**: tokens + `typography.ts` + `Heading` (+ optional `Text`); update `PageHeader` / `CardTitle` only.
 
-- [ ] Add type-scale tokens to `@theme inline` in `src/app/globals.css`
-- [ ] Add `src/components/ui/typography.ts` with shared class maps
-- [ ] Add `src/components/ui/heading.tsx` (`variant` + `as` + `className`)
-- [ ] Optional: `src/components/ui/text.tsx` for `body` / `bodyLg` / `caption`
-- [ ] Export from `src/components/ui/index.ts`
-- [ ] Refactor `PageHeader` to use `typography.page` / `Heading`
-- [ ] Refactor `CardTitle` / `CardDescription` to use shared typography
-- [ ] Align modal / alert-dialog titles with `section`
-- [ ] Reconcile `@layer base` `h1`–`h4` with the agreed fallback scale (no fighting utilities)
+- [x] Add type-scale tokens to `@theme inline` in `src/app/globals.css`
+- [x] Add `src/components/ui/typography.ts` with shared class maps
+- [x] Add `src/components/ui/heading.tsx` (`variant` + `as` + `className`)
+- [x] Optional: `src/components/ui/text.tsx` for `body` / `bodyLg` / `caption`
+- [x] Export from `src/components/ui/index.ts`
+- [x] Refactor `PageHeader` to use `typography.page` / `Heading`
+- [x] Refactor `CardTitle` / `CardDescription` to use shared typography
+- [x] Align modal / alert-dialog titles with `section`
+- [x] Reconcile `@layer base` `h1`–`h4` with the agreed fallback scale (no fighting utilities)
 - [ ] Visual smoke: Dashboard, Projects, Jobs, one Auth page, one Modal
 
 **Exit criteria**: Changing `typography.page` visibly updates all `PageHeader` titles.

@@ -1,5 +1,7 @@
 import React from "react";
 import { cn } from "@/lib/utils/cn";
+import { Heading } from "./heading";
+import { typography } from "./typography";
 
 interface PageHeaderProps {
   title: React.ReactNode;
@@ -25,11 +27,13 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
         <div className="min-w-0 flex-1">
           {isStringTitle ? (
             <>
-              <h1 className="text-2xl sm:text-3xl font-bold text-[var(--text-primary)] tracking-tight">
+              <Heading variant="page" className="text-[var(--text-primary)]">
                 {title}
-              </h1>
+              </Heading>
               {description && (
-                <p className="mt-2 text-sm sm:text-base text-[var(--text-secondary)]">
+                <p
+                  className={cn(typography.body, "mt-2 sm:text-base text-[var(--text-secondary)]")}
+                >
                   {description}
                 </p>
               )}

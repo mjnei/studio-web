@@ -1,5 +1,6 @@
 import React from "react";
 import { cn } from "@/lib/utils/cn";
+import { typography } from "./typography";
 
 interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: "default" | "elevated" | "interactive" | "gradient";
@@ -62,11 +63,7 @@ export const CardTitle = React.forwardRef<
   HTMLHeadingElement,
   React.HTMLAttributes<HTMLHeadingElement>
 >(({ className, ...props }, ref) => (
-  <h3
-    ref={ref}
-    className={cn("text-xl font-semibold leading-none tracking-tight", className)}
-    {...props}
-  />
+  <h3 ref={ref} className={cn(typography.section, "leading-none", className)} {...props} />
 ));
 
 CardTitle.displayName = "CardTitle";
@@ -75,7 +72,11 @@ export const CardDescription = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => (
-  <p ref={ref} className={cn("text-sm text-[var(--text-secondary)]", className)} {...props} />
+  <p
+    ref={ref}
+    className={cn(typography.body, "text-[var(--text-secondary)]", className)}
+    {...props}
+  />
 ));
 
 CardDescription.displayName = "CardDescription";

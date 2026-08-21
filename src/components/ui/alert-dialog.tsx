@@ -1,7 +1,10 @@
 "use client";
 
 import * as React from "react";
+import { cn } from "@/lib/utils/cn";
 import { Modal } from "./modal";
+import { Heading } from "./heading";
+import { typography } from "./typography";
 
 export const AlertDialog = Modal;
 export const AlertDialogContent = ({ children }: { children: React.ReactNode }) => <>{children}</>;
@@ -17,14 +20,18 @@ export const AlertDialogTitle = ({
 }: {
   children: React.ReactNode;
   className?: string;
-}) => <h2 className={`text-xl font-semibold text-text-primary ${className}`}>{children}</h2>;
+}) => (
+  <Heading variant="section" as="h2" className={cn("text-text-primary", className)}>
+    {children}
+  </Heading>
+);
 export const AlertDialogDescription = ({
   children,
   className = "",
 }: {
   children: React.ReactNode;
   className?: string;
-}) => <div className={`text-sm text-text-secondary mt-2 ${className}`}>{children}</div>;
+}) => <div className={cn(typography.body, "text-text-secondary mt-2", className)}>{children}</div>;
 export const AlertDialogAction = ({
   children,
   onClick,

@@ -6,3 +6,6 @@ export { EmptyState } from "./EmptyState";
 export { PageHeader } from "./PageHeader";
 export { LoadingSpinner } from "./LoadingSpinner";
 export { Grid } from "./Grid";
+export { typography, type TypographyRole } from "./typography";
+export { Heading, type HeadingProps, type HeadingVariant, type HeadingTag } from "./heading";
+export { Text, type TextProps, type TextVariant, type TextTag } from "./text";

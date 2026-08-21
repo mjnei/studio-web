@@ -3,6 +3,9 @@
 import { X } from "lucide-react";
 import { useEffect, useRef, ReactNode, useState } from "react";
 import { Button } from "./button";
+import { Heading } from "./heading";
+import { typography } from "./typography";
+import { cn } from "@/lib/utils/cn";
 
 export interface ModalProps {
   open: boolean;
@@ -104,12 +107,15 @@ export function Modal({
           <div className="flex items-start justify-between border-b border-border-default p-6 pb-4">
             <div className="flex-1">
               {title && (
-                <h2 id="modal-title" className="text-xl font-semibold text-text-primary">
+                <Heading id="modal-title" variant="section" as="h2" className="text-text-primary">
                   {title}
-                </h2>
+                </Heading>
               )}
               {description && (
-                <p id="modal-description" className="mt-1 text-sm text-text-secondary">
+                <p
+                  id="modal-description"
+                  className={cn(typography.body, "mt-1 text-text-secondary")}
+                >
                   {description}
                 </p>
               )}
