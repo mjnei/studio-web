@@ -132,6 +132,14 @@ const iconMap: Record<string, React.ReactNode> = {
   "/admin/audit-logs": <Activity size={20} />,
 };
 
+/** Drawer section headers — caption (12px) per typography minimum readable size */
+const sectionLabelClass =
+  "mb-2 px-3 text-caption font-bold uppercase tracking-wider text-text-muted lg:mb-1.5 lg:px-2.5";
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return <p className={sectionLabelClass}>{children}</p>;
+}
+
 function RailLink({
   item,
   isActive: active,
@@ -150,7 +158,7 @@ function RailLink({
       href={item.href}
       onClick={onClick}
       title={collapsed ? label : undefined}
-      className={`flex items-center gap-3 lg:gap-2.5 rounded-lg transition-all duration-200 ${
+      className={`flex items-center gap-3 lg:gap-2.5 rounded-lg transition-all duration-200 focus-ring ${
         collapsed
           ? "justify-center px-0 py-2.5 lg:py-2"
           : "px-3 py-2.5 text-sm font-medium lg:px-2.5 lg:py-2"
@@ -169,7 +177,7 @@ function RailLink({
 function LogoMark({ collapsed }: { collapsed?: boolean }) {
   if (collapsed) return null;
   return (
-    <Link href="/dashboard" className="flex items-center gap-2 text-lg font-bold group">
+    <Link href="/dashboard" className="flex items-center gap-2 text-xl font-bold group focus-ring rounded-lg">
       <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-accent-secondary via-accent-primary to-accent-tertiary shadow-md group-hover:shadow-lg transition-all">
         <Activity size={16} className="text-white" />
       </div>
@@ -198,7 +206,7 @@ function UserSection({ collapsed, onNavigate }: { collapsed?: boolean; onNavigat
       <Link
         href="/profile"
         onClick={onNavigate}
-        className={`flex items-center gap-3 lg:gap-2.5 rounded-lg text-sm transition-all ${
+        className={`flex items-center gap-3 lg:gap-2.5 rounded-lg text-sm transition-all focus-ring ${
           collapsed
             ? "justify-center p-0"
             : "px-3 py-2.5 hover:bg-surface-hover border border-transparent hover:border-border-default lg:px-2.5 lg:py-2"
@@ -220,7 +228,7 @@ function UserSection({ collapsed, onNavigate }: { collapsed?: boolean; onNavigat
         {!collapsed && (
           <div className="flex-1 overflow-hidden">
             <p className="truncate text-sm font-medium text-text-primary">{displayName}</p>
-            <p className="truncate text-xs text-text-secondary">{displayEmail}</p>
+            <p className="truncate text-caption text-text-secondary">{displayEmail}</p>
           </div>
         )}
       </Link>
@@ -255,7 +263,7 @@ export function DrawerContent({
         {onToggle && (
           <button
             onClick={onToggle}
-            className={`rounded-lg p-2 lg:p-1.5 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all active:scale-95 ${
+            className={`rounded-lg p-2 lg:p-1.5 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all active:scale-95 focus-ring ${
               collapsed ? "" : "ml-auto"
             }`}
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
@@ -267,7 +275,7 @@ export function DrawerContent({
         {onClose && (
           <button
             onClick={onClose}
-            className="ml-auto rounded-lg p-2 lg:p-1.5 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all active:scale-95"
+            className="ml-auto rounded-lg p-2 lg:p-1.5 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all active:scale-95 focus-ring"
             aria-label="Close menu"
             title="Close menu"
           >
@@ -281,11 +289,7 @@ export function DrawerContent({
           collapsed ? "px-2 py-4 lg:px-1.5 lg:py-3" : "px-3 py-4 lg:px-2.5 lg:py-3"
         }`}
       >
-        {!collapsed && (
-          <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-wider text-text-muted lg:mb-1.5 lg:px-2.5">
-            {t("shell.main")}
-          </p>
-        )}
+        {!collapsed && <SectionLabel>{t("shell.main")}</SectionLabel>}
         <div className="space-y-1 lg:space-y-0.5">
           {mainItems.map((item) => (
             <RailLink
@@ -303,11 +307,7 @@ export function DrawerContent({
           className={`my-4 border-t border-border-default lg:my-3 ${collapsed ? "mx-0" : "mx-2 lg:mx-1.5"}`}
         />
 
-        {!collapsed && (
-          <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-wider text-text-muted lg:mb-1.5 lg:px-2.5">
-            {t("shell.utilities")}
-          </p>
-        )}
+        {!collapsed && <SectionLabel>{t("shell.utilities")}</SectionLabel>}
         <div className="space-y-1 lg:space-y-0.5">
           {utilityItems.map((item) => (
             <RailLink
@@ -329,11 +329,7 @@ export function DrawerContent({
                 collapsed ? "mx-0" : "mx-2 lg:mx-1.5"
               }`}
             />
-            {!collapsed && (
-              <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-wider text-text-muted lg:mb-1.5 lg:px-2.5">
-                {t("shell.admin")}
-              </p>
-            )}
+            {!collapsed && <SectionLabel>{t("shell.admin")}</SectionLabel>}
             <div className="space-y-1 lg:space-y-0.5">
               {adminItems.map((item) => (
                 <RailLink

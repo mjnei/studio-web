@@ -43,7 +43,7 @@ export function CreditStatus() {
   return (
     <Link
       href="/billing"
-      className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-surface-raised border border-border-default hover:bg-surface-hover hover:border-accent-primary/30 transition-all cursor-pointer"
+      className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-surface-raised border border-border-default hover:bg-surface-hover hover:border-accent-primary/30 transition-all cursor-pointer focus-ring"
       title="View billing & credits"
     >
       <div className="flex items-center gap-2">
@@ -53,7 +53,7 @@ export function CreditStatus() {
             <span className="text-sm font-semibold text-text-primary">
               {creditBalance.credits_remaining}
             </span>
-            <span className="text-xs text-text-muted hidden sm:inline">Credits</span>
+            <span className="text-caption text-text-muted hidden sm:inline">Credits</span>
           </div>
         </div>
       </div>
