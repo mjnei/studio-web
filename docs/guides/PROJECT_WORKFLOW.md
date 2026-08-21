@@ -217,9 +217,9 @@ Generate and preview TTS audio for your selected voice with the full script.
 - Processing details:
   - Published to RabbitMQ for async processing
   - 3rd party TTS service generates audio
-  - Frontend uses SSE (Server-Sent Events) for real-time updates
-  - Fallback to polling if SSE unavailable
+  - Frontend polls job status over HTTP (~3s) until terminal state
   - Audio player appears when generation completes
+  - Real-time channel details: `studio-backend/docs/SSE (Server-Sent Events).md` (notifications SSE only; not per-job TTS streams)
 
 **Technical Flow:**
 1. Frontend: `POST /api/v1/tts` → Creates job with status "queued"
@@ -227,7 +227,7 @@ Generate and preview TTS audio for your selected voice with the full script.
 3. TTS Service: Picks up job, generates audio, updates progress
 4. TTS Service: Publishes result to `tts_results` queue
 5. Backend Consumer: Updates database with audio_url and status
-6. Frontend: SSE connection receives real-time updates (fallback: 5s polling)
+6. Frontend: Polls `GET /tts/{job_id}` until completed/failed
 7. Frontend: Displays audio player when complete
 
 **Completion:** TTS audio generated successfully (status = "completed")
@@ -322,7 +322,7 @@ Generate final video, manage versions, and export in different formats.
 4. External video service processes job (internal processing steps not visible)
 5. Service publishes result to `video_results` queue
 6. Backend consumer updates database with video URL and overall progress
-7. Frontend receives notification via SSE (or polls as fallback)
+7. Frontend polls job/list status (and may receive an in-app notification if one is created — see `studio-backend/docs/SSE (Server-Sent Events).md`)
 8. Completed video appears in the list
 
 **Status Tracking:**
@@ -381,9 +381,8 @@ Generate final video, manage versions, and export in different formats.
 - More platforms coming soon
 
 **Status Updates:**
-- Real-time via SSE (Server-Sent Events) when available
-- Fallback to 10-second polling when SSE unavailable
-- Notifications show when videos complete
+- Job progress via HTTP polling (not SSE)
+- In-app notifications may arrive over the notifications SSE channel when the backend creates them — see `studio-backend/docs/SSE (Server-Sent Events).md`
 - Auto-refresh video list on completion
 
 **Completion:** User downloads video or shares to platform
@@ -668,7 +667,7 @@ src/lib/
   project-client.ts          # API client functions (includes thumbnail fields + scheduleAgnesJobs)
   hooks/
     use-project-state.ts     # Project state management hook (includes thumbnail fields)
-    use-sse.ts               # Server-Sent Events hook for real-time updates
+  # SSE: see studio-backend/docs/SSE (Server-Sent Events).md (notifications live in notification-context; use-sse.ts unused)
 ```
 
 ### Navigation Component
@@ -887,7 +886,7 @@ The workflow navigation component (`FloatingWorkflowNavigation`) enforces these 
 - [ ] Can edit overlay text
 - [ ] Preview shows thumbnail + text overlay in real-time
 - [ ] Finalize thumbnail button creates composite image
-- [ ] Composition status polling works (5s interval, fallback for SSE)
+- [ ] Composition status polling works (interval per page implementation)
 - [ ] Next button always enabled (no longer dependent on thumbnail confirmation)
 - [ ] Successfully advances to Export step
 
@@ -897,7 +896,7 @@ The workflow navigation component (`FloatingWorkflowNavigation`) enforces these 
 - [ ] Credit confirmation modal shows correct balance calculations
 - [ ] Video generation starts after modal confirmation
 - [ ] Overall progress bar displays (0-100%)
-- [ ] Progress updates every 5 seconds via SSE (fallback to polling)
+- [ ] Progress updates via HTTP polling until terminal state
 - [ ] Can leave and return - progress persists
 - [ ] Video player displays when generation complete
 - [ ] Video uses finalized thumbnail as poster image
@@ -933,7 +932,7 @@ The workflow navigation component (`FloatingWorkflowNavigation`) enforces these 
 | Back button icon not showing on mobile | Using `icon` prop instead of `leftIcon` | Use `leftIcon` prop for left-aligned icons |
 | Next button icon not showing on mobile | Using `icon` prop instead of `rightIcon` | Use `rightIcon` prop for right-aligned icons |
 | Navigation buttons too small on mobile | Missing responsive sizing | Use sm size on mobile, md on larger screens |
-| Polling too frequent causing performance issues | Polling every 2 seconds | Reduce to 5-8 seconds, use SSE for real-time updates |
+| Polling too frequent causing performance issues | Polling every 2 seconds | Reduce interval; do not assume job-status SSE (see `studio-backend/docs/SSE (Server-Sent Events).md`) |
 
 ---
 

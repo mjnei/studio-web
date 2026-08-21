@@ -578,8 +578,9 @@ export async function getPlaygroundJob(jobId: string): Promise<PlaygroundJob> {
 }
 
 export async function streamPlaygroundJobStatus(jobId: string): Promise<ReadableStream> {
-  // Use SSE for streaming - see use-sse.ts hook
-  const response = await fetch(`${API_BASE}/playground/${jobId}/stream`, {
+  // Optional helper — product UI polls getPlaygroundJob instead.
+  // SSE status: studio-backend/docs/SSE (Server-Sent Events).md
+  const response = await fetch(`${API_BASE}/playground/tts/${jobId}/stream`, {
     headers: { Authorization: `Bearer ${getAccessToken()}` },
   });
   return response.body!;
@@ -602,7 +603,8 @@ export async function getPlaygroundHistory(limit = 20): Promise<PlaygroundJob[]>
 ```
 
 **Implementation Notes**:
-- SSE streaming: Use `use-sse.ts` hook pattern for real-time status updates
+- Job status: HTTP polling via `getPlaygroundJob` (see admin playground page). Do not assume SSE is wired in the UI.
+- SSE inventory and current status: `studio-backend/docs/SSE (Server-Sent Events).md` (only source of truth)
 - Audio download: Direct fetch for blob data
 - Voice history: Reuse existing voice types from `@/lib/types/api`
 

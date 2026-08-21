@@ -78,7 +78,7 @@ export default function ComposePage() {
     checkAndScheduleThumbnailIfNeeded();
   }, [projectId, state]);
 
-  // Poll for thumbnail status if not yet completed (reduced frequency, fallback for SSE)
+  // Poll thumbnail status if not yet completed (see studio-backend/docs/SSE (Server-Sent Events).md)
   React.useEffect(() => {
     // Poll when thumbnail is not ready yet (no thumbnailUrl) or currently generating
     const shouldPoll = !state?.thumbnailUrl || state?.thumbnailStatus === "generating";

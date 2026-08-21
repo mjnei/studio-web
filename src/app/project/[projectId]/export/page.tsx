@@ -150,7 +150,7 @@ export default function ExportPage() {
     }
   }, [notifications, projectId, loadVideos, loadCreditStatus]);
 
-  // Poll for video status (fallback when SSE unavailable)
+  // Poll video job status over HTTP (see studio-backend/docs/SSE (Server-Sent Events).md)
   React.useEffect(() => {
     const hasProcessingVideo = videos?.some(
       (v) => v.status === "processing" || v.status === "queued"

@@ -253,8 +253,8 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
 
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020/api/v1";
 
-      // EventSource doesn't support custom headers, so we pass the token as a query parameter
-      // The backend needs to be updated to accept token from query params for SSE endpoint
+      // EventSource doesn't support custom headers — pass access token as ?token=
+      // Notifications SSE contract: studio-backend/docs/SSE (Server-Sent Events).md
       const url = new URL(`${apiUrl}/notifications/stream`);
       url.searchParams.set("token", accessToken);
 

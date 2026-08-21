@@ -168,7 +168,7 @@ export default function DebugSSEPage() {
             <li>
               Run backend test:{" "}
               <code className="bg-surface-base px-2 py-1 rounded text-xs">
-                uv run python scripts/test_sse_connection.py
+                {`uv run python scripts/test_notifications_sse.py <email> <password>`}
               </code>
             </li>
           </ol>

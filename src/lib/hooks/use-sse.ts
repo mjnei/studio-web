@@ -12,6 +12,9 @@ interface UseSSEOptions<T> {
 /**
  * Custom hook for Server-Sent Events with authentication support.
  *
+ * Unused by product UI today (job status uses HTTP polling).
+ * Canonical SSE status: studio-backend/docs/SSE (Server-Sent Events).md
+ *
  * Since browser EventSource doesn't support custom headers, this hook
  * uses fetch with ReadableStream to implement SSE with Authorization header.
  */

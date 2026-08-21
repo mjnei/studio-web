@@ -52,6 +52,10 @@ Prettier: semi: true, singleQuote: false, tabWidth: 2, trailingComma: es5, print
 
 Role-based type scale (not bare `h1`–`h4` CSS). See `docs/TYPOGRAPHY.md`. Prefer `PageHeader` / `Heading` / `CardTitle`; change sizes in shared tokens, not per page.
 
+## Server-Sent Events (SSE)
+
+Do not document SSE behavior in this repo. Canonical status for notifications SSE, playground stream, and job polling: **`../studio-backend/docs/SSE (Server-Sent Events).md`**.
+
 ## Internationalization (i18n)
 
 **Supported languages**: English (en), Simplified Chinese (chs)

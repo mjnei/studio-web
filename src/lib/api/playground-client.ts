@@ -49,7 +49,8 @@ export async function getPlaygroundJob(jobId: string): Promise<PlaygroundJob> {
 
 /**
  * Stream playground job status updates via Server-Sent Events (SSE).
- * Returns a ReadableStream that can be consumed with the useSSE hook.
+ * Not used by product UI — admin playground polls getPlaygroundJob instead.
+ * See studio-backend/docs/SSE (Server-Sent Events).md.
  */
 export async function streamPlaygroundJobStatus(jobId: string): Promise<ReadableStream> {
   const token = getAccessToken();

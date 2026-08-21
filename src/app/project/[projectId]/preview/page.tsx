@@ -114,7 +114,7 @@ export default function PreviewPage() {
     [ttsJob, t]
   );
 
-  // Polling for TTS job updates (simplified approach without SSE)
+  // Poll studio TTS job status over HTTP (see studio-backend/docs/SSE (Server-Sent Events).md)
   useEffect(() => {
     if (!ttsJob) return;
     if (ttsJob.status === "completed" || ttsJob.status === "failed") {
