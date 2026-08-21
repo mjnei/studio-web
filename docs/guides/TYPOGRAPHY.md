@@ -1,8 +1,8 @@
 # Typography System — Guidelines & Refactor Plan
 
-**Version**: 1.0  
+**Version**: 1.1  
 **Last Updated**: August 21, 2026  
-**Status**: Proposed — implement per the phased checklist below  
+**Status**: Phase 1 complete — Phase 2 pending  
 **Related**: [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md), [BREAKPOINT_REFERENCE.md](./BREAKPOINT_REFERENCE.md)  
 **Source of truth (after implementation)**: `src/app/globals.css` (`@theme` tokens) + `src/components/ui/heading.tsx`
 
@@ -84,56 +84,65 @@ Make typography **consistent and controllable from one place**, without fighting
 
 ## 4. Design tokens
 
-Define once in `src/app/globals.css` under `@theme inline`. Values below match the **intended post-refactor scale** (aligned with the Aug 2026 “one step smaller” direction and current `PageHeader` / dense UI). Adjust numbers in **one place only** during Phase 0 review.
+Defined in `src/app/globals.css` under `@theme inline`. **Tailwind v4 automatically generates `text-{name}` and `leading-{name}` utility classes** from `--text-*` / `--leading-*` tokens in `@theme`. This means `typography.ts` consumes `text-page`, `text-section`, etc. directly — no manual Tailwind class string duplication. Adjusting a token value here updates every component that uses the corresponding class.
 
-### Suggested token set
+### Token set (current)
 
 ```css
 @theme inline {
   /* …existing color/font tokens… */
 
-  /* Font sizes — type scale (mobile-first; components add breakpoints) */
-  --text-display: 1.875rem; /* 30px — text-3xl */
-  --text-page: 1.5rem; /* 24px — text-2xl */
-  --text-section: 1.25rem; /* 20px — text-xl */
-  --text-subsection: 1.125rem; /* 18px — text-lg */
-  --text-label: 0.875rem; /* 14px — text-sm */
-  --text-body: 0.875rem; /* 14px — app chrome default */
-  --text-body-lg: 1rem; /* 16px — text-base */
-  --text-caption: 0.75rem; /* 12px — text-xs */
-  --text-metric: 1.5rem; /* 24px — text-2xl */
+  /* Base font sizes (mobile-first) */
+  --text-display: 1.875rem; /* 30px */
+  --text-page: 1.5rem;      /* 24px */
+  --text-section: 1.25rem;  /* 20px */
+  --text-subsection: 1.125rem; /* 18px */
+  --text-label: 0.875rem;   /* 14px */
+  --text-body: 0.875rem;    /* 14px — app chrome default */
+  --text-body-lg: 1rem;     /* 16px */
+  --text-caption: 0.75rem;  /* 12px */
+  --text-metric: 1.5rem;    /* 24px */
 
-  /* Optional line-heights if you want stricter rhythm */
+  /* Responsive sm: steps — referenced as sm:text-page-sm etc. */
+  --text-display-sm: 2.25rem; /* 36px */
+  --text-page-sm: 1.875rem;   /* 30px */
+
+  /* Line-heights — referenced as leading-page, leading-section, etc. */
   --leading-display: 1.2;
   --leading-page: 1.25;
   --leading-section: 1.3;
+  --leading-subsection: 1.35;
+  --leading-label: 1.4;
   --leading-body: 1.5;
   --leading-caption: 1.4;
+  --leading-metric: 1;     /* tight — numeric display */
 }
 ```
 
+> **TW4 note**: `--text-*` in `@theme inline` becomes a `text-{name}` utility automatically. Do **not** add manual `fontSize` entries to `tailwind.config.*` — those are only needed in TW3.
+
 ### Responsive steps (owned by components, not pages)
 
-| Role | Base | `sm:` | `lg:` (optional) |
-|------|------|-------|------------------|
-| `display` | `text-display` | +1 step | +1 step (auth/onboarding only) |
-| `page` | `text-page` | ~`text-3xl` | — |
-| `section` | `text-section` | — | — |
-| `subsection` | `text-subsection` | — | — |
-| `label` | `text-label` | — | — |
-| `metric` | `text-metric` | — | — |
+| Role | Base | `sm:` |
+|------|------|-------|
+| `display` | `text-display` | `sm:text-display-sm` |
+| `page` | `text-page` | `sm:text-page-sm` |
+| `section` | `text-section` | — |
+| `subsection` | `text-subsection` | — |
+| `label` | `text-label` | — |
+| `metric` | `text-metric` | — |
 
-Exact Tailwind class strings live in `Heading` / `PageHeader` / `CardTitle` so pages never re-declare the scale.
+All class strings live in `typography.ts` so pages never re-declare the scale.
 
-### Weight & tracking defaults
+### Weight, tracking & numeric defaults
 
-| Role | Weight | Tracking |
-|------|--------|----------|
-| `display`, `page` | `font-bold` | `tracking-tight` |
-| `section`, `subsection` | `font-semibold` | `tracking-tight` |
-| `label` | `font-semibold` or `font-medium` | default |
-| `body`, `body-lg`, `caption` | `font-normal` | default |
-| `metric` | `font-bold` | default |
+| Role | Weight | Tracking | Extra |
+|------|--------|----------|-------|
+| `display`, `page` | `font-bold` | `tracking-tight` | — |
+| `section`, `subsection` | `font-semibold` | `tracking-tight` | — |
+| `label` | `font-semibold` | default | — |
+| `body`, `body-lg`, `caption` | `font-normal` | default | — |
+| `metric` | `font-bold` | default | `tabular-nums` (prevents layout shift on changing numbers) |
 
 Color is **not** part of the type role by default — keep using `text-text-primary`, `text-text-secondary`, `text-text-muted`.
 
@@ -141,59 +150,38 @@ Color is **not** part of the type role by default — keep using `text-text-prim
 
 ## 5. Component API
 
-### 5.1 `Heading` (new)
+### 5.1 `Heading`
 
 **File**: `src/components/ui/heading.tsx`  
-**Export**: from `src/components/ui/index.ts`
+**Export**: from `src/components/ui/index.ts`  
+**Server Component safe** — no hooks or event handlers; works in RSC without `"use client"`.
 
 ```tsx
-import { cn } from "@/lib/utils/cn";
-
-type HeadingRole = "display" | "page" | "section" | "subsection" | "label" | "metric";
-type HeadingTag = "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "p" | "span";
-
-const roleStyles: Record<HeadingRole, string> = {
-  display: "text-3xl sm:text-4xl font-bold tracking-tight",
-  page: "text-2xl sm:text-3xl font-bold tracking-tight",
-  section: "text-xl font-semibold tracking-tight",
-  subsection: "text-lg font-semibold tracking-tight",
-  label: "text-sm font-semibold",
-  metric: "text-2xl font-bold",
-};
-
-const defaultTag: Record<HeadingRole, HeadingTag> = {
-  display: "h1",
-  page: "h1",
-  section: "h2",
-  subsection: "h3",
-  label: "h3",
-  metric: "p",
-};
-
-interface HeadingProps extends React.HTMLAttributes<HTMLElement> {
-  role?: HeadingRole; // avoid name clash with ARIA; or use `level` / `variant`
-  as?: HeadingTag;
-  children: React.ReactNode;
-  className?: string;
-}
-
-export function Heading({
-  role = "section",
-  as,
-  className,
-  children,
-  ...props
-}: HeadingProps) {
-  const Tag = as ?? defaultTag[role];
+// Reads class strings from typography.ts, which consumes @theme tokens.
+export function Heading({ variant = "section", as, className, children, ...props }: HeadingProps) {
+  const Tag = as ?? defaultTag[variant];
   return (
-    <Tag className={cn(roleStyles[role], className)} {...props}>
+    <Tag className={cn(typography[variant], className)} {...props}>
       {children}
     </Tag>
   );
 }
 ```
 
-> **Naming note**: Prefer `variant` over `role` if you want to avoid confusion with ARIA `role`. Either is fine if documented. This guide uses **variant** in examples below.
+**`defaultTag` map** (what element is emitted when `as` is omitted):
+
+| `variant` | Default tag | Rationale |
+|-----------|-------------|-----------|
+| `display` | `h1` | Marketing hero — top of outline |
+| `page` | `h1` | Route title — one per page |
+| `section` | `h2` | Card / section — under page h1 |
+| `subsection` | `h3` | Nested group |
+| `label` | **`p`** | Dense UI chrome — heading level must be explicit; add `as="h2"` when needed in the outline |
+| `metric` | `p` | Numeric display — not a heading |
+
+> **`label` default is `<p>`**: This prevents silent a11y violations where an implicit `h3` would skip levels. Always pass `as="h2"` (or another level) when the label must appear in the document outline.
+
+**Do NOT add `"use client"`** to `heading.tsx` or `text.tsx` — they are intentionally server-safe primitives.
 
 **Preferred public API**:
 
@@ -204,7 +192,10 @@ export function Heading({
 <Heading variant="metric">{count}</Heading>
 ```
 
-### 5.2 `Text` (optional but recommended)
+### 5.2 `Text`
+
+**File**: `src/components/ui/text.tsx`  
+**Server Component safe** — same constraints as `Heading`.
 
 For body/caption consistency:
 
@@ -228,20 +219,22 @@ Centralize class strings in one module, e.g. `src/components/ui/typography.ts`, 
 
 ```ts
 // src/components/ui/typography.ts
+// Class strings use token-derived utilities (text-page, leading-page, …)
+// generated by TW4 from @theme tokens — NOT hardcoded Tailwind steps.
 export const typography = {
-  display: "text-3xl sm:text-4xl font-bold tracking-tight",
-  page: "text-2xl sm:text-3xl font-bold tracking-tight",
-  section: "text-xl font-semibold tracking-tight",
-  subsection: "text-lg font-semibold tracking-tight",
-  label: "text-sm font-semibold",
-  metric: "text-2xl font-bold",
-  body: "text-sm font-normal",
-  bodyLg: "text-base font-normal",
-  caption: "text-xs font-normal",
+  display:    "text-display sm:text-display-sm leading-display font-bold tracking-tight",
+  page:       "text-page sm:text-page-sm leading-page font-bold tracking-tight",
+  section:    "text-section leading-section font-semibold tracking-tight",
+  subsection: "text-subsection leading-subsection font-semibold tracking-tight",
+  label:      "text-label leading-label font-semibold",
+  metric:     "text-metric leading-metric font-bold tabular-nums",
+  body:       "text-body leading-body font-normal",
+  bodyLg:     "text-body-lg leading-body font-normal",
+  caption:    "text-caption leading-caption font-normal",
 } as const;
 ```
 
-Prefer importing `typography.page` over duplicating Tailwind strings.
+Prefer importing `typography.page` over writing any `text-*` size class directly.
 
 ---
 
@@ -382,9 +375,20 @@ Work in **phases**. Prefer small PRs. Do not mix unrelated UI redesign into typo
 - [x] Refactor `CardTitle` / `CardDescription` to use shared typography
 - [x] Align modal / alert-dialog titles with `section`
 - [x] Reconcile `@layer base` `h1`–`h4` with the agreed fallback scale (no fighting utilities)
+- [x] Wire `@theme` tokens → `typography.ts` (use `text-page`, `text-section`, … not `text-2xl`, `text-xl`)
+- [x] Wire `--leading-*` tokens into all roles in `typography.ts`
+- [x] Add `tabular-nums` to `metric` role
+- [x] Change `label` `defaultTag` from `h3` → `p` (prevent implicit a11y violations)
+- [ ] Baseline grep — run before Phase 2 starts to measure scope:
+  ```powershell
+  # Headings still using hardcoded large sizes (target: 0 inside components/ui/)
+  Select-String -rn '<h[1-4][^>]*text-(xl|2xl|3xl|4xl)' src/
+  # Large size utilities outside the typography module
+  Select-String -rn 'text-(3xl|4xl|5xl)' src/ | Where-Object { $_ -notmatch 'typography\.ts|heading\.tsx' }
+  ```
 - [ ] Visual smoke: Dashboard, Projects, Jobs, one Auth page, one Modal
 
-**Exit criteria**: Changing `typography.page` visibly updates all `PageHeader` titles.
+**Exit criteria**: Changing `typography.page` token in `globals.css` visibly updates all `PageHeader` titles, `@layer base` fallbacks, and any component using `typography.page`.
 
 ---
 
@@ -403,33 +407,35 @@ Update components that appear on many routes (one PR or one PR per cluster):
 
 ---
 
-### Phase 3 — Shell / route pages (batch by area)
+### Phase 3 — Shell / route pages (batch into ≤4 PRs)
 
 For each page: replace page titles and section titles with `PageHeader` / `Heading`; keep layout/spacing classes.
 
-#### Auth
-
-- [ ] `(auth)/layout.tsx` → `display` for brand; forms keep `section` for form titles
-- [ ] login / signup / forgot-password / invite
-
-#### Shell
-
-- [ ] dashboard, projects, movies, voices, jobs, billing, pricing, profile, help
-- [ ] notifications, settings/notifications
-- [ ] admin: movies, queues, playground, TTS jobs, audit-logs, voices, tmdb
-
-#### Project workflow
-
-- [ ] `project/[projectId]/*` (details, source, script, voice, compose, preview, export)
-- [ ] `project/new/*`
-
 **Per-file checklist**:
-
 1. Identify page title → `page` / `PageHeader`
 2. Identify section titles → `section` or `label`
 3. Remove redundant `text-*` size classes from those headings
 4. Preserve color, flex, margin, icon wrappers
 5. Verify heading outline (`h1` once; sensible `h2`/`h3`)
+
+#### PR 3a — Auth
+
+- [ ] `(auth)/layout.tsx` → `display` for brand; forms keep `section` for form titles
+- [ ] login / signup / forgot-password / invite
+
+#### PR 3b — Core shell
+
+- [ ] dashboard, projects, movies, voices, jobs, billing, pricing, profile, help
+- [ ] notifications, settings/notifications
+
+#### PR 3c — Admin area
+
+- [ ] admin: movies, queues, playground, TTS jobs, audit-logs, voices, tmdb
+
+#### PR 3d — Project workflow
+
+- [ ] `project/[projectId]/*` (details, source, script, voice, compose, preview, export)
+- [ ] `project/new/*`
 
 **Exit criteria**: Spot-check each area at 375px and 1280px; no obvious size regressions.
 
@@ -512,11 +518,12 @@ Refactor is successful when:
 |------|-----|
 | Page title | `<PageHeader title="…" />` or `<Heading variant="page">` |
 | Card / section title | `<CardTitle>` or `<Heading variant="section">` |
-| Small group label | `<Heading variant="label" as="h2">` |
+| Small group label (in outline) | `<Heading variant="label" as="h2">` |
+| Small group label (not in outline) | `<Heading variant="label">` (emits `<p>`) |
 | Hero / brand | `<Heading variant="display">` |
-| Big number | `<Heading variant="metric">` |
+| Big number | `<Heading variant="metric">` (includes `tabular-nums`) |
 | Helper / meta | `<Text variant="caption">` or `text-xs text-text-muted` |
-| Tune all sizes | Edit `src/components/ui/typography.ts` (+ `@theme` tokens) |
+| Tune all sizes | Edit `--text-*` tokens in `globals.css` → auto-propagates via `typography.ts` |
 
 ---
 

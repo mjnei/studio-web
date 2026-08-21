@@ -1,3 +1,18 @@
+/**
+ * Heading — role-based heading component.
+ *
+ * Safe to use in React Server Components (no hooks, no event handlers).
+ *
+ * - `variant` controls visual size/weight (from typography.ts token map).
+ * - `as`      controls the HTML element emitted (for a11y / document outline).
+ *
+ * The `label` variant defaults to `<p>` — it is intentionally NOT a heading
+ * element by default because its visual size (text-sm) is often used for
+ * dense UI chrome where the heading level should be explicit. Pass `as="h2"`
+ * (or any level) when the label needs to appear in the document outline.
+ *
+ * @see docs/guides/TYPOGRAPHY.md
+ */
 import * as React from "react";
 import { cn } from "@/lib/utils/cn";
 import { typography } from "./typography";
@@ -10,7 +25,9 @@ const defaultTag: Record<HeadingVariant, HeadingTag> = {
   page: "h1",
   section: "h2",
   subsection: "h3",
-  label: "h3",
+  // label intentionally defaults to <p>; add as="h2"|"h3" when heading
+  // semantics are needed (see JSDoc above).
+  label: "p",
   metric: "p",
 };
 
