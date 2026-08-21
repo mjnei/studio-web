@@ -113,7 +113,9 @@ export function ProjectsTable({
             </div>
 
             <div className="md:col-span-1">
-              <span className="text-sm text-text-muted">{formatRelativeTime(project.updated_at)}</span>
+              <span className="text-sm text-text-muted">
+                {formatRelativeTime(project.updated_at)}
+              </span>
             </div>
 
             <div className="flex items-center justify-end gap-2 md:col-span-2">

@@ -40,7 +40,7 @@ export default function AdminTMDBPage() {
           </Heading>
 
           <p className="mb-2 text-text-secondary">
-            TMDB import has been merged with movie management
+            TMDB import has been merged with TMDB Movies
           </p>
 
           <p className="mb-6 text-sm text-text-muted">

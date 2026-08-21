@@ -284,13 +284,7 @@ export interface BulkUpdatePreferencesRequest {
 
 export type AdminProjectStatus = "draft" | "in-progress" | "completed";
 export type AdminProjectStep =
-  | "source"
-  | "script"
-  | "details"
-  | "voice"
-  | "preview"
-  | "compose"
-  | "export";
+  "source" | "script" | "details" | "voice" | "preview" | "compose" | "export";
 
 export interface AdminProject {
   id: number;

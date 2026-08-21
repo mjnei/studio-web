@@ -78,6 +78,10 @@ const adminItems = [
     labelKey: "shell.movies",
   },
   {
+    href: "/admin/projects",
+    labelKey: "shell.adminProjects",
+  },
+  {
     href: "/admin/voices",
     labelKey: "shell.voices",
   },
@@ -130,6 +134,7 @@ const iconMap: Record<string, React.ReactNode> = {
   "/admin/playground-tts-jobs": <Zap size={20} />,
   "/admin/playground": <Play size={20} />,
   "/admin/audit-logs": <Activity size={20} />,
+  "/admin/projects": <Folder size={20} />,
 };
 
 /** Drawer section headers — caption (12px) per typography minimum readable size */

@@ -2,7 +2,7 @@ import { request, getAccessToken } from "@/lib/api-client";
 import type { MovieResponse } from "@/lib/types/api";
 
 // ============================================================================
-// Admin Movie Management (Unified TMDB + CRUD)
+// Admin TMDB Movies (Unified TMDB + CRUD)
 // ============================================================================
 
 export interface TMDBMovieSearchResult {

@@ -57,10 +57,7 @@ export async function updateAdminProject(
   });
 }
 
-export async function deleteAdminProject(
-  projectId: number,
-  permanent = false
-): Promise<void> {
+export async function deleteAdminProject(projectId: number, permanent = false): Promise<void> {
   const query = buildQuery({ permanent: permanent || undefined });
   await request<void>(`/admin/projects/${projectId}${query}`, {
     method: "DELETE",

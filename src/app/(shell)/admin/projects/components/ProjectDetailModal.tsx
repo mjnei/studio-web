@@ -67,7 +67,9 @@ export function ProjectDetailModal({
             <div>
               <p className="text-xs uppercase tracking-wider text-text-muted">Owner</p>
               <p className="mt-1 text-text-primary">{project.user_name || "—"}</p>
-              <p className="text-text-secondary">{project.user_email || `User #${project.user_id}`}</p>
+              <p className="text-text-secondary">
+                {project.user_email || `User #${project.user_id}`}
+              </p>
             </div>
             <div>
               <p className="text-xs uppercase tracking-wider text-text-muted">Movie</p>

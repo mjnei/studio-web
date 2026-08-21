@@ -13,6 +13,7 @@ import {
   Play,
   Activity,
   ChevronRight,
+  Folder,
   type LucideIcon,
 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -39,9 +40,15 @@ type FeatureLink = {
 const ADMIN_FEATURES: FeatureLink[] = [
   {
     href: "/admin/movies",
-    title: "Movie Management",
+    title: "TMDB Movies",
     description: "Catalog movies with TMDB import, cast, crew, and multi-language support",
     icon: Film,
+  },
+  {
+    href: "/admin/projects",
+    title: "Projects",
+    description: "List all user projects, override status, and soft-delete",
+    icon: Folder,
   },
   {
     href: "/admin/voices",
@@ -133,7 +140,7 @@ export default function AdminPage() {
       value: stats ? stats.projects_created.toLocaleString() : "-",
       icon: BarChart3,
       color: "from-orange-500 to-red-500",
-      comingSoon: true,
+      href: "/admin/projects",
     },
   ];
 

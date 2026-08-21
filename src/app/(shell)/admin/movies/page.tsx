@@ -341,7 +341,7 @@ export default function AdminMoviesPage() {
         <div className="flex items-center gap-3 mb-2">
           <Film className="h-8 w-8 text-accent-primary" />
           <Heading variant="page" className="text-text-primary">
-            Movie Management
+            TMDB Movies
           </Heading>
         </div>
         <p className="text-text-secondary">
