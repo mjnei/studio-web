@@ -19,7 +19,9 @@ export function CreditUsageIndicator({
   const { t } = useI18n();
   const hasEnough = remainingCredits >= cost;
   const costLabel =
-    cost === 1 ? t("billing.credits.creditSingular", { count: cost }) : t("billing.credits.creditPlural", { count: cost });
+    cost === 1
+      ? t("billing.credits.creditSingular", { count: cost })
+      : t("billing.credits.creditPlural", { count: cost });
   const remainingLabel =
     remainingCredits === 1
       ? t("billing.credits.creditSingular", { count: remainingCredits })

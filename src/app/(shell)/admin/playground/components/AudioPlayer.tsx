@@ -168,7 +168,9 @@ export function AudioPlayer({ audioUrl, jobId, jobName, onDismiss }: AudioPlayer
       <audio ref={audioRef} src={audioUrl} className="hidden" />
       <div className="rounded-xl border border-border-default bg-gradient-to-br from-surface-panel to-surface-raised p-6 shadow-lg">
         <div className="flex items-center justify-between mb-4">
-          <Heading variant="subsection" as="h3" className="text-text-primary">{jobName || `Job ${jobId || ""}`}</Heading>
+          <Heading variant="subsection" as="h3" className="text-text-primary">
+            {jobName || `Job ${jobId || ""}`}
+          </Heading>
           <div className="flex items-center gap-2">
             <button
               onClick={handleDownload}

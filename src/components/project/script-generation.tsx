@@ -84,7 +84,9 @@ export function ScriptGeneration({
               onClick={onGenerate}
               loading={isGenerating}
             >
-              {isGenerating ? t("project.scriptGen.generating") : t("project.scriptGen.generateButton")}
+              {isGenerating
+                ? t("project.scriptGen.generating")
+                : t("project.scriptGen.generateButton")}
             </Button>
           </div>
         </Card>

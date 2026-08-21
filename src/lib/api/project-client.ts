@@ -81,7 +81,10 @@ export async function getPopularMovies(limit: number = 20): Promise<MovieListRes
   return request(`/movies/popular?${params.toString()}`);
 }
 
-export async function getMovie(movieId: string | number, locale: string = "en"): Promise<MovieResponse> {
+export async function getMovie(
+  movieId: string | number,
+  locale: string = "en"
+): Promise<MovieResponse> {
   return request(`/movies/${movieId}?locale=${encodeURIComponent(locale)}`);
 }
 

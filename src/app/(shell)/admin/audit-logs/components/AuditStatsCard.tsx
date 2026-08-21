@@ -86,7 +86,11 @@ export default function AuditStatsCard({ stats }: AuditStatsCardProps) {
       {/* Top Actions Breakdown */}
       {topActions.length > 0 && (
         <div className="rounded-xl border-2 border-border bg-surface-panel p-4">
-          <Heading variant="label" as="h3" className="mb-3 uppercase tracking-wider text-text-muted">
+          <Heading
+            variant="label"
+            as="h3"
+            className="mb-3 uppercase tracking-wider text-text-muted"
+          >
             Top Actions
           </Heading>
           <div className="space-y-2">

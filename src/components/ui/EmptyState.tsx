@@ -78,18 +78,11 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
           {icon}
         </div>
       )}
-      <Heading
-        variant={sizeConfig.titleVariant}
-        as="h3"
-        className="text-text-primary mb-2"
-      >
+      <Heading variant={sizeConfig.titleVariant} as="h3" className="text-text-primary mb-2">
         {title}
       </Heading>
       {description && (
-        <Text
-          variant={sizeConfig.descriptionVariant}
-          className="text-text-secondary max-w-md mb-6"
-        >
+        <Text variant={sizeConfig.descriptionVariant} className="text-text-secondary max-w-md mb-6">
           {description}
         </Text>
       )}

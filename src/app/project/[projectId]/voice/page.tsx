@@ -624,7 +624,9 @@ export default function VoicePage() {
                   <Heading variant="label" as="h3" className="text-text-primary">
                     {t("project.voice.speechRate")}
                   </Heading>
-                  <p className="text-xs text-text-muted mt-1">{t("project.voice.speechRateHint")}</p>
+                  <p className="text-xs text-text-muted mt-1">
+                    {t("project.voice.speechRateHint")}
+                  </p>
                 </div>
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">

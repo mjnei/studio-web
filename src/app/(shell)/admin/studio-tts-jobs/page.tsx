@@ -260,7 +260,9 @@ export default function TTSJobsPage() {
               <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-accent-primary to-purple-600 shadow-lg">
                 <Zap className="h-6 w-6 text-white" />
               </div>
-              <Heading variant="page" className="text-text-primary">Studio TTS Jobs Monitoring</Heading>
+              <Heading variant="page" className="text-text-primary">
+                Studio TTS Jobs Monitoring
+              </Heading>
             </div>
             <p className="text-text-secondary">
               Monitor Studio project TTS job health and diagnose failures in real-time

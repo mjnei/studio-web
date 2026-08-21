@@ -75,7 +75,9 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
           <div className="p-6 sm:p-8 flex flex-col items-center justify-center text-text-muted">
             <Bell size={40} className="mb-2 sm:mb-3 opacity-50 sm:hidden" />
             <Bell size={48} className="mb-3 opacity-50 hidden sm:block" />
-            <p className="text-xs sm:text-sm font-medium">{t("notifications.noNotificationsYet")}</p>
+            <p className="text-xs sm:text-sm font-medium">
+              {t("notifications.noNotificationsYet")}
+            </p>
             <p className="text-[10px] sm:text-xs mt-1 text-center px-4">
               {t("notifications.noNotificationsHint")}
             </p>

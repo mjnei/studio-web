@@ -401,7 +401,11 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
 
                 {/* External IDs */}
                 <div className="rounded-2xl border border-border-default bg-surface-panel p-6">
-                  <Heading variant="label" as="h2" className="text-text-primary mb-4 flex items-center gap-2">
+                  <Heading
+                    variant="label"
+                    as="h2"
+                    className="text-text-primary mb-4 flex items-center gap-2"
+                  >
                     <ExternalLink className="h-4 w-4" />
                     External Links
                   </Heading>
@@ -452,7 +456,11 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                 {/* Genres */}
                 {movie.genres && movie.genres.length > 0 && (
                   <div className="rounded-2xl border border-border-default bg-surface-panel p-6">
-                    <Heading variant="label" as="h2" className="text-text-primary mb-3 flex items-center gap-2">
+                    <Heading
+                      variant="label"
+                      as="h2"
+                      className="text-text-primary mb-3 flex items-center gap-2"
+                    >
                       <Tag className="h-4 w-4" />
                       Genres
                     </Heading>
@@ -479,7 +487,9 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                 {/* Overview */}
                 {movie.overview && (
                   <div className="rounded-2xl border border-border-default bg-surface-panel p-6">
-                    <Heading variant="label" as="h2" className="text-text-primary mb-3">Overview</Heading>
+                    <Heading variant="label" as="h2" className="text-text-primary mb-3">
+                      Overview
+                    </Heading>
                     <p className="text-sm leading-relaxed text-text-secondary">{movie.overview}</p>
                   </div>
                 )}
@@ -489,7 +499,11 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                   {/* Directors */}
                   {directors.length > 0 && (
                     <div className="rounded-2xl border border-border-default bg-surface-panel p-6">
-                      <Heading variant="label" as="h2" className="text-text-primary mb-4 flex items-center gap-2">
+                      <Heading
+                        variant="label"
+                        as="h2"
+                        className="text-text-primary mb-4 flex items-center gap-2"
+                      >
                         <Film className="h-4 w-4" />
                         Directors
                       </Heading>
@@ -527,7 +541,11 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                   {/* Cast */}
                   {actors.length > 0 && (
                     <div className="rounded-2xl border border-border-default bg-surface-panel p-6">
-                      <Heading variant="label" as="h2" className="text-text-primary mb-4 flex items-center gap-2">
+                      <Heading
+                        variant="label"
+                        as="h2"
+                        className="text-text-primary mb-4 flex items-center gap-2"
+                      >
                         <Users className="h-4 w-4" />
                         Cast ({actors.length})
                       </Heading>
@@ -575,7 +593,9 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                   {/* Producers */}
                   {producers.length > 0 && (
                     <div className="rounded-2xl border border-border-default bg-surface-panel p-6">
-                      <Heading variant="label" as="h2" className="text-text-primary mb-4">Producers</Heading>
+                      <Heading variant="label" as="h2" className="text-text-primary mb-4">
+                        Producers
+                      </Heading>
                       <div className="flex flex-wrap gap-2">
                         {producers.map((credit) => (
                           <span
@@ -592,7 +612,9 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                   {/* Writers */}
                   {writers.length > 0 && (
                     <div className="rounded-2xl border border-border-default bg-surface-panel p-6">
-                      <Heading variant="label" as="h2" className="text-text-primary mb-4">Writers</Heading>
+                      <Heading variant="label" as="h2" className="text-text-primary mb-4">
+                        Writers
+                      </Heading>
                       <div className="flex flex-wrap gap-2">
                         {writers.map((credit) => (
                           <span

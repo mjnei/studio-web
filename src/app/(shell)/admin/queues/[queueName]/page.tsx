@@ -277,9 +277,7 @@ export default function QueueDetailPage() {
                     <Activity className="w-4 h-4" />
                     Messages
                   </CardDescription>
-                  <Heading variant="metric">
-                    {stats.message_count.toLocaleString()}
-                  </Heading>
+                  <Heading variant="metric">{stats.message_count.toLocaleString()}</Heading>
                   {stats.metadata?.max_messages && (
                     <p className="text-xs text-muted-foreground mt-1">
                       {Math.round((stats.message_count / stats.metadata.max_messages) * 100)}%

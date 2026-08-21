@@ -19,15 +19,7 @@ interface FloatingWorkflowNavigationProps {
   isProcessing?: boolean;
 }
 
-const stepKeys = [
-  "source",
-  "script",
-  "voice",
-  "details",
-  "preview",
-  "compose",
-  "export",
-] as const;
+const stepKeys = ["source", "script", "voice", "details", "preview", "compose", "export"] as const;
 
 const stepOrder: Record<string, number> = Object.fromEntries(stepKeys.map((key, i) => [key, i]));
 
@@ -71,8 +63,7 @@ export function FloatingWorkflowNavigation({
     label: t(`project.nav.${key}`),
   }));
 
-  const resolvedNextLabel =
-    nextLabel || t(nextStepLabelKeys[currentStep] || "common.continue");
+  const resolvedNextLabel = nextLabel || t(nextStepLabelKeys[currentStep] || "common.continue");
 
   // Auto-hide on scroll down, show on scroll up
   useEffect(() => {

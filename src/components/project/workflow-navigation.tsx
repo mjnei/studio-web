@@ -115,8 +115,7 @@ export function WorkflowNavigation({
           onClick={handleNext}
           disabled={isProcessing}
         >
-          {nextLabel ||
-            t(nextStepLabelKeys[currentStep] || "common.continue")}
+          {nextLabel || t(nextStepLabelKeys[currentStep] || "common.continue")}
         </Button>
       )}
     </div>

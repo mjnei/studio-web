@@ -155,9 +155,7 @@ export function ProjectCard({
                   ""
                 }
                 alt={
-                  project.project_name ||
-                  project.movie?.title ||
-                  t("project.card.projectThumbnail")
+                  project.project_name || project.movie?.title || t("project.card.projectThumbnail")
                 }
                 className="h-full w-full object-cover"
                 fill

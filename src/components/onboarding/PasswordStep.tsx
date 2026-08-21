@@ -105,11 +105,7 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
           </div>
         </div>
 
-        <Heading
-          variant="page"
-          as="h2"
-          className="mb-3 text-gray-900 sm:mb-4 dark:text-white"
-        >
+        <Heading variant="page" as="h2" className="mb-3 text-gray-900 sm:mb-4 dark:text-white">
           {hasExistingPassword
             ? t("onboarding.password.titleUpdate")
             : t("onboarding.password.title")}

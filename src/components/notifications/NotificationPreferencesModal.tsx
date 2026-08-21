@@ -132,7 +132,9 @@ export function NotificationPreferencesModal({
                         onChange={() => handleToggle(notificationType)}
                         className="w-4 h-4 rounded border-border-default text-accent-primary focus:ring-accent-primary focus:ring-offset-0 cursor-pointer"
                       />
-                      <span className="text-xs text-text-secondary">{t("notifications.inApp")}</span>
+                      <span className="text-xs text-text-secondary">
+                        {t("notifications.inApp")}
+                      </span>
                     </label>
                   </div>
                 );

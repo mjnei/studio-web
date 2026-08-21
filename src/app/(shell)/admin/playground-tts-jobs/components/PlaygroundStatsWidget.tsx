@@ -26,7 +26,9 @@ export function PlaygroundStatsWidget({ stats }: PlaygroundStatsWidgetProps) {
             <p className="text-xs font-medium text-text-muted uppercase tracking-wider mb-1">
               Total Jobs
             </p>
-            <Heading variant="metric" className="text-text-primary">{stats.total_jobs}</Heading>
+            <Heading variant="metric" className="text-text-primary">
+              {stats.total_jobs}
+            </Heading>
             <p className="text-xs text-text-secondary mt-1">Completed: {stats.completed_jobs}</p>
           </div>
           <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-blue-500/10">
@@ -62,7 +64,9 @@ export function PlaygroundStatsWidget({ stats }: PlaygroundStatsWidgetProps) {
             <p className="text-xs font-medium text-text-muted uppercase tracking-wider mb-1">
               Unique Users
             </p>
-            <Heading variant="metric" className="text-purple-600">{stats.unique_ip_count}</Heading>
+            <Heading variant="metric" className="text-purple-600">
+              {stats.unique_ip_count}
+            </Heading>
             <p className="text-xs text-text-secondary mt-1">Anonymous IPs tracked</p>
           </div>
           <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-purple-500/10">

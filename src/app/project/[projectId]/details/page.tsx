@@ -45,202 +45,203 @@ export default function ProjectDetailsPage() {
     (movieTitle: string): NameSuggestion[] => {
       const suggestions: NameSuggestion[] = [];
 
-    // Clean title and split into words
-    const cleanTitle = movieTitle.trim();
-    if (!cleanTitle) return [];
+      // Clean title and split into words
+      const cleanTitle = movieTitle.trim();
+      if (!cleanTitle) return [];
 
-    const getWords = (text: string) => text.split(/\s+/).filter((w) => w.length > 0);
-    const words = getWords(cleanTitle);
+      const getWords = (text: string) => text.split(/\s+/).filter((w) => w.length > 0);
+      const words = getWords(cleanTitle);
 
-    if (words.length === 0) return [];
+      if (words.length === 0) return [];
 
-    // Articles/pronouns to handle specially when leading
-    const articles = new Set(["a", "an", "the", "el", "la", "le"]);
-    const stopWords = new Set([
-      "a",
-      "an",
-      "the",
-      "el",
-      "la",
-      "le",
-      "of",
-      "and",
-      "or",
-      "but",
-      "in",
-      "on",
-      "at",
-      "to",
-      "for",
-      "with",
-      "by",
-    ]);
+      // Articles/pronouns to handle specially when leading
+      const articles = new Set(["a", "an", "the", "el", "la", "le"]);
+      const stopWords = new Set([
+        "a",
+        "an",
+        "the",
+        "el",
+        "la",
+        "le",
+        "of",
+        "and",
+        "or",
+        "but",
+        "in",
+        "on",
+        "at",
+        "to",
+        "for",
+        "with",
+        "by",
+      ]);
 
-    const startsWithArticle = words.length > 1 && articles.has(words[0].toLowerCase());
-    const firstSignificantWord = startsWithArticle ? words[1] : words[0];
+      const startsWithArticle = words.length > 1 && articles.has(words[0].toLowerCase());
+      const firstSignificantWord = startsWithArticle ? words[1] : words[0];
 
-    // Determine if title is really short (e.g. <= 8 characters or 1 word)
-    const isReallyShort = cleanTitle.length <= 8 || words.length === 1;
-    // Determine if title is really long (e.g. > 25 characters or > 4 words)
-    const isReallyLong = cleanTitle.length > 25 || words.length > 4;
+      // Determine if title is really short (e.g. <= 8 characters or 1 word)
+      const isReallyShort = cleanTitle.length <= 8 || words.length === 1;
+      // Determine if title is really long (e.g. > 25 characters or > 4 words)
+      const isReallyLong = cleanTitle.length > 25 || words.length > 4;
 
-    // Determine base title (useful for long titles with colon/dash, e.g. "Star Wars: Episode IV" -> "Star Wars")
-    let baseTitle = cleanTitle;
-    if (isReallyLong) {
-      const separatorIndex = cleanTitle.search(/[:\-]/);
-      if (separatorIndex > 2) {
-        const partBefore = cleanTitle.substring(0, separatorIndex).trim();
-        if (partBefore.length >= 3) {
-          baseTitle = partBefore;
+      // Determine base title (useful for long titles with colon/dash, e.g. "Star Wars: Episode IV" -> "Star Wars")
+      let baseTitle = cleanTitle;
+      if (isReallyLong) {
+        const separatorIndex = cleanTitle.search(/[:\-]/);
+        if (separatorIndex > 2) {
+          const partBefore = cleanTitle.substring(0, separatorIndex).trim();
+          if (partBefore.length >= 3) {
+            baseTitle = partBefore;
+          }
         }
       }
-    }
 
-    // Helper to remove trailing stop words from a word array
-    const cleanTrailingStopWords = (wordList: string[]) => {
-      const list = [...wordList];
-      while (list.length > 0 && stopWords.has(list[list.length - 1].toLowerCase())) {
-        list.pop();
-      }
-      return list;
-    };
+      // Helper to remove trailing stop words from a word array
+      const cleanTrailingStopWords = (wordList: string[]) => {
+        const list = [...wordList];
+        while (list.length > 0 && stopWords.has(list[list.length - 1].toLowerCase())) {
+          list.pop();
+        }
+        return list;
+      };
 
-    const baseWords = cleanTrailingStopWords(getWords(baseTitle));
-    const baseStartsWithArticle = baseWords.length > 1 && articles.has(baseWords[0].toLowerCase());
-    const cleanBaseTitle = baseStartsWithArticle
-      ? baseWords.slice(1).join(" ")
-      : baseWords.join(" ");
+      const baseWords = cleanTrailingStopWords(getWords(baseTitle));
+      const baseStartsWithArticle =
+        baseWords.length > 1 && articles.has(baseWords[0].toLowerCase());
+      const cleanBaseTitle = baseStartsWithArticle
+        ? baseWords.slice(1).join(" ")
+        : baseWords.join(" ");
 
-    // Significant words list (excluding stop words)
-    const sigWords = words.filter((w) => !stopWords.has(w.toLowerCase()));
+      // Significant words list (excluding stop words)
+      const sigWords = words.filter((w) => !stopWords.has(w.toLowerCase()));
 
-    // Strategy 1: Project name suggestion (Direct/Clean name)
-    let projName = "";
-    if (isReallyShort) {
-      projName = t("project.details.nameSuffixProject", { title: cleanTitle });
-    } else if (baseWords.length <= 3) {
-      projName = t("project.details.nameSuffixProject", { title: baseWords.join(" ") });
-    } else {
-      // If base title is too long, build a smart suggestion using first few words
-      const sliceCount = baseStartsWithArticle ? 4 : 3;
-      const slicedWords = cleanTrailingStopWords(baseWords.slice(0, sliceCount));
+      // Strategy 1: Project name suggestion (Direct/Clean name)
+      let projName = "";
+      if (isReallyShort) {
+        projName = t("project.details.nameSuffixProject", { title: cleanTitle });
+      } else if (baseWords.length <= 3) {
+        projName = t("project.details.nameSuffixProject", { title: baseWords.join(" ") });
+      } else {
+        // If base title is too long, build a smart suggestion using first few words
+        const sliceCount = baseStartsWithArticle ? 4 : 3;
+        const slicedWords = cleanTrailingStopWords(baseWords.slice(0, sliceCount));
 
-      // Fallback if all words were popped (unlikely)
-      const finalWords = slicedWords.length > 0 ? slicedWords : baseWords.slice(0, 2);
-      projName = t("project.details.nameSuffixProject", { title: finalWords.join(" ") });
-    }
-
-    suggestions.push({
-      name: projName,
-      reason: t("project.details.reasonDirect"),
-    });
-
-    // Strategy 2: Acronym / Production name (if not really short)
-    if (!isReallyShort && words.length > 1) {
-      // Use sigWords to build a clean acronym (e.g. "The Lord of the Rings" -> "LOTR")
-      let acronymWords = sigWords;
-      if (acronymWords.length === 0) acronymWords = words;
-
-      let acronym = acronymWords
-        .map((w) => w.replace(/[^a-zA-Z0-9]/g, "")) // clean punctuation
-        .filter((w) => w.length > 0)
-        .map((w) => w[0].toUpperCase())
-        .join("");
-
-      // Limit acronym to max 4 chars for readability
-      if (acronym.length > 4) {
-        acronym = acronym.substring(0, 4);
+        // Fallback if all words were popped (unlikely)
+        const finalWords = slicedWords.length > 0 ? slicedWords : baseWords.slice(0, 2);
+        projName = t("project.details.nameSuffixProject", { title: finalWords.join(" ") });
       }
 
-      if (acronym.length >= 2) {
+      suggestions.push({
+        name: projName,
+        reason: t("project.details.reasonDirect"),
+      });
+
+      // Strategy 2: Acronym / Production name (if not really short)
+      if (!isReallyShort && words.length > 1) {
+        // Use sigWords to build a clean acronym (e.g. "The Lord of the Rings" -> "LOTR")
+        let acronymWords = sigWords;
+        if (acronymWords.length === 0) acronymWords = words;
+
+        let acronym = acronymWords
+          .map((w) => w.replace(/[^a-zA-Z0-9]/g, "")) // clean punctuation
+          .filter((w) => w.length > 0)
+          .map((w) => w[0].toUpperCase())
+          .join("");
+
+        // Limit acronym to max 4 chars for readability
+        if (acronym.length > 4) {
+          acronym = acronym.substring(0, 4);
+        }
+
+        if (acronym.length >= 2) {
+          suggestions.push({
+            name: t("project.details.nameSuffixProduction", { title: acronym }),
+            reason: t("project.details.reasonAcronym"),
+          });
+        } else {
+          suggestions.push({
+            name: t("project.details.nameSuffixProduction", { title: firstSignificantWord }),
+            reason: t("project.details.reasonProduction"),
+          });
+        }
+      } else {
         suggestions.push({
-          name: t("project.details.nameSuffixProduction", { title: acronym }),
-          reason: t("project.details.reasonAcronym"),
+          name: t("project.details.nameSuffixFilm", { title: cleanTitle }),
+          reason: t("project.details.reasonFilm"),
+        });
+      }
+
+      // Strategy 3: Narrative / Chronicles / Story adaptation
+      if (isReallyLong) {
+        // For very long titles, use the clean base title prefix + Chronicles
+        // e.g. "Star Wars: Episode IV" -> "Star Wars Chronicles"
+        suggestions.push({
+          name: t("project.details.nameSuffixChronicles", { title: cleanBaseTitle }),
+          reason: t("project.details.reasonChronicles"),
+        });
+      } else if (words.length > 1) {
+        // e.g. "The Matrix" -> "Matrix Story" (uses significant word or last word)
+        const lastWordClean = words[words.length - 1].replace(/[^a-zA-Z0-9]/g, "");
+        const themeWord = lastWordClean.length > 1 ? lastWordClean : firstSignificantWord;
+        suggestions.push({
+          name: t("project.details.nameSuffixStory", { title: themeWord }),
+          reason: t("project.details.reasonStory"),
         });
       } else {
         suggestions.push({
-          name: t("project.details.nameSuffixProduction", { title: firstSignificantWord }),
-          reason: t("project.details.reasonProduction"),
+          name: t("project.details.nameSuffixChronicles", { title: cleanTitle }),
+          reason: t("project.details.reasonMemorable"),
         });
       }
-    } else {
-      suggestions.push({
-        name: t("project.details.nameSuffixFilm", { title: cleanTitle }),
-        reason: t("project.details.reasonFilm"),
-      });
-    }
 
-    // Strategy 3: Narrative / Chronicles / Story adaptation
-    if (isReallyLong) {
-      // For very long titles, use the clean base title prefix + Chronicles
-      // e.g. "Star Wars: Episode IV" -> "Star Wars Chronicles"
-      suggestions.push({
-        name: t("project.details.nameSuffixChronicles", { title: cleanBaseTitle }),
-        reason: t("project.details.reasonChronicles"),
-      });
-    } else if (words.length > 1) {
-      // e.g. "The Matrix" -> "Matrix Story" (uses significant word or last word)
-      const lastWordClean = words[words.length - 1].replace(/[^a-zA-Z0-9]/g, "");
-      const themeWord = lastWordClean.length > 1 ? lastWordClean : firstSignificantWord;
-      suggestions.push({
-        name: t("project.details.nameSuffixStory", { title: themeWord }),
-        reason: t("project.details.reasonStory"),
-      });
-    } else {
-      suggestions.push({
-        name: t("project.details.nameSuffixChronicles", { title: cleanTitle }),
-        reason: t("project.details.reasonMemorable"),
-      });
-    }
+      // Deduplicate and filter suggestions
+      const seen = new Set<string>();
+      const uniqueSuggestions: NameSuggestion[] = [];
 
-    // Deduplicate and filter suggestions
-    const seen = new Set<string>();
-    const uniqueSuggestions: NameSuggestion[] = [];
+      const addUnique = (s: NameSuggestion) => {
+        const normalized = s.name.trim();
+        if (normalized && !seen.has(normalized.toLowerCase())) {
+          seen.add(normalized.toLowerCase());
+          uniqueSuggestions.push({
+            name: normalized,
+            reason: s.reason,
+          });
+          return true;
+        }
+        return false;
+      };
 
-    const addUnique = (s: NameSuggestion) => {
-      const normalized = s.name.trim();
-      if (normalized && !seen.has(normalized.toLowerCase())) {
-        seen.add(normalized.toLowerCase());
-        uniqueSuggestions.push({
-          name: normalized,
-          reason: s.reason,
-        });
-        return true;
+      suggestions.forEach(addUnique);
+
+      // If we have less than 3, pad with nice fallbacks
+      const fallbacks = [
+        {
+          name: t("project.details.nameSuffixVenture", { title: cleanBaseTitle }),
+          reason: t("project.details.reasonVenture"),
+        },
+        {
+          name: t("project.details.nameSuffixStudio", { title: firstSignificantWord }),
+          reason: t("project.details.reasonStudio"),
+        },
+        {
+          name: t("project.details.nameSuffixProjectWord", { title: firstSignificantWord }),
+          reason: t("project.details.reasonClassic"),
+        },
+        {
+          name: t("project.details.nameSuffixChronicles", { title: cleanTitle }),
+          reason: t("project.details.reasonChronicles"),
+        },
+      ];
+
+      for (const f of fallbacks) {
+        if (uniqueSuggestions.length >= 3) break;
+        addUnique(f);
       }
-      return false;
-    };
 
-    suggestions.forEach(addUnique);
-
-    // If we have less than 3, pad with nice fallbacks
-    const fallbacks = [
-      {
-        name: t("project.details.nameSuffixVenture", { title: cleanBaseTitle }),
-        reason: t("project.details.reasonVenture"),
-      },
-      {
-        name: t("project.details.nameSuffixStudio", { title: firstSignificantWord }),
-        reason: t("project.details.reasonStudio"),
-      },
-      {
-        name: t("project.details.nameSuffixProjectWord", { title: firstSignificantWord }),
-        reason: t("project.details.reasonClassic"),
-      },
-      {
-        name: t("project.details.nameSuffixChronicles", { title: cleanTitle }),
-        reason: t("project.details.reasonChronicles"),
-      },
-    ];
-
-    for (const f of fallbacks) {
-      if (uniqueSuggestions.length >= 3) break;
-      addUnique(f);
-    }
-
-    return uniqueSuggestions.slice(0, 3);
-  },
-  [t]
-);
+      return uniqueSuggestions.slice(0, 3);
+    },
+    [t]
+  );
 
   // Polling for AI suggestions - BEFORE effect that uses it
   const startPollingForNameSuggestions = useCallback(async () => {
@@ -424,7 +425,9 @@ export default function ProjectDetailsPage() {
                   <Heading variant="label" as="h4" className="text-text-primary mb-2">
                     {t("project.details.aboutThumbnail")}
                   </Heading>
-                  <p className="text-sm text-text-muted mb-3">{t("project.details.aboutThumbnailDesc")}</p>
+                  <p className="text-sm text-text-muted mb-3">
+                    {t("project.details.aboutThumbnailDesc")}
+                  </p>
                   <div className="text-xs text-text-muted space-y-1">
                     <p>• {t("project.details.aboutBullet1")}</p>
                     <p>• {t("project.details.aboutBullet2")}</p>
@@ -469,7 +472,9 @@ export default function ProjectDetailsPage() {
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <Heading variant="label" as="h3" className="text-text-primary">{state.movieTitle}</Heading>
+                  <Heading variant="label" as="h3" className="text-text-primary">
+                    {state.movieTitle}
+                  </Heading>
                   <p className="mt-1 text-sm text-text-muted">
                     {state.movieGenre && `${state.movieGenre} • `}
                     {state.movieRating &&

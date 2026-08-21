@@ -35,7 +35,9 @@ export default function AdminTMDBPage() {
             </div>
           </div>
 
-          <Heading variant="page" className="mb-3 text-text-primary">Page Moved</Heading>
+          <Heading variant="page" className="mb-3 text-text-primary">
+            Page Moved
+          </Heading>
 
           <p className="mb-2 text-text-secondary">
             TMDB import has been merged with movie management

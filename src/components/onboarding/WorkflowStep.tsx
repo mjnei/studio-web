@@ -80,10 +80,18 @@ export default function WorkflowStep({ onNext, onBack }: WorkflowStepProps) {
 
               {/* Content */}
               <div className="text-center">
-                <Heading variant="subsection" as="h3" className="mb-1 text-gray-900 dark:text-white">
+                <Heading
+                  variant="subsection"
+                  as="h3"
+                  className="mb-1 text-gray-900 dark:text-white"
+                >
                   {step.title}
                 </Heading>
-                <Text variant="caption" as="p" className="leading-snug text-gray-600 dark:text-gray-400">
+                <Text
+                  variant="caption"
+                  as="p"
+                  className="leading-snug text-gray-600 dark:text-gray-400"
+                >
                   {step.description}
                 </Text>
               </div>

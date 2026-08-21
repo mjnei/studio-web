@@ -340,7 +340,9 @@ export default function AdminMoviesPage() {
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
           <Film className="h-8 w-8 text-accent-primary" />
-          <Heading variant="page" className="text-text-primary">Movie Management</Heading>
+          <Heading variant="page" className="text-text-primary">
+            Movie Management
+          </Heading>
         </div>
         <p className="text-text-secondary">
           Import movies from TMDB or manage your existing movie library
@@ -468,7 +470,13 @@ export default function AdminMoviesPage() {
                         <div className="flex flex-1 flex-col">
                           <div className="mb-2 flex items-start justify-between gap-4">
                             <div className="flex-1">
-                              <Heading variant="subsection" as="h3" className="mb-1 text-text-primary">{movie.title || movie.original_title}</Heading>
+                              <Heading
+                                variant="subsection"
+                                as="h3"
+                                className="mb-1 text-text-primary"
+                              >
+                                {movie.title || movie.original_title}
+                              </Heading>
                               {movie.original_title !== movie.title && (
                                 <p className="mb-1 text-sm text-text-muted">
                                   {movie.original_title}
@@ -612,7 +620,13 @@ export default function AdminMoviesPage() {
                       {/* Movie Info - Flex grow to push button to bottom */}
                       <div className="flex flex-1 flex-col p-4">
                         <div className="flex-1">
-                          <Heading variant="label" as="h3" className="mb-1 line-clamp-2 text-text-primary">{movie.title || movie.original_title}</Heading>
+                          <Heading
+                            variant="label"
+                            as="h3"
+                            className="mb-1 line-clamp-2 text-text-primary"
+                          >
+                            {movie.title || movie.original_title}
+                          </Heading>
                           {movie.original_title !== movie.title && (
                             <p className="mb-1 text-xs text-text-muted line-clamp-1">
                               {movie.original_title}
@@ -732,7 +746,9 @@ export default function AdminMoviesPage() {
               className="flex w-full items-center justify-between p-6 text-left transition-colors hover:bg-surface-hover"
             >
               <div>
-                <Heading variant="label" as="h2" className="text-text-primary">Translation Locales to Import</Heading>
+                <Heading variant="label" as="h2" className="text-text-primary">
+                  Translation Locales to Import
+                </Heading>
                 <p className="mt-1 text-xs text-text-muted">
                   {selectedLocales.length} of {SUPPORTED_LOCALES.length} locales selected
                 </p>
@@ -860,7 +876,13 @@ export default function AdminMoviesPage() {
                         <div className="flex flex-1 flex-col">
                           <div className="mb-2 flex items-start justify-between gap-4">
                             <div className="flex-1">
-                              <Heading variant="subsection" as="h3" className="mb-1 text-text-primary">{movie.title}</Heading>
+                              <Heading
+                                variant="subsection"
+                                as="h3"
+                                className="mb-1 text-text-primary"
+                              >
+                                {movie.title}
+                              </Heading>
                               {movie.original_title !== movie.title && (
                                 <p className="mb-1 text-sm text-text-muted">
                                   {movie.original_title}
@@ -955,7 +977,13 @@ export default function AdminMoviesPage() {
                       {/* Movie Info - Flex grow to push button to bottom */}
                       <div className="flex flex-1 flex-col p-4">
                         <div className="flex-1">
-                          <Heading variant="label" as="h3" className="mb-1 line-clamp-2 text-text-primary">{movie.title}</Heading>
+                          <Heading
+                            variant="label"
+                            as="h3"
+                            className="mb-1 line-clamp-2 text-text-primary"
+                          >
+                            {movie.title}
+                          </Heading>
                           {movie.original_title !== movie.title && (
                             <p className="mb-1 line-clamp-1 text-xs text-text-muted">
                               {movie.original_title}

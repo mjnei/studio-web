@@ -268,9 +268,7 @@ export default function BillingPage() {
                 disabled={addingCredits}
                 leftIcon={<Sparkles className="w-4 h-4" />}
               >
-                {addingCredits
-                  ? t("billing.overview.adding")
-                  : t("billing.overview.gimmeCredits")}
+                {addingCredits ? t("billing.overview.adding") : t("billing.overview.gimmeCredits")}
               </Button>
             </div>
 
@@ -393,7 +391,9 @@ export default function BillingPage() {
 
               <div className="grid gap-4 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-text-muted">{t("billing.overview.subscriptionStatus")}</span>
+                  <span className="text-text-muted">
+                    {t("billing.overview.subscriptionStatus")}
+                  </span>
                   <span className="font-medium text-status-success">
                     {t("billing.overview.active")}
                   </span>
@@ -453,11 +453,7 @@ export default function BillingPage() {
                       )}
                     </div>
                     <div>
-                      <Heading
-                        variant="label"
-                        as="h4"
-                        className="text-text-primary capitalize"
-                      >
+                      <Heading variant="label" as="h4" className="text-text-primary capitalize">
                         {transaction.transaction_type}
                       </Heading>
                       <p className="text-xs text-text-muted">

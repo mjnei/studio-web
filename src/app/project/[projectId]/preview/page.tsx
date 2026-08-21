@@ -86,9 +86,7 @@ export default function PreviewPage() {
         setTtsJob(job);
       } catch (error) {
         console.error("Failed to create TTS job:", error);
-        setTtsError(
-          error instanceof Error ? error.message : t("project.preview.createJobFailed")
-        );
+        setTtsError(error instanceof Error ? error.message : t("project.preview.createJobFailed"));
       } finally {
         isCreatingJobRef.current = false;
       }
@@ -441,7 +439,6 @@ export default function PreviewPage() {
                   {ttsJob?.status === "failed" && ttsJob.error_message}
                   {ttsError && !ttsJob && ttsError}
                 </p>
-
               </div>
 
               {/* Queue Status - Show when job is queued */}

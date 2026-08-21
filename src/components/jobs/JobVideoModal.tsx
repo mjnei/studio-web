@@ -59,8 +59,7 @@ export const JobVideoModal: React.FC<JobVideoModalProps> = ({ job, onClose }) =>
           </div>
           <div>
             <span className="font-semibold text-text-secondary">{t("jobs.modal.cost")}:</span>{" "}
-            {job.credit_cost}{" "}
-            {job.credit_cost !== 1 ? t("jobs.credits") : t("jobs.credit")}
+            {job.credit_cost} {job.credit_cost !== 1 ? t("jobs.credits") : t("jobs.credit")}
           </div>
           <div>
             <span className="font-semibold text-text-secondary">{t("jobs.modal.attempt")}:</span> #

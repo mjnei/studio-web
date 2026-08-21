@@ -48,9 +48,7 @@ export const Pagination: React.FC<PaginationProps> = ({
       )}
     >
       <div className="flex items-center gap-2 text-sm text-text-muted">
-        <span>
-          {t("common.pageOf", { current: currentPage, total: totalPages })}
-        </span>
+        <span>{t("common.pageOf", { current: currentPage, total: totalPages })}</span>
         {totalItems !== undefined && (
           <>
             <span className="h-1 w-1 rounded-full bg-text-muted" />

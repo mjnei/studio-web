@@ -178,7 +178,9 @@ export default function PlaygroundPage() {
           <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-accent-primary to-purple-600 shadow-lg">
             <Play className="h-6 w-6 text-white" />
           </div>
-          <Heading variant="page" className="text-text-primary">TTS Playground</Heading>
+          <Heading variant="page" className="text-text-primary">
+            TTS Playground
+          </Heading>
         </div>
         <p className="text-text-secondary">
           Test TTS functionality without creating a full project
@@ -189,7 +191,9 @@ export default function PlaygroundPage() {
         {/* Left Column: Form */}
         <div className="space-y-6">
           <div className="rounded-xl border border-border-default bg-surface-panel p-6">
-            <Heading variant="subsection" as="h2" className="text-text-primary mb-4">Generate TTS Audio</Heading>
+            <Heading variant="subsection" as="h2" className="text-text-primary mb-4">
+              Generate TTS Audio
+            </Heading>
             <PlaygroundForm onSubmit={handleSubmit} isLoading={isLoading} />
           </div>
 
@@ -202,7 +206,9 @@ export default function PlaygroundPage() {
                 <div className="flex items-center gap-4">
                   <LoadingSpinner size="md" />
                   <div>
-                    <Heading variant="label" as="h3" className="text-text-primary mb-1">Processing Audio</Heading>
+                    <Heading variant="label" as="h3" className="text-text-primary mb-1">
+                      Processing Audio
+                    </Heading>
                     <p className="text-xs text-text-secondary">
                       Status: {currentJob.status} • This usually takes 10-30 seconds
                     </p>
@@ -214,7 +220,9 @@ export default function PlaygroundPage() {
           {/* Failed Status */}
           {currentJob?.status === "failed" && (
             <div className="rounded-xl border-2 border-red-500/50 bg-red-500/10 p-6">
-              <Heading variant="label" as="h3" className="text-red-600 mb-2">Generation Failed</Heading>
+              <Heading variant="label" as="h3" className="text-red-600 mb-2">
+                Generation Failed
+              </Heading>
               <p className="text-xs text-red-600">{currentJob.error || "Unknown error occurred"}</p>
             </div>
           )}
@@ -224,7 +232,9 @@ export default function PlaygroundPage() {
         <div className="space-y-6">
           <div>
             <div className="flex items-center justify-between mb-4">
-              <Heading variant="subsection" as="h2" className="text-text-primary">Job History</Heading>
+              <Heading variant="subsection" as="h2" className="text-text-primary">
+                Job History
+              </Heading>
               {history.length > 0 && (
                 <button
                   onClick={() => setClearHistoryModal(true)}

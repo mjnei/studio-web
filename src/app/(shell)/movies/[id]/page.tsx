@@ -30,7 +30,10 @@ function genreName(genre: MovieGenre | Record<string, unknown> | string): string
   return undefined;
 }
 
-function genreKey(genre: MovieGenre | Record<string, unknown> | string, index: number): string | number {
+function genreKey(
+  genre: MovieGenre | Record<string, unknown> | string,
+  index: number
+): string | number {
   if (typeof genre === "string") return genre;
   if (genre && typeof genre === "object" && "id" in genre && genre.id != null) {
     return genre.id as string | number;
@@ -142,7 +145,9 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
         <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
           <div className="rounded-lg border border-border-default bg-surface-panel p-8 text-center">
             <AlertCircle className="mx-auto h-12 w-12 text-status-failed opacity-50 mb-3" />
-            <p className="text-sm text-text-primary font-medium mb-2">{t("movies.detail.errorTitle")}</p>
+            <p className="text-sm text-text-primary font-medium mb-2">
+              {t("movies.detail.errorTitle")}
+            </p>
             <p className="text-sm text-text-muted mb-4">{error}</p>
             <Link
               href="/movies"

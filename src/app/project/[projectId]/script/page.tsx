@@ -105,7 +105,9 @@ export default function ScriptPage() {
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <Heading variant="label" as="h3" className="text-text-primary">{state.movieTitle}</Heading>
+                  <Heading variant="label" as="h3" className="text-text-primary">
+                    {state.movieTitle}
+                  </Heading>
                   <p className="mt-1 text-sm text-text-muted">
                     {state.movieGenre && `${state.movieGenre} • `}
                     {state.movieRating &&

@@ -144,11 +144,7 @@ export default function CompletionStep() {
           </div>
         </div>
 
-        <Heading
-          variant="page"
-          as="h2"
-          className="mb-3 text-gray-900 sm:mb-4 dark:text-white"
-        >
+        <Heading variant="page" as="h2" className="mb-3 text-gray-900 sm:mb-4 dark:text-white">
           {t("onboarding.completion.loading")}
         </Heading>
         <Text variant="bodyLg" className="px-4 text-gray-600 dark:text-gray-300">
@@ -201,10 +197,7 @@ export default function CompletionStep() {
       >
         {t("onboarding.completion.success")}
       </Heading>
-      <Text
-        variant="bodyLg"
-        className="mb-8 px-4 text-gray-600 sm:mb-10 dark:text-gray-300"
-      >
+      <Text variant="bodyLg" className="mb-8 px-4 text-gray-600 sm:mb-10 dark:text-gray-300">
         {t("onboarding.completion.successSubtext")}
       </Text>
 

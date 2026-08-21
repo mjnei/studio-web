@@ -177,7 +177,10 @@ function RailLink({
 function LogoMark({ collapsed }: { collapsed?: boolean }) {
   if (collapsed) return null;
   return (
-    <Link href="/dashboard" className="flex items-center gap-2 text-xl font-bold group focus-ring rounded-lg">
+    <Link
+      href="/dashboard"
+      className="flex items-center gap-2 text-xl font-bold group focus-ring rounded-lg"
+    >
       <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-accent-secondary via-accent-primary to-accent-tertiary shadow-md group-hover:shadow-lg transition-all">
         <Activity size={16} className="text-white" />
       </div>

@@ -94,7 +94,9 @@ export default function SourcePage() {
                 {t("project.source.title")}
               </Heading>
               <p className="mt-1 text-sm text-text-muted">
-                {isChanging ? t("project.source.selectDifferent") : t("project.source.viewSelected")}
+                {isChanging
+                  ? t("project.source.selectDifferent")
+                  : t("project.source.viewSelected")}
               </p>
             </div>
             {!isChanging && state?.movieId && (
@@ -157,7 +159,9 @@ export default function SourcePage() {
                     <div className="flex items-start gap-3">
                       <Info className="h-5 w-5 text-accent-cyan" />
                       <div className="flex-1">
-                        <p className="text-sm text-text-secondary">{t("project.source.changeWarning")}</p>
+                        <p className="text-sm text-text-secondary">
+                          {t("project.source.changeWarning")}
+                        </p>
                       </div>
                     </div>
                   </div>

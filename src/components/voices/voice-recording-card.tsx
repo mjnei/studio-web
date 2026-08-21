@@ -191,8 +191,7 @@ export function VoiceRecordingCard({
     // Handle null and undefined explicitly per Requirement 7.4
     if (!language) return null;
 
-    const normalized =
-      language === "zh-CN" ? "zhCN" : language === "zh-TW" ? "zhTW" : language;
+    const normalized = language === "zh-CN" ? "zhCN" : language === "zh-TW" ? "zhTW" : language;
     const key = `voices.languages.${normalized}`;
     const translated = t(key);
     return translated === key ? language.toUpperCase() : translated;

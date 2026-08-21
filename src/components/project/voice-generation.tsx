@@ -213,7 +213,9 @@ export function VoiceGeneration({
                                 <p className="font-semibold text-text-primary text-sm truncate">
                                   {voice.name}
                                 </p>
-                                <p className="text-xs text-text-muted">{t("project.voice.yourVoice")}</p>
+                                <p className="text-xs text-text-muted">
+                                  {t("project.voice.yourVoice")}
+                                </p>
                               </div>
                             </div>
                             {selectedVoiceId === voice.id && (
@@ -414,7 +416,9 @@ export function VoiceGeneration({
                   <p className="text-sm font-medium text-text-primary">
                     {t("project.voiceGen.notSatisfied")}
                   </p>
-                  <p className="text-xs text-text-secondary">{t("project.voiceGen.tryDifferent")}</p>
+                  <p className="text-xs text-text-secondary">
+                    {t("project.voiceGen.tryDifferent")}
+                  </p>
                 </div>
               </div>
               <Button variant="secondary" size="sm" onClick={onChangeVoice}>

@@ -208,7 +208,10 @@ export default function ComposePage() {
       router.push(`/project/${projectId}/export`);
     } catch (error) {
       console.error("Failed to advance step:", error);
-      toast.error(t("project.compose.toastAdvanceFailed"), t("project.compose.toastAdvanceFailedDesc"));
+      toast.error(
+        t("project.compose.toastAdvanceFailed"),
+        t("project.compose.toastAdvanceFailedDesc")
+      );
     } finally {
       setIsAdvancing(false);
     }
@@ -297,7 +300,8 @@ export default function ComposePage() {
                         isRegenerating ? (
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="text-xs font-medium text-accent-cyan flex items-center gap-1">
-                              <Loader2 className="h-3 w-3 animate-spin" /> {t("project.compose.generating")}
+                              <Loader2 className="h-3 w-3 animate-spin" />{" "}
+                              {t("project.compose.generating")}
                             </span>
                             {/* Show retry button when generating */}
                             {!isRegenerating && (
@@ -315,7 +319,8 @@ export default function ComposePage() {
                           </div>
                         ) : state.thumbnailCompositionStatus === "processing" ? (
                           <span className="text-xs font-medium text-accent-cyan flex items-center gap-1">
-                            <Loader2 className="h-3 w-3 animate-spin" /> {t("project.compose.processing")}
+                            <Loader2 className="h-3 w-3 animate-spin" />{" "}
+                            {t("project.compose.processing")}
                           </span>
                         ) : state.thumbnailConfirmed ? (
                           <span className="text-xs font-medium text-status-success flex items-center gap-1">
@@ -343,7 +348,9 @@ export default function ComposePage() {
                       </div>
                     ) : state.thumbnailConfirmed ? (
                       <div className="space-y-3">
-                        <p className="text-sm text-text-muted">{t("project.compose.readyForVideo")}</p>
+                        <p className="text-sm text-text-muted">
+                          {t("project.compose.readyForVideo")}
+                        </p>
 
                         {/* Show confirmed thumbnail image */}
                         {state.finalThumbnailUrl && (

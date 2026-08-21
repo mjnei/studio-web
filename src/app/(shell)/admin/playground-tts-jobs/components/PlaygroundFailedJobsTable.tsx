@@ -48,7 +48,9 @@ export function PlaygroundFailedJobsTable({
           <div className="flex items-center justify-center w-16 h-16 rounded-full bg-green-500/10">
             <XCircle className="h-8 w-8 text-green-600" />
           </div>
-          <Heading variant="subsection" as="h3" className="text-text-primary">No Failed Playground Jobs</Heading>
+          <Heading variant="subsection" as="h3" className="text-text-primary">
+            No Failed Playground Jobs
+          </Heading>
           <p className="text-sm text-text-secondary max-w-md">
             All playground TTS jobs are processing successfully. Great job!
           </p>

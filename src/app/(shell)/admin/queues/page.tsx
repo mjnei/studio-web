@@ -216,9 +216,7 @@ export default function QueueManagementPage() {
                 <Card className="border-muted">
                   <CardHeader className="pb-3">
                     <CardDescription className="text-xs">Total Messages</CardDescription>
-                    <Heading variant="metric">
-                      {totalMessages.toLocaleString()}
-                    </Heading>
+                    <Heading variant="metric">{totalMessages.toLocaleString()}</Heading>
                   </CardHeader>
                 </Card>
                 <Card className="border-muted">

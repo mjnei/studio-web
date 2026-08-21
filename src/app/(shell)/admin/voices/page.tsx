@@ -253,7 +253,9 @@ export default function AdminVoicesPage() {
               <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-accent-primary to-purple-600 shadow-lg">
                 <Mic className="h-6 w-6 text-white" />
               </div>
-              <Heading variant="page" className="text-text-primary">Community Voices</Heading>
+              <Heading variant="page" className="text-text-primary">
+                Community Voices
+              </Heading>
             </div>
             <p className="text-text-secondary">
               Review and approve shared voices for the public catalog
@@ -338,7 +340,9 @@ export default function AdminVoicesPage() {
                 <p className="text-xs font-medium text-text-muted uppercase tracking-wider mb-1">
                   Total User Voices
                 </p>
-                <Heading variant="metric" className="text-text-primary">{stats.total}</Heading>
+                <Heading variant="metric" className="text-text-primary">
+                  {stats.total}
+                </Heading>
               </div>
               <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-purple-500/10">
                 <Mic className="h-6 w-6 text-purple-600" />
@@ -351,7 +355,9 @@ export default function AdminVoicesPage() {
                 <p className="text-xs font-medium text-text-muted uppercase tracking-wider mb-1">
                   Pending Approval
                 </p>
-                <Heading variant="metric" className="text-orange-600">{stats.pending}</Heading>
+                <Heading variant="metric" className="text-orange-600">
+                  {stats.pending}
+                </Heading>
               </div>
               <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-orange-500/10">
                 <Clock className="h-6 w-6 text-orange-600" />
@@ -364,7 +370,9 @@ export default function AdminVoicesPage() {
                 <p className="text-xs font-medium text-text-muted uppercase tracking-wider mb-1">
                   Approved
                 </p>
-                <Heading variant="metric" className="text-green-600">{stats.approved}</Heading>
+                <Heading variant="metric" className="text-green-600">
+                  {stats.approved}
+                </Heading>
               </div>
               <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-green-500/10">
                 <CheckCircle2 className="h-6 w-6 text-green-600" />
