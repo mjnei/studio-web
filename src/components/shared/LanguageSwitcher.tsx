@@ -10,7 +10,7 @@ export function LanguageSwitcher() {
       <select
         value={locale}
         onChange={(e) => setLocale(e.target.value as Locale)}
-        className="appearance-none bg-surface-secondary text-text-primary border border-border-primary rounded-md px-3 py-2 pr-8 text-sm font-medium cursor-pointer hover:bg-surface-tertiary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary"
+        className="appearance-none bg-surface-secondary text-text-primary border border-border-primary rounded-md px-2.5 py-1.5 pr-7 text-sm font-medium cursor-pointer hover:bg-surface-tertiary transition-colors focus:outline-none focus:ring-2 focus:ring-accent-primary"
       >
         {locales.map((loc) => (
           <option key={loc} value={loc}>

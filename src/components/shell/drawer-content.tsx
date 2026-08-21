@@ -150,8 +150,8 @@ function RailLink({
       href={item.href}
       onClick={onClick}
       title={collapsed ? label : undefined}
-      className={`flex items-center gap-3 rounded-lg transition-all duration-200 ${
-        collapsed ? "justify-center px-0 py-2.5" : "px-3 py-2.5 text-sm font-medium"
+      className={`flex items-center gap-2.5 rounded-lg transition-all duration-200 ${
+        collapsed ? "justify-center px-0 py-2" : "px-2.5 py-2 text-sm font-medium"
       } ${
         active
           ? "bg-gradient-to-r from-accent-secondary/20 via-accent-primary/20 to-accent-tertiary/20 text-accent-primary shadow-sm border border-accent-primary/30"
@@ -189,17 +189,17 @@ function UserSection({ collapsed, onNavigate }: { collapsed?: boolean; onNavigat
 
   return (
     <div
-      className={`border-t border-border-default p-4 bg-surface-raised/50 ${
-        collapsed ? "flex flex-col items-center gap-2" : ""
+      className={`border-t border-border-default p-3 bg-surface-raised/50 ${
+        collapsed ? "flex flex-col items-center gap-1.5" : ""
       }`}
     >
       <Link
         href="/profile"
         onClick={onNavigate}
-        className={`flex items-center gap-3 rounded-lg text-sm transition-all ${
+        className={`flex items-center gap-2.5 rounded-lg text-sm transition-all ${
           collapsed
             ? "justify-center p-0"
-            : "px-3 py-2.5 hover:bg-surface-hover border border-transparent hover:border-border-default"
+            : "px-2.5 py-2 hover:bg-surface-hover border border-transparent hover:border-border-default"
         }`}
       >
         {user?.picture_url ? (
@@ -245,15 +245,15 @@ export function DrawerContent({
   return (
     <div className="flex h-full flex-col">
       <div
-        className={`flex h-16 items-center border-b border-border-default shrink-0 ${
-          collapsed ? "justify-center px-2" : "px-4"
+        className={`flex h-14 items-center border-b border-border-default shrink-0 ${
+          collapsed ? "justify-center px-1.5" : "px-3"
         }`}
       >
         <LogoMark collapsed={collapsed} />
         {onToggle && (
           <button
             onClick={onToggle}
-            className={`rounded-lg p-2 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all active:scale-95 ${
+            className={`rounded-lg p-1.5 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all active:scale-95 ${
               collapsed ? "" : "ml-auto"
             }`}
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
@@ -265,7 +265,7 @@ export function DrawerContent({
         {onClose && (
           <button
             onClick={onClose}
-            className="ml-auto rounded-lg p-2 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all active:scale-95"
+            className="ml-auto rounded-lg p-1.5 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all active:scale-95"
             aria-label="Close menu"
             title="Close menu"
           >
@@ -274,13 +274,13 @@ export function DrawerContent({
         )}
       </div>
 
-      <div className={`flex-1 overflow-y-auto ${collapsed ? "px-2 py-4" : "px-3 py-4"}`}>
+      <div className={`flex-1 overflow-y-auto ${collapsed ? "px-1.5 py-3" : "px-2.5 py-3"}`}>
         {!collapsed && (
-          <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-wider text-text-muted">
+          <p className="mb-1.5 px-2.5 text-[10px] font-bold uppercase tracking-wider text-text-muted">
             {t("shell.main")}
           </p>
         )}
-        <div className="space-y-1">
+        <div className="space-y-0.5">
           {mainItems.map((item) => (
             <RailLink
               key={item.href}
@@ -293,14 +293,14 @@ export function DrawerContent({
           ))}
         </div>
 
-        <div className={`my-4 border-t border-border-default ${collapsed ? "mx-0" : "mx-2"}`} />
+        <div className={`my-3 border-t border-border-default ${collapsed ? "mx-0" : "mx-1.5"}`} />
 
         {!collapsed && (
-          <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-wider text-text-muted">
+          <p className="mb-1.5 px-2.5 text-[10px] font-bold uppercase tracking-wider text-text-muted">
             {t("shell.utilities")}
           </p>
         )}
-        <div className="space-y-1">
+        <div className="space-y-0.5">
           {utilityItems.map((item) => (
             <RailLink
               key={item.href}
@@ -316,13 +316,13 @@ export function DrawerContent({
         {/* Admin Section - Only for Admin Users */}
         {isAdmin && (
           <>
-            <div className={`my-4 border-t border-border-default ${collapsed ? "mx-0" : "mx-2"}`} />
+            <div className={`my-3 border-t border-border-default ${collapsed ? "mx-0" : "mx-1.5"}`} />
             {!collapsed && (
-              <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-wider text-text-muted">
+              <p className="mb-1.5 px-2.5 text-[10px] font-bold uppercase tracking-wider text-text-muted">
                 {t("shell.admin")}
               </p>
             )}
-            <div className="space-y-1">
+            <div className="space-y-0.5">
               {adminItems.map((item) => (
                 <RailLink
                   key={item.href}

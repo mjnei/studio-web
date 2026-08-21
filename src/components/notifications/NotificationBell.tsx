@@ -37,7 +37,7 @@ export function NotificationBell() {
       <button
         ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
-        className="relative rounded-lg p-2 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all focus-ring group"
+        className="relative rounded-lg p-1.5 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all focus-ring group"
         aria-label={`Notifications${unreadCount > 0 ? ` (${displayCount} unread)` : ""}`}
         title="Notifications"
       >
