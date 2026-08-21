@@ -46,4 +46,5 @@ next-env.d.ts
 .vscode/settings.json
 public/images/background*.mp4
 
+# CodeGraph local indexes
 .codegraph/
