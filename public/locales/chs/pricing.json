@@ -24,7 +24,7 @@
       "features": {
         "credits": "每月 5 额度",
         "rollover": "最多结转 10 额度",
-        "voices": "2 次自定义音色创建",
+        "voices": "2 个自定义音色",
         "video": "基础视频生成",
         "quality": "720p 画质",
         "storage": "标准项目存储"
@@ -43,7 +43,7 @@
       "features": {
         "credits": "每月 25 额度",
         "rollover": "最多结转 50 额度",
-        "voices": "5 次自定义音色创建",
+        "voices": "5 个自定义音色",
         "video": "高清视频生成（1080p）",
         "priority": "优先处理",
         "analytics": "高级数据分析",
@@ -62,7 +62,7 @@
       "features": {
         "credits": "每月 100 额度",
         "rollover": "无限结转",
-        "voices": "10 次自定义音色创建",
+        "voices": "10 个自定义音色",
         "quality": "4K 画质",
         "support": "优先支持",
         "ai": "高级 AI 功能",

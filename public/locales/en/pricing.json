@@ -24,7 +24,7 @@
       "features": {
         "credits": "5 credits per month",
         "rollover": "Rollover up to 10 credits",
-        "voices": "2 custom voice creations",
+        "voices": "2 custom voices",
         "video": "Basic video generation",
         "quality": "720p video quality",
         "storage": "Standard project storage"
@@ -43,7 +43,7 @@
       "features": {
         "credits": "25 credits per month",
         "rollover": "Rollover up to 50 credits",
-        "voices": "5 custom voice creations",
+        "voices": "5 custom voices",
         "video": "HD video generation (1080p)",
         "priority": "Priority processing",
         "analytics": "Advanced analytics",
@@ -62,7 +62,7 @@
       "features": {
         "credits": "100 credits per month",
         "rollover": "Unlimited rollover",
-        "voices": "10 custom voice creations",
+        "voices": "10 custom voices",
         "quality": "4K video quality",
         "support": "Priority support",
         "ai": "Advanced AI features",
