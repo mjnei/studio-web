@@ -62,6 +62,8 @@ Do not document SSE behavior in this repo. Canonical status for notifications SS
 
 **Implementation**: Custom i18n provider using client-side context and translation files in `public/locales/`
 
+**Translation principles** (for translators and new locales): **`docs/TRANSLATION_GUIDE.md`** — product UI phrasing over literal translation; locked glossary (onboarding, voices, credits, etc.).
+
 **Usage**:
 ```tsx
 import { useI18n } from "@/i18n";
