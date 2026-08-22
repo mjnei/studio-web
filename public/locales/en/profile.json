@@ -20,12 +20,6 @@
       "profileUpdatedSuccess": "Profile updated successfully.",
       "profileUpdatedError": "Failed to update profile"
     },
-    "personalInformation": {
-      "title": "Personal Information",
-      "description": "Manage your personal details",
-      "firstName": "First name",
-      "lastName": "Last name"
-    },
     "membershipBilling": {
       "title": "Membership & Billing",
       "description": "Manage your subscription and billing",

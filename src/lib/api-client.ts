@@ -233,8 +233,6 @@ export interface UserResponse {
   id: string;
   email: string;
   name: string;
-  given_name: string | null;
-  family_name: string | null;
   picture_url: string | null;
   locale: string | null;
   provider: string;
@@ -259,8 +257,6 @@ export async function getMe(): Promise<UserResponse> {
 
 export async function updateUser(data: {
   name?: string;
-  given_name?: string;
-  family_name?: string;
   picture_url?: string;
   locale?: string;
 }): Promise<UserResponse> {

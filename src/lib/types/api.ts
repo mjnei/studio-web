@@ -8,8 +8,6 @@ export interface UserResponse {
   id: string;
   email: string;
   name: string;
-  given_name: string | null;
-  family_name: string | null;
   picture_url: string | null;
   locale: string | null;
   provider: string;

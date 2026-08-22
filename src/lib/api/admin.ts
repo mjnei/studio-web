@@ -362,8 +362,6 @@ export interface UserSearchResult {
   id: number;
   email: string;
   name: string;
-  given_name: string | null;
-  family_name: string | null;
   picture_url: string | null;
   created_at: string | null;
 }

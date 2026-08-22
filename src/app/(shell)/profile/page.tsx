@@ -36,8 +36,6 @@ export default function ProfilePage() {
   const { user, refreshUser, logout, deleteUser } = useAuth();
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState("");
-  const [givenName, setGivenName] = useState("");
-  const [familyName, setFamilyName] = useState("");
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -55,8 +53,6 @@ export default function ProfilePage() {
     if (user) {
       /* eslint-disable react-hooks/set-state-in-effect */
       setName(user.name);
-      setGivenName(user.given_name || "");
-      setFamilyName(user.family_name || "");
       /* eslint-enable react-hooks/set-state-in-effect */
     }
   }, [user]);
@@ -65,7 +61,7 @@ export default function ProfilePage() {
     setProfileError("");
     setProfileSuccess(false);
     try {
-      await updateUser({ name, given_name: givenName, family_name: familyName });
+      await updateUser({ name });
       await refreshUser();
       setEditing(false);
       setProfileSuccess(true);
@@ -150,7 +146,7 @@ export default function ProfilePage() {
 
   if (!user) return null;
 
-  const initials = (user.given_name?.[0] || user.name?.[0] || user.email[0]).toUpperCase();
+  const initials = (user.name?.[0] || user.email[0]).toUpperCase();
 
   // Normalize membership_tier to handle null/undefined cases
   const membershipTier = user.membership_tier || "free";
@@ -304,8 +300,6 @@ export default function ProfilePage() {
                       onClick={() => {
                         setEditing(false);
                         setName(user.name);
-                        setGivenName(user.given_name || "");
-                        setFamilyName(user.family_name || "");
                       }}
                       className="w-full sm:w-auto"
                     >
@@ -346,32 +340,6 @@ export default function ProfilePage() {
                 <span>{t("profile.accountOverview.profileUpdatedSuccess")}</span>
               </div>
             )}
-          </CardContent>
-        </Card>
-
-        {/* Personal Information */}
-        <Card variant="elevated" padding="lg">
-          <CardHeader>
-            <CardTitle>{t("profile.personalInformation.title")}</CardTitle>
-            <CardDescription>{t("profile.personalInformation.description")}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Input
-                type="text"
-                value={givenName}
-                onChange={(e) => setGivenName(e.target.value)}
-                disabled={!editing}
-                label={t("profile.personalInformation.firstName")}
-              />
-              <Input
-                type="text"
-                value={familyName}
-                onChange={(e) => setFamilyName(e.target.value)}
-                disabled={!editing}
-                label={t("profile.personalInformation.lastName")}
-              />
-            </div>
           </CardContent>
         </Card>
 
