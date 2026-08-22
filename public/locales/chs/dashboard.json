@@ -1,48 +1,48 @@
 {
   "dashboard": {
-    "title": "仪表板",
-    "description": "欢迎回来！这是您的概览。",
+    "title": "工作台",
+    "description": "欢迎回来！这里是你的概览。",
     "stats": {
       "recentProjects": {
         "title": "最近项目",
-        "description": "活跃项目"
+        "description": "进行中的项目"
       },
       "movieLibrary": {
         "title": "电影库",
         "description": "可用电影"
       },
       "myVoices": {
-        "title": "我的声音",
-        "description": "语音配置文件"
+        "title": "我的音色",
+        "description": "已保存的音色"
       }
     },
     "welcomeBanner": {
       "title": "欢迎来到 Huavoi Studio！",
-      "message": "准备好创建您的第一个项目了吗？点击\"新建项目\"开始使用，让您的创意栩栩如生。",
-      "cta": "创建您的第一个项目",
+      "message": "准备好创建第一个项目了吗？点击「新建项目」开始，让创意落地成片。",
+      "cta": "创建第一个项目",
       "dismissAriaLabel": "关闭欢迎横幅"
     },
     "quickActions": {
-      "title": "快速操作",
-      "description": "从这些常见任务开始",
+      "title": "快捷操作",
+      "description": "从这些常用操作开始",
       "newProject": "新建项目",
       "browseMovies": "浏览电影",
-      "recordVoice": "录制声音"
+      "recordVoice": "录制音色"
     },
     "recentProjects": {
       "title": "最近项目",
-      "description": "您最新的作品",
+      "description": "你最新的作品",
       "viewAll": "全部"
     },
     "popularMovies": {
       "title": "热门电影",
-      "description": "开始您的下一个项目的趋势电影",
+      "description": "热门片源，开启下一个项目",
       "exploreAll": "浏览全部"
     },
     "empty": {
       "title": "欢迎来到 Huavoi Studio",
-      "message": "通过创建新项目开始查看您的活动。",
-      "cta": "创建您的第一个项目"
+      "message": "先创建一个项目，活动动态会显示在这里。",
+      "cta": "创建第一个项目"
     }
   }
 }

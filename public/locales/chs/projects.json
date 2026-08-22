@@ -1,32 +1,32 @@
 {
   "projects": {
     "title": "项目",
-    "description": "创建和管理您的视频项目",
+    "description": "创建和管理你的视频项目",
     "badge": {
       "singular": "个项目",
       "plural": "个项目"
     },
-    "new": "新项目",
+    "new": "新建项目",
     "layout": {
       "small": "小网格（最多 4 列）",
-      "medium": "中等网格（2-3 列）",
+      "medium": "中等网格（2–3 列）",
       "list": "列表视图"
     },
     "empty": {
       "title": "还没有项目",
-      "message": "创建您的第一个项目开始吧",
-      "cta": "创建您的第一个项目"
+      "message": "创建第一个项目开始吧",
+      "cta": "创建第一个项目"
     },
     "delete": {
       "title": "删除项目？",
-      "confirm": "您即将删除项目：",
-      "restoreInfo": "该项目可在接下来的 7 天内恢复。",
-      "success": "项目已成功删除",
+      "confirm": "即将删除项目：",
+      "restoreInfo": "该项目可在 7 天内恢复。",
+      "success": "项目已删除",
       "error": "删除项目失败"
     },
     "loading": "正在加载项目...",
-    "loadingDescription": "请稍候，正在获取您的项目",
-    "untitled": "无标题项目",
+    "loadingDescription": "请稍候，正在获取你的项目",
+    "untitled": "未命名项目",
     "loadError": "加载项目失败",
     "loadErrorDescription": "无法加载项目"
   }

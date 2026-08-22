@@ -33,16 +33,16 @@
     "required": "必填",
     "pleaseTryAgain": "请重试",
     "closeNotification": "关闭通知",
-    "closeModal": "关闭对话框",
+    "closeModal": "关闭弹窗",
     "noOptionsFound": "未找到选项",
     "searchEllipsis": "搜索...",
     "previousPage": "上一页",
     "nextPage": "下一页",
-    "selectOption": "选择一个选项",
-    "selectOptions": "选择选项",
+    "selectOption": "请选择",
+    "selectOptions": "请选择",
     "pageOf": "第 {current} 页，共 {total} 页",
     "totalItems": "共 {count} 项",
     "ok": "确定",
-    "anErrorOccurred": "发生错误"
+    "anErrorOccurred": "出错了"
   }
 }

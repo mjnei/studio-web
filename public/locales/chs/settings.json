@@ -1,62 +1,62 @@
 {
   "settings": {
     "title": "设置",
-    "description": "自定义您的体验并管理偏好设置",
+    "description": "自定义体验并管理偏好",
     "saveChanges": "保存更改",
     "saved": "已保存",
     "notifications": {
       "title": "通知",
-      "description": "管理通知偏好设置"
+      "description": "管理通知偏好"
     },
     "projectDefaults": {
       "title": "项目默认值",
-      "description": "为新项目预填充这些值",
-      "defaultVoice": "默认声音",
+      "description": "新建项目时预填这些选项",
+      "defaultVoice": "默认音色",
       "voiceNone": "无",
-      "voiceA": "声音 A",
-      "voiceB": "声音 B",
+      "voiceA": "音色 A",
+      "voiceB": "音色 B",
       "resolution": "分辨率",
       "resolution720p": "720p",
-      "resolution1080p": "1080p (推荐)",
+      "resolution1080p": "1080p（推荐）",
       "resolution4k": "4K",
       "frameRate": "帧率",
-      "fps24": "24 fps (电影效果)",
-      "fps30": "30 fps (标准)",
-      "fps60": "60 fps (流畅)",
+      "fps24": "24 fps（电影感）",
+      "fps30": "30 fps（标准）",
+      "fps60": "60 fps（流畅）",
       "exportFormat": "导出格式",
-      "exportMp4": "MP4 (推荐)",
+      "exportMp4": "MP4（推荐）",
       "exportWebm": "WebM",
       "exportMov": "MOV"
     },
     "appearance": {
       "title": "外观",
-      "description": "根据您的偏好自定义界面",
+      "description": "按喜好自定义界面",
       "compactMode": "紧凑模式",
-      "compactModeDesc": "减少间距并使用较小的缩略图",
+      "compactModeDesc": "减小间距并使用更小的缩略图",
       "autoPlayPreviews": "自动播放预览",
-      "autoPlayPreviewsDesc": "自动播放剪辑和语音预览",
+      "autoPlayPreviewsDesc": "自动播放片段和音色预览",
       "waveformAnimations": "波形动画",
-      "waveformAnimationsDesc": "播放时动画显示音频波形"
+      "waveformAnimationsDesc": "播放时显示音频波形动画"
     },
     "dataPrivacy": {
-      "title": "数据和隐私",
-      "description": "管理您的数据和隐私偏好设置",
+      "title": "数据与隐私",
+      "description": "管理数据与隐私偏好",
       "usageAnalytics": "使用分析",
-      "usageAnalyticsDesc": "通过共享匿名数据帮助我们改进",
+      "usageAnalyticsDesc": "分享匿名数据，帮助我们改进产品",
       "exportMyData": "导出我的数据",
-      "exportMyDataDesc": "下载所有您的项目和账户信息",
-      "requestExport": "请求导出"
+      "exportMyDataDesc": "下载全部项目与账户信息",
+      "requestExport": "申请导出"
     }
   },
   "notificationSettings": {
     "title": "通知设置",
-    "description": "管理您接收通知的方式",
+    "description": "管理接收通知的方式",
     "backToSettings": "返回设置",
     "inApp": "应用内",
-    "preferencesHeader": "通知偏好设置",
-    "savePreferences": "保存偏好设置",
+    "preferencesHeader": "通知偏好",
+    "savePreferences": "保存偏好",
     "saving": "保存中...",
-    "preferencesSaved": "偏好设置已保存!",
+    "preferencesSaved": "偏好已保存！",
     "categories": {
       "videoJobs": "视频任务",
       "account": "账户",
@@ -65,31 +65,31 @@
     "types": {
       "videoJobQueued": {
         "title": "视频任务已排队",
-        "description": "当您的视频生成任务被排队进行处理时"
+        "description": "视频生成任务进入处理队列时"
       },
       "videoJobCompleted": {
         "title": "视频任务已完成",
-        "description": "当您的视频生成成功完成时"
+        "description": "视频生成成功完成时"
       },
       "videoJobFailed": {
         "title": "视频任务失败",
-        "description": "当您的视频生成遇到错误时"
+        "description": "视频生成出错时"
       },
       "lowCredits": {
-        "title": "信用额度不足警告",
-        "description": "当您的信用额度余额不足时（低于 100 个信用点）"
+        "title": "额度不足提醒",
+        "description": "额度余额偏低时（低于 100）"
       },
       "creditTransaction": {
-        "title": "信用交易",
-        "description": "当信用点被添加到账户或从账户中扣除时"
+        "title": "额度变动",
+        "description": "账户增加或扣除额度时"
       },
       "projectDeleted": {
         "title": "项目已删除",
-        "description": "当您的一个项目被删除时"
+        "description": "有项目被删除时"
       },
       "projectPublished": {
         "title": "项目已发布",
-        "description": "当您的项目成功发布时"
+        "description": "项目成功发布时"
       }
     }
   }

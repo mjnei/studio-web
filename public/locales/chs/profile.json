@@ -1,40 +1,40 @@
 {
   "profile": {
-    "title": "个人资料设置",
-    "description": "管理您的账户设置和偏好设置",
+    "title": "个人中心",
+    "description": "管理账户设置与偏好",
     "upgradeBanner": {
-      "title": "使用 Pro 或 Premium 解锁更多功能",
-      "description": "获得更多积分、优先支持和高级功能来创建更多视频。",
-      "viewPlans": "查看计划",
+      "title": "升级 Pro 或 Premium，解锁更多功能",
+      "description": "获得更多额度、优先支持与高级功能，创作更多视频。",
+      "viewPlans": "查看套餐",
       "billing": "账单"
     },
     "accountOverview": {
       "title": "账户概览",
-      "description": "您的个人信息和账户状态",
+      "description": "你的个人信息与账户状态",
       "displayName": "显示名称",
-      "autoCapitalizeWords": "将每个单词的首字母转为大写",
+      "autoCapitalizeWords": "自动将每个单词首字母大写",
       "edit": "编辑",
       "cancel": "取消",
       "save": "保存",
-      "copyEmail": "复制电子邮件地址",
-      "emailCopied": "已复制电子邮件",
-      "profileUpdatedSuccess": "个人资料更新成功。",
-      "profileUpdatedError": "更新个人资料失败"
+      "copyEmail": "复制邮箱地址",
+      "emailCopied": "邮箱已复制",
+      "profileUpdatedSuccess": "资料已更新。",
+      "profileUpdatedError": "更新资料失败"
     },
     "membershipBilling": {
-      "title": "会员和账单",
-      "description": "管理您的订阅和账单",
-      "currentPlan": "当前计划",
-      "upgradePlan": "升级计划",
-      "viewAllPlans": "查看所有计划",
+      "title": "会员与账单",
+      "description": "管理订阅与账单",
+      "currentPlan": "当前套餐",
+      "upgradePlan": "升级套餐",
+      "viewAllPlans": "查看全部套餐",
       "manageBilling": "管理账单",
-      "activeSince": "激活于:",
-      "expiresOn": "过期时间:",
-      "renewsOn": "续订时间:",
+      "activeSince": "生效于：",
+      "expiresOn": "到期时间：",
+      "renewsOn": "续订时间：",
       "subscriptionStatus": {
-        "active": "活跃",
+        "active": "生效中",
         "canceled": "已取消",
-        "inactive": "不活跃",
+        "inactive": "未生效",
         "expired": "已过期"
       },
       "tiers": {
@@ -44,48 +44,48 @@
       }
     },
     "passwordSecurity": {
-      "title": "密码和安全",
-      "description": "管理您的密码和安全设置",
-      "changePassword": "更改密码",
+      "title": "密码与安全",
+      "description": "管理密码与安全设置",
+      "changePassword": "修改密码",
       "setPassword": "设置密码",
       "currentPassword": "当前密码",
       "newPassword": "新密码",
       "confirmNewPassword": "确认新密码",
       "updatePassword": "更新密码",
       "passwordError": {
-        "mismatch": "密码不匹配",
-        "tooShort": "密码必须至少为 8 个字符",
-        "tooLong": "密码最多为 128 个字符"
+        "mismatch": "两次密码不一致",
+        "tooShort": "密码至少需要 8 个字符",
+        "tooLong": "密码最多 128 个字符"
       },
-      "passwordUpdatedSuccess": "密码更新成功。",
-      "passwordUpdatedError": "更改密码失败"
+      "passwordUpdatedSuccess": "密码已更新。",
+      "passwordUpdatedError": "修改密码失败"
     },
     "connectedAccounts": {
       "title": "关联账户",
-      "description": "管理您的关联账户",
+      "description": "管理已关联的登录方式",
       "google": "Google",
-      "connected": "已连接",
-      "notConnected": "未连接",
+      "connected": "已关联",
+      "notConnected": "未关联",
       "primaryAccount": "主账户"
     },
     "onboarding": {
-      "title": "入职",
-      "description": "管理您的会话和入职状态",
-      "signOut": "登出",
+      "title": "新手引导",
+      "description": "管理登录会话与新手引导状态",
+      "signOut": "退出登录",
       "signOutDescription": "结束此设备上的当前会话",
-      "resetOnboarding": "重置入职",
-      "resetOnboardingDescription": "密码:",
+      "resetOnboarding": "重置新手引导",
+      "resetOnboardingDescription": "密码：",
       "passwordAlreadySet": "已设置",
       "passwordNotSet": "未设置",
       "reset": "重置",
       "resetting": "重置中..."
     },
     "dangerZone": {
-      "title": "危险区域",
+      "title": "危险操作",
       "description": "永久删除账户",
-      "deleteAccountWarning": "永久删除您的账户和所有关联数据 — 项目、语音、渲染和推荐历史。此操作无法撤销。",
+      "deleteAccountWarning": "将永久删除你的账户及所有相关数据——项目、音色、渲染记录和推荐历史。此操作无法撤销。",
       "deleteAccount": "删除账户",
-      "confirmDelete": "输入 delete my account 确认:",
+      "confirmDelete": "请输入 delete my account 以确认：",
       "deleteAccountPlaceholder": "delete my account",
       "permanentlyDeleteAccount": "永久删除账户",
       "deleteAccountConfirmCancel": "取消"

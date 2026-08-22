@@ -2,42 +2,42 @@
   "onboarding": {
     "welcome": {
       "title": "欢迎使用 Huavoi Studio",
-      "subtitle": "通过 AI 创意将您的想法转化为精美视频。专业级效果，用时以分钟计，而非小时。",
+      "subtitle": "用 AI 把想法做成精美视频。专业效果，几分钟搞定，不用熬几小时。",
       "features": {
         "templates": "专业模板",
-        "aiTools": "AI 驱动工具",
+        "aiTools": "AI 创作工具",
         "publishing": "一键发布"
       },
-      "getStarted": "开始使用",
-      "subtext": "只需不到 2 分钟即可完成",
-      "getStartedAria": "开始引导流程"
+      "getStarted": "开始体验",
+      "subtext": "不到 2 分钟即可完成",
+      "getStartedAria": "开始新手引导"
     },
     "progress": {
       "stepOf": "第 {current} 步，共 {total} 步",
       "ariaLabel": "第 {current} 步，共 {total} 步"
     },
     "workflow": {
-      "title": "您的视频创作之旅",
-      "subtitle": "4 个简单步骤即可创建精美视频",
+      "title": "你的视频创作流程",
+      "subtitle": "4 个简单步骤，做出精美视频",
       "steps": {
         "source": {
-          "title": "素材",
+          "title": "片源",
           "description": "从电影库中选择"
         },
         "script": {
           "title": "脚本",
-          "description": "AI 生成视频脚本"
+          "description": "AI 生成旁白脚本"
         },
         "voice": {
           "title": "配音",
-          "description": "AI 文本转语音"
+          "description": "AI 语音合成"
         },
         "compose": {
           "title": "合成",
-          "description": "创建最终视频"
+          "description": "生成最终视频"
         }
       },
-      "info": "随时在步骤之间切换。按照自己的节奏工作——您的进度会自动保存。",
+      "info": "可随时切换步骤，按自己的节奏创作——进度会自动保存。",
       "back": "返回",
       "continue": "继续",
       "step": "第 {number} 步",
@@ -45,58 +45,58 @@
       "continueTakeStep": "继续下一步"
     },
     "password": {
-      "title": "设置替代登录方式",
-      "titleUpdate": "更新您的密码",
-      "subtitle": "您已通过 Google 登录。要添加邮箱登录的密码吗？",
-      "subtitleUpdate": "您已设置密码。如果需要，您可以在此处更新密码。",
-      "securityHint": "即使 Google 不可用，也能访问您的账户",
-      "alreadyConfigured": "密码已配置",
+      "title": "设置备用登录方式",
+      "titleUpdate": "更新密码",
+      "subtitle": "你已通过 Google 登录。要不要再设置邮箱密码，方便以后登录？",
+      "subtitleUpdate": "你已设置过密码。如需更换，可在此更新。",
+      "securityHint": "即使 Google 不可用，也能登录账户",
+      "alreadyConfigured": "密码已设置",
       "password": "密码",
       "confirmPassword": "确认密码",
       "passwordLabel": "密码",
       "confirmPasswordLabel": "确认密码",
-      "passwordPlaceholder": "输入密码（最少 8 个字符）",
-      "confirmPasswordPlaceholder": "确认密码",
+      "passwordPlaceholder": "输入密码（至少 8 位）",
+      "confirmPasswordPlaceholder": "再次输入密码",
       "showPassword": "显示密码",
       "hidePassword": "隐藏密码",
       "showConfirmPassword": "显示确认密码",
       "hideConfirmPassword": "隐藏确认密码",
       "strength": "密码强度",
       "strengthWeak": "弱",
-      "strengthFair": "中等",
-      "strengthGood": "良好",
+      "strengthFair": "一般",
+      "strengthGood": "较好",
       "strengthStrong": "强",
-      "match": "密码匹配",
-      "noMatch": "密码不匹配",
+      "match": "两次密码一致",
+      "noMatch": "两次密码不一致",
       "validation": {
         "tooShort": "密码至少需要 8 个字符",
-        "mismatch": "密码不匹配"
+        "mismatch": "两次密码不一致"
       },
       "setPassword": "设置密码",
       "updating": "更新中...",
-      "settingPassword": "设置密码中...",
+      "settingPassword": "设置中...",
       "alreadySet": "密码已设置",
       "skipForNow": "暂时跳过",
       "back": "返回",
       "goBack": "返回上一步",
       "skipPassword": "跳过密码设置",
-      "error": "设置密码失败。请重试。",
-      "errorUpdate": "更新密码失败。请重试。"
+      "error": "设置密码失败，请重试。",
+      "errorUpdate": "更新密码失败，请重试。"
     },
     "completion": {
-      "loading": "正在设置您的账户",
-      "loadingSubtext": "这只需要一会儿...",
-      "loadingAriaLabel": "正在完成入职流程",
+      "loading": "正在设置你的账户",
+      "loadingSubtext": "马上就好...",
+      "loadingAriaLabel": "正在完成新手引导",
       "success": "一切就绪！",
-      "successSubtext": "您的账户已准备好。让我们一起开始创建精美视频吧。",
+      "successSubtext": "账户已准备好。一起来创作精美视频吧。",
       "features": {
-        "create": "创建",
+        "create": "创作",
         "design": "设计",
         "publish": "发布"
       },
-      "goToDashboard": "转到仪表板",
-      "redirect": "将在 {seconds} 秒后重定向{plural}...",
-      "error": "出错了",
+      "goToDashboard": "进入工作台",
+      "redirect": "将在 {seconds} 秒后自动跳转...",
+      "error": "出了点问题",
       "tryAgain": "重试",
       "completionAriaLabel": "完成状态"
     }
