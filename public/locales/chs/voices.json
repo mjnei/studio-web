@@ -1,123 +1,123 @@
 {
   "voices": {
-    "title": "语音",
-    "voiceLibrary": "语音库",
-    "myVoices": "我的语音",
-    "selectVoice": "选择语音",
-    "previewVoice": "预览语音",
+    "title": "音色",
+    "voiceLibrary": "音色库",
+    "myVoices": "我的音色",
+    "selectVoice": "选择音色",
+    "previewVoice": "试听音色",
     "male": "男声",
     "female": "女声",
     "language": "语言",
     "accent": "口音",
     "age": "年龄",
     "style": "风格",
-    "voiceCloning": "声音克隆",
+    "voiceCloning": "音色克隆",
     "uploadSample": "上传样本",
-    "voiceSettings": "语音设置",
+    "voiceSettings": "音色设置",
     "pitch": "音调",
     "speed": "语速",
     "volume": "音量",
-    "noVoices": "暂无可用语音",
+    "noVoices": "暂无可用音色",
     "library": {
-      "title": "语音库",
-      "description": "创建自定义语音并发现社区共享的语音用于您的项目"
+      "title": "音色库",
+      "description": "创建自定义音色，并发现社区分享的音色用于你的项目"
     },
     "tabs": {
-      "private": "私人",
+      "private": "私有",
       "community": "社区"
     },
-    "voiceCount": "{count} / {limit} 个语音",
-    "sharedVoices": "{count} 个共享{count, plural, one {语音} other {语音}}",
-    "addVoice": "添加语音",
+    "voiceCount": "{count} / {limit} 个音色",
+    "sharedVoices": "{count} 个共享音色",
+    "addVoice": "添加音色",
     "status": {
       "pendingReview": "待审核",
-      "private": "私人",
-      "approved": "已批准"
+      "private": "私有",
+      "approved": "已通过"
     },
     "metadata": {
       "createdBy": "@{username}",
-      "you": "（您）",
+      "you": "（你）",
       "justNow": "刚刚",
-      "minutesAgo": "{count}分钟前",
-      "hoursAgo": "{count}小时前",
-      "daysAgo": "{count}天前",
-      "weeksAgo": "{count}周前",
-      "monthsAgo": "{count}月前",
-      "yearsAgo": "{count}年前"
+      "minutesAgo": "{count} 分钟前",
+      "hoursAgo": "{count} 小时前",
+      "daysAgo": "{count} 天前",
+      "weeksAgo": "{count} 周前",
+      "monthsAgo": "{count} 个月前",
+      "yearsAgo": "{count} 年前"
     },
     "playback": {
       "play": "播放",
       "pause": "暂停",
       "loading": "加载中...",
       "audioUnavailable": "音频不可用",
-      "audioUrlNotAvailable": "音频 URL 不可用",
+      "audioUrlNotAvailable": "音频地址不可用",
       "playbackFailed": "播放失败",
       "failedToPlayAudio": "播放音频失败",
       "failedToLoadAudio": "加载音频失败"
     },
     "actions": {
       "shareWithCommunity": "分享到社区",
-      "makePrivate": "设为私人",
-      "deleteVoice": "删除语音",
+      "makePrivate": "设为私有",
+      "deleteVoice": "删除音色",
       "delete": "删除"
     },
     "modals": {
       "delete": {
-        "title": "删除语音",
-        "description": "您确定要删除此语音吗？此操作无法撤销，该语音将从您的所有项目中删除。",
+        "title": "删除音色",
+        "description": "确定要删除此音色吗？此操作无法撤销，该音色将从你的所有项目中移除。",
         "confirmText": "删除",
         "cancelText": "取消"
       },
       "share": {
-        "title": "将语音分享到社区",
-        "description": "您的语音将提交进行管理员审核。审核通过后，它将对所有用户可用，不会占用您的语音限制。这有助于建立我们的社区库！",
+        "title": "将音色分享到社区",
+        "description": "音色将提交管理员审核。通过后对所有用户可用，且不占用你的音色上限。一起丰富社区库吧！",
         "confirmText": "提交审核",
         "cancelText": "取消"
       },
       "unshare": {
-        "title": "设为私人",
-        "description": "您的语音将被撤回审核并设为私人。它将仅供您访问，并将占用您的语音限制。",
-        "confirmText": "设为私人",
+        "title": "设为私有",
+        "description": "音色将撤回审核并改回私有。仅你可使用，并会计入音色上限。",
+        "confirmText": "设为私有",
         "cancelText": "取消"
       }
     },
     "banners": {
       "privateInfo": {
-        "title": "私人语音",
-        "description": "您的私人语音录音。将它们分享到社区进行管理员审核。审核通过后，它们将出现在社区选项卡中，不会占用您的语音限制。"
+        "title": "私有音色",
+        "description": "你的私有录音。可分享到社区等待审核；通过后会出现在「社区」页，且不占用音色上限。"
       },
       "communityInfo": {
-        "title": "社区语音",
-        "description": "社区分享的已批准语音。此处的所有语音都可以免费在您的项目中使用。您批准的语音会显示在此处，不会占用您的语音限制。"
+        "title": "社区音色",
+        "description": "社区已通过的分享音色，可免费用于项目。你通过审核的音色也会显示在此，且不占用上限。"
       }
     },
     "emptyStates": {
       "private": {
-        "title": "无私人语音",
-        "description": "首先录制一个语音样本。您的语音将被克隆并准备在您的项目中使用。将它们与社区分享以获得额外的语音槽位！",
-        "cta": "录制您的第一个语音"
+        "title": "暂无私有音色",
+        "description": "先录制一段样本。音色会被克隆并可用于项目。分享到社区还能获得额外音色位！",
+        "cta": "录制第一个音色"
       },
       "community": {
-        "title": "暂无社区语音",
-        "description": "一旦用户分享他们的语音并被我们的团队批准，社区语音将显示在这里。成为第一个贡献者！"
+        "title": "暂无社区音色",
+        "description": "用户分享并经团队审核通过后，社区音色会出现在这里。来当第一个贡献者吧！"
       }
     },
     "addVoiceCard": {
-      "title": "添加新语音",
-      "slotsRemaining": "剩余 {count} 个{count, plural, one {槽位} other {槽位}}",
-      "limitReached": "已达到语音限制"
+      "title": "添加新音色",
+      "slotsRemaining": "还可添加 {count} 个",
+      "limitReached": "已达音色上限"
     },
     "toasts": {
-      "voiceShared": "语音已分享",
-      "voiceShareedDescription": "您的语音已提交进行审核",
-      "voiceSharedError": "分享语音失败",
-      "voiceMadePrivate": "语音已设为私人",
-      "voiceMadePrivateDescription": "您的语音不再被分享",
-      "voiceMadePrivateError": "设为私人失败",
-      "voiceDeleted": "语音已删除",
-      "voiceDeletedDescription": "您的语音已成功删除",
-      "voiceDeletedError": "删除语音失败",
-      "anErrorOccurred": "发生错误"
+      "voiceShared": "音色已分享",
+      "voiceShareedDescription": "音色已提交审核",
+      "voiceSharedError": "分享音色失败",
+      "voiceMadePrivate": "音色已设为私有",
+      "voiceMadePrivateDescription": "该音色不再对外分享",
+      "voiceMadePrivateError": "设为私有失败",
+      "voiceDeleted": "音色已删除",
+      "voiceDeletedDescription": "音色已成功删除",
+      "voiceDeletedError": "删除音色失败",
+      "anErrorOccurred": "出错了"
     },
     "languages": {
       "en": "英语",
@@ -136,35 +136,35 @@
       "hi": "印地语"
     },
     "errors": {
-      "loadingVoices": "正在加载您的语音...",
-      "loadingCommunityVoices": "正在加载社区语音..."
+      "loadingVoices": "正在加载你的音色...",
+      "loadingCommunityVoices": "正在加载社区音色..."
     },
     "limitDialog": {
-      "limitReachedTitle": "已达到语音限制",
-      "upgradeTitle": "升级以添加更多语音",
-      "message": "您已创建 {current} 个语音，{tier} 计划最多允许 {limit} 个。",
+      "limitReachedTitle": "已达音色上限",
+      "upgradeTitle": "升级以添加更多音色",
+      "message": "你已创建 {current} 个音色，{tier} 套餐最多允许 {limit} 个。",
       "closeButton": "关闭",
       "upgradeButton": "立即升级",
-      "freePlanTitle": "免费",
+      "freePlanTitle": "免费版",
       "proPlanTitle": "专业版",
       "premiumPlanTitle": "高级版",
-      "proUpgradeTitle": "专业版计划",
-      "proUpgradeDescription": "最多创建 5 个自定义语音",
-      "premiumUpgradeTitle": "高级版计划",
-      "premiumUpgradeDescription": "最多创建 10 个自定义语音",
-      "premiumTip": "提示：您可以删除未使用的语音以腾出空间来录制新语音。"
+      "proUpgradeTitle": "专业版",
+      "proUpgradeDescription": "最多创建 5 个自定义音色",
+      "premiumUpgradeTitle": "高级版",
+      "premiumUpgradeDescription": "最多创建 10 个自定义音色",
+      "premiumTip": "提示：可删除不用的音色，腾出位置录制新音色。"
     },
     "recording": {
-      "title": "录制语音",
+      "title": "录制音色",
       "requestingAccess": "正在请求麦克风权限…",
       "readyTitle": "准备录制",
-      "readyHint": "录制 30–60 秒清晰语音",
+      "readyHint": "录制 30–60 秒清晰人声",
       "startRecording": "开始录制",
       "stopRecording": "停止录制",
       "maxDuration": "最长 {time}",
       "ofMax": "共 {time}",
       "recordingTap": "录制中…点击停止",
-      "maxReached": "已达最大时长，录制已自动停止。",
+      "maxReached": "已达最长时长，录制已自动停止。",
       "completeTitle": "录制完成！",
       "completeHint": "{time} • 点击播放试听",
       "play": "播放",
@@ -172,27 +172,27 @@
       "seek": "定位",
       "reRecord": "重新录制",
       "continue": "继续",
-      "nameTitle": "命名您的语音",
-      "nameSubtitle": "选择一个好记的名称和语言",
-      "voiceName": "语音名称 *",
+      "nameTitle": "为音色命名",
+      "nameSubtitle": "起一个好记的名字，并选择语言",
+      "voiceName": "音色名称 *",
       "namePlaceholder": "例如：专业旁白",
-      "nameRequired": "请输入语音名称",
-      "generateRandom": "生成随机名称",
+      "nameRequired": "请输入音色名称",
+      "generateRandom": "随机生成名称",
       "language": "语言 *",
       "languageRequired": "请选择语言",
       "back": "返回",
       "saving": "保存中...",
-      "saveVoice": "保存语音",
-      "httpsTip": "提示：请尝试通过 localhost:3020 访问应用，而不是 IP 地址。",
+      "saveVoice": "保存音色",
+      "httpsTip": "提示：请尽量通过 localhost:3020 访问，而不是 IP 地址。",
       "errors": {
         "playbackFailed": "播放失败，请重新录制样本。",
-        "browserUnsupported": "您的浏览器不支持音频录制。",
+        "browserUnsupported": "当前浏览器不支持音频录制。",
         "recordingFailed": "录制失败，请重试。",
         "startFailed": "无法开始录制，请检查麦克风后重试。",
-        "permissionDenied": "麦克风权限被拒绝。请在浏览器设置中允许麦克风权限后重试。",
-        "notFound": "未找到麦克风。请连接麦克风后重试。",
-        "inUse": "麦克风正被其他应用占用。请关闭占用麦克风的应用后重试。",
-        "securityBlocked": "浏览器安全设置阻止了麦克风访问。请使用 HTTPS 或 localhost。",
+        "permissionDenied": "麦克风权限被拒绝。请在浏览器设置中允许后重试。",
+        "notFound": "未找到麦克风。请连接后重试。",
+        "inUse": "麦克风正被其他应用占用。请关闭后重试。",
+        "securityBlocked": "浏览器安全策略阻止了麦克风访问。请使用 HTTPS 或 localhost。",
         "saveFailed": "保存录制失败"
       }
     },
@@ -201,17 +201,17 @@
       "private": "私有",
       "pendingApproval": "待审核",
       "community": "社区",
-      "approvedOn": "已批准 {date}",
+      "approvedOn": "已通过 {date}",
       "deleteRecording": "删除录制",
       "deleteTitle": "删除录制",
       "deleteDescription": "确定要删除「{name}」吗？此操作无法撤销。",
       "stopSharing": "停止分享（设为私有）",
       "shareCommunity": "分享到社区",
-      "errorTitle": "错误",
+      "errorTitle": "出错了",
       "deleteFailed": "删除录制失败",
       "updateSharingFailed": "更新分享状态失败",
       "audioUrlUnavailable": "音频地址不可用",
-      "playFailed": "播放音频失败，文件可能不可用。",
+      "playFailed": "播放失败，文件可能不可用。",
       "loadFailed": "加载音频失败"
     }
   }

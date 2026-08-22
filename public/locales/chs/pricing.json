@@ -1,16 +1,16 @@
 {
   "pricing": {
-    "title": "简洁透明的价格",
-    "description": "1 个额度 = 1 次视频生成。选择适合您需求的计划。",
-    "badge": "特别推出价格",
+    "title": "价格透明，简单清晰",
+    "description": "1 额度 = 1 次视频生成。选择适合你的套餐。",
+    "badge": "限时上线优惠",
     "billingToggle": {
-      "monthly": "月度",
-      "annual": "年度",
-      "savings": "节省 20%"
+      "monthly": "按月",
+      "annual": "按年",
+      "savings": "省 20%"
     },
     "free": {
-      "name": "免费",
-      "description": "开始基本视频生成",
+      "name": "免费版",
+      "description": "从基础视频生成开始",
       "price": {
         "monthly": "$0",
         "annual": "$0",
@@ -18,22 +18,22 @@
         "billedMonthly": "按月计费时"
       },
       "credits": "额度/月",
-      "rollover": "结转:",
-      "rolloverAmount": "10 个额度",
+      "rollover": "可结转：",
+      "rolloverAmount": "10 额度",
       "features": [
-        "每月 5 个额度",
-        "结转最多 10 个额度",
-        "2 次自定义语音创建",
-        "基本视频生成",
-        "720p 视频质量",
+        "每月 5 额度",
+        "最多结转 10 额度",
+        "2 次自定义音色创建",
+        "基础视频生成",
+        "720p 画质",
         "标准项目存储"
       ],
       "whatsIncluded": "包含内容",
-      "button": "当前计划"
+      "button": "当前套餐"
     },
     "pro": {
       "name": "专业版",
-      "description": "为需要更多容量的创作者设计",
+      "description": "适合需要更大容量的创作者",
       "price": {
         "monthly": "$49/月",
         "annual": "$39/月",
@@ -41,14 +41,14 @@
         "billedMonthly": "按月计费时"
       },
       "credits": "额度/月",
-      "rollover": "结转:",
-      "rolloverAmount": "50 个额度",
+      "rollover": "可结转：",
+      "rolloverAmount": "50 额度",
       "badge": "最受欢迎",
       "features": [
-        "每月 25 个额度",
-        "结转最多 50 个额度",
-        "5 次自定义语音创建",
-        "HD 视频生成 (1080p)",
+        "每月 25 额度",
+        "最多结转 50 额度",
+        "5 次自定义音色创建",
+        "高清视频生成（1080p）",
         "优先处理",
         "高级分析",
         "导出自定义"
@@ -58,7 +58,7 @@
     },
     "premium": {
       "name": "高级版",
-      "description": "为专业人士提供的无限容量",
+      "description": "为专业人士提供更大容量",
       "price": {
         "monthly": "$199/月",
         "annual": "$159/月",
@@ -66,13 +66,13 @@
         "billedMonthly": "按月计费时"
       },
       "credits": "额度/月",
-      "rollover": "结转:",
-      "rolloverAmount": "无限",
+      "rollover": "可结转：",
+      "rolloverAmount": "不限",
       "features": [
-        "每月 100 个额度",
+        "每月 100 额度",
         "无限结转",
-        "10 次自定义语音创建",
-        "4K 视频质量",
+        "10 次自定义音色创建",
+        "4K 画质",
         "优先支持",
         "高级 AI 功能",
         "团队协作",
@@ -84,15 +84,15 @@
     },
     "faq": {
       "title": "常见问题",
-      "creditQuestion": "什么是额度，如何使用？",
-      "creditAnswer": "额度用于生成一个视频。每次视频生成消耗 1 个额度，无论视频长度或复杂性如何。失败的生成会自动退款。",
-      "rolloverQuestion": "额度结转如何工作？",
-      "rolloverAnswer": "未使用的额度结转到下个月，最多可达您计划的最大结转限制（免费版：10，专业版：50，高级版：无限）。6 个月未活动后，额度过期。",
-      "changeQuestion": "我可以更改或取消我的计划吗？",
-      "changeAnswer": "可以，您可以随时升级、降级或取消您的计划。降级时，您可以继续访问当前计划功能，直到计费周期结束。",
-      "teamQuestion": "您提供团队计划吗？",
-      "teamAnswer": "具有共享额度和协作功能的团队计划可供高级版订阅者使用。请联系我们了解自定义定价。"
+      "creditQuestion": "什么是额度？怎么用？",
+      "creditAnswer": "额度用于生成视频。每次视频生成消耗 1 额度，与时长或复杂度无关。失败的生成会自动退还额度。",
+      "rolloverQuestion": "额度结转怎么算？",
+      "rolloverAnswer": "未使用的额度可结转到下个月，上限取决于套餐（免费版：10，专业版：50，高级版：不限）。连续 6 个月未使用后，额度过期。",
+      "changeQuestion": "可以更改或取消套餐吗？",
+      "changeAnswer": "可以。你可随时升级、降级或取消。降级后，当前计费周期结束前仍可使用原套餐权益。",
+      "teamQuestion": "有团队套餐吗？",
+      "teamAnswer": "高级版订阅者可使用共享额度与协作功能的团队方案。如需定制报价，请联系我们。"
     },
-    "subscribeComingSoon": "正在订阅 {tier} 计划...（支付集成即将推出）"
+    "subscribeComingSoon": "正在订阅 {tier} 套餐...（支付功能即将上线）"
   }
 }

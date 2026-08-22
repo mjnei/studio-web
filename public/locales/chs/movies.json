@@ -14,7 +14,7 @@
     },
     "empty": {
       "title": "未找到电影",
-      "searchHint": "请尝试调整搜索关键词",
+      "searchHint": "试试换个搜索关键词",
       "catalogEmpty": "片库中暂无电影"
     },
     "director": "导演",
@@ -28,7 +28,7 @@
       "loadFailed": "加载电影详情失败",
       "createProject": "创建项目",
       "buttonLoading": "加载中...",
-      "statistics": "统计数据",
+      "statistics": "数据统计",
       "rating": "评分",
       "popularity": "热度",
       "externalIds": "外部 ID",
