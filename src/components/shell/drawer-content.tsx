@@ -198,9 +198,7 @@ function LogoMark({ collapsed }: { collapsed?: boolean }) {
 function UserSection({ collapsed, onNavigate }: { collapsed?: boolean; onNavigate?: () => void }) {
   const { user, logout } = useAuth();
   const { t } = useI18n();
-  const initials = user
-    ? (user.name?.[0] || user.email[0]).toUpperCase()
-    : "U";
+  const initials = user ? (user.name?.[0] || user.email[0]).toUpperCase() : "U";
   const displayName = user?.name || t("common.unknown");
   const displayEmail = user?.email || "";
 
