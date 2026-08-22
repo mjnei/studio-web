@@ -43,7 +43,7 @@ export default function QueueManagementPage() {
   // Load layout preference from localStorage on mount (via state initializer)
   const [layoutMode, setLayoutMode] = useState<LayoutMode>(() => {
     if (typeof window === "undefined") return "grid-md";
-    const saved = localStorage.getItem("layoutMode");
+    const saved = localStorage.getItem("layoutMode:admin-queues");
     if (saved && (saved === "grid-sm" || saved === "grid-md" || saved === "list")) {
       return saved as LayoutMode;
     }
@@ -53,7 +53,7 @@ export default function QueueManagementPage() {
   // Save layout preference to localStorage when it changes
   const handleLayoutChange = (mode: LayoutMode) => {
     setLayoutMode(mode);
-    localStorage.setItem("layoutMode", mode);
+    localStorage.setItem("layoutMode:admin-queues", mode);
   };
 
   const fetchQueues = useCallback(async (silent = false) => {

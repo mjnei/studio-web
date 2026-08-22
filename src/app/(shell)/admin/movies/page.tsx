@@ -83,7 +83,7 @@ export default function AdminMoviesPage() {
 
   // Load layout preference from localStorage on mount
   useEffect(() => {
-    const saved = localStorage.getItem("layoutMode");
+    const saved = localStorage.getItem("layoutMode:admin-movies");
     if (saved && (saved === "grid-sm" || saved === "grid-md" || saved === "list")) {
       setLayoutMode(saved as LayoutMode);
     }
@@ -92,7 +92,7 @@ export default function AdminMoviesPage() {
   // Save layout preference to localStorage when it changes
   const handleLayoutChange = (mode: LayoutMode) => {
     setLayoutMode(mode);
-    localStorage.setItem("layoutMode", mode);
+    localStorage.setItem("layoutMode:admin-movies", mode);
   };
 
   // Load movies - can be called manually from handlers
@@ -836,7 +836,7 @@ export default function AdminMoviesPage() {
                   Found {tmdbTotalResults.toLocaleString()} results • Page {tmdbPage} of{" "}
                   {tmdbTotalPages}
                 </p>
-                <LayoutToggle layoutMode={layoutMode} onLayoutChange={setLayoutMode} />
+                <LayoutToggle layoutMode={layoutMode} onLayoutChange={handleLayoutChange} />
               </div>
 
               {/* Results Grid */}

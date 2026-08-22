@@ -19,7 +19,7 @@ export default function MoviesPage() {
   const [error, setError] = useState<string | null>(null);
   const [layoutMode, setLayoutMode] = useState<LayoutMode>(() => {
     if (typeof window === "undefined") return "grid-sm";
-    const saved = localStorage.getItem("layoutMode");
+    const saved = localStorage.getItem("layoutMode:movies");
     if (saved && (saved === "grid-sm" || saved === "grid-md" || saved === "list")) {
       return saved as LayoutMode;
     }
@@ -29,7 +29,7 @@ export default function MoviesPage() {
   // Save layout preference to localStorage when it changes
   const handleLayoutChange = (mode: LayoutMode) => {
     setLayoutMode(mode);
-    localStorage.setItem("layoutMode", mode);
+    localStorage.setItem("layoutMode:movies", mode);
   };
 
   useEffect(() => {

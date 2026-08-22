@@ -24,7 +24,7 @@ export default function ProjectsPage() {
   const [deleting, setDeleting] = useState(false);
   const [layoutMode, setLayoutMode] = useState<LayoutMode>(() => {
     if (typeof window === "undefined") return "grid-md";
-    const saved = localStorage.getItem("layoutMode");
+    const saved = localStorage.getItem("layoutMode:projects");
     if (saved && (saved === "grid-sm" || saved === "grid-md" || saved === "list")) {
       return saved as LayoutMode;
     }
@@ -34,7 +34,7 @@ export default function ProjectsPage() {
   // Save layout preference to localStorage when it changes
   const handleLayoutChange = (mode: LayoutMode) => {
     setLayoutMode(mode);
-    localStorage.setItem("layoutMode", mode);
+    localStorage.setItem("layoutMode:projects", mode);
   };
 
   const loadProjects = useCallback(() => {
