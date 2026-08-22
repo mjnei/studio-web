@@ -30,12 +30,20 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 
+/** Capitalize the first letter of each whitespace-separated word; leave the rest unchanged. */
+function capitalizeWordStarts(value: string): string {
+  return value.replace(/(^|\s)(\S)/g, (_match, boundary: string, char: string) => {
+    return boundary + char.toUpperCase();
+  });
+}
+
 export default function ProfilePage() {
   const { t } = useI18n();
   const router = useRouter();
   const { user, refreshUser, logout, deleteUser } = useAuth();
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState("");
+  const [autoCapitalizeWords, setAutoCapitalizeWords] = useState(true);
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -57,13 +65,39 @@ export default function ProfilePage() {
     }
   }, [user]);
 
+  function handleNameChange(value: string) {
+    setName(autoCapitalizeWords ? capitalizeWordStarts(value) : value);
+  }
+
+  function handleAutoCapitalizeToggle(checked: boolean) {
+    setAutoCapitalizeWords(checked);
+    if (checked) {
+      setName((prev) => capitalizeWordStarts(prev));
+    }
+  }
+
+  function startEditing() {
+    setName(user?.name ?? "");
+    setAutoCapitalizeWords(true);
+    setEditing(true);
+  }
+
+  function cancelEditing() {
+    setEditing(false);
+    setName(user?.name ?? "");
+    setAutoCapitalizeWords(true);
+  }
+
   async function handleSaveProfile() {
     setProfileError("");
     setProfileSuccess(false);
+    const trimmed = name.trim();
+    const nameToSave = autoCapitalizeWords ? capitalizeWordStarts(trimmed) : trimmed;
     try {
-      await updateUser({ name });
+      await updateUser({ name: nameToSave });
       await refreshUser();
       setEditing(false);
+      setAutoCapitalizeWords(true);
       setProfileSuccess(true);
     } catch (err: unknown) {
       setProfileError(
@@ -187,7 +221,7 @@ export default function ProfilePage() {
                 </Text>
               </div>
             </div>
-            <div className="flex gap-2 shrink-0">
+            <div className="flex flex-row flex-wrap items-center gap-2 shrink-0">
               <Link href="/pricing">
                 <Button variant="primary" size="md">
                   {t("profile.upgradeBanner.viewPlans")}
@@ -230,16 +264,35 @@ export default function ProfilePage() {
                   {initials}
                 </div>
               )}
-              <div className="flex-1 text-center sm:text-left space-y-4">
+              <div className="flex-1 text-center sm:text-left space-y-4 min-w-0">
                 {editing ? (
-                  <div className="space-y-3">
+                  <div className="space-y-3 text-left">
                     <Input
                       type="text"
                       value={name}
-                      onChange={(e) => setName(e.target.value)}
+                      onChange={(e) => handleNameChange(e.target.value)}
                       label={t("profile.accountOverview.displayName")}
                       className="text-lg font-semibold"
                     />
+                    <label className="flex items-start gap-2 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={autoCapitalizeWords}
+                        onChange={(e) => handleAutoCapitalizeToggle(e.target.checked)}
+                        className="mt-0.5 w-4 h-4 shrink-0 rounded border-border-default text-accent-primary focus:ring-accent-primary focus:ring-offset-0 cursor-pointer"
+                      />
+                      <span className="text-sm text-text-secondary">
+                        {t("profile.accountOverview.autoCapitalizeWords")}
+                      </span>
+                    </label>
+                    <div className="flex flex-row flex-wrap items-center gap-2">
+                      <Button variant="ghost" size="sm" onClick={cancelEditing}>
+                        {t("profile.accountOverview.cancel")}
+                      </Button>
+                      <Button variant="primary" size="sm" onClick={handleSaveProfile}>
+                        {t("profile.accountOverview.save")}
+                      </Button>
+                    </div>
                   </div>
                 ) : (
                   <>
@@ -291,41 +344,14 @@ export default function ProfilePage() {
                   )}
                 </div>
               </div>
-              <div className="flex gap-2 self-start w-full sm:w-auto">
-                {editing ? (
-                  <>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        setEditing(false);
-                        setName(user.name);
-                      }}
-                      className="w-full sm:w-auto"
-                    >
-                      {t("profile.accountOverview.cancel")}
-                    </Button>
-                    <Button
-                      variant="primary"
-                      size="sm"
-                      onClick={handleSaveProfile}
-                      className="w-full sm:w-auto"
-                    >
-                      {t("profile.accountOverview.save")}
-                    </Button>
-                  </>
-                ) : (
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => setEditing(true)}
-                    className="w-full sm:w-auto"
-                  >
+              {!editing && (
+                <div className="flex items-center self-start shrink-0">
+                  <Button variant="secondary" size="sm" onClick={startEditing}>
                     <Settings className="w-4 h-4" />
                     {t("profile.accountOverview.edit")}
                   </Button>
-                )}
-              </div>
+                </div>
+              )}
             </div>
 
             {profileError && (
@@ -406,15 +432,15 @@ export default function ProfilePage() {
                   </p>
                 )}
               </div>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Link href="/pricing" className="w-full sm:w-auto sm:flex-1">
+              <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3">
+                <Link href="/pricing" className="w-full sm:w-auto">
                   <Button variant="primary" className="w-full sm:w-auto">
                     {isFreeUser
                       ? t("profile.membershipBilling.upgradePlan")
                       : t("profile.membershipBilling.viewAllPlans")}
                   </Button>
                 </Link>
-                <Link href="/billing" className="w-full sm:w-auto sm:flex-1">
+                <Link href="/billing" className="w-full sm:w-auto">
                   <Button
                     variant="secondary"
                     leftIcon={<CreditCard className="w-4 h-4" />}
@@ -565,7 +591,7 @@ export default function ProfilePage() {
           <CardContent>
             <div className="space-y-4">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div>
+                <div className="min-w-0">
                   <p className="text-sm font-medium text-text-primary">
                     {t("profile.onboarding.signOut")}
                   </p>
@@ -577,14 +603,14 @@ export default function ProfilePage() {
                   variant="secondary"
                   onClick={logout}
                   leftIcon={<LogOut className="w-4 h-4" />}
-                  className="w-full sm:w-auto"
+                  className="w-full sm:w-auto sm:min-w-[8.5rem] shrink-0"
                 >
                   {t("profile.onboarding.signOut")}
                 </Button>
               </div>
               <div className="border-t border-border-default pt-4">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-sm font-medium text-text-primary">
                       {t("profile.onboarding.resetOnboarding")}
                     </p>
@@ -604,7 +630,7 @@ export default function ProfilePage() {
                     onClick={handleResetOnboarding}
                     disabled={resettingOnboarding}
                     leftIcon={<RefreshCw className="w-4 h-4" />}
-                    className="w-full sm:w-auto"
+                    className="w-full sm:w-auto sm:min-w-[8.5rem] shrink-0"
                   >
                     {resettingOnboarding
                       ? t("profile.onboarding.resetting")
@@ -648,14 +674,13 @@ export default function ProfilePage() {
                   placeholder={t("profile.dangerZone.deleteAccountPlaceholder")}
                   className="max-w-sm"
                 />
-                <div className="flex flex-col sm:flex-row gap-2">
+                <div className="flex flex-row flex-wrap items-center gap-2">
                   <Button
                     variant="ghost"
                     onClick={() => {
                       setShowDeleteConfirm(false);
                       setDeleteText("");
                     }}
-                    className="w-full sm:w-auto"
                   >
                     {t("profile.dangerZone.deleteAccountConfirmCancel")}
                   </Button>
@@ -664,7 +689,6 @@ export default function ProfilePage() {
                     onClick={handleDeleteAccount}
                     disabled={deleteText !== "delete my account"}
                     leftIcon={<Trash2 className="w-4 h-4" />}
-                    className="w-full sm:w-auto"
                   >
                     {t("profile.dangerZone.permanentlyDeleteAccount")}
                   </Button>

@@ -12,6 +12,7 @@
       "title": "Account Overview",
       "description": "Your personal information and account status",
       "displayName": "Display Name",
+      "autoCapitalizeWords": "Capitalize the first letter of each word",
       "edit": "Edit",
       "cancel": "Cancel",
       "save": "Save",

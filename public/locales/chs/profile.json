@@ -12,6 +12,7 @@
       "title": "账户概览",
       "description": "您的个人信息和账户状态",
       "displayName": "显示名称",
+      "autoCapitalizeWords": "将每个单词的首字母转为大写",
       "edit": "编辑",
       "cancel": "取消",
       "save": "保存",
