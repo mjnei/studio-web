@@ -165,7 +165,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
             <div className="relative h-64 w-full overflow-hidden bg-surface-raised sm:h-80">
               <ExternalImage
                 src={backdropUrl}
-                alt={movie.title || movie.original_title}
+                alt={movie.title || movie.original_title || "Backdrop"}
                 className="h-full w-full object-cover"
                 fill
                 priority
@@ -184,7 +184,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                 {posterUrl ? (
                   <ExternalImage
                     src={posterUrl}
-                    alt={movie.title || movie.original_title}
+                    alt={movie.title || movie.original_title || "Poster"}
                     className="w-full rounded-2xl border border-border-default shadow-2xl"
                     width={280}
                     height={420}
