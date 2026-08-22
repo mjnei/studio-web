@@ -68,12 +68,12 @@ export default function PricingPage() {
       monthlyPrice: t("pricing.free.price.monthly"),
       annualPrice: t("pricing.free.price.annual"),
       features: [
-        "5 credits per month",
-        "Rollover up to 10 credits",
-        "2 custom voice creations",
-        "Basic video generation",
-        "720p video quality",
-        "Standard project storage",
+        t("pricing.free.features.credits"),
+        t("pricing.free.features.rollover"),
+        t("pricing.free.features.voices"),
+        t("pricing.free.features.video"),
+        t("pricing.free.features.quality"),
+        t("pricing.free.features.storage"),
       ],
       credits: 5,
       rollover: t("pricing.free.rolloverAmount"),
@@ -86,13 +86,13 @@ export default function PricingPage() {
       monthlyPrice: t("pricing.pro.price.monthly"),
       annualPrice: t("pricing.pro.price.annual"),
       features: [
-        "25 credits per month",
-        "Rollover up to 50 credits",
-        "5 custom voice creations",
-        "HD video generation (1080p)",
-        "Priority processing",
-        "Advanced analytics",
-        "Export customization",
+        t("pricing.pro.features.credits"),
+        t("pricing.pro.features.rollover"),
+        t("pricing.pro.features.voices"),
+        t("pricing.pro.features.video"),
+        t("pricing.pro.features.priority"),
+        t("pricing.pro.features.analytics"),
+        t("pricing.pro.features.export"),
       ],
       credits: 25,
       rollover: t("pricing.pro.rolloverAmount"),
@@ -106,15 +106,15 @@ export default function PricingPage() {
       monthlyPrice: t("pricing.premium.price.monthly"),
       annualPrice: t("pricing.premium.price.annual"),
       features: [
-        "100 credits per month",
-        "Unlimited rollover",
-        "10 custom voice creations",
-        "4K video quality",
-        "Priority support",
-        "Advanced AI features",
-        "Team collaboration",
-        "White-label exports",
-        "API access",
+        t("pricing.premium.features.credits"),
+        t("pricing.premium.features.rollover"),
+        t("pricing.premium.features.voices"),
+        t("pricing.premium.features.quality"),
+        t("pricing.premium.features.support"),
+        t("pricing.premium.features.ai"),
+        t("pricing.premium.features.team"),
+        t("pricing.premium.features.whiteLabel"),
+        t("pricing.premium.features.api"),
       ],
       credits: 100,
       rollover: t("pricing.premium.rolloverAmount"),
@@ -257,10 +257,10 @@ export default function PricingPage() {
                 <div className="flex items-center gap-2 mb-4">
                   <TrendingUp className={`h-5 w-5 ${getColorClasses(tier.color)}`} />
                   <span className={`text-sm font-semibold ${getColorClasses(tier.color)}`}>
-                    {tier.credits} {t("pricing.free.credits")}
+                    {tier.credits} {t("pricing.creditsPerMonth")}
                   </span>
                   <span className="text-xs text-text-muted">
-                    • {t("pricing.free.rollover")} {tier.rollover}
+                    • {t("pricing.rolloverLabel")} {tier.rollover}
                   </span>
                 </div>
               </div>
@@ -272,7 +272,7 @@ export default function PricingPage() {
                   as="h3"
                   className="text-text-secondary mb-3 uppercase tracking-wide"
                 >
-                  {t("pricing.free.whatsIncluded")}
+                  {t("pricing.whatsIncluded")}
                 </Heading>
                 <ul className="space-y-2.5">
                   {tier.features.map((feature, idx) => (

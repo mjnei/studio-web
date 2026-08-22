@@ -8,6 +8,9 @@
       "annual": "Annual",
       "savings": "Save 20%"
     },
+    "whatsIncluded": "What's included",
+    "creditsPerMonth": "credits/month",
+    "rolloverLabel": "Rollover:",
     "free": {
       "name": "Free",
       "description": "Get started with basic video generation",
@@ -17,18 +20,15 @@
         "billedAnnually": "billed annually",
         "billedMonthly": "when billed monthly"
       },
-      "credits": "credits/month",
-      "rollover": "Rollover:",
       "rolloverAmount": "10 credits",
-      "features": [
-        "5 credits per month",
-        "Rollover up to 10 credits",
-        "2 custom voice creations",
-        "Basic video generation",
-        "720p video quality",
-        "Standard project storage"
-      ],
-      "whatsIncluded": "What's included",
+      "features": {
+        "credits": "5 credits per month",
+        "rollover": "Rollover up to 10 credits",
+        "voices": "2 custom voice creations",
+        "video": "Basic video generation",
+        "quality": "720p video quality",
+        "storage": "Standard project storage"
+      },
       "button": "Current Plan"
     },
     "pro": {
@@ -36,24 +36,19 @@
       "description": "For creators who need more capacity",
       "price": {
         "monthly": "$49/mo",
-        "annual": "$39/mo",
-        "billedAnnually": "billed annually",
-        "billedMonthly": "when billed monthly"
+        "annual": "$39/mo"
       },
-      "credits": "credits/month",
-      "rollover": "Rollover:",
       "rolloverAmount": "50 credits",
       "badge": "Most Popular",
-      "features": [
-        "25 credits per month",
-        "Rollover up to 50 credits",
-        "5 custom voice creations",
-        "HD video generation (1080p)",
-        "Priority processing",
-        "Advanced analytics",
-        "Export customization"
-      ],
-      "whatsIncluded": "What's included",
+      "features": {
+        "credits": "25 credits per month",
+        "rollover": "Rollover up to 50 credits",
+        "voices": "5 custom voice creations",
+        "video": "HD video generation (1080p)",
+        "priority": "Priority processing",
+        "analytics": "Advanced analytics",
+        "export": "Export customization"
+      },
       "button": "Upgrade to Pro"
     },
     "premium": {
@@ -61,25 +56,20 @@
       "description": "Unlimited capacity for professionals",
       "price": {
         "monthly": "$199/mo",
-        "annual": "$159/mo",
-        "billedAnnually": "billed annually",
-        "billedMonthly": "when billed monthly"
+        "annual": "$159/mo"
       },
-      "credits": "credits/month",
-      "rollover": "Rollover:",
       "rolloverAmount": "Unlimited",
-      "features": [
-        "100 credits per month",
-        "Unlimited rollover",
-        "10 custom voice creations",
-        "4K video quality",
-        "Priority support",
-        "Advanced AI features",
-        "Team collaboration",
-        "White-label exports",
-        "API access"
-      ],
-      "whatsIncluded": "What's included",
+      "features": {
+        "credits": "100 credits per month",
+        "rollover": "Unlimited rollover",
+        "voices": "10 custom voice creations",
+        "quality": "4K video quality",
+        "support": "Priority support",
+        "ai": "Advanced AI features",
+        "team": "Team collaboration",
+        "whiteLabel": "White-label exports",
+        "api": "API access"
+      },
       "button": "Upgrade to Premium"
     },
     "faq": {
