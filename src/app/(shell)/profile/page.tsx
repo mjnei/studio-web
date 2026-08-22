@@ -319,30 +319,32 @@ export default function ProfilePage() {
                     </div>
                   </>
                 )}
-                <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
-                  <Badge variant="primary" size="md">
-                    <Shield className="w-3 h-3" />
-                    {user.provider}
-                  </Badge>
-                  <Badge variant={membershipTier === "free" ? "default" : "success"} size="md">
-                    <Crown className="w-3 h-3" />
-                    {tierLabel}
-                  </Badge>
-                  {user.subscription_status && (
-                    <Badge
-                      variant={
-                        user.subscription_status === "active"
-                          ? "success"
-                          : user.subscription_status === "canceled"
-                            ? "warning"
-                            : "error"
-                      }
-                      size="md"
-                    >
-                      {subscriptionStatusLabel}
+                {!editing && (
+                  <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
+                    <Badge variant="primary" size="md">
+                      <Shield className="w-3 h-3" />
+                      {user.provider}
                     </Badge>
-                  )}
-                </div>
+                    <Badge variant={membershipTier === "free" ? "default" : "success"} size="md">
+                      <Crown className="w-3 h-3" />
+                      {tierLabel}
+                    </Badge>
+                    {user.subscription_status && (
+                      <Badge
+                        variant={
+                          user.subscription_status === "active"
+                            ? "success"
+                            : user.subscription_status === "canceled"
+                              ? "warning"
+                              : "error"
+                        }
+                        size="md"
+                      >
+                        {subscriptionStatusLabel}
+                      </Badge>
+                    )}
+                  </div>
+                )}
               </div>
               {!editing && (
                 <div className="flex items-center self-start shrink-0">
