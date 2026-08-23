@@ -33,6 +33,8 @@ Use **`className="h-N w-N"`** (height before width) or the shared `Icon` compone
 | *(informal)* | `h-12 w-12` | 48 | Empty-state icons (jobs, movies, voices, notifications) |
 | *(informal)* | `h-16 w-16` | 64 | Large empty states, redirect heroes |
 
+**Why informal?** The `Icon` component’s `size` prop only covers `xs`–`xl` (12–32 px) — the sizes repeated hundreds of times in buttons, nav, and forms. Hero sizes (`h-10`–`h-16`) appear mainly in empty states and marketing-style blocks, often inside a fixed-size wrapper `div` that is not the icon itself. They were documented here for consistency but not added as `Icon` props to avoid expanding the API before a shared `EmptyState` component decides which sizes to enforce. Use Lucide directly with `className="h-12 w-12"` for those cases, or promote to `2xl`/`3xl`/`4xl` tokens if `EmptyState` lands.
+
 The informal hero tier is not part of the `Icon` size prop — use Lucide directly with `className`. No new tokens unless `EmptyState` should enforce them.
 
 Avoid Lucide’s numeric `size={N}` prop in new code — use classes or `<Icon size="sm" />`.
@@ -86,7 +88,7 @@ All brand icons default to `aria-hidden={true}`. Parent buttons must expose acce
 <Icon icon={Search} size="md" className="text-text-muted" />
 ```
 
-- **`size`** maps to the token table above (`xs`–`xl`).
+- **`size`** maps to the token table above (`xs`–`xl` only; hero sizes are direct Lucide).
 - **`className`** is for color, margin, and non-size utilities only.
 - **`cn()` does not merge conflicting Tailwind size utilities.** `<Icon size="sm" className="h-6 w-6" />` emits both `h-4 w-4` and `h-6 w-6` — browser order wins unpredictably. Use one sizing source: pick the right `size` prop, pass sizes only via `className` (omit `size`), or use Lucide directly (as with `PanelLeft` in `drawer-content.tsx`).
 
@@ -102,7 +104,7 @@ Sidebar icons are defined in `src/components/shell/drawer-content.tsx` via `icon
 
 | # | Gap | Severity | Notes |
 |---|-----|----------|-------|
-| 1 | Class order (`w-N h-N` vs `h-N w-N`) | Cosmetic | ~35 legacy files still width-first. Heaviest: `profile/page.tsx`, `dashboard/page.tsx`, `settings/page.tsx`, `admin/queues/*`, onboarding steps, `video-generation.tsx`, `movie-selection.tsx`, queue components. Migrated surfaces are normalized. |
+| 1 | Class order (`w-N h-N` vs `h-N w-N`) | Done | Lucide icons normalized to `h-N w-N` (31 files, Aug 2026). Container divs and CSS spinners unchanged. |
 | 2 | Missing `aria-hidden` on decorative icons | A11y | Scattered — tab icons, icon-only close buttons, stats/card accents. Icon-only buttons need `aria-label` on the `<button>` and `aria-hidden` on the icon. |
 | 3 | Hero sizes outside token prop | Doc only | `h-10`, `h-12`, `h-16` used for empty states — informal tier above; no `Icon` prop unless `EmptyState` enforces them. |
 | 4 | `Icon` + conflicting `className` sizes | API | See [`Icon` wrapper](#icon-wrapper). Prefer direct Lucide or a single sizing source. |

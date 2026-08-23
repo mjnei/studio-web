@@ -1,6 +1,6 @@
 # Spinner & Loading State Audit
 
-Audit date: August 23, 2026 (last verified against implementation)  
+Audit date: August 24, 2026 (last verified against implementation)  
 Scope: `studio-web_0xMichaelRan` — shared `Spinner` / `LoadingSpinner` primitives, skeleton variants, and remaining inline loading patterns.
 
 ---
@@ -54,6 +54,7 @@ Prefer `className="h-4 w-4"` over `w-4 h-4` for new code.
 - All inline `Loader` and `Loader2` **spinner** usages migrated to `Spinner` or `LoadingSpinner`.
 - `button.tsx`, `LoadingSpinner.tsx`, `ProjectCard.tsx`, and follow-up files (export, compose, details, admin TMDB, referral, etc.).
 - `PageLoadingSkeleton` and `InlineLoadingSkeleton` use `Spinner` internally.
+- **SPIN-401:** Removed dead `src/components/project/video-generation.tsx` (no importers; export flow lives in `export/page.tsx`). Stale `docs/TYPOGRAPHY.md` reference removed.
 
 **Direct `Loader2` imports (verified):** only `spinner.tsx` (implementation) and `ProjectStatsCard.tsx` (static icon).
 
@@ -65,10 +66,6 @@ Prefer `className="h-4 w-4"` over `w-4 h-4` for new code.
 | `RefreshCw` + `animate-spin` | `jobs/page.tsx`, `admin/projects/page.tsx`, `admin/queues/page.tsx`, `admin/queues/[queueName]/page.tsx`, `admin/playground-tts-jobs/page.tsx`, `admin/studio-tts-jobs/page.tsx`, `QueueMessagePeeker.tsx`, `QueueStatsCard.tsx` (8 files, 10 sites) | Refresh action feedback — correct semantics |
 | Pulse / `Skeleton` | `VoiceSelectionPanel`, `LoadingSkeleton` variants, `admin/queues/*` | Appropriate for list/grid loading |
 | Static `Loader2` icon | `ProjectStatsCard` (“In Progress” stat) | Not a spinner — do not migrate |
-
-### Possible dead code
-
-- `src/components/project/video-generation.tsx` — contains `Spinner` but has **no importers** in the repo. Export flow lives in `export/page.tsx`.
 
 ---
 
@@ -236,11 +233,7 @@ Projects and popular movies sections simply do not render while loading (stats s
 
 **Recommendation:** Optional section-level skeletons or a single centered spinner if empty-state flash is noticeable.
 
-### 5. Dead code — `video-generation.tsx` (SPIN-401)
-
-Unused component with spinner usage. Safe to delete or wire up if still planned.
-
-### 6. Accent color split (optional) (SPIN-303)
+### 5. Accent color split (optional) (SPIN-303)
 
 `LoadingSpinner` (`text-accent-primary`) vs project skeletons (`text-accent-cyan`) may look slightly different on the same screen. Unify only as part of a deliberate visual pass.
 
@@ -297,7 +290,7 @@ Replace hand-rolled `div` border spinners with `<Spinner />`. Match size and col
 
 | ID | Task | File(s) | What to do | Acceptance criteria | Effort | PR batch |
 |----|------|---------|------------|---------------------|--------|----------|
-| SPIN-401 | Remove dead `video-generation.tsx` | `src/components/project/video-generation.tsx`, `docs/TYPOGRAPHY.md` (reference) | Delete file if export flow in `export/page.tsx` is canonical. Remove stale doc references. | No importers; build + lint pass; typography doc updated. | S | `chore/remove-video-generation` |
+| SPIN-401 | ~~Remove dead `video-generation.tsx`~~ **Done** | — | File deleted; `docs/TYPOGRAPHY.md` reference removed. Export flow remains in `export/page.tsx`. | No importers; typography doc updated. | S | `chore/remove-video-generation` |
 | SPIN-402 | Update this audit doc | `docs/SPINNER_AUDIT.md` | After each phase, update migration status, border inventory counts, and check off task IDs. | Doc matches repo; verification command counts current. | S | Ongoing |
 
 ### Out of scope — do not implement
@@ -311,7 +304,7 @@ Replace hand-rolled `div` border spinners with `<Spinner />`. Match size and col
 
 ### Suggested PR sequence
 
-1. **Quick wins:** SPIN-001, SPIN-002, SPIN-401  
+1. **Quick wins:** SPIN-001, SPIN-002 ~~SPIN-401 (done)~~  
 2. **Visual consistency:** SPIN-101 → SPIN-107 (one PR per batch row, or notifications + auth together)  
 3. **Primitives:** SPIN-201 + SPIN-202 (single a11y PR)  
 4. **Behavior:** SPIN-003, SPIN-203, SPIN-204 as needed from user feedback  
@@ -348,7 +341,7 @@ Phase 4 — Polish
 - [ ] SPIN-304 Admin projects table initial load
 
 Phase 5 — Cleanup
-- [ ] SPIN-401 Remove video-generation.tsx
+- [x] SPIN-401 Remove video-generation.tsx
 - [ ] SPIN-402 Update SPINNER_AUDIT.md
 ```
 
