@@ -18,6 +18,8 @@ import {
   AlertTriangle,
   Settings,
   CreditCard,
+  KeyRound,
+  CheckCircle2,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useI18n } from "@/i18n";
@@ -166,9 +168,7 @@ export default function ProfilePage() {
     setResettingOnboarding(true);
     try {
       await resetOnboarding();
-      // Refresh user state to update onboarding_completed flag
       await refreshUser();
-      // Now navigate to onboarding
       await router.push("/onboarding");
     } catch (err: unknown) {
       setProfileError(
@@ -191,144 +191,305 @@ export default function ProfilePage() {
     : null;
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto space-y-6 pb-12">
       <PageHeader title={t("profile.title")} description={t("profile.description")} />
 
-      {/* Upgrade Banner for Free Tier Users */}
-      {isFreeUser && (
-        <Card
-          variant="elevated"
-          padding="md"
-          className="mb-6 border-accent-cyan/20 bg-gradient-to-br from-accent-cyan/10 via-accent-primary/10 to-accent-secondary/10 overflow-hidden relative"
-        >
-          <div className="absolute inset-0 bg-gradient-to-br from-accent-cyan/5 to-transparent" />
-          <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-accent-cyan to-accent-primary flex items-center justify-center">
-                <Crown className="w-6 h-6 text-white" />
+      {/* Main Grid: Responsive 2-column layout (12 cols on desktop) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* Left Column (4 cols): Profile Hero & Quick Info */}
+        <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-6">
+          {/* Profile Hero Card */}
+          <Card
+            variant="elevated"
+            padding="lg"
+            className="relative overflow-hidden border-white/10 bg-gradient-to-b from-surface-raised via-surface-raised to-surface-panel shadow-lg"
+          >
+            {/* Ambient Background Blur Glow */}
+            <div className="absolute -right-10 -top-10 w-36 h-36 bg-accent-primary/10 rounded-full blur-2xl pointer-events-none" />
+            <div className="absolute -left-10 -bottom-10 w-36 h-36 bg-accent-cyan/10 rounded-full blur-2xl pointer-events-none" />
+
+            <div className="relative flex flex-col items-center text-center space-y-4">
+              {/* Avatar with Glow Ring */}
+              <div className="relative group">
+                {user.picture_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element -- presigned S3 URLs use dynamic hosts
+                  <img
+                    src={user.picture_url}
+                    alt={user.name}
+                    className="h-28 w-28 rounded-2xl object-cover ring-4 ring-accent-primary/20 shadow-md transition-all duration-300 group-hover:scale-105 group-hover:ring-accent-primary/40"
+                    width={112}
+                    height={112}
+                  />
+                ) : (
+                  <div className="h-28 w-28 rounded-2xl bg-gradient-to-br from-accent-primary via-purple-600 to-accent-cyan text-4xl font-bold text-white flex items-center justify-center ring-4 ring-accent-primary/20 shadow-md transition-all duration-300 group-hover:scale-105 group-hover:ring-accent-primary/40">
+                    {initials}
+                  </div>
+                )}
+                <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-lg bg-surface-elevated border border-border-default flex items-center justify-center shadow-sm">
+                  <Shield className="w-3.5 h-3.5 text-accent-cyan" />
+                </div>
               </div>
-              <div>
-                <Heading
-                  variant="subsection"
-                  as="h2"
-                  className="text-text-primary mb-1 flex items-center gap-2"
-                >
-                  {t("profile.upgradeBanner.title")}
-                  <Sparkles className="w-4 h-4 text-accent-cyan" />
+
+              {/* User Identity */}
+              <div className="space-y-1 max-w-full px-2">
+                <Heading variant="subsection" as="h2" className="text-text-primary truncate">
+                  {user.name}
                 </Heading>
-                <Text variant="body" className="text-text-secondary">
-                  {t("profile.upgradeBanner.description")}
-                </Text>
+                <div className="flex items-center justify-center gap-1.5 text-text-secondary text-sm">
+                  <Mail className="w-3.5 h-3.5 text-text-muted shrink-0" />
+                  <span className="truncate max-w-[180px] sm:max-w-[220px]" title={user.email}>
+                    {user.email}
+                  </span>
+                  <button
+                    onClick={handleCopyEmail}
+                    className="p-1 rounded-md hover:bg-surface-hover text-text-muted hover:text-text-primary transition-colors shrink-0"
+                    title={t("profile.accountOverview.copyEmail")}
+                    aria-label={t("profile.accountOverview.copyEmail")}
+                  >
+                    {copyFeedback ? (
+                      <Check className="w-3.5 h-3.5 text-status-completed" />
+                    ) : (
+                      <Copy className="w-3.5 h-3.5" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Badges Overview */}
+              <div className="flex flex-wrap gap-2 justify-center pt-1">
+                <Badge variant="primary" size="md">
+                  <Shield className="w-3 h-3 mr-1" />
+                  {user.provider}
+                </Badge>
+                <Badge variant={membershipTier === "free" ? "default" : "success"} size="md">
+                  <Crown className="w-3 h-3 mr-1" />
+                  {tierLabel}
+                </Badge>
+                {user.subscription_status && (
+                  <Badge
+                    variant={
+                      user.subscription_status === "active"
+                        ? "success"
+                        : user.subscription_status === "canceled"
+                          ? "warning"
+                          : "error"
+                    }
+                    size="md"
+                  >
+                    {subscriptionStatusLabel}
+                  </Badge>
+                )}
+              </div>
+
+              {/* Primary Action & Intuitive Sign Out Button */}
+              <div className="w-full pt-4 border-t border-border-default/60 space-y-2">
+                {!editing && (
+                  <Button
+                    variant="secondary"
+                    size="md"
+                    className="w-full justify-center"
+                    onClick={startEditing}
+                    leftIcon={<Settings className="w-4 h-4" />}
+                  >
+                    {t("profile.accountOverview.edit")}
+                  </Button>
+                )}
+                <Button
+                  variant="outline"
+                  size="md"
+                  className="w-full justify-center text-text-secondary hover:text-status-failed hover:border-status-failed/40 transition-colors"
+                  onClick={logout}
+                  leftIcon={<LogOut className="w-4 h-4" />}
+                >
+                  {t("profile.onboarding.signOut")}
+                </Button>
               </div>
             </div>
-            <div className="flex flex-row flex-wrap items-center gap-2 shrink-0">
-              <Link href="/pricing">
-                <Button variant="primary" size="md">
-                  {t("profile.upgradeBanner.viewPlans")}
+          </Card>
+
+          {/* Quick Subscription Overview Card */}
+          <Card variant="elevated" padding="md" className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Crown className="w-4 h-4 text-accent-cyan" />
+                <Text variant="caption" className="font-semibold text-text-primary">
+                  {t("profile.membershipBilling.currentPlan")}
+                </Text>
+              </div>
+              <Badge variant={isFreeUser ? "default" : "success"} size="sm">
+                {tierLabel}
+              </Badge>
+            </div>
+            <div className="flex items-center justify-between gap-2 pt-2 border-t border-border-default">
+              <Link href="/pricing" className="flex-1">
+                <Button variant="outline" size="sm" className="w-full text-xs">
+                  {isFreeUser
+                    ? t("profile.membershipBilling.upgradePlan")
+                    : t("profile.membershipBilling.viewAllPlans")}
                 </Button>
               </Link>
-              <Link href="/billing">
-                <Button variant="secondary" size="md">
-                  <CreditCard className="w-4 h-4" />
+              <Link href="/billing" className="flex-1">
+                <Button variant="ghost" size="sm" className="w-full text-xs">
+                  <CreditCard className="w-3.5 h-3.5 mr-1" />
                   {t("profile.upgradeBanner.billing")}
                 </Button>
               </Link>
             </div>
-          </div>
-        </Card>
-      )}
+          </Card>
+        </div>
 
-      <div className="space-y-4">
-        {/* Account Overview */}
-        <Card variant="elevated" padding="lg">
-          <CardHeader className="pb-6">
-            <CardTitle className="flex items-center gap-2">
-              <User className="w-5 h-5 text-accent-primary" />
-              {t("profile.accountOverview.title")}
-            </CardTitle>
-            <CardDescription>{t("profile.accountOverview.description")}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
-              {user.picture_url ? (
-                // eslint-disable-next-line @next/next/no-img-element -- presigned S3 URLs use dynamic hosts
-                <img
-                  src={user.picture_url}
-                  alt={user.name}
-                  className="flex h-24 w-24 shrink-0 items-center justify-center rounded-2xl object-cover ring-4 ring-surface-elevated"
-                  width={96}
-                  height={96}
-                />
-              ) : (
-                <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-accent-primary to-accent-secondary text-3xl font-bold text-white ring-4 ring-surface-elevated">
-                  {initials}
+        {/* Right Column (8 cols): Detailed Management Cards */}
+        <div className="lg:col-span-8 space-y-6">
+          {/* Upgrade Banner for Free Tier Users */}
+          {isFreeUser && (
+            <Card
+              variant="elevated"
+              padding="md"
+              className="border-accent-cyan/30 bg-gradient-to-br from-accent-cyan/15 via-accent-primary/10 to-accent-secondary/15 overflow-hidden relative shadow-md"
+            >
+              <div className="absolute -right-8 -bottom-8 w-32 h-32 bg-accent-cyan/20 rounded-full blur-xl pointer-events-none" />
+              <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex items-start gap-3.5">
+                  <div className="shrink-0 w-11 h-11 rounded-xl bg-gradient-to-br from-accent-cyan to-accent-primary flex items-center justify-center shadow-md">
+                    <Crown className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <Heading
+                      variant="subsection"
+                      as="h2"
+                      className="text-text-primary mb-1 flex items-center gap-1.5"
+                    >
+                      {t("profile.upgradeBanner.title")}
+                      <Sparkles className="w-4 h-4 text-accent-cyan animate-pulse" />
+                    </Heading>
+                    <Text variant="body" className="text-text-secondary text-sm">
+                      {t("profile.upgradeBanner.description")}
+                    </Text>
+                  </div>
                 </div>
-              )}
-              <div className="flex-1 text-center sm:text-left space-y-4 min-w-0">
-                {editing ? (
-                  <div className="space-y-3 text-left">
-                    <Input
-                      type="text"
-                      value={name}
-                      onChange={(e) => handleNameChange(e.target.value)}
-                      label={t("profile.accountOverview.displayName")}
-                      className="text-lg font-semibold"
+                <div className="flex flex-row flex-wrap items-center gap-2 shrink-0 w-full sm:w-auto">
+                  <Link href="/pricing" className="flex-1 sm:flex-none">
+                    <Button variant="primary" size="sm" className="w-full">
+                      {t("profile.upgradeBanner.viewPlans")}
+                    </Button>
+                  </Link>
+                  <Link href="/billing" className="flex-1 sm:flex-none">
+                    <Button variant="secondary" size="sm" className="w-full">
+                      <CreditCard className="w-3.5 h-3.5 mr-1" />
+                      {t("profile.upgradeBanner.billing")}
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </Card>
+          )}
+
+          {/* Account Overview / Personal Details */}
+          <Card variant="elevated" padding="lg">
+            <CardHeader className="pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-accent-primary flex items-center justify-center shadow-sm shrink-0">
+                  <User className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <CardTitle>{t("profile.accountOverview.title")}</CardTitle>
+                  <CardDescription>{t("profile.accountOverview.description")}</CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {editing ? (
+                <div className="space-y-4 pt-2">
+                  <Input
+                    type="text"
+                    value={name}
+                    onChange={(e) => handleNameChange(e.target.value)}
+                    label={t("profile.accountOverview.displayName")}
+                    className="text-base font-medium"
+                  />
+                  <label className="flex items-center gap-2 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={autoCapitalizeWords}
+                      onChange={(e) => handleAutoCapitalizeToggle(e.target.checked)}
+                      className="w-4 h-4 shrink-0 rounded border-border-default text-accent-primary focus:ring-accent-primary focus:ring-offset-0 cursor-pointer"
                     />
-                    <label className="flex items-start gap-2 cursor-pointer select-none">
-                      <input
-                        type="checkbox"
-                        checked={autoCapitalizeWords}
-                        onChange={(e) => handleAutoCapitalizeToggle(e.target.checked)}
-                        className="mt-0.5 w-4 h-4 shrink-0 rounded border-border-default text-accent-primary focus:ring-accent-primary focus:ring-offset-0 cursor-pointer"
-                      />
-                      <span className="text-sm text-text-secondary">
-                        {t("profile.accountOverview.autoCapitalizeWords")}
-                      </span>
-                    </label>
-                    <div className="flex flex-row flex-wrap items-center gap-2">
-                      <Button variant="ghost" size="sm" onClick={cancelEditing}>
-                        {t("profile.accountOverview.cancel")}
-                      </Button>
-                      <Button variant="primary" size="sm" onClick={handleSaveProfile}>
-                        {t("profile.accountOverview.save")}
-                      </Button>
+                    <span className="text-sm text-text-secondary">
+                      {t("profile.accountOverview.autoCapitalizeWords")}
+                    </span>
+                  </label>
+                  <div className="flex items-center gap-2 pt-2">
+                    <Button variant="ghost" size="sm" onClick={cancelEditing}>
+                      {t("profile.accountOverview.cancel")}
+                    </Button>
+                    <Button variant="primary" size="sm" onClick={handleSaveProfile}>
+                      {t("profile.accountOverview.save")}
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4 pt-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-xl border border-border-default bg-surface-raised/50">
+                    <div>
+                      <Text variant="caption" className="text-text-muted">
+                        {t("profile.accountOverview.displayName")}
+                      </Text>
+                      <Text variant="body" className="font-semibold text-text-primary mt-0.5">
+                        {user.name}
+                      </Text>
+                    </div>
+                    <div>
+                      <Text variant="caption" className="text-text-muted">
+                        Email Address
+                      </Text>
+                      <Text variant="body" className="font-medium text-text-secondary mt-0.5">
+                        {user.email}
+                      </Text>
                     </div>
                   </div>
-                ) : (
-                  <>
+                </div>
+              )}
+
+              {profileError && (
+                <div className="mt-4 rounded-lg border border-status-failed/30 bg-status-failed/10 px-4 py-3 text-sm text-status-failed flex items-start gap-2">
+                  <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                  <span>{profileError}</span>
+                </div>
+              )}
+              {profileSuccess && (
+                <div className="mt-4 rounded-lg border border-status-completed/30 bg-status-completed/10 px-4 py-3 text-sm text-status-completed flex items-start gap-2">
+                  <CheckCircle2 className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                  <span>{t("profile.accountOverview.profileUpdatedSuccess")}</span>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Membership & Billing */}
+          <Card variant="elevated" padding="lg">
+            <CardHeader className="pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-cyan to-blue-500 flex items-center justify-center shadow-sm shrink-0">
+                  <Crown className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <CardTitle>{t("profile.membershipBilling.title")}</CardTitle>
+                  <CardDescription>{t("profile.membershipBilling.description")}</CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4 pt-2">
+                <div className="rounded-xl border border-border-default bg-surface-raised p-4 space-y-3">
+                  <div className="flex items-center justify-between">
                     <div>
-                      <Heading variant="section" as="h3" className="text-text-primary">
-                        {user.name}
+                      <Text variant="caption" className="text-text-muted">
+                        {t("profile.membershipBilling.currentPlan")}
+                      </Text>
+                      <Heading variant="subsection" className="capitalize mt-0.5 text-text-primary">
+                        {tierLabel}
                       </Heading>
-                      <div className="flex items-center justify-center sm:justify-start gap-2 mt-2">
-                        <Mail className="w-4 h-4 text-text-muted" />
-                        <span className="text-sm text-text-secondary">{user.email}</span>
-                        <button
-                          onClick={handleCopyEmail}
-                          className="rounded-md p-2 min-w-[40px] min-h-[40px] flex items-center justify-center hover:bg-surface-hover transition-colors"
-                          title={t("profile.accountOverview.copyEmail")}
-                          aria-label={t("profile.accountOverview.copyEmail")}
-                        >
-                          {copyFeedback ? (
-                            <Check className="w-4 h-4 text-status-completed" />
-                          ) : (
-                            <Copy className="w-4 h-4 text-text-muted" />
-                          )}
-                        </button>
-                      </div>
                     </div>
-                  </>
-                )}
-                {!editing && (
-                  <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
-                    <Badge variant="primary" size="md">
-                      <Shield className="w-3 h-3" />
-                      {user.provider}
-                    </Badge>
-                    <Badge variant={membershipTier === "free" ? "default" : "success"} size="md">
-                      <Crown className="w-3 h-3" />
-                      {tierLabel}
-                    </Badge>
                     {user.subscription_status && (
                       <Badge
                         variant={
@@ -344,276 +505,196 @@ export default function ProfilePage() {
                       </Badge>
                     )}
                   </div>
-                )}
-              </div>
-              {!editing && (
-                <div className="flex items-center self-start shrink-0">
-                  <Button variant="secondary" size="sm" onClick={startEditing}>
-                    <Settings className="w-4 h-4" />
-                    {t("profile.accountOverview.edit")}
-                  </Button>
-                </div>
-              )}
-            </div>
-
-            {profileError && (
-              <div className="mt-4 rounded-lg border border-status-failed/30 bg-status-failed/10 px-4 py-3 text-sm text-status-failed flex items-start gap-2">
-                <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                <span>{profileError}</span>
-              </div>
-            )}
-            {profileSuccess && (
-              <div className="mt-4 rounded-lg border border-status-completed/30 bg-status-completed/10 px-4 py-3 text-sm text-status-completed flex items-start gap-2">
-                <Check className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                <span>{t("profile.accountOverview.profileUpdatedSuccess")}</span>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Membership & Billing */}
-        <Card variant="elevated" padding="lg">
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-cyan to-accent-primary flex items-center justify-center">
-                <Crown className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <CardTitle>{t("profile.membershipBilling.title")}</CardTitle>
-                <CardDescription>{t("profile.membershipBilling.description")}</CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="rounded-lg border border-border-default bg-surface-raised p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div>
-                    <p className="text-sm text-text-muted">
-                      {t("profile.membershipBilling.currentPlan")}
+                  {user.subscription_start_date && (
+                    <p className="text-xs text-text-muted">
+                      {t("profile.membershipBilling.activeSince")}{" "}
+                      {new Date(user.subscription_start_date).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
                     </p>
-                    <Heading variant="subsection" className="capitalize mt-1">
-                      {tierLabel}
-                    </Heading>
-                  </div>
-                  {user.subscription_status && (
-                    <Badge
-                      variant={
-                        user.subscription_status === "active"
-                          ? "success"
-                          : user.subscription_status === "canceled"
-                            ? "warning"
-                            : "error"
-                      }
-                      size="md"
-                    >
-                      {subscriptionStatusLabel}
-                    </Badge>
+                  )}
+                  {user.subscription_end_date && (
+                    <p className="text-xs text-text-muted">
+                      {user.subscription_status === "canceled"
+                        ? t("profile.membershipBilling.expiresOn")
+                        : t("profile.membershipBilling.renewsOn")}{" "}
+                      {new Date(user.subscription_end_date).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </p>
                   )}
                 </div>
-                {user.subscription_start_date && (
-                  <p className="text-xs text-text-muted">
-                    {t("profile.membershipBilling.activeSince")}{" "}
-                    {new Date(user.subscription_start_date).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </p>
-                )}
-                {user.subscription_end_date && (
-                  <p className="text-xs text-text-muted mt-1">
-                    {user.subscription_status === "canceled"
-                      ? t("profile.membershipBilling.expiresOn")
-                      : t("profile.membershipBilling.renewsOn")}{" "}
-                    {new Date(user.subscription_end_date).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </p>
-                )}
+
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                  <Link href="/pricing" className="w-full sm:w-auto">
+                    <Button variant="primary" className="w-full sm:w-auto">
+                      {isFreeUser
+                        ? t("profile.membershipBilling.upgradePlan")
+                        : t("profile.membershipBilling.viewAllPlans")}
+                    </Button>
+                  </Link>
+                  <Link href="/billing" className="w-full sm:w-auto">
+                    <Button
+                      variant="secondary"
+                      leftIcon={<CreditCard className="w-4 h-4" />}
+                      className="w-full sm:w-auto"
+                    >
+                      {t("profile.membershipBilling.manageBilling")}
+                    </Button>
+                  </Link>
+                </div>
               </div>
-              <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3">
-                <Link href="/pricing" className="w-full sm:w-auto">
-                  <Button variant="primary" className="w-full sm:w-auto">
-                    {isFreeUser
-                      ? t("profile.membershipBilling.upgradePlan")
-                      : t("profile.membershipBilling.viewAllPlans")}
-                  </Button>
-                </Link>
-                <Link href="/billing" className="w-full sm:w-auto">
+            </CardContent>
+          </Card>
+
+          {/* Password & Security */}
+          <Card variant="elevated" padding="lg">
+            <CardHeader className="pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-sm shrink-0">
+                  <KeyRound className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <CardTitle>{t("profile.passwordSecurity.title")}</CardTitle>
+                  <CardDescription>{t("profile.passwordSecurity.description")}</CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4 pt-2">
+                {passwordError && (
+                  <div className="rounded-lg border border-status-failed/30 bg-status-failed/10 px-4 py-3 text-sm text-status-failed flex items-start gap-2">
+                    <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                    <span>{passwordError}</span>
+                  </div>
+                )}
+                {passwordSuccess && (
+                  <div className="rounded-lg border border-status-completed/30 bg-status-completed/10 px-4 py-3 text-sm text-status-completed flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                    <span>{t("profile.passwordSecurity.passwordUpdatedSuccess")}</span>
+                  </div>
+                )}
+
+                <div>
                   <Button
                     variant="secondary"
-                    leftIcon={<CreditCard className="w-4 h-4" />}
-                    className="w-full sm:w-auto"
+                    size="sm"
+                    onClick={() => {
+                      setShowChangePassword(!showChangePassword);
+                      setPasswordError("");
+                      setPasswordSuccess(false);
+                    }}
+                    leftIcon={<KeyRound className="w-4 h-4" />}
                   >
-                    {t("profile.membershipBilling.manageBilling")}
+                    {showChangePassword
+                      ? t("profile.accountOverview.cancel")
+                      : user.has_password
+                        ? t("profile.passwordSecurity.changePassword")
+                        : t("profile.passwordSecurity.setPassword")}
                   </Button>
-                </Link>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+                </div>
 
-        {/* Password & Security */}
-        <Card variant="elevated" padding="lg">
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
-                <Shield className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <CardTitle>{t("profile.passwordSecurity.title")}</CardTitle>
-                <CardDescription>{t("profile.passwordSecurity.description")}</CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {passwordError && (
-                <div className="rounded-lg border border-status-failed/30 bg-status-failed/10 px-4 py-3 text-sm text-status-failed flex items-start gap-2">
-                  <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                  <span>{passwordError}</span>
-                </div>
-              )}
-              {passwordSuccess && (
-                <div className="rounded-lg border border-status-completed/30 bg-status-completed/10 px-4 py-3 text-sm text-status-completed flex items-start gap-2">
-                  <Check className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                  <span>{t("profile.passwordSecurity.passwordUpdatedSuccess")}</span>
-                </div>
-              )}
-              <div>
-                <button
-                  onClick={() => {
-                    setShowChangePassword(!showChangePassword);
-                    setPasswordError("");
-                    setPasswordSuccess(false);
-                  }}
-                  className="text-sm text-accent-cyan hover:underline font-medium"
-                >
-                  {showChangePassword
-                    ? t("profile.passwordSecurity.changePassword")
-                    : user.has_password
-                      ? t("profile.passwordSecurity.changePassword")
-                      : t("profile.passwordSecurity.setPassword")}
-                </button>
-              </div>
-              {showChangePassword && (
-                <div className="space-y-4 rounded-lg border border-border-default bg-surface-raised p-4">
-                  {user.has_password && (
+                {showChangePassword && (
+                  <div className="space-y-4 rounded-xl border border-border-default bg-surface-raised p-4 transition-all">
+                    {user.has_password && (
+                      <Input
+                        type="password"
+                        value={currentPassword}
+                        onChange={(e) => setCurrentPassword(e.target.value)}
+                        label={t("profile.passwordSecurity.currentPassword")}
+                      />
+                    )}
                     <Input
                       type="password"
-                      value={currentPassword}
-                      onChange={(e) => setCurrentPassword(e.target.value)}
-                      label={t("profile.passwordSecurity.currentPassword")}
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      label={t("profile.passwordSecurity.newPassword")}
                     />
-                  )}
-                  <Input
-                    type="password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    label={t("profile.passwordSecurity.newPassword")}
-                  />
-                  <Input
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    label={t("profile.passwordSecurity.confirmNewPassword")}
-                  />
-                  <Button
-                    variant="primary"
-                    onClick={handleChangePassword}
-                    className="w-full sm:w-auto"
-                  >
-                    {user.has_password
-                      ? t("profile.passwordSecurity.updatePassword")
-                      : t("profile.passwordSecurity.setPassword")}
-                  </Button>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Connected Accounts */}
-        <Card variant="elevated" padding="lg">
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
-                <Link2 className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <CardTitle>{t("profile.connectedAccounts.title")}</CardTitle>
-                <CardDescription>{t("profile.connectedAccounts.description")}</CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between p-4 rounded-lg border border-border-default bg-surface-raised">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center">
-                    <Mail className="w-4 h-4 text-gray-700" />
+                    <Input
+                      type="password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      label={t("profile.passwordSecurity.confirmNewPassword")}
+                    />
+                    <Button
+                      variant="primary"
+                      onClick={handleChangePassword}
+                      className="w-full sm:w-auto"
+                    >
+                      {user.has_password
+                        ? t("profile.passwordSecurity.updatePassword")
+                        : t("profile.passwordSecurity.setPassword")}
+                    </Button>
                   </div>
-                  <div>
-                    <p className="text-sm font-medium text-text-primary">
-                      {t("profile.connectedAccounts.google")}
-                    </p>
-                    {user.provider === "google" && (
-                      <p className="text-xs text-status-completed">
-                        {t("profile.connectedAccounts.connected")}
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Connected Accounts */}
+          <Card variant="elevated" padding="lg">
+            <CardHeader className="pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-sm shrink-0">
+                  <Link2 className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <CardTitle>{t("profile.connectedAccounts.title")}</CardTitle>
+                  <CardDescription>{t("profile.connectedAccounts.description")}</CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="pt-2">
+                <div className="flex items-center justify-between p-4 rounded-xl border border-border-default bg-surface-raised hover:border-border-strong transition-colors">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-lg bg-white flex items-center justify-center shadow-sm shrink-0">
+                      <Mail className="w-4 h-4 text-gray-700" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-text-primary">
+                        {t("profile.connectedAccounts.google")}
                       </p>
-                    )}
+                      {user.provider === "google" && (
+                        <p className="text-xs text-status-completed flex items-center gap-1 mt-0.5">
+                          <CheckCircle2 className="w-3 h-3" />
+                          {t("profile.connectedAccounts.connected")}
+                        </p>
+                      )}
+                    </div>
                   </div>
+                  <Badge variant={user.provider === "google" ? "success" : "default"}>
+                    {user.provider === "google"
+                      ? t("profile.connectedAccounts.primaryAccount")
+                      : t("profile.connectedAccounts.notConnected")}
+                  </Badge>
                 </div>
-                <Badge variant={user.provider === "google" ? "success" : "default"}>
-                  {user.provider === "google"
-                    ? t("profile.connectedAccounts.primaryAccount")
-                    : t("profile.connectedAccounts.notConnected")}
-                </Badge>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        {/* Session & Onboarding */}
-        <Card variant="elevated" padding="lg">
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-                <RefreshCw className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <CardTitle>{t("profile.onboarding.title")}</CardTitle>
-                <CardDescription>{t("profile.onboarding.description")}</CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-text-primary">
-                    {t("profile.onboarding.signOut")}
-                  </p>
-                  <p className="text-xs text-text-muted">
-                    {t("profile.onboarding.signOutDescription")}
-                  </p>
+          {/* Preferences & Onboarding */}
+          <Card variant="elevated" padding="lg">
+            <CardHeader className="pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-sm shrink-0">
+                  <RefreshCw className="w-5 h-5 text-white" />
                 </div>
-                <Button
-                  variant="secondary"
-                  onClick={logout}
-                  leftIcon={<LogOut className="w-4 h-4" />}
-                  className="w-full sm:w-auto sm:min-w-[8.5rem] shrink-0"
-                >
-                  {t("profile.onboarding.signOut")}
-                </Button>
+                <div>
+                  <CardTitle>{t("profile.onboarding.title")}</CardTitle>
+                  <CardDescription>{t("profile.onboarding.description")}</CardDescription>
+                </div>
               </div>
-              <div className="border-t border-border-default pt-4">
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            </CardHeader>
+            <CardContent>
+              <div className="pt-2">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 rounded-xl border border-border-default bg-surface-raised">
                   <div className="min-w-0">
-                    <p className="text-sm font-medium text-text-primary">
+                    <p className="text-sm font-semibold text-text-primary">
                       {t("profile.onboarding.resetOnboarding")}
                     </p>
                     <p className="text-xs text-text-muted mt-1">
@@ -632,7 +713,7 @@ export default function ProfilePage() {
                     onClick={handleResetOnboarding}
                     disabled={resettingOnboarding}
                     leftIcon={<RefreshCw className="w-4 h-4" />}
-                    className="w-full sm:w-auto sm:min-w-[8.5rem] shrink-0"
+                    className="w-full sm:w-auto shrink-0"
                   >
                     {resettingOnboarding
                       ? t("profile.onboarding.resetting")
@@ -640,75 +721,78 @@ export default function ProfilePage() {
                   </Button>
                 </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        {/* Danger Zone */}
-        <Card variant="elevated" padding="lg" className="border-status-failed/30">
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center">
-                <AlertTriangle className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <CardTitle className="text-status-failed">
-                  {t("profile.dangerZone.title")}
-                </CardTitle>
-                <CardDescription>{t("profile.dangerZone.description")}</CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <p className="mb-4 text-sm text-text-muted">
-              {t("profile.dangerZone.deleteAccountWarning")}
-            </p>
-            {showDeleteConfirm ? (
-              <div className="space-y-4 rounded-lg border border-status-failed/30 bg-status-failed/5 p-4">
-                <p className="text-sm text-status-failed flex items-center gap-2">
-                  <AlertTriangle className="w-4 h-4" />
-                  {t("profile.dangerZone.confirmDelete")}
-                </p>
-                <Input
-                  type="text"
-                  value={deleteText}
-                  onChange={(e) => setDeleteText(e.target.value)}
-                  placeholder={t("profile.dangerZone.deleteAccountPlaceholder")}
-                  className="max-w-sm"
-                />
-                <div className="flex flex-row flex-wrap items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    onClick={() => {
-                      setShowDeleteConfirm(false);
-                      setDeleteText("");
-                    }}
-                  >
-                    {t("profile.dangerZone.deleteAccountConfirmCancel")}
-                  </Button>
-                  <Button
-                    variant="danger"
-                    onClick={handleDeleteAccount}
-                    disabled={deleteText !== "delete my account"}
-                    leftIcon={<Trash2 className="w-4 h-4" />}
-                  >
-                    {t("profile.dangerZone.permanentlyDeleteAccount")}
-                  </Button>
+          {/* Danger Zone */}
+          <Card variant="elevated" padding="lg" className="border-status-failed/30 bg-status-failed/5">
+            <CardHeader className="pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center shadow-sm shrink-0">
+                  <AlertTriangle className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <CardTitle className="text-status-failed">
+                    {t("profile.dangerZone.title")}
+                  </CardTitle>
+                  <CardDescription>{t("profile.dangerZone.description")}</CardDescription>
                 </div>
               </div>
-            ) : (
-              <Button
-                variant="danger"
-                onClick={() => setShowDeleteConfirm(true)}
-                leftIcon={<Trash2 className="w-4 h-4" />}
-                className="w-full sm:w-auto"
-              >
-                {t("profile.dangerZone.deleteAccount")}
-              </Button>
-            )}
-          </CardContent>
-        </Card>
+            </CardHeader>
+            <CardContent>
+              <div className="pt-2 space-y-4">
+                <p className="text-sm text-text-muted">
+                  {t("profile.dangerZone.deleteAccountWarning")}
+                </p>
+                {showDeleteConfirm ? (
+                  <div className="space-y-4 rounded-xl border border-status-failed/30 bg-surface-raised p-4">
+                    <p className="text-sm text-status-failed flex items-center gap-2 font-medium">
+                      <AlertTriangle className="w-4 h-4 shrink-0" />
+                      {t("profile.dangerZone.confirmDelete")}
+                    </p>
+                    <Input
+                      type="text"
+                      value={deleteText}
+                      onChange={(e) => setDeleteText(e.target.value)}
+                      placeholder={t("profile.dangerZone.deleteAccountPlaceholder")}
+                      className="max-w-sm"
+                    />
+                    <div className="flex flex-row flex-wrap items-center gap-2 pt-1">
+                      <Button
+                        variant="ghost"
+                        onClick={() => {
+                          setShowDeleteConfirm(false);
+                          setDeleteText("");
+                        }}
+                      >
+                        {t("profile.dangerZone.deleteAccountConfirmCancel")}
+                      </Button>
+                      <Button
+                        variant="danger"
+                        onClick={handleDeleteAccount}
+                        disabled={deleteText !== "delete my account"}
+                        leftIcon={<Trash2 className="w-4 h-4" />}
+                      >
+                        {t("profile.dangerZone.permanentlyDeleteAccount")}
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <Button
+                    variant="danger"
+                    onClick={() => setShowDeleteConfirm(true)}
+                    leftIcon={<Trash2 className="w-4 h-4" />}
+                    className="w-full sm:w-auto"
+                  >
+                    {t("profile.dangerZone.deleteAccount")}
+                  </Button>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
 }
+
