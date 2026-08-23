@@ -123,7 +123,10 @@ export default function SettingsPage() {
                     <CardDescription>{t("settings.notifications.description")}</CardDescription>
                   </div>
                 </div>
-                <ChevronRight className="h-5 w-5 text-text-muted group-hover:text-accent-primary transition-colors" aria-hidden />
+                <ChevronRight
+                  className="h-5 w-5 text-text-muted group-hover:text-accent-primary transition-colors"
+                  aria-hidden
+                />
               </div>
             </CardHeader>
           </Card>

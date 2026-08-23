@@ -133,10 +133,7 @@ export default function CompletionStep() {
         <div className="mb-6 sm:mb-8 flex justify-center">
           <div className="relative">
             <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-blue-500 to-purple-600 dark:from-blue-600 dark:to-purple-700 rounded-3xl flex items-center justify-center shadow-xl animate-pulse">
-              <div
-                role="status"
-                aria-label={t("onboarding.completion.loadingAriaLabel")}
-              >
+              <div role="status" aria-label={t("onboarding.completion.loadingAriaLabel")}>
                 <Spinner className="h-10 w-10 sm:h-12 sm:w-12 text-white" />
               </div>
             </div>

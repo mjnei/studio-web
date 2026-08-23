@@ -88,7 +88,10 @@ export function VoiceSelectionPanel({
             className="border-status-failed/30 bg-status-failed/10"
           >
             <div className="flex items-start gap-3">
-              <AlertCircle className="h-5 w-5 text-status-failed flex-shrink-0 mt-0.5" aria-hidden />
+              <AlertCircle
+                className="h-5 w-5 text-status-failed flex-shrink-0 mt-0.5"
+                aria-hidden
+              />
               <p className="text-sm text-status-failed">{voicesError}</p>
             </div>
           </Card>

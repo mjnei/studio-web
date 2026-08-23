@@ -105,106 +105,106 @@ export default function NotificationSettingsPage() {
           fullHeight
         />
       ) : (
-      <div className="space-y-8">
-        {/* Notification Preferences by Category */}
-        {NOTIFICATION_CATEGORIES.map((category, categoryIndex) => {
-          const categoryNotifications = NOTIFICATION_TYPE_CONFIG.filter(
-            (n) => n.category === category
-          );
+        <div className="space-y-8">
+          {/* Notification Preferences by Category */}
+          {NOTIFICATION_CATEGORIES.map((category, categoryIndex) => {
+            const categoryNotifications = NOTIFICATION_TYPE_CONFIG.filter(
+              (n) => n.category === category
+            );
 
-          return (
-            <section key={category} className="space-y-4">
-              <Heading
-                variant="subsection"
-                as="h2"
-                className="text-text-primary flex items-center gap-2"
-              >
-                <Monitor className="h-5 w-5 text-accent-primary" aria-hidden />
-                {t(
-                  [
-                    "notificationSettings.categories.videoJobs",
-                    "notificationSettings.categories.account",
-                    "notificationSettings.categories.projects",
-                  ][categoryIndex] as any
-                )}
-              </Heading>
+            return (
+              <section key={category} className="space-y-4">
+                <Heading
+                  variant="subsection"
+                  as="h2"
+                  className="text-text-primary flex items-center gap-2"
+                >
+                  <Monitor className="h-5 w-5 text-accent-primary" aria-hidden />
+                  {t(
+                    [
+                      "notificationSettings.categories.videoJobs",
+                      "notificationSettings.categories.account",
+                      "notificationSettings.categories.projects",
+                    ][categoryIndex] as any
+                  )}
+                </Heading>
 
-              <div className="bg-surface-panel rounded-xl border border-border-default divide-y divide-border-default">
-                {categoryNotifications.map(({ type }) => {
-                  const pref = localPreferences[type] || { in_app: true };
-                  // Map notification type to i18n key
-                  const typeI18nMap: Record<string, string> = {
-                    video_job_queued: "notificationSettings.types.videoJobQueued",
-                    video_job_completed: "notificationSettings.types.videoJobCompleted",
-                    video_job_failed: "notificationSettings.types.videoJobFailed",
-                    low_credits: "notificationSettings.types.lowCredits",
-                    credit_transaction: "notificationSettings.types.creditTransaction",
-                    project_deleted: "notificationSettings.types.projectDeleted",
-                    project_published: "notificationSettings.types.projectPublished",
-                  };
+                <div className="bg-surface-panel rounded-xl border border-border-default divide-y divide-border-default">
+                  {categoryNotifications.map(({ type }) => {
+                    const pref = localPreferences[type] || { in_app: true };
+                    // Map notification type to i18n key
+                    const typeI18nMap: Record<string, string> = {
+                      video_job_queued: "notificationSettings.types.videoJobQueued",
+                      video_job_completed: "notificationSettings.types.videoJobCompleted",
+                      video_job_failed: "notificationSettings.types.videoJobFailed",
+                      low_credits: "notificationSettings.types.lowCredits",
+                      credit_transaction: "notificationSettings.types.creditTransaction",
+                      project_deleted: "notificationSettings.types.projectDeleted",
+                      project_published: "notificationSettings.types.projectPublished",
+                    };
 
-                  const typeKey = typeI18nMap[type];
-                  const title = t(`${typeKey}.title`);
-                  const description = t(`${typeKey}.description`);
+                    const typeKey = typeI18nMap[type];
+                    const title = t(`${typeKey}.title`);
+                    const description = t(`${typeKey}.description`);
 
-                  return (
-                    <div key={type} className="p-6">
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex-1">
-                          <Heading variant="subsection" as="h3" className="text-text-primary">
-                            {title}
-                          </Heading>
-                          <Text variant="body" className="text-text-muted mt-1">
-                            {description}
-                          </Text>
-                        </div>
+                    return (
+                      <div key={type} className="p-6">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1">
+                            <Heading variant="subsection" as="h3" className="text-text-primary">
+                              {title}
+                            </Heading>
+                            <Text variant="body" className="text-text-muted mt-1">
+                              {description}
+                            </Text>
+                          </div>
 
-                        {/* In-App Toggle */}
-                        <label className="flex flex-col items-center gap-2 cursor-pointer">
-                          <span className="text-xs font-medium text-text-muted">
-                            {t("notificationSettings.inApp")}
-                          </span>
-                          <button
-                            onClick={() => handleToggle(type)}
-                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                              pref.in_app ? "bg-accent-primary" : "bg-surface-muted"
-                            }`}
-                          >
-                            <span
-                              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                                pref.in_app ? "translate-x-6" : "translate-x-1"
+                          {/* In-App Toggle */}
+                          <label className="flex flex-col items-center gap-2 cursor-pointer">
+                            <span className="text-xs font-medium text-text-muted">
+                              {t("notificationSettings.inApp")}
+                            </span>
+                            <button
+                              onClick={() => handleToggle(type)}
+                              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                                pref.in_app ? "bg-accent-primary" : "bg-surface-muted"
                               }`}
-                            />
-                          </button>
-                        </label>
+                            >
+                              <span
+                                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                                  pref.in_app ? "translate-x-6" : "translate-x-1"
+                                }`}
+                              />
+                            </button>
+                          </label>
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </section>
-          );
-        })}
+                    );
+                  })}
+                </div>
+              </section>
+            );
+          })}
 
-        {/* Save Button */}
-        {hasChanges && (
-          <div className="sticky bottom-6 flex justify-center">
-            <div className="bg-surface-panel rounded-xl border border-border-default shadow-2xl p-4 flex items-center gap-3">
-              {saveSuccess && (
-                <span className="text-sm text-status-success font-medium flex items-center gap-2">
-                  <Check className="h-4 w-4" aria-hidden />
-                  {t("notificationSettings.preferencesSaved")}
-                </span>
-              )}
-              <Button onClick={handleSave} disabled={isSaving || preferencesLoading} size="lg">
-                {isSaving
-                  ? t("notificationSettings.saving")
-                  : t("notificationSettings.savePreferences")}
-              </Button>
+          {/* Save Button */}
+          {hasChanges && (
+            <div className="sticky bottom-6 flex justify-center">
+              <div className="bg-surface-panel rounded-xl border border-border-default shadow-2xl p-4 flex items-center gap-3">
+                {saveSuccess && (
+                  <span className="text-sm text-status-success font-medium flex items-center gap-2">
+                    <Check className="h-4 w-4" aria-hidden />
+                    {t("notificationSettings.preferencesSaved")}
+                  </span>
+                )}
+                <Button onClick={handleSave} disabled={isSaving || preferencesLoading} size="lg">
+                  {isSaving
+                    ? t("notificationSettings.saving")
+                    : t("notificationSettings.savePreferences")}
+                </Button>
+              </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
       )}
     </div>
   );

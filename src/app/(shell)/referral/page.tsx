@@ -279,10 +279,7 @@ export default function ReferralPage() {
         </CardHeader>
         <CardContent>
           {history.length === 0 ? (
-            <EmptyState
-              icon={<Users aria-hidden />}
-              title={t("referral.history.noReferrals")}
-            />
+            <EmptyState icon={<Users aria-hidden />} title={t("referral.history.noReferrals")} />
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full min-w-[600px] text-sm">
