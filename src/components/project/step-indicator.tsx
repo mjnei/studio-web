@@ -38,7 +38,7 @@ export function StepIndicator({ steps, currentStep }: StepIndicatorProps) {
                     }
                   `}
                 >
-                  {isCompleted ? <Check className="w-5 h-5" /> : <span>{step.number}</span>}
+                  {isCompleted ? <Check className="h-5 w-5" /> : <span>{step.number}</span>}
                 </div>
 
                 {/* Label */}

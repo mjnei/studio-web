@@ -28,10 +28,10 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
       <div className="mb-8 sm:mb-10 flex justify-center">
         <div className="relative">
           <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-blue-500 to-purple-600 dark:from-blue-600 dark:to-purple-700 rounded-3xl flex items-center justify-center shadow-xl shadow-blue-500/30 animate-float">
-            <Film className="w-10 h-10 sm:w-12 sm:h-12 text-white" aria-hidden="true" />
+            <Film className="h-10 w-10 sm:h-12 sm:w-12 text-white" aria-hidden="true" />
           </div>
           <div className="absolute -top-2 -right-2">
-            <Sparkles className="w-6 h-6 text-yellow-400 animate-pulse" aria-hidden="true" />
+            <Sparkles className="h-6 w-6 text-yellow-400 animate-pulse" aria-hidden="true" />
           </div>
         </div>
       </div>
@@ -61,7 +61,7 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
               key={idx}
               className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-gray-700/50 rounded-full border border-gray-200 dark:border-gray-600 text-sm sm:text-base"
             >
-              <Icon className="w-4 h-4 text-blue-600 dark:text-blue-400" aria-hidden="true" />
+              <Icon className="h-4 w-4 text-blue-600 dark:text-blue-400" aria-hidden="true" />
               <span className="text-gray-700 dark:text-gray-300 font-medium whitespace-nowrap">
                 {feature.text}
               </span>
@@ -79,7 +79,7 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
         <span className="flex items-center gap-2 justify-center">
           {t("onboarding.welcome.getStarted")}
           <ArrowRight
-            className="w-5 h-5 group-hover:translate-x-1 transition-transform"
+            className="h-5 w-5 group-hover:translate-x-1 transition-transform"
             aria-hidden
           />
         </span>

@@ -112,7 +112,7 @@ function InviteContent() {
           <div className="mb-6 rounded-lg border border-accent-cyan/30 bg-gradient-to-br from-accent-cyan/10 to-accent-primary/10 px-4 py-3">
             <div className="flex items-start gap-3">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent-cyan to-accent-primary flex items-center justify-center flex-shrink-0">
-                <Gift className="w-4 h-4 text-white" />
+                <Gift className="h-4 w-4 text-white" />
               </div>
               <div className="flex-1 text-left">
                 <p className="text-sm font-medium text-text-primary mb-1">
@@ -134,7 +134,7 @@ function InviteContent() {
         <div className="text-center">
           {/* Error Icon */}
           <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center mx-auto mb-4">
-            <AlertCircle className="w-8 h-8 text-white" />
+            <AlertCircle className="h-8 w-8 text-white" />
           </div>
 
           {/* Title */}

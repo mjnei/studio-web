@@ -60,7 +60,7 @@ export function VideoGeneration({
       <div className="text-center max-w-2xl mx-auto">
         <div className="mb-4 flex justify-center">
           <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 shadow-lg">
-            <Video className="w-8 h-8 text-white" />
+            <Video className="h-8 w-8 text-white" />
           </div>
         </div>
         <Heading variant="page" as="h2" className="text-text-primary mb-2">
@@ -80,7 +80,7 @@ export function VideoGeneration({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="flex items-start gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-accent-secondary to-accent-tertiary flex-shrink-0">
-                <Film className="w-5 h-5 text-white" />
+                <Film className="h-5 w-5 text-white" />
               </div>
               <div>
                 <p className="text-sm font-medium text-text-primary">{t("project.common.movie")}</p>
@@ -89,7 +89,7 @@ export function VideoGeneration({
             </div>
             <div className="flex items-start gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-green-500 to-emerald-500 flex-shrink-0">
-                <Clock className="w-5 h-5 text-white" />
+                <Clock className="h-5 w-5 text-white" />
               </div>
               <div>
                 <p className="text-sm font-medium text-text-primary">
@@ -145,7 +145,7 @@ export function VideoGeneration({
           <div className="text-center py-12">
             <div className="mb-6 flex justify-center">
               <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-accent-secondary to-accent-tertiary shadow-lg">
-                <Video className="w-10 h-10 text-white" />
+                <Video className="h-10 w-10 text-white" />
               </div>
             </div>
             <Heading variant="section" as="h3" className="text-text-primary mb-2">
@@ -156,7 +156,7 @@ export function VideoGeneration({
             <Button
               variant="primary"
               size="lg"
-              leftIcon={<Video className="w-5 h-5" />}
+              leftIcon={<Video className="h-5 w-5" />}
               onClick={onStartGeneration}
             >
               {t("project.videoGen.startButton")}
@@ -205,7 +205,7 @@ export function VideoGeneration({
                 >
                   <div className="flex-shrink-0">
                     {step.status === "completed" ? (
-                      <CheckCircle2 className="w-5 h-5 text-status-completed" />
+                      <CheckCircle2 className="h-5 w-5 text-status-completed" />
                     ) : step.status === "processing" ? (
                       <Spinner className="h-5 w-5 text-accent-primary" />
                     ) : (
@@ -240,7 +240,7 @@ export function VideoGeneration({
             <div className="text-center py-8">
               <div className="mb-6 flex justify-center">
                 <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-status-completed/20 border-2 border-status-completed">
-                  <CheckCircle2 className="w-10 h-10 text-status-completed" />
+                  <CheckCircle2 className="h-10 w-10 text-status-completed" />
                 </div>
               </div>
               <Heading variant="page" as="h3" className="text-text-primary mb-2">
@@ -261,11 +261,11 @@ export function VideoGeneration({
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <Video className="w-16 h-16 text-text-muted" />
+                      <Video className="h-16 w-16 text-text-muted" />
                     </div>
                   )}
                   <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button variant="primary" size="lg" leftIcon={<Play className="w-8 h-8" />} />
+                    <Button variant="primary" size="lg" leftIcon={<Play className="h-8 w-8" />} />
                   </div>
                 </div>
               </div>
@@ -275,12 +275,12 @@ export function VideoGeneration({
                 <Button
                   variant="primary"
                   size="lg"
-                  leftIcon={<Download className="w-5 h-5" />}
+                  leftIcon={<Download className="h-5 w-5" />}
                   onClick={downloadVideo}
                 >
                   {t("project.videoGen.downloadVideo")}
                 </Button>
-                <Button variant="secondary" size="lg" leftIcon={<Play className="w-5 h-5" />}>
+                <Button variant="secondary" size="lg" leftIcon={<Play className="h-5 w-5" />}>
                   {t("project.videoGen.previewVideo")}
                 </Button>
               </div>
@@ -291,7 +291,7 @@ export function VideoGeneration({
           <Card variant="elevated" padding="md" className="border-border-subtle">
             <div className="flex items-start gap-3">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-primary/20 flex-shrink-0">
-                <CheckCircle2 className="w-4 h-4 text-accent-primary" />
+                <CheckCircle2 className="h-4 w-4 text-accent-primary" />
               </div>
               <div>
                 <p className="text-sm font-medium text-text-primary mb-1">

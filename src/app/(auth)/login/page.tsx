@@ -78,7 +78,7 @@ export default function LoginPage() {
 
       {error && (
         <div className="mb-6 rounded-lg border border-status-failed/30 bg-status-failed/10 px-4 py-3 text-sm text-status-failed flex items-start gap-2">
-          <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+          <AlertCircle className="h-5 w-5 shrink-0 mt-0.5" />
           <span>{error}</span>
         </div>
       )}
@@ -92,7 +92,7 @@ export default function LoginPage() {
           onChange={(e) => setEmail(e.target.value)}
           disabled={loading}
           placeholder={t("auth.placeholders.email")}
-          icon={<Mail className="w-5 h-5" />}
+          icon={<Mail className="h-5 w-5" />}
         />
 
         <Input
@@ -103,7 +103,7 @@ export default function LoginPage() {
           onChange={(e) => setPassword(e.target.value)}
           disabled={loading}
           placeholder={t("auth.placeholders.password")}
-          icon={<Lock className="w-5 h-5" />}
+          icon={<Lock className="h-5 w-5" />}
         />
 
         <div className="text-right">

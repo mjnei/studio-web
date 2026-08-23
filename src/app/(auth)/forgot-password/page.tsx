@@ -19,7 +19,7 @@ export default function ForgotPasswordPage() {
     return (
       <Card variant="elevated" padding="lg" className="text-center">
         <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-green-500/20 to-emerald-500/20">
-          <Mail className="w-8 h-8 text-status-completed" />
+          <Mail className="h-8 w-8 text-status-completed" />
         </div>
         <Heading variant="section" as="h2" className="mb-3 text-text-primary">
           {t("auth.forgotPassword.successTitle")}
@@ -40,7 +40,7 @@ export default function ForgotPasswordPage() {
     <Card variant="elevated" padding="lg">
       <div className="mb-6 text-center">
         <div className="mb-4 inline-flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-accent-secondary/20 to-accent-primary/20">
-          <Lock className="w-8 h-8 text-accent-primary" />
+          <Lock className="h-8 w-8 text-accent-primary" />
         </div>
         <Heading variant="section" as="h2" className="mb-2 text-text-primary">
           {t("auth.forgotPassword.title")}
@@ -65,7 +65,7 @@ export default function ForgotPasswordPage() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t("auth.placeholders.email")}
           required
-          icon={<Mail className="w-5 h-5" />}
+          icon={<Mail className="h-5 w-5" />}
         />
 
         <Button type="submit" variant="primary" fullWidth size="lg">

@@ -91,17 +91,17 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
             <div className="flex items-center gap-2 text-sm font-normal">
               {trend > 0 ? (
                 <>
-                  <TrendingUp className="w-4 h-4 text-red-500" />
+                  <TrendingUp className="h-4 w-4 text-red-500" />
                   <span className="text-red-500">+{trendPercent}%</span>
                 </>
               ) : trend < 0 ? (
                 <>
-                  <TrendingDown className="w-4 h-4 text-green-500" />
+                  <TrendingDown className="h-4 w-4 text-green-500" />
                   <span className="text-green-500">{trendPercent}%</span>
                 </>
               ) : (
                 <>
-                  <Minus className="w-4 h-4 text-muted-foreground" />
+                  <Minus className="h-4 w-4 text-muted-foreground" />
                   <span className="text-muted-foreground">No change</span>
                 </>
               )}

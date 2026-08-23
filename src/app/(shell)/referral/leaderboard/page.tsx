@@ -42,9 +42,9 @@ export default function LeaderboardPage() {
   }, [t, toast]);
 
   const getRankIcon = (rank: number) => {
-    if (rank === 1) return <Trophy className="w-6 h-6 text-amber-500" />;
-    if (rank === 2) return <Medal className="w-6 h-6 text-slate-400" />;
-    if (rank === 3) return <Award className="w-6 h-6 text-amber-700" />;
+    if (rank === 1) return <Trophy className="h-6 w-6 text-amber-500" />;
+    if (rank === 2) return <Medal className="h-6 w-6 text-slate-400" />;
+    if (rank === 3) return <Award className="h-6 w-6 text-amber-700" />;
     return null;
   };
 
@@ -107,7 +107,7 @@ export default function LeaderboardPage() {
                       height={80}
                     />
                   ) : (
-                    <Medal className="w-10 h-10 text-white" />
+                    <Medal className="h-10 w-10 text-white" />
                   )}
                 </div>
               </div>
@@ -152,7 +152,7 @@ export default function LeaderboardPage() {
                       height={96}
                     />
                   ) : (
-                    <Trophy className="w-12 h-12 text-white" />
+                    <Trophy className="h-12 w-12 text-white" />
                   )}
                 </div>
               </div>
@@ -197,7 +197,7 @@ export default function LeaderboardPage() {
                       height={80}
                     />
                   ) : (
-                    <Award className="w-10 h-10 text-white" />
+                    <Award className="h-10 w-10 text-white" />
                   )}
                 </div>
               </div>
@@ -248,7 +248,7 @@ export default function LeaderboardPage() {
         <CardContent>
           {leaderboard.length === 0 ? (
             <div className="text-center py-12">
-              <TrendingUp className="w-12 h-12 text-text-muted mx-auto mb-4" />
+              <TrendingUp className="h-12 w-12 text-text-muted mx-auto mb-4" />
               <p className="text-text-muted">{t("referral.leaderboard.noData")}</p>
             </div>
           ) : (
@@ -297,7 +297,7 @@ export default function LeaderboardPage() {
                             />
                           ) : (
                             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center">
-                              <Users className="w-5 h-5 text-white" />
+                              <Users className="h-5 w-5 text-white" />
                             </div>
                           )}
                           <p className="font-medium text-text-primary">{entry.user_name}</p>

@@ -68,7 +68,7 @@ export default function WorkflowStep({ onNext, onBack }: WorkflowStepProps) {
                   group-hover:scale-105 transition-transform duration-300
                 `}
                 >
-                  <Icon className="w-6 h-6 sm:w-7 sm:h-7 text-white" aria-hidden="true" />
+                  <Icon className="h-6 w-6 sm:h-7 sm:w-7 text-white" aria-hidden="true" />
                 </div>
                 <span
                   className="absolute -top-1.5 -right-1.5 w-5 h-5 sm:w-6 sm:h-6 bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-xs font-bold rounded-full flex items-center justify-center border-2 border-gray-200 dark:border-gray-700 shadow-sm"
@@ -104,7 +104,7 @@ export default function WorkflowStep({ onNext, onBack }: WorkflowStepProps) {
       <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 sm:p-4 mb-6 sm:mb-8">
         <div className="flex items-start gap-2 sm:gap-3">
           <Info
-            className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5"
+            className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5"
             aria-hidden
           />
           <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">

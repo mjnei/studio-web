@@ -165,7 +165,7 @@ export default function QueueManagementPage() {
       {error && (
         <Card className="border-destructive">
           <CardContent className="flex items-center gap-3 pt-6">
-            <AlertCircle className="w-5 h-5 text-destructive" />
+            <AlertCircle className="h-5 w-5 text-destructive" />
             <div>
               <p className="font-medium">Failed to load queues</p>
               <p className="text-sm text-muted-foreground">{error}</p>
@@ -234,7 +234,7 @@ export default function QueueManagementPage() {
                     <CardDescription className="text-xs">Critical Queues</CardDescription>
                     <Heading variant="metric" className="flex items-center gap-2">
                       {criticalQueues}
-                      {criticalQueues > 0 && <AlertTriangle className="w-5 h-5 text-destructive" />}
+                      {criticalQueues > 0 && <AlertTriangle className="h-5 w-5 text-destructive" />}
                     </Heading>
                   </CardHeader>
                 </Card>
@@ -247,7 +247,7 @@ export default function QueueManagementPage() {
                     <CardDescription className="text-xs">High Load Queues</CardDescription>
                     <Heading variant="metric" className="flex items-center gap-2">
                       {warningQueues}
-                      {warningQueues > 0 && <TrendingUp className="w-5 h-5 text-yellow-600" />}
+                      {warningQueues > 0 && <TrendingUp className="h-5 w-5 text-yellow-600" />}
                     </Heading>
                   </CardHeader>
                 </Card>
@@ -309,7 +309,7 @@ export default function QueueManagementPage() {
                   { value: "name", label: "Queue Name" },
                 ]}
                 size="sm"
-                icon={<ArrowUpDown className="w-4 h-4" />}
+                icon={<ArrowUpDown className="h-4 w-4" />}
               />
             </div>
             <LayoutToggle layoutMode={layoutMode} onLayoutChange={handleLayoutChange} />
@@ -335,7 +335,7 @@ export default function QueueManagementPage() {
       ) : sortedQueues.length === 0 ? (
         <Card>
           <CardContent className="text-center py-12">
-            <AlertCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+            <AlertCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
             <Heading variant="subsection" as="p" className="mb-2">
               No queues found
             </Heading>

@@ -16,7 +16,7 @@ export function QueueDetailPanel({ stats }: QueueDetailPanelProps) {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Database className="w-5 h-5" />
+            <Database className="h-5 w-5" />
             Queue Information
           </CardTitle>
         </CardHeader>
@@ -48,7 +48,7 @@ export function QueueDetailPanel({ stats }: QueueDetailPanelProps) {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <TrendingUp className="w-5 h-5" />
+            <TrendingUp className="h-5 w-5" />
             Current Stats
           </CardTitle>
         </CardHeader>
@@ -67,7 +67,7 @@ export function QueueDetailPanel({ stats }: QueueDetailPanelProps) {
             <span className="text-sm text-muted-foreground">Consumer Status</span>
             {stats.consumer_count > 0 ? (
               <Badge variant="default" className="flex items-center gap-1">
-                <Users className="w-3 h-3" />
+                <Users className="h-3 w-3" />
                 Active
               </Badge>
             ) : (
@@ -81,7 +81,7 @@ export function QueueDetailPanel({ stats }: QueueDetailPanelProps) {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <HardDrive className="w-5 h-5" />
+            <HardDrive className="h-5 w-5" />
             Configuration
           </CardTitle>
         </CardHeader>
@@ -115,7 +115,7 @@ export function QueueDetailPanel({ stats }: QueueDetailPanelProps) {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Clock className="w-5 h-5" />
+            <Clock className="h-5 w-5" />
             Description
           </CardTitle>
         </CardHeader>

@@ -103,7 +103,7 @@ export function ProjectCard({
                 }
                 size="sm"
               >
-                {project.status === "completed" && <CheckCircle2 className="w-3 h-3" />}
+                {project.status === "completed" && <CheckCircle2 className="h-3 w-3" />}
                 {statusLabel}
               </Badge>
             </div>
@@ -215,7 +215,7 @@ export function ProjectCard({
                       }
                       size="sm"
                     >
-                      {project.status === "completed" && <CheckCircle2 className="w-3 h-3" />}
+                      {project.status === "completed" && <CheckCircle2 className="h-3 w-3" />}
                       {statusLabel}
                     </Badge>
                   </div>
@@ -230,7 +230,7 @@ export function ProjectCard({
               </div>
               {showDelete && (
                 <div className="flex items-center gap-1 text-xs text-text-muted flex-shrink-0">
-                  <Clock className="w-3 h-3" />
+                  <Clock className="h-3 w-3" />
                   {updatedDate}
                 </div>
               )}

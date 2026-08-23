@@ -226,7 +226,7 @@ export default function ProfilePage() {
                   </div>
                 )}
                 <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-lg bg-surface-elevated border border-border-default flex items-center justify-center shadow-sm">
-                  <Shield className="w-3.5 h-3.5 text-accent-cyan" />
+                  <Shield className="h-3.5 w-3.5 text-accent-cyan" />
                 </div>
               </div>
 
@@ -236,7 +236,7 @@ export default function ProfilePage() {
                   {user.name}
                 </Heading>
                 <div className="flex items-center justify-center gap-1.5 text-text-secondary text-sm">
-                  <Mail className="w-3.5 h-3.5 text-text-muted shrink-0" />
+                  <Mail className="h-3.5 w-3.5 text-text-muted shrink-0" />
                   <span className="truncate max-w-[180px] sm:max-w-[220px]" title={user.email}>
                     {user.email}
                   </span>
@@ -247,9 +247,9 @@ export default function ProfilePage() {
                     aria-label={t("profile.accountOverview.copyEmail")}
                   >
                     {copyFeedback ? (
-                      <Check className="w-3.5 h-3.5 text-status-completed" />
+                      <Check className="h-3.5 w-3.5 text-status-completed" />
                     ) : (
-                      <Copy className="w-3.5 h-3.5" />
+                      <Copy className="h-3.5 w-3.5" />
                     )}
                   </button>
                 </div>
@@ -258,11 +258,11 @@ export default function ProfilePage() {
               {/* Badges Overview */}
               <div className="flex flex-wrap gap-2 justify-center pt-1">
                 <Badge variant="primary" size="md">
-                  <Shield className="w-3 h-3 mr-1" />
+                  <Shield className="h-3 w-3 mr-1" />
                   {user.provider}
                 </Badge>
                 <Badge variant={membershipTier === "free" ? "default" : "success"} size="md">
-                  <Crown className="w-3 h-3 mr-1" />
+                  <Crown className="h-3 w-3 mr-1" />
                   {tierLabel}
                 </Badge>
                 {user.subscription_status && (
@@ -289,7 +289,7 @@ export default function ProfilePage() {
                     size="md"
                     className="w-full justify-center"
                     onClick={startEditing}
-                    leftIcon={<Settings className="w-4 h-4" />}
+                    leftIcon={<Settings className="h-4 w-4" />}
                   >
                     {t("profile.accountOverview.edit")}
                   </Button>
@@ -299,7 +299,7 @@ export default function ProfilePage() {
                   size="md"
                   className="w-full justify-center text-text-secondary hover:text-status-failed hover:border-status-failed/40 transition-colors"
                   onClick={logout}
-                  leftIcon={<LogOut className="w-4 h-4" />}
+                  leftIcon={<LogOut className="h-4 w-4" />}
                 >
                   {t("profile.onboarding.signOut")}
                 </Button>
@@ -311,7 +311,7 @@ export default function ProfilePage() {
           <Card variant="elevated" padding="md" className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Crown className="w-4 h-4 text-accent-cyan" />
+                <Crown className="h-4 w-4 text-accent-cyan" />
                 <Text variant="caption" className="font-semibold text-text-primary">
                   {t("profile.membershipBilling.currentPlan")}
                 </Text>
@@ -330,7 +330,7 @@ export default function ProfilePage() {
               </Link>
               <Link href="/billing" className="flex-1">
                 <Button variant="ghost" size="sm" className="w-full text-xs">
-                  <CreditCard className="w-3.5 h-3.5 mr-1" />
+                  <CreditCard className="h-3.5 w-3.5 mr-1" />
                   {t("profile.upgradeBanner.billing")}
                 </Button>
               </Link>
@@ -351,7 +351,7 @@ export default function ProfilePage() {
               <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="flex items-start gap-3.5">
                   <div className="shrink-0 w-11 h-11 rounded-xl bg-gradient-to-br from-accent-cyan to-accent-primary flex items-center justify-center shadow-md">
-                    <Crown className="w-5 h-5 text-white" />
+                    <Crown className="h-5 w-5 text-white" />
                   </div>
                   <div>
                     <Heading
@@ -360,7 +360,7 @@ export default function ProfilePage() {
                       className="text-text-primary mb-1 flex items-center gap-1.5"
                     >
                       {t("profile.upgradeBanner.title")}
-                      <Sparkles className="w-4 h-4 text-accent-cyan animate-pulse" />
+                      <Sparkles className="h-4 w-4 text-accent-cyan animate-pulse" />
                     </Heading>
                     <Text variant="body" className="text-text-secondary text-sm">
                       {t("profile.upgradeBanner.description")}
@@ -375,7 +375,7 @@ export default function ProfilePage() {
                   </Link>
                   <Link href="/billing" className="flex-1 sm:flex-none">
                     <Button variant="secondary" size="sm" className="w-full">
-                      <CreditCard className="w-3.5 h-3.5 mr-1" />
+                      <CreditCard className="h-3.5 w-3.5 mr-1" />
                       {t("profile.upgradeBanner.billing")}
                     </Button>
                   </Link>
@@ -389,7 +389,7 @@ export default function ProfilePage() {
             <CardHeader className="pb-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-accent-primary flex items-center justify-center shadow-sm shrink-0">
-                  <User className="w-5 h-5 text-white" />
+                  <User className="h-5 w-5 text-white" />
                 </div>
                 <div>
                   <CardTitle>{t("profile.accountOverview.title")}</CardTitle>
@@ -452,13 +452,13 @@ export default function ProfilePage() {
 
               {profileError && (
                 <div className="mt-4 rounded-lg border border-status-failed/30 bg-status-failed/10 px-4 py-3 text-sm text-status-failed flex items-start gap-2">
-                  <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                  <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" />
                   <span>{profileError}</span>
                 </div>
               )}
               {profileSuccess && (
                 <div className="mt-4 rounded-lg border border-status-completed/30 bg-status-completed/10 px-4 py-3 text-sm text-status-completed flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                  <CheckCircle2 className="h-4 w-4 mt-0.5 flex-shrink-0" />
                   <span>{t("profile.accountOverview.profileUpdatedSuccess")}</span>
                 </div>
               )}
@@ -470,7 +470,7 @@ export default function ProfilePage() {
             <CardHeader className="pb-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-cyan to-blue-500 flex items-center justify-center shadow-sm shrink-0">
-                  <Crown className="w-5 h-5 text-white" />
+                  <Crown className="h-5 w-5 text-white" />
                 </div>
                 <div>
                   <CardTitle>{t("profile.membershipBilling.title")}</CardTitle>
@@ -540,7 +540,7 @@ export default function ProfilePage() {
                   <Link href="/billing" className="w-full sm:w-auto">
                     <Button
                       variant="secondary"
-                      leftIcon={<CreditCard className="w-4 h-4" />}
+                      leftIcon={<CreditCard className="h-4 w-4" />}
                       className="w-full sm:w-auto"
                     >
                       {t("profile.membershipBilling.manageBilling")}
@@ -556,7 +556,7 @@ export default function ProfilePage() {
             <CardHeader className="pb-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-sm shrink-0">
-                  <KeyRound className="w-5 h-5 text-white" />
+                  <KeyRound className="h-5 w-5 text-white" />
                 </div>
                 <div>
                   <CardTitle>{t("profile.passwordSecurity.title")}</CardTitle>
@@ -568,13 +568,13 @@ export default function ProfilePage() {
               <div className="space-y-4 pt-2">
                 {passwordError && (
                   <div className="rounded-lg border border-status-failed/30 bg-status-failed/10 px-4 py-3 text-sm text-status-failed flex items-start gap-2">
-                    <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                    <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" />
                     <span>{passwordError}</span>
                   </div>
                 )}
                 {passwordSuccess && (
                   <div className="rounded-lg border border-status-completed/30 bg-status-completed/10 px-4 py-3 text-sm text-status-completed flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                    <CheckCircle2 className="h-4 w-4 mt-0.5 flex-shrink-0" />
                     <span>{t("profile.passwordSecurity.passwordUpdatedSuccess")}</span>
                   </div>
                 )}
@@ -588,7 +588,7 @@ export default function ProfilePage() {
                       setPasswordError("");
                       setPasswordSuccess(false);
                     }}
-                    leftIcon={<KeyRound className="w-4 h-4" />}
+                    leftIcon={<KeyRound className="h-4 w-4" />}
                   >
                     {showChangePassword
                       ? t("profile.accountOverview.cancel")
@@ -640,7 +640,7 @@ export default function ProfilePage() {
             <CardHeader className="pb-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-sm shrink-0">
-                  <Link2 className="w-5 h-5 text-white" />
+                  <Link2 className="h-5 w-5 text-white" />
                 </div>
                 <div>
                   <CardTitle>{t("profile.connectedAccounts.title")}</CardTitle>
@@ -653,7 +653,7 @@ export default function ProfilePage() {
                 <div className="flex items-center justify-between p-4 rounded-xl border border-border-default bg-surface-raised hover:border-border-strong transition-colors">
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-lg bg-white flex items-center justify-center shadow-sm shrink-0">
-                      <Mail className="w-4 h-4 text-gray-700" />
+                      <Mail className="h-4 w-4 text-gray-700" />
                     </div>
                     <div>
                       <p className="text-sm font-semibold text-text-primary">
@@ -661,7 +661,7 @@ export default function ProfilePage() {
                       </p>
                       {user.provider === "google" && (
                         <p className="text-xs text-status-completed flex items-center gap-1 mt-0.5">
-                          <CheckCircle2 className="w-3 h-3" />
+                          <CheckCircle2 className="h-3 w-3" />
                           {t("profile.connectedAccounts.connected")}
                         </p>
                       )}
@@ -682,7 +682,7 @@ export default function ProfilePage() {
             <CardHeader className="pb-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-sm shrink-0">
-                  <RefreshCw className="w-5 h-5 text-white" />
+                  <RefreshCw className="h-5 w-5 text-white" />
                 </div>
                 <div>
                   <CardTitle>{t("profile.onboarding.title")}</CardTitle>
@@ -712,7 +712,7 @@ export default function ProfilePage() {
                     variant="secondary"
                     onClick={handleResetOnboarding}
                     disabled={resettingOnboarding}
-                    leftIcon={<RefreshCw className="w-4 h-4" />}
+                    leftIcon={<RefreshCw className="h-4 w-4" />}
                     className="w-full sm:w-auto shrink-0"
                   >
                     {resettingOnboarding
@@ -733,7 +733,7 @@ export default function ProfilePage() {
             <CardHeader className="pb-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center shadow-sm shrink-0">
-                  <AlertTriangle className="w-5 h-5 text-white" />
+                  <AlertTriangle className="h-5 w-5 text-white" />
                 </div>
                 <div>
                   <CardTitle className="text-status-failed">
@@ -751,7 +751,7 @@ export default function ProfilePage() {
                 {showDeleteConfirm ? (
                   <div className="space-y-4 rounded-xl border border-status-failed/30 bg-surface-raised p-4">
                     <p className="text-sm text-status-failed flex items-center gap-2 font-medium">
-                      <AlertTriangle className="w-4 h-4 shrink-0" />
+                      <AlertTriangle className="h-4 w-4 shrink-0" />
                       {t("profile.dangerZone.confirmDelete")}
                     </p>
                     <Input
@@ -775,7 +775,7 @@ export default function ProfilePage() {
                         variant="danger"
                         onClick={handleDeleteAccount}
                         disabled={deleteText !== "delete my account"}
-                        leftIcon={<Trash2 className="w-4 h-4" />}
+                        leftIcon={<Trash2 className="h-4 w-4" />}
                       >
                         {t("profile.dangerZone.permanentlyDeleteAccount")}
                       </Button>
@@ -785,7 +785,7 @@ export default function ProfilePage() {
                   <Button
                     variant="danger"
                     onClick={() => setShowDeleteConfirm(true)}
-                    leftIcon={<Trash2 className="w-4 h-4" />}
+                    leftIcon={<Trash2 className="h-4 w-4" />}
                     className="w-full sm:w-auto"
                   >
                     {t("profile.dangerZone.deleteAccount")}

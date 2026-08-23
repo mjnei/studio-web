@@ -106,7 +106,7 @@ export default function ReferralPage() {
         description={t("referral.description")}
         action={
           <Link href="/referral/leaderboard">
-            <Button variant="outline" leftIcon={<Trophy className="w-4 h-4" />}>
+            <Button variant="outline" leftIcon={<Trophy className="h-4 w-4" />}>
               {t("referral.viewLeaderboard")}
             </Button>
           </Link>
@@ -124,12 +124,12 @@ export default function ReferralPage() {
           <CardHeader>
             <div className="flex items-start gap-4">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-accent-cyan to-accent-primary flex items-center justify-center flex-shrink-0">
-                <Share2 className="w-6 h-6 text-white" />
+                <Share2 className="h-6 w-6 text-white" />
               </div>
               <div className="flex-1">
                 <CardTitle className="flex items-center gap-2">
                   {t("referral.inviteCard.title")}
-                  <Gift className="w-5 h-5 text-accent-cyan" />
+                  <Gift className="h-5 w-5 text-accent-cyan" />
                 </CardTitle>
                 <CardDescription>{t("referral.inviteCard.description")}</CardDescription>
               </div>
@@ -150,7 +150,7 @@ export default function ReferralPage() {
                   variant="primary"
                   size="lg"
                   onClick={handleCopy}
-                  leftIcon={copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                  leftIcon={copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                   className="shrink-0"
                 >
                   {copied ? t("referral.inviteCard.copied") : t("referral.inviteCard.copyLink")}
@@ -184,7 +184,7 @@ export default function ReferralPage() {
               </Heading>
             </div>
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Users className="w-6 h-6 text-white" />
+              <Users className="h-6 w-6 text-white" />
             </div>
           </div>
         </Card>
@@ -202,7 +202,7 @@ export default function ReferralPage() {
               </Heading>
             </div>
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <TrendingUp className="w-6 h-6 text-white" />
+              <TrendingUp className="h-6 w-6 text-white" />
             </div>
           </div>
         </Card>
@@ -220,7 +220,7 @@ export default function ReferralPage() {
               </Heading>
             </div>
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Award className="w-6 h-6 text-white" />
+              <Award className="h-6 w-6 text-white" />
             </div>
           </div>
         </Card>
@@ -231,7 +231,7 @@ export default function ReferralPage() {
         <Card variant="elevated" padding="lg" className="mb-6">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Trophy className="w-5 h-5 text-amber-500" />
+              <Trophy className="h-5 w-5 text-amber-500" />
               {t("referral.achievements.title")}
             </CardTitle>
             <CardDescription>{t("referral.achievements.description")}</CardDescription>
@@ -253,7 +253,7 @@ export default function ReferralPage() {
                     />
                   ) : (
                     <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center mx-auto mb-2">
-                      <Trophy className="w-6 h-6 text-white" />
+                      <Trophy className="h-6 w-6 text-white" />
                     </div>
                   )}
                   <p className="text-sm font-semibold text-text-primary">{achievement.name}</p>
@@ -279,7 +279,7 @@ export default function ReferralPage() {
         <CardContent>
           {history.length === 0 ? (
             <div className="text-center py-12">
-              <Users className="w-12 h-12 text-text-muted mx-auto mb-4" />
+              <Users className="h-12 w-12 text-text-muted mx-auto mb-4" />
               <p className="text-text-muted">{t("referral.history.noReferrals")}</p>
             </div>
           ) : (

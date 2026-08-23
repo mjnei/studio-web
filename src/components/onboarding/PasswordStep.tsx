@@ -92,12 +92,12 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
         <div className="mb-4 sm:mb-6 flex justify-center">
           <div className="relative">
             <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-purple-500 to-pink-600 dark:from-purple-600 dark:to-pink-700 rounded-3xl flex items-center justify-center shadow-xl shadow-purple-500/30">
-              <Lock className="w-8 h-8 sm:w-10 sm:h-10 text-white" aria-hidden="true" />
+              <Lock className="h-8 w-8 sm:h-10 sm:w-10 text-white" aria-hidden="true" />
             </div>
             {hasExistingPassword && (
               <div className="absolute -top-1 -right-1">
                 <CheckCircle2
-                  className="w-7 h-7 text-green-500 bg-white dark:bg-gray-800 rounded-full"
+                  className="h-7 w-7 text-green-500 bg-white dark:bg-gray-800 rounded-full"
                   aria-hidden="true"
                 />
               </div>
@@ -121,14 +121,14 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
 
         {!hasExistingPassword && (
           <div className="flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400 px-4">
-            <Shield className="w-4 h-4" aria-hidden="true" />
+            <Shield className="h-4 w-4" aria-hidden="true" />
             <span>{t("onboarding.password.securityHint")}</span>
           </div>
         )}
 
         {hasExistingPassword && (
           <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded-xl text-sm font-medium border border-green-200 dark:border-green-800">
-            <CheckCircle2 className="w-5 h-5" aria-hidden="true" />
+            <CheckCircle2 className="h-5 w-5" aria-hidden="true" />
             <span>{t("onboarding.password.alreadyConfigured")}</span>
           </div>
         )}
@@ -167,9 +167,9 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
               }
             >
               {showPassword ? (
-                <EyeOff className="w-5 h-5" aria-hidden="true" />
+                <EyeOff className="h-5 w-5" aria-hidden="true" />
               ) : (
-                <Eye className="w-5 h-5" aria-hidden="true" />
+                <Eye className="h-5 w-5" aria-hidden="true" />
               )}
             </button>
           </div>
@@ -248,9 +248,9 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
               }
             >
               {showConfirmPassword ? (
-                <EyeOff className="w-5 h-5" aria-hidden="true" />
+                <EyeOff className="h-5 w-5" aria-hidden="true" />
               ) : (
-                <Eye className="w-5 h-5" aria-hidden="true" />
+                <Eye className="h-5 w-5" aria-hidden="true" />
               )}
             </button>
           </div>
@@ -261,7 +261,7 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
               {password === confirmPassword ? (
                 <>
                   <CheckCircle2
-                    className="w-4 h-4 text-green-600 dark:text-green-400"
+                    className="h-4 w-4 text-green-600 dark:text-green-400"
                     aria-hidden="true"
                   />
                   <span className="text-xs text-green-600 dark:text-green-400 font-medium">
@@ -271,7 +271,7 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
               ) : (
                 <>
                   <AlertCircle
-                    className="w-4 h-4 text-red-600 dark:text-red-400"
+                    className="h-4 w-4 text-red-600 dark:text-red-400"
                     aria-hidden="true"
                   />
                   <span className="text-xs text-red-600 dark:text-red-400 font-medium">
@@ -291,7 +291,7 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
             role="alert"
             aria-live="polite"
           >
-            <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" aria-hidden="true" />
+            <AlertCircle className="h-5 w-5 flex-shrink-0 mt-0.5" aria-hidden="true" />
             <span>{error}</span>
           </div>
         )}

@@ -71,7 +71,7 @@ export function QueuePurgeDialog({ queue, open, onOpenChange, onSuccess }: Queue
     >
       <div className="space-y-3 text-sm">
         <p className="flex items-center gap-2">
-          <AlertTriangle className="w-5 h-5 text-destructive shrink-0" />
+          <AlertTriangle className="h-5 w-5 text-destructive shrink-0" />
           You are about to <strong>permanently delete all messages</strong> from:
         </p>
         <div className="p-3 bg-muted rounded-md">

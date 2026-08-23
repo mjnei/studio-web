@@ -49,7 +49,7 @@ export function DLQInspector({ queueName, dlqStats }: DLQInspectorProps) {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5 text-yellow-500" />
+            <AlertTriangle className="h-5 w-5 text-yellow-500" />
             Dead-Letter Queue
           </CardTitle>
           <CardDescription>
@@ -113,11 +113,11 @@ export function DLQInspector({ queueName, dlqStats }: DLQInspectorProps) {
 
             <div className="flex gap-2">
               <Button variant="outline" size="sm" onClick={() => window.location.reload()}>
-                <RefreshCw className="w-4 h-4 mr-2" />
+                <RefreshCw className="h-4 w-4 mr-2" />
                 Refresh
               </Button>
               <Button variant="destructive" size="sm" onClick={handlePurgeDLQ} disabled={purging}>
-                <Trash2 className="w-4 h-4 mr-2" />
+                <Trash2 className="h-4 w-4 mr-2" />
                 Purge DLQ
               </Button>
             </div>
@@ -133,7 +133,7 @@ export function DLQInspector({ queueName, dlqStats }: DLQInspectorProps) {
           </CardHeader>
           <CardContent>
             <div className="flex items-start gap-3 p-4 bg-green-500/10 rounded-lg">
-              <Info className="w-5 h-5 text-green-500 mt-0.5" />
+              <Info className="h-5 w-5 text-green-500 mt-0.5" />
               <div className="flex-1">
                 <p className="text-sm text-muted-foreground">
                   A clean DLQ indicates that all messages are being processed successfully without

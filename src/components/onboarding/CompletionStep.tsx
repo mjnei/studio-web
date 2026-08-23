@@ -99,7 +99,7 @@ export default function CompletionStep() {
           <div className="relative">
             <div className="w-20 h-20 sm:w-24 sm:h-24 bg-red-100 dark:bg-red-900/30 rounded-3xl flex items-center justify-center shadow-xl border-2 border-red-200 dark:border-red-800">
               <AlertCircle
-                className="w-10 h-10 sm:w-12 sm:h-12 text-red-600 dark:text-red-400"
+                className="h-10 w-10 sm:h-12 sm:w-12 text-red-600 dark:text-red-400"
                 aria-hidden="true"
               />
             </div>
@@ -139,7 +139,7 @@ export default function CompletionStep() {
               />
             </div>
             <div className="absolute -top-2 -right-2">
-              <Sparkles className="w-8 h-8 text-yellow-400 animate-pulse" aria-hidden="true" />
+              <Sparkles className="h-8 w-8 text-yellow-400 animate-pulse" aria-hidden="true" />
             </div>
           </div>
         </div>
@@ -172,17 +172,17 @@ export default function CompletionStep() {
         <div className="relative">
           <div className="w-24 h-24 sm:w-28 sm:h-28 bg-gradient-to-br from-green-400 to-emerald-600 dark:from-green-500 dark:to-emerald-700 rounded-3xl flex items-center justify-center shadow-2xl shadow-green-500/40 animate-scaleIn">
             <CheckCircle2
-              className="w-14 h-14 sm:w-16 sm:h-16 text-white"
+              className="h-14 w-14 sm:h-16 sm:w-16 text-white"
               aria-hidden="true"
               strokeWidth={2.5}
             />
           </div>
           <div className="absolute -top-3 -right-3 animate-bounce">
-            <Sparkles className="w-8 h-8 sm:w-10 sm:h-10 text-yellow-400" aria-hidden="true" />
+            <Sparkles className="h-8 w-8 sm:h-10 sm:w-10 text-yellow-400" aria-hidden="true" />
           </div>
           <div className="absolute -bottom-2 -left-2 animate-pulse">
             <Rocket
-              className="w-8 h-8 sm:w-10 sm:h-10 text-blue-500 dark:text-blue-400"
+              className="h-8 w-8 sm:h-10 sm:w-10 text-blue-500 dark:text-blue-400"
               aria-hidden="true"
             />
           </div>
@@ -228,7 +228,7 @@ export default function CompletionStep() {
         <span className="flex items-center justify-center gap-2">
           {t("onboarding.completion.goToDashboard")}
           <Rocket
-            className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"
+            className="h-5 w-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"
             aria-hidden="true"
           />
         </span>

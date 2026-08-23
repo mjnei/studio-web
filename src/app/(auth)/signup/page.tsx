@@ -143,7 +143,7 @@ function SignupContent() {
         <div className="mb-6 rounded-lg border border-accent-cyan/30 bg-gradient-to-br from-accent-cyan/10 to-accent-primary/10 px-4 py-3">
           <div className="flex items-start gap-3">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-accent-cyan to-accent-primary flex items-center justify-center flex-shrink-0">
-              <Gift className="w-4 h-4 text-white" />
+              <Gift className="h-4 w-4 text-white" />
             </div>
             <div className="flex-1">
               <p className="text-sm font-medium text-text-primary mb-1">
@@ -157,7 +157,7 @@ function SignupContent() {
 
       {error && (
         <div className="mb-6 rounded-lg border border-status-failed/30 bg-status-failed/10 px-4 py-3 text-sm text-status-failed flex items-start gap-2">
-          <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+          <AlertCircle className="h-5 w-5 shrink-0 mt-0.5" />
           <span>{error}</span>
         </div>
       )}

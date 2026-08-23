@@ -85,7 +85,7 @@ export function QueueMessagePeeker({ queueName, stats }: QueueMessagePeekerProps
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="flex items-center gap-2">
-                <Eye className="w-5 h-5" />
+                <Eye className="h-5 w-5" />
                 Peek Message
               </CardTitle>
               <CardDescription className="mt-1">
@@ -105,7 +105,7 @@ export function QueueMessagePeeker({ queueName, stats }: QueueMessagePeekerProps
         <CardContent>
           {stats.message_count === 0 ? (
             <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-lg border border-muted">
-              <EyeOff className="w-5 h-5 text-muted-foreground" />
+              <EyeOff className="h-5 w-5 text-muted-foreground" />
               <p className="text-sm text-muted-foreground">Queue is empty - no messages to peek</p>
             </div>
           ) : (
@@ -121,7 +121,7 @@ export function QueueMessagePeeker({ queueName, stats }: QueueMessagePeekerProps
       {error && (
         <Card className="border-destructive">
           <CardContent className="flex items-center gap-3 pt-6">
-            <AlertCircle className="w-5 h-5 text-destructive shrink-0" />
+            <AlertCircle className="h-5 w-5 text-destructive shrink-0" />
             <div>
               <p className="text-sm font-medium text-destructive">Error</p>
               <p className="text-sm text-muted-foreground">{error}</p>
@@ -143,12 +143,12 @@ export function QueueMessagePeeker({ queueName, stats }: QueueMessagePeekerProps
               <Button onClick={copyToClipboard} variant="outline" size="sm" className="gap-2">
                 {copied ? (
                   <>
-                    <Check className="w-4 h-4" />
+                    <Check className="h-4 w-4" />
                     Copied
                   </>
                 ) : (
                   <>
-                    <Copy className="w-4 h-4" />
+                    <Copy className="h-4 w-4" />
                     Copy
                   </>
                 )}
@@ -187,7 +187,7 @@ export function QueueMessagePeeker({ queueName, stats }: QueueMessagePeekerProps
             )}
 
             <div className="pt-4 border-t flex items-start gap-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded">
-              <AlertCircle className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
+              <AlertCircle className="h-4 w-4 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
               <p className="text-xs text-blue-600 dark:text-blue-400">
                 This message is not removed from the queue. Use the peek function to inspect without
                 affecting message processing.

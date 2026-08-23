@@ -110,7 +110,7 @@ export default function HelpPage() {
         <Card variant="interactive" padding="md" className="group">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center group-hover:scale-110 transition-transform">
-              <BookOpen className="w-5 h-5 text-white" />
+              <BookOpen className="h-5 w-5 text-white" />
             </div>
             <div>
               <Heading variant="label" as="h3" className="text-text-primary">
@@ -126,7 +126,7 @@ export default function HelpPage() {
         <Card variant="interactive" padding="md" className="group">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <MessageCircle className="w-5 h-5 text-white" />
+              <MessageCircle className="h-5 w-5 text-white" />
             </div>
             <div>
               <Heading variant="label" as="h3" className="text-text-primary">
@@ -142,7 +142,7 @@ export default function HelpPage() {
         <Card variant="interactive" padding="md" className="group">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <ExternalLink className="w-5 h-5 text-white" />
+              <ExternalLink className="h-5 w-5 text-white" />
             </div>
             <div>
               <Heading variant="label" as="h3" className="text-text-primary">
@@ -167,7 +167,7 @@ export default function HelpPage() {
                   <div
                     className={`w-10 h-10 rounded-xl bg-gradient-to-br ${section.color} flex items-center justify-center`}
                   >
-                    <IconComponent className="w-5 h-5 text-white" />
+                    <IconComponent className="h-5 w-5 text-white" />
                   </div>
                   <CardTitle>{section.title}</CardTitle>
                 </div>
@@ -191,7 +191,7 @@ export default function HelpPage() {
                       </p>
                       <div className="mt-3 flex items-center gap-1 text-xs text-accent-cyan opacity-0 group-hover:opacity-100 transition-opacity">
                         {t("help.gettingStarted.readMore")}
-                        <ExternalLink className="w-3 h-3" />
+                        <ExternalLink className="h-3 w-3" />
                       </div>
                     </button>
                   ))}
@@ -206,17 +206,17 @@ export default function HelpPage() {
       <Card variant="elevated" padding="lg" className="mt-8 text-center">
         <div className="max-w-2xl mx-auto">
           <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center">
-            <HelpCircle className="w-8 h-8 text-white" />
+            <HelpCircle className="h-8 w-8 text-white" />
           </div>
           <CardTitle className="mb-2">{t("help.contactSupport.title")}</CardTitle>
           <CardDescription className="mb-6">{t("help.contactSupport.description")}</CardDescription>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button variant="primary" size="lg">
-              <Mail className="w-4 h-4" />
+              <Mail className="h-4 w-4" />
               {t("help.contactSupport.contact")}
             </Button>
             <Button variant="secondary" size="lg">
-              <MessageCircle className="w-4 h-4" />
+              <MessageCircle className="h-4 w-4" />
               {t("help.contactSupport.liveChat")}
             </Button>
           </div>

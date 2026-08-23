@@ -239,7 +239,7 @@ export default function BillingPage() {
               {/* Success Message */}
               {creditsSuccess && (
                 <div className="mt-4 rounded-lg border border-status-completed/30 bg-status-completed/10 px-4 py-3 text-sm text-status-completed flex items-start gap-2">
-                  <Check className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                  <Check className="h-4 w-4 mt-0.5 flex-shrink-0" />
                   <span>{t("billing.overview.successMessage")}</span>
                 </div>
               )}
@@ -266,7 +266,7 @@ export default function BillingPage() {
                 variant="primary"
                 onClick={() => setShowCreditsConfirm(true)}
                 disabled={addingCredits}
-                leftIcon={<Sparkles className="w-4 h-4" />}
+                leftIcon={<Sparkles className="h-4 w-4" />}
               >
                 {addingCredits ? t("billing.overview.adding") : t("billing.overview.gimmeCredits")}
               </Button>
@@ -545,7 +545,7 @@ export default function BillingPage() {
           >
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-cyan to-accent-primary flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-white" />
+                <Sparkles className="h-5 w-5 text-white" />
               </div>
               <div>
                 <Heading variant="section" as="h2" className="text-text-primary">
@@ -568,7 +568,7 @@ export default function BillingPage() {
                 onClick={handleGimmeCredits}
                 disabled={addingCredits}
                 fullWidth
-                leftIcon={<Sparkles className="w-4 h-4" />}
+                leftIcon={<Sparkles className="h-4 w-4" />}
               >
                 {addingCredits
                   ? t("billing.overview.adding")

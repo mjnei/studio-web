@@ -184,12 +184,12 @@ export default function QueueDetailPage() {
     return (
       <div className="max-w-7xl mx-auto space-y-6">
         <Button variant="ghost" onClick={() => router.back()}>
-          <ArrowLeft className="w-4 h-4 mr-2" />
+          <ArrowLeft className="h-4 w-4 mr-2" />
           Back
         </Button>
         <Card className="border-destructive">
           <CardContent className="flex items-center gap-3 pt-6">
-            <AlertCircle className="w-5 h-5 text-destructive" />
+            <AlertCircle className="h-5 w-5 text-destructive" />
             <div>
               <p className="font-medium">Failed to load queue details</p>
               <p className="text-sm text-muted-foreground">{error}</p>
@@ -209,7 +209,7 @@ export default function QueueDetailPage() {
         title={
           <div className="flex items-center gap-3">
             <Button variant="ghost" size="icon" onClick={() => router.back()}>
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="h-5 w-5" />
             </Button>
             <div>
               <Heading variant="page">{stats.metadata?.display_name || queueName}</Heading>
@@ -274,7 +274,7 @@ export default function QueueDetailPage() {
               <Card className="border-muted">
                 <CardHeader className="pb-3">
                   <CardDescription className="flex items-center gap-2 text-xs">
-                    <Activity className="w-4 h-4" />
+                    <Activity className="h-4 w-4" />
                     Messages
                   </CardDescription>
                   <Heading variant="metric">{stats.message_count.toLocaleString()}</Heading>
@@ -290,7 +290,7 @@ export default function QueueDetailPage() {
               <Card className="border-muted">
                 <CardHeader className="pb-3">
                   <CardDescription className="flex items-center gap-2 text-xs">
-                    <TrendingUp className="w-4 h-4" />
+                    <TrendingUp className="h-4 w-4" />
                     Consumers
                   </CardDescription>
                   <Heading variant="metric">{stats.consumer_count}</Heading>
@@ -325,7 +325,7 @@ export default function QueueDetailPage() {
                     <Heading variant="metric" className="flex items-center gap-2">
                       {dlqStats.message_count}
                       {dlqStats.message_count > 0 && (
-                        <AlertCircle className="w-5 h-5 text-destructive" />
+                        <AlertCircle className="h-5 w-5 text-destructive" />
                       )}
                     </Heading>
                     <p className="text-xs text-muted-foreground mt-1">

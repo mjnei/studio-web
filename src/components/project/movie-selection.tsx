@@ -97,7 +97,7 @@ export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps)
       <div className="text-center max-w-2xl mx-auto">
         <div className="mb-4 flex justify-center">
           <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-accent-secondary to-accent-tertiary shadow-lg">
-            <Film className="w-8 h-8 text-white" />
+            <Film className="h-8 w-8 text-white" />
           </div>
         </div>
         <Heading variant="page" as="h2" className="text-text-primary mb-2">
@@ -115,7 +115,7 @@ export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps)
           placeholder={t("project.movieSelection.searchPlaceholder")}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          icon={<Search className="w-5 h-5" />}
+          icon={<Search className="h-5 w-5" />}
         />
       </div>
 
@@ -131,7 +131,7 @@ export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps)
       ) : error ? (
         <Card variant="elevated" padding="lg">
           <div className="text-center py-12">
-            <Film className="w-12 h-12 text-text-muted mx-auto mb-4" />
+            <Film className="h-12 w-12 text-text-muted mx-auto mb-4" />
             <p className="text-text-secondary">{error}</p>
           </div>
         </Card>
@@ -168,13 +168,13 @@ export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps)
                 {/* Selected Badge */}
                 {selectedMovie === movie.id && (
                   <div className="absolute top-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-accent-primary shadow-lg">
-                    <Check className="w-5 h-5 text-white" />
+                    <Check className="h-5 w-5 text-white" />
                   </div>
                 )}
 
                 {/* Rating */}
                 <div className="absolute top-2 left-2 flex items-center gap-1 bg-black/70 backdrop-blur-sm px-2 py-1 rounded-lg">
-                  <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
+                  <Star className="h-3 w-3 text-yellow-400 fill-yellow-400" />
                   <span className="text-xs font-semibold text-white">{movie.rating}</span>
                 </div>
               </div>
@@ -207,7 +207,7 @@ export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps)
       ) : (
         <Card variant="elevated" padding="lg">
           <div className="text-center py-12">
-            <Film className="w-12 h-12 text-text-muted mx-auto mb-4" />
+            <Film className="h-12 w-12 text-text-muted mx-auto mb-4" />
             <p className="text-text-secondary">
               {t("project.movieSelection.noMoviesFound", { query: searchQuery })}
             </p>
@@ -220,7 +220,7 @@ export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps)
         <Card variant="elevated" padding="md" className="border-accent-primary/30">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent-primary/20">
-              <Check className="w-5 h-5 text-accent-primary" />
+              <Check className="h-5 w-5 text-accent-primary" />
             </div>
             <div>
               <p className="text-sm font-medium text-text-primary">

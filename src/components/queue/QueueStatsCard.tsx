@@ -37,16 +37,16 @@ export function QueueStatsCard({
               {metadata?.description && (
                 <Tooltip content={metadata.description} position="top">
                   <div className="text-muted-foreground hover:text-foreground cursor-help">
-                    <AlertCircle className="w-4 h-4" />
+                    <AlertCircle className="h-4 w-4" />
                   </div>
                 </Tooltip>
               )}
             </div>
           </div>
           <Badge variant="outline" className={colors.badge}>
-            {health.status === "healthy" && <CheckCircle2 className="w-3 h-3 mr-1" />}
-            {health.status === "warning" && <AlertCircle className="w-3 h-3 mr-1" />}
-            {health.status === "critical" && <AlertCircle className="w-3 h-3 mr-1" />}
+            {health.status === "healthy" && <CheckCircle2 className="h-3 w-3 mr-1" />}
+            {health.status === "warning" && <AlertCircle className="h-3 w-3 mr-1" />}
+            {health.status === "critical" && <AlertCircle className="h-3 w-3 mr-1" />}
             {health.status.charAt(0).toUpperCase() + health.status.slice(1)}
           </Badge>
         </div>
@@ -57,7 +57,7 @@ export function QueueStatsCard({
           {/* Message Count */}
           <div className="flex items-center space-x-2">
             <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded">
-              <Clock className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+              <Clock className="h-4 w-4 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
               <Heading variant="metric">{message_count.toLocaleString()}</Heading>
@@ -70,7 +70,7 @@ export function QueueStatsCard({
           {/* Consumer Count */}
           <div className="flex items-center space-x-2">
             <div className="p-2 bg-purple-100 dark:bg-purple-900 rounded">
-              <Users className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+              <Users className="h-4 w-4 text-purple-600 dark:text-purple-400" />
             </div>
             <div>
               <Heading variant="metric">{consumer_count}</Heading>
