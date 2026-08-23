@@ -93,20 +93,20 @@ Defined in `src/app/globals.css` under `@theme inline`. **Tailwind v4 automatica
 @theme inline {
   /* …existing color/font tokens… */
 
-  /* Base font sizes (mobile-first) */
-  --text-display: 1.875rem; /* 30px */
-  --text-page: 1.5rem;      /* 24px */
-  --text-section: 1.25rem;  /* 20px */
-  --text-subsection: 1.125rem; /* 18px */
+  /* Base font sizes (mobile-first) — sidebar-aligned density, Aug 2026 */
+  --text-display: 1.875rem; /* 30px — auth / onboarding heroes only */
+  --text-page: 1.25rem;     /* 20px — matches sidebar logo */
+  --text-section: 1rem;     /* 16px — card / section titles */
+  --text-subsection: 0.875rem; /* 14px — item titles; hierarchy via weight */
   --text-label: 0.875rem;   /* 14px */
-  --text-body: 0.875rem;    /* 14px — app chrome default */
-  --text-body-lg: 1rem;     /* 16px */
+  --text-body: 0.875rem;    /* 14px — app default (sidebar nav size) */
+  --text-body-lg: 0.875rem; /* 14px — same as body; use weight/color for emphasis */
   --text-caption: 0.75rem;  /* 12px */
-  --text-metric: 1.5rem;    /* 24px */
+  --text-metric: 1.125rem;  /* 18px — stat numbers */
 
   /* Responsive sm: steps — referenced as sm:text-page-sm etc. */
   --text-display-sm: 2.25rem; /* 36px */
-  --text-page-sm: 1.875rem;   /* 30px */
+  --text-page-sm: 1.375rem;   /* 22px */
 
   /* Line-heights — referenced as leading-page, leading-section, etc. */
   --leading-display: 1.2;
@@ -482,11 +482,24 @@ rg -n "text-(3xl|4xl|5xl)" src --glob "!**/typography.ts" --glob "!**/heading.ts
 
 Only after Phases 1–3:
 
-- [ ] Adjust tokens / `typography.ts` strings once (e.g. shrink `page` or `metric`)
+- [x] Adjust tokens / `typography.ts` strings once (sidebar-aligned density pass, Aug 2026)
 - [ ] Visual QA across shell + project + auth
-- [ ] No page-by-page size edits required
+- [x] No page-by-page size edits required for standard roles (bulk legacy migration: see [TYPOGRAPHY_REFACTOR.md](./TYPOGRAPHY_REFACTOR.md))
 
 This is the payoff: **one change updates the product**.
+
+---
+
+### Phase 6 — Legacy utility migration (in progress)
+
+See **[TYPOGRAPHY_REFACTOR.md](./TYPOGRAPHY_REFACTOR.md)** for audit, allowlist, ESLint rules, and remaining TODO.
+
+- [x] Bulk migrate `text-xs`–`text-xl` → token utilities (~250 files)
+- [x] Sidebar token alignment (`drawer-content`, `top-nav`)
+- [x] ESLint warn on legacy size classes in `className`
+- [ ] Micro-size token (`text-[10px]` / `text-[11px]`)
+- [ ] ESLint allowlist + escalate to error
+- [ ] Visual QA checklist
 
 ---
 

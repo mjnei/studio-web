@@ -26,6 +26,12 @@ const eslintConfig = defineConfig([
           message:
             "Use <Heading> / <PageHeader> / typography roles instead of text-xl+ on heading tags. See docs/TYPOGRAPHY.md.",
         },
+        {
+          selector:
+            "JSXAttribute[name.name='className'][value.value=/(?:^|\\s)text-(xs|sm|base|lg|xl)(?:\\s|$)/]",
+          message:
+            "Use @theme typography tokens (text-body, text-caption, text-page, …) instead of legacy Tailwind text-xs–text-xl. See docs/TYPOGRAPHY_REFACTOR.md.",
+        },
       ],
     },
   },
