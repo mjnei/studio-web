@@ -45,7 +45,7 @@ export const StatusCards: React.FC<StatusCardsProps> = ({
               {summary.activeCount > 0 && (
                 <Badge
                   variant="info"
-                  className="animate-pulse flex items-center gap-1 text-[10px] py-0 px-1.5"
+                  className="animate-pulse flex items-center gap-1 text-micro py-0 px-1.5"
                 >
                   <span className="h-1.5 w-1.5 rounded-full bg-blue-400 animate-ping" />
                   {t("jobs.status.live")}

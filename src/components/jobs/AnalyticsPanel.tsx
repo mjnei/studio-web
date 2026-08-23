@@ -57,7 +57,7 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({ summary }) => {
               <Heading variant="subsection" className="text-text-primary">
                 {summary.successRate}%
               </Heading>
-              <Text variant="caption" className="text-[11px] text-text-muted">
+              <Text variant="micro" className="text-text-muted">
                 {summary.completedCount} of {summary.completedCount + summary.failedCount} finished
               </Text>
             </div>
@@ -74,7 +74,7 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({ summary }) => {
               <Heading variant="subsection" className="text-text-primary">
                 {summary.creditsUsed}
               </Heading>
-              <Text variant="caption" className="text-[11px] text-text-muted">
+              <Text variant="micro" className="text-text-muted">
                 {t("jobs.analytics.acrossAllAttempts")}
               </Text>
             </div>
@@ -91,7 +91,7 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({ summary }) => {
               <Heading variant="subsection" className="text-text-primary truncate max-w-[140px]">
                 {summary.topVoice}
               </Heading>
-              <Text variant="caption" className="text-[11px] text-text-muted">
+              <Text variant="micro" className="text-text-muted">
                 {t("jobs.analytics.mostFrequently")}
               </Text>
             </div>
@@ -108,7 +108,7 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({ summary }) => {
               <Heading variant="subsection" className="text-text-primary">
                 ~{summary.avgProcessingTimeMinutes} mins
               </Heading>
-              <Text variant="caption" className="text-[11px] text-text-muted">
+              <Text variant="micro" className="text-text-muted">
                 {t("jobs.analytics.perVideoRendering")}
               </Text>
             </div>

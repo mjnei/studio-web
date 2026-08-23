@@ -37,7 +37,7 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
             {t("notifications.title")}
           </Heading>
           {unreadCount > 0 && (
-            <span className="text-[10px] sm:text-caption text-text-muted shrink-0">
+            <span className="text-micro sm:text-caption text-text-muted shrink-0">
               {t("notifications.newCount", { count: unreadCount })}
             </span>
           )}

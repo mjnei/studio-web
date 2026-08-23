@@ -135,7 +135,7 @@ export function FloatingWorkflowNavigation({
               <div key={step.key} className="flex items-center flex-shrink-0">
                 {/* Circle */}
                 <div
-                  className={`flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded-full text-[10px] sm:text-caption font-semibold transition-all duration-300 ${
+                  className={`flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded-full text-micro sm:text-caption font-semibold transition-all duration-300 ${
                     isCompleted
                       ? "bg-accent-cyan text-white"
                       : isCurrent

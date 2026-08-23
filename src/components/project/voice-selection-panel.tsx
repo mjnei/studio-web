@@ -229,7 +229,7 @@ export function VoiceSelectionPanel({
                               <span className="truncate">@{voice.creator_username}</span>
                             </p>
                             <div className="mt-1">
-                              <span className="inline-flex items-center gap-1 rounded-full bg-green-500/10 border border-green-500/30 px-1.5 py-0.5 text-[10px] font-bold text-green-600">
+                              <span className="inline-flex items-center gap-1 rounded-full bg-green-500/10 border border-green-500/30 px-1.5 py-0.5 text-micro font-bold text-green-600">
                                 <div className="h-1 w-1 rounded-full bg-green-600"></div>
                                 {t("project.voice.approved")}
                               </span>

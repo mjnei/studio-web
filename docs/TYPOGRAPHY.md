@@ -1,10 +1,10 @@
 # Typography System — Guidelines & Refactor Plan
 
-**Version**: 1.1  
-**Last Updated**: August 21, 2026  
-**Status**: Adopted (Phase 4 complete)  
-**Related**: [DESIGN_SYSTEM.md](./guides/DESIGN_SYSTEM.md), [BREAKPOINT_REFERENCE.md](./guides/BREAKPOINT_REFERENCE.md)  
-**Source of truth (after implementation)**: `src/app/globals.css` (`@theme` tokens) + `src/components/ui/heading.tsx`
+**Version**: 1.2  
+**Last Updated**: August 24, 2026  
+**Status**: Adopted (Phases 1–5 complete; Phase 6 legacy migration largely done)  
+**Related**: [DESIGN_SYSTEM.md](./guides/DESIGN_SYSTEM.md), [BREAKPOINT_REFERENCE.md](./guides/BREAKPOINT_REFERENCE.md), [TYPOGRAPHY_REFACTOR.md](./TYPOGRAPHY_REFACTOR.md)  
+**Source of truth (after implementation)**: `src/app/globals.css` (`@theme` tokens) + `src/components/ui/heading.tsx` / `typography.ts`
 
 ---
 
@@ -62,10 +62,11 @@ Make typography **consistent and controllable from one place**, without fighting
 | `page` | Route / page title | `h1` | Primary page heading |
 | `section` | Major section or card title | `h2` / `h3` | Secondary hierarchy |
 | `subsection` | Nested group title | `h3` / `h4` | Tertiary |
-| `label` | Small section label / group header | `h2`–`h4` or `p` | Compact UI chrome (`text-sm` feel) |
+| `label` | Small section label / group header | `h2`–`h4` or `p` | Compact UI chrome (same size as body; hierarchy via weight) |
 | `body` | Default readable copy | `p` | Primary paragraph / dense UI body |
-| `body-lg` | Emphasized supporting text | `p` | Short descriptions under titles |
-| `caption` | Hints, meta, timestamps | `p` / `span` | Smallest readable text |
+| `body-lg` | Emphasized supporting text | `p` | Same size as body (14px); use weight/color — kept as a semantic alias |
+| `caption` | Hints, meta, timestamps | `p` / `span` | Smallest readable copy (12px) |
+| `micro` | Badges, counts, card overlays | `span` | Sub-caption chrome only (10px) — not paragraphs |
 | `metric` | Dashboard / stats numbers | `p` / `span` | Large numeric emphasis |
 
 ### Mapping examples from current UI
@@ -78,8 +79,9 @@ Make typography **consistent and controllable from one place**, without fighting
 | Auth brand title / onboarding heroes | `display` |
 | Movie detail title | `page` |
 | Jobs `StatusCards` big counts | `metric` |
-| Form labels, button text | Keep component-owned (`text-sm`); not heading roles |
+| Form labels, button text | Keep component-owned (`text-body`); not heading roles |
 | `CardDescription`, helper text | `body` or `caption` |
+| Badge / unread count / poster overlay | `text-micro` (or `typography.micro`) |
 
 ---
 
@@ -101,7 +103,8 @@ Defined in `src/app/globals.css` under `@theme inline`. **Tailwind v4 automatica
   --text-label: 0.875rem;   /* 14px */
   --text-body: 0.875rem;    /* 14px — app default (sidebar nav size) */
   --text-body-lg: 0.875rem; /* 14px — same as body; use weight/color for emphasis */
-  --text-caption: 0.75rem;  /* 12px */
+  --text-caption: 0.75rem;  /* 12px — minimum readable body copy */
+  --text-micro: 0.625rem;   /* 10px — badges, counts, overlays only */
   --text-metric: 1.125rem;  /* 18px — stat numbers */
 
   /* Responsive sm: steps — referenced as sm:text-page-sm etc. */
@@ -116,9 +119,12 @@ Defined in `src/app/globals.css` under `@theme inline`. **Tailwind v4 automatica
   --leading-label: 1.4;
   --leading-body: 1.5;
   --leading-caption: 1.4;
+  --leading-micro: 1.3;
   --leading-metric: 1;     /* tight — numeric display */
 }
 ```
+
+> **Minimum readable size**: Prefer `--text-caption` (12px) for any user-readable copy. `--text-micro` (10px) is for dense chrome only (badges, step pills, poster overlays). Do not use arbitrary `text-[Npx]` — chart SVG labels are the sole allowlisted exception (see [TYPOGRAPHY_REFACTOR.md](./TYPOGRAPHY_REFACTOR.md)).
 
 > **TW4 note**: `--text-*` in `@theme inline` becomes a `text-{name}` utility automatically. Do **not** add manual `fontSize` entries to `tailwind.config.*` — those are only needed in TW3.
 
@@ -132,6 +138,7 @@ Defined in `src/app/globals.css` under `@theme inline`. **Tailwind v4 automatica
 | `subsection` | `text-subsection` | — |
 | `label` | `text-label` | — |
 | `metric` | `text-metric` | — |
+| `micro` | `text-micro` | often `sm:text-caption` |
 
 All class strings live in `typography.ts` so pages never re-declare the scale.
 
@@ -142,7 +149,7 @@ All class strings live in `typography.ts` so pages never re-declare the scale.
 | `display`, `page` | `font-bold` | `tracking-tight` | — |
 | `section`, `subsection` | `font-semibold` | `tracking-tight` | — |
 | `label` | `font-semibold` | default | — |
-| `body`, `body-lg`, `caption` | `font-normal` | default | — |
+| `body`, `body-lg`, `caption`, `micro` | `font-normal` | default | — |
 | `metric` | `font-bold` | default | `tabular-nums` (prevents layout shift on changing numbers) |
 
 Color is **not** part of the type role by default — keep using `text-text-primary`, `text-text-secondary`, `text-text-muted`.
@@ -202,9 +209,14 @@ For body/caption consistency:
 
 ```tsx
 <Text variant="body">Supporting copy</Text>
+<Text variant="bodyLg" className="text-text-secondary">Emphasized blurb (same size as body)</Text>
 <Text variant="caption" className="text-text-muted">Updated 2h ago</Text>
+<Text variant="micro" className="text-text-muted">Badge / overlay chrome</Text>
 ```
 
+`bodyLg` is intentionally the same pixel size as `body` on the Aug 2026 dense scale — keep the variant for semantic call sites (auth/onboarding blurbs); do not invent a larger size without a product density review.
+
+`micro` is for dense chrome only — prefer `caption` for any readable meta copy.
 ### 5.3 Wire existing primitives
 
 | Component | Change |
@@ -230,8 +242,9 @@ export const typography = {
   label:      "text-label leading-label font-semibold",
   metric:     "text-metric leading-metric font-bold tabular-nums",
   body:       "text-body leading-body font-normal",
-  bodyLg:     "text-body-lg leading-body font-normal",
+  bodyLg:     "text-body-lg leading-body font-normal", // same size as body
   caption:    "text-caption leading-caption font-normal",
+  micro:      "text-micro leading-micro font-normal", // badges / overlays only
 } as const;
 ```
 
@@ -471,36 +484,33 @@ rg -n "text-(3xl|4xl|5xl)" src --glob "!**/typography.ts" --glob "!**/heading.ts
 | Pattern | Locations | Reason |
 |---------|-----------|--------|
 | `Heading variant="display"` | `(auth)/layout.tsx` brand; `WelcomeStep`, `CompletionStep` heroes | Marketing / onboarding heroes only |
-| `text-3xl` (non-heading) | `profile/page.tsx` avatar initial; `CompletionStep` emoji | Decorative glyph sizing, not titles |
-| `text-sm` / `text-xs` on body chrome | Forms, buttons, meta rows | Component-owned density — not heading roles |
+| `text-3xl` / `text-4xl` (non-heading) | `CompletionStep` emoji; `profile/page.tsx` avatar initial | Decorative glyph sizing, not titles |
+| `text-[8px]` / `text-[14px]` | `HealthIndicator.tsx` SVG labels | Chart library inline labels (also set via `style`) |
+| `text-micro` | Badges, notifications, poster overlays | Intentional sub-caption chrome |
 
 **Exit criteria**: New UI PRs use `Heading` / `PageHeader` by default; globals tokens are the only place to tune the scale.
 
 ---
 
-### Phase 5 — Global size tweak (optional product pass)
-
-Only after Phases 1–3:
+### Phase 5 — Global size tweak (product pass)
 
 - [x] Adjust tokens / `typography.ts` strings once (sidebar-aligned density pass, Aug 2026)
-- [ ] Visual QA across shell + project + auth
+- [ ] Visual QA across shell + project + auth (see [TYPOGRAPHY_REFACTOR.md](./TYPOGRAPHY_REFACTOR.md) §9 Phase 6e)
 - [x] No page-by-page size edits required for standard roles (bulk legacy migration: see [TYPOGRAPHY_REFACTOR.md](./TYPOGRAPHY_REFACTOR.md))
 
 This is the payoff: **one change updates the product**.
 
 ---
 
-### Phase 6 — Legacy utility migration (in progress)
+### Phase 6 — Legacy utility migration
 
 See **[TYPOGRAPHY_REFACTOR.md](./TYPOGRAPHY_REFACTOR.md)** for audit, allowlist, ESLint rules, and remaining TODO.
 
 - [x] Bulk migrate `text-xs`–`text-xl` → token utilities (~250 files)
 - [x] Sidebar token alignment (`drawer-content`, `top-nav`)
-- [x] ESLint warn on legacy size classes in `className`
-- [ ] Micro-size token (`text-[10px]` / `text-[11px]`)
-- [ ] ESLint allowlist + escalate to error
-- [ ] Visual QA checklist
-
+- [x] ESLint error on legacy size classes + `text-[Npx]` in `className` (allowlisted exceptions)
+- [x] Micro-size token (`--text-micro` / `text-micro`) for former `text-[10px]` / `text-[11px]`
+- [ ] Visual QA checklist (Phase 6e)
 ---
 
 ## 11. Acceptance criteria
@@ -550,7 +560,8 @@ Refactor is successful when:
 | Small group label (not in outline) | `<Heading variant="label">` (emits `<p>`) |
 | Hero / brand | `<Heading variant="display">` |
 | Big number | `<Heading variant="metric">` (includes `tabular-nums`) |
-| Helper / meta | `<Text variant="caption">` or `text-xs text-text-muted` |
+| Helper / meta | `<Text variant="caption">` or `text-caption text-text-muted` |
+| Badge / overlay chrome | `text-micro` (not for paragraphs) |
 | Tune all sizes | Edit `--text-*` tokens in `globals.css` → auto-propagates via `typography.ts` |
 
 ---

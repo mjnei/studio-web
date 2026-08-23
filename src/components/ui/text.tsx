@@ -8,13 +8,14 @@ import * as React from "react";
 import { cn } from "@/lib/utils/cn";
 import { typography } from "./typography";
 
-export type TextVariant = "body" | "bodyLg" | "caption";
+export type TextVariant = "body" | "bodyLg" | "caption" | "micro";
 export type TextTag = "p" | "span" | "div" | "label";
 
 const defaultTag: Record<TextVariant, TextTag> = {
   body: "p",
   bodyLg: "p",
   caption: "span",
+  micro: "span",
 };
 
 export interface TextProps extends React.HTMLAttributes<HTMLElement> {

@@ -164,7 +164,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
                 return (
                   <span
                     key={typeof genre === "string" ? genre : idx}
-                    className="rounded bg-white/20 px-2 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm"
+                    className="rounded bg-white/20 px-2 py-0.5 text-micro font-semibold text-white backdrop-blur-sm"
                   >
                     {genreName}
                   </span>
@@ -175,7 +175,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
 
           {/* Director */}
           {movie.directors && movie.directors.length > 0 && (
-            <div className="text-[11px] leading-tight text-white">
+            <div className="text-micro leading-tight text-white">
               <span className="font-semibold">{t("movies.director")}: </span>
               <span className="text-gray-200">{movie.directors[0]}</span>
             </div>
@@ -183,7 +183,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
 
           {/* Top Cast */}
           {movie.topCast && movie.topCast.length > 0 && (
-            <div className="text-[11px] leading-tight text-white">
+            <div className="text-micro leading-tight text-white">
               <span className="font-semibold">{t("movies.cast")}: </span>
               <span className="line-clamp-2 text-gray-200">{movie.topCast.join(", ")}</span>
             </div>
@@ -191,7 +191,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
 
           {/* Overview fallback if no cast data yet */}
           {!movie.directors && !movie.topCast && movie.overview && (
-            <p className="line-clamp-3 text-[11px] leading-relaxed text-gray-200">
+            <p className="line-clamp-3 text-micro leading-relaxed text-gray-200">
               {movie.overview}
             </p>
           )}

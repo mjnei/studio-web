@@ -14,6 +14,7 @@
  *   text-base → text-body    (14px; was 16px pre-2026-08 scale)
  *   text-lg → text-metric     (18px)
  *   text-xl → text-page      (20px)
+ *   text-[10px]/[11px] → text-micro (10px; badges / overlays only)
  *
  * @see docs/TYPOGRAPHY.md
  * @see docs/TYPOGRAPHY_REFACTOR.md
@@ -26,8 +27,11 @@ export const typography = {
   label: "text-label leading-label font-semibold",
   metric: "text-metric leading-metric font-bold tabular-nums",
   body: "text-body leading-body font-normal",
+  /** Same size as body; prefer weight/color for emphasis (dense Aug 2026 scale). */
   bodyLg: "text-body-lg leading-body font-normal",
   caption: "text-caption leading-caption font-normal",
+  /** Sub-caption chrome only — not for readable paragraphs. */
+  micro: "text-micro leading-micro font-normal",
 } as const;
 
 export type TypographyRole = keyof typeof typography;

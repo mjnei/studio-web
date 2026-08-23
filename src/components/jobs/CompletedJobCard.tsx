@@ -89,7 +89,7 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
               >
                 {job.projectName}
               </h3>
-              <Badge variant="success" className="text-[10px] py-0 px-1.5 flex items-center gap-1">
+              <Badge variant="success" className="text-micro py-0 px-1.5 flex items-center gap-1">
                 <CheckCircle2 className="h-3 w-3" aria-hidden />
                 {t("jobs.completedJob.ready")}
               </Badge>
@@ -193,7 +193,7 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
 
         <Badge
           variant="success"
-          className="absolute top-2 right-2 z-10 text-[10px] py-0.5 px-1.5 shadow-md"
+          className="absolute top-2 right-2 z-10 text-micro py-0.5 px-1.5 shadow-md"
         >
           {t("jobs.completedJob.completed")}
         </Badge>
@@ -238,7 +238,7 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-1 text-[11px] text-text-muted pt-1 border-t border-border-default">
+        <div className="grid grid-cols-2 gap-1 text-micro text-text-muted pt-1 border-t border-border-default">
           <div>
             {t("jobs.completedJob.voice")}:{" "}
             <span className="font-medium text-text-secondary">
