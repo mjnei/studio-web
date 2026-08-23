@@ -18,7 +18,11 @@ interface SpinnerProps {
 export function Spinner({ size, className, "aria-hidden": ariaHidden = true }: SpinnerProps) {
   return (
     <Loader2
-      className={cn("animate-spin", size && sizeClasses[size], className)}
+      className={cn(
+        "animate-spin motion-reduce:animate-none motion-reduce:opacity-80",
+        size && sizeClasses[size],
+        className
+      )}
       aria-hidden={ariaHidden}
     />
   );

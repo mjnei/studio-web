@@ -95,12 +95,21 @@ export function LoadingSkeleton({ className, variant = "card", count = 1 }: Load
  */
 export function PageLoadingSkeleton({ message }: { message?: string }) {
   const { t } = useI18n();
+  const loadingText = message ?? t("common.loading");
 
   return (
-    <div className="flex h-full items-center justify-center">
+    <div
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+      className="flex h-full items-center justify-center"
+    >
       <div className="text-center">
         <Spinner size="md" className="mb-4 text-accent-cyan" />
-        <p className="text-text-secondary">{message ?? t("common.loading")}</p>
+        <span className="sr-only">{loadingText}</span>
+        <p aria-hidden="true" className="text-text-secondary">
+          {loadingText}
+        </p>
       </div>
     </div>
   );
@@ -112,11 +121,18 @@ export function PageLoadingSkeleton({ message }: { message?: string }) {
  */
 export function InlineLoadingSkeleton({ message }: { message?: string }) {
   const { t } = useI18n();
+  const loadingText = message ?? t("common.loading");
 
   return (
-    <div className="flex items-center justify-center py-8 text-text-muted text-sm border border-dashed border-border-default rounded-lg bg-surface-base/50">
+    <div
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+      className="flex items-center justify-center py-8 text-text-muted text-sm border border-dashed border-border-default rounded-lg bg-surface-base/50"
+    >
       <Spinner className="h-5 w-5 text-accent-cyan mr-2" />
-      {message ?? t("common.loading")}
+      <span className="sr-only">{loadingText}</span>
+      <span aria-hidden="true">{loadingText}</span>
     </div>
   );
 }
