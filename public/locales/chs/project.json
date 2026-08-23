@@ -541,7 +541,12 @@
       "videoDeleted": "视频已删除",
       "videoDeletedDesc": "该视频已从历史记录中移除",
       "deleteFailed": "删除失败",
-      "deleteFailedDesc": "删除视频失败"
+      "deleteFailedDesc": "删除视频失败",
+      "loadTimedOut": "加载时间超出预期",
+      "loadTimedOutDesc": "未能及时加载导出数据，请检查网络连接后重试。",
+      "processingTimedOut": "视频生成时间超出预期",
+      "processingTimedOutDesc": "任务可能仍在后台运行，请刷新状态或重试。",
+      "refreshStatus": "刷新状态"
     }
   },
   "tts": {

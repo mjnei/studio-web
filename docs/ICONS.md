@@ -128,8 +128,8 @@ All brand icons default to `aria-hidden={true}`. Parent buttons must expose acce
 ```
 
 - **`size`** — standard tier only (`xs`–`xl`).
-- **`className`** — color, margin, non-size utilities only.
-- **`cn()` does not merge conflicting Tailwind size utilities.** Do not combine `size="sm"` with `className="h-6 w-6"`. Use one sizing source or Lucide directly (see `PanelLeft` in `drawer-content.tsx`).
+- **`className`** — color, margin, non-size utilities; or pass explicit `h-N w-N` (size token is skipped automatically).
+- Passing both `size="sm"` and `className="h-6 w-6"` is safe — explicit dimensions in `className` win.
 
 ---
 
@@ -147,7 +147,7 @@ Sidebar icons are defined in `src/components/shell/drawer-content.tsx` via `icon
 | Spinner primitive (`Spinner` / `LoadingSpinner`) | Done — `@/components/ui/spinner`, `@/components/ui/LoadingSpinner` |
 | Class order (`h-N w-N` on Lucide) | Done |
 | Empty-state pattern (`EmptyState` + hero tier) | Done — primary surfaces migrated |
-| `aria-hidden` on decorative icons | Partial — high-traffic surfaces first |
-| `Icon` + conflicting `className` sizes | Open — prefer direct Lucide or single sizing source; no `tailwind-merge` yet |
+| `aria-hidden` on decorative icons | Partial — job cards, admin empties; broader rollout continues |
+| `Icon` + conflicting `className` sizes | Done — `Icon` skips size token when `className` includes `h-N` / `w-N` |
 
 Remaining icon accessibility work is tracked in this document’s audit status table above.

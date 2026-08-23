@@ -541,7 +541,12 @@
       "videoDeleted": "Video deleted",
       "videoDeletedDesc": "The video has been removed from your history",
       "deleteFailed": "Delete failed",
-      "deleteFailedDesc": "Failed to delete the video"
+      "deleteFailedDesc": "Failed to delete the video",
+      "loadTimedOut": "Loading is taking longer than expected",
+      "loadTimedOutDesc": "We couldn't load your export data in time. Check your connection and try again.",
+      "processingTimedOut": "Video generation is taking longer than expected",
+      "processingTimedOutDesc": "The job may still be running in the background. Refresh status or try again.",
+      "refreshStatus": "Refresh status"
     }
   },
   "tts": {

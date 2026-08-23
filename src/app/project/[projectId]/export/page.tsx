@@ -24,6 +24,7 @@ import {
   Check,
   AlertCircle,
   Clock,
+  RotateCcw,
 } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
 import {
@@ -40,13 +41,14 @@ import { CreditConfirmationModal } from "@/components/credits/CreditConfirmation
 import { useNotifications } from "@/lib/notification-context";
 import { ExportFormatModal } from "@/components/project/ExportFormatModal";
 import { useI18n } from "@/i18n";
+import { useStuckAsync } from "@/lib/hooks/use-stuck-async";
 import { XIcon, WeChatIcon } from "@/components/icons";
 
 export default function ExportPage() {
   const params = useParams();
   const router = useRouter();
   const projectId = params.projectId as string;
-  const { isLoading } = useProjectState(projectId);
+  const { isLoading, refresh: refreshProject } = useProjectState(projectId);
   const toast = useToast();
   const { refreshNotifications } = useNotifications();
   const { t, locale } = useI18n();
@@ -252,14 +254,61 @@ export default function ExportPage() {
   };
 
   // ── Derived values ─────────────────────────────────────────────────────────
-  if (isLoading || isLoadingVideos) {
-    return <PageLoadingSkeleton message={t("project.common.loadingProject")} />;
-  }
-
+  const isPageLoading = isLoading || isLoadingVideos;
   const completedVideos = videos?.filter((v) => v.status === "completed") || [];
   const processingVideos =
     videos?.filter((v) => v.status === "processing" || v.status === "queued") || [];
   const failedVideos = videos?.filter((v) => v.status === "failed") || [];
+
+  const { isStuck: isLoadStuck, reset: resetLoadStuck } = useStuckAsync(isPageLoading);
+  const { isStuck: isProcessingStuck, reset: resetProcessingStuck } = useStuckAsync(
+    processingVideos.length > 0
+  );
+
+  const handleRetryLoad = () => {
+    resetLoadStuck();
+    void refreshProject();
+    void loadVideos();
+    void loadCreditStatus();
+  };
+
+  const handleRetryProcessingStatus = () => {
+    resetProcessingStuck();
+    void loadVideos();
+    void loadCreditStatus();
+    void refreshNotifications();
+  };
+
+  if (isPageLoading && !isLoadStuck) {
+    return <PageLoadingSkeleton message={t("project.common.loadingProject")} />;
+  }
+
+  if (isPageLoading && isLoadStuck) {
+    return (
+      <div className="mx-auto max-w-lg px-4 py-16">
+        <div
+          role="alert"
+          className="flex flex-col items-center gap-4 rounded-2xl border border-error-border/30 bg-surface-panel p-8 text-center"
+        >
+          <AlertCircle className="h-10 w-10 text-error-text" aria-hidden />
+          <div>
+            <Heading variant="subsection" as="h2" className="text-text-primary mb-2">
+              {t("project.export.loadTimedOut")}
+            </Heading>
+            <p className="text-sm text-text-secondary">{t("project.export.loadTimedOutDesc")}</p>
+          </div>
+          <Button
+            variant="primary"
+            leftIcon={<RotateCcw className="h-4 w-4" aria-hidden />}
+            onClick={handleRetryLoad}
+          >
+            {t("common.retry")}
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   const displayVideo = completedVideos.find((v) => v.id === selectedVideoId) || completedVideos[0];
 
   return (
@@ -333,7 +382,7 @@ export default function ExportPage() {
             <Card variant="elevated" padding="md" className="border-error-border/30">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-error-bg flex-shrink-0">
-                  <AlertCircle className="h-5 w-5 text-error-text" />
+                  <AlertCircle className="h-5 w-5 text-error-text" aria-hidden />
                 </div>
                 <div>
                   <Heading variant="metric" className="text-error-text">
@@ -559,31 +608,58 @@ export default function ExportPage() {
               <Heading variant="label" as="h3" className="text-text-primary mb-4">
                 {t("project.export.processingVideos")}
               </Heading>
-              <div className="space-y-3">
-                {processingVideos.map((video) => (
-                  <div
-                    key={video.id}
-                    className="flex items-center justify-between p-3 rounded-lg bg-surface-raised border border-accent-cyan/30"
-                  >
-                    <div className="flex items-center gap-3 flex-1">
-                      <Spinner className="h-5 w-5 text-accent-cyan flex-shrink-0" />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-text-primary">
-                          {t("project.common.version", { number: video.generation_attempt })}
-                        </p>
-                        <p className="text-xs text-text-muted">
-                          {video.status === "queued"
-                            ? t("project.export.queuedProcessing")
-                            : t("project.export.generatingVideo")}
-                        </p>
-                      </div>
+              {isProcessingStuck ? (
+                <div
+                  role="alert"
+                  className="flex flex-col gap-4 rounded-lg border border-error-border/30 bg-surface-raised p-4 sm:flex-row sm:items-center sm:justify-between"
+                >
+                  <div className="flex items-start gap-3">
+                    <AlertCircle className="h-5 w-5 text-error-text flex-shrink-0" aria-hidden />
+                    <div>
+                      <p className="text-sm font-medium text-text-primary">
+                        {t("project.export.processingTimedOut")}
+                      </p>
+                      <p className="text-xs text-text-secondary mt-1">
+                        {t("project.export.processingTimedOutDesc")}
+                      </p>
                     </div>
-                    <span className="text-xs px-2 py-1 rounded bg-accent-cyan/10 text-accent-cyan">
-                      {getStatusLabel(video.status)}
-                    </span>
                   </div>
-                ))}
-              </div>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    leftIcon={<RotateCcw className="h-4 w-4" aria-hidden />}
+                    onClick={handleRetryProcessingStatus}
+                  >
+                    {t("project.export.refreshStatus")}
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {processingVideos.map((video) => (
+                    <div
+                      key={video.id}
+                      className="flex items-center justify-between p-3 rounded-lg bg-surface-raised border border-accent-cyan/30"
+                    >
+                      <div className="flex items-center gap-3 flex-1">
+                        <Spinner className="h-5 w-5 text-accent-cyan flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-text-primary">
+                            {t("project.common.version", { number: video.generation_attempt })}
+                          </p>
+                          <p className="text-xs text-text-muted">
+                            {video.status === "queued"
+                              ? t("project.export.queuedProcessing")
+                              : t("project.export.generatingVideo")}
+                          </p>
+                        </div>
+                      </div>
+                      <span className="text-xs px-2 py-1 rounded bg-accent-cyan/10 text-accent-cyan">
+                        {getStatusLabel(video.status)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </Card>
           )}
 
@@ -600,7 +676,7 @@ export default function ExportPage() {
                     className="flex items-center justify-between p-3 rounded-lg bg-surface-raised border border-error-border/30"
                   >
                     <div className="flex items-center gap-3 flex-1 min-w-0">
-                      <AlertCircle className="h-5 w-5 text-error-text flex-shrink-0" />
+                      <AlertCircle className="h-5 w-5 text-error-text flex-shrink-0" aria-hidden />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-text-primary">
                           {t("project.common.version", { number: video.generation_attempt })}

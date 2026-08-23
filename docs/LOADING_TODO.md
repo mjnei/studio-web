@@ -11,7 +11,7 @@ Shared primitives are implemented and in use: `Spinner`, `LoadingSpinner`, `Load
 
 **Priority:** P0 — fix first  
 **Effort:** L (half day+)  
-**Status:** Open
+**Status:** Done (export page pilot, Aug 2026)
 
 ### Problem
 
@@ -47,7 +47,7 @@ After 15–30 seconds without resolution:
 
 **Priority:** P2 — visible UX gap, not a blocker  
 **Effort:** M (1–3 h)  
-**Status:** Open
+**Status:** Done
 
 ### Problem
 
@@ -85,7 +85,7 @@ These were tracked in the former spinner audit but do not need urgent work:
 | Item | Notes |
 |------|-------|
 | SPIN-304 admin projects table | Plain `"Loading projects…"` text is acceptable; skeleton rows are optional polish. |
-| Button loading a11y | Add `aria-busy` / `aria-disabled` on `button.tsx` when showing spinner — incremental a11y. |
+| Button loading a11y | Done — `aria-busy` / `aria-disabled` on `button.tsx` when loading |
 | Profile / `project/new/source` loaders | Low severity; auth shell covers most cases. |
 
 ---
