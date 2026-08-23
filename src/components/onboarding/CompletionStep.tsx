@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CheckCircle, Sparkles, Rocket, AlertCircle } from "lucide-react";
+import { CheckCircle2, Sparkles, Rocket, AlertCircle } from "lucide-react";
 import { completeOnboarding } from "@/lib/api-client";
 import { useAuth } from "@/lib/auth-context";
 import { useI18n } from "@/i18n";
@@ -171,7 +171,7 @@ export default function CompletionStep() {
       <div className="mb-6 sm:mb-8 flex justify-center relative">
         <div className="relative">
           <div className="w-24 h-24 sm:w-28 sm:h-28 bg-gradient-to-br from-green-400 to-emerald-600 dark:from-green-500 dark:to-emerald-700 rounded-3xl flex items-center justify-center shadow-2xl shadow-green-500/40 animate-scaleIn">
-            <CheckCircle
+            <CheckCircle2
               className="w-14 h-14 sm:w-16 sm:h-16 text-white"
               aria-hidden="true"
               strokeWidth={2.5}

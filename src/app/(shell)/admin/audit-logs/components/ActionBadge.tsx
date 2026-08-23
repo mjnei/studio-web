@@ -2,12 +2,12 @@
 
 import {
   Plus,
-  Edit,
+  Edit2,
   Trash2,
   Eye,
   LogIn,
   LogOut,
-  CheckCircle,
+  CheckCircle2,
   XCircle,
   Upload,
   Download,
@@ -34,7 +34,7 @@ export default function ActionBadge({ action }: ActionBadgeProps) {
     actionLower.includes("edit") ||
     actionLower.includes("modify")
   ) {
-    Icon = Edit;
+    Icon = Edit2;
     colorClasses = "bg-blue-500/10 text-blue-600 dark:text-blue-500";
   } else if (actionLower.includes("delete") || actionLower.includes("remove")) {
     Icon = Trash2;
@@ -53,7 +53,7 @@ export default function ActionBadge({ action }: ActionBadgeProps) {
     Icon = LogOut;
     colorClasses = "bg-orange-500/10 text-orange-600 dark:text-orange-500";
   } else if (actionLower.includes("approve") || actionLower.includes("accept")) {
-    Icon = CheckCircle;
+    Icon = CheckCircle2;
     colorClasses = "bg-green-500/10 text-green-600 dark:text-green-500";
   } else if (
     actionLower.includes("reject") ||

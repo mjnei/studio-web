@@ -128,7 +128,7 @@ export function Modal({
                 className="ml-4 rounded-lg p-1.5 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all focus-ring"
                 aria-label={t("common.closeModal")}
               >
-                <X size={20} />
+                <X className="h-5 w-5" aria-hidden />
               </button>
             )}
           </div>

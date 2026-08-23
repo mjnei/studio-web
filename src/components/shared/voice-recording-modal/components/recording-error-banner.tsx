@@ -1,4 +1,4 @@
-import { X } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import type { TranslateFn } from "../types";
 
 interface RecordingErrorBannerProps {
@@ -11,7 +11,7 @@ export function RecordingErrorBanner({ error, translate: t }: RecordingErrorBann
 
   return (
     <div className="mb-4 flex items-start gap-2 rounded-xl bg-red-500/10 px-4 py-3 border border-red-500/20">
-      <X size={18} className="mt-0.5 shrink-0 text-red-400" />
+      <AlertCircle className="mt-0.5 h-[18px] w-[18px] shrink-0 text-red-400" aria-hidden />
       <div className="text-sm text-red-300">
         <p>{error}</p>
         {showHttpsTip && (

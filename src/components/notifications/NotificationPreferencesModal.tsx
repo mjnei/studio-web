@@ -74,7 +74,7 @@ export function NotificationPreferencesModal({
         {/* Header */}
         <div className="p-6 border-b border-border-default bg-surface-raised flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Bell size={24} className="text-accent-primary" />
+            <Bell className="h-6 w-6 text-accent-primary" aria-hidden />
             <div>
               <Heading variant="section" as="h2" className="text-text-primary">
                 {t("notifications.preferencesTitle")}
@@ -89,7 +89,7 @@ export function NotificationPreferencesModal({
             className="p-2 rounded-lg text-text-muted hover:bg-surface-hover hover:text-text-primary transition-all"
             aria-label={t("common.close")}
           >
-            <X size={20} />
+            <X className="h-5 w-5" aria-hidden />
           </button>
         </div>
 

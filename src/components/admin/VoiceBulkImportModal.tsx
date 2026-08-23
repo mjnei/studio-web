@@ -7,7 +7,6 @@ import {
   User,
   AlertCircle,
   CheckCircle2,
-  XCircle,
   FileAudio,
   X,
 } from "lucide-react";
@@ -205,8 +204,9 @@ export function VoiceBulkImportModal({ open, onClose, onSuccess }: VoiceBulkImpo
               onClick={handleClose}
               disabled={isImporting}
               className="text-white/80 hover:text-white transition-colors disabled:opacity-50"
+              aria-label="Close"
             >
-              <XCircle className="h-6 w-6" />
+              <X className="h-6 w-6" aria-hidden />
             </button>
           </div>
         </div>
@@ -358,8 +358,9 @@ export function VoiceBulkImportModal({ open, onClose, onSuccess }: VoiceBulkImpo
                       <button
                         onClick={() => removeFile(index)}
                         className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-red-500/10 text-text-muted hover:text-red-600 transition-colors"
+                        aria-label="Remove file"
                       >
-                        <X className="h-4 w-4" />
+                        <X className="h-4 w-4" aria-hidden />
                       </button>
                     )}
                   </div>

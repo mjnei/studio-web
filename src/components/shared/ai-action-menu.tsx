@@ -19,7 +19,7 @@ export function AiActionMenu() {
           key={action.key}
           className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-text-secondary hover:bg-surface-hover hover:text-text-primary"
         >
-          <Activity size={14} className="text-accent-gradient-solid" />
+          <Activity className="h-3.5 w-3.5 text-accent-gradient-solid" aria-hidden />
           {action.label}
         </button>
       ))}

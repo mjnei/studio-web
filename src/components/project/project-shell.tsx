@@ -119,11 +119,15 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
                 className="rounded-md p-1.5 text-text-muted hover:bg-surface-hover hover:text-text-secondary"
                 aria-label={t("project.common.openNavigation")}
               >
-                <PanelLeft size={20} />
+                <PanelLeft className="h-5 w-5" aria-hidden />
               </button>
             )}
-            <Link href="/projects" className="text-text-muted hover:text-text-secondary">
-              <ArrowLeft size={20} />
+            <Link
+              href="/projects"
+              className="text-text-muted hover:text-text-secondary"
+              aria-label={t("common.back")}
+            >
+              <ArrowLeft className="h-5 w-5" aria-hidden />
             </Link>
             <Heading variant="label" as="h1" className="text-text-primary">
               {projectTitle}

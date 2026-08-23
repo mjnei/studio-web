@@ -1,4 +1,4 @@
-import { Check, Pause, Play, RotateCcw } from "lucide-react";
+import { CheckCircle2, Pause, Play, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { formatRecordingTime } from "../utils";
@@ -41,7 +41,7 @@ export function RecordedPlaybackView({
 
       <div className="flex flex-col items-center gap-3">
         <div className="rounded-full bg-green-500/10 p-4">
-          <Check size={32} className="text-green-400" />
+          <CheckCircle2 className="h-8 w-8 text-green-400" aria-hidden />
         </div>
         <div className="text-center">
           <Heading variant="subsection" as="h3" className="text-text-primary mb-1">
@@ -57,12 +57,12 @@ export function RecordedPlaybackView({
         <button
           onClick={onTogglePlayback}
           className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-accent-cyan to-blue-500 text-white shadow-lg transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-accent-cyan focus:ring-offset-2 focus:ring-offset-surface-base active:scale-95"
-          title={isPlaying ? t("voices.recording.pause") : t("voices.recording.play")}
+          aria-label={isPlaying ? t("voices.recording.pause") : t("voices.recording.play")}
         >
           {isPlaying ? (
-            <Pause size={20} className="fill-current" />
+            <Pause className="h-5 w-5 fill-current" aria-hidden />
           ) : (
-            <Play size={20} className="ml-0.5 fill-current" />
+            <Play className="ml-0.5 h-5 w-5 fill-current" aria-hidden />
           )}
         </button>
         <button
@@ -94,7 +94,7 @@ export function RecordedPlaybackView({
           disabled={isSaving}
           className="flex-1"
         >
-          <RotateCcw size={16} className="mr-2" />
+          <RotateCcw className="mr-2 h-4 w-4" aria-hidden />
           {t("voices.recording.reRecord")}
         </Button>
         <Button

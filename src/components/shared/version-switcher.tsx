@@ -21,7 +21,7 @@ export function VersionSwitcher({
         className="flex items-center gap-1 rounded-md border border-border-default bg-surface-raised px-2 py-1 text-xs text-text-secondary hover:bg-surface-hover"
       >
         {current}
-        <ChevronDown size={12} />
+        <ChevronDown className="h-3 w-3" aria-hidden />
       </button>
       {open && (
         <div className="absolute left-0 top-full z-10 mt-1 rounded-md border border-border-default bg-surface-panel py-1 shadow-lg">

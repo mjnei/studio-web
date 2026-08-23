@@ -62,7 +62,7 @@ export const StatusCards: React.FC<StatusCardsProps> = ({
             </Text>
           </div>
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 text-white shadow-md">
-            <Play className="h-5.5 w-5.5 fill-current" />
+            <Play className="h-5 w-5 fill-current" />
           </div>
         </div>
       </Card>
@@ -91,7 +91,7 @@ export const StatusCards: React.FC<StatusCardsProps> = ({
             </Text>
           </div>
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-md">
-            <CheckCircle2 className="h-5.5 w-5.5" />
+            <CheckCircle2 className="h-5 w-5" />
           </div>
         </div>
       </Card>
@@ -133,7 +133,7 @@ export const StatusCards: React.FC<StatusCardsProps> = ({
             )}
           </div>
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-red-500 text-white shadow-md">
-            <AlertTriangle className="h-5.5 w-5.5" />
+            <AlertTriangle className="h-5 w-5" />
           </div>
         </div>
       </Card>
@@ -161,7 +161,7 @@ export const StatusCards: React.FC<StatusCardsProps> = ({
             </Text>
           </div>
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 text-white shadow-md">
-            <Video className="h-5.5 w-5.5" />
+            <Video className="h-5 w-5" />
           </div>
         </div>
       </Card>

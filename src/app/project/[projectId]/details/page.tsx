@@ -3,7 +3,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { Check, ChevronDown, FileText, Pencil, Sparkles } from "lucide-react";
+import { Check, ChevronDown, FileText, Edit2, Sparkles } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -530,7 +530,7 @@ export default function ProjectDetailsPage() {
             <div className="mb-6">
               <div className="flex items-center gap-2.5 mb-4">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-cyan shadow-sm shadow-accent-cyan/50">
-                  <Pencil className="h-4 w-4 text-white" />
+                  <Edit2 className="h-4 w-4 text-white" />
                 </div>
                 <div className="flex-1">
                   <label

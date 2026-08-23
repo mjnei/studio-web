@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Sparkles, RefreshCw, Copy, Check, FileText, Edit3 } from "lucide-react";
+import { Sparkles, RefreshCw, Copy, Check, FileText, Edit2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -153,7 +153,7 @@ export function ScriptGeneration({
                 <Button
                   variant="ghost"
                   size="sm"
-                  leftIcon={<Edit3 className="w-4 h-4" />}
+                  leftIcon={<Edit2 className="h-4 w-4" />}
                   onClick={() => setEditing(!editing)}
                 >
                   {editing ? t("project.scriptGen.preview") : t("project.scriptGen.edit")}
@@ -161,7 +161,7 @@ export function ScriptGeneration({
                 <Button
                   variant="ghost"
                   size="sm"
-                  leftIcon={<RefreshCw className="w-4 h-4" />}
+                  leftIcon={<RefreshCw className="h-4 w-4" />}
                   onClick={onRegenerate}
                 >
                   {t("project.scriptGen.regenerate")}

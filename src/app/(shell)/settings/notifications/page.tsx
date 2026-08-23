@@ -111,7 +111,7 @@ export default function NotificationSettingsPage() {
                 as="h2"
                 className="text-text-primary flex items-center gap-2"
               >
-                <Monitor size={20} className="text-accent-primary" />
+                <Monitor className="h-5 w-5 text-accent-primary" aria-hidden />
                 {t(
                   [
                     "notificationSettings.categories.videoJobs",

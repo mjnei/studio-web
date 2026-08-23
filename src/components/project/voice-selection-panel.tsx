@@ -117,7 +117,7 @@ export function VoiceSelectionPanel({
                     </p>
                     {onAddVoice && (
                       <Button variant="primary" size="sm" onClick={onAddVoice}>
-                        <Plus size={16} className="mr-2" />
+                        <Plus className="mr-2 h-4 w-4" aria-hidden />
                         {t("project.voice.recordVoice")}
                       </Button>
                     )}

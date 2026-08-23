@@ -14,7 +14,7 @@ import { ThumbnailEditorModal } from "@/components/project/ThumbnailEditorModal"
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
-import { FileText, ChevronDown, Sparkles, Check, RotateCw, Edit } from "lucide-react";
+import { FileText, ChevronDown, Sparkles, Check, RotateCcw, Edit2 } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import {
   advanceProjectStep,
@@ -280,7 +280,7 @@ export default function ComposePage() {
                               className="text-xs font-medium text-accent-cyan hover:text-accent-cyan-hover flex items-center gap-1 transition-colors"
                               title={t("project.compose.regenerateTitle")}
                             >
-                              <RotateCw className="h-3 w-3" />
+                              <RotateCcw className="h-3 w-3" />
                             </button>
                             <button
                               onClick={(e) => {
@@ -290,7 +290,7 @@ export default function ComposePage() {
                               className="text-xs font-medium text-accent-cyan hover:text-accent-cyan-hover flex items-center gap-1 transition-colors"
                               title={t("project.compose.customizeTitle")}
                             >
-                              <Edit className="h-3 w-3" />
+                              <Edit2 className="h-3 w-3" />
                             </button>
                           </>
                         )}
@@ -313,7 +313,7 @@ export default function ComposePage() {
                                 className="text-xs font-medium text-white bg-status-warning hover:bg-status-warning/90 flex items-center gap-1 transition-colors px-2 py-1 rounded"
                                 title={t("project.compose.retryHint")}
                               >
-                                <RotateCw className="h-3 w-3" /> {t("common.retry")}
+                                <RotateCcw className="h-3 w-3" /> {t("common.retry")}
                               </button>
                             )}
                           </div>
@@ -570,9 +570,9 @@ export default function ComposePage() {
               loading={isRegenerating}
               leftIcon={
                 actionModalType === "regenerate" || actionModalType === "retry" ? (
-                  <RotateCw className="h-4 w-4" />
+                  <RotateCcw className="h-4 w-4" />
                 ) : (
-                  <Edit className="h-4 w-4" />
+                  <Edit2 className="h-4 w-4" />
                 )
               }
             >
@@ -589,7 +589,7 @@ export default function ComposePage() {
           {actionModalType === "regenerate" ? (
             <>
               <div className="flex items-start gap-3 p-4 rounded-lg bg-accent-cyan/5 border border-accent-cyan/20">
-                <RotateCw className="h-5 w-5 text-accent-cyan flex-shrink-0 mt-0.5" />
+                <RotateCcw className="h-5 w-5 text-accent-cyan flex-shrink-0 mt-0.5" />
                 <div>
                   <Heading variant="label" as="h4" className="text-text-primary mb-1">
                     {t("project.compose.generateNewImage")}
@@ -617,7 +617,7 @@ export default function ComposePage() {
           ) : actionModalType === "retry" ? (
             <>
               <div className="flex items-start gap-3 p-4 rounded-lg bg-status-warning/5 border border-status-warning/20">
-                <RotateCw className="h-5 w-5 text-status-warning flex-shrink-0 mt-0.5" />
+                <RotateCcw className="h-5 w-5 text-status-warning flex-shrink-0 mt-0.5" />
                 <div>
                   <Heading variant="label" as="h4" className="text-text-primary mb-1">
                     {t("project.compose.retryStuck")}
@@ -645,7 +645,7 @@ export default function ComposePage() {
           ) : (
             <>
               <div className="flex items-start gap-3 p-4 rounded-lg bg-accent-cyan/5 border border-accent-cyan/20">
-                <Edit className="h-5 w-5 text-accent-cyan flex-shrink-0 mt-0.5" />
+                <Edit2 className="h-5 w-5 text-accent-cyan flex-shrink-0 mt-0.5" />
                 <div>
                   <Heading variant="label" as="h4" className="text-text-primary mb-1">
                     {t("project.compose.customizeCurrent")}

@@ -78,7 +78,7 @@ export default function NotificationsPage() {
 
             {/* Desktop: Button group */}
             <div className="hidden sm:flex items-center gap-2 flex-wrap">
-              <Filter size={16} className="text-text-muted" />
+              <Filter className="h-4 w-4 text-text-muted" aria-hidden />
               {NOTIFICATION_FILTERS_WITH_LABELS.map((filterOption) => (
                 <button
                   key={filterOption.value}
@@ -106,7 +106,7 @@ export default function NotificationsPage() {
                 className="gap-2 flex-1 sm:flex-none"
                 aria-label={t("notifications.markAllAsRead")}
               >
-                <CheckCheck size={16} />
+                <CheckCheck className="h-4 w-4" aria-hidden />
                 <span>{t("notifications.markAllAsRead")}</span>
               </Button>
             )}
@@ -117,7 +117,7 @@ export default function NotificationsPage() {
               className="gap-2 flex-1 sm:flex-none"
               aria-label={t("notifications.notificationSettings")}
             >
-              <Settings size={16} />
+              <Settings className="h-4 w-4" aria-hidden />
               <span>{t("notifications.preferences")}</span>
             </Button>
           </div>
@@ -133,7 +133,7 @@ export default function NotificationsPage() {
           </div>
         ) : filteredNotifications.length === 0 ? (
           <div className="p-12 flex flex-col items-center justify-center text-center">
-            <Bell size={64} className="text-text-muted opacity-50 mb-4" />
+            <Bell className="h-16 w-16 text-text-muted opacity-50 mb-4" aria-hidden />
             <Heading variant="subsection" as="h3" className="text-text-primary mb-2">
               {filter === "all"
                 ? t("notifications.noNotifications")

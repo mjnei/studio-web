@@ -30,8 +30,8 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
       {/* Header */}
       <div className="p-3 sm:p-4 border-b border-border-default bg-surface-raised flex items-center justify-between shrink-0">
         <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
-          <Bell size={16} className="text-text-secondary sm:hidden shrink-0" />
-          <Bell size={18} className="text-text-secondary hidden sm:block shrink-0" />
+          <Bell className="h-4 w-4 text-text-secondary sm:hidden shrink-0" aria-hidden />
+          <Bell className="hidden h-[18px] w-[18px] text-text-secondary sm:block shrink-0" aria-hidden />
           <Heading variant="label" as="h3" className="text-text-primary truncate">
             {t("notifications.title")}
           </Heading>
@@ -49,7 +49,7 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
               title={t("notifications.markAllAsRead")}
               aria-label={t("notifications.markAllAsRead")}
             >
-              <CheckCheck size={18} />
+              <CheckCheck className="h-[18px] w-[18px]" aria-hidden />
             </button>
           )}
           <Link
@@ -59,7 +59,7 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
             title={t("notifications.notificationSettings")}
             aria-label={t("notifications.notificationSettings")}
           >
-            <Settings size={18} />
+            <Settings className="h-[18px] w-[18px]" aria-hidden />
           </Link>
         </div>
       </div>
@@ -73,8 +73,8 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
           </div>
         ) : notifications.length === 0 ? (
           <div className="p-6 sm:p-8 flex flex-col items-center justify-center text-text-muted">
-            <Bell size={40} className="mb-2 sm:mb-3 opacity-50 sm:hidden" />
-            <Bell size={48} className="mb-3 opacity-50 hidden sm:block" />
+            <Bell className="h-10 w-10 mb-2 sm:mb-3 opacity-50 sm:hidden" aria-hidden />
+            <Bell className="hidden h-12 w-12 mb-3 opacity-50 sm:block" aria-hidden />
             <p className="text-xs sm:text-sm font-medium">
               {t("notifications.noNotificationsYet")}
             </p>

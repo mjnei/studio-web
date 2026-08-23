@@ -1,4 +1,4 @@
-import { Check, Globe, Sparkles, X } from "lucide-react";
+import { AlertCircle, Check, Globe, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { RECORDING_LANGUAGES } from "../constants";
@@ -62,7 +62,7 @@ export function VoiceNamingForm({
           />
           {nameError && (
             <p className="mt-2 text-xs text-red-400 flex items-center gap-1">
-              <X size={12} />
+              <AlertCircle className="h-3 w-3" aria-hidden />
               {t("voices.recording.nameRequired")}
             </p>
           )}
@@ -73,7 +73,7 @@ export function VoiceNamingForm({
           disabled={isSaving}
           className="mt-3 flex items-center gap-2 text-sm text-accent-cyan hover:text-accent-cyan/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <Sparkles size={16} />
+          <Sparkles className="h-4 w-4" aria-hidden />
           {t("voices.recording.generateRandom")}
         </button>
       </div>
@@ -86,7 +86,7 @@ export function VoiceNamingForm({
           {t("voices.recording.language")}
         </label>
         <div className="relative">
-          <Globe size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
+          <Globe className="absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-text-muted" aria-hidden />
           <select
             id="voice-language"
             value={language}
@@ -121,7 +121,7 @@ export function VoiceNamingForm({
             </>
           ) : (
             <>
-              <Check size={16} className="mr-2" />
+              <Check className="mr-2 h-4 w-4" aria-hidden />
               {t("voices.recording.saveVoice")}
             </>
           )}

@@ -179,10 +179,10 @@ export function Select({
             )}
           </span>
           <ChevronDown
-            size={18}
-            className={`text-text-secondary transition-transform duration-200 ${
+            className={`h-[18px] w-[18px] text-text-secondary transition-transform duration-200 ${
               isOpen ? "rotate-180" : ""
             }`}
+            aria-hidden
           />
         </button>
 
@@ -241,7 +241,9 @@ export function Select({
                       {option.icon && <span className="text-text-secondary">{option.icon}</span>}
                       <span>{option.label}</span>
                     </span>
-                    {option.value === value && <Check size={16} className="text-accent-primary" />}
+                    {option.value === value && (
+                      <Check className="h-4 w-4 text-accent-primary" aria-hidden />
+                    )}
                   </button>
                 ))
               )}
@@ -365,10 +367,10 @@ export function MultiSelect({
             )}
           </div>
           <ChevronDown
-            size={18}
-            className={`text-text-secondary transition-transform duration-200 shrink-0 ${
+            className={`h-[18px] w-[18px] text-text-secondary transition-transform duration-200 shrink-0 ${
               isOpen ? "rotate-180" : ""
             }`}
+            aria-hidden
           />
         </button>
 
@@ -420,7 +422,7 @@ export function MultiSelect({
                         {option.icon && <span className="text-text-secondary">{option.icon}</span>}
                         <span>{option.label}</span>
                       </span>
-                      {isSelected && <Check size={16} className="text-accent-primary" />}
+                      {isSelected && <Check className="h-4 w-4 text-accent-primary" aria-hidden />}
                     </button>
                   );
                 })

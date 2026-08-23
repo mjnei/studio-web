@@ -23,7 +23,7 @@ export function ActiveRecordingView({
         <div className="relative">
           <div className="absolute inset-0 animate-ping rounded-full bg-red-400 opacity-30" />
           <div className="relative rounded-full bg-gradient-to-br from-red-500 to-red-600 p-6 shadow-lg">
-            <Mic size={40} className="text-white" />
+            <Mic className="h-10 w-10 text-white" aria-hidden />
           </div>
         </div>
         <div className="text-center">
@@ -52,9 +52,9 @@ export function ActiveRecordingView({
       <button
         onClick={onStop}
         className="flex h-20 w-20 items-center justify-center rounded-2xl bg-surface-raised shadow-xl transition-all hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-text-muted/30 active:scale-95"
-        title={t("voices.recording.stopRecording")}
+        aria-label={t("voices.recording.stopRecording")}
       >
-        <Square size={36} className="fill-red-500 text-red-500" />
+        <Square className="h-9 w-9 fill-red-500 text-red-500" aria-hidden />
       </button>
       <p className="text-sm text-text-secondary animate-pulse">
         {t("voices.recording.recordingTap")}

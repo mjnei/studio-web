@@ -138,21 +138,21 @@ function ToastItem({ toast, onClose }: ToastItemProps) {
       iconBg: "bg-status-success/20",
     },
     error: {
-      icon: <XCircle size={20} />,
+      icon: <XCircle className="h-5 w-5" />,
       bgColor: "bg-status-error/10",
       borderColor: "border-status-error/30",
       textColor: "text-status-error",
       iconBg: "bg-status-error/20",
     },
     warning: {
-      icon: <AlertCircle size={20} />,
+      icon: <AlertCircle className="h-5 w-5" />,
       bgColor: "bg-status-warning/10",
       borderColor: "border-status-warning/30",
       textColor: "text-status-warning",
       iconBg: "bg-status-warning/20",
     },
     info: {
-      icon: <Info size={20} />,
+      icon: <Info className="h-5 w-5" />,
       bgColor: "bg-status-info/10",
       borderColor: "border-status-info/30",
       textColor: "text-status-info",
@@ -191,7 +191,7 @@ function ToastItem({ toast, onClose }: ToastItemProps) {
           className="shrink-0 rounded-lg p-1 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all touch-manipulation"
           aria-label={t("common.closeNotification")}
         >
-          <X size={16} />
+          <X className="h-4 w-4" />
         </button>
       </div>
     </div>

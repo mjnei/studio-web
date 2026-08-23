@@ -13,6 +13,7 @@ import {
   Play,
   Activity,
   ChevronRight,
+  AlertTriangle,
   type LucideIcon,
 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -134,8 +135,9 @@ export default function AdminPage() {
       />
 
       {error && (
-        <div className="mb-8 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-          ⚠️ {error}
+        <div className="mb-8 flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+          <AlertTriangle className="h-5 w-5 shrink-0" aria-hidden />
+          <span>{error}</span>
         </div>
       )}
 

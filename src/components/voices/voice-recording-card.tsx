@@ -224,9 +224,9 @@ export function VoiceRecordingCard({
           onClick={handleDeleteClick}
           disabled={isDeleting}
           className="shrink-0 p-1.5 text-text-muted hover:text-red-400 transition-colors disabled:opacity-50"
-          title={t("voices.recordingCard.deleteRecording")}
+          aria-label={t("voices.recordingCard.deleteRecording")}
         >
-          <Trash2 size={16} />
+          <Trash2 className="h-4 w-4" aria-hidden />
         </button>
       </div>
 
@@ -262,12 +262,12 @@ export function VoiceRecordingCard({
             </>
           ) : isPlaying ? (
             <>
-              <Pause size={14} className="mr-1" />
+              <Pause className="mr-1 h-3.5 w-3.5" aria-hidden />
               {t("voices.playback.pause")}
             </>
           ) : (
             <>
-              <Play size={14} className="mr-1" />
+              <Play className="mr-1 h-3.5 w-3.5" aria-hidden />
               {t("voices.playback.play")}
             </>
           )}
@@ -281,7 +281,7 @@ export function VoiceRecordingCard({
               ? "border border-orange-500/50 bg-orange-500/10 text-orange-600 hover:bg-orange-500/20"
               : "border border-green-500/50 bg-green-500/10 text-green-600 hover:bg-green-500/20"
           } disabled:opacity-50`}
-          title={
+          aria-label={
             isShared
               ? t("voices.recordingCard.stopSharing")
               : t("voices.recordingCard.shareCommunity")
@@ -290,9 +290,9 @@ export function VoiceRecordingCard({
           {isTogglingSharing ? (
             <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
           ) : isShared ? (
-            <Lock size={14} />
+            <Lock className="h-3.5 w-3.5" aria-hidden />
           ) : (
-            <Share2 size={14} />
+            <Share2 className="h-3.5 w-3.5" aria-hidden />
           )}
         </button>
       </div>

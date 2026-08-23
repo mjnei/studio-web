@@ -30,8 +30,9 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
             onClick={onClose}
             disabled={modal.isSaving || modal.phase === "recording"}
             className="p-2 rounded-lg hover:bg-surface-raised transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            aria-label={modal.t("common.close")}
           >
-            <X size={20} className="text-text-muted" />
+            <X className="h-5 w-5 text-text-muted" aria-hidden />
           </button>
         </div>
 

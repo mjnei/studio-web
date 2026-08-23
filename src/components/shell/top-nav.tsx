@@ -21,7 +21,7 @@ export function TopNav() {
           aria-label={t("shell.openNavMenu")}
           title={t("shell.openNavMenu")}
         >
-          <PanelLeft size={22} />
+          <PanelLeft className="h-[22px] w-[22px]" aria-hidden />
         </button>
       )}
 
@@ -29,7 +29,7 @@ export function TopNav() {
         {/* Search Bar */}
         <div className="hidden lg:block relative">
           <div className="absolute left-2.5 top-1/2 -translate-y-1/2 text-text-muted">
-            <Search size={16} />
+            <Search className="h-4 w-4" aria-hidden />
           </div>
           <input
             type="text"

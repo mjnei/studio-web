@@ -609,8 +609,9 @@ export default function ExportPage() {
                       onClick={() => handleDeleteVideo(video.id)}
                       className="text-xs text-text-muted hover:text-error-text font-medium ml-2"
                       title={t("project.export.deleteVideo")}
+                      aria-label={t("project.export.deleteVideo")}
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="h-4 w-4" aria-hidden />
                     </button>
                   </div>
                 ))}
@@ -697,8 +698,9 @@ export default function ExportPage() {
                               onClick={() => video.video_url && handleDownload(video.video_url)}
                               className="p-1 rounded hover:bg-surface-base transition-colors"
                               title={t("common.download")}
+                              aria-label={t("common.download")}
                             >
-                              <Download className="h-4 w-4 text-text-muted hover:text-accent-cyan" />
+                              <Download className="h-4 w-4 text-text-muted hover:text-accent-cyan" aria-hidden />
                             </button>
                           </>
                         )}
@@ -708,8 +710,9 @@ export default function ExportPage() {
                             onClick={() => handleDeleteVideo(video.id)}
                             className="p-1 rounded hover:bg-surface-base transition-colors"
                             title={t("common.delete")}
+                            aria-label={t("common.delete")}
                           >
-                            <Trash2 className="h-4 w-4 text-text-muted hover:text-error-text" />
+                            <Trash2 className="h-4 w-4 text-text-muted hover:text-error-text" aria-hidden />
                           </button>
                         )}
                       </div>
@@ -754,7 +757,7 @@ export default function ExportPage() {
                   className="w-full flex items-center gap-4 p-4 rounded-lg border border-border-default bg-surface-raised hover:bg-surface-raised-hover hover:border-accent-cyan/30 transition-all group"
                 >
                   <div className="flex h-12 w-12 items-center justify-center rounded-full bg-black flex-shrink-0">
-                    <XIcon className="text-white" />
+                    <XIcon className="h-6 w-6 text-white" />
                   </div>
                   <div className="flex-1 text-left">
                     <Heading
@@ -786,7 +789,7 @@ export default function ExportPage() {
                   className="w-full flex items-center gap-4 p-4 rounded-lg border border-border-default bg-surface-raised hover:bg-surface-raised-hover hover:border-accent-cyan/30 transition-all group"
                 >
                   <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#07C160] flex-shrink-0">
-                    <WeChatIcon className="text-white" />
+                    <WeChatIcon className="h-6 w-6 text-white" />
                   </div>
                   <div className="flex-1 text-left">
                     <Heading

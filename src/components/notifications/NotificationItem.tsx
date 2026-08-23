@@ -3,7 +3,7 @@
 import { type Notification } from "@/lib/notification-context";
 import { useNotifications } from "@/lib/notification-context";
 import { formatDistanceToNow } from "date-fns";
-import { CheckCircle, AlertCircle, Info, Trash2 } from "lucide-react";
+import { CheckCircle2, AlertCircle, Info, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useI18n } from "@/i18n";
 
@@ -13,13 +13,13 @@ interface NotificationItemProps {
 }
 
 const iconMap = {
-  video_job_completed: CheckCircle,
+  video_job_completed: CheckCircle2,
   video_job_failed: AlertCircle,
   video_job_queued: Info,
   low_credits: AlertCircle,
-  credit_transaction: CheckCircle,
+  credit_transaction: CheckCircle2,
   project_deleted: Info,
-  project_published: CheckCircle,
+  project_published: CheckCircle2,
 };
 
 const colorMap = {
@@ -91,8 +91,8 @@ export function NotificationItem({ notification, onClose }: NotificationItemProp
       <div className="flex gap-2 sm:gap-3">
         {/* Icon */}
         <div className={`flex-shrink-0 ${iconColor} mt-0.5`}>
-          <Icon size={16} className="sm:hidden" />
-          <Icon size={18} className="hidden sm:block" />
+          <Icon className="h-4 w-4 sm:hidden" aria-hidden />
+          <Icon className="hidden h-[18px] w-[18px] sm:block" aria-hidden />
         </div>
 
         {/* Content */}
@@ -118,8 +118,8 @@ export function NotificationItem({ notification, onClose }: NotificationItemProp
                   title={t("notifications.markAsRead")}
                   aria-label={t("notifications.markAsRead")}
                 >
-                  <CheckCircle size={13} className="sm:hidden" />
-                  <CheckCircle size={14} className="hidden sm:block" />
+                  <CheckCircle2 className="h-3.5 w-3.5 sm:hidden" aria-hidden />
+                  <CheckCircle2 className="hidden h-3.5 w-3.5 sm:block" aria-hidden />
                 </button>
               )}
               <button
@@ -128,8 +128,8 @@ export function NotificationItem({ notification, onClose }: NotificationItemProp
                 title={t("notifications.deleteNotification")}
                 aria-label={t("notifications.deleteNotification")}
               >
-                <Trash2 size={13} className="sm:hidden" />
-                <Trash2 size={14} className="hidden sm:block" />
+                <Trash2 className="h-3.5 w-3.5 sm:hidden" aria-hidden />
+                <Trash2 className="hidden h-3.5 w-3.5 sm:block" aria-hidden />
               </button>
             </div>
           </div>
