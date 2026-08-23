@@ -16,7 +16,11 @@ type UseTmdbImportOptions = {
   onLibraryRefresh: () => Promise<void>;
 };
 
-export function useTmdbImport({ enabled, isLibraryActive, onLibraryRefresh }: UseTmdbImportOptions) {
+export function useTmdbImport({
+  enabled,
+  isLibraryActive,
+  onLibraryRefresh,
+}: UseTmdbImportOptions) {
   const toast = useToast();
   const searchInputRef = useRef<HTMLInputElement>(null);
 

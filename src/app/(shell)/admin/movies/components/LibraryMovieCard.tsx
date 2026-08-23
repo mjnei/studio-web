@@ -1,13 +1,4 @@
-import {
-  Film,
-  Trash2,
-  Edit2,
-  Calendar,
-  Star,
-  Save,
-  X,
-  Eye,
-} from "lucide-react";
+import { Film, Trash2, Edit2, Calendar, Star, Save, X, Eye } from "lucide-react";
 import Link from "next/link";
 import { ExternalImage } from "@/components/ui/ExternalImage";
 import { Heading } from "@/components/ui/heading";
@@ -210,9 +201,7 @@ export function LibraryMovieCard({
               <input
                 type="text"
                 value={editingData.douban_id || ""}
-                onChange={(e) =>
-                  onEditingDataChange({ ...editingData, douban_id: e.target.value })
-                }
+                onChange={(e) => onEditingDataChange({ ...editingData, douban_id: e.target.value })}
                 className="w-full rounded border border-border-default bg-surface-base px-2 py-1 text-xs text-text-primary focus:border-accent-primary focus:outline-none"
                 placeholder="Optional"
               />

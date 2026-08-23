@@ -97,7 +97,13 @@ export function RecordedPlaybackView({
           <RotateCcw size={16} className="mr-2" />
           {t("voices.recording.reRecord")}
         </Button>
-        <Button variant="primary" size="md" onClick={onContinue} disabled={isSaving} className="flex-1">
+        <Button
+          variant="primary"
+          size="md"
+          onClick={onContinue}
+          disabled={isSaving}
+          className="flex-1"
+        >
           {t("voices.recording.continue")}
         </Button>
       </div>

@@ -111,9 +111,7 @@ describe("VoiceSelectionPanel", () => {
   });
 
   it("shows loading skeletons when isLoadingVoices is true", () => {
-    const { container } = render(
-      <VoiceSelectionPanel {...defaultProps} isLoadingVoices={true} />
-    );
+    const { container } = render(<VoiceSelectionPanel {...defaultProps} isLoadingVoices={true} />);
 
     expect(container.querySelectorAll(".animate-pulse").length).toBeGreaterThan(0);
   });

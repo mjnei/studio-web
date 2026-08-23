@@ -2,11 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useI18n } from "@/i18n";
-import {
-  AUTO_PLAY_DELAY_MS,
-  MAX_DURATION_S,
-  RECORDING_TIMER_INTERVAL_MS,
-} from "../constants";
+import { AUTO_PLAY_DELAY_MS, MAX_DURATION_S, RECORDING_TIMER_INTERVAL_MS } from "../constants";
 import {
   generateRandomVoiceName,
   getSupportedMimeType,
@@ -185,7 +181,10 @@ export function useVoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecord
 
         const audio = attachAudio(url);
         setTimeout(() => {
-          audio.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+          audio
+            .play()
+            .then(() => setIsPlaying(true))
+            .catch(() => setIsPlaying(false));
         }, AUTO_PLAY_DELAY_MS);
       };
 
@@ -282,7 +281,10 @@ export function useVoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecord
       return;
     }
 
-    audio.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+    audio
+      .play()
+      .then(() => setIsPlaying(true))
+      .catch(() => setIsPlaying(false));
   }, [isPlaying]);
 
   const seekPlayback = useCallback((fraction: number) => {

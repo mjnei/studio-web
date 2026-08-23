@@ -50,9 +50,7 @@ export function VoiceNamingForm({
             onChange={(e) => onVoiceNameChange(e.target.value)}
             placeholder={t("voices.recording.namePlaceholder")}
             className={`w-full rounded-xl border ${
-              nameError
-                ? "border-red-500 bg-red-500/5"
-                : "border-border-default bg-surface-raised"
+              nameError ? "border-red-500 bg-red-500/5" : "border-border-default bg-surface-raised"
             } px-4 py-3 text-text-primary placeholder-text-muted transition-colors focus:border-accent-cyan focus:outline-none focus:ring-2 focus:ring-accent-cyan/20`}
             autoFocus
             onKeyDown={(e) => {
@@ -81,7 +79,10 @@ export function VoiceNamingForm({
       </div>
 
       <div>
-        <label htmlFor="voice-language" className="block text-sm font-medium text-text-primary mb-2">
+        <label
+          htmlFor="voice-language"
+          className="block text-sm font-medium text-text-primary mb-2"
+        >
           {t("voices.recording.language")}
         </label>
         <div className="relative">
@@ -103,7 +104,13 @@ export function VoiceNamingForm({
       </div>
 
       <div className="flex items-center gap-2">
-        <Button variant="secondary" size="md" onClick={onBack} disabled={isSaving} className="flex-1">
+        <Button
+          variant="secondary"
+          size="md"
+          onClick={onBack}
+          disabled={isSaving}
+          className="flex-1"
+        >
           {t("voices.recording.back")}
         </Button>
         <Button variant="primary" size="md" onClick={onSave} disabled={isSaving} className="flex-1">

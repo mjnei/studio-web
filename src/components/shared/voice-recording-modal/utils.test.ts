@@ -1,9 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import {
-  formatRecordingTime,
-  generateRandomVoiceName,
-  mapMicrophoneStartError,
-} from "./utils";
+import { formatRecordingTime, generateRandomVoiceName, mapMicrophoneStartError } from "./utils";
 
 describe("formatRecordingTime", () => {
   it("formats seconds as m:ss", () => {

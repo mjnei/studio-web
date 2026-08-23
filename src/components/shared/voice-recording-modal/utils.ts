@@ -1,8 +1,4 @@
-import {
-  SUPPORTED_MIME_TYPES,
-  VOICE_NAME_ADJECTIVES,
-  VOICE_NAME_NOUNS,
-} from "./constants";
+import { SUPPORTED_MIME_TYPES, VOICE_NAME_ADJECTIVES, VOICE_NAME_NOUNS } from "./constants";
 import type { TranslateFn } from "./types";
 
 export function getSupportedMimeType(): string {
