@@ -76,7 +76,7 @@ Avoid Lucide’s numeric `size={N}` prop in new code.
 | Error empty (failed fetch) | `<EmptyState icon={…} title={…} description={error} />` |
 | Dense UI icons in the same view | `<Icon size="…" />` or `xs`–`xl` — not hero tier |
 
-**Migrated surfaces (Aug 2026):** jobs, movies, projects, voices, notifications (page + dropdown), dashboard, referral history, movie selection, voice selection panel, admin movies/voices/queues, TMDB import.
+**Migrated surfaces (Aug 2026):** jobs, movies, projects, voices, notifications (page + dropdown), dashboard, referral history, movie selection, voice selection panel, admin movies/voices/queues/TTS (failed, rate-limited, completed), TMDB import.
 
 **Still direct Lucide (OK):** billing/history blocks, movie poster placeholders, preview player controls, admin card fallbacks — contextual layout, not list empty pattern.
 

@@ -1,9 +1,9 @@
 "use client";
 
-import { Heading } from "@/components/ui/heading";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 import { useState } from "react";
-import { ShieldAlert, RefreshCw, Eye, Clock } from "lucide-react";
+import { CheckCircle2, RefreshCw, Eye, Clock } from "lucide-react";
 import type { PlaygroundRateLimitedJob } from "@/types/admin";
 
 interface PlaygroundRateLimitedJobsTableProps {
@@ -43,19 +43,13 @@ export function PlaygroundRateLimitedJobsTable({
 
   if (rateLimitedJobs.length === 0) {
     return (
-      <div className="rounded-xl border border-border-default bg-surface-panel p-8 text-center">
-        <div className="flex flex-col items-center justify-center gap-3">
-          <div className="flex items-center justify-center w-16 h-16 rounded-full bg-green-500/10">
-            <ShieldAlert className="h-8 w-8 text-green-600" />
-          </div>
-          <Heading variant="subsection" as="h3" className="text-text-primary">
-            No Rate-Limited Jobs
-          </Heading>
-          <p className="text-sm text-text-secondary max-w-md">
-            No abuse patterns detected. All requests within rate limits.
-          </p>
-        </div>
-      </div>
+      <EmptyState
+        size="lg"
+        className="rounded-xl border border-border-default bg-surface-panel"
+        icon={<CheckCircle2 aria-hidden />}
+        title="No Rate-Limited Jobs"
+        description="No abuse patterns detected. All requests within rate limits."
+      />
     );
   }
 
