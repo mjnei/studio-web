@@ -296,7 +296,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                     {movie.title || movie.original_title}
                   </Heading>
                   {movie.original_title && movie.original_title !== movie.title && (
-                    <p className="mb-4 text-base text-text-muted italic">{movie.original_title}</p>
+                    <p className="mb-4 text-body text-text-muted italic">{movie.original_title}</p>
                   )}
 
                   {/* Metadata Row */}
@@ -357,7 +357,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                 {/* Tagline */}
                 {movie.tagline && (
                   <div className="rounded-xl border border-accent-cyan/30 bg-accent-cyan/5 p-5">
-                    <p className="text-base italic text-text-primary leading-relaxed">
+                    <p className="text-body italic text-text-primary leading-relaxed">
                       &quot;{movie.tagline}&quot;
                     </p>
                   </div>

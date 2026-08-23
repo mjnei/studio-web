@@ -405,7 +405,7 @@ export default function ProfilePage() {
                     value={name}
                     onChange={(e) => handleNameChange(e.target.value)}
                     label={t("profile.accountOverview.displayName")}
-                    className="text-base font-medium"
+                    className="text-body font-medium"
                   />
                   <label className="flex items-center gap-2 cursor-pointer select-none">
                     <input
