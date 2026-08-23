@@ -122,7 +122,7 @@ Auth and new-project redirect pages use `border-b-2` or `border-4 border-r-trans
 | `VoiceSelectionPanel` | Pulse grid when `isLoadingVoices` | Correct — skeleton, not spinner |
 | `project/new/*` | CSS border spinners on redirect / script load | Works; could unify to `PageLoadingSkeleton` |
 
-**Caveat — `export/page.tsx` player:** A large `Spinner` shows when `displayVideo.video_url` is falsy. This may conflate “still loading” with “no stream yet”. Consider splitting empty vs loading states if users report a stuck spinner.
+**Caveat — `export/page.tsx` player (SPIN-003):** A large `Spinner` shows when `displayVideo.video_url` is falsy. This may conflate “still loading” with “no stream yet”. Consider splitting empty vs loading states if users report a stuck spinner.
 
 ### Shell & admin — mostly OK
 
@@ -178,6 +178,8 @@ These are not necessarily bugs — they use other patterns or minimal feedback.
 
 ## User Experience (UX) & Accessibility (a11y) Gaps
 
+> **Task IDs:** SPIN-201 (live regions), SPIN-202 (reduced motion), SPIN-203 (FOLS delay), SPIN-204 (timeout/retry).
+
 ### 1. Screen Reader & Accessibility Gaps (WCAG 2.2 / 4.1.3 Status Messages)
 
 - **Issue:** `Spinner` sets `aria-hidden={true}` by default. When rendered in standalone containers or full-page wrappers (`PageLoadingSkeleton`, `LoadingSpinner`), screen readers are not notified that content is actively loading unless wrapped in an accessible live region.
@@ -205,7 +207,9 @@ These are not necessarily bugs — they use other patterns or minimal feedback.
 
 ## Known issues & recommendations
 
-### 1. Redundant spinners — `TmdbImportView`
+> **Task IDs:** Each item below maps to the [Task list](#task-list) (e.g. SPIN-001).
+
+### 1. Redundant spinners — `TmdbImportView` (SPIN-002)
 
 When `isSearching` is true, both apply:
 
@@ -214,31 +218,139 @@ When `isSearching` is true, both apply:
 
 **Recommendation:** Keep the full-page `LoadingSpinner` OR the button spinner, not both.
 
-### 2. Inconsistent spinner visuals — CSS border divs
+### 2. Inconsistent spinner visuals — CSS border divs (SPIN-101–SPIN-108)
 
 15 files still use hand-rolled border spinners (auth, notifications, audit logs, voice preview, onboarding, new-project redirects). They work but look different from `Loader2`-based `Spinner`.
 
 **Recommendation:** Migrate in a small follow-up PR for visual consistency (not required for correctness). Start with notifications cluster (page + dropdown + modal) for highest visibility.
 
-### 3. Missing first-load UI — notification settings
+### 3. Missing first-load UI — notification settings (SPIN-001)
 
 `settings/notifications/page.tsx` reads `preferencesLoading` from context but does not render a loading state.
 
 **Recommendation:** Add `LoadingSpinner` or skeleton while `preferencesLoading === true`.
 
-### 4. Dashboard progressive loading
+### 4. Dashboard progressive loading (SPIN-301)
 
 Projects and popular movies sections simply do not render while loading (stats show `"..."`).
 
 **Recommendation:** Optional section-level skeletons or a single centered spinner if empty-state flash is noticeable.
 
-### 5. Dead code — `video-generation.tsx`
+### 5. Dead code — `video-generation.tsx` (SPIN-401)
 
 Unused component with spinner usage. Safe to delete or wire up if still planned.
 
-### 6. Accent color split (optional)
+### 6. Accent color split (optional) (SPIN-303)
 
 `LoadingSpinner` (`text-accent-primary`) vs project skeletons (`text-accent-cyan`) may look slightly different on the same screen. Unify only as part of a deliberate visual pass.
+
+---
+
+## Task list
+
+Actionable backlog for Priority 3+ spinner work. Check off items as completed and note the PR that closed each task.
+
+**Legend:** Effort — **S** (≤1 h), **M** (1–3 h), **L** (half day+). Priority — **P0** user-facing bug/ gap, **P1** consistency/cleanup, **P2** polish, **P3** optional / design pass.
+
+### Phase 1 — UX gaps (P0)
+
+| ID | Task | File(s) | What to do | Acceptance criteria | Effort | PR batch |
+|----|------|---------|------------|---------------------|--------|----------|
+| SPIN-001 | Notification settings first-load | `src/app/(shell)/settings/notifications/page.tsx` | When `preferencesLoading === true`, render `<LoadingSpinner size="md" message={…} fullHeight />` (or a form skeleton) instead of the preferences form. Use an existing i18n key or add one under `settings.notifications`. | Form does not flash empty/stale toggles on first visit; Save stays disabled while loading; no layout shift when prefs arrive. | S | `fix/notifications-settings-loading` |
+| SPIN-002 | TmdbImportView redundant spinners | `src/app/(shell)/admin/movies/components/TmdbImportView.tsx` | Remove either the search-button `<Spinner size="sm" />` **or** the full-page `<LoadingSpinner fullHeight />` when `isSearching`. Prefer keeping full-page spinner + disabled search input. | Only one loading indicator visible during TMDB search; search button/input clearly disabled. | S | `fix/tmdb-import-spinner` |
+| SPIN-003 | Export player loading vs empty | `src/app/project/[projectId]/export/page.tsx` | Introduce distinct UI for (a) video metadata/stream still fetching, (b) generation in progress, (c) no URL yet / failed. Do not show a bare large `Spinner` for all falsy `video_url` cases. | Player area shows spinner only while a known fetch/generation is in flight; empty/error states have copy + optional retry. | M | `fix/export-player-states` |
+
+### Phase 2 — Border spinner → `Spinner` migration (P1)
+
+Replace hand-rolled `div` border spinners with `<Spinner />`. Match size and color from the surrounding context. See [Border spinner inventory](#border-spinner-inventory).
+
+| ID | Task | File(s) | Replacement pattern | Acceptance criteria | Effort | PR batch |
+|----|------|---------|---------------------|---------------------|--------|----------|
+| SPIN-101 | Notifications cluster | `src/app/(shell)/notifications/page.tsx`, `src/components/notifications/NotificationDropdown.tsx`, `src/components/notifications/NotificationPreferencesModal.tsx` | Page: `<Spinner size="lg" className="text-accent-primary mb-4" />`. Dropdown: `<Spinner size="md" className="text-accent-primary" />`. Modal: `<Spinner size="md" className="text-accent-primary" />`. | No border `animate-spin` divs remain in these three files; visuals align with `invite/page.tsx`. | S | `refactor/spinner-notifications` |
+| SPIN-102 | Auth redirect pages | `src/app/(auth)/login/page.tsx`, `src/app/(auth)/signup/page.tsx` | Replace redirect spinners with `<Spinner size="lg" className="text-accent-primary mb-4" />` (match `invite/page.tsx`). | Login + signup redirect states use shared `Spinner`; form submit still uses `Button loading`. | S | `refactor/spinner-auth` |
+| SPIN-103 | New project boot | `src/app/project/new/page.tsx`, `src/app/project/new/script/page.tsx` | Replace inline border div + message with `<PageLoadingSkeleton message={t("common.loading")} />` or equivalent centered layout. | New-project redirect/script load matches `[projectId]/*` boot pattern. | S | `refactor/spinner-new-project` |
+| SPIN-104 | Audit logs table overlay | `src/app/(shell)/admin/audit-logs/components/AuditLogsTable.tsx` | Replace table overlay border spinner with `<Spinner size="md" className="text-primary" />`. | Table loading overlay uses `Spinner`; pagination/filters unchanged. | S | `refactor/spinner-admin` |
+| SPIN-105 | Voice cards & preview | `src/components/voices/VoiceCard.tsx`, `src/components/voices/voice-recording-card.tsx`, `src/components/project/voice-selection-card.tsx` | Inline actions: `<Spinner size="sm" />` or `className="h-3 w-3"` / `h-4 w-4` with `text-current` or `text-accent-cyan` as appropriate. | All three files free of border spinners; button/layout size unchanged. | M | `refactor/spinner-voices` |
+| SPIN-106 | Voice recording modal | `src/components/shared/voice-recording-modal/components/requesting-access-view.tsx`, `voice-naming-form.tsx` | Permission wait: `<Spinner size="lg" className="text-accent-cyan" />`. Submit: `<Spinner size="sm" className="text-white" />` inside button row. | Modal flows use `Spinner`; white-on-primary contrast preserved on submit. | S | `refactor/spinner-voice-modal` |
+| SPIN-107 | Onboarding steps | `src/components/onboarding/PasswordStep.tsx`, `src/components/onboarding/CompletionStep.tsx` | Submit: `<Spinner size="sm" className="text-white" />`. Completion wait: `<Spinner size="lg" className="text-white" />`. Secondary loader: `<Spinner size="sm" />` with muted color. | Onboarding spinners unified; no border divs left in these files. | S | `refactor/spinner-onboarding` |
+| SPIN-108 | Migration verification | — | Run verification commands (below). Expect **0** border-spinner matches outside `RefreshCw` and `spinner.tsx`. | `rg 'border.*animate-spin\|animate-spin.*border' src` returns only intentional non-migration cases (if any documented). | S | Included in last migration PR |
+
+### Phase 3 — Shared primitive & a11y (P1)
+
+| ID | Task | File(s) | What to do | Acceptance criteria | Effort | PR batch |
+|----|------|---------|------------|---------------------|--------|----------|
+| SPIN-201 | Live region on page loaders | `src/components/ui/LoadingSpinner.tsx`, `src/components/ui/loading-skeleton.tsx` | Add `role="status"`, `aria-live="polite"`, and `aria-busy="true"` on the outer wrapper. Include `<span className="sr-only">{message ?? t("common.loading")}</span>`. | Screen reader announces loading when `LoadingSpinner` / `PageLoadingSkeleton` mount; visible message unchanged. | M | `feat/spinner-a11y` |
+| SPIN-202 | Reduced motion support | `src/components/ui/spinner.tsx` | Add `motion-reduce:animate-none` to `Loader2` classes; optionally swap to a static icon or subtle pulse under `@media (prefers-reduced-motion: reduce)` via Tailwind `motion-reduce:` utilities. | With OS “reduce motion” on, spinner does not rotate continuously. | S | `feat/spinner-a11y` |
+| SPIN-203 | Optional FOLS delay helper | New hook e.g. `src/lib/hooks/use-delayed-loading.ts` + adopt on 1–2 full-page loaders | Expose `showLoading = isLoading && elapsed > 150ms` (configurable). Apply to `LoadingSpinner fullHeight` on list pages first. | Fast cached loads (<150ms) do not flash full-page spinner; slow loads still show spinner. | M | `feat/spinner-fols-delay` |
+| SPIN-204 | Timeout + retry pattern (pilot) | Pick one critical flow: e.g. `export/page.tsx` generation or `preview/page.tsx` TTS | After 15–30s without resolution, replace spinner with error copy + retry button (`RotateCcw`). | Stuck async state surfaces error + retry; happy path unchanged. | L | `feat/spinner-timeout-retry` |
+
+### Phase 4 — Optional polish (P2–P3)
+
+| ID | Task | File(s) | What to do | Acceptance criteria | Effort | PR batch |
+|----|------|---------|------------|---------------------|--------|----------|
+| SPIN-301 | Dashboard section skeletons | `src/app/(shell)/dashboard/page.tsx` | While `loadingProjects` / `loadingMovies`, show `LoadingSkeleton variant="card"` or `variant="poster"` in section slots instead of hiding sections. | No empty gap under stats during fetch; stats still show `"..."`. | M | `polish/dashboard-loading` |
+| SPIN-302 | Admin hub stats loading | `src/app/(shell)/admin/page.tsx` | Optional: skeleton cards or inline `Spinner size="sm"` beside stat labels while stats fetch. | Stats area does not jump from `"-"` to numbers without context (if pursued). | S | `polish/admin-hub-loading` |
+| SPIN-303 | Accent color unification | `LoadingSpinner.tsx`, `loading-skeleton.tsx` | Pick one accent (`text-accent-primary` or `text-accent-cyan`) for all shared loaders; update both components together. | All page/section loaders share one accent token. | S | `polish/spinner-accent` |
+| SPIN-304 | Admin projects table initial load | `src/app/(shell)/admin/projects/page.tsx` | Optional: show table `LoadingSpinner` or skeleton rows on first fetch (today only stats use `LoadingSpinner`). | First visit shows table loading state; refresh still uses `RefreshCw` spin. | M | `polish/admin-projects-table` |
+
+### Phase 5 — Cleanup (P1)
+
+| ID | Task | File(s) | What to do | Acceptance criteria | Effort | PR batch |
+|----|------|---------|------------|---------------------|--------|----------|
+| SPIN-401 | Remove dead `video-generation.tsx` | `src/components/project/video-generation.tsx`, `docs/TYPOGRAPHY.md` (reference) | Delete file if export flow in `export/page.tsx` is canonical. Remove stale doc references. | No importers; build + lint pass; typography doc updated. | S | `chore/remove-video-generation` |
+| SPIN-402 | Update this audit doc | `docs/SPINNER_AUDIT.md` | After each phase, update migration status, border inventory counts, and check off task IDs. | Doc matches repo; verification command counts current. | S | Ongoing |
+
+### Out of scope — do not implement
+
+| ID | Item | Reason |
+|----|------|--------|
+| SPIN-X01 | Migrate `RefreshCw` + `animate-spin` (8 files, 10 sites) | Correct refresh semantics — see [What not to migrate](#what-not-to-migrate) |
+| SPIN-X02 | Replace pulse skeletons with spinners | Worse UX for grids/lists |
+| SPIN-X03 | Migrate `ProjectStatsCard` `Loader2` | Static metric icon, not a spinner |
+| SPIN-X04 | Profile `return null` when `!user` | Relies on auth shell; low severity |
+
+### Suggested PR sequence
+
+1. **Quick wins:** SPIN-001, SPIN-002, SPIN-401  
+2. **Visual consistency:** SPIN-101 → SPIN-107 (one PR per batch row, or notifications + auth together)  
+3. **Primitives:** SPIN-201 + SPIN-202 (single a11y PR)  
+4. **Behavior:** SPIN-003, SPIN-203, SPIN-204 as needed from user feedback  
+5. **Polish:** SPIN-301–304 only if empty-state flash is reported
+
+### Task checklist (copy for PR descriptions)
+
+```
+Phase 1 — UX
+- [ ] SPIN-001 Notification settings first-load
+- [ ] SPIN-002 TmdbImportView redundant spinners
+- [ ] SPIN-003 Export player loading vs empty
+
+Phase 2 — Border migration
+- [ ] SPIN-101 Notifications cluster
+- [ ] SPIN-102 Auth redirect pages
+- [ ] SPIN-103 New project boot
+- [ ] SPIN-104 Audit logs table
+- [ ] SPIN-105 Voice cards & preview
+- [ ] SPIN-106 Voice recording modal
+- [ ] SPIN-107 Onboarding steps
+- [ ] SPIN-108 Migration verification
+
+Phase 3 — a11y & behavior
+- [ ] SPIN-201 Live region on page loaders
+- [ ] SPIN-202 Reduced motion support
+- [ ] SPIN-203 FOLS delay helper
+- [ ] SPIN-204 Timeout + retry (pilot)
+
+Phase 4 — Polish
+- [ ] SPIN-301 Dashboard section skeletons
+- [ ] SPIN-302 Admin hub stats loading
+- [ ] SPIN-303 Accent color unification
+- [ ] SPIN-304 Admin projects table initial load
+
+Phase 5 — Cleanup
+- [ ] SPIN-401 Remove video-generation.tsx
+- [ ] SPIN-402 Update SPINNER_AUDIT.md
+```
 
 ---
 
@@ -282,6 +394,6 @@ As of last verification: **2** direct `Loader2` files, **30** files importing `S
 | 2 | `Icon` + `Spinner` primitives; migrate spinners | Done |
 | 3 | Brand icons (`GoogleIcon`, `XIcon`, `WeChatIcon`) | Done |
 | 4 | Icon conventions in `AGENTS.md` / `docs/ICONS.md` | Done |
-| 5 | Accessibility pass on icon-only buttons | Partial (high-traffic surfaces) |
+| 5 | Accessibility pass on icon-only buttons | Partial — see [Remaining gaps](ICONS.md#remaining-gaps-roadmap) in `docs/ICONS.md` |
 
 This document covers Priority 2 spinner scope. Icon wrapper adoption (`Icon` component) is documented in `docs/ICONS.md`; spinners remain separate from icons per that guide.
