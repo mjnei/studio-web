@@ -8,6 +8,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useI18n } from "@/i18n";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function CompletionStep() {
   const router = useRouter();
@@ -133,10 +134,11 @@ export default function CompletionStep() {
           <div className="relative">
             <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-blue-500 to-purple-600 dark:from-blue-600 dark:to-purple-700 rounded-3xl flex items-center justify-center shadow-xl animate-pulse">
               <div
-                className="w-10 h-10 sm:w-12 sm:h-12 border-4 border-white border-t-transparent rounded-full animate-spin"
                 role="status"
                 aria-label={t("onboarding.completion.loadingAriaLabel")}
-              />
+              >
+                <Spinner className="h-10 w-10 sm:h-12 sm:w-12 text-white" />
+              </div>
             </div>
             <div className="absolute -top-2 -right-2">
               <Sparkles className="h-8 w-8 text-yellow-400 animate-pulse" aria-hidden="true" />
@@ -236,7 +238,7 @@ export default function CompletionStep() {
 
       {/* Countdown */}
       <div className="mt-6 flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-        <div className="w-5 h-5 border-2 border-gray-400 dark:border-gray-500 border-t-transparent rounded-full animate-spin" />
+        <Spinner size="sm" className="text-gray-400 dark:text-gray-500" />
         <span>
           {t("onboarding.completion.redirect")
             .replace("{seconds}", countdown.toString())

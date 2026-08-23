@@ -8,6 +8,7 @@ import { Heading } from "@/components/ui/heading";
 import { Edit2 } from "lucide-react";
 import { createScript } from "@/lib/project-client";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
+import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { useI18n } from "@/i18n";
 
 /**
@@ -89,14 +90,7 @@ export default function NewProjectScriptPage() {
   };
 
   if (!selectedMovie) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-accent-cyan border-r-transparent" />
-          <p className="text-text-secondary">{t("common.loading")}</p>
-        </div>
-      </div>
-    );
+    return <PageLoadingSkeleton message={t("common.loading")} />;
   }
 
   return (

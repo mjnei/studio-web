@@ -11,6 +11,7 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/toast";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
+import { Spinner } from "@/components/ui/spinner";
 import { GoogleIcon } from "@/components/icons";
 
 export default function LoginPage() {
@@ -56,7 +57,7 @@ export default function LoginPage() {
     return (
       <Card variant="elevated" padding="lg" className="w-full">
         <div className="flex flex-col items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-primary mb-4"></div>
+          <Spinner size="lg" className="text-accent-primary mb-4" />
           <p className="text-sm text-text-secondary">
             {isAuthenticated ? t("auth.login.redirecting") : t("auth.login.loading")}
           </p>

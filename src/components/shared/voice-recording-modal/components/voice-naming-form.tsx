@@ -1,5 +1,6 @@
 import { AlertCircle, Check, Globe, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import { Heading } from "@/components/ui/heading";
 import { RECORDING_LANGUAGES } from "../constants";
 import type { TranslateFn } from "../types";
@@ -119,7 +120,7 @@ export function VoiceNamingForm({
         <Button variant="primary" size="md" onClick={onSave} disabled={isSaving} className="flex-1">
           {isSaving ? (
             <>
-              <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+              <Spinner size="sm" className="mr-2 text-white" />
               {t("voices.recording.saving")}
             </>
           ) : (

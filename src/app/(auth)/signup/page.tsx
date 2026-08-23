@@ -14,6 +14,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 import { validateReferralCode } from "@/lib/api/referral-client";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
+import { Spinner } from "@/components/ui/spinner";
 import { GoogleIcon } from "@/components/icons";
 
 function SignupContent() {
@@ -118,7 +119,7 @@ function SignupContent() {
     return (
       <Card variant="elevated" padding="lg" className="w-full">
         <div className="flex flex-col items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-primary mb-4"></div>
+          <Spinner size="lg" className="text-accent-primary mb-4" />
           <p className="text-sm text-text-secondary">
             {isAuthenticated ? t("auth.signup.redirecting") : t("auth.signup.loading")}
           </p>
@@ -227,7 +228,7 @@ export default function SignupPage() {
       fallback={
         <Card variant="elevated" padding="lg" className="w-full">
           <div className="flex flex-col items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent-primary mb-4"></div>
+            <Spinner size="lg" className="text-accent-primary mb-4" />
             <p className="text-sm text-text-secondary">{t("common.loading")}</p>
           </div>
         </Card>

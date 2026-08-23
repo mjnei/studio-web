@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useNotifications } from "@/lib/notification-context";
 import { X, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import { NOTIFICATION_TYPE_LABELS } from "@/lib/notification-constants";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
@@ -102,7 +103,7 @@ export function NotificationPreferencesModal({
             </Heading>
             {preferencesLoading ? (
               <div className="flex items-center justify-center py-12">
-                <div className="w-8 h-8 border-2 border-accent-primary border-t-transparent rounded-full animate-spin" />
+                <Spinner size="md" className="text-accent-primary" />
               </div>
             ) : (
               Object.keys(NOTIFICATION_TYPE_LABELS).map((notificationType) => {

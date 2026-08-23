@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useI18n } from "@/i18n";
+import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 
 /**
  * This page redirects to the movie selection step.
@@ -18,12 +19,5 @@ export default function NewProjectPage() {
     router.replace("/project/new/source");
   }, [router]);
 
-  return (
-    <div className="flex min-h-screen items-center justify-center">
-      <div className="text-center">
-        <div className="mb-4 inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-accent-cyan border-r-transparent" />
-        <p className="text-text-secondary">{t("common.loading")}</p>
-      </div>
-    </div>
-  );
+  return <PageLoadingSkeleton message={t("common.loading")} />;
 }

@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 import { useToast } from "@/components/ui/toast";
 import { useI18n } from "@/i18n";
+import { Spinner } from "@/components/ui/spinner";
 import type { VoiceWithCreator, VoiceResponse } from "@/lib/types/api";
 
 interface VoiceCardProps {
@@ -242,7 +243,7 @@ export function VoiceCard({
           >
             {isLoading ? (
               <>
-                <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                <Spinner size="sm" className="text-current" />
                 <span className="text-sm">{t("voices.playback.loading")}</span>
               </>
             ) : isPlaying ? (

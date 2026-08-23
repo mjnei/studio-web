@@ -8,6 +8,7 @@ import { NotificationPreferencesModal } from "@/components/notifications/Notific
 import { Bell, Settings, CheckCheck, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { Spinner } from "@/components/ui/spinner";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 
@@ -128,7 +129,7 @@ export default function NotificationsPage() {
       <div className="bg-surface-panel rounded-xl border border-border-default overflow-hidden">
         {isLoading ? (
           <div className="p-12 flex flex-col items-center justify-center">
-            <div className="w-12 h-12 border-2 border-accent-primary border-t-transparent rounded-full animate-spin mb-4" />
+            <Spinner size="lg" className="text-accent-primary mb-4" />
             <p className="text-sm text-text-muted">{t("notifications.loading")}</p>
           </div>
         ) : filteredNotifications.length === 0 ? (

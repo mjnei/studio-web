@@ -2,6 +2,7 @@
 
 import { Check, Mic, Volume2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Spinner } from "@/components/ui/spinner";
 import { useI18n } from "@/i18n";
 
 interface VoiceSelectionCardProps {
@@ -87,7 +88,7 @@ export function VoiceSelectionCard({
               )}
               {isPreviewLoading && (
                 <div className="mt-2 text-xs text-text-muted flex items-center gap-1">
-                  <div className="h-3 w-3 animate-spin rounded-full border-2 border-accent-cyan border-t-transparent" />
+                  <Spinner className="h-3 w-3 text-accent-cyan" />
                   <span>{t("voices.playback.loading")}</span>
                 </div>
               )}

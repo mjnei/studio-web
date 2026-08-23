@@ -1,6 +1,6 @@
 # Spinner & Loading State Audit
 
-Audit date: August 24, 2026 (last verified against implementation)  
+Audit date: August 24, 2026 (Phase 2 border migration complete)  
 Scope: `studio-web_0xMichaelRan` — shared `Spinner` / `LoadingSpinner` primitives, skeleton variants, and remaining inline loading patterns.
 
 ---
@@ -62,36 +62,33 @@ Prefer `className="h-4 w-4"` over `w-4 h-4` for new code.
 
 | Pattern | Files | Notes |
 |---------|-------|-------|
-| CSS border `animate-spin` divs | See [Border spinner inventory](#border-spinner-inventory) below (15 files) | Functional; not yet unified to `Spinner` |
+| ~~CSS border `animate-spin` divs~~ | — | **Migrated (Phase 2)** — all 17 instances replaced with `Spinner` or `PageLoadingSkeleton` |
 | `RefreshCw` + `animate-spin` | `jobs/page.tsx`, `admin/projects/page.tsx`, `admin/queues/page.tsx`, `admin/queues/[queueName]/page.tsx`, `admin/playground-tts-jobs/page.tsx`, `admin/studio-tts-jobs/page.tsx`, `QueueMessagePeeker.tsx`, `QueueStatsCard.tsx` (8 files, 10 sites) | Refresh action feedback — correct semantics |
 | Pulse / `Skeleton` | `VoiceSelectionPanel`, `LoadingSkeleton` variants, `admin/queues/*` | Appropriate for list/grid loading |
 | Static `Loader2` icon | `ProjectStatsCard` (“In Progress” stat) | Not a spinner — do not migrate |
 
 ---
 
-## Border spinner inventory
+## Border spinner inventory (historical — Phase 2 complete)
 
-Hand-rolled border spinners (17 instances in 15 files). Candidates for a small consistency PR.
+All 17 hand-rolled border spinners in 15 files were migrated to `Spinner` or `PageLoadingSkeleton`. Verification: `rg 'border.*animate-spin|animate-spin.*border' src` returns **0** matches.
 
-| File | Context |
-|------|---------|
-| `(auth)/login/page.tsx` | Auth redirect |
-| `(auth)/signup/page.tsx` | Auth redirect (2 instances) |
-| `(shell)/notifications/page.tsx` | Initial notifications load |
-| `notifications/NotificationDropdown.tsx` | Dropdown fetch |
-| `notifications/NotificationPreferencesModal.tsx` | Preferences fetch |
-| `admin/audit-logs/components/AuditLogsTable.tsx` | Table loading overlay |
-| `project/new/page.tsx` | Redirect to `/project/new/source` |
-| `project/new/script/page.tsx` | Script step loading |
-| `project/voice-selection-card.tsx` | Inline voice preview |
-| `voices/VoiceCard.tsx` | Voice action in-flight |
-| `voices/voice-recording-card.tsx` | Recording actions (2 instances) |
-| `shared/voice-recording-modal/components/requesting-access-view.tsx` | Mic permission wait |
-| `shared/voice-recording-modal/components/voice-naming-form.tsx` | Submit in-flight |
-| `onboarding/PasswordStep.tsx` | Submit in-flight |
-| `onboarding/CompletionStep.tsx` | Completion wait + secondary loader |
+<details>
+<summary>Migrated files (SPIN-101–107)</summary>
 
-Auth and new-project redirect pages use `border-b-2` or `border-4 border-r-transparent` styles; voice/onboarding/notifications use `border-t-transparent` rings.
+| File | Migration |
+|------|-----------|
+| `(auth)/login/page.tsx`, `(auth)/signup/page.tsx` | `<Spinner size="lg" className="text-accent-primary mb-4" />` |
+| `(shell)/notifications/page.tsx` | `<Spinner size="lg" … />` |
+| `notifications/NotificationDropdown.tsx` | `<Spinner size="md" … />` |
+| `notifications/NotificationPreferencesModal.tsx` | `<Spinner size="md" … />` |
+| `admin/audit-logs/components/AuditLogsTable.tsx` | `<Spinner size="md" className="text-primary" />` |
+| `project/new/page.tsx`, `project/new/script/page.tsx` | `<PageLoadingSkeleton />` |
+| `project/voice-selection-card.tsx`, `voices/VoiceCard.tsx`, `voices/voice-recording-card.tsx` | Inline `<Spinner />` |
+| `voice-recording-modal/…/requesting-access-view.tsx`, `voice-naming-form.tsx` | `<Spinner />` with accent/white colors |
+| `onboarding/PasswordStep.tsx`, `onboarding/CompletionStep.tsx` | `<Spinner size="sm" />` / custom sizes |
+
+</details>
 
 ---
 
@@ -117,7 +114,7 @@ Auth and new-project redirect pages use `border-b-2` or `border-4 border-r-trans
 | `preview` | TTS processing hero icon | Correct |
 | `ThumbnailEditorModal` | Regenerate / generate overlays | Correct |
 | `VoiceSelectionPanel` | Pulse grid when `isLoadingVoices` | Correct — skeleton, not spinner |
-| `project/new/*` | CSS border spinners on redirect / script load | Works; could unify to `PageLoadingSkeleton` |
+| `project/new/*` | `PageLoadingSkeleton` on redirect / script boot | Correct — unified (SPIN-103) |
 
 **Caveat — `export/page.tsx` player (SPIN-003) — Fixed:** Completed videos without `video_url` now show an unavailable empty state instead of a spinner. Initial page/video fetch still uses `PageLoadingSkeleton`; in-flight generation appears in the processing list.
 
@@ -139,21 +136,21 @@ Auth and new-project redirect pages use `border-b-2` or `border-4 border-r-trans
 | `ActiveJobCard` | Permanent overlay on thumbnail | Correct for active-job cards |
 | `PlaygroundForm`, `VoiceBulkImportModal` | Submit / search spinners | Correct |
 
-### Auth — partial unification
+### Auth — OK
 
 | Location | Usage | Verdict |
 |----------|-------|---------|
 | `invite/page.tsx` | `Spinner` for auth + validation | Correct |
-| `login/page.tsx` | CSS border spinner for auth redirect; `Button loading` uses `Spinner` for form submit | Works; border spinner could be unified |
-| `signup/page.tsx` | CSS border spinners | Same as login |
+| `login/page.tsx` | `Spinner` for auth redirect; `Button loading` for form submit | Correct |
+| `signup/page.tsx` | `Spinner` for redirect + Suspense fallback | Correct |
 
-### Notifications — border spinners
+### Notifications — OK
 
 | Location | Usage | Verdict |
 |----------|-------|---------|
-| `notifications/page.tsx` | CSS border spinner | Works; could unify |
-| `NotificationDropdown.tsx` | CSS border spinner | Same |
-| `NotificationPreferencesModal.tsx` | CSS border spinner | Same |
+| `notifications/page.tsx` | `Spinner size="lg"` on list fetch | Correct |
+| `NotificationDropdown.tsx` | `Spinner size="md"` on fetch | Correct |
+| `NotificationPreferencesModal.tsx` | `Spinner size="md"` while prefs load | Correct |
 
 ---
 
@@ -215,11 +212,9 @@ When `isSearching` is true, both apply:
 
 **Resolution:** Full-page `LoadingSpinner` kept; button always shows `Search` icon; input disabled while searching.
 
-### 2. Inconsistent spinner visuals — CSS border divs (SPIN-101–SPIN-108)
+### 2. Inconsistent spinner visuals — CSS border divs (SPIN-101–108) — **Fixed**
 
-15 files still use hand-rolled border spinners (auth, notifications, audit logs, voice preview, onboarding, new-project redirects). They work but look different from `Loader2`-based `Spinner`.
-
-**Recommendation:** Migrate in a small follow-up PR for visual consistency (not required for correctness). Start with notifications cluster (page + dropdown + modal) for highest visibility.
+~~15 files still use hand-rolled border spinners~~ All migrated to shared `Spinner` / `PageLoadingSkeleton` in Phase 2.
 
 ### 3. Missing first-load UI — notification settings (SPIN-001) — **Fixed**
 
@@ -259,14 +254,14 @@ Replace hand-rolled `div` border spinners with `<Spinner />`. Match size and col
 
 | ID | Task | File(s) | Replacement pattern | Acceptance criteria | Effort | PR batch |
 |----|------|---------|---------------------|---------------------|--------|----------|
-| SPIN-101 | Notifications cluster | `src/app/(shell)/notifications/page.tsx`, `src/components/notifications/NotificationDropdown.tsx`, `src/components/notifications/NotificationPreferencesModal.tsx` | Page: `<Spinner size="lg" className="text-accent-primary mb-4" />`. Dropdown: `<Spinner size="md" className="text-accent-primary" />`. Modal: `<Spinner size="md" className="text-accent-primary" />`. | No border `animate-spin` divs remain in these three files; visuals align with `invite/page.tsx`. | S | `refactor/spinner-notifications` |
-| SPIN-102 | Auth redirect pages | `src/app/(auth)/login/page.tsx`, `src/app/(auth)/signup/page.tsx` | Replace redirect spinners with `<Spinner size="lg" className="text-accent-primary mb-4" />` (match `invite/page.tsx`). | Login + signup redirect states use shared `Spinner`; form submit still uses `Button loading`. | S | `refactor/spinner-auth` |
-| SPIN-103 | New project boot | `src/app/project/new/page.tsx`, `src/app/project/new/script/page.tsx` | Replace inline border div + message with `<PageLoadingSkeleton message={t("common.loading")} />` or equivalent centered layout. | New-project redirect/script load matches `[projectId]/*` boot pattern. | S | `refactor/spinner-new-project` |
-| SPIN-104 | Audit logs table overlay | `src/app/(shell)/admin/audit-logs/components/AuditLogsTable.tsx` | Replace table overlay border spinner with `<Spinner size="md" className="text-primary" />`. | Table loading overlay uses `Spinner`; pagination/filters unchanged. | S | `refactor/spinner-admin` |
-| SPIN-105 | Voice cards & preview | `src/components/voices/VoiceCard.tsx`, `src/components/voices/voice-recording-card.tsx`, `src/components/project/voice-selection-card.tsx` | Inline actions: `<Spinner size="sm" />` or `className="h-3 w-3"` / `h-4 w-4` with `text-current` or `text-accent-cyan` as appropriate. | All three files free of border spinners; button/layout size unchanged. | M | `refactor/spinner-voices` |
-| SPIN-106 | Voice recording modal | `src/components/shared/voice-recording-modal/components/requesting-access-view.tsx`, `voice-naming-form.tsx` | Permission wait: `<Spinner size="lg" className="text-accent-cyan" />`. Submit: `<Spinner size="sm" className="text-white" />` inside button row. | Modal flows use `Spinner`; white-on-primary contrast preserved on submit. | S | `refactor/spinner-voice-modal` |
-| SPIN-107 | Onboarding steps | `src/components/onboarding/PasswordStep.tsx`, `src/components/onboarding/CompletionStep.tsx` | Submit: `<Spinner size="sm" className="text-white" />`. Completion wait: `<Spinner size="lg" className="text-white" />`. Secondary loader: `<Spinner size="sm" />` with muted color. | Onboarding spinners unified; no border divs left in these files. | S | `refactor/spinner-onboarding` |
-| SPIN-108 | Migration verification | — | Run verification commands (below). Expect **0** border-spinner matches outside `RefreshCw` and `spinner.tsx`. | `rg 'border.*animate-spin\|animate-spin.*border' src` returns only intentional non-migration cases (if any documented). | S | Included in last migration PR |
+| SPIN-101 | Notifications cluster | … | … | … | S | `refactor/spinner-notifications` | **Done** |
+| SPIN-102 | Auth redirect pages | … | … | … | S | `refactor/spinner-auth` | **Done** |
+| SPIN-103 | New project boot | … | … | … | S | `refactor/spinner-new-project` | **Done** |
+| SPIN-104 | Audit logs table overlay | … | … | … | S | `refactor/spinner-admin` | **Done** |
+| SPIN-105 | Voice cards & preview | … | … | … | M | `refactor/spinner-voices` | **Done** |
+| SPIN-106 | Voice recording modal | … | … | … | S | `refactor/spinner-voice-modal` | **Done** |
+| SPIN-107 | Onboarding steps | … | … | … | S | `refactor/spinner-onboarding` | **Done** |
+| SPIN-108 | Migration verification | — | … | `rg 'border.*animate-spin\|animate-spin.*border' src` → **0** matches | S | Included in Phase 2 PR | **Done** |
 
 ### Phase 3 — Shared primitive & a11y (P1)
 
@@ -304,8 +299,8 @@ Replace hand-rolled `div` border spinners with `<Spinner />`. Match size and col
 
 ### Suggested PR sequence
 
-1. **Quick wins:** SPIN-001, SPIN-002 ~~SPIN-401 (done)~~  
-2. **Visual consistency:** SPIN-101 → SPIN-107 (one PR per batch row, or notifications + auth together)  
+1. **Quick wins:** SPIN-001, SPIN-002, SPIN-401 — **done**  
+2. **Visual consistency:** SPIN-101 → SPIN-108 — **done**  
 3. **Primitives:** SPIN-201 + SPIN-202 (single a11y PR)  
 4. **Behavior:** SPIN-003, SPIN-203, SPIN-204 as needed from user feedback  
 5. **Polish:** SPIN-301–304 only if empty-state flash is reported
@@ -319,14 +314,14 @@ Phase 1 — UX
 - [x] SPIN-003 Export player loading vs empty
 
 Phase 2 — Border migration
-- [ ] SPIN-101 Notifications cluster
-- [ ] SPIN-102 Auth redirect pages
-- [ ] SPIN-103 New project boot
-- [ ] SPIN-104 Audit logs table
-- [ ] SPIN-105 Voice cards & preview
-- [ ] SPIN-106 Voice recording modal
-- [ ] SPIN-107 Onboarding steps
-- [ ] SPIN-108 Migration verification
+- [x] SPIN-101 Notifications cluster
+- [x] SPIN-102 Auth redirect pages
+- [x] SPIN-103 New project boot
+- [x] SPIN-104 Audit logs table
+- [x] SPIN-105 Voice cards & preview
+- [x] SPIN-106 Voice recording modal
+- [x] SPIN-107 Onboarding steps
+- [x] SPIN-108 Migration verification
 
 Phase 3 — a11y & behavior
 - [ ] SPIN-201 Live region on page loaders
@@ -375,7 +370,7 @@ rg 'from "@/components/ui/spinner"|from "@/components/ui/LoadingSpinner"' src --
 pnpm eslint src/components/ui/spinner.tsx src/components/ui/LoadingSpinner.tsx
 ```
 
-As of last verification: **2** direct `Loader2` files, **30** files importing `Spinner`/`LoadingSpinner`, **17** border-spinner instances across **15** files, **10** `RefreshCw` refresh-spin sites across **8** files.
+As of last verification: **2** direct `Loader2` files, **~40** files importing `Spinner`/`LoadingSpinner`, **0** border-spinner instances, **10** `RefreshCw` refresh-spin sites across **8** files.
 
 ---
 

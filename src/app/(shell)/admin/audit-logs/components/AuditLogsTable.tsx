@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Copy } from "lucide-react";
 import type { AuditLog } from "@/types/admin";
 import { useToast } from "@/lib/hooks/use-toast";
+import { Spinner } from "@/components/ui/spinner";
 import ActionBadge from "./ActionBadge";
 import SourceBadge from "./SourceBadge";
 
@@ -109,7 +110,7 @@ export default function AuditLogsTable({
     return (
       <div className="rounded-xl border-2 border-border bg-surface-panel p-8">
         <div className="flex items-center justify-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+          <Spinner size="md" className="text-primary" />
         </div>
       </div>
     );

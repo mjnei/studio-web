@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { Trash2, Play, Pause, Share2, Lock, CheckCircle2, Clock } from "lucide-react";
 import { VoiceResponse } from "@/lib/types/api";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import { Heading } from "@/components/ui/heading";
 import { ConfirmModal, AlertModal } from "@/components/ui/modal";
 import { useI18n } from "@/i18n";
@@ -257,7 +258,7 @@ export function VoiceRecordingCard({
         >
           {isLoading ? (
             <>
-              <div className="mr-1 h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
+              <Spinner className="mr-1 h-3 w-3 text-current" />
               {t("voices.playback.loading")}
             </>
           ) : isPlaying ? (
@@ -288,7 +289,7 @@ export function VoiceRecordingCard({
           }
         >
           {isTogglingSharing ? (
-            <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+            <Spinner className="h-4 w-4 text-current" />
           ) : isShared ? (
             <Lock className="h-3.5 w-3.5" aria-hidden />
           ) : (

@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useI18n } from "@/i18n";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
+import { Spinner } from "@/components/ui/spinner";
 
 interface PasswordStepProps {
   onNext: () => void;
@@ -304,7 +305,7 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
         >
           {loading ? (
             <span className="flex items-center justify-center gap-2">
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              <Spinner size="sm" className="text-white" />
               {hasExistingPassword
                 ? t("onboarding.password.updating")
                 : t("onboarding.password.settingPassword")}

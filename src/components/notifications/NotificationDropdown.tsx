@@ -6,6 +6,7 @@ import { Settings, CheckCheck, Bell } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
+import { Spinner } from "@/components/ui/spinner";
 import { useI18n } from "@/i18n";
 
 interface NotificationDropdownProps {
@@ -67,7 +68,7 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
       <div className="flex-1 overflow-y-auto overscroll-contain">
         {isLoading ? (
           <div className="p-6 sm:p-8 flex flex-col items-center justify-center text-text-muted">
-            <div className="w-6 h-6 sm:w-8 sm:h-8 border-2 border-accent-primary border-t-transparent rounded-full animate-spin mb-2 sm:mb-3" />
+            <Spinner size="md" className="text-accent-primary mb-2 sm:mb-3" />
             <p className="text-xs sm:text-sm">{t("notifications.loading")}</p>
           </div>
         ) : notifications.length === 0 ? (
