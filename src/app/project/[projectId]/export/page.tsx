@@ -260,9 +260,16 @@ export default function ExportPage() {
     videos?.filter((v) => v.status === "processing" || v.status === "queued") || [];
   const failedVideos = videos?.filter((v) => v.status === "failed") || [];
 
+  // Restart stuck timer when poll shows status/progress movement (not on every poll tick).
+  const processingActivityKey = processingVideos
+    .map((v) => `${v.id}:${v.status}:${v.progress}:${v.updated_at}`)
+    .join("|");
+
   const { isStuck: isLoadStuck, reset: resetLoadStuck } = useStuckAsync(isPageLoading);
   const { isStuck: isProcessingStuck, reset: resetProcessingStuck } = useStuckAsync(
-    processingVideos.length > 0
+    processingVideos.length > 0,
+    30_000,
+    processingActivityKey
   );
 
   const handleRetryLoad = () => {
