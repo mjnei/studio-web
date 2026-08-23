@@ -2,7 +2,7 @@
 
 Product UI icons use **Lucide React** (`lucide-react`). Brand logos that Lucide does not provide live in `@/components/icons`.
 
-Loading spinners are **not** icons — use `Spinner` / `LoadingSpinner` (see `docs/SPINNER_AUDIT.md`).
+Loading spinners are **not** icons — use `Spinner` / `LoadingSpinner` from `@/components/ui`.
 
 ---
 
@@ -144,10 +144,10 @@ Sidebar icons are defined in `src/components/shell/drawer-content.tsx` via `icon
 | Item | Status |
 |------|--------|
 | Lucide migration + brand icons | Done |
-| Spinner primitive (`Spinner` / `LoadingSpinner`) | Done — see `docs/SPINNER_AUDIT.md` |
+| Spinner primitive (`Spinner` / `LoadingSpinner`) | Done — `@/components/ui/spinner`, `@/components/ui/LoadingSpinner` |
 | Class order (`h-N w-N` on Lucide) | Done |
 | Empty-state pattern (`EmptyState` + hero tier) | Done — primary surfaces migrated |
-| `aria-hidden` on decorative icons | Partial — high-traffic surfaces first; see SPINNER_AUDIT Priority 5 |
+| `aria-hidden` on decorative icons | Partial — high-traffic surfaces first |
 | `Icon` + conflicting `className` sizes | Open — prefer direct Lucide or single sizing source; no `tailwind-merge` yet |
 
-Priority 5 in `docs/SPINNER_AUDIT.md` tracks the accessibility pass.
+Remaining icon accessibility work is tracked in this document’s audit status table above.
