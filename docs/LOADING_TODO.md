@@ -5,6 +5,18 @@ Scope: user-facing loading gaps that remain after the spinner migration (Phases 
 
 Shared primitives are implemented and in use: `Spinner`, `LoadingSpinner`, `LoadingSkeleton`, `PageLoadingSkeleton`, and `InlineLoadingSkeleton` under `src/components/ui/`. FOLS delay hook: `src/lib/hooks/use-delayed-loading.ts`.
 
+### Spinner vs icons
+
+Spinners are **not** Lucide icons. Use `Spinner` / `LoadingSpinner` — do not pass ad-hoc `h-N w-N` sizes to `LoadingSpinner`. One-off dimensions on bare `<Spinner />` are OK for dense layout.
+
+| `size` | Class | Pixels | Typical use |
+|--------|-------|--------|-------------|
+| `sm` | `h-4 w-4` | 16 | Button loading, compact inline |
+| `md` *(default)* | `h-8 w-8` | 32 | Panel/section loading, dropdowns |
+| `lg` | `h-12 w-12` | 48 | Full-page or `fullHeight` loading blocks |
+
+Lucide icon conventions (size tokens, semantic glossary, `EmptyState`): **`docs/guides/DESIGN_SYSTEM.md` § Icons** (agent summary: **`AGENTS.md` § Icons**).
+
 ---
 
 ## SPIN-204 — Timeout + retry on stuck async flows

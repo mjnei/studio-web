@@ -1,7 +1,7 @@
 # Frontend UI Design System
 
-**Version**: 2.2  
-**Last Updated**: August 21, 2026  
+**Version**: 2.3  
+**Last Updated**: August 24, 2026  
 **Repository**: `/Users/aa/git/github_uncgra/huavoi/studio-web/`
 
 ---
@@ -81,6 +81,112 @@ Summary:
 - Prefer `PageHeader`, `Heading`, and `CardTitle` over one-off `text-2xl` / `text-3xl` on headings.
 - Tune the scale in shared tokens / `typography.ts` — do not mass-edit pages to change global font sizes.
 - `@layer base` heading rules in `globals.css` are a fallback only; Tailwind utilities always win when present.
+
+---
+
+## Icons
+
+Product UI icons use **Lucide React** (`lucide-react`). Brand logos that Lucide does not provide live in `@/components/icons`. Agent-facing summary: [AGENTS.md](../../AGENTS.md) § Icons. Spinners are **not** icons — see [LOADING_TODO.md](../LOADING_TODO.md).
+
+### Libraries
+
+| Source | Path | When to use |
+|--------|------|-------------|
+| Lucide | `import { … } from "lucide-react"` | All standard UI icons |
+| Brand SVGs | `GoogleIcon`, `XIcon`, `WeChatIcon` from `@/components/icons` | OAuth and platform share only |
+| `Icon` wrapper | `@/components/ui/icon` | Nav and repeated dense-UI patterns; size tokens + `aria-hidden` |
+| `EmptyState` | `@/components/ui/EmptyState` | Page/tab/list “nothing here” blocks; owns hero-tier icon sizing |
+
+Do not add `react-icons`, Heroicons, or inline duplicate SVGs for icons Lucide already ships.
+
+### Size tokens — two tiers
+
+Use **`className="h-N w-N"`** (height before width) on Lucide, or a shared component (`Icon` / `EmptyState`). Avoid Lucide’s numeric `size={N}` prop in new code.
+
+**Standard tier** (`Icon` / direct Lucide) — dense UI:
+
+| Token | Class | Pixels | Typical use |
+|-------|-------|--------|-------------|
+| `xs` | `h-3 w-3` | 12 | Badges, compact table actions |
+| `sm` | `h-4 w-4` | 16 | Buttons, inline actions, form controls |
+| `md` | `h-5 w-5` | 20 | Sidebar nav, toolbar icons |
+| `lg` | `h-6 w-6` | 24 | Card headers, modals |
+| `xl` | `h-8 w-8` | 32 | Prominent inline accents (not page empties) |
+
+Fractional sizes (`h-3.5 w-3.5`) are allowed for dense row actions.
+
+**Hero tier** (`EmptyState` only) — 40–64 px:
+
+| `EmptyState` size | Ring class | Pixels | Typical use |
+|-------------------|------------|--------|-------------|
+| `sm` | `h-10 w-10` | 40 | Dropdown/panel empties, compact bordered blocks |
+| `md` *(default)* | `h-12 w-12` | 48 | Standard page/tab empty states |
+| `lg` | `h-16 w-16` | 64 | Primary empty pages (jobs, movies, dashboard) |
+
+`EmptyState` fills the ring via `[&_svg]:h-full [&_svg]:w-full`. **Pass Lucide icons without `h-N w-N`** — only color utilities and `aria-hidden` when decorative.
+
+One-off heroes outside `EmptyState` (preview player, poster placeholders, billing receipt) may use `h-10` / `h-12` / `h-16` on Lucide directly.
+
+### Empty states
+
+| Context | Pattern |
+|---------|---------|
+| Page or tab list empty | `<EmptyState size="md" … />`; `lg` for flagship empties, `sm` for panels |
+| Bordered empty inside a card/grid | `<EmptyState variant="bordered" size="sm" className="col-span-full" … />` |
+| Error empty (failed fetch) | `<EmptyState icon={…} title={…} description={error} />` |
+| Admin “all clear” tabs (no failed / rate-limited / completed rows) | `CheckCircle2`, not `XCircle` |
+| Admin TTS row Retry | `RotateCcw`, not `RefreshCw` |
+
+```tsx
+<EmptyState
+  size="lg"
+  icon={<Video className="text-accent-primary" aria-hidden />}
+  title={t("jobs.empty.title")}
+  description={t("jobs.empty.message")}
+  action={<Button … />}
+/>
+```
+
+### Semantic glossary
+
+| Meaning | Icon | Notes |
+|---------|------|-------|
+| Success / completed | `CheckCircle2` | Not `CheckCircle`; also admin “all clear” empties |
+| Error / failure | `AlertCircle` or `XCircle` | Messages vs failed job rows — not for positive empties |
+| Warning / destructive confirm | `AlertTriangle` | Purge dialogs, stale-job alerts |
+| Info | `Info` | Neutral hints |
+| Edit content | `Edit2` | Not `Edit`, `Edit3`, or `Pencil` |
+| Reload list | `RefreshCw` | Add `animate-spin` while in flight |
+| Retry / undo | `RotateCcw` | Job retry, reset playback — not `RefreshCw` |
+| Close dismiss | `X` | Modals, filters, toasts |
+| In progress (static metric) | `Loader2` | Not animated — stat labels only |
+| Loading (animated) | `<Spinner />` | Never raw `Loader2` + `animate-spin` |
+
+### Brand icons
+
+| Component | Default size | Use |
+|-----------|--------------|-----|
+| `GoogleIcon` | `h-5 w-5` | OAuth buttons |
+| `XIcon` | `h-5 w-5` | Share modals |
+| `WeChatIcon` | `h-5 w-5` | Share modals |
+
+Defaults include `aria-hidden={true}`. Parent buttons must expose accessible names.
+
+### `Icon` wrapper
+
+```tsx
+<Icon icon={Search} size="md" className="text-text-muted" />
+```
+
+- **`size`** — standard tier only (`xs`–`xl`).
+- Explicit `h-N` / `w-N` in `className` skips the size token automatically.
+- Sidebar href → icon mappings live in `src/components/shell/drawer-content.tsx` (`iconMap` + `Icon`) only.
+
+### Accessibility
+
+- **Decorative** icons (next to visible text): `aria-hidden="true"`.
+- **Icon-only buttons**: `aria-label` on the `<button>`; icon stays `aria-hidden`.
+- Never rely on `title` alone for critical actions.
 
 ---
 
@@ -440,7 +546,8 @@ import { useToast, ToastProvider } from "@/components/ui/toast";
 ```typescript
 {items.length === 0 && (
   <EmptyState
-    icon={<Icon className="h-16 w-16" />}
+    size="lg"
+    icon={<Video className="text-accent-primary" aria-hidden />}
     title="No items found"
     description="Get started by creating your first item"
     action={<Button>Create Item</Button>}
@@ -812,6 +919,8 @@ Test these **critical viewports**:
 **Empty State:**
 ```tsx
 <EmptyState
+  size="md"
+  icon={<Inbox className="text-text-muted" aria-hidden />}
   title="No Items Found"
   description="Get started by creating your first item"
   action={<Button variant="primary">Create Item</Button>}
