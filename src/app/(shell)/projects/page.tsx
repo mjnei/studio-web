@@ -10,6 +10,7 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { useToast } from "@/components/ui/toast";
 import { useI18n } from "@/i18n";
+import { useDelayedLoading } from "@/lib/hooks/use-delayed-loading";
 import { ProjectCard } from "@/components/project/ProjectCard";
 import { listProjects, deleteProject, type ProjectResponse } from "@/lib/project-client";
 import { LayoutToggle, type LayoutMode } from "@/components/ui/LayoutToggle";
@@ -19,6 +20,7 @@ export default function ProjectsPage() {
   const { t } = useI18n();
   const [projects, setProjects] = useState<ProjectResponse[]>([]);
   const [loading, setLoading] = useState(true);
+  const showLoading = useDelayedLoading(loading);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState<ProjectResponse | null>(null);
   const [deleting, setDeleting] = useState(false);
@@ -152,14 +154,14 @@ export default function ProjectsPage() {
         </div>
       )}
 
-      {loading ? (
+      {showLoading ? (
         <LoadingSpinner
           size="lg"
           message={t("projects.loading")}
           description={t("projects.loadingDescription")}
           fullHeight
         />
-      ) : projects.length === 0 ? (
+      ) : loading ? null : projects.length === 0 ? (
         <EmptyState
           variant="default"
           icon={<Folder aria-hidden />}

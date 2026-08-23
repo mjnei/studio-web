@@ -10,12 +10,14 @@ import { MovieCard } from "@/components/movie";
 import { getPopularMovies, searchMovies, type MovieResponse } from "@/lib/project-client";
 import { LayoutToggle, type LayoutMode } from "@/components/ui/LayoutToggle";
 import { useI18n } from "@/i18n";
+import { useDelayedLoading } from "@/lib/hooks/use-delayed-loading";
 
 export default function MoviesPage() {
   const { t } = useI18n();
   const [searchQuery, setSearchQuery] = useState("");
   const [movies, setMovies] = useState<MovieResponse[]>([]);
   const [loading, setLoading] = useState(true);
+  const showLoading = useDelayedLoading(loading);
   const [error, setError] = useState<string | null>(null);
   const [layoutMode, setLayoutMode] = useState<LayoutMode>(() => {
     if (typeof window === "undefined") return "grid-sm";
@@ -107,7 +109,7 @@ export default function MoviesPage() {
       </div>
 
       {/* Content */}
-      {loading ? (
+      {showLoading ? (
         <LoadingSpinner
           size="lg"
           message={t("movies.loading")}
@@ -115,7 +117,7 @@ export default function MoviesPage() {
           className="rounded-2xl border border-border-default bg-surface-panel"
           fullHeight
         />
-      ) : error ? (
+      ) : loading ? null : error ? (
         <EmptyState
           variant="elevated"
           icon={<Search className="text-status-failed" aria-hidden />}

@@ -1,7 +1,7 @@
 # Spinner & Loading State Audit
 
 Audit date: August 24, 2026  
-Last verified: August 24, 2026 — Phase 1 (SPIN-001–003) and Phase 2 (SPIN-101–108) complete  
+Last verified: August 24, 2026 — Phase 1–2 complete; Phase 3 partial (SPIN-201–203 done, SPIN-204 deferred)  
 Scope: `studio-web_0xMichaelRan` — shared `Spinner` / `LoadingSpinner` primitives, skeleton variants, and remaining inline loading patterns.
 
 ---
@@ -10,12 +10,12 @@ Scope: `studio-web_0xMichaelRan` — shared `Spinner` / `LoadingSpinner` primiti
 
 | Component | Path | Purpose |
 |-----------|------|---------|
-| `Spinner` | `src/components/ui/spinner.tsx` | Inline loading indicator (`Loader2` + `animate-spin`). Sizes: `sm` (h-4), `md` (h-8), `lg` (h-12), or custom via `className` (size prop optional). Default `aria-hidden={true}`. |
-| `LoadingSpinner` | `src/components/ui/LoadingSpinner.tsx` | Centered block with optional `message`, `description`, `fullHeight`. Wraps `Spinner` with legacy size classes (`sm` h-5, `md` h-8, `lg` h-10) and `text-accent-primary`. |
+| `Spinner` | `src/components/ui/spinner.tsx` | Inline loading indicator (`Loader2` + `animate-spin`). Sizes: `sm` (h-4), `md` (h-8), `lg` (h-12), or custom via `className` (size prop optional). Default `aria-hidden={true}`. Respects `prefers-reduced-motion` via `motion-reduce:animate-none`. |
+| `LoadingSpinner` | `src/components/ui/LoadingSpinner.tsx` | Centered block with optional `message`, `description`, `fullHeight`. Wraps `Spinner` with legacy size classes (`sm` h-5, `md` h-8, `lg` h-10) and `text-accent-primary`. Outer wrapper: `role="status"`, `aria-live="polite"`, `aria-busy="true"`, sr-only loading text. |
 | `Icon` | `src/components/ui/icon.tsx` | Lucide wrapper with size tokens (`xs`–`xl`). Not a spinner — see `docs/ICONS.md`. |
 | `LoadingSkeleton` | `src/components/ui/loading-skeleton.tsx` | Pulse placeholders (`card`, `text`, `grid`, `list`, `poster` variants). No spinner. |
-| `PageLoadingSkeleton` | `src/components/ui/loading-skeleton.tsx` | Full-page project loading (`Spinner size="md"` + message, `text-accent-cyan`). |
-| `InlineLoadingSkeleton` | `src/components/ui/loading-skeleton.tsx` | Dashed-border inline loading (`Spinner` h-5 + message, `text-accent-cyan`). |
+| `PageLoadingSkeleton` | `src/components/ui/loading-skeleton.tsx` | Full-page project loading (`Spinner size="md"` + message, `text-accent-cyan`). Live region + sr-only text (SPIN-201). |
+| `InlineLoadingSkeleton` | `src/components/ui/loading-skeleton.tsx` | Dashed-border inline loading (`Spinner` h-5 + message, `text-accent-cyan`). Live region + sr-only text (SPIN-201). |
 
 **Canonical spinner:** `Loader2` from Lucide, accessed only through `Spinner` (except `ProjectStatsCard`, which uses `Loader2` as a static stat icon — not a spinner).
 
@@ -26,7 +26,8 @@ Both `Spinner` and `LoadingSpinner` are exported from `src/components/ui/index.t
 - **`Spinner` size is optional.** When omitted, only `animate-spin` and `className` apply — common for one-off sizes like `h-3 w-3` or `h-5 w-5`.
 - **`LoadingSpinner` does not pass `size` to `Spinner`.** It applies `legacySizeClasses` via `className` to preserve pre-migration visuals.
 - **`Button`** (`button.tsx`) shows `<Spinner size="sm" />` when `loading` or `isLoading` is true (both props are aliases).
-- **Accent color split:** `LoadingSpinner` uses `text-accent-primary`; `PageLoadingSkeleton` / `InlineLoadingSkeleton` use `text-accent-cyan`. Intentional legacy split; unify only if doing a visual pass.
+- **Accent color split:** `LoadingSpinner` uses `text-accent-primary`; `PageLoadingSkeleton` / `InlineLoadingSkeleton` use `text-accent-cyan`. Intentional legacy split; unify only if doing a visual pass (SPIN-303).
+- **FOLS delay:** `useDelayedLoading(isLoading, delayMs?)` in `src/lib/hooks/use-delayed-loading.ts` — adopted on `projects/page.tsx` and `movies/page.tsx` (SPIN-203).
 
 ---
 
@@ -57,6 +58,7 @@ Prefer `className="h-4 w-4"` over `w-4 h-4` for new code.
 - `PageLoadingSkeleton` and `InlineLoadingSkeleton` use `Spinner` internally.
 - **Phase 1 (SPIN-001–003):** Notification settings first-load, `TmdbImportView` redundant spinners, export player empty vs loading states — all shipped and verified in repo.
 - **Phase 2 (SPIN-101–108):** All 17 hand-rolled border-spinner divs in 15 files replaced with `Spinner` or `PageLoadingSkeleton`; verification grep returns **0** border-spinner matches.
+- **Phase 3 (SPIN-201–203):** Live regions on page loaders, reduced-motion spinner, FOLS delay hook (projects + movies list pages). SPIN-204 (timeout + retry pilot) deferred.
 - **SPIN-401:** Removed dead `src/components/project/video-generation.tsx` (no importers; export flow lives in `export/page.tsx`). Stale `docs/TYPOGRAPHY.md` reference removed.
 
 **Direct `Loader2` imports (verified):** only `spinner.tsx` (implementation) and `ProjectStatsCard.tsx` (static icon).
@@ -137,7 +139,7 @@ rg 'border.*animate-spin|animate-spin.*border' src --glob '*.{tsx,ts}'   # → 0
 
 | Location | Usage | Verdict |
 |----------|-------|---------|
-| `projects`, `movies`, `voices` (my tab) | `LoadingSpinner` on list fetch | Correct |
+| `projects`, `movies`, `voices` (my tab) | `LoadingSpinner` on list fetch | Correct; projects + movies use FOLS delay (SPIN-203) |
 | `voices` (community tab) | Separate `LoadingSpinner` when `communityLoading` | Correct |
 | `referral`, `leaderboard` | `Spinner` on initial load | Correct |
 | `jobs`, `billing` | `PageLoadingSkeleton` | Correct |
@@ -189,28 +191,26 @@ These are not necessarily bugs — they use other patterns or minimal feedback.
 
 > **Task IDs:** SPIN-201 (live regions), SPIN-202 (reduced motion), SPIN-203 (FOLS delay), SPIN-204 (timeout/retry).
 
-### 1. Screen Reader & Accessibility Gaps (WCAG 2.2 / 4.1.3 Status Messages)
+### 1. Screen Reader & Accessibility Gaps (WCAG 2.2 / 4.1.3 Status Messages) — **Fixed (SPIN-201)**
 
 - **Issue:** `Spinner` sets `aria-hidden={true}` by default. When rendered in standalone containers or full-page wrappers (`PageLoadingSkeleton`, `LoadingSpinner`), screen readers are not notified that content is actively loading unless wrapped in an accessible live region.
-- **Guidance:**
-  - Wrap standalone/page-level loading states in `role="status"` or `aria-live="polite"` with `aria-busy="true"` on the parent container.
-  - Provide a localized `<span className="sr-only">{t("common.loading")}</span>` when `Spinner` is used without visible text.
-  - Ensure disabled submit buttons with spinners convey state via `aria-disabled="true"` or `aria-busy="true"`.
+- **As shipped:** `LoadingSpinner`, `PageLoadingSkeleton`, and `InlineLoadingSkeleton` outer wrappers use `role="status"`, `aria-live="polite"`, `aria-busy="true"`, and localized sr-only loading text. Visible duplicate copy uses `aria-hidden="true"` to avoid double announcement.
+- **Remaining guidance:** Ensure disabled submit buttons with spinners convey state via `aria-disabled="true"` or `aria-busy="true"` (not yet applied to `button.tsx`).
 
-### 2. Motion Sensitivity (`prefers-reduced-motion`)
+### 2. Motion Sensitivity (`prefers-reduced-motion`) — **Fixed (SPIN-202)**
 
 - **Issue:** `animate-spin` continuously rotates at high speed, which can cause discomfort or vestibular disorientation for users with motion sensitivity.
-- **Guidance:** Respect `motion-reduce:animate-none` or provide a gentle pulse / static indicator under `prefers-reduced-motion: reduce`.
+- **As shipped:** `Spinner` adds `motion-reduce:animate-none motion-reduce:opacity-80` — icon stops rotating and uses a static dimmed appearance when OS “reduce motion” is on.
 
-### 3. Flash of Loading State (FOLS) on Fast Connections
+### 3. Flash of Loading State (FOLS) on Fast Connections — **Fixed (SPIN-203, pilot)**
 
 - **Issue:** Micro-requests (<150ms–200ms) flash full-size spinners or skeletons momentarily, creating visual jitter and perceived slowness.
-- **Guidance:** For rapid interactions or cached data, consider a short entrance delay (e.g. 150ms debounce) or CSS transition delay before mounting full-page/section spinners.
+- **As shipped:** `useDelayedLoading(isLoading, 150)` on `projects/page.tsx` and `movies/page.tsx` — full-page `LoadingSpinner` mounts only after 150ms of sustained loading.
 
-### 4. Stuck Spinner & Indefinite Loading Recovery
+### 4. Stuck Spinner & Indefinite Loading Recovery — **Deferred (SPIN-204)**
 
 - **Issue:** Network failures or SSE disconnects may leave spinners running indefinitely without error fallback or retry mechanisms.
-- **Guidance:** Pair critical async loaders (e.g., TTS preview, video export, auth checks) with timeouts (e.g., 15–30s) that swap the spinner for an explicit error message with a retry action button (`RotateCcw`).
+- **Guidance:** Pair critical async loaders (e.g., TTS preview, video export, auth checks) with timeouts (e.g., 15–30s) that swap the spinner for an explicit error message with a retry action button (`RotateCcw`). Not implemented — deferred pending user feedback.
 
 ---
 
@@ -281,14 +281,14 @@ Replace hand-rolled `div` border spinners with `<Spinner />` or `<PageLoadingSke
 | SPIN-107 | Onboarding steps | `onboarding/PasswordStep.tsx`, `onboarding/CompletionStep.tsx` | `<Spinner size="sm" />` or custom `className` sizes | Submit and completion hero/footer use shared spinner. | 2 files, 3 spinners (CompletionStep hero + footer). | S | `refactor/spinner-onboarding` | **Done** |
 | SPIN-108 | Migration verification | — (repo-wide grep) | Run border-spinner grep; fix any stragglers | `rg 'border.*animate-spin\|animate-spin.*border' src` → **0** matches | **0** matches as of Aug 24, 2026. Only remaining `animate-spin`: `spinner.tsx` + 10 `RefreshCw` refresh sites (8 files). | S | Included in Phase 2 PR | **Done** |
 
-### Phase 3 — Shared primitive & a11y (P1)
+### Phase 3 — Shared primitive & a11y (P1) — **Partial** (SPIN-201–203 done; SPIN-204 deferred)
 
-| ID | Task | File(s) | What to do | Acceptance criteria | Effort | PR batch |
-|----|------|---------|------------|---------------------|--------|----------|
-| SPIN-201 | Live region on page loaders | `src/components/ui/LoadingSpinner.tsx`, `src/components/ui/loading-skeleton.tsx` | Add `role="status"`, `aria-live="polite"`, and `aria-busy="true"` on the outer wrapper. Include `<span className="sr-only">{message ?? t("common.loading")}</span>`. | Screen reader announces loading when `LoadingSpinner` / `PageLoadingSkeleton` mount; visible message unchanged. | M | `feat/spinner-a11y` |
-| SPIN-202 | Reduced motion support | `src/components/ui/spinner.tsx` | Add `motion-reduce:animate-none` to `Loader2` classes; optionally swap to a static icon or subtle pulse under `@media (prefers-reduced-motion: reduce)` via Tailwind `motion-reduce:` utilities. | With OS “reduce motion” on, spinner does not rotate continuously. | S | `feat/spinner-a11y` |
-| SPIN-203 | Optional FOLS delay helper | New hook e.g. `src/lib/hooks/use-delayed-loading.ts` + adopt on 1–2 full-page loaders | Expose `showLoading = isLoading && elapsed > 150ms` (configurable). Apply to `LoadingSpinner fullHeight` on list pages first. | Fast cached loads (<150ms) do not flash full-page spinner; slow loads still show spinner. | M | `feat/spinner-fols-delay` |
-| SPIN-204 | Timeout + retry pattern (pilot) | Pick one critical flow: e.g. `export/page.tsx` generation or `preview/page.tsx` TTS | After 15–30s without resolution, replace spinner with error copy + retry button (`RotateCcw`). | Stuck async state surfaces error + retry; happy path unchanged. | L | `feat/spinner-timeout-retry` |
+| ID | Task | File(s) | What to do | Acceptance criteria | As shipped | Effort | PR batch |
+|----|------|---------|------------|---------------------|------------|--------|----------|
+| SPIN-201 | Live region on page loaders | `src/components/ui/LoadingSpinner.tsx`, `src/components/ui/loading-skeleton.tsx` | Add `role="status"`, `aria-live="polite"`, and `aria-busy="true"` on the outer wrapper. Include `<span className="sr-only">{message ?? t("common.loading")}</span>`. | Screen reader announces loading when `LoadingSpinner` / `PageLoadingSkeleton` mount; visible message unchanged. | All three page-loader components; sr-only + `aria-hidden` on visible duplicate. | M | `feat/spinner-a11y` | **Done** |
+| SPIN-202 | Reduced motion support | `src/components/ui/spinner.tsx` | Add `motion-reduce:animate-none` to `Loader2` classes; optionally swap to a static icon or subtle pulse under `@media (prefers-reduced-motion: reduce)` via Tailwind `motion-reduce:` utilities. | With OS “reduce motion” on, spinner does not rotate continuously. | `motion-reduce:animate-none motion-reduce:opacity-80`. | S | `feat/spinner-a11y` | **Done** |
+| SPIN-203 | Optional FOLS delay helper | New hook e.g. `src/lib/hooks/use-delayed-loading.ts` + adopt on 1–2 full-page loaders | Expose `showLoading = isLoading && elapsed > 150ms` (configurable). Apply to `LoadingSpinner fullHeight` on list pages first. | Fast cached loads (<150ms) do not flash full-page spinner; slow loads still show spinner. | Hook at 150ms default; adopted on `projects/page.tsx` and `movies/page.tsx`. | M | `feat/spinner-fols-delay` | **Done** |
+| SPIN-204 | Timeout + retry pattern (pilot) | Pick one critical flow: e.g. `export/page.tsx` generation or `preview/page.tsx` TTS | After 15–30s without resolution, replace spinner with error copy + retry button (`RotateCcw`). | Stuck async state surfaces error + retry; happy path unchanged. | — | L | `feat/spinner-timeout-retry` | **Deferred** |
 
 ### Phase 4 — Optional polish (P2–P3)
 
@@ -304,7 +304,7 @@ Replace hand-rolled `div` border spinners with `<Spinner />` or `<PageLoadingSke
 | ID | Task | File(s) | What to do | Acceptance criteria | Effort | PR batch |
 |----|------|---------|------------|---------------------|--------|----------|
 | SPIN-401 | ~~Remove dead `video-generation.tsx`~~ **Done** | — | File deleted; `docs/TYPOGRAPHY.md` reference removed. Export flow remains in `export/page.tsx`. | No importers; typography doc updated. | S | `chore/remove-video-generation` |
-| SPIN-402 | Update this audit doc | `docs/SPINNER_AUDIT.md` | After each phase, update migration status, border inventory counts, and check off task IDs. | Doc matches repo; verification command counts current. | Phase 1 + Phase 2 sections updated Aug 24, 2026. Re-run after Phase 3+. | S | Ongoing | **Partial** |
+| SPIN-402 | Update this audit doc | `docs/SPINNER_AUDIT.md` | After each phase, update migration status, border inventory counts, and check off task IDs. | Doc matches repo; verification command counts current. | Phase 1–3 (SPIN-201–203) updated Aug 24, 2026. SPIN-204 deferred. | S | Ongoing | **Partial** |
 
 ### Out of scope — do not implement
 
@@ -320,8 +320,8 @@ Replace hand-rolled `div` border spinners with `<Spinner />` or `<PageLoadingSke
 1. **Quick wins:** SPIN-001, SPIN-002, SPIN-401 — **done**  
 2. **Export player states:** SPIN-003 — **done**  
 3. **Visual consistency:** SPIN-101 → SPIN-108 — **done**  
-4. **Primitives:** SPIN-201 + SPIN-202 (single a11y PR)  
-5. **Behavior:** SPIN-203, SPIN-204 as needed from user feedback  
+4. **Primitives:** SPIN-201 + SPIN-202 — **done**  
+5. **Behavior:** SPIN-203 — **done**; SPIN-204 deferred pending user feedback  
 6. **Polish:** SPIN-301–304 only if empty-state flash is reported
 
 ### Task checklist (copy for PR descriptions)
@@ -343,10 +343,10 @@ Phase 2 — Border migration
 - [x] SPIN-108 Migration verification
 
 Phase 3 — a11y & behavior
-- [ ] SPIN-201 Live region on page loaders
-- [ ] SPIN-202 Reduced motion support
-- [ ] SPIN-203 FOLS delay helper
-- [ ] SPIN-204 Timeout + retry (pilot)
+- [x] SPIN-201 Live region on page loaders
+- [x] SPIN-202 Reduced motion support
+- [x] SPIN-203 FOLS delay helper
+- [ ] SPIN-204 Timeout + retry (pilot — deferred)
 
 Phase 4 — Polish
 - [ ] SPIN-301 Dashboard section skeletons
@@ -356,7 +356,7 @@ Phase 4 — Polish
 
 Phase 5 — Cleanup
 - [x] SPIN-401 Remove video-generation.tsx
-- [x] SPIN-402 Update SPINNER_AUDIT.md (Phase 1 + Phase 2 verified Aug 24, 2026)
+- [x] SPIN-402 Update SPINNER_AUDIT.md (Phase 1–3 partial verified Aug 24, 2026)
 ```
 
 ---
@@ -388,8 +388,8 @@ rg 'animate-spin' src --glob '*.{tsx,ts}'
 # Spinner / LoadingSpinner import sites
 rg 'from "@/components/ui/spinner"|from "@/components/ui/LoadingSpinner"' src --glob '*.{tsx,ts}'
 
-# Lint shared UI
-pnpm eslint src/components/ui/spinner.tsx src/components/ui/LoadingSpinner.tsx
+# Lint shared UI + FOLS hook
+pnpm eslint src/components/ui/spinner.tsx src/components/ui/LoadingSpinner.tsx src/lib/hooks/use-delayed-loading.ts
 ```
 
 As of Aug 24, 2026 verification:
