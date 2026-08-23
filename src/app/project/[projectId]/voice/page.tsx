@@ -1,16 +1,17 @@
 "use client";
 
-import React from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useState, useEffect, useRef } from "react";
-import { Mic, Plus, FileText, ChevronDown, Globe, User, AlertCircle, Check } from "lucide-react";
+import { useState, useEffect } from "react";
+import { FileText, ChevronDown } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 import { typography } from "@/components/ui/typography";
-import { Button } from "@/components/ui/button";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { useVoiceLimits } from "@/lib/hooks/use-voice-limits";
+import { useVoicePreview } from "@/lib/hooks/use-voice-preview";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
+import { VoiceSelectionPanel } from "@/components/project/voice-selection-panel";
+import { SpeechRateControl } from "@/components/project/speech-rate-control";
 import { VoiceRecordingModal } from "@/components/shared/voice-recording-modal";
 import { VoiceLimitDialog } from "@/components/voices/voice-limit-dialog";
 import { FullScriptModal } from "@/components/project/full-script-modal";
@@ -29,35 +30,31 @@ export default function VoicePage() {
   const projectId = params.projectId as string;
   const { state, updateVoice, activeScript, isLoading } = useProjectState(projectId);
   const { error: toastError, success: toastSuccess } = useToast();
+  const { playVoicePreview } = useVoicePreview();
 
   const [availableVoicesLoading, setAvailableVoicesLoading] = useState(true);
   const [availableVoicesError, setAvailableVoicesError] = useState<string | null>(null);
   const [ownVoices, setOwnVoices] = useState<VoiceResponse[]>([]);
   const [communityVoices, setCommunityVoices] = useState<VoiceWithCreator[]>([]);
   const [selectedVoiceId, setSelectedVoiceId] = useState<number | null>(() => {
-    // Initialize from saved state if available
     const voiceId = state?.voiceId ? Number(state.voiceId) : undefined;
     const alternateVoiceId = state?.voice?.id ? Number(state.voice.id) : undefined;
     return voiceId || alternateVoiceId || null;
   });
-  const [tab, setTab] = useState<"my" | "community">("my");
   const [showRecorder, setShowRecorder] = useState(false);
   const [showLimitDialog, setShowLimitDialog] = useState(false);
   const [showFullScriptModal, setShowFullScriptModal] = useState(false);
   const [isAdvancing, setIsAdvancing] = useState(false);
   const [hasScheduledAgnes, setHasScheduledAgnes] = useState(false);
   const [ratio, setRatio] = useState(1.0);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   const voiceLimits = useVoiceLimits();
 
-  // Schedule Agnes jobs on page load (progressive scheduling) - ONCE
   useEffect(() => {
     const scheduleAgnesJobsIfNeeded = async () => {
       if (!projectId || !activeScript?.content) return;
-      if (hasScheduledAgnes) return; // Only schedule once
+      if (hasScheduledAgnes) return;
 
       try {
-        // Backend checks state and schedules only what's missing
         const result = await scheduleAgnesJobs(projectId);
         if (result.scheduled.length > 0) {
           console.log("[Voice Page] Agnes jobs scheduled:", result.scheduled);
@@ -65,21 +62,18 @@ export default function VoicePage() {
         setHasScheduledAgnes(true);
       } catch (error) {
         console.error("[Voice Page] Failed to schedule Agnes jobs:", error);
-        setHasScheduledAgnes(true); // Mark as attempted even if failed
+        setHasScheduledAgnes(true);
       }
     };
 
     scheduleAgnesJobsIfNeeded();
   }, [projectId, activeScript?.content, hasScheduledAgnes]);
 
-  // Fetch available voices (own + community)
   useEffect(() => {
     let cancelled = false;
     getAvailableVoices()
       .then((data) => {
         if (!cancelled) {
-          // Backend already filters out deleted voices and returns only approved community voices
-          // (is_shared=TRUE AND is_approved=TRUE AND is_deleted=FALSE)
           setOwnVoices(data.own_voices);
           setCommunityVoices(data.community_voices);
           setAvailableVoicesError(null);
@@ -102,92 +96,7 @@ export default function VoicePage() {
     };
   }, [t]);
 
-  // Cleanup audio on unmount (when user navigates away)
-  useEffect(() => {
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.currentTime = 0; // Reset to start
-        if (audioRef.current.src?.startsWith("blob:")) {
-          URL.revokeObjectURL(audioRef.current.src);
-        }
-        audioRef.current = null;
-      }
-    };
-  }, []);
-
-  const playAudio = async (voiceId: number, type: "own" | "community") => {
-    // Stop current audio if playing
-    if (audioRef.current) {
-      audioRef.current.pause();
-      if (audioRef.current.src?.startsWith("blob:")) {
-        URL.revokeObjectURL(audioRef.current.src);
-      }
-      audioRef.current = null;
-    }
-
-    try {
-      // Get the voice data
-      const voiceData =
-        type === "own"
-          ? ownVoices.find((v) => v.id === voiceId)
-          : communityVoices.find((v) => v.id === voiceId);
-
-      if (!voiceData) {
-        toastError(t("project.voice.voiceNotFound"), t("project.voice.voiceNotFoundDesc"));
-        return;
-      }
-
-      // If audio_url is not already attached, fetch it
-      let audioUrl = voiceData.audio_url;
-      if (!audioUrl) {
-        try {
-          const audioUrlData = await getVoiceAudioUrl(voiceId);
-          audioUrl = audioUrlData.audio_url;
-        } catch (err) {
-          console.error("Failed to get audio URL:", err);
-          toastError(
-            t("project.voice.previewUnavailable"),
-            t("project.voice.previewUnavailableDesc")
-          );
-          return;
-        }
-      }
-
-      if (!audioUrl) {
-        toastError(
-          t("project.voice.previewUnavailable"),
-          t("project.voice.previewUnavailableDesc")
-        );
-        return;
-      }
-
-      const response = await fetch(audioUrl);
-      if (!response.ok) {
-        throw new Error("Failed to load voice audio");
-      }
-      const blob = await response.blob();
-      const blobUrl = URL.createObjectURL(blob);
-
-      audioRef.current = new Audio(blobUrl);
-      audioRef.current.onended = () => {
-        URL.revokeObjectURL(blobUrl);
-      };
-      audioRef.current.onerror = (e) => {
-        console.error("Audio playback error:", audioRef.current?.error, e);
-        toastError(t("project.voice.playbackFailed"), t("project.voice.playbackFailedPlay"));
-        URL.revokeObjectURL(blobUrl);
-      };
-
-      await audioRef.current.play();
-    } catch (err) {
-      console.error("Failed to load/play audio:", err);
-      toastError(t("project.voice.playbackFailed"), t("project.voice.playbackFailedLoad"));
-    }
-  };
-
   const handleVoiceSelect = async (voiceId: number) => {
-    // Find voice in either own or community voices
     const voice =
       ownVoices.find((v) => v.id === voiceId) || communityVoices.find((v) => v.id === voiceId);
 
@@ -201,7 +110,6 @@ export default function VoicePage() {
       audioUrl: null,
     });
 
-    // Save voice selection to localStorage for preview page
     try {
       localStorage.setItem(
         `project_${projectId}_voice`,
@@ -215,17 +123,14 @@ export default function VoicePage() {
       console.error("Failed to save voice to localStorage:", e);
     }
 
-    // Auto-play preview
     const voiceType = ownVoices.some((v) => v.id === voiceId) ? "own" : "community";
-    await playAudio(voiceId, voiceType);
+    await playVoicePreview(voiceId, voiceType, ownVoices, communityVoices);
   };
 
   const handleRecordingSaved = async (
     newRecording: VoiceResponse & { title?: string; file_path?: string }
   ) => {
     try {
-      // The voice recorder returns a response with the recorded voice data
-      // Get the audio URL for it
       const audioUrlData = await getVoiceAudioUrl(newRecording.id);
       const recordingWithUrl: VoiceResponse = {
         id: newRecording.id,
@@ -244,13 +149,8 @@ export default function VoicePage() {
 
       setShowRecorder(false);
       setOwnVoices([recordingWithUrl, ...ownVoices]);
-
-      // Refresh voice limits after adding a voice
       await voiceLimits.refetch();
-
-      // Auto-select the newly recorded voice
       await handleVoiceSelect(recordingWithUrl.id);
-
       toastSuccess(t("project.voice.voiceRecorded"), t("project.voice.voiceRecordedDesc"));
     } catch (error) {
       console.error("Failed to get audio URL for new recording:", error);
@@ -260,7 +160,6 @@ export default function VoicePage() {
   };
 
   const handleAddVoiceClick = () => {
-    // Check limits before opening recorder
     if (!voiceLimits.canAdd) {
       setShowLimitDialog(true);
       return;
@@ -270,7 +169,6 @@ export default function VoicePage() {
 
   const handleUpgradeClick = () => {
     setShowLimitDialog(false);
-    // Navigate to pricing/upgrade page
     window.location.href = "/pricing";
   };
 
@@ -279,7 +177,6 @@ export default function VoicePage() {
 
     setIsAdvancing(true);
     try {
-      // Schedule TTS job with selected voice
       const voice =
         ownVoices.find((v) => v.id === selectedVoiceId) ||
         communityVoices.find((v) => v.id === selectedVoiceId);
@@ -290,15 +187,12 @@ export default function VoicePage() {
         voiceId: String(selectedVoiceId),
         voiceName: voice?.name,
         scriptText: activeScript.content,
-        language: "en", // Default language; backend no longer validates language match
-        ratio: ratio,
+        language: "en",
+        ratio,
         autoActivate: true,
       });
 
-      // Advance to details step
       await advanceProjectStep(projectId, "voice");
-
-      // Navigate to details page
       router.push(`/project/${projectId}/details`);
       toastSuccess(t("project.voice.voiceSelected"), t("project.voice.voiceSelectedDesc"));
     } catch (error) {
@@ -308,6 +202,10 @@ export default function VoicePage() {
       setIsAdvancing(false);
     }
   };
+
+  const selectedVoiceName =
+    ownVoices.find((v) => v.id === selectedVoiceId)?.name ||
+    communityVoices.find((v) => v.id === selectedVoiceId)?.name;
 
   if (isLoading) {
     return <PageLoadingSkeleton message={t("project.common.loadingProject")} />;
@@ -324,18 +222,14 @@ export default function VoicePage() {
               </Heading>
               <p className="mt-1 text-sm text-text-muted">{t("project.voice.description")}</p>
             </div>
-            {selectedVoiceId && (
+            {selectedVoiceId && selectedVoiceName && (
               <div className="text-sm text-text-muted">
                 {t("project.voice.selected")}{" "}
-                <span className="font-medium text-text-primary">
-                  {ownVoices.find((v) => v.id === selectedVoiceId)?.name ||
-                    communityVoices.find((v) => v.id === selectedVoiceId)?.name}
-                </span>
+                <span className="font-medium text-text-primary">{selectedVoiceName}</span>
               </div>
             )}
           </div>
 
-          {/* Script Summary Card */}
           {state?.scriptSummary && (
             <Card
               variant="elevated"
@@ -355,7 +249,7 @@ export default function VoicePage() {
                     {t("project.common.scriptTagline")}
                   </Heading>
                   <p className={`${typography.section} mb-2 text-accent-cyan`}>
-                    "{state.scriptSummary}"
+                    &ldquo;{state.scriptSummary}&rdquo;
                   </p>
                   <p className="text-xs text-text-muted">{t("project.voice.taglineHint")}</p>
                 </div>
@@ -363,7 +257,6 @@ export default function VoicePage() {
             </Card>
           )}
 
-          {/* Expandable full script */}
           {activeScript && (
             <Card
               variant="elevated"
@@ -396,352 +289,26 @@ export default function VoicePage() {
             </Card>
           )}
 
-          {/* Voice Selection with Tabs */}
-          <Card variant="elevated" padding="lg">
-            <div className="space-y-4">
-              {/* Tab Navigation */}
-              <div className="inline-flex items-center gap-2 rounded-xl bg-surface-panel p-1.5 shadow-sm border border-border-default">
-                <button
-                  onClick={() => setTab("my")}
-                  className={`relative flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold transition-all duration-200 ${
-                    tab === "my"
-                      ? "bg-gradient-to-r from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30"
-                      : "text-text-muted hover:text-text-secondary hover:bg-surface-raised"
-                  }`}
-                >
-                  <Mic className="h-4 w-4" />
-                  <span>{t("project.voice.myVoices")}</span>
-                  {ownVoices.length > 0 && (
-                    <span
-                      className={`ml-1 rounded-full px-2 py-0.5 text-xs font-bold ${
-                        tab === "my" ? "bg-white/20" : "bg-surface-raised"
-                      }`}
-                    >
-                      {ownVoices.length}
-                    </span>
-                  )}
-                </button>
+          <VoiceSelectionPanel
+            ownVoices={ownVoices}
+            communityVoices={communityVoices}
+            selectedVoiceId={selectedVoiceId}
+            isLoadingVoices={availableVoicesLoading}
+            voicesError={availableVoicesError}
+            onVoiceSelect={handleVoiceSelect}
+            onAddVoice={handleAddVoiceClick}
+            canAddVoice={voiceLimits.canAdd}
+            remainingVoiceCount={voiceLimits.remainingCount}
+          />
 
-                <button
-                  onClick={() => setTab("community")}
-                  className={`relative flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold transition-all duration-200 ${
-                    tab === "community"
-                      ? "bg-gradient-to-r from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30"
-                      : "text-text-muted hover:text-text-secondary hover:bg-surface-raised"
-                  }`}
-                >
-                  <Globe className="h-4 w-4" />
-                  <span>{t("project.voice.community")}</span>
-                  {communityVoices.length > 0 && (
-                    <span
-                      className={`ml-1 rounded-full px-2 py-0.5 text-xs font-bold ${
-                        tab === "community" ? "bg-white/20" : "bg-surface-raised"
-                      }`}
-                    >
-                      {communityVoices.length}
-                    </span>
-                  )}
-                </button>
-              </div>
+          {selectedVoiceId && <SpeechRateControl ratio={ratio} onRatioChange={setRatio} />}
 
-              {/* Error State */}
-              {availableVoicesError && (
-                <Card
-                  variant="elevated"
-                  padding="md"
-                  className="border-status-failed/30 bg-status-failed/10"
-                >
-                  <div className="flex items-start gap-3">
-                    <AlertCircle className="h-5 w-5 text-status-failed flex-shrink-0 mt-0.5" />
-                    <p className="text-sm text-status-failed">{availableVoicesError}</p>
-                  </div>
-                </Card>
-              )}
-
-              {/* Loading State */}
-              {availableVoicesLoading ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {Array.from({ length: 6 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="h-24 animate-pulse rounded-lg bg-surface-panel border border-border-default"
-                    />
-                  ))}
-                </div>
-              ) : (
-                <>
-                  {/* My Voices Tab */}
-                  {tab === "my" && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                      {ownVoices.length === 0 ? (
-                        <div className="col-span-full text-center py-8 rounded-lg border border-dashed border-border-default bg-surface-panel/50">
-                          <Mic className="h-8 w-8 text-text-muted mx-auto mb-2 opacity-50" />
-                          <p className="text-sm text-text-muted mb-2">
-                            {t("project.voice.noPersonalVoices")}
-                          </p>
-                          <p className="text-xs text-text-muted max-w-xs mx-auto mb-4">
-                            {t("project.voice.recordFirst")}
-                          </p>
-                          <Button variant="primary" size="sm" onClick={handleAddVoiceClick}>
-                            <Plus size={16} className="mr-2" />
-                            {t("project.voice.recordVoice")}
-                          </Button>
-                        </div>
-                      ) : (
-                        <>
-                          {ownVoices.map((voice) => (
-                            <Card
-                              key={voice.id}
-                              variant={selectedVoiceId === voice.id ? "elevated" : "default"}
-                              padding="md"
-                              className={`cursor-pointer transition-all ${
-                                selectedVoiceId === voice.id
-                                  ? "ring-2 ring-accent-primary border-accent-primary"
-                                  : "hover:border-accent-primary/40"
-                              }`}
-                              onClick={() => handleVoiceSelect(voice.id)}
-                            >
-                              <div className="flex items-start justify-between gap-2">
-                                <div className="flex items-start gap-2 flex-1 min-w-0">
-                                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-accent-primary to-purple-600 flex-shrink-0">
-                                    <Mic className="w-5 h-5 text-white" />
-                                  </div>
-                                  <div className="flex-1 min-w-0">
-                                    <p className="font-semibold text-text-primary text-sm truncate">
-                                      {voice.name}
-                                    </p>
-                                    <p className="text-xs text-text-muted">
-                                      {t("project.voice.yourVoice")}
-                                    </p>
-                                  </div>
-                                </div>
-                                {selectedVoiceId === voice.id && (
-                                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-primary flex-shrink-0">
-                                    <Check className="w-4 h-4 text-white" />
-                                  </div>
-                                )}
-                              </div>
-                            </Card>
-                          ))}
-
-                          {/* Add Voice Card */}
-                          <Card
-                            variant="default"
-                            padding="md"
-                            className="border-dashed hover:border-accent-primary/50 hover:bg-accent-primary/5 transition-all cursor-pointer group"
-                            onClick={handleAddVoiceClick}
-                          >
-                            <div className="flex flex-col items-center justify-center h-full min-h-[88px] text-center">
-                              <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-accent-primary/10 group-hover:bg-accent-primary/20 transition-colors">
-                                <Plus className="h-5 w-5 text-accent-primary" />
-                              </div>
-                              <p className="text-xs font-semibold text-text-primary mb-0.5">
-                                {t("project.voice.addVoice")}
-                              </p>
-                              <p className="text-xs text-text-muted">
-                                {voiceLimits.canAdd
-                                  ? t("project.voice.remainingLeft", {
-                                      count: voiceLimits.remainingCount,
-                                    })
-                                  : t("project.voice.limitReached")}
-                              </p>
-                            </div>
-                          </Card>
-                        </>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Community Voices Tab */}
-                  {tab === "community" && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                      {communityVoices.length === 0 ? (
-                        <div className="col-span-full text-center py-8 rounded-lg border border-dashed border-border-default bg-surface-panel/50">
-                          <Globe className="h-8 w-8 text-text-muted mx-auto mb-2 opacity-50" />
-                          <p className="text-sm text-text-muted mb-2">
-                            {t("project.voice.noCommunityVoices")}
-                          </p>
-                          <p className="text-xs text-text-muted max-w-xs mx-auto">
-                            {t("project.voice.communityHint")}
-                          </p>
-                        </div>
-                      ) : (
-                        communityVoices.map((voice) => (
-                          <Card
-                            key={voice.id}
-                            variant={selectedVoiceId === voice.id ? "elevated" : "default"}
-                            padding="md"
-                            className={`cursor-pointer transition-all ${
-                              selectedVoiceId === voice.id
-                                ? "ring-2 ring-accent-cyan border-accent-cyan"
-                                : "hover:border-accent-cyan/40"
-                            }`}
-                            onClick={() => handleVoiceSelect(voice.id)}
-                          >
-                            <div className="flex items-start justify-between gap-2">
-                              <div className="flex items-start gap-2 flex-1 min-w-0">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-accent-cyan to-blue-600 flex-shrink-0">
-                                  <Globe className="w-5 h-5 text-white" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <p className="font-semibold text-text-primary text-sm truncate">
-                                    {voice.name}
-                                  </p>
-                                  <p className="text-xs text-text-muted flex items-center gap-1 truncate">
-                                    <User className="h-3 w-3 flex-shrink-0" />
-                                    <span className="truncate">@{voice.creator_username}</span>
-                                  </p>
-                                  {/* Approved badge */}
-                                  <div className="mt-1">
-                                    <span className="inline-flex items-center gap-1 rounded-full bg-green-500/10 border border-green-500/30 px-1.5 py-0.5 text-[10px] font-bold text-green-600">
-                                      <div className="h-1 w-1 rounded-full bg-green-600"></div>
-                                      {t("project.voice.approved")}
-                                    </span>
-                                  </div>
-                                </div>
-                              </div>
-                              {selectedVoiceId === voice.id && (
-                                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-cyan flex-shrink-0">
-                                  <Check className="w-4 h-4 text-white" />
-                                </div>
-                              )}
-                            </div>
-                          </Card>
-                        ))
-                      )}
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-          </Card>
-
-          {/* Speech Rate Control */}
-          {selectedVoiceId && (
-            <Card variant="elevated" padding="lg">
-              <div className="space-y-4">
-                <div>
-                  <Heading variant="label" as="h3" className="text-text-primary">
-                    {t("project.voice.speechRate")}
-                  </Heading>
-                  <p className="text-xs text-text-muted mt-1">
-                    {t("project.voice.speechRateHint")}
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-                  {/* Very Slow */}
-                  <button
-                    onClick={() => setRatio(0.5)}
-                    className={`relative flex flex-col items-center justify-center rounded-xl p-4 transition-all ${
-                      ratio === 0.5
-                        ? "bg-gradient-to-br from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30 ring-2 ring-accent-primary"
-                        : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
-                    }`}
-                  >
-                    <span className={`${typography.subsection} mb-1 tabular-nums`}>0.5x</span>
-                    <span className="text-xs font-medium">{t("project.voice.verySlow")}</span>
-                    {ratio === 0.5 && (
-                      <div className="absolute top-2 right-2">
-                        <Check className="h-4 w-4" />
-                      </div>
-                    )}
-                  </button>
-
-                  {/* Slow */}
-                  <button
-                    onClick={() => setRatio(1.0)}
-                    className={`relative flex flex-col items-center justify-center rounded-xl p-4 transition-all ${
-                      ratio === 1.0
-                        ? "bg-gradient-to-br from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30 ring-2 ring-accent-primary"
-                        : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
-                    }`}
-                  >
-                    <span className={`${typography.subsection} mb-1 tabular-nums`}>1.0x</span>
-                    <span className="text-xs font-medium">{t("project.voice.slow")}</span>
-                    {ratio === 1.0 && (
-                      <div className="absolute top-2 right-2">
-                        <Check className="h-4 w-4" />
-                      </div>
-                    )}
-                  </button>
-
-                  {/* Normal */}
-                  <button
-                    onClick={() => setRatio(1.25)}
-                    className={`relative flex flex-col items-center justify-center rounded-xl p-4 transition-all ${
-                      ratio === 1.25
-                        ? "bg-gradient-to-br from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30 ring-2 ring-accent-primary"
-                        : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
-                    }`}
-                  >
-                    <span className={`${typography.subsection} mb-1 tabular-nums`}>1.25x</span>
-                    <span className="text-xs font-medium">{t("project.voice.normal")}</span>
-                    {ratio === 1.25 && (
-                      <div className="absolute top-2 right-2">
-                        <Check className="h-4 w-4" />
-                      </div>
-                    )}
-                  </button>
-
-                  {/* Fast */}
-                  <button
-                    onClick={() => setRatio(1.6)}
-                    className={`relative flex flex-col items-center justify-center rounded-xl p-4 transition-all ${
-                      ratio === 1.6
-                        ? "bg-gradient-to-br from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30 ring-2 ring-accent-primary"
-                        : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
-                    }`}
-                  >
-                    <span className={`${typography.subsection} mb-1 tabular-nums`}>1.6x</span>
-                    <span className="text-xs font-medium">{t("project.voice.fast")}</span>
-                    {ratio === 1.6 && (
-                      <div className="absolute top-2 right-2">
-                        <Check className="h-4 w-4" />
-                      </div>
-                    )}
-                  </button>
-
-                  {/* Very Fast */}
-                  <button
-                    onClick={() => setRatio(2.0)}
-                    className={`relative flex flex-col items-center justify-center rounded-xl p-4 transition-all ${
-                      ratio === 2.0
-                        ? "bg-gradient-to-br from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30 ring-2 ring-accent-primary"
-                        : "bg-surface-panel text-text-secondary hover:bg-surface-raised hover:text-text-primary border border-border-default hover:border-accent-primary/40"
-                    }`}
-                  >
-                    <span className={`${typography.subsection} mb-1 tabular-nums`}>2.0x</span>
-                    <span className="text-xs font-medium">{t("project.voice.veryFast")}</span>
-                    {ratio === 2.0 && (
-                      <div className="absolute top-2 right-2">
-                        <Check className="h-4 w-4" />
-                      </div>
-                    )}
-                  </button>
-                </div>
-
-                {/* Current Selection Display */}
-                <div className="flex items-center justify-center gap-2 p-3 rounded-lg bg-accent-primary/5 border border-accent-primary/20">
-                  <span className="text-sm font-medium text-text-secondary">
-                    {t("project.voice.currentSpeed")}
-                  </span>
-                  <span className={`${typography.subsection} text-accent-primary tabular-nums`}>
-                    {ratio.toFixed(2)}x
-                  </span>
-                </div>
-              </div>
-            </Card>
-          )}
-
-          {/* Voice Recorder Modal */}
           <VoiceRecordingModal
             isOpen={showRecorder}
             onClose={() => setShowRecorder(false)}
             onSaved={handleRecordingSaved}
           />
 
-          {/* Voice Limit Dialog */}
           {showLimitDialog && (
             <VoiceLimitDialog
               tier={voiceLimits.tier}
@@ -755,7 +322,6 @@ export default function VoicePage() {
         </div>
       </div>
 
-      {/* Full Script Modal */}
       {activeScript && (
         <FullScriptModal
           isOpen={showFullScriptModal}
