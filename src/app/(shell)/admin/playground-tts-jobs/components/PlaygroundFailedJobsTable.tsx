@@ -3,7 +3,7 @@
 import { EmptyState } from "@/components/ui/EmptyState";
 
 import { useState } from "react";
-import { CheckCircle2, RefreshCw, Eye, Clock, AlertCircle } from "lucide-react";
+import { CheckCircle2, RotateCcw, Eye, Clock, AlertCircle } from "lucide-react";
 import type { PlaygroundFailedJob } from "@/types/admin";
 
 interface PlaygroundFailedJobsTableProps {
@@ -132,7 +132,7 @@ export function PlaygroundFailedJobsTable({
                   onClick={() => onRetry(job.id)}
                   className="flex items-center gap-1.5 rounded-lg border border-green-500/50 bg-green-500/10 px-3 py-1.5 text-xs font-medium text-green-600 hover:bg-green-500/20 transition-all"
                 >
-                  <RefreshCw className="h-3.5 w-3.5" />
+                  <RotateCcw className="h-3.5 w-3.5" />
                   <span className="hidden sm:inline">Retry</span>
                 </button>
               )}
