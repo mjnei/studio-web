@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Trash2, Play, Pause, Share2, Lock, CheckCircle, Clock } from "lucide-react";
+import { Trash2, Play, Pause, Share2, Lock, CheckCircle2, Clock } from "lucide-react";
 import { VoiceResponse } from "@/lib/types/api";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
@@ -183,7 +183,7 @@ export function VoiceRecordingCard({
     return {
       label: `✅ ${t("voices.recordingCard.community")}${approvalDate}`,
       color: "bg-green-500/10 text-green-600 border-green-500/30",
-      icon: <CheckCircle className="h-3 w-3" />,
+      icon: <CheckCircle2 className="h-3 w-3" />,
     };
   };
 

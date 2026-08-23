@@ -42,7 +42,7 @@ export function XIcon({
 }: BrandIconProps) {
   return (
     <svg
-      className={cn("h-6 w-6", className)}
+      className={cn("h-5 w-5", className)}
       fill={fill}
       viewBox="0 0 24 24"
       aria-hidden={ariaHidden}
@@ -61,7 +61,7 @@ export function WeChatIcon({
 }: BrandIconProps) {
   return (
     <svg
-      className={cn("h-7 w-7", className)}
+      className={cn("h-5 w-5", className)}
       fill={fill}
       viewBox="0 0 24 24"
       aria-hidden={ariaHidden}

@@ -7,7 +7,7 @@ import { validateReferralCode } from "@/lib/api/referral-client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
-import { AlertCircle, CheckCircle, Gift } from "lucide-react";
+import { AlertCircle, CheckCircle2, Gift } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
@@ -89,7 +89,7 @@ function InviteContent() {
         <div className="text-center">
           {/* Success Icon */}
           <div className="w-16 h-16 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center mx-auto mb-4">
-            <CheckCircle className="w-8 h-8 text-white" />
+            <CheckCircle2 className="h-8 w-8 text-white" />
           </div>
 
           {/* Title */}

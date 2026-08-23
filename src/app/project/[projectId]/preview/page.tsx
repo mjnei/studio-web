@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState, useRef, useCallback } from "react";
 import {
-  CheckCircle,
+  CheckCircle2,
   FileText,
   Mic2,
   AlertCircle,
@@ -655,7 +655,7 @@ export default function PreviewPage() {
               <CardHeader>
                 <div className="flex items-center gap-2">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500">
-                    <CheckCircle className="h-5 w-5 text-white" />
+                    <CheckCircle2 className="h-5 w-5 text-white" />
                   </div>
                   <CardTitle>{t("project.preview.projectDetails")}</CardTitle>
                 </div>

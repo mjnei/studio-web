@@ -8,22 +8,25 @@ import {
   Film,
   Mic,
   Briefcase,
-  User,
+  Gift,
   PanelLeft,
   X,
   Activity,
   Search,
   ShieldCheck,
-  DollarSign,
   CreditCard,
   Layers,
   Zap,
   Play,
+  Gamepad2,
+  BarChart3,
+  type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { useIsAdmin } from "@/lib/hooks/use-admin";
 import { useI18n } from "@/i18n";
+import { Icon } from "@/components/ui/icon";
 
 const mainItems = [
   {
@@ -114,26 +117,25 @@ function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(href + "/");
 }
 
-const iconMap: Record<string, React.ReactNode> = {
-  "/dashboard": <Home size={20} />,
-  "/projects": <Folder size={20} />,
-  "/movies": <Film size={20} />,
-  "/voices": <Mic size={20} />,
-  "/jobs": <Briefcase size={20} />,
-  "/pricing": <DollarSign size={20} />,
-  "/billing": <CreditCard size={20} />,
-  "/referral": <User size={20} />,
-  "/help": <HelpCircle size={20} />,
-  "/settings": <Settings size={20} />,
-  "/admin": <ShieldCheck size={20} />,
-  "/admin/movies": <Film size={20} />,
-  "/admin/voices": <Mic size={20} />,
-  "/admin/queues": <Layers size={20} />,
-  "/admin/studio-tts-jobs": <Zap size={20} />,
-  "/admin/playground-tts-jobs": <Zap size={20} />,
-  "/admin/playground": <Play size={20} />,
-  "/admin/audit-logs": <Activity size={20} />,
-  "/admin/projects": <Folder size={20} />,
+const iconMap: Record<string, LucideIcon> = {
+  "/dashboard": Home,
+  "/projects": Folder,
+  "/movies": Film,
+  "/voices": Mic,
+  "/jobs": Briefcase,
+  "/billing": CreditCard,
+  "/referral": Gift,
+  "/help": HelpCircle,
+  "/settings": Settings,
+  "/admin": ShieldCheck,
+  "/admin/movies": Film,
+  "/admin/voices": Mic,
+  "/admin/queues": Layers,
+  "/admin/studio-tts-jobs": Zap,
+  "/admin/playground-tts-jobs": Gamepad2,
+  "/admin/playground": Play,
+  "/admin/audit-logs": Activity,
+  "/admin/projects": BarChart3,
 };
 
 /** Drawer section headers — caption (12px) per typography minimum readable size */
@@ -157,6 +159,8 @@ function RailLink({
   collapsed?: boolean;
   label: string;
 }) {
+  const NavIcon = iconMap[item.href] ?? Search;
+
   return (
     <Link
       href={item.href}
@@ -172,7 +176,7 @@ function RailLink({
           : "text-text-secondary hover:bg-surface-hover hover:text-text-primary hover:border hover:border-border-default"
       }`}
     >
-      {iconMap[item.href] || <Search size={20} />}
+      <Icon icon={NavIcon} size="md" />
       {!collapsed && <span>{label}</span>}
     </Link>
   );
@@ -186,7 +190,7 @@ function LogoMark({ collapsed }: { collapsed?: boolean }) {
       className="flex items-center gap-2 text-xl font-bold group focus-ring rounded-lg"
     >
       <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-accent-secondary via-accent-primary to-accent-tertiary shadow-md group-hover:shadow-lg transition-all">
-        <Activity size={16} className="text-white" />
+        <Icon icon={Activity} size="sm" className="text-white" />
       </div>
       <span className="bg-gradient-to-r from-text-primary to-text-secondary bg-clip-text text-transparent">
         Huavoi
@@ -275,7 +279,7 @@ export function DrawerContent({
             aria-label={collapsed ? t("shell.expandSidebar") : t("shell.collapseSidebar")}
             title={collapsed ? t("shell.expandSidebar") : t("shell.collapseSidebar")}
           >
-            <PanelLeft size={18} />
+            <Icon icon={PanelLeft} size="sm" className="h-[18px] w-[18px]" />
           </button>
         )}
         {onClose && (
@@ -285,7 +289,7 @@ export function DrawerContent({
             aria-label={t("shell.closeMenu")}
             title={t("shell.closeMenu")}
           >
-            <X size={20} />
+            <Icon icon={X} size="md" />
           </button>
         )}
       </div>

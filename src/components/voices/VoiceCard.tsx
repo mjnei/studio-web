@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Play, Pause, Trash2, Share2, Lock, Clock, CheckCircle, User } from "lucide-react";
+import { Play, Pause, Trash2, Share2, Lock, Clock, CheckCircle2, User } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 import { useToast } from "@/components/ui/toast";
@@ -176,7 +176,7 @@ export function VoiceCard({
     } else {
       return (
         <span className="inline-flex items-center gap-1 rounded-full bg-green-500/10 border border-green-500/30 px-2 py-1 text-xs font-semibold text-green-600">
-          <CheckCircle className="h-3 w-3" />
+          <CheckCircle2 className="h-3 w-3" />
           {t("voices.status.approved")}
         </span>
       );

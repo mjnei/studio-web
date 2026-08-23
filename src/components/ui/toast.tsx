@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle, XCircle, AlertCircle, Info, X } from "lucide-react";
+import { CheckCircle2, XCircle, AlertCircle, Info, X } from "lucide-react";
 import { createContext, useContext, useState, useCallback, ReactNode } from "react";
 import { useI18n } from "@/i18n";
 
@@ -131,7 +131,7 @@ function ToastItem({ toast, onClose }: ToastItemProps) {
   const { t } = useI18n();
   const variants = {
     success: {
-      icon: <CheckCircle size={20} />,
+      icon: <CheckCircle2 className="h-5 w-5" />,
       bgColor: "bg-status-success/10",
       borderColor: "border-status-success/30",
       textColor: "text-status-success",
