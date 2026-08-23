@@ -8,6 +8,7 @@ import { Spinner } from "@/components/ui/spinner";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Heading } from "@/components/ui/heading";
 import { Badge } from "@/components/ui/badge";
@@ -278,10 +279,10 @@ export default function ReferralPage() {
         </CardHeader>
         <CardContent>
           {history.length === 0 ? (
-            <div className="text-center py-12">
-              <Users className="h-12 w-12 text-text-muted mx-auto mb-4" />
-              <p className="text-text-muted">{t("referral.history.noReferrals")}</p>
-            </div>
+            <EmptyState
+              icon={<Users aria-hidden />}
+              title={t("referral.history.noReferrals")}
+            />
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full min-w-[600px] text-sm">

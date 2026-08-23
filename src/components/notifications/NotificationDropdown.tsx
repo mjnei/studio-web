@@ -2,6 +2,7 @@
 
 import { useNotifications } from "@/lib/notification-context";
 import { NotificationItem } from "./NotificationItem";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { Settings, CheckCheck, Bell } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -72,16 +73,13 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
             <p className="text-xs sm:text-sm">{t("notifications.loading")}</p>
           </div>
         ) : notifications.length === 0 ? (
-          <div className="p-6 sm:p-8 flex flex-col items-center justify-center text-text-muted">
-            <Bell className="h-10 w-10 mb-2 sm:mb-3 opacity-50 sm:hidden" aria-hidden />
-            <Bell className="hidden h-12 w-12 mb-3 opacity-50 sm:block" aria-hidden />
-            <p className="text-xs sm:text-sm font-medium">
-              {t("notifications.noNotificationsYet")}
-            </p>
-            <p className="text-[10px] sm:text-xs mt-1 text-center px-4">
-              {t("notifications.noNotificationsHint")}
-            </p>
-          </div>
+          <EmptyState
+            size="sm"
+            icon={<Bell aria-hidden />}
+            title={t("notifications.noNotificationsYet")}
+            description={t("notifications.noNotificationsHint")}
+            className="px-6 py-8 sm:px-8 sm:py-8"
+          />
         ) : (
           <div className="divide-y divide-border-default">
             {notifications.slice(0, 5).map((notification) => (

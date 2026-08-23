@@ -118,7 +118,7 @@ export default function MoviesPage() {
       ) : error ? (
         <EmptyState
           variant="elevated"
-          icon={<Search className="h-12 w-12 text-status-failed" />}
+          icon={<Search className="text-status-failed" aria-hidden />}
           title={t("movies.error.title")}
           description={error}
           className="border-status-failed/30 bg-status-failed/5"
@@ -126,7 +126,8 @@ export default function MoviesPage() {
       ) : movies.length === 0 ? (
         <EmptyState
           variant="default"
-          icon={<Film className="h-16 w-16" />}
+          size="lg"
+          icon={<Film aria-hidden />}
           title={t("movies.empty.title")}
           description={
             searchQuery.trim() ? t("movies.empty.searchHint") : t("movies.empty.catalogEmpty")

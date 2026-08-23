@@ -140,7 +140,8 @@ export default function JobsPage() {
       {/* Empty State: No jobs total */}
       {allJobs.length === 0 ? (
         <EmptyState
-          icon={<Video className="h-16 w-16 text-accent-primary" />}
+          size="lg"
+          icon={<Video className="text-accent-primary" aria-hidden />}
           title={t("jobs.empty.title")}
           description={t("jobs.empty.message")}
           action={
@@ -152,7 +153,8 @@ export default function JobsPage() {
       ) : filteredJobs.length === 0 ? (
         /* Empty State: No matching filter results */
         <EmptyState
-          icon={<Video className="h-16 w-16 text-text-muted" />}
+          size="lg"
+          icon={<Video aria-hidden />}
           title={t("jobs.empty.noMatches")}
           description={t("jobs.empty.noMatchesMessage")}
           action={

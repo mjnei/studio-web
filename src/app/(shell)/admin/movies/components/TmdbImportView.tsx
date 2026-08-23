@@ -125,7 +125,7 @@ export function TmdbImportView({
       {!isSearching && searchResults.length === 0 && searchQuery && (
         <EmptyState
           variant="default"
-          icon={<Film className="h-12 w-12" />}
+          icon={<Film aria-hidden />}
           title="No movies found"
           description="Try a different search query."
         />
@@ -134,7 +134,7 @@ export function TmdbImportView({
       {!isSearching && searchResults.length === 0 && !searchQuery && (
         <EmptyState
           variant="default"
-          icon={<Database className="h-12 w-12" />}
+          icon={<Database aria-hidden />}
           title="Search TMDB"
           description="Enter a movie title above to search The Movie Database"
         />

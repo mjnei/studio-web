@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils/cn";
 import { Heading, type HeadingVariant } from "./heading";
 import { Text, type TextVariant } from "./text";
 
+/** Hero-tier empty blocks. Ring sizes: sm h-10, md h-12 (default), lg h-16. Icons fill the ring — pass Lucide without h-N w-N. */
 interface EmptyStateProps {
   icon?: React.ReactNode;
   title: string;
@@ -10,6 +11,7 @@ interface EmptyStateProps {
   action?: React.ReactNode;
   className?: string;
   variant?: "default" | "bordered" | "elevated";
+  /** sm (40px) compact panels; md (48px) default pages; lg (64px) primary empty pages */
   size?: "sm" | "md" | "lg";
 }
 
@@ -71,7 +73,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       {icon && (
         <div
           className={cn(
-            "flex items-center justify-center rounded-full bg-surface-raised text-text-muted opacity-50",
+            "flex shrink-0 items-center justify-center rounded-full bg-surface-raised text-text-muted opacity-50 [&_svg]:h-full [&_svg]:w-full",
             sizeConfig.icon
           )}
         >

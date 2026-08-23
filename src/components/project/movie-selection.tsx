@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ExternalImage } from "@/components/ui/ExternalImage";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { useI18n } from "@/i18n";
@@ -130,10 +131,11 @@ export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps)
         </div>
       ) : error ? (
         <Card variant="elevated" padding="lg">
-          <div className="text-center py-12">
-            <Film className="h-12 w-12 text-text-muted mx-auto mb-4" />
-            <p className="text-text-secondary">{error}</p>
-          </div>
+          <EmptyState
+            icon={<Film aria-hidden />}
+            title={t("project.movieSelection.unableToLoad")}
+            description={error}
+          />
         </Card>
       ) : movies.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -206,12 +208,10 @@ export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps)
         </div>
       ) : (
         <Card variant="elevated" padding="lg">
-          <div className="text-center py-12">
-            <Film className="h-12 w-12 text-text-muted mx-auto mb-4" />
-            <p className="text-text-secondary">
-              {t("project.movieSelection.noMoviesFound", { query: searchQuery })}
-            </p>
-          </div>
+          <EmptyState
+            icon={<Film aria-hidden />}
+            title={t("project.movieSelection.noMoviesFound", { query: searchQuery })}
+          />
         </Card>
       )}
 

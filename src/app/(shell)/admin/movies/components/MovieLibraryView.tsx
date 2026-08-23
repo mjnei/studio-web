@@ -92,8 +92,7 @@ export function MovieLibraryView({
       ) : movies.length === 0 ? (
         <EmptyState
           variant="default"
-          size="md"
-          icon={<Film className="h-12 w-12" />}
+          icon={<Film aria-hidden />}
           title="No movies found"
           description={
             searchTerm ? "Try a different search query" : "Import movies from TMDB to get started"

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Mic, Plus, Globe, User, AlertCircle, Check } from "lucide-react";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
@@ -107,21 +108,22 @@ export function VoiceSelectionPanel({
             {tab === "my" && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {ownVoices.length === 0 ? (
-                  <div className="col-span-full text-center py-8 rounded-lg border border-dashed border-border-default bg-surface-panel/50">
-                    <Mic className="h-8 w-8 text-text-muted mx-auto mb-2 opacity-50" aria-hidden />
-                    <p className="text-sm text-text-muted mb-2">
-                      {t("project.voice.noPersonalVoices")}
-                    </p>
-                    <p className="text-xs text-text-muted max-w-xs mx-auto mb-4">
-                      {t("project.voice.recordFirst")}
-                    </p>
-                    {onAddVoice && (
-                      <Button variant="primary" size="sm" onClick={onAddVoice}>
-                        <Plus className="mr-2 h-4 w-4" aria-hidden />
-                        {t("project.voice.recordVoice")}
-                      </Button>
-                    )}
-                  </div>
+                  <EmptyState
+                    variant="bordered"
+                    size="sm"
+                    className="col-span-full"
+                    icon={<Mic aria-hidden />}
+                    title={t("project.voice.noPersonalVoices")}
+                    description={t("project.voice.recordFirst")}
+                    action={
+                      onAddVoice ? (
+                        <Button variant="primary" size="sm" onClick={onAddVoice}>
+                          <Plus className="mr-2 h-4 w-4" aria-hidden />
+                          {t("project.voice.recordVoice")}
+                        </Button>
+                      ) : undefined
+                    }
+                  />
                 ) : (
                   <>
                     {ownVoices.map((voice) => (
@@ -189,15 +191,14 @@ export function VoiceSelectionPanel({
             {tab === "community" && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {communityVoices.length === 0 ? (
-                  <div className="col-span-full text-center py-8 rounded-lg border border-dashed border-border-default bg-surface-panel/50">
-                    <Globe className="h-8 w-8 text-text-muted mx-auto mb-2 opacity-50" aria-hidden />
-                    <p className="text-sm text-text-muted mb-2">
-                      {t("project.voice.noCommunityVoices")}
-                    </p>
-                    <p className="text-xs text-text-muted max-w-xs mx-auto">
-                      {t("project.voice.communityHint")}
-                    </p>
-                  </div>
+                  <EmptyState
+                    variant="bordered"
+                    size="sm"
+                    className="col-span-full"
+                    icon={<Globe aria-hidden />}
+                    title={t("project.voice.noCommunityVoices")}
+                    description={t("project.voice.communityHint")}
+                  />
                 ) : (
                   communityVoices.map((voice) => (
                     <Card

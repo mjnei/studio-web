@@ -5,12 +5,11 @@ import { useI18n } from "@/i18n";
 import { useNotifications } from "@/lib/notification-context";
 import { NotificationItem } from "@/components/notifications/NotificationItem";
 import { NotificationPreferencesModal } from "@/components/notifications/NotificationPreferencesModal";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { Bell, Settings, CheckCheck, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Spinner } from "@/components/ui/spinner";
-import { Heading } from "@/components/ui/heading";
-import { Text } from "@/components/ui/text";
 
 const NOTIFICATION_FILTERS = [
   { value: "all", label: "all" },
@@ -133,19 +132,21 @@ export default function NotificationsPage() {
             <p className="text-sm text-text-muted">{t("notifications.loading")}</p>
           </div>
         ) : filteredNotifications.length === 0 ? (
-          <div className="p-12 flex flex-col items-center justify-center text-center">
-            <Bell className="h-16 w-16 text-text-muted opacity-50 mb-4" aria-hidden />
-            <Heading variant="subsection" as="h3" className="text-text-primary mb-2">
-              {filter === "all"
+          <EmptyState
+            size="lg"
+            icon={<Bell aria-hidden />}
+            title={
+              filter === "all"
                 ? t("notifications.noNotifications")
-                : t("notifications.noFilteredNotifications")}
-            </Heading>
-            <Text variant="body" className="text-text-muted max-w-md">
-              {filter === "all"
+                : t("notifications.noFilteredNotifications")
+            }
+            description={
+              filter === "all"
                 ? t("notifications.noNotificationsDescription")
-                : t("notifications.noFilteredNotificationsDescription")}
-            </Text>
-          </div>
+                : t("notifications.noFilteredNotificationsDescription")
+            }
+            className="p-12"
+          />
         ) : (
           <div className="divide-y divide-border-default">
             {filteredNotifications.map((notification) => (

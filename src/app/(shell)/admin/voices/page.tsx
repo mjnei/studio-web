@@ -417,11 +417,11 @@ export default function AdminVoicesPage() {
           variant="default"
           icon={
             viewType === "pending" ? (
-              <Clock className="h-12 w-12" />
+              <Clock aria-hidden />
             ) : viewType === "approved" ? (
-              <CheckCircle2 className="h-12 w-12" />
+              <CheckCircle2 aria-hidden />
             ) : (
-              <Mic className="h-12 w-12" />
+              <Mic aria-hidden />
             )
           }
           title={searchTerm ? "No voices found" : `No ${viewType} voices`}

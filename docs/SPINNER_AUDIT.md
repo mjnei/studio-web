@@ -382,6 +382,7 @@ As of last verification: **2** direct `Loader2` files, **~40** files importing `
 | 2 | `Icon` + `Spinner` primitives; migrate spinners | Done |
 | 3 | Brand icons (`GoogleIcon`, `XIcon`, `WeChatIcon`) | Done |
 | 4 | Icon conventions in `AGENTS.md` / `docs/ICONS.md` | Done |
-| 5 | Accessibility pass on icon-only buttons | Partial — see [Remaining gaps](ICONS.md#remaining-gaps-roadmap) in `docs/ICONS.md` |
+| 5 | Accessibility pass on icon-only buttons | Partial — see [Audit status](ICONS.md#audit-status-aug-2026) in `docs/ICONS.md` |
+| 6 | Empty-state hero tier (`EmptyState` pattern) | Done — see [Empty states](ICONS.md#empty-states--pattern) in `docs/ICONS.md` |
 
 This document covers Priority 2 spinner scope. Icon wrapper adoption (`Icon` component) is documented in `docs/ICONS.md`; spinners remain separate from icons per that guide.

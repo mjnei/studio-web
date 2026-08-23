@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Folder, Film, Mic, Plus, ArrowRight, Sparkles, X } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Heading } from "@/components/ui/heading";
 import { ExternalImage } from "@/components/ui/ExternalImage";
@@ -314,18 +315,17 @@ export default function DashboardPage() {
         popularMovies.length === 0 && (
           <Card variant="elevated" padding="lg" className="fade-in">
             <CardContent>
-              <div className="flex flex-col items-center justify-center py-12 text-center">
-                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-surface-hover border border-border-default">
-                  <Folder className="h-8 w-8 text-text-muted" aria-hidden />
-                </div>
-                <Heading variant="subsection" as="p" className="mb-2 text-text-primary">
-                  {t("dashboard.empty.title")}
-                </Heading>
-                <p className="text-text-secondary mb-6 max-w-md">{t("dashboard.empty.message")}</p>
-                <Link href="/project/new">
-                  <Button variant="primary">{t("dashboard.empty.cta")}</Button>
-                </Link>
-              </div>
+              <EmptyState
+                size="lg"
+                icon={<Folder aria-hidden />}
+                title={t("dashboard.empty.title")}
+                description={t("dashboard.empty.message")}
+                action={
+                  <Link href="/project/new">
+                    <Button variant="primary">{t("dashboard.empty.cta")}</Button>
+                  </Link>
+                }
+              />
             </CardContent>
           </Card>
         )}

@@ -19,6 +19,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/toast";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { Heading } from "@/components/ui/heading";
 import { LayoutToggle, type LayoutMode } from "@/components/ui/LayoutToggle";
 import { Select } from "@/components/ui/select";
@@ -334,14 +335,12 @@ export default function QueueManagementPage() {
         </div>
       ) : sortedQueues.length === 0 ? (
         <Card>
-          <CardContent className="text-center py-12">
-            <AlertCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <Heading variant="subsection" as="p" className="mb-2">
-              No queues found
-            </Heading>
-            <p className="text-sm text-muted-foreground">
-              No queues found for category: {activeCategory}
-            </p>
+          <CardContent>
+            <EmptyState
+              icon={<AlertCircle aria-hidden />}
+              title="No queues found"
+              description={`No queues found for category: ${activeCategory}`}
+            />
           </CardContent>
         </Card>
       ) : (

@@ -357,7 +357,7 @@ export default function VoicesPage() {
             <EmptyState
               variant="bordered"
               size="lg"
-              icon={<Mic className="h-12 w-12" />}
+              icon={<Mic aria-hidden />}
               title={t("voices.emptyStates.private.title")}
               description={t("voices.emptyStates.private.description")}
               action={
@@ -460,7 +460,7 @@ export default function VoicesPage() {
             <EmptyState
               variant="bordered"
               size="lg"
-              icon={<Globe className="h-12 w-12" />}
+              icon={<Globe aria-hidden />}
               title={t("voices.emptyStates.community.title")}
               description={t("voices.emptyStates.community.description")}
             />

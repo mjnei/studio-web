@@ -12,15 +12,20 @@ Loading spinners are **not** icons — use `Spinner` / `LoadingSpinner` (see `do
 |--------|------|-------------|
 | Lucide | `import { … } from "lucide-react"` | All standard UI icons |
 | Brand SVGs | `import { GoogleIcon, XIcon, WeChatIcon } from "@/components/icons"` | OAuth and platform share buttons only |
-| `Icon` wrapper | `import { Icon } from "@/components/ui/icon"` | Prefer for nav and repeated patterns; passes size tokens and `aria-hidden` |
+| `Icon` wrapper | `import { Icon } from "@/components/ui/icon"` | Nav and repeated dense-UI patterns; size tokens + `aria-hidden` |
+| `EmptyState` | `import { EmptyState } from "@/components/ui/EmptyState"` | Page/tab/list “nothing here” blocks; owns hero-tier icon sizing |
 
 Do not add `react-icons`, Heroicons, or inline duplicate SVGs for icons Lucide already ships.
 
 ---
 
-## Size tokens
+## Size tokens — two tiers
 
-Use **`className="h-N w-N"`** (height before width) or the shared `Icon` component:
+Use **`className="h-N w-N"`** (height before width) on Lucide, or a shared component (`Icon` / `EmptyState`).
+
+### Standard tier (`Icon` / direct Lucide)
+
+Dense UI: buttons, nav, tables, forms.
 
 | Token | Class | Pixels | Typical use |
 |-------|-------|--------|-------------|
@@ -28,18 +33,52 @@ Use **`className="h-N w-N"`** (height before width) or the shared `Icon` compone
 | `sm` | `h-4 w-4` | 16 | Buttons, inline actions, form controls, select chevrons |
 | `md` | `h-5 w-5` | 20 | Sidebar nav, toolbar icons |
 | `lg` | `h-6 w-6` | 24 | Card headers, modals |
-| `xl` | `h-8 w-8` | 32 | Empty states, hero accents |
-| *(informal)* | `h-10 w-10` | 40 | Avatar rings, compact hero containers |
-| *(informal)* | `h-12 w-12` | 48 | Empty-state icons (jobs, movies, voices, notifications) |
-| *(informal)* | `h-16 w-16` | 64 | Large empty states, redirect heroes |
+| `xl` | `h-8 w-8` | 32 | Prominent inline accents (not page empty states) |
 
-**Why informal?** The `Icon` component’s `size` prop only covers `xs`–`xl` (12–32 px) — the sizes repeated hundreds of times in buttons, nav, and forms. Hero sizes (`h-10`–`h-16`) appear mainly in empty states and marketing-style blocks, often inside a fixed-size wrapper `div` that is not the icon itself. They were documented here for consistency but not added as `Icon` props to avoid expanding the API before a shared `EmptyState` component decides which sizes to enforce. Use Lucide directly with `className="h-12 w-12"` for those cases, or promote to `2xl`/`3xl`/`4xl` tokens if `EmptyState` lands.
+`<Icon size="sm" />` maps to this table (`xs`–`xl` only).
 
-The informal hero tier is not part of the `Icon` size prop — use Lucide directly with `className`. No new tokens unless `EmptyState` should enforce them.
+Fractional sizes (`h-3.5 w-3.5`) are allowed for dense row actions.
 
-Avoid Lucide’s numeric `size={N}` prop in new code — use classes or `<Icon size="sm" />`.
+### Hero tier (`EmptyState`)
 
-Fractional sizes (`h-3.5 w-3.5`) are allowed for dense row actions (notification items, admin tables, compact menus).
+Empty states and large accents — **40–64 px**. Not on `Icon`.
+
+| `EmptyState` size | Ring class | Pixels | Typical use |
+|-------------------|------------|--------|-------------|
+| `sm` | `h-10 w-10` | 40 | Dropdown/panel empties, compact bordered blocks |
+| `md` *(default)* | `h-12 w-12` | 48 | Standard page/tab empty states |
+| `lg` | `h-16 w-16` | 64 | Primary empty pages (jobs, movies catalog, dashboard) |
+
+`EmptyState` fills the ring via `[&_svg]:h-full [&_svg]:w-full`. **Pass Lucide icons without `h-N w-N`** — only color utilities and `aria-hidden` when decorative.
+
+```tsx
+<EmptyState
+  size="lg"
+  icon={<Video className="text-accent-primary" aria-hidden />}
+  title={t("jobs.empty.title")}
+  description={t("jobs.empty.message")}
+  action={<Button … />}
+/>
+```
+
+**One-off heroes** outside `EmptyState` (preview player, billing receipt block, poster placeholders) may use `h-10` / `h-12` / `h-16` directly on Lucide when no shared empty layout applies.
+
+Avoid Lucide’s numeric `size={N}` prop in new code.
+
+---
+
+## Empty states — pattern
+
+| Context | Pattern |
+|---------|---------|
+| Page or tab list empty | `<EmptyState size="md" … />`; use `lg` for flagship empties, `sm` for panels |
+| Bordered empty inside a card/grid | `<EmptyState variant="bordered" size="sm" className="col-span-full" … />` |
+| Error empty (failed fetch) | `<EmptyState icon={…} title={…} description={error} />` |
+| Dense UI icons in the same view | `<Icon size="…" />` or `xs`–`xl` — not hero tier |
+
+**Migrated surfaces (Aug 2026):** jobs, movies, projects, voices, notifications (page + dropdown), dashboard, referral history, movie selection, voice selection panel, admin movies/voices/queues, TMDB import.
+
+**Still direct Lucide (OK):** billing/history blocks, movie poster placeholders, preview player controls, admin card fallbacks — contextual layout, not list empty pattern.
 
 ---
 
@@ -88,9 +127,9 @@ All brand icons default to `aria-hidden={true}`. Parent buttons must expose acce
 <Icon icon={Search} size="md" className="text-text-muted" />
 ```
 
-- **`size`** maps to the token table above (`xs`–`xl` only; hero sizes are direct Lucide).
-- **`className`** is for color, margin, and non-size utilities only.
-- **`cn()` does not merge conflicting Tailwind size utilities.** `<Icon size="sm" className="h-6 w-6" />` emits both `h-4 w-4` and `h-6 w-6` — browser order wins unpredictably. Use one sizing source: pick the right `size` prop, pass sizes only via `className` (omit `size`), or use Lucide directly (as with `PanelLeft` in `drawer-content.tsx`).
+- **`size`** — standard tier only (`xs`–`xl`).
+- **`className`** — color, margin, non-size utilities only.
+- **`cn()` does not merge conflicting Tailwind size utilities.** Do not combine `size="sm"` with `className="h-6 w-6"`. Use one sizing source or Lucide directly (see `PanelLeft` in `drawer-content.tsx`).
 
 ---
 
@@ -100,13 +139,15 @@ Sidebar icons are defined in `src/components/shell/drawer-content.tsx` via `icon
 
 ---
 
-## Remaining gaps (roadmap)
+## Audit status (Aug 2026)
 
-| # | Gap | Severity | Notes |
-|---|-----|----------|-------|
-| 1 | Class order (`w-N h-N` vs `h-N w-N`) | Done | Lucide icons normalized to `h-N w-N` (31 files, Aug 2026). Container divs and CSS spinners unchanged. |
-| 2 | Missing `aria-hidden` on decorative icons | A11y | Scattered — tab icons, icon-only close buttons, stats/card accents. Icon-only buttons need `aria-label` on the `<button>` and `aria-hidden` on the icon. |
-| 3 | Hero sizes outside token prop | Doc only | `h-10`, `h-12`, `h-16` used for empty states — informal tier above; no `Icon` prop unless `EmptyState` enforces them. |
-| 4 | `Icon` + conflicting `className` sizes | API | See [`Icon` wrapper](#icon-wrapper). Prefer direct Lucide or a single sizing source. |
+| Item | Status |
+|------|--------|
+| Lucide migration + brand icons | Done |
+| Spinner primitive (`Spinner` / `LoadingSpinner`) | Done — see `docs/SPINNER_AUDIT.md` |
+| Class order (`h-N w-N` on Lucide) | Done |
+| Empty-state pattern (`EmptyState` + hero tier) | Done — primary surfaces migrated |
+| `aria-hidden` on decorative icons | Partial — high-traffic surfaces first; see SPINNER_AUDIT Priority 5 |
+| `Icon` + conflicting `className` sizes | Open — prefer direct Lucide or single sizing source; no `tailwind-merge` yet |
 
-Priority 5 in `docs/SPINNER_AUDIT.md` (accessibility pass) tracks gap #2.
+Priority 5 in `docs/SPINNER_AUDIT.md` tracks the accessibility pass.

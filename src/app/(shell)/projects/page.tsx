@@ -162,7 +162,7 @@ export default function ProjectsPage() {
       ) : projects.length === 0 ? (
         <EmptyState
           variant="default"
-          icon={<Folder className="h-12 w-12" />}
+          icon={<Folder aria-hidden />}
           title={t("projects.empty.title")}
           description={t("projects.empty.message")}
           action={
