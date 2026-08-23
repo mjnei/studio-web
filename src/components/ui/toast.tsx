@@ -131,28 +131,28 @@ function ToastItem({ toast, onClose }: ToastItemProps) {
   const { t } = useI18n();
   const variants = {
     success: {
-      icon: <CheckCircle2 className="h-5 w-5" />,
+      icon: <CheckCircle2 className="h-5 w-5" aria-hidden />,
       bgColor: "bg-status-success/10",
       borderColor: "border-status-success/30",
       textColor: "text-status-success",
       iconBg: "bg-status-success/20",
     },
     error: {
-      icon: <XCircle className="h-5 w-5" />,
+      icon: <XCircle className="h-5 w-5" aria-hidden />,
       bgColor: "bg-status-error/10",
       borderColor: "border-status-error/30",
       textColor: "text-status-error",
       iconBg: "bg-status-error/20",
     },
     warning: {
-      icon: <AlertCircle className="h-5 w-5" />,
+      icon: <AlertCircle className="h-5 w-5" aria-hidden />,
       bgColor: "bg-status-warning/10",
       borderColor: "border-status-warning/30",
       textColor: "text-status-warning",
       iconBg: "bg-status-warning/20",
     },
     info: {
-      icon: <Info className="h-5 w-5" />,
+      icon: <Info className="h-5 w-5" aria-hidden />,
       bgColor: "bg-status-info/10",
       borderColor: "border-status-info/30",
       textColor: "text-status-info",
@@ -191,7 +191,7 @@ function ToastItem({ toast, onClose }: ToastItemProps) {
           className="shrink-0 rounded-lg p-1 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all touch-manipulation"
           aria-label={t("common.closeNotification")}
         >
-          <X className="h-4 w-4" />
+          <X className="h-4 w-4" aria-hidden />
         </button>
       </div>
     </div>

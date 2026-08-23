@@ -279,7 +279,7 @@ export function DrawerContent({
             aria-label={collapsed ? t("shell.expandSidebar") : t("shell.collapseSidebar")}
             title={collapsed ? t("shell.expandSidebar") : t("shell.collapseSidebar")}
           >
-            <Icon icon={PanelLeft} size="sm" className="h-[18px] w-[18px]" />
+            <PanelLeft className="h-[18px] w-[18px]" aria-hidden />
           </button>
         )}
         {onClose && (

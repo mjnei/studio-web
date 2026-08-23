@@ -168,7 +168,7 @@ export default function AdminPage() {
                     stat.href ? "group-hover:scale-110 transition-transform" : ""
                   }`}
                 >
-                  <Icon className="w-5 h-5 text-white" />
+                  <Icon className="h-5 w-5 text-white" />
                 </div>
               </div>
             </Card>
@@ -195,7 +195,7 @@ export default function AdminPage() {
         <CardHeader>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center">
-              <ShieldCheck className="w-5 h-5 text-white" />
+              <ShieldCheck className="h-5 w-5 text-white" />
             </div>
             <div>
               <CardTitle>Admin Features</CardTitle>
@@ -214,12 +214,12 @@ export default function AdminPage() {
                   className="group flex items-start gap-3 rounded-lg border border-border-default bg-surface-panel p-3 transition-all hover:border-accent-primary/40 hover:bg-surface-hover"
                 >
                   <div className="w-8 h-8 rounded-lg bg-accent-muted flex items-center justify-center flex-shrink-0">
-                    <Icon className="w-4 h-4 text-accent-primary" />
+                    <Icon className="h-4 w-4 text-accent-primary" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-1.5">
                       <p className="text-sm font-medium text-text-primary">{feature.title}</p>
-                      <ChevronRight className="w-3.5 h-3.5 text-text-muted opacity-0 transition-opacity group-hover:opacity-100" />
+                      <ChevronRight className="h-3.5 w-3.5 text-text-muted opacity-0 transition-opacity group-hover:opacity-100" />
                     </div>
                     <p className="text-xs text-text-secondary mt-0.5">{feature.description}</p>
                   </div>

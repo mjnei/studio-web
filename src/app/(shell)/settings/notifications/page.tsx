@@ -91,7 +91,7 @@ export default function NotificationSettingsPage() {
             href="/settings"
             className="inline-flex items-center gap-2 text-sm text-text-muted hover:text-text-primary transition-colors group"
           >
-            <ChevronLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
+            <ChevronLeft className="h-4 w-4 group-hover:-translate-x-0.5 transition-transform" />
             <span>{t("notificationSettings.backToSettings")}</span>
           </Link>
         }

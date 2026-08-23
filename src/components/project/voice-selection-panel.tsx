@@ -139,7 +139,7 @@ export function VoiceSelectionPanel({
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex items-start gap-2 flex-1 min-w-0">
                             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-accent-primary to-purple-600 flex-shrink-0">
-                              <Mic className="w-5 h-5 text-white" />
+                              <Mic className="h-5 w-5 text-white" />
                             </div>
                             <div className="flex-1 min-w-0">
                               <p className="font-semibold text-text-primary text-sm truncate">
@@ -152,7 +152,7 @@ export function VoiceSelectionPanel({
                           </div>
                           {selectedVoiceId === voice.id && (
                             <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-primary flex-shrink-0">
-                              <Check className="w-4 h-4 text-white" />
+                              <Check className="h-4 w-4 text-white" />
                             </div>
                           )}
                         </div>
@@ -214,7 +214,7 @@ export function VoiceSelectionPanel({
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex items-start gap-2 flex-1 min-w-0">
                           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-accent-cyan to-blue-600 flex-shrink-0">
-                            <Globe className="w-5 h-5 text-white" />
+                            <Globe className="h-5 w-5 text-white" />
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="font-semibold text-text-primary text-sm truncate">
@@ -234,7 +234,7 @@ export function VoiceSelectionPanel({
                         </div>
                         {selectedVoiceId === voice.id && (
                           <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-cyan flex-shrink-0">
-                            <Check className="w-4 h-4 text-white" />
+                            <Check className="h-4 w-4 text-white" />
                           </div>
                         )}
                       </div>

@@ -118,8 +118,7 @@ export function NotificationItem({ notification, onClose }: NotificationItemProp
                   title={t("notifications.markAsRead")}
                   aria-label={t("notifications.markAsRead")}
                 >
-                  <CheckCircle2 className="h-3.5 w-3.5 sm:hidden" aria-hidden />
-                  <CheckCircle2 className="hidden h-3.5 w-3.5 sm:block" aria-hidden />
+                  <CheckCircle2 className="h-3.5 w-3.5" aria-hidden />
                 </button>
               )}
               <button
@@ -128,8 +127,7 @@ export function NotificationItem({ notification, onClose }: NotificationItemProp
                 title={t("notifications.deleteNotification")}
                 aria-label={t("notifications.deleteNotification")}
               >
-                <Trash2 className="h-3.5 w-3.5 sm:hidden" aria-hidden />
-                <Trash2 className="hidden h-3.5 w-3.5 sm:block" aria-hidden />
+                <Trash2 className="h-3.5 w-3.5" aria-hidden />
               </button>
             </div>
           </div>

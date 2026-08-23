@@ -51,7 +51,7 @@ export function ScriptGeneration({
       <div className="text-center max-w-2xl mx-auto">
         <div className="mb-4 flex justify-center">
           <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 shadow-lg">
-            <FileText className="w-8 h-8 text-white" />
+            <FileText className="h-8 w-8 text-white" />
           </div>
         </div>
         <Heading variant="page" as="h2" className="text-text-primary mb-2">
@@ -68,7 +68,7 @@ export function ScriptGeneration({
           <div className="text-center py-12">
             <div className="mb-6 flex justify-center">
               <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-accent-secondary to-accent-tertiary shadow-lg">
-                <Sparkles className="w-10 h-10 text-white" />
+                <Sparkles className="h-10 w-10 text-white" />
               </div>
             </div>
             <Heading variant="section" as="h3" className="text-text-primary mb-2">
@@ -80,7 +80,7 @@ export function ScriptGeneration({
             <Button
               variant="primary"
               size="lg"
-              leftIcon={<Sparkles className="w-5 h-5" />}
+              leftIcon={<Sparkles className="h-5 w-5" />}
               onClick={onGenerate}
               loading={isGenerating}
             >
@@ -145,7 +145,7 @@ export function ScriptGeneration({
                 <Button
                   variant="ghost"
                   size="sm"
-                  leftIcon={copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                  leftIcon={copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                   onClick={copyToClipboard}
                 >
                   {copied ? t("project.scriptGen.copied") : t("project.scriptGen.copy")}
@@ -192,7 +192,7 @@ export function ScriptGeneration({
           <Card variant="elevated" padding="md" className="border-border-subtle">
             <div className="flex items-start gap-3">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-primary/20 flex-shrink-0">
-                <Sparkles className="w-4 h-4 text-accent-primary" />
+                <Sparkles className="h-4 w-4 text-accent-primary" />
               </div>
               <div>
                 <p className="text-sm font-medium text-text-primary mb-1">
