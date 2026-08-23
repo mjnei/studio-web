@@ -3,8 +3,9 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Loader2, Video, Eye, Bell, BellOff, XCircle } from "lucide-react";
+import { Video, Eye, Bell, BellOff, XCircle } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Spinner } from "@/components/ui/spinner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tooltip } from "@/components/ui/tooltip";
@@ -65,7 +66,7 @@ export const ActiveJobCard: React.FC<ActiveJobCardProps> = ({ job, onDelete, isD
             </div>
           )}
           <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px] flex items-center justify-center">
-            <Loader2 className="h-7 w-7 text-blue-400 animate-spin" />
+            <Spinner className="h-7 w-7 text-blue-400" />
           </div>
         </div>
 

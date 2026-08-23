@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Play, Loader2 } from "lucide-react";
+import { Play } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 import { VoiceSelector } from "./VoiceSelector";
 import type { PlaygroundTTSRequest } from "@/types/admin";
 
@@ -101,7 +102,7 @@ export function PlaygroundForm({ onSubmit, isLoading }: PlaygroundFormProps) {
       >
         {isLoading ? (
           <>
-            <Loader2 className="h-5 w-5 animate-spin" />
+            <Spinner className="h-5 w-5" />
             Generating Audio...
           </>
         ) : (

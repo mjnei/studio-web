@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { CheckCircle2, Clock, Folder, Loader2, Trash2, Calendar } from "lucide-react";
+import { CheckCircle2, Clock, Folder, Trash2, Calendar } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Spinner } from "@/components/ui/spinner";
 import { Badge } from "@/components/ui/badge";
 import { ExternalImage } from "@/components/ui/ExternalImage";
 import { Heading } from "@/components/ui/heading";
@@ -186,7 +187,7 @@ export function ProjectCard({
             {project.thumbnail?.base_image_status === "generating" && (
               <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center">
                 <div className="flex flex-col items-center gap-2 text-white">
-                  <Loader2 className="h-8 w-8 animate-spin" aria-hidden />
+                  <Spinner size="md" />
                   <span className="text-xs font-medium">
                     {t("project.card.generatingThumbnail")}
                   </span>

@@ -5,6 +5,8 @@ export { Input, TextArea } from "./input";
 export { EmptyState } from "./EmptyState";
 export { PageHeader } from "./PageHeader";
 export { LoadingSpinner } from "./LoadingSpinner";
+export { Icon } from "./icon";
+export { Spinner } from "./spinner";
 export { Grid } from "./Grid";
 export { typography, type TypographyRole } from "./typography";
 export { Heading, type HeadingProps, type HeadingVariant, type HeadingTag } from "./heading";
