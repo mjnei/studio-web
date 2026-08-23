@@ -1,10 +1,11 @@
 "use client";
 
 import React from "react";
-import { Search, Grid3x3, LayoutGrid, List, ArrowUpDown, X } from "lucide-react";
+import { ArrowUpDown, Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { LayoutToggle } from "@/components/ui/LayoutToggle";
 import { useI18n } from "@/i18n";
 import { JobFilters, JobStatusFilter, LayoutMode } from "@/types/jobs";
 
@@ -158,45 +159,15 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
             <ArrowUpDown className="h-4 w-4" />
           </Button>
 
-          {/* Layout Mode Toggle */}
-          <div className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-panel p-1">
-            <button
-              onClick={() => onChangeLayoutMode("grid-sm")}
-              className={`rounded p-2 min-w-[44px] min-h-[44px] flex items-center justify-center transition-all ${
-                layoutMode === "grid-sm"
-                  ? "bg-accent-primary text-white"
-                  : "text-text-muted hover:text-text-primary"
-              }`}
-              title={t("jobs.filters.smallGrid")}
-              aria-label={t("jobs.filters.smallGrid")}
-            >
-              <Grid3x3 className="h-5 w-5" />
-            </button>
-            <button
-              onClick={() => onChangeLayoutMode("grid-md")}
-              className={`rounded p-2 min-w-[44px] min-h-[44px] flex items-center justify-center transition-all ${
-                layoutMode === "grid-md"
-                  ? "bg-accent-primary text-white"
-                  : "text-text-muted hover:text-text-primary"
-              }`}
-              title={t("jobs.filters.mediumGrid")}
-              aria-label={t("jobs.filters.mediumGrid")}
-            >
-              <LayoutGrid className="h-5 w-5" />
-            </button>
-            <button
-              onClick={() => onChangeLayoutMode("list")}
-              className={`rounded p-2 min-w-[44px] min-h-[44px] flex items-center justify-center transition-all ${
-                layoutMode === "list"
-                  ? "bg-accent-primary text-white"
-                  : "text-text-muted hover:text-text-primary"
-              }`}
-              title={t("jobs.filters.listView")}
-              aria-label={t("jobs.filters.listView")}
-            >
-              <List className="h-5 w-5" />
-            </button>
-          </div>
+          <LayoutToggle
+            layoutMode={layoutMode}
+            onLayoutChange={onChangeLayoutMode}
+            labels={{
+              small: t("jobs.filters.smallGrid"),
+              medium: t("jobs.filters.mediumGrid"),
+              list: t("jobs.filters.listView"),
+            }}
+          />
         </div>
       </div>
 

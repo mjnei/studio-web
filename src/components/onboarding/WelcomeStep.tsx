@@ -1,4 +1,4 @@
-import { Film, Sparkles, Video, Wand2 } from "lucide-react";
+import { ArrowRight, Film, Sparkles, Video, Wand2 } from "lucide-react";
 import { useI18n } from "@/i18n";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
@@ -78,20 +78,10 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
       >
         <span className="flex items-center gap-2 justify-center">
           {t("onboarding.welcome.getStarted")}
-          <svg
+          <ArrowRight
             className="w-5 h-5 group-hover:translate-x-1 transition-transform"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M13 7l5 5m0 0l-5 5m5-5H6"
-            />
-          </svg>
+            aria-hidden
+          />
         </span>
       </button>
 

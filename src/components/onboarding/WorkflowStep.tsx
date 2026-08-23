@@ -1,4 +1,4 @@
-import { Film, FileText, Mic, Video } from "lucide-react";
+import { Film, FileText, Info, Mic, Video } from "lucide-react";
 import { useI18n } from "@/i18n";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
@@ -103,20 +103,10 @@ export default function WorkflowStep({ onNext, onBack }: WorkflowStepProps) {
       {/* Info Box - Compact */}
       <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 sm:p-4 mb-6 sm:mb-8">
         <div className="flex items-start gap-2 sm:gap-3">
-          <svg
+          <Info
             className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
+            aria-hidden
+          />
           <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
             {t("onboarding.workflow.info")}
           </p>

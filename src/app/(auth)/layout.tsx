@@ -1,5 +1,6 @@
 "use client";
 
+import { Layers } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
 import { Heading } from "@/components/ui/heading";
@@ -40,21 +41,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         {/* Left Side Branding (Desktop only) */}
         <div className="hidden lg:flex flex-col justify-end w-1/2 p-12 text-white">
           <div className="inline-flex items-center justify-center w-16 h-16 mb-6 rounded-2xl bg-gradient-to-br from-accent-secondary via-accent-primary to-accent-tertiary shadow-lg">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="32"
-              height="32"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="white"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <polygon points="12 2 2 7 12 12 22 7 12 2" />
-              <polyline points="2 17 12 22 22 17" />
-              <polyline points="2 12 12 17 22 12" />
-            </svg>
+            <Layers className="h-8 w-8 text-white" aria-hidden />
           </div>
           <Heading variant="display" className="mb-4 text-white drop-shadow-md">
             Huavoi Studio
@@ -70,21 +57,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             {/* Mobile Branding */}
             <div className="mb-8 text-center lg:hidden">
               <div className="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-2xl bg-gradient-to-br from-accent-secondary via-accent-primary to-accent-tertiary shadow-lg">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="32"
-                  height="32"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="white"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <polygon points="12 2 2 7 12 12 22 7 12 2" />
-                  <polyline points="2 17 12 22 22 17" />
-                  <polyline points="2 12 12 17 22 12" />
-                </svg>
+                <Layers className="h-8 w-8 text-white" aria-hidden />
               </div>
               <Heading variant="display" className="text-white drop-shadow-md">
                 Huavoi Studio

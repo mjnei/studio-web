@@ -3,7 +3,7 @@
 import { Heading } from "@/components/ui/heading";
 
 import { useEffect, useState } from "react";
-import { ArrowLeft, Download, Database, Cloud } from "lucide-react";
+import { ArrowLeft, Cloud, Database, Download, Info } from "lucide-react";
 import Link from "next/link";
 import { getAuditLogs, getAuditStats, exportAuditLogsCSV } from "@/lib/api/audit-client";
 import type { AuditLog, AuditStats, AuditFilter } from "@/types/admin";
@@ -189,19 +189,7 @@ export default function AuditLogsPage() {
           <div className="flex items-start gap-3">
             <div className="flex-shrink-0 mt-0.5">
               <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-500/20">
-                <svg
-                  className="h-4 w-4 text-blue-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
+                <Info className="h-4 w-4 text-blue-500" aria-hidden />
               </div>
             </div>
             <div className="flex-1">

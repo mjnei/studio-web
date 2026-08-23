@@ -3,7 +3,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { FileText, Sparkles, Loader2, ChevronDown, Pencil } from "lucide-react";
+import { Check, ChevronDown, FileText, Loader2, Pencil, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
@@ -557,19 +557,7 @@ export default function ProjectDetailsPage() {
                 {projectName.trim() && (
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
                     <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-500/20">
-                      <svg
-                        className="h-4 w-4 text-green-500"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={3}
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
+                      <Check className="h-4 w-4 text-green-500" strokeWidth={3} aria-hidden />
                     </div>
                   </div>
                 )}
@@ -659,19 +647,7 @@ export default function ProjectDetailsPage() {
                         </div>
                         {projectName === suggestion.name && (
                           <div className="flex-shrink-0 h-5 w-5 rounded-full bg-accent-cyan flex items-center justify-center">
-                            <svg
-                              className="h-3 w-3 text-white"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={3}
-                                d="M5 13l4 4L19 7"
-                              />
-                            </svg>
+                            <Check className="h-3 w-3 text-white" strokeWidth={3} aria-hidden />
                           </div>
                         )}
                       </div>
@@ -708,19 +684,7 @@ export default function ProjectDetailsPage() {
                         </div>
                         {projectName === suggestion.name && (
                           <div className="flex-shrink-0 h-5 w-5 rounded-full bg-accent-cyan flex items-center justify-center">
-                            <svg
-                              className="h-3 w-3 text-white"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={3}
-                                d="M5 13l4 4L19 7"
-                              />
-                            </svg>
+                            <Check className="h-3 w-3 text-white" strokeWidth={3} aria-hidden />
                           </div>
                         )}
                       </div>
