@@ -22,9 +22,12 @@
 
 ---
 
-## Overview
+## Scope & Purpose
 
-This is the **single source of truth** for Huavoi Studio's frontend design system. It documents the unified design system for the frontend redesign, featuring a modern dark theme that's responsive, intuitive, and visually cohesive.
+This is the **single source of truth** for Huavoi Studio's frontend design system. Huavoi Studio is a **modern TTS and AI-driven video generation online tool**. This document outlines the unified design system for the frontend, featuring a premium dark theme that's responsive, intuitive, and visually cohesive.
+
+> [!IMPORTANT]
+> **Scope Rule**: These guidelines apply to **all frontend user-facing pages**. The `src/app/(shell)/admin` directory is explicitly excluded from strict adherence to these aesthetics, as the admin panel prioritizes data density and internal utility over premium consumer design.
 
 This document combines:
 - Complete color system and CSS variables
@@ -35,13 +38,36 @@ This document combines:
 - Quick reference for developers
 - Real-world implementation patterns
 
-## Design Principles
+## Design Principles & Global Guidelines
 
-1. **Dark First** - Optimized for extended use with reduced eye strain
-2. **Responsive** - Mobile-first approach with seamless scaling
-3. **Consistent** - Unified component library and patterns
-4. **Accessible** - WCAG-compliant with proper contrast and focus states
-5. **Performant** - Optimized animations and transitions
+Huavoi Studio's frontend embodies a premium, state-of-the-art aesthetic that is designed to wow users at first glance while remaining highly functional and accessible.
+
+### Core Principles
+
+1. **Rich Aesthetics** - We prioritize visual excellence. Our design uses curated, harmonious color palettes, sleek dark modes, and dynamic visual elements rather than generic plain colors.
+2. **Dynamic & Interactive** - The interface must feel responsive and alive. We achieve this with generous hover effects, smooth transitions, and subtle micro-animations that encourage user interaction.
+3. **Glassmorphism & Depth** - We heavily utilize ambient gradient backdrops and glassmorphism (backdrop blurs with subtle borders) to create a layered, premium feel without visual clutter.
+4. **Responsive** - Mobile-first approach with seamless scaling across breakpoints. No horizontal scrolling, large touch targets (44x44px minimum).
+5. **Accessible & Performant** - WCAG-compliant with proper contrast, focus states, and semantic HTML, powered by optimized GPU-accelerated CSS animations.
+
+### Global Design Guidelines
+
+#### Visual Styling
+- **Backgrounds**: Use layered surface colors (`var(--surface-base)` and `var(--surface-raised)`) with subtle ambient gradient glows (`bg-gradient-to-br from-accent/10 to-transparent blur-xl`) to establish depth.
+- **Cards & Containers**: Default to glassmorphic or elevated styles. Typical pattern: `bg-surface-raised border border-border-default shadow-md`. Add `hover:border-border-strong` for interactive elements.
+- **Typography**: Adhere strictly to the role-based type scale (`page`, `section`, `subsection`, `label`, `body`, `caption`, `metric`). Do not use ad-hoc Tailwind sizes like `text-2xl`. Utilize modern fonts (e.g., Geist, Inter) over browser defaults.
+- **Colors**: Never use plain primary colors (e.g., raw `#FF0000`). Use the defined `status-*` or `accent-*` CSS variables and gradients (e.g., `from-accent-cyan to-accent-primary`) for premium impact.
+
+#### Interaction & Motion
+- **Micro-animations**: Every clickable element should respond to interaction. Buttons and cards must scale up slightly (e.g., `hover:scale-105`) or brighten on hover.
+- **Transitions**: Apply `transition-all duration-200 ease-smooth` to interactive surfaces. 
+- **Loading States**: Use dynamic shimmering skeletons or pulsating soft glows to indicate background activity.
+
+#### Media & AI Workflows (TTS & Video)
+- **Audio & Voice Selection**: Use `Card variant="interactive"` with play/pause micro-animations for voice browsing. Highlight the currently selected voice using `border-accent-primary` or a glowing shadow.
+- **Script & Text Editors**: Editor areas should use `bg-surface-panel` to provide a subtle contrast against the page background, helping focus user attention on content creation.
+- **Generation Status**: Use step-based progress indicators with smooth transitions. Apply pulsating animations (`animate-pulse`) or glowing borders for elements in an active "processing" state (e.g., video rendering, TTS generation).
+- **Video Previews**: Wrap video elements in glassmorphic containers with rounded corners (`rounded-xl` or `rounded-2xl`) and soft drop shadows to make media stand out against the dark interface.
 
 ---
 
