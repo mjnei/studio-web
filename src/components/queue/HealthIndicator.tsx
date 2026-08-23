@@ -148,7 +148,7 @@ export function HealthIndicator({ queues }: HealthIndicatorProps) {
               className="flex items-center justify-between gap-2 p-1.5 rounded-md hover:bg-muted/50 transition-colors"
             >
               <div className="flex items-center gap-2">
-                <slice.icon className={`w-4 h-4 ${slice.iconColor}`} />
+                <slice.icon className={`h-4 w-4 ${slice.iconColor}`} />
                 <span className="text-xs text-muted-foreground">{slice.label}</span>
               </div>
               <div className="flex items-center gap-2">

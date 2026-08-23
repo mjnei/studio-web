@@ -125,7 +125,7 @@ export function QueueStatsCard({
               disabled={isRefreshing}
               className="px-3 py-1.5 text-xs font-medium rounded border border-muted-foreground/30 hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1.5"
             >
-              <RefreshCw className={`w-3 h-3 ${isRefreshing ? "animate-spin" : ""}`} />
+              <RefreshCw className={`h-3 w-3 ${isRefreshing ? "animate-spin" : ""}`} />
               Refresh
             </button>
           )}

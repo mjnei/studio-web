@@ -97,7 +97,7 @@ export function QueueMessagePeeker({ queueName, stats }: QueueMessagePeekerProps
               disabled={loading || stats.message_count === 0}
               size="sm"
             >
-              <RefreshCw className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`} />
+              <RefreshCw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
               Peek Message
             </Button>
           </div>

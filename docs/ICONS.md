@@ -93,9 +93,22 @@ Avoid Lucide’s numeric `size={N}` prop in new code.
 | Page or tab list empty | `<EmptyState size="md" … />`; use `lg` for flagship empties, `sm` for panels |
 | Bordered empty inside a card/grid | `<EmptyState variant="bordered" size="sm" className="col-span-full" … />` |
 | Error empty (failed fetch) | `<EmptyState icon={…} title={…} description={error} />` |
+| Admin queue tab — all clear (no failed / rate-limited / completed rows) | `<EmptyState size="lg" icon={<CheckCircle2 aria-hidden />} … />` — success-neutral, not `XCircle` |
 | Dense UI icons in the same view | `<Icon size="…" />` or `xs`–`xl` — not hero tier |
 
-**Migrated surfaces (Aug 2026):** jobs, movies, projects, voices, notifications (page + dropdown), dashboard, referral history, movie selection, voice selection panel, admin movies/voices/queues/TTS (failed, rate-limited, completed), TMDB import.
+Admin TTS job tables (studio + playground): failed, rate-limited, and completed tabs use `EmptyState` with `CheckCircle2` for “nothing here / all clear” and `RotateCcw` on row-level Retry actions.
+
+```tsx
+<EmptyState
+  size="lg"
+  className="rounded-xl border border-border-default bg-surface-panel"
+  icon={<CheckCircle2 aria-hidden />}
+  title="No Failed Jobs"
+  description="All TTS jobs are processing successfully."
+/>
+```
+
+**Migrated surfaces (Aug 2026):** jobs, movies, projects, voices, notifications (page + dropdown), dashboard, referral history, movie selection, voice selection panel, admin movies/voices/queues/TTS (failed, rate-limited, completed), TMDB import, audit logs.
 
 **Still direct Lucide (OK):** billing/history blocks, movie poster placeholders, preview player controls, admin card fallbacks — contextual layout, not list empty pattern.
 
@@ -107,13 +120,13 @@ Use one icon per meaning across the app:
 
 | Meaning | Icon | Notes |
 |---------|------|-------|
-| Success / completed | `CheckCircle2` | Not `CheckCircle` |
-| Error / failure | `AlertCircle` or `XCircle` | `AlertCircle` for messages; `XCircle` for failed status |
+| Success / completed | `CheckCircle2` | Not `CheckCircle`; also for admin “all clear” tab empties |
+| Error / failure | `AlertCircle` or `XCircle` | `AlertCircle` for messages; `XCircle` for failed job rows/modals — not for positive empties |
 | Warning / destructive confirm | `AlertTriangle` | Purge dialogs, stale-job alerts |
 | Info | `Info` | Neutral hints |
 | Edit content | `Edit2` | Not `Edit`, `Edit3`, or `Pencil` |
 | Reload data / refresh list | `RefreshCw` | Add `animate-spin` while in flight |
-| Retry / undo user action | `RotateCcw` | Job retry, reset playback |
+| Retry / undo user action | `RotateCcw` | Admin TTS retry, job retry, reset playback — not `RefreshCw` |
 | Close dismiss | `X` | Modals, filters, toasts |
 | In progress (static metric) | `Loader2` | Not animated — stat labels only |
 | Loading (animated) | `<Spinner />` | Never raw `Loader2` + `animate-spin` outside `Spinner` |
@@ -160,13 +173,15 @@ Sidebar icons are defined in `src/components/shell/drawer-content.tsx` via `icon
 
 ## Audit status (Aug 2026)
 
+Icon migration and convention work is complete. Remaining accessibility rollout (`aria-hidden` on decorative icons outside admin/empty-state surfaces) continues opportunistically in feature work — not tracked here.
+
 | Item | Status |
 |------|--------|
 | Lucide migration + brand icons | Done |
-| Spinner primitive (`Spinner` / `LoadingSpinner`) | Done — shared `size` tokens (`sm`/`md`/`lg`); `@/components/ui/spinner`, `@/components/ui/LoadingSpinner` |
+| Spinner / `LoadingSpinner` shared size tokens | Done — documented spinner tier above |
 | Class order (`h-N w-N` on Lucide) | Done |
-| Empty-state pattern (`EmptyState` + hero tier) | Done — primary surfaces migrated |
-| `aria-hidden` on decorative icons | Partial — job cards, admin empties; broader rollout continues |
+| Empty-state pattern (`EmptyState` + hero tier) | Done |
+| Admin failed / rate-limited / completed tab empties → `EmptyState` | Done |
+| Admin “all clear” empties — `CheckCircle2` (not green `XCircle`) | Done |
+| Admin Retry actions — `RotateCcw` (not `RefreshCw`) | Done |
 | `Icon` + conflicting `className` sizes | Done — `Icon` skips size token when `className` includes `h-N` / `w-N` |
-
-Remaining icon accessibility work is tracked in this document’s audit status table above.

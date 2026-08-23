@@ -186,7 +186,7 @@ export default function QueueManagementPage() {
               <div className="flex items-center gap-2">
                 <CardTitle>Summary Statistics</CardTitle>
                 <ChevronDown
-                  className={`w-5 h-5 text-muted-foreground transition-transform ${
+                  className={`h-5 w-5 text-muted-foreground transition-transform ${
                     statsExpanded ? "rotate-0" : "-rotate-90"
                   }`}
                 />
@@ -297,7 +297,7 @@ export default function QueueManagementPage() {
           {/* Control Buttons (moved from header) */}
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" onClick={() => fetchQueues()} disabled={refreshing}>
-              <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? "animate-spin" : ""}`} />
+              <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? "animate-spin" : ""}`} />
               Refresh
             </Button>
             <div className="w-40">

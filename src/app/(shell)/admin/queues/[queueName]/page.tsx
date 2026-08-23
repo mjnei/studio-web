@@ -222,7 +222,7 @@ export default function QueueDetailPage() {
         action={
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={() => fetchStats()} disabled={refreshing}>
-              <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? "animate-spin" : ""}`} />
+              <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? "animate-spin" : ""}`} />
               Refresh
             </Button>
             <Button variant="destructive" size="sm" onClick={() => setPurgeDialogOpen(true)}>
@@ -243,7 +243,7 @@ export default function QueueDetailPage() {
               <CardTitle>Queue Statistics</CardTitle>
               <Badge variant={health.color as any}>{health.status.toUpperCase()}</Badge>
               <ChevronDown
-                className={`w-5 h-5 text-muted-foreground transition-transform ${
+                className={`h-5 w-5 text-muted-foreground transition-transform ${
                   statsExpanded ? "rotate-0" : "-rotate-90"
                 }`}
               />
@@ -348,7 +348,7 @@ export default function QueueDetailPage() {
             >
               <CardContent className="flex items-center gap-3 pt-4 pb-4">
                 <HealthIcon
-                  className={`w-5 h-5 ${
+                  className={`h-5 w-5 ${
                     health.status === "critical"
                       ? "text-destructive"
                       : health.status === "warning"
