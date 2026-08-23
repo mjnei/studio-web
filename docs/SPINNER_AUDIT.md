@@ -61,8 +61,8 @@ Prefer `className="h-4 w-4"` over `w-4 h-4` for new code.
 
 | Pattern | Files | Notes |
 |---------|-------|-------|
-| CSS border `animate-spin` divs | See [Border spinner inventory](#border-spinner-inventory) below | Functional; not yet unified to `Spinner` |
-| `RefreshCw` + `animate-spin` | `jobs/page.tsx`, `admin/projects/page.tsx`, `admin/queues/page.tsx`, `admin/queues/[queueName]/page.tsx`, `admin/playground-tts-jobs/page.tsx`, `admin/studio-tts-jobs/page.tsx`, `QueueMessagePeeker.tsx`, `QueueStatsCard.tsx` | Refresh action feedback — correct semantics |
+| CSS border `animate-spin` divs | See [Border spinner inventory](#border-spinner-inventory) below (15 files) | Functional; not yet unified to `Spinner` |
+| `RefreshCw` + `animate-spin` | `jobs/page.tsx`, `admin/projects/page.tsx`, `admin/queues/page.tsx`, `admin/queues/[queueName]/page.tsx`, `admin/playground-tts-jobs/page.tsx`, `admin/studio-tts-jobs/page.tsx`, `QueueMessagePeeker.tsx`, `QueueStatsCard.tsx` (8 files, 10 sites) | Refresh action feedback — correct semantics |
 | Pulse / `Skeleton` | `VoiceSelectionPanel`, `LoadingSkeleton` variants, `admin/queues/*` | Appropriate for list/grid loading |
 | Static `Loader2` icon | `ProjectStatsCard` (“In Progress” stat) | Not a spinner — do not migrate |
 
@@ -74,7 +74,7 @@ Prefer `className="h-4 w-4"` over `w-4 h-4` for new code.
 
 ## Border spinner inventory
 
-Hand-rolled border spinners (17 instances in 16 files). Candidates for a small consistency PR.
+Hand-rolled border spinners (17 instances in 15 files). Candidates for a small consistency PR.
 
 | File | Context |
 |------|---------|
@@ -176,6 +176,33 @@ These are not necessarily bugs — they use other patterns or minimal feedback.
 
 ---
 
+## User Experience (UX) & Accessibility (a11y) Gaps
+
+### 1. Screen Reader & Accessibility Gaps (WCAG 2.2 / 4.1.3 Status Messages)
+
+- **Issue:** `Spinner` sets `aria-hidden={true}` by default. When rendered in standalone containers or full-page wrappers (`PageLoadingSkeleton`, `LoadingSpinner`), screen readers are not notified that content is actively loading unless wrapped in an accessible live region.
+- **Guidance:**
+  - Wrap standalone/page-level loading states in `role="status"` or `aria-live="polite"` with `aria-busy="true"` on the parent container.
+  - Provide a localized `<span className="sr-only">{t("common.loading")}</span>` when `Spinner` is used without visible text.
+  - Ensure disabled submit buttons with spinners convey state via `aria-disabled="true"` or `aria-busy="true"`.
+
+### 2. Motion Sensitivity (`prefers-reduced-motion`)
+
+- **Issue:** `animate-spin` continuously rotates at high speed, which can cause discomfort or vestibular disorientation for users with motion sensitivity.
+- **Guidance:** Respect `motion-reduce:animate-none` or provide a gentle pulse / static indicator under `prefers-reduced-motion: reduce`.
+
+### 3. Flash of Loading State (FOLS) on Fast Connections
+
+- **Issue:** Micro-requests (<150ms–200ms) flash full-size spinners or skeletons momentarily, creating visual jitter and perceived slowness.
+- **Guidance:** For rapid interactions or cached data, consider a short entrance delay (e.g. 150ms debounce) or CSS transition delay before mounting full-page/section spinners.
+
+### 4. Stuck Spinner & Indefinite Loading Recovery
+
+- **Issue:** Network failures or SSE disconnects may leave spinners running indefinitely without error fallback or retry mechanisms.
+- **Guidance:** Pair critical async loaders (e.g., TTS preview, video export, auth checks) with timeouts (e.g., 15–30s) that swap the spinner for an explicit error message with a retry action button (`RotateCcw`).
+
+---
+
 ## Known issues & recommendations
 
 ### 1. Redundant spinners — `TmdbImportView`
@@ -189,7 +216,7 @@ When `isSearching` is true, both apply:
 
 ### 2. Inconsistent spinner visuals — CSS border divs
 
-16 files still use hand-rolled border spinners (auth, notifications, audit logs, voice preview, onboarding, new-project redirects). They work but look different from `Loader2`-based `Spinner`.
+15 files still use hand-rolled border spinners (auth, notifications, audit logs, voice preview, onboarding, new-project redirects). They work but look different from `Loader2`-based `Spinner`.
 
 **Recommendation:** Migrate in a small follow-up PR for visual consistency (not required for correctness). Start with notifications cluster (page + dropdown + modal) for highest visibility.
 
@@ -243,7 +270,7 @@ rg 'from "@/components/ui/spinner"|from "@/components/ui/LoadingSpinner"' src --
 pnpm eslint src/components/ui/spinner.tsx src/components/ui/LoadingSpinner.tsx
 ```
 
-As of last verification: **2** direct `Loader2` files, **30** files importing `Spinner`/`LoadingSpinner`, **17** border-spinner instances, **10** `RefreshCw` refresh-spin sites.
+As of last verification: **2** direct `Loader2` files, **30** files importing `Spinner`/`LoadingSpinner`, **17** border-spinner instances across **15** files, **10** `RefreshCw` refresh-spin sites across **8** files.
 
 ---
 
