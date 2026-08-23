@@ -1,7 +1,7 @@
 # Spinner & Loading State Audit
 
 Audit date: August 24, 2026  
-Last verified: August 24, 2026 — Phase 1–2 complete; Phase 3 partial (SPIN-201–203 done, SPIN-204 deferred)  
+Last verified: August 24, 2026 — Phase 1–4 complete; Phase 3 partial (SPIN-204 deferred)  
 Scope: `studio-web_0xMichaelRan` — shared `Spinner` / `LoadingSpinner` primitives, skeleton variants, and remaining inline loading patterns.
 
 ---
@@ -26,7 +26,7 @@ Both `Spinner` and `LoadingSpinner` are exported from `src/components/ui/index.t
 - **`Spinner` size is optional.** When omitted, only `animate-spin` and `className` apply — common for one-off sizes like `h-3 w-3` or `h-5 w-5`.
 - **`LoadingSpinner` does not pass `size` to `Spinner`.** It applies `legacySizeClasses` via `className` to preserve pre-migration visuals.
 - **`Button`** (`button.tsx`) shows `<Spinner size="sm" />` when `loading` or `isLoading` is true (both props are aliases).
-- **Accent color split:** `LoadingSpinner` uses `text-accent-primary`; `PageLoadingSkeleton` / `InlineLoadingSkeleton` use `text-accent-cyan`. Intentional legacy split; unify only if doing a visual pass (SPIN-303).
+- **Accent color:** `LoadingSpinner`, `PageLoadingSkeleton`, and `InlineLoadingSkeleton` all use `text-accent-primary` (SPIN-303).
 - **FOLS delay:** `useDelayedLoading(isLoading, delayMs?)` in `src/lib/hooks/use-delayed-loading.ts` — adopted on `projects/page.tsx` and `movies/page.tsx` (SPIN-203).
 
 ---
@@ -59,6 +59,7 @@ Prefer `className="h-4 w-4"` over `w-4 h-4` for new code.
 - **Phase 1 (SPIN-001–003):** Notification settings first-load, `TmdbImportView` redundant spinners, export player empty vs loading states — all shipped and verified in repo.
 - **Phase 2 (SPIN-101–108):** All 17 hand-rolled border-spinner divs in 15 files replaced with `Spinner` or `PageLoadingSkeleton`; verification grep returns **0** border-spinner matches.
 - **Phase 3 (SPIN-201–203):** Live regions on page loaders, reduced-motion spinner, FOLS delay hook (projects + movies list pages). SPIN-204 (timeout + retry pilot) deferred.
+- **Phase 4 (SPIN-301–304):** Dashboard section skeletons, admin hub stat spinners, accent unification, admin projects table initial-load skeleton rows.
 - **SPIN-401:** Removed dead `src/components/project/video-generation.tsx` (no importers; export flow lives in `export/page.tsx`). Stale `docs/TYPOGRAPHY.md` reference removed.
 
 **Direct `Loader2` imports (verified):** only `spinner.tsx` (implementation) and `ProjectStatsCard.tsx` (static icon).
@@ -146,7 +147,7 @@ rg 'border.*animate-spin|animate-spin.*border' src --glob '*.{tsx,ts}'   # → 0
 | `movies/[id]`, `admin/movies/[id]` | Page + action button spinners | Correct |
 | `admin/voices`, `studio-tts-jobs`, `playground-tts-jobs` | `LoadingSpinner` | Correct |
 | `admin/playground` | `LoadingSpinner` for job + history | Correct |
-| `admin/projects` | `LoadingSpinner` only while **stats** load; table uses refresh icon spin | Partial — acceptable but asymmetric |
+| `admin/projects` | Stats `LoadingSpinner` on first load; table skeleton rows when empty + loading (SPIN-304); refresh uses `RefreshCw` spin only | None — fixed |
 | `admin/tmdb` | Decorative spinner on redirect page | Correct for redirect UX |
 | `TmdbMovieCard` | Import button spinner | Correct |
 | `TmdbImportView` | Full-page `LoadingSpinner` when searching | Correct |
@@ -177,8 +178,8 @@ These are not necessarily bugs — they use other patterns or minimal feedback.
 
 | Page | Loading behavior | Gap severity |
 |------|------------------|--------------|
-| `dashboard` | Stats show `"..."`; sections hidden until data arrives | Low–medium — brief empty layout possible |
-| `admin/` hub | Stats show `"-"` until fetch completes | Low |
+| `dashboard` | Stats show `"..."`; sections show skeletons while loading (SPIN-301) | None — fixed |
+| `admin/` hub | Stats show inline `Spinner size="sm"` while fetch runs (SPIN-302) | None — fixed |
 | `admin/queues/*` | `Skeleton` components | None — appropriate |
 | `settings/notifications` | `LoadingSpinner` while `preferencesLoading` | None — fixed (SPIN-001) |
 | `profile` | `return null` when `!user` | Low — relies on auth shell |
@@ -240,15 +241,13 @@ Player area no longer shows a large spinner for every falsy `video_url`.
 
 All **17** hand-rolled border spinners in **15** files migrated to `Spinner` or `PageLoadingSkeleton`. SPIN-108 grep verification: **0** border-spinner matches remain.
 
-### 5. Dashboard progressive loading (SPIN-301)
+### 5. Dashboard progressive loading (SPIN-301) — **Fixed**
 
-Projects and popular movies sections simply do not render while loading (stats show `"..."`).
+Projects and popular movies sections render card shells with `LoadingSkeleton` (`grid` ×3, `poster` ×6) while fetching; stats still show `"..."`.
 
-**Recommendation:** Optional section-level skeletons or a single centered spinner if empty-state flash is noticeable.
+### 6. Accent color split (SPIN-303) — **Fixed**
 
-### 6. Accent color split (optional) (SPIN-303)
-
-`LoadingSpinner` (`text-accent-primary`) vs project skeletons (`text-accent-cyan`) may look slightly different on the same screen. Unify only as part of a deliberate visual pass.
+`PageLoadingSkeleton` and `InlineLoadingSkeleton` now use `text-accent-primary`, matching `LoadingSpinner`.
 
 ---
 
@@ -290,21 +289,21 @@ Replace hand-rolled `div` border spinners with `<Spinner />` or `<PageLoadingSke
 | SPIN-203 | Optional FOLS delay helper | New hook e.g. `src/lib/hooks/use-delayed-loading.ts` + adopt on 1–2 full-page loaders | Expose `showLoading = isLoading && elapsed > 150ms` (configurable). Apply to `LoadingSpinner fullHeight` on list pages first. | Fast cached loads (<150ms) do not flash full-page spinner; slow loads still show spinner. | Hook at 150ms default; adopted on `projects/page.tsx` and `movies/page.tsx`. | M | `feat/spinner-fols-delay` | **Done** |
 | SPIN-204 | Timeout + retry pattern (pilot) | Pick one critical flow: e.g. `export/page.tsx` generation or `preview/page.tsx` TTS | After 15–30s without resolution, replace spinner with error copy + retry button (`RotateCcw`). | Stuck async state surfaces error + retry; happy path unchanged. | — | L | `feat/spinner-timeout-retry` | **Deferred** |
 
-### Phase 4 — Optional polish (P2–P3)
+### Phase 4 — Optional polish (P2–P3) — **Complete**
 
-| ID | Task | File(s) | What to do | Acceptance criteria | Effort | PR batch |
-|----|------|---------|------------|---------------------|--------|----------|
-| SPIN-301 | Dashboard section skeletons | `src/app/(shell)/dashboard/page.tsx` | While `loadingProjects` / `loadingMovies`, show `LoadingSkeleton variant="card"` or `variant="poster"` in section slots instead of hiding sections. | No empty gap under stats during fetch; stats still show `"..."`. | M | `polish/dashboard-loading` |
-| SPIN-302 | Admin hub stats loading | `src/app/(shell)/admin/page.tsx` | Optional: skeleton cards or inline `Spinner size="sm"` beside stat labels while stats fetch. | Stats area does not jump from `"-"` to numbers without context (if pursued). | S | `polish/admin-hub-loading` |
-| SPIN-303 | Accent color unification | `LoadingSpinner.tsx`, `loading-skeleton.tsx` | Pick one accent (`text-accent-primary` or `text-accent-cyan`) for all shared loaders; update both components together. | All page/section loaders share one accent token. | S | `polish/spinner-accent` |
-| SPIN-304 | Admin projects table initial load | `src/app/(shell)/admin/projects/page.tsx` | Optional: show table `LoadingSpinner` or skeleton rows on first fetch (today only stats use `LoadingSpinner`). | First visit shows table loading state; refresh still uses `RefreshCw` spin. | M | `polish/admin-projects-table` |
+| ID | Task | File(s) | What to do | Acceptance criteria | As shipped | Effort | PR batch |
+|----|------|---------|------------|---------------------|------------|--------|----------|
+| SPIN-301 | Dashboard section skeletons | `src/app/(shell)/dashboard/page.tsx` | While `loadingProjects` / `loadingMovies`, show `LoadingSkeleton variant="card"` or `variant="poster"` in section slots instead of hiding sections. | No empty gap under stats during fetch; stats still show `"..."`. | Card shells with `LoadingSkeleton` grid ×3 and poster ×6. | M | `polish/dashboard-loading` | **Done** |
+| SPIN-302 | Admin hub stats loading | `src/app/(shell)/admin/page.tsx` | Optional: skeleton cards or inline `Spinner size="sm"` beside stat labels while stats fetch. | Stats area does not jump from `"-"` to numbers without context (if pursued). | Inline `Spinner size="sm"` in metric slot while `isLoading`. | S | `polish/admin-hub-loading` | **Done** |
+| SPIN-303 | Accent color unification | `LoadingSpinner.tsx`, `loading-skeleton.tsx` | Pick one accent (`text-accent-primary` or `text-accent-cyan`) for all shared loaders; update both components together. | All page/section loaders share one accent token. | `text-accent-primary` on `PageLoadingSkeleton` + `InlineLoadingSkeleton`. | S | `polish/spinner-accent` | **Done** |
+| SPIN-304 | Admin projects table initial load | `src/app/(shell)/admin/projects/page.tsx` | Optional: show table `LoadingSpinner` or skeleton rows on first fetch (today only stats use `LoadingSpinner`). | First visit shows table loading state; refresh still uses `RefreshCw` spin. | `LoadingSkeleton variant="list"` ×8 in table; `isLoading && projects.length === 0` gate. | M | `polish/admin-projects-table` | **Done** |
 
 ### Phase 5 — Cleanup (P1)
 
 | ID | Task | File(s) | What to do | Acceptance criteria | Effort | PR batch |
 |----|------|---------|------------|---------------------|--------|----------|
 | SPIN-401 | ~~Remove dead `video-generation.tsx`~~ **Done** | — | File deleted; `docs/TYPOGRAPHY.md` reference removed. Export flow remains in `export/page.tsx`. | No importers; typography doc updated. | S | `chore/remove-video-generation` |
-| SPIN-402 | Update this audit doc | `docs/SPINNER_AUDIT.md` | After each phase, update migration status, border inventory counts, and check off task IDs. | Doc matches repo; verification command counts current. | Phase 1–3 (SPIN-201–203) updated Aug 24, 2026. SPIN-204 deferred. | S | Ongoing | **Partial** |
+| SPIN-402 | Update this audit doc | `docs/SPINNER_AUDIT.md` | After each phase, update migration status, border inventory counts, and check off task IDs. | Doc matches repo; verification command counts current. | Phase 1–4 updated Aug 24, 2026. SPIN-204 deferred. | S | Ongoing | **Done** |
 
 ### Out of scope — do not implement
 
@@ -322,7 +321,7 @@ Replace hand-rolled `div` border spinners with `<Spinner />` or `<PageLoadingSke
 3. **Visual consistency:** SPIN-101 → SPIN-108 — **done**  
 4. **Primitives:** SPIN-201 + SPIN-202 — **done**  
 5. **Behavior:** SPIN-203 — **done**; SPIN-204 deferred pending user feedback  
-6. **Polish:** SPIN-301–304 only if empty-state flash is reported
+6. **Polish:** SPIN-301–304 — **done**
 
 ### Task checklist (copy for PR descriptions)
 
@@ -349,14 +348,14 @@ Phase 3 — a11y & behavior
 - [ ] SPIN-204 Timeout + retry (pilot — deferred)
 
 Phase 4 — Polish
-- [ ] SPIN-301 Dashboard section skeletons
-- [ ] SPIN-302 Admin hub stats loading
-- [ ] SPIN-303 Accent color unification
-- [ ] SPIN-304 Admin projects table initial load
+- [x] SPIN-301 Dashboard section skeletons
+- [x] SPIN-302 Admin hub stats loading
+- [x] SPIN-303 Accent color unification
+- [x] SPIN-304 Admin projects table initial load
 
 Phase 5 — Cleanup
 - [x] SPIN-401 Remove video-generation.tsx
-- [x] SPIN-402 Update SPINNER_AUDIT.md (Phase 1–3 partial verified Aug 24, 2026)
+- [x] SPIN-402 Update SPINNER_AUDIT.md (Phase 1–4 verified Aug 24, 2026)
 ```
 
 ---

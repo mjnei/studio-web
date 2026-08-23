@@ -161,7 +161,7 @@ export default function AdminProjectsPage() {
 
       <ProjectsTable
         projects={projects}
-        isLoading={isLoading}
+        isLoading={isLoading && projects.length === 0}
         onView={(project) => {
           setSelected(project);
           setModalOpen(true);

@@ -19,6 +19,7 @@ import {
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Heading } from "@/components/ui/heading";
+import { Spinner } from "@/components/ui/spinner";
 import { getAdminStats, type AdminStatsResponse } from "@/lib/api/admin";
 
 type StatCard = {
@@ -73,13 +74,16 @@ const ADMIN_FEATURES: FeatureLink[] = [
 
 export default function AdminPage() {
   const [stats, setStats] = useState<AdminStatsResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchStats = async () => {
+      setIsLoading(true);
       try {
         const data = await getAdminStats();
         setStats(data);
+        setError(null);
       } catch (err) {
         console.error("Error fetching stats:", err);
         const message = err instanceof Error ? err.message : "Failed to fetch statistics";
@@ -90,6 +94,8 @@ export default function AdminPage() {
           total_users: 0,
           projects_created: 0,
         });
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -159,7 +165,11 @@ export default function AdminPage() {
                 <div>
                   <p className="text-sm text-text-muted mb-1">{stat.label}</p>
                   <Heading variant="metric" className="text-text-primary">
-                    {stat.value}
+                    {isLoading ? (
+                      <Spinner size="sm" className="text-accent-primary" aria-hidden />
+                    ) : (
+                      stat.value
+                    )}
                   </Heading>
                   {stat.comingSoon && <p className="mt-1 text-xs text-text-muted">Coming soon</p>}
                 </div>
