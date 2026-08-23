@@ -113,11 +113,7 @@ export function Modal({
                 </Heading>
               )}
               {description && (
-                <Text
-                  id="modal-description"
-                  variant="body"
-                  className="mt-1 text-text-secondary"
-                >
+                <Text id="modal-description" variant="body" className="mt-1 text-text-secondary">
                   {description}
                 </Text>
               )}

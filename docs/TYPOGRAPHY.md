@@ -1,10 +1,10 @@
-# Typography System — Guidelines & Refactor Plan
+# Typography System
 
-**Version**: 1.2  
+**Version**: 1.3  
 **Last Updated**: August 24, 2026  
-**Status**: Adopted (Phases 1–5 complete; Phase 6 legacy migration largely done)  
-**Related**: [DESIGN_SYSTEM.md](./guides/DESIGN_SYSTEM.md), [BREAKPOINT_REFERENCE.md](./guides/BREAKPOINT_REFERENCE.md), [TYPOGRAPHY_REFACTOR.md](./TYPOGRAPHY_REFACTOR.md)  
-**Source of truth (after implementation)**: `src/app/globals.css` (`@theme` tokens) + `src/components/ui/heading.tsx` / `typography.ts`
+**Status**: Adopted (role system + legacy migration complete)  
+**Related**: [DESIGN_SYSTEM.md](./guides/DESIGN_SYSTEM.md), [BREAKPOINT_REFERENCE.md](./guides/BREAKPOINT_REFERENCE.md)  
+**Source of truth**: `src/app/globals.css` (`@theme` tokens) + `src/components/ui/typography.ts` / `heading.tsx` / `text.tsx`
 
 ---
 
@@ -124,7 +124,7 @@ Defined in `src/app/globals.css` under `@theme inline`. **Tailwind v4 automatica
 }
 ```
 
-> **Minimum readable size**: Prefer `--text-caption` (12px) for any user-readable copy. `--text-micro` (10px) is for dense chrome only (badges, step pills, poster overlays). Do not use arbitrary `text-[Npx]` — chart SVG labels are the sole allowlisted exception (see [TYPOGRAPHY_REFACTOR.md](./TYPOGRAPHY_REFACTOR.md)).
+> **Minimum readable size**: Prefer `--text-caption` (12px) for any user-readable copy. `--text-micro` (10px) is for dense chrome only (badges, step pills, poster overlays). Do not use arbitrary `text-[Npx]` — chart SVG labels are the sole allowlisted exception (see Allowlists in §10 Phase 4).
 
 > **TW4 note**: `--text-*` in `@theme inline` becomes a `text-{name}` utility automatically. Do **not** add manual `fontSize` entries to `tailwind.config.*` — those are only needed in TW3.
 
@@ -495,23 +495,22 @@ rg -n "text-(3xl|4xl|5xl)" src --glob "!**/typography.ts" --glob "!**/heading.ts
 ### Phase 5 — Global size tweak (product pass)
 
 - [x] Adjust tokens / `typography.ts` strings once (sidebar-aligned density pass, Aug 2026)
-- [ ] Visual QA across shell + project + auth (see [TYPOGRAPHY_REFACTOR.md](./TYPOGRAPHY_REFACTOR.md) §9 Phase 6e)
-- [x] No page-by-page size edits required for standard roles (bulk legacy migration: see [TYPOGRAPHY_REFACTOR.md](./TYPOGRAPHY_REFACTOR.md))
+- [ ] Optional: human visual QA at 375px / 1280px (shell, project, auth, admin)
+- [x] No page-by-page size edits required for standard roles (bulk legacy migration complete)
 
 This is the payoff: **one change updates the product**.
 
 ---
 
-### Phase 6 — Legacy utility migration
-
-See **[TYPOGRAPHY_REFACTOR.md](./TYPOGRAPHY_REFACTOR.md)** for audit, allowlist, ESLint rules, and remaining TODO.
+### Phase 6 — Legacy utility migration (complete)
 
 - [x] Bulk migrate `text-xs`–`text-xl` → token utilities (~250 files)
 - [x] Sidebar token alignment (`drawer-content`, `top-nav`)
-- [x] ESLint error on legacy size classes + `text-[Npx]` in `className` (allowlisted exceptions)
+- [x] ESLint error on legacy size classes + `text-[Npx]` in `className` (allowlisted exceptions in `eslint.config.mjs`)
 - [x] Micro-size token (`--text-micro` / `text-micro`) for former `text-[10px]` / `text-[11px]`
-- [x] Shared UI → `<Text>` / `forwardRef` on `Heading`/`Text`; page-title audit (see [TYPOGRAPHY_REFACTOR.md](./TYPOGRAPHY_REFACTOR.md))
-- [ ] Visual QA checklist (Phase 6e)
+- [x] Shared UI → `<Text>` / `forwardRef` on `Heading`/`Text`; page-title audit
+- [x] Automated preflight + codemod (`pnpm typography:migrate:dry`)
+- [ ] Optional: human browser spot-checks at 375px / 1280px
 ---
 
 ## 11. Acceptance criteria
@@ -545,9 +544,41 @@ Refactor is successful when:
 ### Code review checklist
 
 - [ ] New titles use `PageHeader` or `Heading` (or `CardTitle`)
+- [ ] No new `text-xs`–`text-xl` in `className` (use tokens or `Text`)
+- [ ] No new `text-[Npx]` without `text-micro` / allowlist justification
+- [ ] Prefer `text-caption` for readable meta; `text-micro` only for dense chrome
 - [ ] No new `text-2xl|3xl|4xl` on headings outside allowlisted display surfaces
 - [ ] `as` chosen for outline; `variant` for look
 - [ ] Color utilities OK; size utilities on headings discouraged
+- [ ] Global density changes go through `@theme` tokens, not page-by-page edits
+
+### Legacy → token mapping (do not use left column)
+
+| Legacy | Token | Notes |
+|--------|-------|-------|
+| `text-xs` | `text-caption` | 12px |
+| `text-sm` / `text-base` | `text-body` | 14px |
+| `text-lg` | `text-metric` | Prefer `<Heading variant="metric">` |
+| `text-xl` | `text-page` | Prefer `<Heading variant="page">` |
+| `text-[10px]` / `text-[11px]` | `text-micro` | Badges / overlays only |
+| `text-2xl`+ on headings | `Heading` variant | Never raw utilities on headings |
+
+### Verification & codemod
+
+```bash
+# Legacy sizes (target: allowlist / comments only)
+rg -n '\btext-(xs|sm|base|lg|xl|2xl|3xl|4xl|5xl)\b' src \
+  --glob '!**/heading.tsx' --glob '!**/typography.ts'
+
+# Arbitrary sizes (target: HealthIndicator only)
+rg -n 'text-\[[0-9]+px\]' src
+
+# Re-apply mapping if legacy classes reappear
+pnpm typography:migrate:dry
+pnpm typography:migrate
+```
+
+ESLint (`eslint.config.mjs`) errors on legacy sizes and `text-[Npx]` outside the allowlist (`CompletionStep`, `profile/page`, `HealthIndicator`).
 
 ---
 

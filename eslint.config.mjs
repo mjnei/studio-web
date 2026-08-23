@@ -20,12 +20,12 @@ const typographyRestrictedSyntax = [
     selector:
       "JSXAttribute[name.name='className'][value.value=/(?:^|\\s)text-(xs|sm|base|lg|xl)(?:\\s|$)/]",
     message:
-      "Use @theme typography tokens (text-body, text-caption, text-page, …) instead of legacy Tailwind text-xs–text-xl. See docs/TYPOGRAPHY_REFACTOR.md.",
+      "Use @theme typography tokens (text-body, text-caption, text-page, …) instead of legacy Tailwind text-xs–text-xl. See docs/TYPOGRAPHY.md.",
   },
   {
     selector: "JSXAttribute[name.name='className'][value.value=/text-\\[\\d+px\\]/]",
     message:
-      "Avoid arbitrary text-[Npx] sizes. Use text-caption, text-micro, or an allowlisted chart/decorative exception. See docs/TYPOGRAPHY_REFACTOR.md.",
+      "Avoid arbitrary text-[Npx] sizes. Use text-caption, text-micro, or an allowlisted chart/decorative exception. See docs/TYPOGRAPHY.md.",
   },
 ];
 
@@ -45,7 +45,7 @@ const eslintConfig = defineConfig([
     ignores: typographyAllowlist,
     rules: {
       // Typography roles: prefer Heading / PageHeader / tokens over ad-hoc sizes.
-      // See docs/TYPOGRAPHY.md + docs/TYPOGRAPHY_REFACTOR.md.
+      // See docs/TYPOGRAPHY.md.
       "no-restricted-syntax": ["error", ...typographyRestrictedSyntax],
     },
   },

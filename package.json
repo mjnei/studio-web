@@ -9,7 +9,9 @@
     "lint": "eslint",
     "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css,json}\"",
-    "test": "vitest"
+    "test": "vitest",
+    "typography:migrate": "node scripts/migrate-typography.mjs",
+    "typography:migrate:dry": "node scripts/migrate-typography.mjs --dry-run"
   },
   "dependencies": {
     "date-fns": "^4.4.0",
