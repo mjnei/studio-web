@@ -21,7 +21,7 @@ export function TopNav() {
           aria-label={t("shell.openNavMenu")}
           title={t("shell.openNavMenu")}
         >
-          <PanelLeft className="h-[22px] w-[22px]" aria-hidden />
+          <PanelLeft className="h-5 w-5" aria-hidden />
         </button>
       )}
 

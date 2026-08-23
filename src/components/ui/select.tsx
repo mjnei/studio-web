@@ -179,7 +179,7 @@ export function Select({
             )}
           </span>
           <ChevronDown
-            className={`h-[18px] w-[18px] text-text-secondary transition-transform duration-200 ${
+            className={`h-4 w-4 text-text-secondary transition-transform duration-200 ${
               isOpen ? "rotate-180" : ""
             }`}
             aria-hidden
@@ -367,7 +367,7 @@ export function MultiSelect({
             )}
           </div>
           <ChevronDown
-            className={`h-[18px] w-[18px] text-text-secondary transition-transform duration-200 shrink-0 ${
+            className={`h-4 w-4 text-text-secondary transition-transform duration-200 shrink-0 ${
               isOpen ? "rotate-180" : ""
             }`}
             aria-hidden

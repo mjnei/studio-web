@@ -30,11 +30,7 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
       {/* Header */}
       <div className="p-3 sm:p-4 border-b border-border-default bg-surface-raised flex items-center justify-between shrink-0">
         <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
-          <Bell className="h-4 w-4 text-text-secondary sm:hidden shrink-0" aria-hidden />
-          <Bell
-            className="hidden h-[18px] w-[18px] text-text-secondary sm:block shrink-0"
-            aria-hidden
-          />
+          <Bell className="h-4 w-4 text-text-secondary shrink-0" aria-hidden />
           <Heading variant="label" as="h3" className="text-text-primary truncate">
             {t("notifications.title")}
           </Heading>
@@ -52,7 +48,7 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
               title={t("notifications.markAllAsRead")}
               aria-label={t("notifications.markAllAsRead")}
             >
-              <CheckCheck className="h-[18px] w-[18px]" aria-hidden />
+              <CheckCheck className="h-4 w-4" aria-hidden />
             </button>
           )}
           <Link
@@ -62,7 +58,7 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
             title={t("notifications.notificationSettings")}
             aria-label={t("notifications.notificationSettings")}
           >
-            <Settings className="h-[18px] w-[18px]" aria-hidden />
+            <Settings className="h-4 w-4" aria-hidden />
           </Link>
         </div>
       </div>

@@ -11,7 +11,7 @@ export function RecordingErrorBanner({ error, translate: t }: RecordingErrorBann
 
   return (
     <div className="mb-4 flex items-start gap-2 rounded-xl bg-red-500/10 px-4 py-3 border border-red-500/20">
-      <AlertCircle className="mt-0.5 h-[18px] w-[18px] shrink-0 text-red-400" aria-hidden />
+      <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-400" aria-hidden />
       <div className="text-sm text-red-300">
         <p>{error}</p>
         {showHttpsTip && (

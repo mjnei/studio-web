@@ -25,8 +25,7 @@ Use **`className="h-N w-N"`** (height before width) or the shared `Icon` compone
 | Token | Class | Pixels | Typical use |
 |-------|-------|--------|-------------|
 | `xs` | `h-3 w-3` | 12 | Badges, compact table actions |
-| `sm` | `h-4 w-4` | 16 | Buttons, inline actions, form controls |
-| `compact` | `h-[18px] w-[18px]` | 18 | Notification dropdown headers, select chevrons, dense toolbar controls |
+| `sm` | `h-4 w-4` | 16 | Buttons, inline actions, form controls, select chevrons |
 | `md` | `h-5 w-5` | 20 | Sidebar nav, toolbar icons |
 | `lg` | `h-6 w-6` | 24 | Card headers, modals |
 | `xl` | `h-8 w-8` | 32 | Empty states, hero accents |

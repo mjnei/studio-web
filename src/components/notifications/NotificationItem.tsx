@@ -91,8 +91,7 @@ export function NotificationItem({ notification, onClose }: NotificationItemProp
       <div className="flex gap-2 sm:gap-3">
         {/* Icon */}
         <div className={`flex-shrink-0 ${iconColor} mt-0.5`}>
-          <Icon className="h-4 w-4 sm:hidden" aria-hidden />
-          <Icon className="hidden h-[18px] w-[18px] sm:block" aria-hidden />
+          <Icon className="h-4 w-4" aria-hidden />
         </div>
 
         {/* Content */}
