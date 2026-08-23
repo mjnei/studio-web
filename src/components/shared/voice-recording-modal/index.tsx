@@ -1,6 +1,7 @@
 "use client";
 
 import { X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { MAX_DURATION_S } from "./constants";
 import { ActiveRecordingView } from "./components/active-recording-view";
@@ -26,14 +27,15 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
           <Heading variant="subsection" as="h2" className="text-text-primary">
             {modal.t("voices.recording.title")}
           </Heading>
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={onClose}
             disabled={modal.isSaving || modal.phase === "recording"}
-            className="p-2 rounded-lg hover:bg-surface-raised transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label={modal.t("common.close")}
           >
             <X className="h-5 w-5 text-text-muted" aria-hidden />
-          </button>
+          </Button>
         </div>
 
         {modal.error && <RecordingErrorBanner error={modal.error} translate={modal.t} />}

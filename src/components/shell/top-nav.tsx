@@ -17,11 +17,11 @@ export function TopNav() {
       {isNarrow && (
         <button
           onClick={toggle}
-          className="rounded-lg p-1.5 text-text-muted hover:bg-surface-hover hover:text-text-secondary transition-all active:scale-95 focus-ring"
+          className="h-9 w-9 rounded-md text-text-muted hover:bg-surface-hover hover:text-text-secondary transition-all active:scale-95 focus-ring flex items-center justify-center"
           aria-label={t("shell.openNavMenu")}
           title={t("shell.openNavMenu")}
         >
-          <PanelLeft className="h-5 w-5" aria-hidden />
+          <PanelLeft className="h-4 w-4" aria-hidden />
         </button>
       )}
 
@@ -34,7 +34,7 @@ export function TopNav() {
           <input
             type="text"
             placeholder={t("common.searchEllipsis")}
-            className="w-64 rounded-lg border border-border-default bg-surface-raised pl-9 pr-3 py-1.5 text-body text-text-primary placeholder-text-muted focus:border-accent-primary focus-ring transition-all hover:border-border-strong"
+            className="w-64 h-9 rounded-lg border border-border-default bg-surface-raised pl-9 pr-3 text-body text-text-primary placeholder-text-muted focus:border-accent-primary focus-ring transition-all hover:border-border-strong"
           />
         </div>
 

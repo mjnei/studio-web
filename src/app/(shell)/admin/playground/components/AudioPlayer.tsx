@@ -1,6 +1,7 @@
 "use client";
 
 import { Heading } from "@/components/ui/heading";
+import { Button } from "@/components/ui/button";
 
 import { useState, useRef, useEffect } from "react";
 import { Play, Pause, Volume2, VolumeX, Download, RotateCcw, X } from "lucide-react";
@@ -172,20 +173,22 @@ export function AudioPlayer({ audioUrl, jobId, jobName, onDismiss }: AudioPlayer
             {jobName || `Job ${jobId || ""}`}
           </Heading>
           <div className="flex items-center gap-2">
-            <button
+            <Button
+              variant="secondary"
+              size="sm"
               onClick={handleDownload}
-              className="flex items-center gap-2 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-caption font-medium text-text-secondary hover:border-accent-primary hover:text-accent-primary hover:bg-accent-primary/5 transition-all"
+              leftIcon={<Download className="h-4 w-4" />}
             >
-              <Download className="h-4 w-4" />
               Download
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={handleDismiss}
-              className="flex items-center justify-center w-8 h-8 rounded-lg border border-border-default bg-surface-base text-text-secondary hover:border-red-500 hover:text-red-600 hover:bg-red-500/5 transition-all"
               aria-label="Close player"
             >
               <X className="h-4 w-4" aria-hidden />
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -226,16 +229,18 @@ export function AudioPlayer({ audioUrl, jobId, jobName, onDismiss }: AudioPlayer
         <div className="flex items-center gap-3">
           {/* Play/Pause */}
           <button
+            type="button"
             onClick={togglePlay}
-            className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-accent-primary to-purple-600 text-white hover:shadow-lg hover:shadow-accent-primary/30 transition-all"
+            className="flex items-center justify-center h-10 w-10 rounded-full bg-gradient-to-r from-accent-primary to-purple-600 text-white hover:shadow-lg hover:shadow-accent-primary/30 transition-all"
           >
-            {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5 ml-0.5" />}
+            {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4 ml-0.5" />}
           </button>
 
           {/* Restart */}
           <button
+            type="button"
             onClick={handleRestart}
-            className="flex items-center justify-center w-10 h-10 rounded-full border border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:text-accent-primary hover:bg-accent-primary/5 transition-all"
+            className="flex items-center justify-center h-9 w-9 rounded-full border border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:text-accent-primary hover:bg-accent-primary/5 transition-all"
           >
             <RotateCcw className="h-4 w-4" />
           </button>
@@ -243,8 +248,9 @@ export function AudioPlayer({ audioUrl, jobId, jobName, onDismiss }: AudioPlayer
           {/* Volume */}
           <div className="flex-1 flex items-center gap-3">
             <button
+              type="button"
               onClick={toggleMute}
-              className="flex items-center justify-center w-10 h-10 rounded-full border border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:text-accent-primary hover:bg-accent-primary/5 transition-all"
+              className="flex items-center justify-center h-9 w-9 rounded-full border border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:text-accent-primary hover:bg-accent-primary/5 transition-all"
             >
               {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
             </button>

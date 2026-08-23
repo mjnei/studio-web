@@ -1,6 +1,7 @@
 "use client";
 
 import { Heading } from "@/components/ui/heading";
+import { Button } from "@/components/ui/button";
 
 import { X, Clock, CheckCircle2, XCircle, Zap, FileText, Mic } from "lucide-react";
 import type { TTSJob } from "@/types/admin";
@@ -78,13 +79,9 @@ export function JobDetailModal({ job, open, onClose }: JobDetailModalProps) {
             </Heading>
             <p className="text-body text-text-muted mt-1">#{job.job_id}</p>
           </div>
-          <button
-            onClick={onClose}
-            className="rounded-lg p-2 text-text-muted hover:bg-surface-raised hover:text-text-primary transition-colors"
-            aria-label="Close"
-          >
+          <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close">
             <X className="h-5 w-5" aria-hidden />
-          </button>
+          </Button>
         </div>
 
         {/* Content */}
@@ -202,12 +199,9 @@ export function JobDetailModal({ job, open, onClose }: JobDetailModalProps) {
 
         {/* Footer */}
         <div className="sticky bottom-0 border-t border-border-default bg-surface-panel px-6 py-4">
-          <button
-            onClick={onClose}
-            className="w-full rounded-lg bg-gradient-to-r from-accent-primary to-purple-600 px-4 py-2.5 text-body font-semibold text-white hover:shadow-lg hover:shadow-accent-primary/30 transition-all"
-          >
+          <Button size="md" fullWidth onClick={onClose}>
             Close
-          </button>
+          </Button>
         </div>
       </div>
     </div>

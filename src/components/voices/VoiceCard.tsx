@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Play, Pause, Trash2, Share2, Lock, Clock, CheckCircle2, User } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { useToast } from "@/components/ui/toast";
 import { useI18n } from "@/i18n";
@@ -236,61 +237,67 @@ export function VoiceCard({
       {/* Playback Controls */}
       <div className="px-4 pb-3 border-t border-border-subtle pt-3">
         <div className="flex items-center gap-2">
-          <button
+          <Button
+            size="md"
+            variant="ghost"
             onClick={togglePlayback}
             disabled={isLoading}
-            className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-accent-primary/10 hover:bg-accent-primary/20 text-accent-primary font-medium py-2.5 transition-colors disabled:opacity-50"
-          >
-            {isLoading ? (
-              <>
+            className="flex-1 bg-accent-primary/10 hover:bg-accent-primary/20 text-accent-primary"
+            leftIcon={
+              isLoading ? (
                 <Spinner size="sm" className="text-current" />
-                <span className="text-body">{t("voices.playback.loading")}</span>
-              </>
-            ) : isPlaying ? (
-              <>
+              ) : isPlaying ? (
                 <Pause className="h-4 w-4" />
-                <span className="text-body">{t("voices.playback.pause")}</span>
-              </>
-            ) : (
-              <>
+              ) : (
                 <Play className="h-4 w-4" />
-                <span className="text-body">{t("voices.playback.play")}</span>
-              </>
-            )}
-          </button>
+              )
+            }
+          >
+            {isLoading
+              ? t("voices.playback.loading")
+              : isPlaying
+                ? t("voices.playback.pause")
+                : t("voices.playback.play")}
+          </Button>
 
           {/* Action Buttons */}
           {variant === "private" && (
             <>
               {!voice.is_shared && onShare && (
-                <button
+                <Button
+                  size="icon"
+                  variant="secondary"
                   onClick={() => onShare(voice.id)}
-                  className="p-2.5 rounded-lg border border-green-500/50 bg-green-500/10 text-green-600 hover:bg-green-500/20 transition-colors"
                   title={t("voices.actions.shareWithCommunity")}
+                  className="border-green-500/50 bg-green-500/10 text-green-600 hover:bg-green-500/20"
                 >
                   <Share2 className="h-4 w-4" />
-                </button>
+                </Button>
               )}
               {voice.is_shared && !voice.is_approved && onUnshare && (
-                <button
+                <Button
+                  size="icon"
+                  variant="secondary"
                   onClick={() => onUnshare(voice.id)}
-                  className="p-2.5 rounded-lg border border-orange-500/50 bg-orange-500/10 text-orange-600 hover:bg-orange-500/20 transition-colors"
                   title={t("voices.actions.makePrivate")}
+                  className="border-orange-500/50 bg-orange-500/10 text-orange-600 hover:bg-orange-500/20"
                 >
                   <Lock className="h-4 w-4" />
-                </button>
+                </Button>
               )}
             </>
           )}
 
           {(variant === "private" || (variant === "community" && isOwnVoice)) && (
-            <button
+            <Button
+              size="icon"
+              variant="secondary"
               onClick={() => onDelete(voice.id)}
-              className="p-2.5 rounded-lg border border-red-500/50 bg-red-500/10 text-red-600 hover:bg-red-500/20 transition-colors"
               title={t("voices.actions.deleteVoice")}
+              className="border-red-500/50 bg-red-500/10 text-red-600 hover:bg-red-500/20"
             >
               <Trash2 className="h-4 w-4" />
-            </button>
+            </Button>
           )}
         </div>
       </div>

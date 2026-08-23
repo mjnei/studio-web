@@ -502,7 +502,7 @@ export default function PreviewPage() {
                       <button
                         onClick={resetAudio}
                         title={t("project.preview.resetToStart")}
-                        className="h-10 w-10 p-0 flex items-center justify-center rounded hover:bg-surface-panel transition-colors"
+                        className="h-9 w-9 p-0 flex items-center justify-center rounded hover:bg-surface-panel transition-colors"
                       >
                         <RotateCcw className="h-4 w-4 text-text-primary" />
                       </button>
@@ -522,7 +522,7 @@ export default function PreviewPage() {
                       <button
                         onClick={toggleMute}
                         title={isMuted ? t("project.preview.unmute") : t("project.preview.mute")}
-                        className="h-10 w-10 p-0 flex items-center justify-center rounded hover:bg-surface-panel transition-colors"
+                        className="h-9 w-9 p-0 flex items-center justify-center rounded hover:bg-surface-panel transition-colors"
                       >
                         {isMuted || volume === 0 ? (
                           <VolumeX className="h-4 w-4 text-text-primary" />

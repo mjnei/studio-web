@@ -694,6 +694,8 @@ className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center sm:min
 // Default size="md" = h-9 (36px) — matches Input / Select denser type scale
 // size="lg" = h-10 (40px) — auth / full-width primary CTAs
 // Prefer size="sm" (h-8) in tables and toolbars
+// Prefer size="icon" (h-9) for icon-only chrome (LayoutToggle, notification header, sidebar)
+// Do not use raw <button> with min-h-[44px] / px-4 py-2 for product CTAs — use Button
 ```
 
 **Verified in**: Projects page layout toggle, Profile page buttons, Notifications filters

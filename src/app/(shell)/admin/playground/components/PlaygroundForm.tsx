@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Play } from "lucide-react";
-import { Spinner } from "@/components/ui/spinner";
+import { Button } from "@/components/ui/button";
 import { VoiceSelector } from "./VoiceSelector";
 import type { PlaygroundTTSRequest } from "@/types/admin";
 
@@ -99,23 +99,16 @@ export function PlaygroundForm({ onSubmit, isLoading }: PlaygroundFormProps) {
       </div>
 
       {/* Submit Button */}
-      <button
+      <Button
         type="submit"
+        size="md"
+        fullWidth
         disabled={!isValid || isLoading}
-        className="w-full flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-accent-primary to-purple-600 px-5 py-2.5 text-body font-semibold text-white hover:shadow-lg hover:shadow-accent-primary/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+        isLoading={isLoading}
+        leftIcon={<Play className="h-4 w-4" />}
       >
-        {isLoading ? (
-          <>
-            <Spinner className="h-5 w-5" />
-            Generating Audio...
-          </>
-        ) : (
-          <>
-            <Play className="h-5 w-5" />
-            Generate TTS Audio
-          </>
-        )}
-      </button>
+        Generate TTS Audio
+      </Button>
     </form>
   );
 }

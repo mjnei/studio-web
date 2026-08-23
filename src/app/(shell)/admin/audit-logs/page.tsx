@@ -1,6 +1,7 @@
 "use client";
 
 import { Heading } from "@/components/ui/heading";
+import { Button } from "@/components/ui/button";
 
 import { useEffect, useState } from "react";
 import { ArrowLeft, Cloud, Database, Download, Info } from "lucide-react";
@@ -138,14 +139,15 @@ export default function AuditLogsPage() {
               </div>
             </div>
 
-            <button
+            <Button
+              variant="secondary"
+              size="md"
               onClick={handleExportCSV}
               disabled={logs.length === 0}
-              className="flex items-center gap-2 rounded-xl border-2 border-border bg-surface-panel px-4 py-2 text-body font-medium hover:bg-surface-raised disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              leftIcon={<Download className="h-4 w-4" />}
             >
-              <Download className="h-4 w-4" />
               Export CSV
-            </button>
+            </Button>
           </div>
 
           {/* Data Source Toggle */}
@@ -157,7 +159,7 @@ export default function AuditLogsPage() {
                   setDataSource("postgres");
                   setPagination((prev) => ({ ...prev, page: 1 }));
                 }}
-                className={`flex items-center gap-2 rounded-xl border-2 px-4 py-2 text-body font-medium transition-colors ${
+                className={`flex h-9 items-center gap-2 rounded-xl border-2 px-3.5 py-0 text-body font-medium transition-colors ${
                   dataSource === "postgres"
                     ? "border-blue-500 bg-blue-500/10 text-blue-500"
                     : "border-border bg-surface-panel text-text-secondary hover:bg-surface-raised"
@@ -171,7 +173,7 @@ export default function AuditLogsPage() {
                   setDataSource("axiom");
                   setPagination((prev) => ({ ...prev, page: 1 }));
                 }}
-                className={`flex items-center gap-2 rounded-xl border-2 px-4 py-2 text-body font-medium transition-colors ${
+                className={`flex h-9 items-center gap-2 rounded-xl border-2 px-3.5 py-0 text-body font-medium transition-colors ${
                   dataSource === "axiom"
                     ? "border-purple-500 bg-purple-500/10 text-purple-500"
                     : "border-border bg-surface-panel text-text-secondary hover:bg-surface-raised"

@@ -5,6 +5,7 @@ import { Gamepad2, RefreshCw, Download, ShieldAlert } from "lucide-react";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useToast } from "@/components/ui/toast";
 import { Heading } from "@/components/ui/heading";
+import { Button } from "@/components/ui/button";
 import { PlaygroundStatsWidget } from "./components/PlaygroundStatsWidget";
 import { PlaygroundStaleJobsAlert } from "./components/PlaygroundStaleJobsAlert";
 import { PlaygroundFailedJobsTable } from "./components/PlaygroundFailedJobsTable";
@@ -300,41 +301,39 @@ export default function PlaygroundTTSJobsPage() {
           {/* Controls */}
           <div className="flex items-center gap-3">
             {/* Auto-refresh toggle */}
-            <button
+            <Button
+              size="md"
+              variant={autoRefresh ? "success" : "secondary"}
               onClick={() => setAutoRefresh(!autoRefresh)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-body font-semibold transition-all ${
-                autoRefresh
-                  ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg shadow-green-500/30"
-                  : "border-2 border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:bg-accent-primary/5"
-              }`}
+              leftIcon={<RefreshCw className={`h-4 w-4 ${autoRefresh ? "animate-spin" : ""}`} />}
             >
-              <RefreshCw className={`h-4 w-4 ${autoRefresh ? "animate-spin" : ""}`} />
               Auto-refresh {autoRefresh ? "ON" : "OFF"}
-            </button>
+            </Button>
 
             {/* Manual refresh */}
-            <button
+            <Button
+              size="md"
+              variant="secondary"
               onClick={() => loadData()}
               disabled={isLoading}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-body font-semibold border-2 border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:text-accent-primary hover:bg-accent-primary/5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              leftIcon={<RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />}
             >
-              <RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
               Refresh
-            </button>
+            </Button>
 
             {/* Export CSV */}
-            <button
+            <Button
+              size="md"
               onClick={handleExportCSV}
               disabled={
                 (activeTab === "failed" && !failedJobs.length) ||
                 (activeTab === "rate_limited" && !rateLimitedJobs.length) ||
                 (activeTab === "completed" && !completedJobs.length)
               }
-              className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-body font-semibold bg-gradient-to-r from-accent-primary to-purple-600 text-white hover:shadow-lg hover:shadow-accent-primary/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              leftIcon={<Download className="h-4 w-4" />}
             >
-              <Download className="h-4 w-4" />
               Export CSV
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -363,7 +362,7 @@ export default function PlaygroundTTSJobsPage() {
             <div className="flex items-center gap-2 mb-6">
               <button
                 onClick={() => setActiveTab("failed")}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-body font-semibold transition-all ${
+                className={`flex h-9 items-center gap-2 px-3.5 py-0 rounded-lg text-body font-semibold transition-all ${
                   activeTab === "failed"
                     ? "bg-red-500/10 text-red-600 border-2 border-red-500/30"
                     : "border-2 border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:bg-accent-primary/5"
@@ -382,7 +381,7 @@ export default function PlaygroundTTSJobsPage() {
               </button>
               <button
                 onClick={() => setActiveTab("rate_limited")}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-body font-semibold transition-all ${
+                className={`flex h-9 items-center gap-2 px-3.5 py-0 rounded-lg text-body font-semibold transition-all ${
                   activeTab === "rate_limited"
                     ? "bg-orange-500/10 text-orange-600 border-2 border-orange-500/30"
                     : "border-2 border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:bg-accent-primary/5"
@@ -402,7 +401,7 @@ export default function PlaygroundTTSJobsPage() {
               </button>
               <button
                 onClick={() => setActiveTab("completed")}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-body font-semibold transition-all ${
+                className={`flex h-9 items-center gap-2 px-3.5 py-0 rounded-lg text-body font-semibold transition-all ${
                   activeTab === "completed"
                     ? "bg-green-500/10 text-green-600 border-2 border-green-500/30"
                     : "border-2 border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:bg-accent-primary/5"

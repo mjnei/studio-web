@@ -39,7 +39,7 @@ export function NotificationBell() {
       <button
         ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
-        className="relative rounded-lg p-1.5 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all focus-ring group"
+        className="relative h-9 w-9 rounded-md text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all focus-ring group flex items-center justify-center"
         aria-label={
           unreadCount > 0
             ? t("notifications.unreadWithCount", { count: displayCount })
@@ -48,20 +48,20 @@ export function NotificationBell() {
         title={t("notifications.title")}
       >
         <Bell
-          className="h-5 w-5 group-hover:scale-110 transition-transform duration-200"
+          className="h-4 w-4 group-hover:scale-110 transition-transform duration-200"
           aria-hidden
         />
 
         {/* Unread badge */}
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-status-failed text-white text-micro font-semibold flex items-center justify-center leading-none">
+          <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-status-failed text-white text-micro font-semibold flex items-center justify-center leading-none">
             {unreadCount > 99 ? "99+" : unreadCount}
           </span>
         )}
 
         {/* Connection indicator */}
         {isSSEConnected && (
-          <span className="absolute bottom-1 right-1 h-2 w-2 rounded-full bg-status-success" />
+          <span className="absolute bottom-1 right-1 h-1.5 w-1.5 rounded-full bg-status-success" />
         )}
       </button>
 

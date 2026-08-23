@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { CheckCircle2, Clock, Folder, Trash2, Calendar } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { Badge } from "@/components/ui/badge";
 import { ExternalImage } from "@/components/ui/ExternalImage";
@@ -124,14 +125,16 @@ export function ProjectCard({
 
         {/* Delete Button */}
         {showDelete && onDelete && (
-          <button
+          <Button
+            variant="secondary"
+            size="icon"
             onPointerDown={handleDeleteClick}
-            className="flex-shrink-0 self-start rounded-lg border border-border-default bg-surface-elevated/90 p-2 text-text-secondary backdrop-blur-sm transition-all duration-200 hover:border-status-error hover:bg-status-error/10 hover:text-status-error focus-ring touch-none"
+            className="flex-shrink-0 self-start bg-surface-elevated/90 text-text-secondary backdrop-blur-sm hover:border-status-error hover:bg-status-error/10 hover:text-status-error touch-none"
             aria-label={t("project.card.deleteProject")}
             title={t("project.card.deleteProject")}
           >
             <Trash2 className="h-4 w-4" />
-          </button>
+          </Button>
         )}
       </Link>
     );
@@ -241,14 +244,16 @@ export function ProjectCard({
 
       {/* Delete Button - always visible on mobile, appears on hover on desktop */}
       {showDelete && onDelete && (
-        <button
+        <Button
+          variant="secondary"
+          size="icon"
           onPointerDown={handleDeleteClick}
-          className="absolute top-2 right-2 p-2 rounded-lg bg-surface-elevated/90 backdrop-blur-sm border border-border-default opacity-100 md:opacity-0 md:group-hover:opacity-100 hover:bg-status-error/10 hover:border-status-error hover:text-status-error text-text-secondary transition-all duration-200 focus-ring touch-none"
+          className="absolute top-2 right-2 bg-surface-elevated/90 backdrop-blur-sm opacity-100 md:opacity-0 md:group-hover:opacity-100 hover:bg-status-error/10 hover:border-status-error hover:text-status-error text-text-secondary touch-none"
           aria-label={t("project.card.deleteProject")}
           title={t("project.card.deleteProject")}
         >
           <Trash2 className="h-4 w-4" />
-        </button>
+        </Button>
       )}
     </div>
   );

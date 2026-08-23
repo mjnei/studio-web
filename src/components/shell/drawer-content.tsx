@@ -273,23 +273,23 @@ export function DrawerContent({
         {onToggle && (
           <button
             onClick={onToggle}
-            className={`rounded-lg p-2 lg:p-1.5 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all active:scale-95 focus-ring ${
+            className={`h-9 w-9 rounded-md text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all active:scale-95 focus-ring flex items-center justify-center ${
               collapsed ? "" : "ml-auto"
             }`}
             aria-label={collapsed ? t("shell.expandSidebar") : t("shell.collapseSidebar")}
             title={collapsed ? t("shell.expandSidebar") : t("shell.collapseSidebar")}
           >
-            <PanelLeft className="h-5 w-5" aria-hidden />
+            <PanelLeft className="h-4 w-4" aria-hidden />
           </button>
         )}
         {onClose && (
           <button
             onClick={onClose}
-            className="ml-auto rounded-lg p-2 lg:p-1.5 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all active:scale-95 focus-ring"
+            className="ml-auto h-9 w-9 rounded-md text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all active:scale-95 focus-ring flex items-center justify-center"
             aria-label={t("shell.closeMenu")}
             title={t("shell.closeMenu")}
           >
-            <Icon icon={X} size="md" />
+            <Icon icon={X} size="sm" />
           </button>
         )}
       </div>

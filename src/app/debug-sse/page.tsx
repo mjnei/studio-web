@@ -5,6 +5,7 @@ import { getAccessToken } from "@/lib/api-client";
 import { useAuth } from "@/lib/auth-context";
 import { useNotifications } from "@/lib/notification-context";
 import { Heading } from "@/components/ui/heading";
+import { Button } from "@/components/ui/button";
 
 export default function DebugSSEPage() {
   const { isAuthenticated, user } = useAuth();
@@ -120,13 +121,14 @@ export default function DebugSSEPage() {
             <Heading variant="subsection" as="h2" className="text-text-primary">
               Manual SSE Test
             </Heading>
-            <button
+            <Button
+              variant="primary"
+              size="md"
               onClick={testSSEConnection}
               disabled={!token}
-              className="px-4 py-2 bg-primary-base text-white rounded hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Test SSE Connection
-            </button>
+            </Button>
           </div>
         </div>
 

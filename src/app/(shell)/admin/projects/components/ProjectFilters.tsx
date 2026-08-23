@@ -1,6 +1,7 @@
 "use client";
 
 import { Heading } from "@/components/ui/heading";
+import { Button } from "@/components/ui/button";
 import { Filter, Search, X } from "lucide-react";
 import { useState } from "react";
 import type { AdminProjectFilter, AdminProjectStatus, AdminProjectStep } from "@/types/admin";
@@ -171,13 +172,9 @@ export function ProjectFilters({ filters, onFilterChange, onClear }: ProjectFilt
             />
             Include deleted
           </label>
-          <button
-            type="button"
-            onClick={apply}
-            className="ml-auto rounded-lg bg-accent-primary px-4 py-2 text-body font-medium text-white hover:opacity-90"
-          >
+          <Button type="button" size="md" onClick={apply} className="ml-auto">
             Apply
-          </button>
+          </Button>
         </div>
       </div>
     </div>

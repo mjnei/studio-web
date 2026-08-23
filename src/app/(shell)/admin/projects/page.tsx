@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Folder, RefreshCw } from "lucide-react";
 import { Heading } from "@/components/ui/heading";
+import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useToast } from "@/components/ui/toast";
 import {
@@ -141,14 +142,15 @@ export default function AdminProjectsPage() {
             </div>
           </div>
         </div>
-        <button
+        <Button
           type="button"
+          variant="secondary"
+          size="md"
           onClick={loadData}
-          className="inline-flex items-center gap-2 rounded-lg border border-border-default px-3 py-2 text-body text-text-primary hover:bg-surface-hover"
+          leftIcon={<RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />}
         >
-          <RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
           Refresh
-        </button>
+        </Button>
       </div>
 
       {stats ? <ProjectStatsCard stats={stats} /> : <LoadingSpinner />}
@@ -176,22 +178,24 @@ export default function AdminProjectsPage() {
             Page {pagination.page} of {totalPages} · {pagination.total} projects
           </span>
           <div className="flex gap-2">
-            <button
+            <Button
               type="button"
+              variant="secondary"
+              size="sm"
               disabled={pagination.page <= 1}
               onClick={() => setPagination((prev) => ({ ...prev, page: prev.page - 1 }))}
-              className="rounded-lg border border-border-default px-3 py-1.5 disabled:opacity-40"
             >
               Previous
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant="secondary"
+              size="sm"
               disabled={pagination.page >= totalPages}
               onClick={() => setPagination((prev) => ({ ...prev, page: prev.page + 1 }))}
-              className="rounded-lg border border-border-default px-3 py-1.5 disabled:opacity-40"
             >
               Next
-            </button>
+            </Button>
           </div>
         </div>
       )}

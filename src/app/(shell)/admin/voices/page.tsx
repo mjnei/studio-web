@@ -18,6 +18,7 @@ import { ConfirmModal } from "@/components/ui/modal";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Heading } from "@/components/ui/heading";
+import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
 import { VoiceBulkImportModal } from "@/components/admin/VoiceBulkImportModal";
 import {
@@ -263,20 +264,20 @@ export default function AdminVoicesPage() {
           </div>
 
           {/* Bulk Import Button */}
-          <button
+          <Button
+            size="md"
             onClick={() => setBulkImportModal(true)}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-body font-semibold bg-gradient-to-r from-accent-primary to-purple-600 text-white hover:shadow-lg hover:shadow-accent-primary/30 transition-all"
+            leftIcon={<Upload className="h-4 w-4" />}
           >
-            <Upload className="h-4 w-4" />
             Bulk Import
-          </button>
+          </Button>
         </div>
 
         {/* View Type Tabs */}
         <div className="flex gap-1 p-1 rounded-xl bg-surface-raised border border-border-default w-fit">
           <button
             onClick={() => setViewType("pending")}
-            className={`flex items-center gap-2 rounded-lg px-6 py-2.5 text-body font-semibold transition-all ${
+            className={`flex h-9 items-center gap-2 rounded-lg px-3.5 py-0 text-body font-semibold transition-all ${
               viewType === "pending"
                 ? "bg-gradient-to-r from-orange-500 to-yellow-600 text-white shadow-lg shadow-orange-500/30"
                 : "text-text-secondary hover:text-text-primary hover:bg-surface-panel"
@@ -294,7 +295,7 @@ export default function AdminVoicesPage() {
           </button>
           <button
             onClick={() => setViewType("approved")}
-            className={`flex items-center gap-2 rounded-lg px-6 py-2.5 text-body font-semibold transition-all ${
+            className={`flex h-9 items-center gap-2 rounded-lg px-3.5 py-0 text-body font-semibold transition-all ${
               viewType === "approved"
                 ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg shadow-green-500/30"
                 : "text-text-secondary hover:text-text-primary hover:bg-surface-panel"
@@ -312,7 +313,7 @@ export default function AdminVoicesPage() {
           </button>
           <button
             onClick={() => setViewType("all")}
-            className={`flex items-center gap-2 rounded-lg px-6 py-2.5 text-body font-semibold transition-all ${
+            className={`flex h-9 items-center gap-2 rounded-lg px-3.5 py-0 text-body font-semibold transition-all ${
               viewType === "all"
                 ? "bg-gradient-to-r from-blue-500 to-cyan-600 text-white shadow-lg shadow-blue-500/30"
                 : "text-text-secondary hover:text-text-primary hover:bg-surface-panel"
@@ -505,7 +506,9 @@ export default function AdminVoicesPage() {
                   <div className="md:hidden text-caption font-medium text-text-muted mb-1 w-full">
                     Actions
                   </div>
-                  <button
+                  <Button
+                    size="sm"
+                    variant={playingVoiceId === voice.id ? "primary" : "secondary"}
                     onClick={() => {
                       if (playingVoiceId === voice.id) {
                         stopAudio();
@@ -513,42 +516,45 @@ export default function AdminVoicesPage() {
                         playVoiceAudio(voice.id);
                       }
                     }}
-                    className={`flex items-center gap-2 rounded-lg px-3 py-2 text-body font-semibold transition-all shadow-sm ${
-                      playingVoiceId === voice.id
-                        ? "bg-gradient-to-r from-accent-primary to-purple-600 text-white shadow-accent-primary/30"
-                        : "border-2 border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:text-accent-primary hover:bg-accent-primary/5"
-                    }`}
-                  >
-                    {playingVoiceId === voice.id ? (
-                      <>
+                    leftIcon={
+                      playingVoiceId === voice.id ? (
                         <Pause className="h-4 w-4" />
-                        <Volume2 className="h-4 w-4 animate-pulse" />
-                      </>
-                    ) : (
-                      <>
+                      ) : (
                         <Play className="h-4 w-4" />
-                        <span className="hidden md:inline">Preview</span>
-                      </>
+                      )
+                    }
+                    rightIcon={
+                      playingVoiceId === voice.id ? (
+                        <Volume2 className="h-4 w-4 animate-pulse" />
+                      ) : undefined
+                    }
+                  >
+                    {playingVoiceId !== voice.id && (
+                      <span className="hidden md:inline">Preview</span>
                     )}
-                  </button>
+                  </Button>
 
                   {voice.is_shared ? (
                     voice.is_approved ? (
-                      <button
+                      <Button
+                        size="sm"
+                        variant="secondary"
                         onClick={() => handleUnapprove(voice)}
-                        className="flex items-center gap-1.5 rounded-lg border-2 border-orange-500/50 bg-orange-500/10 px-3 py-2 text-body font-medium text-orange-600 hover:bg-orange-500/20 transition-all"
+                        leftIcon={<XCircle className="h-4 w-4" />}
+                        className="border-orange-500/50 bg-orange-500/10 text-orange-600 hover:bg-orange-500/20"
                       >
-                        <XCircle className="h-4 w-4" />
                         <span className="hidden md:inline">Revoke</span>
-                      </button>
+                      </Button>
                     ) : (
-                      <button
+                      <Button
+                        size="sm"
+                        variant="secondary"
                         onClick={() => handleApprove(voice)}
-                        className="flex items-center gap-1.5 rounded-lg border-2 border-green-500/50 bg-green-500/10 px-3 py-2 text-body font-medium text-green-600 hover:bg-green-500/20 transition-all"
+                        leftIcon={<ThumbsUp className="h-4 w-4" />}
+                        className="border-green-500/50 bg-green-500/10 text-green-600 hover:bg-green-500/20"
                       >
-                        <ThumbsUp className="h-4 w-4" />
                         <span className="hidden md:inline">Approve</span>
-                      </button>
+                      </Button>
                     )
                   ) : null}
                 </div>

@@ -1,4 +1,5 @@
 import { Film, Calendar, Star, Download, CheckCircle2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { ExternalImage } from "@/components/ui/ExternalImage";
 import { Heading } from "@/components/ui/heading";
@@ -73,23 +74,16 @@ export function TmdbMovieCard({
               Already in Database
             </div>
           ) : (
-            <button
+            <Button
+              size="sm"
               onClick={onImport}
               disabled={isImporting}
-              className="flex items-center justify-center gap-2 rounded-lg bg-accent-primary px-3 py-2 text-body font-medium text-white hover:bg-accent-primary/90 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
+              leftIcon={
+                isImporting ? <Spinner size="sm" /> : <Download className="h-4 w-4" />
+              }
             >
-              {isImporting ? (
-                <>
-                  <Spinner size="sm" />
-                  Importing...
-                </>
-              ) : (
-                <>
-                  <Download className="h-4 w-4" />
-                  Import to Database
-                </>
-              )}
-            </button>
+              {isImporting ? "Importing..." : "Import to Database"}
+            </Button>
           )}
         </div>
       </div>
@@ -150,23 +144,17 @@ export function TmdbMovieCard({
               in Database
             </div>
           ) : (
-            <button
+            <Button
+              size="sm"
+              fullWidth
               onClick={onImport}
               disabled={isImporting}
-              className="flex w-full items-center justify-center gap-2 rounded-lg bg-accent-primary px-3 py-2 text-body font-medium text-white hover:bg-accent-primary/90 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
+              leftIcon={
+                isImporting ? <Spinner size="sm" /> : <Download className="h-4 w-4" />
+              }
             >
-              {isImporting ? (
-                <>
-                  <Spinner size="sm" />
-                  Importing...
-                </>
-              ) : (
-                <>
-                  <Download className="h-4 w-4" />
-                  Import
-                </>
-              )}
-            </button>
+              {isImporting ? "Importing..." : "Import"}
+            </Button>
           )}
         </div>
       </div>

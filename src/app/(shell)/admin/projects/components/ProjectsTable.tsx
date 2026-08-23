@@ -1,6 +1,7 @@
 "use client";
 
 import { Heading } from "@/components/ui/heading";
+import { Button } from "@/components/ui/button";
 import { Eye, RotateCcw, Trash2 } from "lucide-react";
 import type { AdminProject } from "@/types/admin";
 
@@ -119,32 +120,37 @@ export function ProjectsTable({
             </div>
 
             <div className="flex items-center justify-end gap-2 md:col-span-2">
-              <button
+              <Button
                 type="button"
+                variant="secondary"
+                size="icon"
                 onClick={() => onView(project)}
-                className="rounded-lg border border-border-default p-2 text-text-secondary hover:bg-surface-hover hover:text-text-primary"
                 title="View details"
               >
                 <Eye className="h-4 w-4" />
-              </button>
+              </Button>
               {project.is_deleted ? (
-                <button
+                <Button
                   type="button"
+                  variant="secondary"
+                  size="icon"
                   onClick={() => onRestore(project)}
-                  className="rounded-lg border border-border-default p-2 text-green-600 hover:bg-green-500/10"
                   title="Restore"
+                  className="text-green-600 hover:bg-green-500/10"
                 >
                   <RotateCcw className="h-4 w-4" />
-                </button>
+                </Button>
               ) : (
-                <button
+                <Button
                   type="button"
+                  variant="secondary"
+                  size="icon"
                   onClick={() => onDelete(project)}
-                  className="rounded-lg border border-border-default p-2 text-red-600 hover:bg-red-500/10"
                   title="Soft delete"
+                  className="text-red-600 hover:bg-red-500/10"
                 >
                   <Trash2 className="h-4 w-4" />
-                </button>
+                </Button>
               )}
             </div>
           </div>

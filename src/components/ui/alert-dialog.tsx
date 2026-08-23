@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils/cn";
 import { Modal } from "./modal";
 import { Heading } from "./heading";
 import { typography } from "./typography";
+import { Button } from "./button";
 
 export const AlertDialog = Modal;
 export const AlertDialogContent = ({ children }: { children: React.ReactNode }) => <>{children}</>;
@@ -43,13 +44,9 @@ export const AlertDialogAction = ({
   disabled?: boolean;
   className?: string;
 }) => (
-  <button
-    onClick={onClick}
-    disabled={disabled}
-    className={`px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 ${className}`}
-  >
+  <Button variant="primary" size="md" onClick={onClick} disabled={disabled} className={className}>
     {children}
-  </button>
+  </Button>
 );
 export const AlertDialogCancel = ({
   children,
@@ -60,11 +57,7 @@ export const AlertDialogCancel = ({
   onClick?: () => void;
   disabled?: boolean;
 }) => (
-  <button
-    onClick={onClick}
-    disabled={disabled}
-    className="px-4 py-2 rounded-lg font-medium border border-border-default hover:bg-surface-hover transition-colors disabled:opacity-50"
-  >
+  <Button variant="secondary" size="md" onClick={onClick} disabled={disabled}>
     {children || "Cancel"}
-  </button>
+  </Button>
 );

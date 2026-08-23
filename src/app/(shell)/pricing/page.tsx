@@ -32,8 +32,9 @@ function BillingToggle({ billingCycle, onBillingCycleChange, t }: BillingToggleP
   return (
     <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-surface-raised border border-border-default shadow-sm">
       <button
+        type="button"
         onClick={() => onBillingCycleChange("monthly")}
-        className={`px-4 sm:px-5 py-2 rounded-lg text-body font-medium transition-all ${
+        className={`h-9 px-3.5 sm:px-4 rounded-lg text-body font-medium transition-all ${
           billingCycle === "monthly"
             ? "bg-accent-primary text-white shadow-glow"
             : "text-text-muted hover:text-text-primary"
@@ -42,8 +43,9 @@ function BillingToggle({ billingCycle, onBillingCycleChange, t }: BillingToggleP
         {t("pricing.billingToggle.monthly")}
       </button>
       <button
+        type="button"
         onClick={() => onBillingCycleChange("annual")}
-        className={`px-4 sm:px-5 py-2 rounded-lg text-body font-medium transition-all ${
+        className={`h-9 px-3.5 sm:px-4 rounded-lg text-body font-medium transition-all ${
           billingCycle === "annual"
             ? "bg-accent-primary text-white shadow-glow"
             : "text-text-muted hover:text-text-primary"

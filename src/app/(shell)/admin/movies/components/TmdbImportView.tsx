@@ -1,4 +1,5 @@
 import { Film, Search, Database } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { LayoutToggle, type LayoutMode } from "@/components/ui/LayoutToggle";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -78,14 +79,15 @@ export function TmdbImportView({
               className="min-w-0 flex-1 bg-transparent text-text-primary placeholder-text-muted focus:outline-none disabled:opacity-50"
             />
           </div>
-          <button
+          <Button
+            size="icon"
             onClick={() => onSearch(1)}
             disabled={isSearching || !searchQuery.trim()}
-            className="flex shrink-0 items-center justify-center rounded-lg bg-accent-primary px-4 py-3 text-body font-medium text-white hover:bg-accent-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all sm:px-6"
             aria-label="Search TMDB"
+            className="shrink-0"
           >
             <Search className="h-4 w-4" />
-          </button>
+          </Button>
         </div>
       </div>
 

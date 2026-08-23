@@ -1,6 +1,7 @@
 "use client";
 
 import { Heading } from "@/components/ui/heading";
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Search, X, Filter } from "lucide-react";
 import type { AuditFilter } from "@/types/admin";
@@ -164,12 +165,9 @@ export default function AuditFilters({ filters, onFilterChange, onClear }: Audit
 
         {/* Apply Button */}
         <div className="mt-4 flex gap-2">
-          <button
-            onClick={handleApply}
-            className="flex-1 rounded-lg bg-primary px-4 py-2 text-body font-medium text-white hover:bg-primary-hover transition-colors"
-          >
+          <Button onClick={handleApply} size="md" fullWidth>
             Apply Filters
-          </button>
+          </Button>
         </div>
       </div>
     </div>

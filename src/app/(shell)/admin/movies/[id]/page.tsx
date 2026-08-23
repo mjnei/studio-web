@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Spinner } from "@/components/ui/spinner";
+import { Button } from "@/components/ui/button";
 import { ExternalImage } from "@/components/ui/ExternalImage";
 import { Heading } from "@/components/ui/heading";
 import {
@@ -322,27 +323,32 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                       />
                     </div>
                     <div className="flex gap-2">
-                      <button
+                      <Button
+                        size="md"
+                        variant="success"
                         onClick={handleUpdate}
-                        className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-body font-medium text-white hover:bg-green-700 transition-colors"
+                        leftIcon={<Save className="h-4 w-4" />}
+                        className="flex-1"
                       >
-                        <Save className="h-4 w-4" />
                         Save
-                      </button>
-                      <button
+                      </Button>
+                      <Button
+                        size="icon"
+                        variant="secondary"
                         onClick={() => {
                           setIsEditing(false);
                           setEditingData(null);
                         }}
-                        className="flex items-center justify-center gap-2 rounded-lg border border-border-default bg-surface-base px-4 py-2 text-body font-medium text-text-secondary hover:bg-surface-hover transition-colors"
                       >
                         <X className="h-4 w-4" />
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 ) : (
                   <div className="flex flex-col gap-2">
-                    <button
+                    <Button
+                      size="md"
+                      variant="secondary"
                       onClick={() => {
                         setIsEditing(true);
                         setEditingData({
@@ -350,18 +356,19 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                           douban_id: movie.douban_id || undefined,
                         });
                       }}
-                      className="flex items-center justify-center gap-2 rounded-lg border border-border-default bg-surface-base px-4 py-2 text-body font-medium text-text-secondary hover:bg-surface-hover transition-colors"
+                      leftIcon={<Edit2 className="h-4 w-4" />}
                     >
-                      <Edit2 className="h-4 w-4" />
                       Edit Movie
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                      size="md"
+                      variant="outline"
                       onClick={handleDelete}
-                      className="flex items-center justify-center gap-2 rounded-lg border border-red-500/50 bg-red-500/10 px-4 py-2 text-body font-medium text-red-600 hover:bg-red-500/20 transition-colors"
+                      leftIcon={<Trash2 className="h-4 w-4" />}
+                      className="border-red-500/50 bg-red-500/10 text-red-600 hover:bg-red-500/20"
                     >
-                      <Trash2 className="h-4 w-4" />
                       Delete Movie
-                    </button>
+                    </Button>
                   </div>
                 )}
               </div>

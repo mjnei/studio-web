@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { Spinner } from "@/components/ui/spinner";
+import { Button } from "@/components/ui/button";
 import { ExternalImage } from "@/components/ui/ExternalImage";
 import { Heading } from "@/components/ui/heading";
 import { getMovie, type MovieResponse } from "@/lib/project-client";
@@ -196,23 +197,17 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                 )}
 
                 {/* Create Project Button */}
-                <button
+                <Button
+                  size="md"
+                  fullWidth
                   onClick={handleCreateProject}
                   disabled={movieId === null || loading}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-accent-cyan px-5 py-3.5 text-body font-semibold text-white shadow-lg shadow-accent-cyan/20 hover:bg-accent-cyan/90 hover:shadow-xl hover:shadow-accent-cyan/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+                  isLoading={loading}
+                  leftIcon={<Play className="h-5 w-5" />}
+                  className="bg-accent-cyan shadow-lg shadow-accent-cyan/20 hover:bg-accent-cyan/90 hover:shadow-xl hover:shadow-accent-cyan/30"
                 >
-                  {loading ? (
-                    <>
-                      <Spinner className="h-5 w-5" />
-                      {t("movies.detail.buttonLoading")}
-                    </>
-                  ) : (
-                    <>
-                      <Play className="h-5 w-5" />
-                      {t("movies.detail.createProject")}
-                    </>
-                  )}
-                </button>
+                  {t("movies.detail.createProject")}
+                </Button>
 
                 {/* Stats Card */}
                 <div className="space-y-3 rounded-xl border border-border-default bg-surface-panel p-4">

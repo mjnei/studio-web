@@ -1,6 +1,7 @@
 "use client";
 
 import { Heading } from "@/components/ui/heading";
+import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { AdminProject, AdminProjectStatus } from "@/types/admin";
@@ -53,14 +54,15 @@ export function ProjectDetailModal({
             </Heading>
             <p className="mt-1 text-body text-text-muted">Project ID {project.id}</p>
           </div>
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            size="icon"
             onClick={onClose}
-            className="rounded-lg p-2 text-text-muted hover:bg-surface-hover hover:text-text-primary"
             aria-label="Close"
           >
             <X className="h-5 w-5" aria-hidden />
-          </button>
+          </Button>
         </div>
 
         <div className="space-y-4 px-5 py-4 text-body">
@@ -126,14 +128,14 @@ export function ProjectDetailModal({
                     </option>
                   ))}
                 </select>
-                <button
+                <Button
                   type="button"
+                  size="md"
                   disabled={saving || status === project.status}
                   onClick={handleSaveStatus}
-                  className="rounded-lg bg-accent-primary px-4 py-2 text-body font-medium text-white disabled:opacity-50"
                 >
                   {saving ? "Saving…" : "Save status"}
-                </button>
+                </Button>
               </div>
             </div>
           )}
@@ -141,29 +143,17 @@ export function ProjectDetailModal({
 
         <div className="flex justify-end gap-2 border-t border-border-default px-5 py-4">
           {project.is_deleted ? (
-            <button
-              type="button"
-              onClick={() => onRestore(project)}
-              className="rounded-lg bg-green-600 px-4 py-2 text-body font-medium text-white hover:opacity-90"
-            >
+            <Button type="button" variant="success" size="md" onClick={() => onRestore(project)}>
               Restore project
-            </button>
+            </Button>
           ) : (
-            <button
-              type="button"
-              onClick={() => onDelete(project)}
-              className="rounded-lg bg-red-600 px-4 py-2 text-body font-medium text-white hover:opacity-90"
-            >
+            <Button type="button" variant="danger" size="md" onClick={() => onDelete(project)}>
               Soft delete
-            </button>
+            </Button>
           )}
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-lg border border-border-default px-4 py-2 text-body text-text-primary hover:bg-surface-hover"
-          >
+          <Button type="button" variant="secondary" size="md" onClick={onClose}>
             Close
-          </button>
+          </Button>
         </div>
       </div>
     </div>

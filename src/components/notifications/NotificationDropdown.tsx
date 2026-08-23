@@ -45,8 +45,9 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
         <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
           {unreadCount > 0 && (
             <button
+              type="button"
               onClick={handleMarkAllAsRead}
-              className="p-2 min-w-[44px] min-h-[44px] rounded-lg text-text-muted hover:bg-surface-hover hover:text-text-primary active:bg-surface-hover transition-all touch-manipulation flex items-center justify-center"
+              className="h-9 w-9 rounded-md text-text-muted hover:bg-surface-hover hover:text-text-primary transition-all flex items-center justify-center"
               title={t("notifications.markAllAsRead")}
               aria-label={t("notifications.markAllAsRead")}
             >
@@ -56,7 +57,7 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
           <Link
             href="/settings/notifications"
             onClick={onClose}
-            className="p-2 min-w-[44px] min-h-[44px] rounded-lg text-text-muted hover:bg-surface-hover hover:text-text-primary active:bg-surface-hover transition-all touch-manipulation flex items-center justify-center"
+            className="h-9 w-9 rounded-md text-text-muted hover:bg-surface-hover hover:text-text-primary transition-all flex items-center justify-center"
             title={t("notifications.notificationSettings")}
             aria-label={t("notifications.notificationSettings")}
           >
