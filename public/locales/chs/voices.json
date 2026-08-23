@@ -158,7 +158,7 @@
       "title": "录制音色",
       "requestingAccess": "正在请求麦克风权限…",
       "readyTitle": "准备录制",
-      "readyHint": "录制 30–60 秒清晰人声",
+      "readyHint": "录制最多 10 秒清晰人声",
       "startRecording": "开始录制",
       "stopRecording": "停止录制",
       "maxDuration": "最长 {time}",

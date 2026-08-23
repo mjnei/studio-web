@@ -1,4 +1,5 @@
-export const MAX_DURATION_S = 60;
+/** Max clip length in seconds. See docs/guides/VOICE_RECORDING_MODAL.md */
+export const MAX_DURATION_S = 10;
 
 export const RECORDING_TIMER_INTERVAL_MS = 200;
 

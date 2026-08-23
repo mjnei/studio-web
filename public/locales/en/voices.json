@@ -158,7 +158,7 @@
       "title": "Record Voice",
       "requestingAccess": "Requesting microphone access…",
       "readyTitle": "Ready to Record",
-      "readyHint": "Record 30–60s of clear speech",
+      "readyHint": "Record up to 10s of clear speech",
       "startRecording": "Start recording",
       "stopRecording": "Stop recording",
       "maxDuration": "Maximum {time}",
