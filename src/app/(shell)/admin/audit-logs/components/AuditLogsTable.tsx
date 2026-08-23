@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Copy } from "lucide-react";
+import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Copy, FileText } from "lucide-react";
 import type { AuditLog } from "@/types/admin";
 import { useToast } from "@/lib/hooks/use-toast";
 import { Spinner } from "@/components/ui/spinner";
+import { EmptyState } from "@/components/ui/EmptyState";
 import ActionBadge from "./ActionBadge";
 import SourceBadge from "./SourceBadge";
 
@@ -100,9 +101,9 @@ export default function AuditLogsTable({
   const SortIcon = ({ field }: { field: SortField }) => {
     if (sortField !== field) return null;
     return sortDirection === "asc" ? (
-      <ChevronUp className="h-4 w-4" />
+      <ChevronUp className="h-4 w-4" aria-hidden />
     ) : (
-      <ChevronDown className="h-4 w-4" />
+      <ChevronDown className="h-4 w-4" aria-hidden />
     );
   };
 
@@ -118,9 +119,13 @@ export default function AuditLogsTable({
 
   if (logs.length === 0) {
     return (
-      <div className="rounded-xl border-2 border-border bg-surface-panel p-8">
-        <p className="text-center text-text-muted">No audit logs found</p>
-      </div>
+      <EmptyState
+        size="md"
+        className="rounded-xl border-2 border-border bg-surface-panel"
+        icon={<FileText aria-hidden />}
+        title="No audit logs found"
+        description="Audit events will appear here once activity is recorded."
+      />
     );
   }
 

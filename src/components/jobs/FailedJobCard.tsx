@@ -46,14 +46,14 @@ export const FailedJobCard: React.FC<FailedJobCardProps> = ({
             className="text-text-muted hover:text-status-failed transition-colors p-1"
           >
             {isSelected ? (
-              <CheckSquare className="h-4 w-4 text-status-failed" />
+              <CheckSquare className="h-4 w-4 text-status-failed" aria-hidden />
             ) : (
-              <Square className="h-4 w-4" />
+              <Square className="h-4 w-4" aria-hidden />
             )}
           </button>
 
           <div className="flex-shrink-0 w-28 aspect-video rounded-md overflow-hidden bg-black/50 border border-status-failed/30 flex items-center justify-center">
-            <AlertTriangle className="h-7 w-7 text-status-failed" />
+            <AlertTriangle className="h-7 w-7 text-status-failed" aria-hidden />
           </div>
         </div>
 
@@ -83,7 +83,7 @@ export const FailedJobCard: React.FC<FailedJobCardProps> = ({
           {/* Error Message Box */}
           <div className="p-2.5 rounded-md bg-status-failed/10 border border-status-failed/20 text-xs text-status-failed space-y-0.5">
             <p className="font-semibold flex items-center gap-1.5">
-              <AlertTriangle className="h-3.5 w-3.5 flex-shrink-0" />
+              <AlertTriangle className="h-3.5 w-3.5 flex-shrink-0" aria-hidden />
               {t("jobs.failedJob.generationFailed", { progress: job.progress })}
             </p>
             <p className="text-text-secondary line-clamp-2 pl-5">
@@ -116,7 +116,7 @@ export const FailedJobCard: React.FC<FailedJobCardProps> = ({
             <Button
               variant="primary"
               size="sm"
-              leftIcon={<RotateCcw className="h-3.5 w-3.5" />}
+              leftIcon={<RotateCcw className="h-3.5 w-3.5" aria-hidden />}
               onClick={() => onRetry(job.projectId, job.id)}
               disabled={isActionLoading}
             >
@@ -126,7 +126,7 @@ export const FailedJobCard: React.FC<FailedJobCardProps> = ({
             <Button
               variant="outline"
               size="sm"
-              leftIcon={<Eye className="h-3.5 w-3.5" />}
+              leftIcon={<Eye className="h-3.5 w-3.5" aria-hidden />}
               onClick={() => router.push(`/project/${job.projectId}/export`)}
             >
               {t("jobs.failedJob.viewProject")}
@@ -135,7 +135,7 @@ export const FailedJobCard: React.FC<FailedJobCardProps> = ({
             <Button
               variant="ghost"
               size="sm"
-              leftIcon={<Trash2 className="h-3.5 w-3.5" />}
+              leftIcon={<Trash2 className="h-3.5 w-3.5" aria-hidden />}
               onClick={() => onDelete(job.projectId, job.id)}
               disabled={isActionLoading}
               className="text-status-failed hover:bg-status-failed/10 ml-auto"

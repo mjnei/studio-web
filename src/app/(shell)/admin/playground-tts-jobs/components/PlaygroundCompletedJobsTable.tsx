@@ -1,6 +1,6 @@
 "use client";
 
-import { Heading } from "@/components/ui/heading";
+import { EmptyState } from "@/components/ui/EmptyState";
 
 import { useState } from "react";
 import { CheckCircle2, Eye, Clock, Play } from "lucide-react";
@@ -49,19 +49,13 @@ export function PlaygroundCompletedJobsTable({
 
   if (completedJobs.length === 0) {
     return (
-      <div className="rounded-xl border border-border-default bg-surface-panel p-8 text-center">
-        <div className="flex flex-col items-center justify-center gap-3">
-          <div className="flex items-center justify-center w-16 h-16 rounded-full bg-gray-500/10">
-            <CheckCircle2 className="h-8 w-8 text-gray-600" />
-          </div>
-          <Heading variant="subsection" as="h3" className="text-text-primary">
-            No Completed Playground Jobs
-          </Heading>
-          <p className="text-sm text-text-secondary max-w-md">
-            No completed playground TTS jobs found in the system yet.
-          </p>
-        </div>
-      </div>
+      <EmptyState
+        size="lg"
+        className="rounded-xl border border-border-default bg-surface-panel"
+        icon={<CheckCircle2 aria-hidden />}
+        title="No Completed Playground Jobs"
+        description="No completed playground TTS jobs found in the system yet."
+      />
     );
   }
 

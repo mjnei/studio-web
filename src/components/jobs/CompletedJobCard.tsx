@@ -50,9 +50,9 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
               className="text-text-muted hover:text-accent-primary transition-colors p-1"
             >
               {isSelected ? (
-                <CheckSquare className="h-4 w-4 text-accent-primary" />
+                <CheckSquare className="h-4 w-4 text-accent-primary" aria-hidden />
               ) : (
-                <Square className="h-4 w-4" />
+                <Square className="h-4 w-4" aria-hidden />
               )}
             </button>
 
@@ -71,11 +71,11 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-surface-panel">
-                  <Play className="h-5 w-5 text-text-muted" />
+                  <Play className="h-5 w-5 text-text-muted" aria-hidden />
                 </div>
               )}
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                <Play className="h-6 w-6 text-white fill-current" />
+                <Play className="h-6 w-6 text-white fill-current" aria-hidden />
               </div>
             </div>
           </div>
@@ -90,7 +90,7 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
                 {job.projectName}
               </h3>
               <Badge variant="success" className="text-[10px] py-0 px-1.5 flex items-center gap-1">
-                <CheckCircle2 className="h-3 w-3" />
+                <CheckCircle2 className="h-3 w-3" aria-hidden />
                 {t("jobs.completedJob.ready")}
               </Badge>
             </div>
@@ -121,7 +121,7 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
           <div className="flex items-center gap-1.5 self-end sm:self-center">
             <Tooltip content={t("jobs.completedJob.previewVideo")} position="top">
               <Button variant="ghost" size="sm" onClick={() => onPlay(job)} className="px-2">
-                <Play className="h-4 w-4" />
+                <Play className="h-4 w-4" aria-hidden />
               </Button>
             </Tooltip>
 
@@ -133,7 +133,7 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
                   onClick={() => window.open(job.video_url!, "_blank")}
                   className="px-2"
                 >
-                  <Download className="h-4 w-4 text-accent-cyan" />
+                  <Download className="h-4 w-4 text-accent-cyan" aria-hidden />
                 </Button>
               </Tooltip>
             )}
@@ -145,7 +145,7 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
                 onClick={() => router.push(`/project/${job.projectId}/export`)}
                 className="px-2"
               >
-                <Eye className="h-4 w-4" />
+                <Eye className="h-4 w-4" aria-hidden />
               </Button>
             </Tooltip>
 
@@ -157,7 +157,7 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
                 disabled={isDeleting}
                 className="px-2 text-status-failed hover:bg-status-failed/10"
               >
-                <Trash2 className="h-4 w-4" />
+                <Trash2 className="h-4 w-4" aria-hidden />
               </Button>
             </Tooltip>
           </div>
@@ -185,9 +185,9 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
           className="absolute top-2 left-2 z-10 p-1.5 rounded-md bg-black/60 text-white hover:bg-black/80 transition-colors backdrop-blur-sm"
         >
           {isSelected ? (
-            <CheckSquare className="h-4 w-4 text-accent-primary" />
+            <CheckSquare className="h-4 w-4 text-accent-primary" aria-hidden />
           ) : (
-            <Square className="h-4 w-4 text-white/80" />
+            <Square className="h-4 w-4 text-white/80" aria-hidden />
           )}
         </button>
 
@@ -208,7 +208,7 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-surface-panel">
-            <Play className="h-8 w-8 text-text-muted" />
+            <Play className="h-8 w-8 text-text-muted" aria-hidden />
           </div>
         )}
 
@@ -218,7 +218,7 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
           className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
         >
           <div className="h-11 w-11 rounded-full bg-accent-primary text-white flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
-            <Play className="h-5 w-5 fill-current ml-0.5" />
+            <Play className="h-5 w-5 fill-current ml-0.5" aria-hidden />
           </div>
         </div>
       </div>
@@ -265,7 +265,7 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
             variant="ghost"
             size="sm"
             onClick={() => onPlay(job)}
-            leftIcon={<Play className="h-3.5 w-3.5" />}
+            leftIcon={<Play className="h-3.5 w-3.5" aria-hidden />}
             className="flex-1 text-xs"
           >
             {t("jobs.completedJob.play")}
@@ -279,7 +279,7 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
                 onClick={() => window.open(job.video_url!, "_blank")}
                 className="px-2 text-accent-cyan"
               >
-                <Download className="h-3.5 w-3.5" />
+                <Download className="h-3.5 w-3.5" aria-hidden />
               </Button>
             </Tooltip>
           )}
@@ -292,7 +292,7 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
               disabled={isDeleting}
               className="px-2 text-status-failed hover:bg-status-failed/10"
             >
-              <Trash2 className="h-3.5 w-3.5" />
+              <Trash2 className="h-3.5 w-3.5" aria-hidden />
             </Button>
           </Tooltip>
         </div>

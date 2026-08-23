@@ -6,6 +6,7 @@ import { Folder, Film, Mic, Plus, ArrowRight, Sparkles, X } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { LoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Heading } from "@/components/ui/heading";
 import { ExternalImage } from "@/components/ui/ExternalImage";
@@ -223,7 +224,7 @@ export default function DashboardPage() {
       </Card>
 
       {/* Recent Projects */}
-      {!loadingProjects && projects.length > 0 && (
+      {(loadingProjects || projects.length > 0) && (
         <Card variant="elevated" padding="lg" className="mb-6 fade-in">
           <CardHeader className="mb-6">
             <div className="flex items-center justify-between">
@@ -231,26 +232,32 @@ export default function DashboardPage() {
                 <CardTitle>{t("dashboard.recentProjects.title")}</CardTitle>
                 <CardDescription>{t("dashboard.recentProjects.description")}</CardDescription>
               </div>
-              <Link href="/projects">
-                <Button variant="secondary" size="sm">
-                  {t("dashboard.recentProjects.viewAll")}
-                  <ArrowRight className="h-4 w-4 ml-1" aria-hidden />
-                </Button>
-              </Link>
+              {!loadingProjects && projects.length > 0 && (
+                <Link href="/projects">
+                  <Button variant="secondary" size="sm">
+                    {t("dashboard.recentProjects.viewAll")}
+                    <ArrowRight className="h-4 w-4 ml-1" aria-hidden />
+                  </Button>
+                </Link>
+              )}
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {projects.map((project) => (
-                <ProjectCard key={project.id} project={project} />
-              ))}
-            </div>
+            {loadingProjects ? (
+              <LoadingSkeleton variant="grid" count={3} />
+            ) : (
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {projects.map((project) => (
+                  <ProjectCard key={project.id} project={project} />
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
       )}
 
       {/* Popular Movies */}
-      {!loadingMovies && popularMovies.length > 0 && (
+      {(loadingMovies || popularMovies.length > 0) && (
         <Card variant="elevated" padding="lg" className="fade-in">
           <CardHeader className="mb-6">
             <div className="flex items-center justify-between">
@@ -261,49 +268,59 @@ export default function DashboardPage() {
                 </CardTitle>
                 <CardDescription>{t("dashboard.popularMovies.description")}</CardDescription>
               </div>
-              <Link href="/movies">
-                <Button variant="secondary" size="sm">
-                  {t("dashboard.popularMovies.exploreAll")}
-                  <ArrowRight className="h-4 w-4 ml-1" aria-hidden />
-                </Button>
-              </Link>
+              {!loadingMovies && popularMovies.length > 0 && (
+                <Link href="/movies">
+                  <Button variant="secondary" size="sm">
+                    {t("dashboard.popularMovies.exploreAll")}
+                    <ArrowRight className="h-4 w-4 ml-1" aria-hidden />
+                  </Button>
+                </Link>
+              )}
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-              {popularMovies.map((movie) => (
-                <Link
-                  key={movie.id}
-                  href={`/movies/${movie.id}`}
-                  className="group overflow-hidden rounded-xl border border-border-default bg-surface-panel transition hover:border-accent-cyan/40 hover:shadow-lg"
-                >
-                  <div className="relative aspect-[2/3] w-full overflow-hidden bg-surface-raised">
-                    {movie.poster_path && tmdbImageUrl(movie.poster_path) ? (
-                      <ExternalImage
-                        src={tmdbImageUrl(movie.poster_path)!}
-                        alt={movie.title}
-                        className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-                        fill
-                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
-                      />
-                    ) : (
-                      <div className="flex h-full items-center justify-center">
-                        <Film className="h-8 w-8 text-text-muted" aria-hidden />
-                      </div>
-                    )}
-                  </div>
-                  <div className="p-2">
-                    <Heading
-                      variant="label"
-                      as="h3"
-                      className="line-clamp-1 text-caption text-text-primary group-hover:text-accent-cyan"
-                    >
-                      {movie.title}
-                    </Heading>
-                  </div>
-                </Link>
-              ))}
-            </div>
+            {loadingMovies ? (
+              <LoadingSkeleton
+                variant="poster"
+                count={6}
+                className="grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4"
+              />
+            ) : (
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+                {popularMovies.map((movie) => (
+                  <Link
+                    key={movie.id}
+                    href={`/movies/${movie.id}`}
+                    className="group overflow-hidden rounded-xl border border-border-default bg-surface-panel transition hover:border-accent-cyan/40 hover:shadow-lg"
+                  >
+                    <div className="relative aspect-[2/3] w-full overflow-hidden bg-surface-raised">
+                      {movie.poster_path && tmdbImageUrl(movie.poster_path) ? (
+                        <ExternalImage
+                          src={tmdbImageUrl(movie.poster_path)!}
+                          alt={movie.title}
+                          className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                          fill
+                          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
+                        />
+                      ) : (
+                        <div className="flex h-full items-center justify-center">
+                          <Film className="h-8 w-8 text-text-muted" aria-hidden />
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-2">
+                      <Heading
+                        variant="label"
+                        as="h3"
+                        className="line-clamp-1 text-caption text-text-primary group-hover:text-accent-cyan"
+                      >
+                        {movie.title}
+                      </Heading>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
       )}

@@ -62,7 +62,7 @@ export const ActiveJobCard: React.FC<ActiveJobCardProps> = ({ job, onDelete, isD
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-surface-panel">
-              <Video className="h-8 w-8 text-blue-400/60" />
+              <Video className="h-8 w-8 text-blue-400/60" aria-hidden />
             </div>
           )}
           <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px] flex items-center justify-center">
@@ -148,7 +148,7 @@ export const ActiveJobCard: React.FC<ActiveJobCardProps> = ({ job, onDelete, isD
             <Button
               variant="outline"
               size="sm"
-              leftIcon={<Eye className="h-3.5 w-3.5" />}
+              leftIcon={<Eye className="h-3.5 w-3.5" aria-hidden />}
               onClick={() => router.push(`/project/${job.projectId}/export`)}
             >
               {t("jobs.activeJob.viewProject")}
@@ -166,12 +166,17 @@ export const ActiveJobCard: React.FC<ActiveJobCardProps> = ({ job, onDelete, isD
                 variant={notifyMe ? "secondary" : "ghost"}
                 size="sm"
                 onClick={() => setNotifyMe(!notifyMe)}
+                aria-label={
+                  notifyMe
+                    ? t("jobs.activeJob.notificationEnabled")
+                    : t("jobs.activeJob.notifyWhenComplete")
+                }
                 className="px-2.5"
               >
                 {notifyMe ? (
-                  <Bell className="h-3.5 w-3.5 text-accent-cyan" />
+                  <Bell className="h-3.5 w-3.5 text-accent-cyan" aria-hidden />
                 ) : (
-                  <BellOff className="h-3.5 w-3.5 text-text-muted" />
+                  <BellOff className="h-3.5 w-3.5 text-text-muted" aria-hidden />
                 )}
               </Button>
             </Tooltip>
@@ -179,7 +184,7 @@ export const ActiveJobCard: React.FC<ActiveJobCardProps> = ({ job, onDelete, isD
             <Button
               variant="ghost"
               size="sm"
-              leftIcon={<XCircle className="h-3.5 w-3.5" />}
+              leftIcon={<XCircle className="h-3.5 w-3.5" aria-hidden />}
               onClick={() => onDelete(job.projectId, job.id)}
               disabled={isDeleting}
               className="text-text-muted hover:text-status-failed ml-auto"

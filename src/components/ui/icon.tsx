@@ -11,9 +11,11 @@ const sizeClasses = {
 
 type IconSize = keyof typeof sizeClasses;
 
+const SIZE_CLASS_PATTERN = /\b(h|w)-[\d.]+/;
+
 interface IconProps extends Omit<React.ComponentPropsWithoutRef<LucideIcon>, "size"> {
   icon: LucideIcon;
-  /** Size token (`xs`–`xl`). Do not pass conflicting `h-N w-N` in `className` — cn() does not dedupe Tailwind utilities. */
+  /** Size token (`xs`–`xl`). Omit when passing explicit `h-N w-N` in `className` (token is skipped). */
   size?: IconSize;
   className?: string;
 }
@@ -25,9 +27,11 @@ export function Icon({
   "aria-hidden": ariaHidden = true,
   ...props
 }: IconProps) {
+  const hasExplicitSize = SIZE_CLASS_PATTERN.test(className ?? "");
+
   return (
     <IconComponent
-      className={cn(sizeClasses[size], className)}
+      className={cn(!hasExplicitSize && sizeClasses[size], className)}
       aria-hidden={ariaHidden}
       {...props}
     />
