@@ -3,6 +3,7 @@
 import React from "react";
 import { cn } from "@/lib/utils/cn";
 import { Spinner } from "@/components/ui/spinner";
+import { Text } from "@/components/ui/text";
 import { useI18n } from "@/i18n";
 
 interface LoadingSpinnerProps {
@@ -34,11 +35,15 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
         <Spinner size={size} className="text-accent-primary" />
         <span className="sr-only">{loadingText}</span>
         {message && (
-          <p aria-hidden="true" className="text-body font-medium text-text-primary">
+          <Text aria-hidden="true" variant="body" className="font-medium text-text-primary">
             {message}
-          </p>
+          </Text>
         )}
-        {description && <p className="text-caption text-text-muted">{description}</p>}
+        {description && (
+          <Text variant="caption" className="text-text-muted">
+            {description}
+          </Text>
+        )}
       </div>
     </div>
   );

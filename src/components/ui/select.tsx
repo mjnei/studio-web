@@ -3,6 +3,7 @@
 import { Check, ChevronDown } from "lucide-react";
 import { useState, useRef, useEffect, ReactNode } from "react";
 import { useI18n } from "@/i18n";
+import { Text } from "./text";
 
 export interface SelectOption {
   value: string;
@@ -142,7 +143,9 @@ export function Select({
   return (
     <div className={`relative ${className}`}>
       {label && (
-        <label className="mb-2 block text-body font-medium text-text-primary">{label}</label>
+        <Text as="label" variant="body" className="mb-2 block font-medium text-text-primary">
+          {label}
+        </Text>
       )}
 
       <div ref={selectRef} className="relative">
@@ -255,9 +258,15 @@ export function Select({
       </div>
 
       {helperText && !error && (
-        <p className="mt-1.5 text-caption text-text-secondary">{helperText}</p>
+        <Text variant="caption" className="mt-1.5 text-text-secondary">
+          {helperText}
+        </Text>
       )}
-      {error && <p className="mt-1.5 text-caption text-status-error">{error}</p>}
+      {error && (
+        <Text variant="caption" className="mt-1.5 text-status-error">
+          {error}
+        </Text>
+      )}
     </div>
   );
 }
@@ -337,7 +346,9 @@ export function MultiSelect({
   return (
     <div className={`relative ${className}`}>
       {label && (
-        <label className="mb-2 block text-body font-medium text-text-primary">{label}</label>
+        <Text as="label" variant="body" className="mb-2 block font-medium text-text-primary">
+          {label}
+        </Text>
       )}
 
       <div ref={selectRef} className="relative">
@@ -439,9 +450,15 @@ export function MultiSelect({
       </div>
 
       {helperText && !error && (
-        <p className="mt-1.5 text-caption text-text-secondary">{helperText}</p>
+        <Text variant="caption" className="mt-1.5 text-text-secondary">
+          {helperText}
+        </Text>
       )}
-      {error && <p className="mt-1.5 text-caption text-status-error">{error}</p>}
+      {error && (
+        <Text variant="caption" className="mt-1.5 text-status-error">
+          {error}
+        </Text>
+      )}
     </div>
   );
 }

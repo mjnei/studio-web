@@ -1,7 +1,7 @@
 import React from "react";
 import { cn } from "@/lib/utils/cn";
 import { Heading } from "./heading";
-import { typography } from "./typography";
+import { Text } from "./text";
 
 interface PageHeaderProps {
   title: React.ReactNode;
@@ -31,9 +31,9 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
                 {title}
               </Heading>
               {description && (
-                <p className={cn(typography.body, "mt-2 text-[var(--text-secondary)]")}>
+                <Text variant="body" className="mt-2 text-[var(--text-secondary)]">
                   {description}
-                </p>
+                </Text>
               )}
             </>
           ) : (

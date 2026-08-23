@@ -37,11 +37,16 @@ export interface HeadingProps extends React.HTMLAttributes<HTMLElement> {
   children: React.ReactNode;
 }
 
-export function Heading({ variant = "section", as, className, children, ...props }: HeadingProps) {
+export const Heading = React.forwardRef<HTMLElement, HeadingProps>(function Heading(
+  { variant = "section", as, className, children, ...props },
+  ref
+) {
   const Tag = as ?? defaultTag[variant];
   return (
-    <Tag className={cn(typography[variant], className)} {...props}>
+    <Tag ref={ref as React.Ref<never>} className={cn(typography[variant], className)} {...props}>
       {children}
     </Tag>
   );
-}
+});
+
+Heading.displayName = "Heading";

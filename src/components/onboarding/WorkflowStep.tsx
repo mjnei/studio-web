@@ -107,9 +107,9 @@ export default function WorkflowStep({ onNext, onBack }: WorkflowStepProps) {
             className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5"
             aria-hidden
           />
-          <p className="text-caption text-gray-700 dark:text-gray-300">
+          <Text variant="caption" as="p" className="text-gray-700 dark:text-gray-300">
             {t("onboarding.workflow.info")}
-          </p>
+          </Text>
         </div>
       </div>
 

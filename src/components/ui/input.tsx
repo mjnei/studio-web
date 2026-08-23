@@ -1,5 +1,6 @@
 import React from "react";
 import { cn } from "@/lib/utils/cn";
+import { Text } from "./text";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -16,9 +17,13 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="w-full">
         {label && (
-          <label className="block text-body font-medium text-[var(--text-primary)] mb-2">
+          <Text
+            as="label"
+            variant="body"
+            className="block font-medium text-[var(--text-primary)] mb-2"
+          >
             {label}
-          </label>
+          </Text>
         )}
         <div className="relative">
           {displayLeftIcon && (
@@ -44,7 +49,11 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             </div>
           )}
         </div>
-        {error && <p className="mt-1.5 text-body text-[var(--status-error)]">{error}</p>}
+        {error && (
+          <Text variant="body" className="mt-1.5 text-[var(--status-error)]">
+            {error}
+          </Text>
+        )}
       </div>
     );
   }
@@ -62,9 +71,13 @@ export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
     return (
       <div className="w-full">
         {label && (
-          <label className="block text-body font-medium text-[var(--text-primary)] mb-2">
+          <Text
+            as="label"
+            variant="body"
+            className="block font-medium text-[var(--text-primary)] mb-2"
+          >
             {label}
-          </label>
+          </Text>
         )}
         <textarea
           className={cn(
@@ -75,7 +88,11 @@ export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
           ref={ref}
           {...props}
         />
-        {error && <p className="mt-1.5 text-body text-[var(--status-error)]">{error}</p>}
+        {error && (
+          <Text variant="body" className="mt-1.5 text-[var(--status-error)]">
+            {error}
+          </Text>
+        )}
       </div>
     );
   }

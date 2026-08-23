@@ -510,6 +510,7 @@ See **[TYPOGRAPHY_REFACTOR.md](./TYPOGRAPHY_REFACTOR.md)** for audit, allowlist,
 - [x] Sidebar token alignment (`drawer-content`, `top-nav`)
 - [x] ESLint error on legacy size classes + `text-[Npx]` in `className` (allowlisted exceptions)
 - [x] Micro-size token (`--text-micro` / `text-micro`) for former `text-[10px]` / `text-[11px]`
+- [x] Shared UI → `<Text>` / `forwardRef` on `Heading`/`Text`; page-title audit (see [TYPOGRAPHY_REFACTOR.md](./TYPOGRAPHY_REFACTOR.md))
 - [ ] Visual QA checklist (Phase 6e)
 ---
 

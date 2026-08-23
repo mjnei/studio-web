@@ -4,8 +4,7 @@ import { X } from "lucide-react";
 import { useEffect, useRef, ReactNode, useState } from "react";
 import { Button } from "./button";
 import { Heading } from "./heading";
-import { typography } from "./typography";
-import { cn } from "@/lib/utils/cn";
+import { Text } from "./text";
 import { useI18n } from "@/i18n";
 
 export interface ModalProps {
@@ -114,12 +113,13 @@ export function Modal({
                 </Heading>
               )}
               {description && (
-                <p
+                <Text
                   id="modal-description"
-                  className={cn(typography.body, "mt-1 text-text-secondary")}
+                  variant="body"
+                  className="mt-1 text-text-secondary"
                 >
                   {description}
-                </p>
+                </Text>
               )}
             </div>
             {showCloseButton && (
@@ -308,7 +308,9 @@ export function AlertModal({
     >
       <div className="flex gap-4">
         {icon && <div className={`flex-shrink-0 ${iconColors[variant]}`}>{icon}</div>}
-        <p className="text-text-primary text-body leading-relaxed">{message}</p>
+        <Text variant="body" className="text-text-primary leading-relaxed">
+          {message}
+        </Text>
       </div>
     </Modal>
   );

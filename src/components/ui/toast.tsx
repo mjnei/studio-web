@@ -3,6 +3,7 @@
 import { CheckCircle2, XCircle, AlertCircle, Info, X } from "lucide-react";
 import { createContext, useContext, useState, useCallback, ReactNode } from "react";
 import { useI18n } from "@/i18n";
+import { Text } from "./text";
 
 export type ToastVariant = "success" | "error" | "warning" | "info";
 export type ToastPosition =
@@ -177,11 +178,13 @@ function ToastItem({ toast, onClose }: ToastItemProps) {
           {variantStyle.icon}
         </div>
         <div className="flex-1 min-w-0">
-          <p className={`font-semibold text-caption ${variantStyle.textColor}`}>{toast.title}</p>
+          <Text as="p" variant="caption" className={`font-semibold ${variantStyle.textColor}`}>
+            {toast.title}
+          </Text>
           {toast.description && (
-            <p className="mt-1 text-caption text-text-secondary line-clamp-2">
+            <Text as="p" variant="caption" className="mt-1 text-text-secondary line-clamp-2">
               {toast.description}
-            </p>
+            </Text>
           )}
         </div>
         <button

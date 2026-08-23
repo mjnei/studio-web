@@ -24,11 +24,16 @@ export interface TextProps extends React.HTMLAttributes<HTMLElement> {
   children: React.ReactNode;
 }
 
-export function Text({ variant = "body", as, className, children, ...props }: TextProps) {
+export const Text = React.forwardRef<HTMLElement, TextProps>(function Text(
+  { variant = "body", as, className, children, ...props },
+  ref
+) {
   const Tag = as ?? defaultTag[variant];
   return (
-    <Tag className={cn(typography[variant], className)} {...props}>
+    <Tag ref={ref as React.Ref<never>} className={cn(typography[variant], className)} {...props}>
       {children}
     </Tag>
   );
-}
+});
+
+Text.displayName = "Text";

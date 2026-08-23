@@ -2,7 +2,7 @@
 
 **Version**: 1.1  
 **Last Updated**: August 24, 2026  
-**Status**: Phase 6 mostly complete (6b micro token + 6d ESLint done; visual QA remains)  
+**Status**: Phase 6 mostly complete (6b–6d done; visual QA Phase 6e remains)  
 **Related**: [TYPOGRAPHY.md](./TYPOGRAPHY.md) (canonical role system), [DESIGN_SYSTEM.md](./guides/DESIGN_SYSTEM.md)
 
 ---
@@ -213,7 +213,7 @@ All former `text-[10px]` / `text-[11px]` use `text-micro`.
 | Gap | Detail | Status |
 |-----|--------|--------|
 | `bodyLg` == `body` | Both 14px; `Text variant="bodyLg"` adds no size | **Resolved as intentional alias** — keep for auth/onboarding blurbs; emphasize via weight/color |
-| `subsection` == `label` | Both 14px semibold | OK for dense UI; optionally bump `subsection` to 16px later |
+| `subsection` == `label` | Both 14px semibold | **Kept** — dense UI; hierarchy via weight vs body, not size |
 | `<Text>` underuse | Many places use `text-body` string instead of `<Text variant="body">` | Gradual migration for RSC-safe consistency |
 
 ---
@@ -244,9 +244,22 @@ Run: `pnpm lint`
 ### Phase 6c — Component API cleanup
 
 - [x] Resolve `bodyLg` redundancy (keep as same-size semantic alias; documented)
-- [ ] Consider bumping `subsection` to 16px if item titles need more separation from body
-- [ ] Replace inline `text-body` / `text-caption` strings with `<Text variant="…">` in high-traffic shared components
-- [ ] Audit `Heading` usage: ensure page views have one `variant="page"` h1
+- [x] Decide `subsection` size — **keep 14px** (dense UI; hierarchy via weight vs body)
+- [x] Replace inline `text-body` / `text-caption` with `<Text>` in high-traffic shared UI:
+  `PageHeader`, `CardTitle`/`CardDescription`, `Input`/`TextArea`, `LoadingSpinner`,
+  `toast`, `modal`, `select` labels/helpers, `WorkflowStep` info
+- [x] `Heading` / `Text` now `forwardRef` (safe for Card primitives)
+- [x] Audit `Heading` / page titles (Aug 24, 2026):
+
+  | Surface | Page-level title | Notes |
+  |---------| | ---------------- | ----- |
+  | Shell routes | `PageHeader` → `variant="page"` h1 | One per view |
+  | Project workflow | `ProjectShell` `Heading variant="label" as="h1"` | Compact chrome; steps use `section` under it |
+  | Auth | Layout `variant="display"` | Form pages intentionally have no second page h1 |
+  | Onboarding steps | `display` / `page` in step components | Under auth layout |
+  | `/` | redirect only | N/A |
+
+  No missing page h1s outside intentional compact/auth patterns.
 
 ### Phase 6d — ESLint hardening
 
@@ -269,6 +282,7 @@ Run: `pnpm lint`
 - [x] Update [TYPOGRAPHY.md](./TYPOGRAPHY.md) token table to match Aug 2026 scale (+ micro)
 - [x] Mark Phase 5 complete in [TYPOGRAPHY.md](./TYPOGRAPHY.md)
 - [x] Link from [AGENTS.md](../AGENTS.md) → this doc (already present)
+- [x] Record Phase 6c shared-component + heading audit results
 
 ### Phase 7 — Long-term (optional)
 

@@ -133,7 +133,7 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
               {projectTitle}
             </Heading>
             <span
-              className={`inline-flex items-center rounded-full px-2 py-0.5 text-caption font-medium text-white ${statusColors[projectStatus]}`}
+              className={`inline-flex items-center rounded-full px-2 py-0.5 text-caption leading-caption font-medium text-white ${statusColors[projectStatus]}`}
             >
               {t(statusI18nKeys[projectStatus])}
             </span>
