@@ -28,20 +28,18 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
           </Heading>
           <button
             onClick={onClose}
-            disabled={modal.isSaving || modal.state === "recording"}
+            disabled={modal.isSaving || modal.phase === "recording"}
             className="p-2 rounded-lg hover:bg-surface-raised transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <X size={20} className="text-text-muted" />
           </button>
         </div>
 
-        {modal.error && (
-          <RecordingErrorBanner error={modal.error} translate={modal.t} />
-        )}
+        {modal.error && <RecordingErrorBanner error={modal.error} translate={modal.t} />}
 
-        {modal.state === "requesting" && <RequestingAccessView translate={modal.t} />}
+        {modal.phase === "requesting" && <RequestingAccessView translate={modal.t} />}
 
-        {modal.state === "idle" && (
+        {modal.phase === "idle" && (
           <IdleRecordingView
             maxDurationLabel={maxDurationLabel}
             onStart={modal.startRecording}
@@ -49,19 +47,19 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
           />
         )}
 
-        {modal.state === "recording" && (
+        {modal.phase === "recording" && (
           <ActiveRecordingView
-            duration={modal.duration}
+            duration={modal.elapsed}
             maxDurationLabel={maxDurationLabel}
             onStop={modal.stopRecording}
             translate={modal.t}
           />
         )}
 
-        {modal.state === "recorded" && (
+        {modal.phase === "recorded" && modal.recording && (
           <RecordedPlaybackView
-            duration={modal.duration}
-            maxReached={modal.maxReached}
+            duration={modal.recording.duration}
+            maxReached={modal.recording.maxReached}
             isPlaying={modal.isPlaying}
             playbackProgress={modal.playbackProgress}
             playbackTime={modal.playbackTime}
@@ -74,23 +72,19 @@ export function VoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecording
           />
         )}
 
-        {modal.state === "naming" && (
+        {modal.phase === "naming" && (
           <VoiceNamingForm
             voiceName={modal.voiceName}
             language={modal.language}
             nameError={modal.nameError}
-            languageError={modal.languageError}
             isSaving={modal.isSaving}
             onVoiceNameChange={(value) => {
               modal.setVoiceName(value);
               if (modal.nameError) modal.setNameError(false);
             }}
-            onLanguageChange={(value) => {
-              modal.setLanguage(value);
-              if (modal.languageError) modal.setLanguageError(false);
-            }}
+            onLanguageChange={modal.setLanguage}
             onGenerateName={modal.generateName}
-            onBack={() => modal.setState("recorded")}
+            onBack={() => modal.setPhase("recorded")}
             onSave={modal.saveRecording}
             translate={modal.t}
           />

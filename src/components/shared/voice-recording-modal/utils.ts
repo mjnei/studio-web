@@ -45,3 +45,18 @@ export function mapMicrophoneStartError(error: unknown, t: TranslateFn): string 
 
   return t("voices.recording.errors.startFailed");
 }
+
+export async function requestMicrophoneStream(): Promise<MediaStream> {
+  try {
+    return await navigator.mediaDevices.getUserMedia({
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        sampleRate: 48000,
+      },
+    });
+  } catch (err) {
+    console.warn("Optimal audio constraints failed, trying minimal constraints:", err);
+    return navigator.mediaDevices.getUserMedia({ audio: true });
+  }
+}

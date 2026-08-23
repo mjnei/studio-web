@@ -99,16 +99,14 @@ naming      → API upload pending
 
 | File | Responsibility |
 | --- | --- |
-| `index.tsx` | Modal shell; wires state → view components |
+| `index.tsx` | Modal shell; wires phase → view components |
 | `constants.ts` | `MAX_DURATION_S`, languages, mime types, timers |
 | `types.ts` | `RecorderState`, props |
-| `utils.ts` | Pure helpers (time format, mime detection, error mapping) |
-| `hooks/use-media-recorder.ts` | Mic access, MediaRecorder, timer, blob lifecycle |
-| `hooks/use-audio-playback.ts` | Playback, seek, progress |
-| `hooks/use-voice-recording-modal.ts` | State machine, save flow, open/close reset |
-| `components/*-view.tsx` | Presentational UI per state |
+| `utils.ts` | Pure helpers (time format, mime detection, mic access, error mapping) |
+| `hooks/use-voice-recording-modal.ts` | Single hook: phase machine, MediaRecorder, playback, save |
+| `components/*-view.tsx` | Presentational UI per phase |
 
-Orchestration lives in `use-voice-recording-modal.ts`; views are props-in / JSX-out for easier testing.
+All recording, playback, and upload logic lives in one hook. Completed recordings are stored as React state (`recording`) instead of refs. Resource cleanup (streams, blob URLs, timers, audio) goes through one `cleanup()` function.
 
 ## Cross-cutting behavior
 

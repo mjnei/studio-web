@@ -8,7 +8,6 @@ interface VoiceNamingFormProps {
   voiceName: string;
   language: string;
   nameError: boolean;
-  languageError: boolean;
   isSaving: boolean;
   onVoiceNameChange: (value: string) => void;
   onLanguageChange: (value: string) => void;
@@ -22,7 +21,6 @@ export function VoiceNamingForm({
   voiceName,
   language,
   nameError,
-  languageError,
   isSaving,
   onVoiceNameChange,
   onLanguageChange,
@@ -92,11 +90,7 @@ export function VoiceNamingForm({
             id="voice-language"
             value={language}
             onChange={(e) => onLanguageChange(e.target.value)}
-            className={`w-full rounded-xl border ${
-              languageError
-                ? "border-red-500 bg-red-500/5"
-                : "border-border-default bg-surface-raised"
-            } pl-10 pr-4 py-3 text-text-primary transition-colors focus:border-accent-cyan focus:outline-none focus:ring-2 focus:ring-accent-cyan/20 disabled:opacity-50`}
+            className="w-full rounded-xl border border-border-default bg-surface-raised pl-10 pr-4 py-3 text-text-primary transition-colors focus:border-accent-cyan focus:outline-none focus:ring-2 focus:ring-accent-cyan/20 disabled:opacity-50"
             disabled={isSaving}
           >
             {RECORDING_LANGUAGES.map((lang) => (
@@ -105,12 +99,6 @@ export function VoiceNamingForm({
               </option>
             ))}
           </select>
-          {languageError && (
-            <p className="mt-2 text-xs text-red-400 flex items-center gap-1">
-              <X size={12} />
-              {t("voices.recording.languageRequired")}
-            </p>
-          )}
         </div>
       </div>
 

@@ -1,111 +1,231 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { useI18n } from "@/i18n";
-import { useAudioPlayback } from "./use-audio-playback";
-import { useMediaRecorder } from "./use-media-recorder";
-import { generateRandomVoiceName } from "../utils";
+import {
+  AUTO_PLAY_DELAY_MS,
+  MAX_DURATION_S,
+  RECORDING_TIMER_INTERVAL_MS,
+} from "../constants";
+import {
+  generateRandomVoiceName,
+  getSupportedMimeType,
+  mapMicrophoneStartError,
+  requestMicrophoneStream,
+} from "../utils";
 import type { RecorderState, VoiceRecordingModalProps } from "../types";
+
+interface CompletedRecording {
+  blob: Blob;
+  url: string;
+  mimeType: string;
+  duration: number;
+  maxReached: boolean;
+}
 
 export function useVoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecordingModalProps) {
   const { t } = useI18n();
-  const [state, setState] = useState<RecorderState>("idle");
+
+  const [phase, setPhase] = useState<RecorderState>("idle");
   const [error, setError] = useState<string | null>(null);
+  const [elapsed, setElapsed] = useState(0);
+  const [recording, setRecording] = useState<CompletedRecording | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [playbackProgress, setPlaybackProgress] = useState(0);
+  const [playbackTime, setPlaybackTime] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
   const [voiceName, setVoiceName] = useState("");
   const [language, setLanguage] = useState("en");
   const [nameError, setNameError] = useState(false);
-  const [languageError, setLanguageError] = useState(false);
 
-  const audioUrlRef = useRef<string | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const startTimeRef = useRef(0);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const recordingUrlRef = useRef<string | null>(null);
+  const mimeRef = useRef("");
 
-  const playback = useAudioPlayback(() => {
-    setError(t("voices.recording.errors.playbackFailed"));
-  });
+  const stopPlayback = useCallback(() => {
+    audioRef.current?.pause();
+    if (audioRef.current) audioRef.current.currentTime = 0;
+    setIsPlaying(false);
+    setPlaybackProgress(0);
+    setPlaybackTime(0);
+  }, []);
 
-  const recorder = useMediaRecorder({
-    translate: t,
-    onRecordingStarted: () => {
-      setState("recording");
-    },
-    onRecorded: ({ url }) => {
-      audioUrlRef.current = url;
-      setState("recorded");
-    },
-    onRecordingError: (message) => {
-      setError(message);
-      setState("idle");
-    },
-    onAutoPlay: (url) => {
-      playback.play(url);
-    },
-  });
+  const releaseStream = useCallback(() => {
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+    streamRef.current = null;
+  }, []);
 
-  const resetFormState = useCallback(() => {
-    setState("idle");
+  const clearTimer = useCallback(() => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  }, []);
+
+  const cleanup = useCallback(() => {
+    clearTimer();
+    stopPlayback();
+    releaseStream();
+    audioRef.current = null;
+
+    if (recorderRef.current?.state === "recording") {
+      recorderRef.current.stop();
+    }
+    recorderRef.current = null;
+    chunksRef.current = [];
+    mimeRef.current = "";
+
+    if (recordingUrlRef.current) {
+      URL.revokeObjectURL(recordingUrlRef.current);
+      recordingUrlRef.current = null;
+    }
+  }, [clearTimer, releaseStream, stopPlayback]);
+
+  const resetUi = useCallback(() => {
+    setPhase("idle");
     setError(null);
+    setElapsed(0);
+    setRecording(null);
     setIsSaving(false);
     setVoiceName("");
     setLanguage("en");
     setNameError(false);
-    setLanguageError(false);
   }, []);
 
-  const resetAll = useCallback(() => {
-    playback.reset();
-    recorder.resetRecording();
-    recorder.revokeAudioUrl();
-    audioUrlRef.current = null;
-    resetFormState();
-  }, [playback, recorder, resetFormState]);
+  const attachAudio = useCallback(
+    (url: string) => {
+      stopPlayback();
+      const audio = new Audio(url);
+      audioRef.current = audio;
 
-  useEffect(() => {
-    return () => {
-      playback.stop();
-      recorder.dispose();
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount/unmount only
-  }, []);
+      audio.ontimeupdate = () => {
+        if (!audio.duration || !isFinite(audio.duration)) return;
+        setPlaybackProgress(audio.currentTime / audio.duration);
+        setPlaybackTime(audio.currentTime);
+      };
+      audio.onended = () => {
+        setIsPlaying(false);
+        setPlaybackProgress(1);
+        setPlaybackTime(audio.duration || 0);
+      };
+      audio.onerror = () => {
+        setIsPlaying(false);
+        setError(t("voices.recording.errors.playbackFailed"));
+      };
+
+      return audio;
+    },
+    [stopPlayback, t]
+  );
+
+  useEffect(() => () => cleanup(), [cleanup]);
 
   useEffect(() => {
     if (!isOpen) {
-      playback.stop();
-      recorder.revokeAudioUrl();
-      recorder.resetRecording();
+      cleanup();
       return;
     }
-
-    resetFormState();
-    playback.reset();
-    recorder.resetRecording();
-    audioUrlRef.current = null;
-  }, [isOpen, playback, recorder, resetFormState]);
+    resetUi();
+  }, [isOpen, cleanup, resetUi]);
 
   const startRecording = useCallback(async () => {
-    setError(null);
-    playback.stop();
-    recorder.revokeAudioUrl();
-    audioUrlRef.current = null;
-    playback.reset();
-    setState("requesting");
-    await recorder.startRecording();
-  }, [playback, recorder]);
+    cleanup();
+    resetUi();
+    setPhase("requesting");
+
+    const mime = getSupportedMimeType();
+    if (!mime) {
+      setError(t("voices.recording.errors.browserUnsupported"));
+      setPhase("idle");
+      return;
+    }
+    mimeRef.current = mime;
+
+    try {
+      const stream = await requestMicrophoneStream();
+      streamRef.current = stream;
+
+      const recorder = new MediaRecorder(stream, { mimeType: mime });
+      recorderRef.current = recorder;
+
+      recorder.ondataavailable = (event) => {
+        if (event.data.size > 0) chunksRef.current.push(event.data);
+      };
+
+      recorder.onerror = () => {
+        setError(t("voices.recording.errors.recordingFailed"));
+        cleanup();
+        setPhase("idle");
+      };
+
+      recorder.onstop = () => {
+        clearTimer();
+        releaseStream();
+
+        const duration = Math.floor((Date.now() - startTimeRef.current) / 1000);
+        const blob = new Blob(chunksRef.current, { type: mime });
+        const url = URL.createObjectURL(blob);
+        recordingUrlRef.current = url;
+
+        const completed: CompletedRecording = {
+          blob,
+          url,
+          mimeType: mime,
+          duration,
+          maxReached: duration >= MAX_DURATION_S,
+        };
+
+        setRecording(completed);
+        setPhase("recorded");
+
+        const audio = attachAudio(url);
+        setTimeout(() => {
+          audio.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+        }, AUTO_PLAY_DELAY_MS);
+      };
+
+      recorder.start();
+      setPhase("recording");
+      startTimeRef.current = Date.now();
+
+      timerRef.current = setInterval(() => {
+        const seconds = Math.floor((Date.now() - startTimeRef.current) / 1000);
+        setElapsed(seconds);
+        if (seconds >= MAX_DURATION_S) {
+          recorder.stop();
+        }
+      }, RECORDING_TIMER_INTERVAL_MS);
+    } catch (err) {
+      console.error("[VoiceRecording] Failed to start recording:", err);
+      setError(mapMicrophoneStartError(err, t));
+      cleanup();
+      setPhase("idle");
+    }
+  }, [attachAudio, cleanup, clearTimer, releaseStream, resetUi, t]);
 
   const stopRecording = useCallback(() => {
-    recorder.stopRecording();
-  }, [recorder]);
+    if (recorderRef.current?.state === "recording") {
+      recorderRef.current.stop();
+    }
+    clearTimer();
+  }, [clearTimer]);
 
   const discardRecording = useCallback(() => {
-    resetAll();
-  }, [resetAll]);
+    cleanup();
+    resetUi();
+  }, [cleanup, resetUi]);
 
   const proceedToNaming = useCallback(() => {
-    setState("naming");
+    stopPlayback();
     setVoiceName("");
     setNameError(false);
-    setLanguageError(false);
-    playback.stop();
-  }, [playback]);
+    setPhase("naming");
+  }, [stopPlayback]);
 
   const generateName = useCallback(() => {
     setVoiceName(generateRandomVoiceName());
@@ -113,86 +233,83 @@ export function useVoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecord
   }, []);
 
   const saveRecording = useCallback(async () => {
-    const blob = recorder.getRecordedBlob();
-    if (!blob) return;
+    if (!recording) return;
 
     const title = voiceName.trim();
-
     if (!title) {
       setNameError(true);
-      return;
-    }
-
-    if (!language) {
-      setLanguageError(true);
       return;
     }
 
     setIsSaving(true);
     setError(null);
     setNameError(false);
-    setLanguageError(false);
 
     try {
       const { uploadVoice } = await import("@/lib/api/voice-client");
       const { convertWebmToAudio } = await import("@/lib/utils/audio-converter");
 
-      let audioBlob = blob;
-      const mimeType = recorder.getMimeType() || blob.type || "audio/webm";
+      let audioBlob = recording.blob;
+      const mimeType = recording.mimeType || recording.blob.type || "audio/webm";
 
       if (mimeType.includes("webm")) {
         try {
-          audioBlob = await convertWebmToAudio(blob, title);
+          audioBlob = await convertWebmToAudio(recording.blob, title);
         } catch (conversionErr) {
           console.warn("Audio conversion failed, using original format:", conversionErr);
-          audioBlob = new Blob([blob], { type: mimeType });
+          audioBlob = new Blob([recording.blob], { type: mimeType });
         }
-      } else {
-        audioBlob = new Blob([blob], { type: mimeType });
       }
 
-      const newRecording = await uploadVoice(audioBlob, title, language, recorder.duration);
-      onSaved?.(newRecording);
-      resetAll();
+      const saved = await uploadVoice(audioBlob, title, language, recording.duration);
+      onSaved?.(saved);
+      cleanup();
+      resetUi();
       onClose();
     } catch (err) {
       setError(err instanceof Error ? err.message : t("voices.recording.errors.saveFailed"));
       setIsSaving(false);
     }
-  }, [language, onClose, onSaved, recorder, resetAll, t, voiceName]);
-
-  const playRecording = useCallback(() => {
-    const url = audioUrlRef.current;
-    if (url) playback.play(url);
-  }, [playback]);
+  }, [cleanup, language, onClose, onSaved, recording, resetUi, t, voiceName]);
 
   const togglePlayback = useCallback(() => {
-    if (playback.isPlaying) {
-      playback.pause();
-    } else {
-      playRecording();
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    if (isPlaying) {
+      audio.pause();
+      setIsPlaying(false);
+      return;
     }
-  }, [playback, playRecording]);
+
+    audio.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+  }, [isPlaying]);
+
+  const seekPlayback = useCallback((fraction: number) => {
+    const audio = audioRef.current;
+    if (!audio?.duration || !isFinite(audio.duration)) return;
+    audio.currentTime = fraction * audio.duration;
+    setPlaybackProgress(fraction);
+    setPlaybackTime(audio.currentTime);
+  }, []);
 
   return {
     t,
-    state,
-    setState,
+    phase,
     error,
+    elapsed,
+    recording,
+    isPlaying,
+    playbackProgress,
+    playbackTime,
     isSaving,
     voiceName,
-    setVoiceName,
     language,
-    setLanguage,
     nameError,
+    setVoiceName,
+    setLanguage,
     setNameError,
-    languageError,
-    setLanguageError,
-    duration: recorder.duration,
-    maxReached: recorder.maxReached,
-    isPlaying: playback.isPlaying,
-    playbackProgress: playback.progress,
-    playbackTime: playback.currentTime,
+    setPhase,
     startRecording,
     stopRecording,
     discardRecording,
@@ -200,6 +317,6 @@ export function useVoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecord
     generateName,
     saveRecording,
     togglePlayback,
-    seekPlayback: playback.seek,
+    seekPlayback,
   };
 }
