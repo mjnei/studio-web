@@ -400,7 +400,7 @@ Update components that appear on many routes (one PR or one PR per cluster):
 
 - [x] `EmptyState` / `EmptyState.tsx` (deleted unused duplicate `empty-state.tsx`)
 - [x] Jobs: `StatusCards`, `ActiveJobCard`, `FailedJobCard`, `AnalyticsPanel`
-- [x] Project shell: `project-shell`, `new-project-shell`, step headers (`movie-selection`, `script-generation`, `voice-generation`, `video-generation`, `tts-queue-status`)
+- [x] Project shell: `project-shell`, `new-project-shell`, step headers (`movie-selection`, `script-generation`, `voice-selection-panel`, `video-generation`, `tts-queue-status`)
 - [x] Notifications dropdown / preferences modal titles
 - [x] Voice / movie / project card titles (`VoiceCard`, `MovieCard`, `ProjectCard`)
 - [x] Queue admin headers (`QueueMessagePeeker`, `DLQInspector`, `QueueStatsCard`)

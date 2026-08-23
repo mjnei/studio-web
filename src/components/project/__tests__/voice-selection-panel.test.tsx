@@ -129,11 +129,3 @@ describe("VoiceSelectionPanel", () => {
     });
   });
 });
-
-describe("VoiceGeneration re-export", () => {
-  it("re-exports VoiceSelectionPanel as VoiceGeneration", async () => {
-    const { VoiceGeneration } = await import("../voice-generation");
-    const { VoiceSelectionPanel } = await import("../voice-selection-panel");
-    expect(VoiceGeneration).toBe(VoiceSelectionPanel);
-  });
-});
