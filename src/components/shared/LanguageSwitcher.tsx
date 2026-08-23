@@ -14,7 +14,7 @@ export function LanguageSwitcher() {
       >
         {locales.map((loc) => (
           <option key={loc} value={loc} className="bg-surface-raised text-text-primary">
-            {localeNames[loc].flag}
+            {localeNames[loc].flag} {localeNames[loc].name}
           </option>
         ))}
       </select>
