@@ -68,9 +68,9 @@ export const BulkActionsBar: React.FC<BulkActionsBarProps> = ({
         <button
           onClick={onClearSelection}
           className="ml-2 rounded-lg p-1 text-text-muted hover:bg-surface-hover hover:text-text-primary transition-colors"
-          title={t("jobs.bulk.clearSelection")}
+          aria-label={t("jobs.bulk.clearSelection")}
         >
-          <X className="h-4 w-4" />
+          <X className="h-4 w-4" aria-hidden />
         </button>
       </div>
     </div>

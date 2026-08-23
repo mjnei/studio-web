@@ -179,7 +179,7 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
             onClick={handleResetFilters}
             className="flex items-center gap-1 text-accent-cyan hover:underline font-medium"
           >
-            <X className="h-3 w-3" /> {t("jobs.filters.clearFilters")}
+              <X className="h-4 w-4" aria-hidden /> {t("jobs.filters.clearFilters")}
           </button>
         </div>
       )}

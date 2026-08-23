@@ -89,8 +89,9 @@ export function LibraryMovieCard({
                 <button
                   onClick={onCancelEditing}
                   className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-base px-3 py-1.5 text-sm font-medium text-text-secondary hover:bg-surface-hover"
+                  aria-label="Cancel editing"
                 >
-                  <X className="h-3.5 w-3.5" />
+                  <X className="h-3.5 w-3.5" aria-hidden />
                 </button>
               </div>
             ) : (
@@ -217,8 +218,9 @@ export function LibraryMovieCard({
               <button
                 onClick={onCancelEditing}
                 className="flex items-center justify-center gap-1 rounded-lg border border-border-default bg-surface-base px-2 py-1.5 text-xs font-medium text-text-secondary hover:bg-surface-hover"
+                aria-label="Cancel editing"
               >
-                <X className="h-3 w-3" />
+                <X className="h-3 w-3" aria-hidden />
               </button>
             </div>
           </div>

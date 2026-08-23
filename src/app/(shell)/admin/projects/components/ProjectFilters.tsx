@@ -74,7 +74,7 @@ export function ProjectFilters({ filters, onFilterChange, onClear }: ProjectFilt
               onClick={clear}
               className="flex items-center gap-1 text-sm text-text-muted transition-colors hover:text-text-primary"
             >
-              <X className="h-4 w-4" />
+              <X className="h-4 w-4" aria-hidden />
               Clear
             </button>
           )}

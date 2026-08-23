@@ -101,8 +101,9 @@ export function PlaygroundJobDetailModal({ job, open, onClose }: PlaygroundJobDe
           <button
             onClick={onClose}
             className="rounded-lg p-2 text-text-muted hover:bg-surface-raised hover:text-text-primary transition-colors"
+            aria-label="Close"
           >
-            <X className="h-5 w-5" />
+            <X className="h-5 w-5" aria-hidden />
           </button>
         </div>
 

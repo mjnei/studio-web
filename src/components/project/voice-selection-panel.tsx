@@ -45,7 +45,7 @@ export function VoiceSelectionPanel({
                 : "text-text-muted hover:text-text-secondary hover:bg-surface-raised"
             }`}
           >
-            <Mic className="h-4 w-4" />
+            <Mic className="h-4 w-4" aria-hidden />
             <span>{t("project.voice.myVoices")}</span>
             {ownVoices.length > 0 && (
               <span
@@ -66,7 +66,7 @@ export function VoiceSelectionPanel({
                 : "text-text-muted hover:text-text-secondary hover:bg-surface-raised"
             }`}
           >
-            <Globe className="h-4 w-4" />
+            <Globe className="h-4 w-4" aria-hidden />
             <span>{t("project.voice.community")}</span>
             {communityVoices.length > 0 && (
               <span
@@ -87,7 +87,7 @@ export function VoiceSelectionPanel({
             className="border-status-failed/30 bg-status-failed/10"
           >
             <div className="flex items-start gap-3">
-              <AlertCircle className="h-5 w-5 text-status-failed flex-shrink-0 mt-0.5" />
+              <AlertCircle className="h-5 w-5 text-status-failed flex-shrink-0 mt-0.5" aria-hidden />
               <p className="text-sm text-status-failed">{voicesError}</p>
             </div>
           </Card>
@@ -108,7 +108,7 @@ export function VoiceSelectionPanel({
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {ownVoices.length === 0 ? (
                   <div className="col-span-full text-center py-8 rounded-lg border border-dashed border-border-default bg-surface-panel/50">
-                    <Mic className="h-8 w-8 text-text-muted mx-auto mb-2 opacity-50" />
+                    <Mic className="h-8 w-8 text-text-muted mx-auto mb-2 opacity-50" aria-hidden />
                     <p className="text-sm text-text-muted mb-2">
                       {t("project.voice.noPersonalVoices")}
                     </p>
@@ -139,7 +139,7 @@ export function VoiceSelectionPanel({
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex items-start gap-2 flex-1 min-w-0">
                             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-accent-primary to-purple-600 flex-shrink-0">
-                              <Mic className="h-5 w-5 text-white" />
+                              <Mic className="h-5 w-5 text-white" aria-hidden />
                             </div>
                             <div className="flex-1 min-w-0">
                               <p className="font-semibold text-text-primary text-sm truncate">
@@ -152,7 +152,7 @@ export function VoiceSelectionPanel({
                           </div>
                           {selectedVoiceId === voice.id && (
                             <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-primary flex-shrink-0">
-                              <Check className="h-4 w-4 text-white" />
+                              <Check className="h-4 w-4 text-white" aria-hidden />
                             </div>
                           )}
                         </div>
@@ -168,7 +168,7 @@ export function VoiceSelectionPanel({
                       >
                         <div className="flex flex-col items-center justify-center h-full min-h-[88px] text-center">
                           <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-accent-primary/10 group-hover:bg-accent-primary/20 transition-colors">
-                            <Plus className="h-5 w-5 text-accent-primary" />
+                            <Plus className="h-5 w-5 text-accent-primary" aria-hidden />
                           </div>
                           <p className="text-xs font-semibold text-text-primary mb-0.5">
                             {t("project.voice.addVoice")}
@@ -190,7 +190,7 @@ export function VoiceSelectionPanel({
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {communityVoices.length === 0 ? (
                   <div className="col-span-full text-center py-8 rounded-lg border border-dashed border-border-default bg-surface-panel/50">
-                    <Globe className="h-8 w-8 text-text-muted mx-auto mb-2 opacity-50" />
+                    <Globe className="h-8 w-8 text-text-muted mx-auto mb-2 opacity-50" aria-hidden />
                     <p className="text-sm text-text-muted mb-2">
                       {t("project.voice.noCommunityVoices")}
                     </p>
@@ -214,14 +214,14 @@ export function VoiceSelectionPanel({
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex items-start gap-2 flex-1 min-w-0">
                           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-accent-cyan to-blue-600 flex-shrink-0">
-                            <Globe className="h-5 w-5 text-white" />
+                            <Globe className="h-5 w-5 text-white" aria-hidden />
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="font-semibold text-text-primary text-sm truncate">
                               {voice.name}
                             </p>
                             <p className="text-xs text-text-muted flex items-center gap-1 truncate">
-                              <User className="h-3 w-3 flex-shrink-0" />
+                              <User className="h-3 w-3 flex-shrink-0" aria-hidden />
                               <span className="truncate">@{voice.creator_username}</span>
                             </p>
                             <div className="mt-1">
@@ -234,7 +234,7 @@ export function VoiceSelectionPanel({
                         </div>
                         {selectedVoiceId === voice.id && (
                           <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent-cyan flex-shrink-0">
-                            <Check className="h-4 w-4 text-white" />
+                            <Check className="h-4 w-4 text-white" aria-hidden />
                           </div>
                         )}
                       </div>

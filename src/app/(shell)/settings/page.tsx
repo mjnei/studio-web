@@ -91,12 +91,12 @@ export default function SettingsPage() {
           >
             {saved ? (
               <>
-                <Check className="w-4 h-4" />
+                <Check className="h-4 w-4" aria-hidden />
                 {t("settings.saved")}
               </>
             ) : (
               <>
-                <SettingsIcon className="w-4 h-4" />
+                <SettingsIcon className="h-4 w-4" aria-hidden />
                 {t("settings.saveChanges")}
               </>
             )}
@@ -116,14 +116,14 @@ export default function SettingsPage() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center">
-                    <Bell className="w-5 h-5 text-white" />
+                    <Bell className="h-5 w-5 text-white" aria-hidden />
                   </div>
                   <div>
                     <CardTitle>{t("settings.notifications.title")}</CardTitle>
                     <CardDescription>{t("settings.notifications.description")}</CardDescription>
                   </div>
                 </div>
-                <ChevronRight className="w-5 h-5 text-text-muted group-hover:text-accent-primary transition-colors" />
+                <ChevronRight className="h-5 w-5 text-text-muted group-hover:text-accent-primary transition-colors" aria-hidden />
               </div>
             </CardHeader>
           </Card>
@@ -134,7 +134,7 @@ export default function SettingsPage() {
           <CardHeader>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-                <FileText className="w-5 h-5 text-white" />
+                <FileText className="h-5 w-5 text-white" aria-hidden />
               </div>
               <div>
                 <CardTitle>{t("settings.projectDefaults.title")}</CardTitle>
@@ -209,7 +209,7 @@ export default function SettingsPage() {
           <CardHeader>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
-                <Palette className="w-5 h-5 text-white" />
+                <Palette className="h-5 w-5 text-white" aria-hidden />
               </div>
               <div>
                 <CardTitle>{t("settings.appearance.title")}</CardTitle>
@@ -257,7 +257,7 @@ export default function SettingsPage() {
           <CardHeader>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
-                <Shield className="w-5 h-5 text-white" />
+                <Shield className="h-5 w-5 text-white" aria-hidden />
               </div>
               <div>
                 <CardTitle>{t("settings.dataPrivacy.title")}</CardTitle>
@@ -277,7 +277,7 @@ export default function SettingsPage() {
               description={t("settings.dataPrivacy.exportMyDataDesc")}
             >
               <button className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border-default bg-surface-raised text-sm font-medium text-text-primary hover:bg-surface-hover transition-all">
-                <Download className="w-4 h-4" />
+                <Download className="h-4 w-4" aria-hidden />
                 {t("settings.dataPrivacy.requestExport")}
               </button>
             </SettingRow>

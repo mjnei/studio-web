@@ -13,6 +13,7 @@ type IconSize = keyof typeof sizeClasses;
 
 interface IconProps extends Omit<React.ComponentPropsWithoutRef<LucideIcon>, "size"> {
   icon: LucideIcon;
+  /** Size token (`xs`–`xl`). Do not pass conflicting `h-N w-N` in `className` — cn() does not dedupe Tailwind utilities. */
   size?: IconSize;
   className?: string;
 }

@@ -182,9 +182,9 @@ export function AudioPlayer({ audioUrl, jobId, jobName, onDismiss }: AudioPlayer
             <button
               onClick={handleDismiss}
               className="flex items-center justify-center w-8 h-8 rounded-lg border border-border-default bg-surface-base text-text-secondary hover:border-red-500 hover:text-red-600 hover:bg-red-500/5 transition-all"
-              title="Close player"
+              aria-label="Close player"
             >
-              <X className="h-4 w-4" />
+              <X className="h-4 w-4" aria-hidden />
             </button>
           </div>
         </div>

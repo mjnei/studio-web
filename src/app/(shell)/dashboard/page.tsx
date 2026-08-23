@@ -87,7 +87,7 @@ export default function DashboardPage() {
       title: t("dashboard.stats.recentProjects.title"),
       value: loadingProjects ? "..." : projects.length > 0 ? projects.length.toString() : "0",
       description: t("dashboard.stats.recentProjects.description"),
-      icon: <Folder className="w-6 h-6" />,
+      icon: <Folder className="h-6 w-6" aria-hidden />,
       gradient: "from-blue-500 to-cyan-500",
       href: "/projects",
     },
@@ -95,7 +95,7 @@ export default function DashboardPage() {
       title: t("dashboard.stats.movieLibrary.title"),
       value: loadingMovies ? "..." : popularMovies.length > 0 ? `${popularMovies.length}+` : "0",
       description: t("dashboard.stats.movieLibrary.description"),
-      icon: <Film className="w-6 h-6" />,
+      icon: <Film className="h-6 w-6" aria-hidden />,
       gradient: "from-purple-500 to-pink-500",
       href: "/movies",
     },
@@ -103,7 +103,7 @@ export default function DashboardPage() {
       title: t("dashboard.stats.myVoices.title"),
       value: voices.length.toString(),
       description: t("dashboard.stats.myVoices.description"),
-      icon: <Mic className="w-6 h-6" />,
+      icon: <Mic className="h-6 w-6" aria-hidden />,
       gradient: "from-green-500 to-emerald-500",
       href: "/voices",
     },
@@ -121,7 +121,7 @@ export default function DashboardPage() {
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
-                <Sparkles className="w-5 h-5 text-blue-500" />
+                <Sparkles className="h-5 w-5 text-blue-500" aria-hidden />
                 <Heading variant="subsection" as="h3" className="text-text-primary">
                   {t("dashboard.welcomeBanner.title")}
                 </Heading>
@@ -129,7 +129,7 @@ export default function DashboardPage() {
               <p className="text-text-secondary mb-4">{t("dashboard.welcomeBanner.message")}</p>
               <Link href="/project/new">
                 <Button variant="primary" size="sm">
-                  <Plus className="w-4 h-4" />
+                  <Plus className="h-4 w-4" aria-hidden />
                   {t("dashboard.welcomeBanner.cta")}
                 </Button>
               </Link>
@@ -139,7 +139,7 @@ export default function DashboardPage() {
               className="text-text-muted hover:text-text-primary transition-colors p-1"
               aria-label={t("dashboard.welcomeBanner.dismissAriaLabel")}
             >
-              <X className="w-5 h-5" />
+              <X className="h-5 w-5" aria-hidden />
             </button>
           </div>
         </Card>
@@ -193,7 +193,7 @@ export default function DashboardPage() {
                 fullWidth
                 className="justify-start hover:bg-surface-hover transition-all"
               >
-                <Plus className="w-5 h-5" />
+                <Plus className="h-5 w-5" aria-hidden />
                 {t("dashboard.quickActions.newProject")}
               </Button>
             </Link>
@@ -203,7 +203,7 @@ export default function DashboardPage() {
                 fullWidth
                 className="justify-start hover:bg-surface-hover transition-all"
               >
-                <Film className="w-5 h-5" />
+                <Film className="h-5 w-5" aria-hidden />
                 {t("dashboard.quickActions.browseMovies")}
               </Button>
             </Link>
@@ -213,7 +213,7 @@ export default function DashboardPage() {
                 fullWidth
                 className="justify-start hover:bg-surface-hover transition-all"
               >
-                <Mic className="w-5 h-5" />
+                <Mic className="h-5 w-5" aria-hidden />
                 {t("dashboard.quickActions.recordVoice")}
               </Button>
             </Link>
@@ -233,7 +233,7 @@ export default function DashboardPage() {
               <Link href="/projects">
                 <Button variant="secondary" size="sm">
                   {t("dashboard.recentProjects.viewAll")}
-                  <ArrowRight className="w-4 h-4 ml-1" />
+                  <ArrowRight className="h-4 w-4 ml-1" aria-hidden />
                 </Button>
               </Link>
             </div>
@@ -255,7 +255,7 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle className="flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-accent-primary" />
+                  <Sparkles className="h-5 w-5 text-accent-primary" aria-hidden />
                   {t("dashboard.popularMovies.title")}
                 </CardTitle>
                 <CardDescription>{t("dashboard.popularMovies.description")}</CardDescription>
@@ -263,7 +263,7 @@ export default function DashboardPage() {
               <Link href="/movies">
                 <Button variant="secondary" size="sm">
                   {t("dashboard.popularMovies.exploreAll")}
-                  <ArrowRight className="w-4 h-4 ml-1" />
+                  <ArrowRight className="h-4 w-4 ml-1" aria-hidden />
                 </Button>
               </Link>
             </div>
@@ -287,7 +287,7 @@ export default function DashboardPage() {
                       />
                     ) : (
                       <div className="flex h-full items-center justify-center">
-                        <Film className="h-8 w-8 text-text-muted" />
+                        <Film className="h-8 w-8 text-text-muted" aria-hidden />
                       </div>
                     )}
                   </div>
@@ -316,7 +316,7 @@ export default function DashboardPage() {
             <CardContent>
               <div className="flex flex-col items-center justify-center py-12 text-center">
                 <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-surface-hover border border-border-default">
-                  <Folder className="w-8 h-8 text-text-muted" />
+                  <Folder className="h-8 w-8 text-text-muted" aria-hidden />
                 </div>
                 <Heading variant="subsection" as="p" className="mb-2 text-text-primary">
                   {t("dashboard.empty.title")}

@@ -77,7 +77,7 @@ export default function AuditFilters({ filters, onFilterChange, onClear }: Audit
               onClick={handleClear}
               className="flex items-center gap-1 text-sm text-text-muted hover:text-text-primary transition-colors"
             >
-              <X className="h-4 w-4" />
+              <X className="h-4 w-4" aria-hidden />
               Clear all
             </button>
           )}

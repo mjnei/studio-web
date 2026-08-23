@@ -57,8 +57,9 @@ export function ProjectDetailModal({
             type="button"
             onClick={onClose}
             className="rounded-lg p-2 text-text-muted hover:bg-surface-hover hover:text-text-primary"
+            aria-label="Close"
           >
-            <X className="h-5 w-5" />
+            <X className="h-5 w-5" aria-hidden />
           </button>
         </div>
 

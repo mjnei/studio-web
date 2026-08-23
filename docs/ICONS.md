@@ -29,6 +29,11 @@ Use **`className="h-N w-N"`** (height before width) or the shared `Icon` compone
 | `md` | `h-5 w-5` | 20 | Sidebar nav, toolbar icons |
 | `lg` | `h-6 w-6` | 24 | Card headers, modals |
 | `xl` | `h-8 w-8` | 32 | Empty states, hero accents |
+| *(informal)* | `h-10 w-10` | 40 | Avatar rings, compact hero containers |
+| *(informal)* | `h-12 w-12` | 48 | Empty-state icons (jobs, movies, voices, notifications) |
+| *(informal)* | `h-16 w-16` | 64 | Large empty states, redirect heroes |
+
+The informal hero tier is not part of the `Icon` size prop — use Lucide directly with `className`. No new tokens unless `EmptyState` should enforce them.
 
 Avoid Lucide’s numeric `size={N}` prop in new code — use classes or `<Icon size="sm" />`.
 
@@ -75,6 +80,31 @@ All brand icons default to `aria-hidden={true}`. Parent buttons must expose acce
 
 ---
 
+## `Icon` wrapper
+
+```tsx
+<Icon icon={Search} size="md" className="text-text-muted" />
+```
+
+- **`size`** maps to the token table above (`xs`–`xl`).
+- **`className`** is for color, margin, and non-size utilities only.
+- **`cn()` does not merge conflicting Tailwind size utilities.** `<Icon size="sm" className="h-6 w-6" />` emits both `h-4 w-4` and `h-6 w-6` — browser order wins unpredictably. Use one sizing source: pick the right `size` prop, pass sizes only via `className` (omit `size`), or use Lucide directly (as with `PanelLeft` in `drawer-content.tsx`).
+
+---
+
 ## Navigation icons
 
 Sidebar icons are defined in `src/components/shell/drawer-content.tsx` via `iconMap` + `Icon`. Keep href → icon mappings in that file only.
+
+---
+
+## Remaining gaps (roadmap)
+
+| # | Gap | Severity | Notes |
+|---|-----|----------|-------|
+| 1 | Class order (`w-N h-N` vs `h-N w-N`) | Cosmetic | ~35 legacy files still width-first. Heaviest: `profile/page.tsx`, `dashboard/page.tsx`, `settings/page.tsx`, `admin/queues/*`, onboarding steps, `video-generation.tsx`, `movie-selection.tsx`, queue components. Migrated surfaces are normalized. |
+| 2 | Missing `aria-hidden` on decorative icons | A11y | Scattered — tab icons, icon-only close buttons, stats/card accents. Icon-only buttons need `aria-label` on the `<button>` and `aria-hidden` on the icon. |
+| 3 | Hero sizes outside token prop | Doc only | `h-10`, `h-12`, `h-16` used for empty states — informal tier above; no `Icon` prop unless `EmptyState` enforces them. |
+| 4 | `Icon` + conflicting `className` sizes | API | See [`Icon` wrapper](#icon-wrapper). Prefer direct Lucide or a single sizing source. |
+
+Priority 5 in `docs/SPINNER_AUDIT.md` (accessibility pass) tracks gap #2.
