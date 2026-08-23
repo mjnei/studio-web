@@ -3,7 +3,8 @@
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { Check, ChevronDown, FileText, Loader2, Pencil, Sparkles } from "lucide-react";
+import { Check, ChevronDown, FileText, Pencil, Sparkles } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
@@ -443,7 +444,7 @@ export default function ProjectDetailsPage() {
           {state?.thumbnailStatus === "generating" && (
             <Card variant="elevated" padding="md" className="border-accent-cyan/30">
               <div className="flex items-center gap-3">
-                <Loader2 className="h-5 w-5 text-accent-cyan animate-spin flex-shrink-0" />
+                <Spinner className="h-5 w-5 text-accent-cyan flex-shrink-0" />
                 <div className="flex-1">
                   <Heading variant="label" as="h3" className="text-text-primary">
                     {t("project.details.generatingThumbnail")}
@@ -585,7 +586,7 @@ export default function ProjectDetailsPage() {
                       {t("project.details.suggestions")}
                     </Heading>
                     {loadingAiSuggestions && (
-                      <Loader2 className="h-4 w-4 animate-spin text-accent-cyan" />
+                      <Spinner size="sm" className="text-accent-cyan" />
                     )}
                   </div>
                   {activeScript?.content && (

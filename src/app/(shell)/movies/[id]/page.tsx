@@ -8,13 +8,13 @@ import {
   Calendar,
   Clock,
   Play,
-  Loader,
   AlertCircle,
   Film,
   Globe,
   TrendingUp,
 } from "lucide-react";
 import Link from "next/link";
+import { Spinner } from "@/components/ui/spinner";
 import { ExternalImage } from "@/components/ui/ExternalImage";
 import { Heading } from "@/components/ui/heading";
 import { getMovie, type MovieResponse } from "@/lib/project-client";
@@ -137,7 +137,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
       {loading ? (
         <div className="flex h-[60vh] items-center justify-center">
           <div className="flex flex-col items-center gap-2">
-            <Loader className="h-8 w-8 animate-spin text-accent-cyan" />
+            <Spinner size="md" className="text-accent-cyan" />
             <p className="text-sm text-text-muted">{t("movies.detail.loading")}</p>
           </div>
         </div>
@@ -203,7 +203,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                 >
                   {loading ? (
                     <>
-                      <Loader className="h-5 w-5 animate-spin" />
+                      <Spinner className="h-5 w-5" />
                       {t("movies.detail.buttonLoading")}
                     </>
                   ) : (

@@ -14,7 +14,8 @@ import { ThumbnailEditorModal } from "@/components/project/ThumbnailEditorModal"
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
-import { FileText, ChevronDown, Sparkles, Check, Loader2, RotateCw, Edit } from "lucide-react";
+import { FileText, ChevronDown, Sparkles, Check, RotateCw, Edit } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 import {
   advanceProjectStep,
   scheduleAgnesJobs,
@@ -257,7 +258,7 @@ export default function ComposePage() {
                     {state.thumbnailStatus === "generating" ||
                     !state.thumbnailUrl ||
                     isRegenerating ? (
-                      <Loader2 className="h-5 w-5 text-accent-cyan animate-spin" />
+                      <Spinner className="h-5 w-5 text-accent-cyan" />
                     ) : (
                       <Sparkles className="h-5 w-5 text-accent-cyan" />
                     )}
@@ -300,7 +301,7 @@ export default function ComposePage() {
                         isRegenerating ? (
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="text-xs font-medium text-accent-cyan flex items-center gap-1">
-                              <Loader2 className="h-3 w-3 animate-spin" />{" "}
+                              <Spinner className="h-3 w-3" />{" "}
                               {t("project.compose.generating")}
                             </span>
                             {/* Show retry button when generating */}
@@ -319,7 +320,7 @@ export default function ComposePage() {
                           </div>
                         ) : state.thumbnailCompositionStatus === "processing" ? (
                           <span className="text-xs font-medium text-accent-cyan flex items-center gap-1">
-                            <Loader2 className="h-3 w-3 animate-spin" />{" "}
+                            <Spinner className="h-3 w-3" />{" "}
                             {t("project.compose.processing")}
                           </span>
                         ) : state.thumbnailConfirmed ? (

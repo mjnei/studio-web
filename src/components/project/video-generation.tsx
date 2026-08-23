@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { Video, Play, Download, Loader2, CheckCircle2, Film, Clock } from "lucide-react";
+import { Video, Play, Download, CheckCircle2, Film, Clock } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -206,7 +207,7 @@ export function VideoGeneration({
                     {step.status === "completed" ? (
                       <CheckCircle2 className="w-5 h-5 text-status-completed" />
                     ) : step.status === "processing" ? (
-                      <Loader2 className="w-5 h-5 text-accent-primary animate-spin" />
+                      <Spinner className="h-5 w-5 text-accent-primary" />
                     ) : (
                       <div className="w-5 h-5 rounded-full border-2 border-border-default" />
                     )}

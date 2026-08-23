@@ -6,7 +6,6 @@ import {
   CheckCircle,
   FileText,
   Mic2,
-  Loader2,
   AlertCircle,
   Play,
   Pause,
@@ -17,6 +16,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Spinner } from "@/components/ui/spinner";
 import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -405,7 +405,7 @@ export default function PreviewPage() {
                   }`}
                 >
                   {isProcessing ? (
-                    <Loader2 className="h-12 w-12 text-accent-primary animate-spin" />
+                    <Spinner size="lg" className="text-accent-primary" />
                   ) : ttsJob?.status === "failed" ? (
                     <AlertCircle className="h-12 w-12 text-status-error" />
                   ) : ttsJob?.status === "completed" ? (

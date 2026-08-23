@@ -1,4 +1,5 @@
-import { Film, Search, Database, Loader } from "lucide-react";
+import { Film, Search, Database } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 import { LayoutToggle, type LayoutMode } from "@/components/ui/LayoutToggle";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -84,7 +85,7 @@ export function TmdbImportView({
             aria-label="Search TMDB"
           >
             {isSearching ? (
-              <Loader className="h-4 w-4 animate-spin" />
+              <Spinner size="sm" />
             ) : (
               <Search className="h-4 w-4" />
             )}

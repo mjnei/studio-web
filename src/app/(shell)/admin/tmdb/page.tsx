@@ -4,7 +4,8 @@ import { Heading } from "@/components/ui/heading";
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Loader, ArrowRight, Database } from "lucide-react";
+import { ArrowRight, Database } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 
 /**
  * Legacy TMDB Import Page - Redirects to Unified Movies Page
@@ -31,7 +32,7 @@ export default function AdminTMDBPage() {
           <div className="mb-6 flex justify-center">
             <div className="relative">
               <Database className="h-16 w-16 text-accent-primary" />
-              <Loader className="absolute -right-2 -top-2 h-6 w-6 animate-spin text-accent-primary" />
+              <Spinner className="absolute -right-2 -top-2 h-6 w-6 text-accent-primary" />
             </div>
           </div>
 

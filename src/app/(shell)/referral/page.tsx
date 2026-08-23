@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useI18n } from "@/i18n";
-import { Copy, Check, Users, Award, Gift, TrendingUp, Share2, Loader2, Trophy } from "lucide-react";
+import { Copy, Check, Users, Award, Gift, TrendingUp, Share2, Trophy } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -81,7 +82,7 @@ export default function ReferralPage() {
       <div className="max-w-7xl mx-auto">
         <PageHeader title={t("referral.title")} description={t("referral.description")} />
         <div className="flex items-center justify-center py-20">
-          <Loader2 className="w-8 h-8 animate-spin text-accent-primary" />
+          <Spinner size="md" className="text-accent-primary" />
         </div>
       </div>
     );

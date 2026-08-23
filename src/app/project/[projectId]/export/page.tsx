@@ -11,13 +11,13 @@ import { Modal } from "@/components/ui/modal";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
+import { Spinner } from "@/components/ui/spinner";
 import {
   ChevronRight,
   Download,
   Share2,
   Video,
   Trash2,
-  Loader2,
   RefreshCw,
   Info,
   Film,
@@ -363,7 +363,7 @@ export default function ExportPage() {
                     size="sm"
                     leftIcon={
                       isGeneratingVideo ? (
-                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                        <Spinner className="h-3.5 w-3.5" />
                       ) : (
                         <RefreshCw className="h-3.5 w-3.5" />
                       )
@@ -417,7 +417,7 @@ export default function ExportPage() {
                   </video>
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <Loader2 className="h-12 w-12 text-text-muted animate-spin" />
+                    <Spinner size="lg" className="text-text-muted" />
                   </div>
                 )}
               </div>
@@ -523,7 +523,7 @@ export default function ExportPage() {
                   size="lg"
                   leftIcon={
                     isGeneratingVideo ? (
-                      <Loader2 className="h-5 w-5 animate-spin" />
+                      <Spinner className="h-5 w-5" />
                     ) : (
                       <Video className="h-5 w-5" />
                     )
@@ -559,7 +559,7 @@ export default function ExportPage() {
                     className="flex items-center justify-between p-3 rounded-lg bg-surface-raised border border-accent-cyan/30"
                   >
                     <div className="flex items-center gap-3 flex-1">
-                      <Loader2 className="h-5 w-5 text-accent-cyan animate-spin flex-shrink-0" />
+                      <Spinner className="h-5 w-5 text-accent-cyan flex-shrink-0" />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-text-primary">
                           {t("project.common.version", { number: video.generation_attempt })}
@@ -655,7 +655,7 @@ export default function ExportPage() {
                               {t("project.common.version", { number: video.generation_attempt })}
                             </p>
                             {(video.status === "processing" || video.status === "queued") && (
-                              <Loader2 className="h-3 w-3 text-accent-cyan animate-spin" />
+                              <Spinner className="h-3 w-3 text-accent-cyan" />
                             )}
                             <span
                               className={`text-xs px-2 py-0.5 rounded ${

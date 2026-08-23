@@ -4,7 +4,6 @@ import { useState, useRef } from "react";
 import Image from "next/image";
 import {
   Upload,
-  Loader2,
   Check,
   Palette,
   AlignLeft,
@@ -16,6 +15,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
+import { Spinner } from "@/components/ui/spinner";
 import {
   regenerateThumbnail,
   uploadCustomThumbnail,
@@ -380,7 +380,7 @@ export function ThumbnailEditorModal({
             {isRegenerating && !useCustom && (
               <div className="absolute inset-0 flex items-center justify-center bg-surface-base/80 z-10">
                 <div className="text-center">
-                  <Loader2 className="h-8 w-8 text-accent-cyan animate-spin mx-auto mb-2" />
+                  <Spinner size="md" className="text-accent-cyan mx-auto mb-2" />
                   <p className="text-sm text-text-muted">
                     {t("project.thumbnailEditor.generatingNew")}
                   </p>
@@ -391,7 +391,7 @@ export function ThumbnailEditorModal({
             {project.thumbnailStatus === "generating" && !useCustom && !isRegenerating && (
               <div className="absolute inset-0 flex items-center justify-center bg-surface-base/80 z-10">
                 <div className="text-center">
-                  <Loader2 className="h-8 w-8 text-accent-cyan animate-spin mx-auto mb-2" />
+                  <Spinner size="md" className="text-accent-cyan mx-auto mb-2" />
                   <p className="text-sm text-text-muted">
                     {t("project.thumbnailEditor.aiGenerating")}
                   </p>

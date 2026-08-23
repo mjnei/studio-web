@@ -8,11 +8,11 @@ import {
   AlertCircle,
   CheckCircle2,
   XCircle,
-  Loader2,
   FileAudio,
   X,
 } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
+import { Spinner } from "@/components/ui/spinner";
 import { Heading } from "@/components/ui/heading";
 import { adminSearchUsers, adminBulkUploadVoices, type UserSearchResult } from "@/lib/api/admin";
 
@@ -237,7 +237,7 @@ export function VoiceBulkImportModal({ open, onClose, onSuccess }: VoiceBulkImpo
                   disabled={isImporting}
                   className="flex-1 bg-transparent text-text-primary placeholder-text-muted focus:outline-none disabled:opacity-50"
                 />
-                {isSearching && <Loader2 className="h-4 w-4 animate-spin text-text-muted" />}
+                {isSearching && <Spinner size="sm" className="text-text-muted" />}
               </div>
 
               {/* User Dropdown */}
@@ -442,7 +442,7 @@ export function VoiceBulkImportModal({ open, onClose, onSuccess }: VoiceBulkImpo
             >
               {isImporting ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Spinner size="sm" />
                   Uploading...
                 </>
               ) : (

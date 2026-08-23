@@ -7,7 +7,6 @@ import {
   ArrowLeft,
   Calendar,
   Clock,
-  Loader,
   AlertCircle,
   Film,
   Users,
@@ -21,6 +20,7 @@ import {
   X,
 } from "lucide-react";
 import Link from "next/link";
+import { Spinner } from "@/components/ui/spinner";
 import { ExternalImage } from "@/components/ui/ExternalImage";
 import { Heading } from "@/components/ui/heading";
 import {
@@ -225,7 +225,7 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
       {loading ? (
         <div className="flex h-[60vh] items-center justify-center">
           <div className="flex flex-col items-center gap-2">
-            <Loader className="h-8 w-8 animate-spin text-accent-primary" />
+            <Spinner size="md" className="text-accent-primary" />
             <p className="text-sm text-text-muted">Loading movie details...</p>
           </div>
         </div>

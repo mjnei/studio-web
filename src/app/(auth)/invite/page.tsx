@@ -7,7 +7,8 @@ import { validateReferralCode } from "@/lib/api/referral-client";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
-import { AlertCircle, CheckCircle, Loader2, Gift } from "lucide-react";
+import { AlertCircle, CheckCircle, Gift } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 
@@ -74,7 +75,7 @@ function InviteContent() {
     return (
       <Card variant="elevated" padding="lg" className="w-full">
         <div className="flex flex-col items-center justify-center py-12">
-          <Loader2 className="animate-spin h-12 w-12 text-accent-primary mb-4" />
+          <Spinner size="lg" className="text-accent-primary mb-4" />
           <p className="text-sm text-text-secondary">{t("auth.invite.validating")}</p>
         </div>
       </Card>
@@ -167,7 +168,7 @@ export default function InvitePage() {
       fallback={
         <Card variant="elevated" padding="lg" className="w-full">
           <div className="flex flex-col items-center justify-center py-12">
-            <Loader2 className="animate-spin h-12 w-12 text-accent-primary mb-4" />
+            <Spinner size="lg" className="text-accent-primary mb-4" />
             <p className="text-sm text-text-secondary">{t("common.loading")}</p>
           </div>
         </Card>

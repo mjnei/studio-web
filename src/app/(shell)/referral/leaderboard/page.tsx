@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useI18n } from "@/i18n";
-import { Trophy, Medal, Award, TrendingUp, Users, Loader2 } from "lucide-react";
+import { Trophy, Medal, Award, TrendingUp, Users } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Heading } from "@/components/ui/heading";
@@ -72,7 +73,7 @@ export default function LeaderboardPage() {
           description={t("referral.leaderboard.description")}
         />
         <div className="flex items-center justify-center py-20">
-          <Loader2 className="w-8 h-8 animate-spin text-accent-primary" />
+          <Spinner size="md" className="text-accent-primary" />
         </div>
       </div>
     );

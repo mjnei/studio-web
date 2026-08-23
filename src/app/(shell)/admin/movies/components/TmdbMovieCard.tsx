@@ -1,4 +1,5 @@
-import { Film, Calendar, Star, Download, CheckCircle2, Loader } from "lucide-react";
+import { Film, Calendar, Star, Download, CheckCircle2 } from "lucide-react";
+import { Spinner } from "@/components/ui/spinner";
 import { ExternalImage } from "@/components/ui/ExternalImage";
 import { Heading } from "@/components/ui/heading";
 import type { LayoutMode } from "@/components/ui/LayoutToggle";
@@ -79,7 +80,7 @@ export function TmdbMovieCard({
             >
               {isImporting ? (
                 <>
-                  <Loader className="h-4 w-4 animate-spin" />
+                  <Spinner size="sm" />
                   Importing...
                 </>
               ) : (
@@ -156,7 +157,7 @@ export function TmdbMovieCard({
             >
               {isImporting ? (
                 <>
-                  <Loader className="h-4 w-4 animate-spin" />
+                  <Spinner size="sm" />
                   Importing...
                 </>
               ) : (
