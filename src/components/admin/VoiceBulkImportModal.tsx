@@ -1,15 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import {
-  Upload,
-  Search,
-  User,
-  AlertCircle,
-  CheckCircle2,
-  FileAudio,
-  X,
-} from "lucide-react";
+import { Upload, Search, User, AlertCircle, CheckCircle2, FileAudio, X } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
 import { Spinner } from "@/components/ui/spinner";
 import { Heading } from "@/components/ui/heading";

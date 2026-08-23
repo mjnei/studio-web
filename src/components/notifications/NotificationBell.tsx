@@ -47,7 +47,10 @@ export function NotificationBell() {
         }
         title={t("notifications.title")}
       >
-        <Bell className="h-5 w-5 group-hover:scale-110 transition-transform duration-200" aria-hidden />
+        <Bell
+          className="h-5 w-5 group-hover:scale-110 transition-transform duration-200"
+          aria-hidden
+        />
 
         {/* Unread badge */}
         {unreadCount > 0 && (

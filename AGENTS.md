@@ -79,3 +79,7 @@ function Component() {
 **Language switcher**: `<LanguageSwitcher />` component available in `@/components/shared/LanguageSwitcher`
 
 **Persistence**: Selected language is stored in localStorage
+
+## Icons
+
+Lucide React for UI icons; brand SVGs in `@/components/icons`. Use the shared `Icon` wrapper (`@/components/ui/icon`) for nav and repeated patterns. Conventions (size tokens, semantic glossary, accessibility): **`docs/ICONS.md`**. Loading indicators: **`docs/SPINNER_AUDIT.md`**.

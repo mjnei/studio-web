@@ -11,7 +11,7 @@ Scope: `studio-web_0xMichaelRan` after Priority 2 (shared `Spinner` / `LoadingSp
 |-----------|------|---------|
 | `Spinner` | `src/components/ui/spinner.tsx` | Inline loading indicator (`Loader2` + `animate-spin`). Sizes: `sm` (h-4), `md` (h-8), `lg` (h-12), or custom via `className`. Default `aria-hidden={true}`. |
 | `LoadingSpinner` | `src/components/ui/LoadingSpinner.tsx` | Centered block with optional `message`, `description`, `fullHeight`. Wraps `Spinner` internally. |
-| `Icon` | `src/components/ui/icon.tsx` | Lucide wrapper with size tokens (`xs`–`xl`). Not yet adopted broadly. |
+| `Icon` | `src/components/ui/icon.tsx` | Lucide wrapper with size tokens (`xs`–`xl`). Adopted in sidebar nav; use for new icon-heavy UI. |
 | `PageLoadingSkeleton` | `src/components/ui/loading-skeleton.tsx` | Full-page project loading (spinner + message). Used by project workflow pages. |
 | `InlineLoadingSkeleton` | `src/components/ui/loading-skeleton.tsx` | Dashed-border inline loading (spinner + message). |
 
@@ -195,8 +195,8 @@ pnpm eslint src/components/ui/spinner.tsx src/components/ui/LoadingSpinner.tsx
 |----------|------|--------|
 | 1 | Remove dead code; Lucide for duplicate inline SVGs | Done |
 | 2 | `Icon` + `Spinner` primitives; migrate spinners | Done |
-| 3 | Brand icons (`GoogleIcon`, `XIcon`, `WeChatIcon`) | Pending |
-| 4 | Icon conventions in `AGENTS.md` or `docs/ICONS.md` | Pending |
-| 5 | Accessibility pass on icon-only buttons | Pending |
+| 3 | Brand icons (`GoogleIcon`, `XIcon`, `WeChatIcon`) | Done |
+| 4 | Icon conventions in `AGENTS.md` or `docs/ICONS.md` | Done |
+| 5 | Accessibility pass on icon-only buttons | Partial (high-traffic surfaces) |
 
 This document covers Priority 2 spinner scope only. Icon wrapper adoption (`Icon` component) is deferred to a later pass.

@@ -700,7 +700,10 @@ export default function ExportPage() {
                               title={t("common.download")}
                               aria-label={t("common.download")}
                             >
-                              <Download className="h-4 w-4 text-text-muted hover:text-accent-cyan" aria-hidden />
+                              <Download
+                                className="h-4 w-4 text-text-muted hover:text-accent-cyan"
+                                aria-hidden
+                              />
                             </button>
                           </>
                         )}
@@ -712,7 +715,10 @@ export default function ExportPage() {
                             title={t("common.delete")}
                             aria-label={t("common.delete")}
                           >
-                            <Trash2 className="h-4 w-4 text-text-muted hover:text-error-text" aria-hidden />
+                            <Trash2
+                              className="h-4 w-4 text-text-muted hover:text-error-text"
+                              aria-hidden
+                            />
                           </button>
                         )}
                       </div>

@@ -31,7 +31,10 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
       <div className="p-3 sm:p-4 border-b border-border-default bg-surface-raised flex items-center justify-between shrink-0">
         <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
           <Bell className="h-4 w-4 text-text-secondary sm:hidden shrink-0" aria-hidden />
-          <Bell className="hidden h-[18px] w-[18px] text-text-secondary sm:block shrink-0" aria-hidden />
+          <Bell
+            className="hidden h-[18px] w-[18px] text-text-secondary sm:block shrink-0"
+            aria-hidden
+          />
           <Heading variant="label" as="h3" className="text-text-primary truncate">
             {t("notifications.title")}
           </Heading>

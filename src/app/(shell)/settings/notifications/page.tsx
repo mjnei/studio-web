@@ -184,7 +184,7 @@ export default function NotificationSettingsPage() {
             <div className="bg-surface-panel rounded-xl border border-border-default shadow-2xl p-4 flex items-center gap-3">
               {saveSuccess && (
                 <span className="text-sm text-status-success font-medium flex items-center gap-2">
-                  <Check size={16} />
+                  <Check className="h-4 w-4" aria-hidden />
                   {t("notificationSettings.preferencesSaved")}
                 </span>
               )}

@@ -86,7 +86,10 @@ export function VoiceNamingForm({
           {t("voices.recording.language")}
         </label>
         <div className="relative">
-          <Globe className="absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-text-muted" aria-hidden />
+          <Globe
+            className="absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-text-muted"
+            aria-hidden
+          />
           <select
             id="voice-language"
             value={language}
