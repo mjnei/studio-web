@@ -56,6 +56,7 @@
     "preferencesHeader": "Notification Preferences",
     "savePreferences": "Save Preferences",
     "saving": "Saving...",
+    "loadingPreferences": "Loading notification preferences...",
     "preferencesSaved": "Preferences saved!",
     "categories": {
       "videoJobs": "Video Jobs",

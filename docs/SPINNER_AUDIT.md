@@ -119,7 +119,7 @@ Auth and new-project redirect pages use `border-b-2` or `border-4 border-r-trans
 | `VoiceSelectionPanel` | Pulse grid when `isLoadingVoices` | Correct — skeleton, not spinner |
 | `project/new/*` | CSS border spinners on redirect / script load | Works; could unify to `PageLoadingSkeleton` |
 
-**Caveat — `export/page.tsx` player (SPIN-003):** A large `Spinner` shows when `displayVideo.video_url` is falsy. This may conflate “still loading” with “no stream yet”. Consider splitting empty vs loading states if users report a stuck spinner.
+**Caveat — `export/page.tsx` player (SPIN-003) — Fixed:** Completed videos without `video_url` now show an unavailable empty state instead of a spinner. Initial page/video fetch still uses `PageLoadingSkeleton`; in-flight generation appears in the processing list.
 
 ### Shell & admin — mostly OK
 
@@ -135,7 +135,7 @@ Auth and new-project redirect pages use `border-b-2` or `border-4 border-r-trans
 | `admin/projects` | `LoadingSpinner` only while **stats** load; table uses refresh icon spin | Partial — acceptable but asymmetric |
 | `admin/tmdb` | Decorative spinner on redirect page | Correct for redirect UX |
 | `TmdbMovieCard` | Import button spinner | Correct |
-| `TmdbImportView` | Button spinner **and** full-page `LoadingSpinner` when searching | **Redundant** — pick one |
+| `TmdbImportView` | Full-page `LoadingSpinner` when searching | Correct |
 | `ActiveJobCard` | Permanent overlay on thumbnail | Correct for active-job cards |
 | `PlaygroundForm`, `VoiceBulkImportModal` | Submit / search spinners | Correct |
 
@@ -166,7 +166,7 @@ These are not necessarily bugs — they use other patterns or minimal feedback.
 | `dashboard` | Stats show `"..."`; sections hidden until data arrives | Low–medium — brief empty layout possible |
 | `admin/` hub | Stats show `"-"` until fetch completes | Low |
 | `admin/queues/*` | `Skeleton` components | None — appropriate |
-| `settings/notifications` | `preferencesLoading` disables Save only; no visible first-load indicator | **Medium** — form may flash before prefs load |
+| `settings/notifications` | `LoadingSpinner` while `preferencesLoading` | None — fixed (SPIN-001) |
 | `profile` | `return null` when `!user` | Low — relies on auth shell |
 | `help`, `pricing` | Static content | None |
 | `project/new/source` | Relies on shell; no dedicated page spinner | Low |
@@ -206,14 +206,14 @@ These are not necessarily bugs — they use other patterns or minimal feedback.
 
 > **Task IDs:** Each item below maps to the [Task list](#task-list) (e.g. SPIN-001).
 
-### 1. Redundant spinners — `TmdbImportView` (SPIN-002)
+### 1. Redundant spinners — `TmdbImportView` (SPIN-002) — **Fixed**
 
 When `isSearching` is true, both apply:
 
-- `<Spinner size="sm" />` in the search button
+- ~~`<Spinner size="sm" />` in the search button~~
 - `<LoadingSpinner size="lg" fullHeight message="Searching TMDB…" />`
 
-**Recommendation:** Keep the full-page `LoadingSpinner` OR the button spinner, not both.
+**Resolution:** Full-page `LoadingSpinner` kept; button always shows `Search` icon; input disabled while searching.
 
 ### 2. Inconsistent spinner visuals — CSS border divs (SPIN-101–SPIN-108)
 
@@ -221,11 +221,11 @@ When `isSearching` is true, both apply:
 
 **Recommendation:** Migrate in a small follow-up PR for visual consistency (not required for correctness). Start with notifications cluster (page + dropdown + modal) for highest visibility.
 
-### 3. Missing first-load UI — notification settings (SPIN-001)
+### 3. Missing first-load UI — notification settings (SPIN-001) — **Fixed**
 
 `settings/notifications/page.tsx` reads `preferencesLoading` from context but does not render a loading state.
 
-**Recommendation:** Add `LoadingSpinner` or skeleton while `preferencesLoading === true`.
+**Resolution:** Renders `<LoadingSpinner fullHeight />` with `notificationSettings.loadingPreferences` while preferences load.
 
 ### 4. Dashboard progressive loading (SPIN-301)
 
@@ -249,9 +249,9 @@ Actionable backlog for Priority 3+ spinner work. Check off items as completed an
 
 | ID | Task | File(s) | What to do | Acceptance criteria | Effort | PR batch |
 |----|------|---------|------------|---------------------|--------|----------|
-| SPIN-001 | Notification settings first-load | `src/app/(shell)/settings/notifications/page.tsx` | When `preferencesLoading === true`, render `<LoadingSpinner size="md" message={…} fullHeight />` (or a form skeleton) instead of the preferences form. Use an existing i18n key or add one under `settings.notifications`. | Form does not flash empty/stale toggles on first visit; Save stays disabled while loading; no layout shift when prefs arrive. | S | `fix/notifications-settings-loading` |
-| SPIN-002 | TmdbImportView redundant spinners | `src/app/(shell)/admin/movies/components/TmdbImportView.tsx` | Remove either the search-button `<Spinner size="sm" />` **or** the full-page `<LoadingSpinner fullHeight />` when `isSearching`. Prefer keeping full-page spinner + disabled search input. | Only one loading indicator visible during TMDB search; search button/input clearly disabled. | S | `fix/tmdb-import-spinner` |
-| SPIN-003 | Export player loading vs empty | `src/app/project/[projectId]/export/page.tsx` | Introduce distinct UI for (a) video metadata/stream still fetching, (b) generation in progress, (c) no URL yet / failed. Do not show a bare large `Spinner` for all falsy `video_url` cases. | Player area shows spinner only while a known fetch/generation is in flight; empty/error states have copy + optional retry. | M | `fix/export-player-states` |
+| SPIN-001 | Notification settings first-load | `src/app/(shell)/settings/notifications/page.tsx` | When `preferencesLoading === true`, render `<LoadingSpinner size="md" message={…} fullHeight />` (or a form skeleton) instead of the preferences form. Use an existing i18n key or add one under `settings.notifications`. | Form does not flash empty/stale toggles on first visit; Save stays disabled while loading; no layout shift when prefs arrive. | S | `fix/notifications-settings-loading` | **Done** |
+| SPIN-002 | TmdbImportView redundant spinners | `src/app/(shell)/admin/movies/components/TmdbImportView.tsx` | Remove either the search-button `<Spinner size="sm" />` **or** the full-page `<LoadingSpinner fullHeight />` when `isSearching`. Prefer keeping full-page spinner + disabled search input. | Only one loading indicator visible during TMDB search; search button/input clearly disabled. | S | `fix/tmdb-import-spinner` | **Done** |
+| SPIN-003 | Export player loading vs empty | `src/app/project/[projectId]/export/page.tsx` | Introduce distinct UI for (a) video metadata/stream still fetching, (b) generation in progress, (c) no URL yet / failed. Do not show a bare large `Spinner` for all falsy `video_url` cases. | Player area shows spinner only while a known fetch/generation is in flight; empty/error states have copy + optional retry. | M | `fix/export-player-states` | **Done** |
 
 ### Phase 2 — Border spinner → `Spinner` migration (P1)
 
@@ -314,9 +314,9 @@ Replace hand-rolled `div` border spinners with `<Spinner />`. Match size and col
 
 ```
 Phase 1 — UX
-- [ ] SPIN-001 Notification settings first-load
-- [ ] SPIN-002 TmdbImportView redundant spinners
-- [ ] SPIN-003 Export player loading vs empty
+- [x] SPIN-001 Notification settings first-load
+- [x] SPIN-002 TmdbImportView redundant spinners
+- [x] SPIN-003 Export player loading vs empty
 
 Phase 2 — Border migration
 - [ ] SPIN-101 Notifications cluster

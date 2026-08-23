@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useNotifications } from "@/lib/notification-context";
 import { Monitor, Check, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
@@ -97,6 +98,13 @@ export default function NotificationSettingsPage() {
         }
       />
 
+      {preferencesLoading ? (
+        <LoadingSpinner
+          size="md"
+          message={t("notificationSettings.loadingPreferences")}
+          fullHeight
+        />
+      ) : (
       <div className="space-y-8">
         {/* Notification Preferences by Category */}
         {NOTIFICATION_CATEGORIES.map((category, categoryIndex) => {
@@ -197,6 +205,7 @@ export default function NotificationSettingsPage() {
           </div>
         )}
       </div>
+      )}
     </div>
   );
 }

@@ -496,6 +496,8 @@
       "newVersion": "New Version",
       "versionLabel": "Version:",
       "browserNoVideo": "Your browser does not support the video tag.",
+      "videoUnavailable": "Video stream unavailable",
+      "videoUnavailableDesc": "This version completed but the video file is not ready yet. Try refreshing or generate a new version.",
       "voiceLabel": "Voice:",
       "costLabel": "Cost:",
       "generatedLabel": "Generated:",

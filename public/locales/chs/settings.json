@@ -56,6 +56,7 @@
     "preferencesHeader": "通知偏好",
     "savePreferences": "保存偏好",
     "saving": "保存中...",
+    "loadingPreferences": "正在加载通知偏好...",
     "preferencesSaved": "偏好已保存！",
     "categories": {
       "videoJobs": "视频任务",

@@ -417,8 +417,14 @@ export default function ExportPage() {
                     {t("project.export.browserNoVideo")}
                   </video>
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <Spinner size="lg" className="text-text-muted" />
+                  <div className="w-full h-full flex flex-col items-center justify-center gap-2 p-6 text-center">
+                    <Film className="h-10 w-10 text-text-muted" aria-hidden />
+                    <p className="text-sm font-medium text-text-secondary">
+                      {t("project.export.videoUnavailable")}
+                    </p>
+                    <p className="text-xs text-text-muted max-w-xs">
+                      {t("project.export.videoUnavailableDesc")}
+                    </p>
                   </div>
                 )}
               </div>
