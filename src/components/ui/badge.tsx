@@ -31,9 +31,9 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
     };
 
     const sizes = {
-      sm: "px-2 py-0.5 text-caption",
-      md: "px-2.5 py-1 text-body",
-      lg: "px-3 py-1.5 text-body",
+      sm: "px-1.5 py-0.5 text-caption",
+      md: "px-2 py-0.5 text-caption",
+      lg: "px-2.5 py-1 text-body",
     };
 
     return (

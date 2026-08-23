@@ -130,8 +130,8 @@ export function Select({
 
   const sizes = {
     sm: "px-3 py-1.5 text-body",
-    md: "px-4 py-2.5 text-body",
-    lg: "px-4 py-3 text-body",
+    md: "px-3.5 py-2 text-body",
+    lg: "px-4 py-2.5 text-body",
   };
 
   const dropdownSizes = {
@@ -207,7 +207,7 @@ export function Select({
                     setHighlightedIndex(0);
                   }}
                   placeholder={t("common.searchEllipsis")}
-                  className="w-full px-3 py-2 text-body rounded-lg border border-border-default bg-surface-raised text-text-primary placeholder:text-text-secondary focus:outline-none focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
+                  className="w-full px-3 py-1.5 text-body rounded-lg border border-border-default bg-surface-raised text-text-primary placeholder:text-text-secondary focus:outline-none focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
                   onClick={(e) => e.stopPropagation()}
                 />
               </div>
@@ -339,8 +339,8 @@ export function MultiSelect({
 
   const sizes = {
     sm: "px-3 py-1.5 text-body min-h-[32px]",
-    md: "px-4 py-2.5 text-body min-h-[42px]",
-    lg: "px-4 py-3 text-body min-h-[48px]",
+    md: "px-3.5 py-2 text-body min-h-[36px]",
+    lg: "px-4 py-2.5 text-body min-h-[40px]",
   };
 
   return (
@@ -401,7 +401,7 @@ export function MultiSelect({
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={t("common.searchEllipsis")}
-                  className="w-full px-3 py-2 text-body rounded-lg border border-border-default bg-surface-raised text-text-primary placeholder:text-text-secondary focus:outline-none focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
+                  className="w-full px-3 py-1.5 text-body rounded-lg border border-border-default bg-surface-raised text-text-primary placeholder:text-text-secondary focus:outline-none focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
                 />
               </div>
             )}

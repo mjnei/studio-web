@@ -146,10 +146,10 @@ export function NotificationPreferencesModal({
 
         {/* Footer */}
         <div className="p-4 border-t border-border-default bg-surface-raised flex items-center justify-end gap-2">
-          <Button variant="ghost" onClick={onClose} disabled={isSaving}>
+          <Button variant="ghost" size="md" onClick={onClose} disabled={isSaving}>
             {t("common.cancel")}
           </Button>
-          <Button onClick={handleSave} disabled={isSaving || preferencesLoading}>
+          <Button size="md" onClick={handleSave} disabled={isSaving || preferencesLoading}>
             {isSaving ? t("notifications.saving") : t("notifications.savePreferences")}
           </Button>
         </div>

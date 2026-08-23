@@ -594,7 +594,7 @@ export default function ProjectDetailsPage() {
                       variant="ghost"
                       size="sm"
                       disabled={loadingAiSuggestions}
-                      className="text-caption h-8 text-accent-cyan hover:bg-accent-cyan/10"
+                      className="text-accent-cyan hover:bg-accent-cyan/10"
                       title={t("project.details.aiGeneratedOnce")}
                     >
                       <Sparkles className="h-3 w-3 mr-1" />

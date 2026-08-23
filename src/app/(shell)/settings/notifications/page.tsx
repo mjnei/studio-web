@@ -196,7 +196,7 @@ export default function NotificationSettingsPage() {
                     {t("notificationSettings.preferencesSaved")}
                   </span>
                 )}
-                <Button onClick={handleSave} disabled={isSaving || preferencesLoading} size="lg">
+                <Button onClick={handleSave} disabled={isSaving || preferencesLoading} size="md">
                   {isSaving
                     ? t("notificationSettings.saving")
                     : t("notificationSettings.savePreferences")}

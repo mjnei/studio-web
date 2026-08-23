@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { Button } from "@/components/ui/button";
 import { useI18n } from "@/i18n";
 
 function Toggle({ checked, onChange }: { checked: boolean; onChange: () => void }) {
@@ -279,10 +280,9 @@ export default function SettingsPage() {
               title={t("settings.dataPrivacy.exportMyData")}
               description={t("settings.dataPrivacy.exportMyDataDesc")}
             >
-              <button className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border-default bg-surface-raised text-body font-medium text-text-primary hover:bg-surface-hover transition-all">
-                <Download className="h-4 w-4" aria-hidden />
+              <Button variant="secondary" size="sm" leftIcon={<Download className="h-4 w-4" />}>
                 {t("settings.dataPrivacy.requestExport")}
-              </button>
+              </Button>
             </SettingRow>
           </CardContent>
         </Card>

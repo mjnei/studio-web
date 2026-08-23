@@ -146,7 +146,7 @@ export default function ScriptPage() {
               {!isEditing ? (
                 <Button
                   variant="secondary"
-                  size="md"
+                  size="sm"
                   leftIcon={<Edit2 className="h-4 w-4" />}
                   onClick={() => setIsEditing(true)}
                   aria-label={t("common.edit")}

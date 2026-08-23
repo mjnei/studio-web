@@ -557,11 +557,12 @@ export default function ComposePage() {
         size="md"
         footer={
           <>
-            <Button variant="secondary" onClick={() => setShowActionModal(false)}>
+            <Button variant="secondary" size="md" onClick={() => setShowActionModal(false)}>
               {t("common.cancel")}
             </Button>
             <Button
               variant="primary"
+              size="md"
               onClick={
                 actionModalType === "regenerate"
                   ? handleRegenerateThumbnail

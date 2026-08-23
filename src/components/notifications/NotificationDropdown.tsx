@@ -97,7 +97,7 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
       {notifications.length > 0 && (
         <div className="p-2 sm:p-3 border-t border-border-default bg-surface-raised">
           <Link href="/notifications" onClick={onClose}>
-            <Button variant="ghost" className="w-full text-caption" size="sm">
+            <Button variant="ghost" size="sm" className="w-full">
               {t("notifications.viewAll")}
             </Button>
           </Link>

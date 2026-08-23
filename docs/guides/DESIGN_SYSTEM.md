@@ -47,7 +47,7 @@ Huavoi Studio's frontend embodies a premium, state-of-the-art aesthetic that is 
 1. **Rich Aesthetics** - We prioritize visual excellence. Our design uses curated, harmonious color palettes, sleek dark modes, and dynamic visual elements rather than generic plain colors.
 2. **Dynamic & Interactive** - The interface must feel responsive and alive. We achieve this with generous hover effects, smooth transitions, and subtle micro-animations that encourage user interaction.
 3. **Glassmorphism & Depth** - We heavily utilize ambient gradient backdrops and glassmorphism (backdrop blurs with subtle borders) to create a layered, premium feel without visual clutter.
-4. **Responsive** - Mobile-first approach with seamless scaling across breakpoints. No horizontal scrolling, large touch targets (44x44px minimum).
+4. **Responsive** - Mobile-first approach with seamless scaling across breakpoints. No horizontal scrolling; dense controls (36–40px) with larger hit areas only where primary mobile chrome needs them.
 5. **Accessible & Performant** - WCAG-compliant with proper contrast, focus states, and semantic HTML, powered by optimized GPU-accelerated CSS animations.
 
 ### Global Design Guidelines
@@ -259,7 +259,8 @@ All components are located in `src/components/ui/` and are built with React 19, 
 #### 1. Button
 - **File**: `src/components/ui/button.tsx`
 - **Variants**: primary, secondary, outline, ghost, danger, success
-- **Sizes**: sm (h-8), md (h-10), lg (h-12)
+- **Sizes**: sm (h-8 / 32px — dense chrome), md (h-9 / 36px, default — PageHeader & modal CTAs), lg (h-10 / 40px — auth only), icon (h-9)
+- **Size roles**: Do not mix sizes for the same role. Page actions & modal footers = `md`; card rows / filters / toolbars / floating nav = `sm`; auth full-width = `lg`.
 - **Features**: Loading state (via `loading` or `isLoading` prop), left/right icons, full width option
 - **Usage**: Actions, navigation, form submissions
 
@@ -680,23 +681,22 @@ const getGridClass = () => {
 
 ### Touch Target Sizes
 
-All interactive elements follow WCAG AA guidelines for minimum touch target size:
+Prefer dense desktop controls; keep comfortable hit areas on mobile primary actions:
 
-**Icon Buttons** (44×44px minimum):
+**Icon / toolbar buttons** (mobile-first hit area when used as primary chrome):
 ```tsx
-className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center"
-// Plus 5px icon: 40px inner + 4px padding = 44×44px total
+className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center sm:min-w-0 sm:min-h-0"
+// Default Button size="icon" is h-9 (36px); bump with min-h-[44px] only for isolated mobile chrome
 ```
 
-**Regular Buttons** (44×44px minimum):
+**Regular Buttons** (shared scale):
 ```tsx
-// Height: py-2.5 = 10px padding + text = naturally ~44px
-// Width: px-4 = 16px padding
-// With text this naturally meets or exceeds 44×44px
+// Default size="md" = h-9 (36px) — matches Input / Select denser type scale
+// size="lg" = h-10 (40px) — auth / full-width primary CTAs
+// Prefer size="sm" (h-8) in tables and toolbars
 ```
 
 **Verified in**: Projects page layout toggle, Profile page buttons, Notifications filters
-
 ---
 
 ### Design Rationale

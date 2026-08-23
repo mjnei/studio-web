@@ -211,11 +211,11 @@ export default function HelpPage() {
           <CardTitle className="mb-2">{t("help.contactSupport.title")}</CardTitle>
           <CardDescription className="mb-6">{t("help.contactSupport.description")}</CardDescription>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button variant="primary" size="lg">
+            <Button variant="primary" size="md">
               <Mail className="h-4 w-4" />
               {t("help.contactSupport.contact")}
             </Button>
-            <Button variant="secondary" size="lg">
+            <Button variant="secondary" size="md">
               <MessageCircle className="h-4 w-4" />
               {t("help.contactSupport.liveChat")}
             </Button>

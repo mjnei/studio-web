@@ -183,10 +183,10 @@ export function ConfirmModal({
       variant={variant}
       footer={
         <>
-          <Button variant="secondary" onClick={onClose} disabled={loading}>
+          <Button variant="secondary" size="md" onClick={onClose} disabled={loading}>
             {cancelText}
           </Button>
-          <Button variant={buttonVariant} onClick={onConfirm} loading={loading}>
+          <Button variant={buttonVariant} size="md" onClick={onConfirm} loading={loading}>
             {confirmText}
           </Button>
         </>
@@ -241,10 +241,10 @@ export function FormModal({
       size={size}
       footer={
         <>
-          <Button variant="secondary" onClick={onClose} disabled={loading}>
+          <Button variant="secondary" size="md" onClick={onClose} disabled={loading}>
             {cancelText}
           </Button>
-          <Button variant="primary" onClick={onSubmit} loading={loading}>
+          <Button variant="primary" size="md" onClick={onSubmit} loading={loading}>
             {submitText}
           </Button>
         </>
@@ -297,7 +297,7 @@ export function AlertModal({
       size="sm"
       variant={variant === "error" ? "danger" : variant === "success" ? "success" : "default"}
       footer={
-        <Button variant={buttonVariants[variant]} onClick={onClose} className="w-full">
+        <Button variant={buttonVariants[variant]} size="md" onClick={onClose} className="w-full">
           {actionText}
         </Button>
       }
@@ -361,10 +361,10 @@ export function InputModal({
       size="sm"
       footer={
         <>
-          <Button variant="secondary" onClick={onClose} disabled={loading}>
+          <Button variant="secondary" size="md" onClick={onClose} disabled={loading}>
             {cancelText}
           </Button>
-          <Button variant="primary" onClick={handleSubmit} loading={loading}>
+          <Button variant="primary" size="md" onClick={handleSubmit} loading={loading}>
             {submitText}
           </Button>
         </>

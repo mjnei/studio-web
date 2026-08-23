@@ -146,7 +146,7 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
           {/* Sort Direction toggle */}
           <Button
             variant="outline"
-            size="md"
+            size="sm"
             onClick={() =>
               onChangeFilters((prev) => ({
                 ...prev,

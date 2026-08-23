@@ -89,11 +89,11 @@ export function InsufficientCreditsModal({
 
         {/* Actions */}
         <div className="flex gap-3 pt-2">
-          <Button variant="ghost" onClick={onClose} className="flex-1">
+          <Button variant="ghost" size="md" onClick={onClose} className="flex-1">
             {t("billing.credits.cancel")}
           </Button>
           {currentTier !== "premium" && (
-            <Button variant="primary" onClick={handleUpgrade} className="flex-1">
+            <Button variant="primary" size="md" onClick={handleUpgrade} className="flex-1">
               {t("billing.credits.upgradePlan")}
             </Button>
           )}

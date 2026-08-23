@@ -3,6 +3,7 @@ import { LayoutToggle, type LayoutMode } from "@/components/ui/LayoutToggle";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Pagination } from "@/components/ui/Pagination";
+import { Button } from "@/components/ui/button";
 import type { AdminMovieResponse } from "@/lib/api/admin";
 import { SUPPORTED_LOCALES } from "../constants";
 import type { EditingMovie } from "../types";
@@ -99,13 +100,14 @@ export function MovieLibraryView({
           }
           action={
             !searchTerm && (
-              <button
+              <Button
+                variant="primary"
+                size="md"
                 onClick={onSwitchToImport}
-                className="flex items-center gap-2 rounded-lg bg-accent-primary px-4 py-2 text-body font-medium text-white hover:bg-accent-primary/90"
+                leftIcon={<Download className="h-4 w-4" />}
               >
-                <Download className="h-4 w-4" />
                 Import from TMDB
-              </button>
+              </Button>
             )
           }
         />

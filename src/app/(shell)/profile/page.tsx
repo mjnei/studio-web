@@ -322,14 +322,14 @@ export default function ProfilePage() {
             </div>
             <div className="flex items-center justify-between gap-2 pt-2 border-t border-border-default">
               <Link href="/pricing" className="flex-1">
-                <Button variant="outline" size="sm" className="w-full text-caption">
+                <Button variant="outline" size="sm" className="w-full">
                   {isFreeUser
                     ? t("profile.membershipBilling.upgradePlan")
                     : t("profile.membershipBilling.viewAllPlans")}
                 </Button>
               </Link>
               <Link href="/billing" className="flex-1">
-                <Button variant="ghost" size="sm" className="w-full text-caption">
+                <Button variant="ghost" size="sm" className="w-full">
                   <CreditCard className="h-3.5 w-3.5 mr-1" />
                   {t("profile.upgradeBanner.billing")}
                 </Button>
@@ -531,7 +531,7 @@ export default function ProfilePage() {
 
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                   <Link href="/pricing" className="w-full sm:w-auto">
-                    <Button variant="primary" className="w-full sm:w-auto">
+                    <Button variant="primary" size="md" className="w-full sm:w-auto">
                       {isFreeUser
                         ? t("profile.membershipBilling.upgradePlan")
                         : t("profile.membershipBilling.viewAllPlans")}
@@ -540,6 +540,7 @@ export default function ProfilePage() {
                   <Link href="/billing" className="w-full sm:w-auto">
                     <Button
                       variant="secondary"
+                      size="md"
                       leftIcon={<CreditCard className="h-4 w-4" />}
                       className="w-full sm:w-auto"
                     >
@@ -622,6 +623,7 @@ export default function ProfilePage() {
                     />
                     <Button
                       variant="primary"
+                      size="md"
                       onClick={handleChangePassword}
                       className="w-full sm:w-auto"
                     >
@@ -710,6 +712,7 @@ export default function ProfilePage() {
                   </div>
                   <Button
                     variant="secondary"
+                    size="md"
                     onClick={handleResetOnboarding}
                     disabled={resettingOnboarding}
                     leftIcon={<RefreshCw className="h-4 w-4" />}
@@ -764,6 +767,7 @@ export default function ProfilePage() {
                     <div className="flex flex-row flex-wrap items-center gap-2 pt-1">
                       <Button
                         variant="ghost"
+                        size="md"
                         onClick={() => {
                           setShowDeleteConfirm(false);
                           setDeleteText("");
@@ -773,6 +777,7 @@ export default function ProfilePage() {
                       </Button>
                       <Button
                         variant="danger"
+                        size="md"
                         onClick={handleDeleteAccount}
                         disabled={deleteText !== "delete my account"}
                         leftIcon={<Trash2 className="h-4 w-4" />}
@@ -784,6 +789,7 @@ export default function ProfilePage() {
                 ) : (
                   <Button
                     variant="danger"
+                    size="md"
                     onClick={() => setShowDeleteConfirm(true)}
                     leftIcon={<Trash2 className="h-4 w-4" />}
                     className="w-full sm:w-auto"

@@ -186,7 +186,7 @@ export function FloatingWorkflowNavigation({
                 size="sm"
                 leftIcon={<ArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
                 onClick={handleBack}
-                className="shadow-lg sm:size-md text-caption touch-manipulation"
+                className="shadow-lg touch-manipulation"
                 aria-label={backLabel || t("project.nav.goBack")}
               >
                 <span className="hidden sm:inline">{backLabel || t("common.back")}</span>
@@ -199,7 +199,7 @@ export function FloatingWorkflowNavigation({
               size="sm"
               leftIcon={<Home className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
               onClick={handleGoHome}
-              className="shadow-lg sm:size-md text-caption touch-manipulation"
+              className="shadow-lg touch-manipulation"
               title={t("project.nav.goToProjects")}
               aria-label={t("project.nav.goToProjectsHome")}
             >
@@ -218,7 +218,7 @@ export function FloatingWorkflowNavigation({
                 }
                 onClick={handleNext}
                 disabled={isProcessing}
-                className="shadow-lg sm:size-md text-caption touch-manipulation"
+                className="shadow-lg touch-manipulation"
                 aria-label={resolvedNextLabel || t("project.nav.continueToNextStep")}
               >
                 <span className="hidden sm:inline">{resolvedNextLabel}</span>

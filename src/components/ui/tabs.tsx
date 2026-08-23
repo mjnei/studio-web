@@ -45,7 +45,7 @@ export function Tabs({ value, onValueChange, children, className = "" }: TabsPro
 export function TabsList({ children, className = "" }: TabsListProps) {
   return (
     <div
-      className={`inline-flex h-10 items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground ${className}`}
+      className={`inline-flex h-9 items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground ${className}`}
       role="tablist"
     >
       {children}

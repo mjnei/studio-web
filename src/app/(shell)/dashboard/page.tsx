@@ -130,7 +130,7 @@ export default function DashboardPage() {
               </div>
               <p className="text-text-secondary mb-4">{t("dashboard.welcomeBanner.message")}</p>
               <Link href="/project/new">
-                <Button variant="primary" size="sm">
+                <Button variant="primary" size="md">
                   <Plus className="h-4 w-4" aria-hidden />
                   {t("dashboard.welcomeBanner.cta")}
                 </Button>
@@ -192,6 +192,7 @@ export default function DashboardPage() {
             <Link href="/project/new">
               <Button
                 variant="secondary"
+                size="md"
                 fullWidth
                 className="justify-start hover:bg-surface-hover transition-all"
               >
@@ -202,6 +203,7 @@ export default function DashboardPage() {
             <Link href="/movies">
               <Button
                 variant="secondary"
+                size="md"
                 fullWidth
                 className="justify-start hover:bg-surface-hover transition-all"
               >
@@ -212,6 +214,7 @@ export default function DashboardPage() {
             <Link href="/voices">
               <Button
                 variant="secondary"
+                size="md"
                 fullWidth
                 className="justify-start hover:bg-surface-hover transition-all"
               >
@@ -339,7 +342,9 @@ export default function DashboardPage() {
                 description={t("dashboard.empty.message")}
                 action={
                   <Link href="/project/new">
-                    <Button variant="primary">{t("dashboard.empty.cta")}</Button>
+                    <Button variant="primary" size="md">
+                      {t("dashboard.empty.cta")}
+                    </Button>
                   </Link>
                 }
               />

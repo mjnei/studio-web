@@ -62,11 +62,12 @@ export function ExportFormatModal({ isOpen, onClose, videoUrl, onExport }: Expor
       size="md"
       footer={
         <>
-          <Button variant="secondary" onClick={onClose}>
+          <Button variant="secondary" size="md" onClick={onClose}>
             {t("common.cancel")}
           </Button>
           <Button
             variant="primary"
+            size="md"
             leftIcon={<Download className="h-4 w-4" />}
             onClick={handleExport}
           >

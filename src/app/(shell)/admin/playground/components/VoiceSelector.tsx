@@ -45,7 +45,7 @@ export function VoiceSelector({ value, onChange }: VoiceSelectorProps) {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between gap-3 rounded-lg border-2 border-border-default bg-surface-base px-4 py-3 text-left hover:border-accent-primary focus:border-accent-primary focus:outline-none transition-colors"
+        className="w-full flex items-center justify-between gap-3 rounded-lg border-2 border-border-default bg-surface-base px-3.5 py-2 text-left hover:border-accent-primary focus:border-accent-primary focus:outline-none transition-colors"
       >
         <div className="flex items-center gap-3 flex-1 min-w-0">
           <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-purple-500/10 flex-shrink-0">

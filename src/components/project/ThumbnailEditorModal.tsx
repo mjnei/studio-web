@@ -176,7 +176,7 @@ export function ThumbnailEditorModal({
       size="xl"
       footer={
         <>
-          <Button variant="secondary" onClick={onClose} disabled={isFinalizing}>
+          <Button variant="secondary" size="md" onClick={onClose} disabled={isFinalizing}>
             {t("common.cancel")}
           </Button>
           <Button

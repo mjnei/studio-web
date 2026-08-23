@@ -183,7 +183,7 @@ export default function QueueDetailPage() {
   if (error) {
     return (
       <div className="max-w-7xl mx-auto space-y-6">
-        <Button variant="ghost" onClick={() => router.back()}>
+        <Button variant="ghost" size="sm" onClick={() => router.back()}>
           <ArrowLeft className="h-4 w-4 mr-2" />
           Back
         </Button>

@@ -306,6 +306,7 @@ export default function ExportPage() {
           </div>
           <Button
             variant="primary"
+            size="md"
             leftIcon={<RotateCcw className="h-4 w-4" aria-hidden />}
             onClick={handleRetryLoad}
           >
@@ -527,7 +528,7 @@ export default function ExportPage() {
               <div className="grid gap-2 sm:grid-cols-3">
                 <Button
                   variant="secondary"
-                  size="lg"
+                  size="md"
                   leftIcon={<Download className="h-4 w-4" />}
                   onClick={() => displayVideo.video_url && handleDownload(displayVideo.video_url)}
                   className="w-full"
@@ -536,7 +537,7 @@ export default function ExportPage() {
                 </Button>
                 <Button
                   variant="secondary"
-                  size="lg"
+                  size="md"
                   leftIcon={<Film className="h-4 w-4" />}
                   onClick={() => handleExportFormat(displayVideo)}
                   className="w-full"
@@ -545,7 +546,7 @@ export default function ExportPage() {
                 </Button>
                 <Button
                   variant="primary"
-                  size="lg"
+                  size="md"
                   leftIcon={<Share2 className="h-4 w-4" />}
                   onClick={() => handleShare(displayVideo)}
                   className="w-full"
@@ -583,12 +584,12 @@ export default function ExportPage() {
 
                 <Button
                   variant="primary"
-                  size="lg"
+                  size="md"
                   leftIcon={
                     isGeneratingVideo ? (
-                      <Spinner className="h-5 w-5" />
+                      <Spinner className="h-4 w-4" />
                     ) : (
-                      <Video className="h-5 w-5" />
+                      <Video className="h-4 w-4" />
                     )
                   }
                   onClick={handleGenerateVideo}

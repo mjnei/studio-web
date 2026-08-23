@@ -79,8 +79,8 @@ export function ScriptGeneration({
             </Text>
             <Button
               variant="primary"
-              size="lg"
-              leftIcon={<Sparkles className="h-5 w-5" />}
+              size="md"
+              leftIcon={<Sparkles className="h-4 w-4" />}
               onClick={onGenerate}
               loading={isGenerating}
             >

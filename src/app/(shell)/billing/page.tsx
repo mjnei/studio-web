@@ -266,6 +266,7 @@ export default function BillingPage() {
               </div>
               <Button
                 variant="primary"
+                size="md"
                 onClick={() => setShowCreditsConfirm(true)}
                 disabled={addingCredits}
                 leftIcon={<Sparkles className="h-4 w-4" />}
@@ -507,10 +508,10 @@ export default function BillingPage() {
               {t("billing.invoices.invoiceManagement")}
             </p>
             <div className="flex gap-3 justify-center">
-              <Button variant="ghost" size="lg" leftIcon={<Download className="h-4 w-4" />}>
+              <Button variant="ghost" size="md" leftIcon={<Download className="h-4 w-4" />}>
                 {t("billing.invoices.downloadSample")}
               </Button>
-              <Button variant="primary" size="lg" leftIcon={<CreditCard className="h-4 w-4" />}>
+              <Button variant="primary" size="md" leftIcon={<CreditCard className="h-4 w-4" />}>
                 {t("billing.invoices.viewStripePortal")}
               </Button>
             </div>
@@ -566,11 +567,17 @@ export default function BillingPage() {
               {t("billing.creditsModal.description")}
             </p>
             <div className="flex gap-3">
-              <Button variant="ghost" onClick={() => setShowCreditsConfirm(false)} fullWidth>
+              <Button
+                variant="ghost"
+                size="md"
+                onClick={() => setShowCreditsConfirm(false)}
+                fullWidth
+              >
                 {t("billing.creditsModal.cancel")}
               </Button>
               <Button
                 variant="primary"
+                size="md"
                 onClick={handleGimmeCredits}
                 disabled={addingCredits}
                 fullWidth

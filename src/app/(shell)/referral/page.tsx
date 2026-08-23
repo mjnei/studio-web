@@ -107,7 +107,7 @@ export default function ReferralPage() {
         description={t("referral.description")}
         action={
           <Link href="/referral/leaderboard">
-            <Button variant="outline" leftIcon={<Trophy className="h-4 w-4" />}>
+            <Button variant="outline" size="md" leftIcon={<Trophy className="h-4 w-4" />}>
               {t("referral.viewLeaderboard")}
             </Button>
           </Link>
@@ -149,7 +149,7 @@ export default function ReferralPage() {
                 </div>
                 <Button
                   variant="primary"
-                  size="lg"
+                  size="md"
                   onClick={handleCopy}
                   leftIcon={copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                   className="shrink-0"

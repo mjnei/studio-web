@@ -5,6 +5,7 @@ import { Upload, Search, User, AlertCircle, CheckCircle2, FileAudio, X } from "l
 import { useToast } from "@/components/ui/toast";
 import { Spinner } from "@/components/ui/spinner";
 import { Heading } from "@/components/ui/heading";
+import { Button } from "@/components/ui/button";
 import { adminSearchUsers, adminBulkUploadVoices, type UserSearchResult } from "@/lib/api/admin";
 
 interface VoiceBulkImportModalProps {
@@ -428,30 +429,21 @@ export function VoiceBulkImportModal({ open, onClose, onSuccess }: VoiceBulkImpo
         {/* Footer */}
         <div className="sticky bottom-0 border-t border-border-default bg-surface-base px-6 py-4">
           <div className="flex items-center justify-end gap-3">
-            <button
-              onClick={handleClose}
-              disabled={isImporting}
-              className="px-6 py-2.5 rounded-lg text-body font-semibold text-text-secondary hover:text-text-primary hover:bg-surface-raised transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
+            <Button variant="secondary" size="md" onClick={handleClose} disabled={isImporting}>
               {importResult ? "Close" : "Cancel"}
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="primary"
+              size="md"
               onClick={handleImport}
               disabled={!selectedUser || selectedFiles.length === 0 || isImporting}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-lg text-body font-semibold bg-gradient-to-r from-accent-primary to-purple-600 text-white hover:shadow-lg hover:shadow-accent-primary/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
+              loading={isImporting}
+              leftIcon={!isImporting ? <Upload className="h-4 w-4" /> : undefined}
             >
-              {isImporting ? (
-                <>
-                  <Spinner size="sm" />
-                  Uploading...
-                </>
-              ) : (
-                <>
-                  <Upload className="h-4 w-4" />
-                  Upload {selectedFiles.length > 0 ? `${selectedFiles.length} Files` : "Voices"}
-                </>
-              )}
-            </button>
+              {isImporting
+                ? "Uploading..."
+                : `Upload ${selectedFiles.length > 0 ? `${selectedFiles.length} Files` : "Voices"}`}
+            </Button>
           </div>
         </div>
       </div>

@@ -145,7 +145,7 @@ export default function JobsPage() {
           title={t("jobs.empty.title")}
           description={t("jobs.empty.message")}
           action={
-            <Button variant="primary" onClick={() => router.push("/projects")}>
+            <Button variant="primary" size="md" onClick={() => router.push("/projects")}>
               {t("jobs.empty.cta")}
             </Button>
           }
@@ -160,6 +160,7 @@ export default function JobsPage() {
           action={
             <Button
               variant="secondary"
+              size="md"
               onClick={() =>
                 setFilters({
                   status: "all",

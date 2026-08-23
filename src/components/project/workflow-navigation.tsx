@@ -98,7 +98,7 @@ export function WorkflowNavigation({
       {!isFirstStep && canGoBack && !isProcessing && (
         <Button
           variant="secondary"
-          size="md"
+          size="sm"
           leftIcon={<ArrowLeft className="h-4 w-4" />}
           onClick={handleBack}
         >
@@ -110,7 +110,7 @@ export function WorkflowNavigation({
       {canGoNext && (
         <Button
           variant="primary"
-          size="md"
+          size="sm"
           leftIcon={!isLastStep ? <ArrowRight className="h-4 w-4" /> : undefined}
           onClick={handleNext}
           disabled={isProcessing}

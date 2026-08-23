@@ -122,13 +122,20 @@ export function CreditConfirmationModal({
 
         {/* Actions */}
         <div className="flex gap-3 pt-2">
-          <Button variant="secondary" onClick={onClose} disabled={isProcessing} className="flex-1">
+          <Button
+            variant="secondary"
+            size="md"
+            onClick={onClose}
+            disabled={isProcessing}
+            className="flex-1"
+          >
             {t("billing.credits.cancel")}
           </Button>
 
           {hasInsufficientCredits ? (
             <Button
               variant="primary"
+              size="md"
               onClick={() => {
                 window.location.href = "/pricing";
               }}
@@ -139,6 +146,7 @@ export function CreditConfirmationModal({
           ) : (
             <Button
               variant="primary"
+              size="md"
               onClick={onConfirm}
               disabled={isProcessing}
               className="flex-1"

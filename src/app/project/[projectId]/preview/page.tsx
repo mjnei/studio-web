@@ -568,7 +568,7 @@ export default function PreviewPage() {
                 <div className="flex justify-center">
                   <Button
                     variant="primary"
-                    size="lg"
+                    size="md"
                     onClick={() => {
                       let voiceId = state?.voiceId;
                       let voiceName = state?.voiceName;

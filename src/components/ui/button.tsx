@@ -5,6 +5,13 @@ import { cn } from "@/lib/utils/cn";
 import { Spinner } from "@/components/ui/spinner";
 import { useI18n } from "@/i18n";
 
+/**
+ * Shared button. Size roles (keep call sites aligned):
+ * - sm   — dense chrome: card rows, toolbars, filters, floating nav, icon+label inline
+ * - md   — default: PageHeader actions, modal footers, primary in-page CTAs
+ * - lg   — auth / full-width marketing CTAs only
+ * - icon — icon-only controls (square)
+ */
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "outline" | "ghost" | "danger" | "success" | "destructive";
   size?: "icon" | "sm" | "md" | "lg";
@@ -53,10 +60,10 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     };
 
     const sizes = {
-      icon: "h-10 w-10 p-0",
+      icon: "h-9 w-9 p-0",
       sm: "h-8 px-3 text-body",
-      md: "h-10 px-4 text-body",
-      lg: "h-12 px-6 text-body",
+      md: "h-9 px-3.5 text-body",
+      lg: "h-10 px-5 text-body",
     };
 
     return (

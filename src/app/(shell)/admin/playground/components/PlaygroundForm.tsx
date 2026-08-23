@@ -102,7 +102,7 @@ export function PlaygroundForm({ onSubmit, isLoading }: PlaygroundFormProps) {
       <button
         type="submit"
         disabled={!isValid || isLoading}
-        className="w-full flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-accent-primary to-purple-600 px-6 py-3 text-body font-semibold text-white hover:shadow-lg hover:shadow-accent-primary/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-accent-primary to-purple-600 px-5 py-2.5 text-body font-semibold text-white hover:shadow-lg hover:shadow-accent-primary/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isLoading ? (
           <>

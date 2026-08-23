@@ -33,7 +33,7 @@ function BillingToggle({ billingCycle, onBillingCycleChange, t }: BillingToggleP
     <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-surface-raised border border-border-default shadow-sm">
       <button
         onClick={() => onBillingCycleChange("monthly")}
-        className={`px-4 sm:px-6 py-2.5 rounded-lg text-body font-medium transition-all ${
+        className={`px-4 sm:px-5 py-2 rounded-lg text-body font-medium transition-all ${
           billingCycle === "monthly"
             ? "bg-accent-primary text-white shadow-glow"
             : "text-text-muted hover:text-text-primary"
@@ -43,7 +43,7 @@ function BillingToggle({ billingCycle, onBillingCycleChange, t }: BillingToggleP
       </button>
       <button
         onClick={() => onBillingCycleChange("annual")}
-        className={`px-4 sm:px-6 py-2.5 rounded-lg text-body font-medium transition-all ${
+        className={`px-4 sm:px-5 py-2 rounded-lg text-body font-medium transition-all ${
           billingCycle === "annual"
             ? "bg-accent-primary text-white shadow-glow"
             : "text-text-muted hover:text-text-primary"
@@ -287,7 +287,7 @@ export default function PricingPage() {
               {/* CTA */}
               <Button
                 variant={getButtonVariant(tier.color)}
-                size="lg"
+                size="md"
                 onClick={() => handleSubscribe(tier.name)}
                 className="w-full"
                 disabled={tier.name === t("pricing.free.name")}

@@ -26,12 +26,13 @@ export const JobVideoModal: React.FC<JobVideoModalProps> = ({ job, onClose }) =>
       size="lg"
       footer={
         <>
-          <Button variant="secondary" onClick={onClose}>
+          <Button variant="secondary" size="md" onClick={onClose}>
             {t("jobs.modal.close")}
           </Button>
           {job.video_url && (
             <Button
               variant="primary"
+              size="md"
               leftIcon={<Download className="h-4 w-4" />}
               onClick={() => window.open(job.video_url!, "_blank")}
             >
