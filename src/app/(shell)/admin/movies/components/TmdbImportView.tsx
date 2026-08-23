@@ -84,11 +84,7 @@ export function TmdbImportView({
             className="flex shrink-0 items-center justify-center rounded-lg bg-accent-primary px-4 py-3 text-sm font-medium text-white hover:bg-accent-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all sm:px-6"
             aria-label="Search TMDB"
           >
-            {isSearching ? (
-              <Spinner size="sm" />
-            ) : (
-              <Search className="h-4 w-4" />
-            )}
+            {isSearching ? <Spinner size="sm" /> : <Search className="h-4 w-4" />}
           </button>
         </div>
       </div>

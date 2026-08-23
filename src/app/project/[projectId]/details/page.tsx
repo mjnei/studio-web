@@ -585,9 +585,7 @@ export default function ProjectDetailsPage() {
                     <Heading variant="label" as="h4" className="text-text-secondary">
                       {t("project.details.suggestions")}
                     </Heading>
-                    {loadingAiSuggestions && (
-                      <Spinner size="sm" className="text-accent-cyan" />
-                    )}
+                    {loadingAiSuggestions && <Spinner size="sm" className="text-accent-cyan" />}
                   </div>
                   {activeScript?.content && (
                     <Button

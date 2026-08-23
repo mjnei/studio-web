@@ -301,8 +301,7 @@ export default function ComposePage() {
                         isRegenerating ? (
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className="text-xs font-medium text-accent-cyan flex items-center gap-1">
-                              <Spinner className="h-3 w-3" />{" "}
-                              {t("project.compose.generating")}
+                              <Spinner className="h-3 w-3" /> {t("project.compose.generating")}
                             </span>
                             {/* Show retry button when generating */}
                             {!isRegenerating && (
@@ -320,8 +319,7 @@ export default function ComposePage() {
                           </div>
                         ) : state.thumbnailCompositionStatus === "processing" ? (
                           <span className="text-xs font-medium text-accent-cyan flex items-center gap-1">
-                            <Spinner className="h-3 w-3" />{" "}
-                            {t("project.compose.processing")}
+                            <Spinner className="h-3 w-3" /> {t("project.compose.processing")}
                           </span>
                         ) : state.thumbnailConfirmed ? (
                           <span className="text-xs font-medium text-status-success flex items-center gap-1">

@@ -28,9 +28,7 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
       className={cn("flex items-center justify-center", fullHeight && "min-h-[400px]", className)}
     >
       <div className="flex flex-col items-center gap-3">
-        <Spinner
-          className={cn("text-accent-primary", legacySizeClasses[size])}
-        />
+        <Spinner className={cn("text-accent-primary", legacySizeClasses[size])} />
         {message && <p className="text-sm font-medium text-text-primary">{message}</p>}
         {description && <p className="text-xs text-text-muted">{description}</p>}
       </div>
