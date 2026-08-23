@@ -22,21 +22,21 @@ export function QueueDetailPanel({ stats }: QueueDetailPanelProps) {
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="flex justify-between">
-            <span className="text-sm text-muted-foreground">Queue Name</span>
-            <code className="text-sm font-mono bg-muted px-2 py-0.5 rounded">
+            <span className="text-body text-muted-foreground">Queue Name</span>
+            <code className="text-body font-mono bg-muted px-2 py-0.5 rounded">
               {stats.queue_name}
             </code>
           </div>
           <div className="flex justify-between">
-            <span className="text-sm text-muted-foreground">Display Name</span>
-            <span className="text-sm font-medium">{metadata?.display_name}</span>
+            <span className="text-body text-muted-foreground">Display Name</span>
+            <span className="text-body font-medium">{metadata?.display_name}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-sm text-muted-foreground">Category</span>
+            <span className="text-body text-muted-foreground">Category</span>
             <Badge variant="outline">{metadata?.category?.toUpperCase()}</Badge>
           </div>
           <div className="flex justify-between">
-            <span className="text-sm text-muted-foreground">Type</span>
+            <span className="text-body text-muted-foreground">Type</span>
             <Badge variant={metadata?.is_job_queue ? "default" : "secondary"}>
               {metadata?.is_job_queue ? "Job Queue" : "Result Queue"}
             </Badge>
@@ -54,17 +54,17 @@ export function QueueDetailPanel({ stats }: QueueDetailPanelProps) {
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="flex justify-between">
-            <span className="text-sm text-muted-foreground">Message Count</span>
-            <span className="text-sm font-medium font-mono">
+            <span className="text-body text-muted-foreground">Message Count</span>
+            <span className="text-body font-medium font-mono">
               {stats.message_count.toLocaleString()}
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="text-sm text-muted-foreground">Active Consumers</span>
-            <span className="text-sm font-medium font-mono">{stats.consumer_count}</span>
+            <span className="text-body text-muted-foreground">Active Consumers</span>
+            <span className="text-body font-medium font-mono">{stats.consumer_count}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-sm text-muted-foreground">Consumer Status</span>
+            <span className="text-body text-muted-foreground">Consumer Status</span>
             {stats.consumer_count > 0 ? (
               <Badge variant="default" className="flex items-center gap-1">
                 <Users className="h-3 w-3" />
@@ -87,25 +87,25 @@ export function QueueDetailPanel({ stats }: QueueDetailPanelProps) {
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="flex justify-between">
-            <span className="text-sm text-muted-foreground">Max Messages</span>
-            <span className="text-sm font-medium">
+            <span className="text-body text-muted-foreground">Max Messages</span>
+            <span className="text-body font-medium">
               {metadata?.max_messages?.toLocaleString() || "Unlimited"}
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="text-sm text-muted-foreground">Retention Period</span>
-            <span className="text-sm font-medium">
+            <span className="text-body text-muted-foreground">Retention Period</span>
+            <span className="text-body font-medium">
               {metadata?.retention_hours ? `${metadata.retention_hours}h` : "Default"}
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="text-sm text-muted-foreground">Dead-Letter Queue</span>
+            <span className="text-body text-muted-foreground">Dead-Letter Queue</span>
             {metadata?.dlq_name ? (
-              <code className="text-sm font-mono bg-muted px-2 py-0.5 rounded">
+              <code className="text-body font-mono bg-muted px-2 py-0.5 rounded">
                 {metadata.dlq_name}
               </code>
             ) : (
-              <span className="text-sm text-muted-foreground">None</span>
+              <span className="text-body text-muted-foreground">None</span>
             )}
           </div>
         </CardContent>
@@ -120,10 +120,10 @@ export function QueueDetailPanel({ stats }: QueueDetailPanelProps) {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">{metadata?.description}</p>
+          <p className="text-body text-muted-foreground">{metadata?.description}</p>
           {metadata?.is_job_queue && (
             <div className="mt-4 p-3 bg-muted rounded-lg">
-              <p className="text-xs text-muted-foreground">
+              <p className="text-caption text-muted-foreground">
                 This is a job queue. Messages represent pending work that will be processed by
                 consumers. High message counts with no consumers may indicate system issues.
               </p>
@@ -131,7 +131,7 @@ export function QueueDetailPanel({ stats }: QueueDetailPanelProps) {
           )}
           {!metadata?.is_job_queue && (
             <div className="mt-4 p-3 bg-muted rounded-lg">
-              <p className="text-xs text-muted-foreground">
+              <p className="text-caption text-muted-foreground">
                 This is a result queue. Messages represent completed work results. Messages
                 accumulate here until they are consumed by the backend.
               </p>

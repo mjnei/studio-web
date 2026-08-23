@@ -92,7 +92,7 @@ export const ActiveJobCard: React.FC<ActiveJobCardProps> = ({ job, onDelete, isD
               )}
             </div>
 
-            <div className="text-right text-xs">
+            <div className="text-right text-caption">
               <span className="font-semibold text-blue-400">
                 ~{getEstimatedMinutesLeft(job.progress)}
               </span>
@@ -102,7 +102,7 @@ export const ActiveJobCard: React.FC<ActiveJobCardProps> = ({ job, onDelete, isD
 
           {/* Progress Bar & Stage Context */}
           <div className="space-y-1.5">
-            <div className="flex items-center justify-between text-xs">
+            <div className="flex items-center justify-between text-caption">
               <span className="text-text-secondary font-medium">
                 {getContextMessage(job.progress)}
               </span>
@@ -117,7 +117,7 @@ export const ActiveJobCard: React.FC<ActiveJobCardProps> = ({ job, onDelete, isD
           </div>
 
           {/* Metadata */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-text-muted pt-1">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-caption text-text-muted pt-1">
             <div>
               <span className="font-medium text-text-secondary">{t("jobs.activeJob.voice")}:</span>{" "}
               {job.voice_name || "N/A"}

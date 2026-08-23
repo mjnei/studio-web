@@ -122,7 +122,7 @@ export default function AdminProjectsPage() {
         <div>
           <Link
             href="/admin"
-            className="mb-3 inline-flex items-center gap-1.5 text-sm text-text-muted hover:text-text-primary"
+            className="mb-3 inline-flex items-center gap-1.5 text-body text-text-muted hover:text-text-primary"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to Admin
@@ -135,7 +135,7 @@ export default function AdminProjectsPage() {
               <Heading variant="page" as="h1" className="text-text-primary">
                 Projects
               </Heading>
-              <p className="text-sm text-text-secondary">
+              <p className="text-body text-text-secondary">
                 Cross-user project list, status override, and soft-delete
               </p>
             </div>
@@ -144,7 +144,7 @@ export default function AdminProjectsPage() {
         <button
           type="button"
           onClick={loadData}
-          className="inline-flex items-center gap-2 rounded-lg border border-border-default px-3 py-2 text-sm text-text-primary hover:bg-surface-hover"
+          className="inline-flex items-center gap-2 rounded-lg border border-border-default px-3 py-2 text-body text-text-primary hover:bg-surface-hover"
         >
           <RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
           Refresh
@@ -171,7 +171,7 @@ export default function AdminProjectsPage() {
       />
 
       {pagination.total > 0 && (
-        <div className="flex items-center justify-between text-sm text-text-secondary">
+        <div className="flex items-center justify-between text-body text-text-secondary">
           <span>
             Page {pagination.page} of {totalPages} · {pagination.total} projects
           </span>

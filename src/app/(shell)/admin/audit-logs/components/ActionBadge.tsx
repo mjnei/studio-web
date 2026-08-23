@@ -75,7 +75,7 @@ export default function ActionBadge({ action }: ActionBadgeProps) {
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold ${colorClasses}`}
+      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-caption font-bold ${colorClasses}`}
     >
       <Icon className="h-3.5 w-3.5" />
       {action}

@@ -403,6 +403,6 @@ describe("useVoices Hook - Type Safety", () => {
  */
 
 console.log("\n✅ useVoices Hook Test Suite Ready");
-console.log("   Requirements: 2.1-2.6");
-console.log("   Property: Property 1 - Audio URL Retrieval Consistency");
-console.log("   Total Test Cases: 40+\n");
+console.log(" Requirements: 2.1-2.6");
+console.log(" Property: Property 1 - Audio URL Retrieval Consistency");
+console.log(" Total Test Cases: 40+\n");

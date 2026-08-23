@@ -174,7 +174,7 @@ export function AudioPlayer({ audioUrl, jobId, jobName, onDismiss }: AudioPlayer
           <div className="flex items-center gap-2">
             <button
               onClick={handleDownload}
-              className="flex items-center gap-2 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-xs font-medium text-text-secondary hover:border-accent-primary hover:text-accent-primary hover:bg-accent-primary/5 transition-all"
+              className="flex items-center gap-2 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-caption font-medium text-text-secondary hover:border-accent-primary hover:text-accent-primary hover:bg-accent-primary/5 transition-all"
             >
               <Download className="h-4 w-4" />
               Download
@@ -216,7 +216,7 @@ export function AudioPlayer({ audioUrl, jobId, jobName, onDismiss }: AudioPlayer
             onChange={handleSeek}
             className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-surface-raised accent-accent-primary"
           />
-          <div className="mt-2 flex items-center justify-between text-xs text-text-muted">
+          <div className="mt-2 flex items-center justify-between text-caption text-text-muted">
             <span>{formatTime(currentTime)}</span>
             <span>{formatTime(duration)}</span>
           </div>

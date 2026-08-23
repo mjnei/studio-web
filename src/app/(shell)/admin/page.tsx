@@ -141,7 +141,7 @@ export default function AdminPage() {
       />
 
       {error && (
-        <div className="mb-8 flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+        <div className="mb-8 flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-body text-red-700">
           <AlertTriangle className="h-5 w-5 shrink-0" aria-hidden />
           <span>{error}</span>
         </div>
@@ -163,7 +163,7 @@ export default function AdminPage() {
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-text-muted mb-1">{stat.label}</p>
+                  <p className="text-body text-text-muted mb-1">{stat.label}</p>
                   <Heading variant="metric" className="text-text-primary">
                     {isLoading ? (
                       <Spinner size="sm" className="text-accent-primary" aria-hidden />
@@ -171,7 +171,9 @@ export default function AdminPage() {
                       stat.value
                     )}
                   </Heading>
-                  {stat.comingSoon && <p className="mt-1 text-xs text-text-muted">Coming soon</p>}
+                  {stat.comingSoon && (
+                    <p className="mt-1 text-caption text-text-muted">Coming soon</p>
+                  )}
                 </div>
                 <div
                   className={`w-10 h-10 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center ${
@@ -228,16 +230,16 @@ export default function AdminPage() {
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-1.5">
-                      <p className="text-sm font-medium text-text-primary">{feature.title}</p>
+                      <p className="text-body font-medium text-text-primary">{feature.title}</p>
                       <ChevronRight className="h-3.5 w-3.5 text-text-muted opacity-0 transition-opacity group-hover:opacity-100" />
                     </div>
-                    <p className="text-xs text-text-secondary mt-0.5">{feature.description}</p>
+                    <p className="text-caption text-text-secondary mt-0.5">{feature.description}</p>
                   </div>
                 </Link>
               );
             })}
           </div>
-          <p className="mt-4 text-xs text-text-muted">
+          <p className="mt-4 text-caption text-text-muted">
             <Link href="/debug-sse" className="hover:text-accent-primary hover:underline">
               /debug-sse
             </Link>

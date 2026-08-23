@@ -390,7 +390,7 @@ export default function ProjectDetailsPage() {
               <Heading variant="section" as="h2" className="text-text-primary">
                 {t("project.details.title")}
               </Heading>
-              <p className="mt-1 text-sm text-text-muted">{t("project.details.description")}</p>
+              <p className="mt-1 text-body text-text-muted">{t("project.details.description")}</p>
             </div>
           </div>
 
@@ -426,10 +426,10 @@ export default function ProjectDetailsPage() {
                   <Heading variant="label" as="h4" className="text-text-primary mb-2">
                     {t("project.details.aboutThumbnail")}
                   </Heading>
-                  <p className="text-sm text-text-muted mb-3">
+                  <p className="text-body text-text-muted mb-3">
                     {t("project.details.aboutThumbnailDesc")}
                   </p>
-                  <div className="text-xs text-text-muted space-y-1">
+                  <div className="text-caption text-text-muted space-y-1">
                     <p>• {t("project.details.aboutBullet1")}</p>
                     <p>• {t("project.details.aboutBullet2")}</p>
                     <p>• {t("project.details.aboutBullet3")}</p>
@@ -449,7 +449,7 @@ export default function ProjectDetailsPage() {
                   <Heading variant="label" as="h3" className="text-text-primary">
                     {t("project.details.generatingThumbnail")}
                   </Heading>
-                  <p className="mt-1 text-xs text-text-muted">
+                  <p className="mt-1 text-caption text-text-muted">
                     {t("project.details.generatingThumbnailDesc")}
                   </p>
                 </div>
@@ -476,7 +476,7 @@ export default function ProjectDetailsPage() {
                   <Heading variant="label" as="h3" className="text-text-primary">
                     {state.movieTitle}
                   </Heading>
-                  <p className="mt-1 text-sm text-text-muted">
+                  <p className="mt-1 text-body text-text-muted">
                     {state.movieGenre && `${state.movieGenre} • `}
                     {state.movieRating &&
                       t("project.common.ratingValue", { value: state.movieRating.toFixed(1) })}
@@ -503,17 +503,17 @@ export default function ProjectDetailsPage() {
                     <Heading variant="label" as="h3" className="text-text-primary">
                       {t("project.common.yourScript")}
                     </Heading>
-                    <span className="text-xs font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0">
+                    <span className="text-caption font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0">
                       {t("project.common.clickToExpand")} <ChevronDown className="h-3 w-3" />
                     </span>
                   </div>
-                  <p className="text-sm text-text-muted mb-3">
+                  <p className="text-body text-text-muted mb-3">
                     {t("project.common.scriptMeta", {
                       count: activeScript.wordCount,
                       duration: formatDuration(activeScript.duration),
                     })}
                   </p>
-                  <p className="text-sm text-text-secondary line-clamp-3 leading-relaxed">
+                  <p className="text-body text-text-secondary line-clamp-3 leading-relaxed">
                     {activeScript.content}
                   </p>
                 </div>
@@ -538,11 +538,13 @@ export default function ProjectDetailsPage() {
                     className={`${typography.subsection} flex items-center gap-2 text-text-primary`}
                   >
                     {t("project.details.nameYourProject")}
-                    <span className="rounded-full bg-accent-cyan/10 px-2 py-0.5 text-sm font-normal text-accent-cyan">
+                    <span className="rounded-full bg-accent-cyan/10 px-2 py-0.5 text-body font-normal text-accent-cyan">
                       {t("common.required")}
                     </span>
                   </label>
-                  <p className="mt-0.5 text-xs text-text-muted">{t("project.details.nameHint")}</p>
+                  <p className="mt-0.5 text-caption text-text-muted">
+                    {t("project.details.nameHint")}
+                  </p>
                 </div>
               </div>
 
@@ -564,7 +566,7 @@ export default function ProjectDetailsPage() {
                 )}
               </div>
 
-              <div className="mt-3 flex items-start gap-2 text-xs text-text-muted bg-accent-cyan/5 rounded-lg p-3 border border-accent-cyan/10">
+              <div className="mt-3 flex items-start gap-2 text-caption text-text-muted bg-accent-cyan/5 rounded-lg p-3 border border-accent-cyan/10">
                 <Sparkles className="h-4 w-4 text-accent-cyan flex-shrink-0 mt-0.5" />
                 <p>
                   <span className="font-medium text-text-secondary">
@@ -592,7 +594,7 @@ export default function ProjectDetailsPage() {
                       variant="ghost"
                       size="sm"
                       disabled={loadingAiSuggestions}
-                      className="text-xs h-8 text-accent-cyan hover:bg-accent-cyan/10"
+                      className="text-caption h-8 text-accent-cyan hover:bg-accent-cyan/10"
                       title={t("project.details.aiGeneratedOnce")}
                     >
                       <Sparkles className="h-3 w-3 mr-1" />
@@ -639,7 +641,7 @@ export default function ProjectDetailsPage() {
                             {suggestion.name}
                           </div>
                           {suggestion.reason && (
-                            <div className="mt-1 text-xs text-text-secondary line-clamp-2">
+                            <div className="mt-1 text-caption text-text-secondary line-clamp-2">
                               {suggestion.reason}
                             </div>
                           )}
@@ -676,7 +678,7 @@ export default function ProjectDetailsPage() {
                             {suggestion.name}
                           </div>
                           {suggestion.reason && (
-                            <div className="mt-1 text-xs text-text-muted line-clamp-2">
+                            <div className="mt-1 text-caption text-text-muted line-clamp-2">
                               {suggestion.reason}
                             </div>
                           )}

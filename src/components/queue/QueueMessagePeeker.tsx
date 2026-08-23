@@ -106,11 +106,13 @@ export function QueueMessagePeeker({ queueName, stats }: QueueMessagePeekerProps
           {stats.message_count === 0 ? (
             <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-lg border border-muted">
               <EyeOff className="h-5 w-5 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground">Queue is empty - no messages to peek</p>
+              <p className="text-body text-muted-foreground">
+                Queue is empty - no messages to peek
+              </p>
             </div>
           ) : (
             <div className="space-y-3">
-              <p className="text-sm text-muted-foreground">
+              <p className="text-body text-muted-foreground">
                 {stats.message_count.toLocaleString()} message(s) available
               </p>
             </div>
@@ -123,8 +125,8 @@ export function QueueMessagePeeker({ queueName, stats }: QueueMessagePeekerProps
           <CardContent className="flex items-center gap-3 pt-6">
             <AlertCircle className="h-5 w-5 text-destructive shrink-0" />
             <div>
-              <p className="text-sm font-medium text-destructive">Error</p>
-              <p className="text-sm text-muted-foreground">{error}</p>
+              <p className="text-body font-medium text-destructive">Error</p>
+              <p className="text-body text-muted-foreground">{error}</p>
             </div>
           </CardContent>
         </Card>
@@ -157,7 +159,7 @@ export function QueueMessagePeeker({ queueName, stats }: QueueMessagePeekerProps
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="bg-muted rounded-lg p-4 overflow-auto max-h-96">
-              <pre className="text-xs font-mono text-foreground whitespace-pre-wrap break-words">
+              <pre className="text-caption font-mono text-foreground whitespace-pre-wrap break-words">
                 {formatJSON(message.body)}
               </pre>
             </div>
@@ -169,7 +171,7 @@ export function QueueMessagePeeker({ queueName, stats }: QueueMessagePeekerProps
                 </Heading>
                 <div className="space-y-2 bg-muted/50 rounded-lg p-3">
                   {Object.entries(message.headers).map(([key, value]) => (
-                    <div key={key} className="flex items-start gap-2 text-xs">
+                    <div key={key} className="flex items-start gap-2 text-caption">
                       <span className="text-muted-foreground font-mono">{key}:</span>
                       <span className="font-mono flex-1 break-all">{String(value)}</span>
                     </div>
@@ -180,7 +182,7 @@ export function QueueMessagePeeker({ queueName, stats }: QueueMessagePeekerProps
 
             {message.timestamp && (
               <div className="pt-4 border-t">
-                <p className="text-xs text-muted-foreground">
+                <p className="text-caption text-muted-foreground">
                   <span className="font-medium">Timestamp:</span> {message.timestamp}
                 </p>
               </div>
@@ -188,7 +190,7 @@ export function QueueMessagePeeker({ queueName, stats }: QueueMessagePeekerProps
 
             <div className="pt-4 border-t flex items-start gap-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded">
               <AlertCircle className="h-4 w-4 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
-              <p className="text-xs text-blue-600 dark:text-blue-400">
+              <p className="text-caption text-blue-600 dark:text-blue-400">
                 This message is not removed from the queue. Use the peek function to inspect without
                 affecting message processing.
               </p>

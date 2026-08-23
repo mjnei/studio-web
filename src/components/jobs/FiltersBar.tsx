@@ -173,7 +173,7 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
 
       {/* Active filters bar & reset button */}
       {hasActiveFilters && (
-        <div className="flex items-center justify-between text-xs text-text-muted bg-surface-panel px-3 py-1.5 rounded-md border border-border-default">
+        <div className="flex items-center justify-between text-caption text-text-muted bg-surface-panel px-3 py-1.5 rounded-md border border-border-default">
           <span>{t("jobs.filters.showing", { count: totalResultsCount })}</span>
           <button
             onClick={handleResetFilters}

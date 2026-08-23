@@ -38,7 +38,7 @@ export function CreditUsageIndicator({
       <Coins className={`h-4 w-4 ${hasEnough ? "text-accent-cyan" : "text-warning-text"}`} />
       <div className="flex items-center gap-1.5">
         <span
-          className={`text-sm font-medium ${hasEnough ? "text-accent-cyan" : "text-warning-text"}`}
+          className={`text-body font-medium ${hasEnough ? "text-accent-cyan" : "text-warning-text"}`}
         >
           {costLabel}
         </span>
@@ -46,10 +46,10 @@ export function CreditUsageIndicator({
           <div className="relative group">
             <Info className="h-3.5 w-3.5 text-text-muted cursor-help" />
             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-surface-raised border border-border-default rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all w-48 z-10">
-              <p className="text-xs text-text-secondary">
+              <p className="text-caption text-text-secondary">
                 {t("billing.credits.usageDeduct", { cost: costLabel })}
               </p>
-              <p className="text-xs text-text-muted mt-1">
+              <p className="text-caption text-text-muted mt-1">
                 {t("billing.credits.usageRemaining", { remaining: remainingLabel })}
               </p>
             </div>

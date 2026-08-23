@@ -37,7 +37,7 @@ export function PlaygroundForm({ onSubmit, isLoading }: PlaygroundFormProps) {
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Text Input */}
       <div>
-        <label className="block text-sm font-medium text-text-secondary mb-2">
+        <label className="block text-body font-medium text-text-secondary mb-2">
           Text to Synthesize
         </label>
         <textarea
@@ -46,20 +46,24 @@ export function PlaygroundForm({ onSubmit, isLoading }: PlaygroundFormProps) {
           placeholder="Enter the text you want to convert to speech..."
           rows={6}
           maxLength={2000}
-          className="w-full rounded-lg border-2 border-border-default bg-surface-base px-4 py-3 text-sm text-text-primary placeholder-text-muted focus:border-accent-primary focus:outline-none transition-colors resize-y"
+          className="w-full rounded-lg border-2 border-border-default bg-surface-base px-4 py-3 text-body text-text-primary placeholder-text-muted focus:border-accent-primary focus:outline-none transition-colors resize-y"
           disabled={isLoading}
         />
         <div className="mt-2 flex items-center justify-between">
           <p
-            className={`text-xs ${isOverLimit ? "text-red-600 font-semibold" : "text-text-muted"}`}
+            className={`text-caption ${isOverLimit ? "text-red-600 font-semibold" : "text-text-muted"}`}
           >
             {charCount}/{maxChars} character{charCount !== 1 ? "s" : ""}
           </p>
           {isOverLimit ? (
-            <p className="text-xs text-red-600 font-semibold">⚠️ Text exceeds maximum length</p>
+            <p className="text-caption text-red-600 font-semibold">
+              ⚠️ Text exceeds maximum length
+            </p>
           ) : (
             charCount > 1600 && (
-              <p className="text-xs text-orange-600">⚠️ Long text may take more time to process</p>
+              <p className="text-caption text-orange-600">
+                ⚠️ Long text may take more time to process
+              </p>
             )
           )}
         </div>
@@ -71,8 +75,8 @@ export function PlaygroundForm({ onSubmit, isLoading }: PlaygroundFormProps) {
       {/* Speed Ratio Slider */}
       <div>
         <div className="flex items-center justify-between mb-2">
-          <label className="text-sm font-medium text-text-secondary">Speech Speed</label>
-          <span className="text-sm font-bold text-accent-primary">{speedRatio.toFixed(1)}x</span>
+          <label className="text-body font-medium text-text-secondary">Speech Speed</label>
+          <span className="text-body font-bold text-accent-primary">{speedRatio.toFixed(1)}x</span>
         </div>
         <input
           type="range"
@@ -87,7 +91,7 @@ export function PlaygroundForm({ onSubmit, isLoading }: PlaygroundFormProps) {
             background: `linear-gradient(to right, rgb(139, 92, 246) 0%, rgb(139, 92, 246) ${((speedRatio - 0.5) / 1.5) * 100}%, rgb(51, 51, 51) ${((speedRatio - 0.5) / 1.5) * 100}%, rgb(51, 51, 51) 100%)`,
           }}
         />
-        <div className="mt-2 flex items-center justify-between text-xs text-text-muted">
+        <div className="mt-2 flex items-center justify-between text-caption text-text-muted">
           <span>0.5x (Slower)</span>
           <span>1.0x (Normal)</span>
           <span>2.0x (Faster)</span>
@@ -98,7 +102,7 @@ export function PlaygroundForm({ onSubmit, isLoading }: PlaygroundFormProps) {
       <button
         type="submit"
         disabled={!isValid || isLoading}
-        className="w-full flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-accent-primary to-purple-600 px-6 py-3 text-sm font-semibold text-white hover:shadow-lg hover:shadow-accent-primary/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-accent-primary to-purple-600 px-6 py-3 text-body font-semibold text-white hover:shadow-lg hover:shadow-accent-primary/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isLoading ? (
           <>

@@ -39,7 +39,7 @@ export const StatusCards: React.FC<StatusCardsProps> = ({
         <div className="flex items-start justify-between">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="text-sm font-medium text-text-secondary">
+              <span className="text-body font-medium text-text-secondary">
                 {t("jobs.status.active")}
               </span>
               {summary.activeCount > 0 && (
@@ -80,7 +80,7 @@ export const StatusCards: React.FC<StatusCardsProps> = ({
       >
         <div className="flex items-start justify-between">
           <div className="space-y-1">
-            <span className="text-sm font-medium text-text-secondary">
+            <span className="text-body font-medium text-text-secondary">
               {t("jobs.status.completed")}
             </span>
             <Heading variant="metric" className="text-text-primary">
@@ -107,7 +107,7 @@ export const StatusCards: React.FC<StatusCardsProps> = ({
       >
         <div className="flex items-start justify-between">
           <div className="space-y-1">
-            <span className="text-sm font-medium text-text-secondary">
+            <span className="text-body font-medium text-text-secondary">
               {t("jobs.status.failed")}
             </span>
             <Heading variant="metric" className="text-text-primary">
@@ -121,7 +121,7 @@ export const StatusCards: React.FC<StatusCardsProps> = ({
                   e.stopPropagation();
                   onRetryAllFailed();
                 }}
-                className="h-6 px-1.5 text-xs text-status-failed hover:bg-status-failed/10 hover:text-status-failed flex items-center gap-1 -ml-1 mt-0.5"
+                className="h-6 px-1.5 text-caption text-status-failed hover:bg-status-failed/10 hover:text-status-failed flex items-center gap-1 -ml-1 mt-0.5"
               >
                 <RotateCcw className="h-3 w-3" />
                 {t("jobs.status.retryAll")}
@@ -149,7 +149,7 @@ export const StatusCards: React.FC<StatusCardsProps> = ({
       >
         <div className="flex items-start justify-between">
           <div className="space-y-1">
-            <span className="text-sm font-medium text-text-secondary">
+            <span className="text-body font-medium text-text-secondary">
               {t("jobs.status.total")}
             </span>
             <Heading variant="metric" className="text-text-primary">

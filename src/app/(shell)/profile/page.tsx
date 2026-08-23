@@ -235,7 +235,7 @@ export default function ProfilePage() {
                 <Heading variant="subsection" as="h2" className="text-text-primary truncate">
                   {user.name}
                 </Heading>
-                <div className="flex items-center justify-center gap-1.5 text-text-secondary text-sm">
+                <div className="flex items-center justify-center gap-1.5 text-text-secondary text-body">
                   <Mail className="h-3.5 w-3.5 text-text-muted shrink-0" />
                   <span className="truncate max-w-[180px] sm:max-w-[220px]" title={user.email}>
                     {user.email}
@@ -322,14 +322,14 @@ export default function ProfilePage() {
             </div>
             <div className="flex items-center justify-between gap-2 pt-2 border-t border-border-default">
               <Link href="/pricing" className="flex-1">
-                <Button variant="outline" size="sm" className="w-full text-xs">
+                <Button variant="outline" size="sm" className="w-full text-caption">
                   {isFreeUser
                     ? t("profile.membershipBilling.upgradePlan")
                     : t("profile.membershipBilling.viewAllPlans")}
                 </Button>
               </Link>
               <Link href="/billing" className="flex-1">
-                <Button variant="ghost" size="sm" className="w-full text-xs">
+                <Button variant="ghost" size="sm" className="w-full text-caption">
                   <CreditCard className="h-3.5 w-3.5 mr-1" />
                   {t("profile.upgradeBanner.billing")}
                 </Button>
@@ -362,7 +362,7 @@ export default function ProfilePage() {
                       {t("profile.upgradeBanner.title")}
                       <Sparkles className="h-4 w-4 text-accent-cyan animate-pulse" />
                     </Heading>
-                    <Text variant="body" className="text-text-secondary text-sm">
+                    <Text variant="body" className="text-text-secondary text-body">
                       {t("profile.upgradeBanner.description")}
                     </Text>
                   </div>
@@ -414,7 +414,7 @@ export default function ProfilePage() {
                       onChange={(e) => handleAutoCapitalizeToggle(e.target.checked)}
                       className="w-4 h-4 shrink-0 rounded border-border-default text-accent-primary focus:ring-accent-primary focus:ring-offset-0 cursor-pointer"
                     />
-                    <span className="text-sm text-text-secondary">
+                    <span className="text-body text-text-secondary">
                       {t("profile.accountOverview.autoCapitalizeWords")}
                     </span>
                   </label>
@@ -451,13 +451,13 @@ export default function ProfilePage() {
               )}
 
               {profileError && (
-                <div className="mt-4 rounded-lg border border-status-failed/30 bg-status-failed/10 px-4 py-3 text-sm text-status-failed flex items-start gap-2">
+                <div className="mt-4 rounded-lg border border-status-failed/30 bg-status-failed/10 px-4 py-3 text-body text-status-failed flex items-start gap-2">
                   <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" />
                   <span>{profileError}</span>
                 </div>
               )}
               {profileSuccess && (
-                <div className="mt-4 rounded-lg border border-status-completed/30 bg-status-completed/10 px-4 py-3 text-sm text-status-completed flex items-start gap-2">
+                <div className="mt-4 rounded-lg border border-status-completed/30 bg-status-completed/10 px-4 py-3 text-body text-status-completed flex items-start gap-2">
                   <CheckCircle2 className="h-4 w-4 mt-0.5 flex-shrink-0" />
                   <span>{t("profile.accountOverview.profileUpdatedSuccess")}</span>
                 </div>
@@ -506,7 +506,7 @@ export default function ProfilePage() {
                     )}
                   </div>
                   {user.subscription_start_date && (
-                    <p className="text-xs text-text-muted">
+                    <p className="text-caption text-text-muted">
                       {t("profile.membershipBilling.activeSince")}{" "}
                       {new Date(user.subscription_start_date).toLocaleDateString("en-US", {
                         year: "numeric",
@@ -516,7 +516,7 @@ export default function ProfilePage() {
                     </p>
                   )}
                   {user.subscription_end_date && (
-                    <p className="text-xs text-text-muted">
+                    <p className="text-caption text-text-muted">
                       {user.subscription_status === "canceled"
                         ? t("profile.membershipBilling.expiresOn")
                         : t("profile.membershipBilling.renewsOn")}{" "}
@@ -567,13 +567,13 @@ export default function ProfilePage() {
             <CardContent>
               <div className="space-y-4 pt-2">
                 {passwordError && (
-                  <div className="rounded-lg border border-status-failed/30 bg-status-failed/10 px-4 py-3 text-sm text-status-failed flex items-start gap-2">
+                  <div className="rounded-lg border border-status-failed/30 bg-status-failed/10 px-4 py-3 text-body text-status-failed flex items-start gap-2">
                     <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" />
                     <span>{passwordError}</span>
                   </div>
                 )}
                 {passwordSuccess && (
-                  <div className="rounded-lg border border-status-completed/30 bg-status-completed/10 px-4 py-3 text-sm text-status-completed flex items-start gap-2">
+                  <div className="rounded-lg border border-status-completed/30 bg-status-completed/10 px-4 py-3 text-body text-status-completed flex items-start gap-2">
                     <CheckCircle2 className="h-4 w-4 mt-0.5 flex-shrink-0" />
                     <span>{t("profile.passwordSecurity.passwordUpdatedSuccess")}</span>
                   </div>
@@ -656,11 +656,11 @@ export default function ProfilePage() {
                       <Mail className="h-4 w-4 text-gray-700" />
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-text-primary">
+                      <p className="text-body font-semibold text-text-primary">
                         {t("profile.connectedAccounts.google")}
                       </p>
                       {user.provider === "google" && (
-                        <p className="text-xs text-status-completed flex items-center gap-1 mt-0.5">
+                        <p className="text-caption text-status-completed flex items-center gap-1 mt-0.5">
                           <CheckCircle2 className="h-3 w-3" />
                           {t("profile.connectedAccounts.connected")}
                         </p>
@@ -694,10 +694,10 @@ export default function ProfilePage() {
               <div className="pt-2">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 rounded-xl border border-border-default bg-surface-raised">
                   <div className="min-w-0">
-                    <p className="text-sm font-semibold text-text-primary">
+                    <p className="text-body font-semibold text-text-primary">
                       {t("profile.onboarding.resetOnboarding")}
                     </p>
-                    <p className="text-xs text-text-muted mt-1">
+                    <p className="text-caption text-text-muted mt-1">
                       {t("profile.onboarding.resetOnboardingDescription")}{" "}
                       <span
                         className={user.has_password ? "text-status-completed" : "text-text-muted"}
@@ -745,12 +745,12 @@ export default function ProfilePage() {
             </CardHeader>
             <CardContent>
               <div className="pt-2 space-y-4">
-                <p className="text-sm text-text-muted">
+                <p className="text-body text-text-muted">
                   {t("profile.dangerZone.deleteAccountWarning")}
                 </p>
                 {showDeleteConfirm ? (
                   <div className="space-y-4 rounded-xl border border-status-failed/30 bg-surface-raised p-4">
-                    <p className="text-sm text-status-failed flex items-center gap-2 font-medium">
+                    <p className="text-body text-status-failed flex items-center gap-2 font-medium">
                       <AlertTriangle className="h-4 w-4 shrink-0" />
                       {t("profile.dangerZone.confirmDelete")}
                     </p>

@@ -29,7 +29,7 @@ export function SpeechRateControl({ ratio, onRatioChange }: SpeechRateControlPro
           <Heading variant="label" as="h3" className="text-text-primary">
             {t("project.voice.speechRate")}
           </Heading>
-          <p className="text-xs text-text-muted mt-1">{t("project.voice.speechRateHint")}</p>
+          <p className="text-caption text-text-muted mt-1">{t("project.voice.speechRateHint")}</p>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
@@ -44,7 +44,7 @@ export function SpeechRateControl({ ratio, onRatioChange }: SpeechRateControlPro
               }`}
             >
               <span className={`${typography.subsection} mb-1 tabular-nums`}>{value}x</span>
-              <span className="text-xs font-medium">{t(labelKey)}</span>
+              <span className="text-caption font-medium">{t(labelKey)}</span>
               {ratio === value && (
                 <div className="absolute top-2 right-2">
                   <Check className="h-4 w-4" />
@@ -55,7 +55,7 @@ export function SpeechRateControl({ ratio, onRatioChange }: SpeechRateControlPro
         </div>
 
         <div className="flex items-center justify-center gap-2 p-3 rounded-lg bg-accent-primary/5 border border-accent-primary/20">
-          <span className="text-sm font-medium text-text-secondary">
+          <span className="text-body font-medium text-text-secondary">
             {t("project.voice.currentSpeed")}
           </span>
           <span className={`${typography.subsection} text-accent-primary tabular-nums`}>

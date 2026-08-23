@@ -211,7 +211,7 @@ export function VoiceRecordingCard({
               const badgeInfo = getBadgeInfo();
               return (
                 <span
-                  className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold border whitespace-nowrap ${badgeInfo.color}`}
+                  className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-caption font-bold border whitespace-nowrap ${badgeInfo.color}`}
                   title={badgeInfo.label}
                 >
                   {badgeInfo.icon}
@@ -231,7 +231,7 @@ export function VoiceRecordingCard({
         </button>
       </div>
 
-      <div className="flex items-center justify-between text-xs text-text-muted mb-4">
+      <div className="flex items-center justify-between text-caption text-text-muted mb-4">
         <div className="flex items-center gap-2">
           <span>{formatDate(recording.created_at)}</span>
           <span>•</span>
@@ -240,7 +240,7 @@ export function VoiceRecordingCard({
           {formatLanguage(recording.language) && (
             <>
               <span>•</span>
-              <span className="text-xs bg-blue-500/10 text-blue-600 px-2 py-0.5 rounded">
+              <span className="text-caption bg-blue-500/10 text-blue-600 px-2 py-0.5 rounded">
                 {formatLanguage(recording.language)}
               </span>
             </>
@@ -277,7 +277,7 @@ export function VoiceRecordingCard({
         <button
           onClick={handleToggleSharing}
           disabled={isTogglingSharing}
-          className={`flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-all ${
+          className={`flex items-center gap-1.5 rounded-lg px-3 py-2 text-body font-medium transition-all ${
             isShared
               ? "border border-orange-500/50 bg-orange-500/10 text-orange-600 hover:bg-orange-500/20"
               : "border border-green-500/50 bg-green-500/10 text-green-600 hover:bg-green-500/20"

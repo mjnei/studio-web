@@ -33,7 +33,7 @@ function BillingToggle({ billingCycle, onBillingCycleChange, t }: BillingToggleP
     <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-surface-raised border border-border-default shadow-sm">
       <button
         onClick={() => onBillingCycleChange("monthly")}
-        className={`px-4 sm:px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
+        className={`px-4 sm:px-6 py-2.5 rounded-lg text-body font-medium transition-all ${
           billingCycle === "monthly"
             ? "bg-accent-primary text-white shadow-glow"
             : "text-text-muted hover:text-text-primary"
@@ -43,14 +43,14 @@ function BillingToggle({ billingCycle, onBillingCycleChange, t }: BillingToggleP
       </button>
       <button
         onClick={() => onBillingCycleChange("annual")}
-        className={`px-4 sm:px-6 py-2.5 rounded-lg text-sm font-medium transition-all ${
+        className={`px-4 sm:px-6 py-2.5 rounded-lg text-body font-medium transition-all ${
           billingCycle === "annual"
             ? "bg-accent-primary text-white shadow-glow"
             : "text-text-muted hover:text-text-primary"
         }`}
       >
         <span>{t("pricing.billingToggle.annual")}</span>
-        <span className="ml-2 text-xs opacity-75">{t("pricing.billingToggle.savings")}</span>
+        <span className="ml-2 text-caption opacity-75">{t("pricing.billingToggle.savings")}</span>
       </button>
     </div>
   );
@@ -184,7 +184,7 @@ export default function PricingPage() {
 
       {/* Pricing Header with Badge and Billing Toggle */}
       <div className="text-center mb-6">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-muted text-accent-primary text-sm font-medium mb-4">
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-muted text-accent-primary text-body font-medium mb-4">
           <Sparkles className="h-4 w-4" />
           {t("pricing.badge")}
         </div>
@@ -211,7 +211,7 @@ export default function PricingPage() {
             >
               {tier.highlight && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <div className="bg-accent-cyan text-white text-xs font-bold px-4 py-1.5 rounded-full inline-flex items-center gap-1.5 shadow-lg">
+                  <div className="bg-accent-cyan text-white text-caption font-bold px-4 py-1.5 rounded-full inline-flex items-center gap-1.5 shadow-lg">
                     <Sparkles className="h-3 w-3" />
                     {t("pricing.pro.badge")}
                   </div>
@@ -241,13 +241,13 @@ export default function PricingPage() {
                       {currentPrice}
                     </Heading>
                     {isAnnual && tier.name !== t("pricing.free.name") && (
-                      <span className="text-sm text-text-muted">
+                      <span className="text-body text-text-muted">
                         {t("pricing.free.price.billedAnnually")}
                       </span>
                     )}
                   </div>
                   {isAnnual && tier.name !== t("pricing.free.name") && (
-                    <p className="text-sm text-text-muted line-through">
+                    <p className="text-body text-text-muted line-through">
                       {tier.monthlyPrice} {t("pricing.free.price.billedMonthly")}
                     </p>
                   )}
@@ -256,10 +256,10 @@ export default function PricingPage() {
                 {/* Credits */}
                 <div className="flex items-center gap-2 mb-4">
                   <TrendingUp className={`h-5 w-5 ${getColorClasses(tier.color)}`} />
-                  <span className={`text-sm font-semibold ${getColorClasses(tier.color)}`}>
+                  <span className={`text-body font-semibold ${getColorClasses(tier.color)}`}>
                     {tier.credits} {t("pricing.creditsPerMonth")}
                   </span>
-                  <span className="text-xs text-text-muted">
+                  <span className="text-caption text-text-muted">
                     • {t("pricing.rolloverLabel")} {tier.rollover}
                   </span>
                 </div>
@@ -278,7 +278,7 @@ export default function PricingPage() {
                   {tier.features.map((feature, idx) => (
                     <li key={idx} className="flex items-start gap-2">
                       <Check className={`h-4 w-4 mt-0.5 ${getColorClasses(tier.color)}`} />
-                      <span className="text-sm text-text-secondary">{feature}</span>
+                      <span className="text-body text-text-secondary">{feature}</span>
                     </li>
                   ))}
                 </ul>
@@ -311,28 +311,28 @@ export default function PricingPage() {
             <Heading variant="label" as="h3" className="mb-2 text-text-primary">
               {t("pricing.faq.creditQuestion")}
             </Heading>
-            <p className="text-sm text-text-secondary">{t("pricing.faq.creditAnswer")}</p>
+            <p className="text-body text-text-secondary">{t("pricing.faq.creditAnswer")}</p>
           </Card>
 
           <Card variant="elevated" padding="md">
             <Heading variant="label" as="h3" className="mb-2 text-text-primary">
               {t("pricing.faq.rolloverQuestion")}
             </Heading>
-            <p className="text-sm text-text-secondary">{t("pricing.faq.rolloverAnswer")}</p>
+            <p className="text-body text-text-secondary">{t("pricing.faq.rolloverAnswer")}</p>
           </Card>
 
           <Card variant="elevated" padding="md">
             <Heading variant="label" as="h3" className="mb-2 text-text-primary">
               {t("pricing.faq.changeQuestion")}
             </Heading>
-            <p className="text-sm text-text-secondary">{t("pricing.faq.changeAnswer")}</p>
+            <p className="text-body text-text-secondary">{t("pricing.faq.changeAnswer")}</p>
           </Card>
 
           <Card variant="elevated" padding="md">
             <Heading variant="label" as="h3" className="mb-2 text-text-primary">
               {t("pricing.faq.teamQuestion")}
             </Heading>
-            <p className="text-sm text-text-secondary">{t("pricing.faq.teamAnswer")}</p>
+            <p className="text-body text-text-secondary">{t("pricing.faq.teamAnswer")}</p>
           </Card>
         </div>
       </div>

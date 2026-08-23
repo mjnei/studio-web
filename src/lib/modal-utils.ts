@@ -164,18 +164,18 @@ export async function handleDeleteWithConfirmation<T>(
  * Example usage for managing multiple modal states:
  *
  * const [modals, setModals] = useState({
- *   deleteConfirm: false,
- *   errorAlert: { open: false, message: "" },
- *   successAlert: false,
+ * deleteConfirm: false,
+ * errorAlert: { open: false, message: "" },
+ * successAlert: false,
  * });
  *
  * Then create helper functions:
  *
  * const openModal = (key) => {
- *   setModals(prev => ({
- *     ...prev,
- *     [key]: typeof prev[key] === "boolean" ? true : { ...prev[key], open: true },
- *   }));
+ * setModals(prev => ({
+ * ...prev,
+ * [key]: typeof prev[key] === "boolean" ? true : { ...prev[key], open: true },
+ * }));
  * };
  */
 

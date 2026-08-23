@@ -33,7 +33,7 @@ export const BulkActionsBar: React.FC<BulkActionsBarProps> = ({
       <div className="flex items-center gap-3">
         <button
           onClick={onToggleSelectAll}
-          className="flex items-center gap-2 text-xs font-semibold text-text-primary hover:text-accent-primary transition-colors"
+          className="flex items-center gap-2 text-caption font-semibold text-text-primary hover:text-accent-primary transition-colors"
         >
           {isAllSelected ? (
             <CheckSquare className="h-4 w-4 text-accent-primary" />

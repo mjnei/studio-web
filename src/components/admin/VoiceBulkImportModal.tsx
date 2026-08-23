@@ -189,7 +189,7 @@ export function VoiceBulkImportModal({ open, onClose, onSuccess }: VoiceBulkImpo
                 <Heading variant="section" as="h2" className="text-white">
                   Bulk Import Voices
                 </Heading>
-                <p className="text-sm text-white/80">Upload multiple audio files for a user</p>
+                <p className="text-body text-white/80">Upload multiple audio files for a user</p>
               </div>
             </div>
             <button
@@ -207,7 +207,7 @@ export function VoiceBulkImportModal({ open, onClose, onSuccess }: VoiceBulkImpo
         <div className="p-6 space-y-6">
           {/* User Selection */}
           <div>
-            <label className="block text-sm font-semibold text-text-primary mb-2">
+            <label className="block text-body font-semibold text-text-primary mb-2">
               Target User *
             </label>
             <div className="relative">
@@ -256,10 +256,10 @@ export function VoiceBulkImportModal({ open, onClose, onSuccess }: VoiceBulkImpo
                         </div>
                       )}
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-text-primary truncate">
+                        <p className="text-body font-semibold text-text-primary truncate">
                           {user.name}
                         </p>
-                        <p className="text-xs text-text-muted truncate">{user.email}</p>
+                        <p className="text-caption text-text-muted truncate">{user.email}</p>
                       </div>
                     </button>
                   ))}
@@ -271,10 +271,10 @@ export function VoiceBulkImportModal({ open, onClose, onSuccess }: VoiceBulkImpo
               <div className="mt-3 flex items-center gap-3 p-3 rounded-lg bg-green-500/10 border border-green-500/30">
                 <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-green-600">
+                  <p className="text-body font-semibold text-green-600">
                     Selected: {selectedUser.name}
                   </p>
-                  <p className="text-xs text-green-600/80">{selectedUser.email}</p>
+                  <p className="text-caption text-green-600/80">{selectedUser.email}</p>
                 </div>
               </div>
             )}
@@ -282,7 +282,7 @@ export function VoiceBulkImportModal({ open, onClose, onSuccess }: VoiceBulkImpo
 
           {/* File Upload */}
           <div>
-            <label className="block text-sm font-semibold text-text-primary mb-2">
+            <label className="block text-body font-semibold text-text-primary mb-2">
               Audio Files *
             </label>
             <div
@@ -307,16 +307,16 @@ export function VoiceBulkImportModal({ open, onClose, onSuccess }: VoiceBulkImpo
                   <FileAudio className="h-8 w-8 text-accent-primary" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-text-primary">
+                  <p className="text-body font-semibold text-text-primary">
                     Click to select audio files
                   </p>
-                  <p className="text-xs text-text-muted mt-1">
+                  <p className="text-caption text-text-muted mt-1">
                     Supports MP3, WAV, OGG, WebM, M4A, AAC
                   </p>
                 </div>
               </div>
             </div>
-            <p className="mt-2 text-xs text-text-muted">
+            <p className="mt-2 text-caption text-text-muted">
               All voices will be uploaded with language set to English by default
             </p>
           </div>
@@ -324,7 +324,7 @@ export function VoiceBulkImportModal({ open, onClose, onSuccess }: VoiceBulkImpo
           {/* Selected Files List */}
           {selectedFiles.length > 0 && (
             <div>
-              <label className="block text-sm font-semibold text-text-primary mb-2">
+              <label className="block text-body font-semibold text-text-primary mb-2">
                 Selected Files ({selectedFiles.length})
               </label>
               <div className="rounded-xl border border-border-default bg-surface-panel overflow-hidden max-h-64 overflow-y-auto">
@@ -337,13 +337,15 @@ export function VoiceBulkImportModal({ open, onClose, onSuccess }: VoiceBulkImpo
                       <FileAudio className="h-5 w-5 text-accent-primary" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-text-primary truncate">
+                      <p className="text-body font-semibold text-text-primary truncate">
                         {file.name}
                       </p>
                       <div className="flex items-center gap-2 mt-1">
-                        <span className="text-xs text-text-muted">{formatFileSize(file.size)}</span>
-                        <span className="text-xs text-text-muted">•</span>
-                        <span className="text-xs text-text-muted">{file.type}</span>
+                        <span className="text-caption text-text-muted">
+                          {formatFileSize(file.size)}
+                        </span>
+                        <span className="text-caption text-text-muted">•</span>
+                        <span className="text-caption text-text-muted">{file.type}</span>
                       </div>
                     </div>
                     {!isImporting && (
@@ -365,8 +367,10 @@ export function VoiceBulkImportModal({ open, onClose, onSuccess }: VoiceBulkImpo
           {isImporting && importProgress.total > 0 && (
             <div className="rounded-xl border border-border-default bg-surface-panel p-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-semibold text-text-primary">Uploading files...</span>
-                <span className="text-sm font-medium text-accent-primary">
+                <span className="text-body font-semibold text-text-primary">
+                  Uploading files...
+                </span>
+                <span className="text-body font-medium text-accent-primary">
                   {importProgress.current} / {importProgress.total}
                 </span>
               </div>
@@ -389,23 +393,26 @@ export function VoiceBulkImportModal({ open, onClose, onSuccess }: VoiceBulkImpo
               </Heading>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-text-secondary">Success:</span>
-                  <span className="text-sm font-bold text-green-600">
+                  <span className="text-body text-text-secondary">Success:</span>
+                  <span className="text-body font-bold text-green-600">
                     {importResult.success_count}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-text-secondary">Failed:</span>
-                  <span className="text-sm font-bold text-orange-600">
+                  <span className="text-body text-text-secondary">Failed:</span>
+                  <span className="text-body font-bold text-orange-600">
                     {importResult.failure_count}
                   </span>
                 </div>
                 {importResult.errors.length > 0 && (
                   <div className="mt-3 pt-3 border-t border-border-default">
-                    <p className="text-xs font-semibold text-text-muted mb-2">Errors:</p>
+                    <p className="text-caption font-semibold text-text-muted mb-2">Errors:</p>
                     <ul className="space-y-1 max-h-32 overflow-y-auto">
                       {importResult.errors.map((error, index) => (
-                        <li key={index} className="flex items-start gap-2 text-xs text-orange-600">
+                        <li
+                          key={index}
+                          className="flex items-start gap-2 text-caption text-orange-600"
+                        >
                           <AlertCircle className="h-3 w-3 flex-shrink-0 mt-0.5" />
                           <span>{error}</span>
                         </li>
@@ -424,14 +431,14 @@ export function VoiceBulkImportModal({ open, onClose, onSuccess }: VoiceBulkImpo
             <button
               onClick={handleClose}
               disabled={isImporting}
-              className="px-6 py-2.5 rounded-lg text-sm font-semibold text-text-secondary hover:text-text-primary hover:bg-surface-raised transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2.5 rounded-lg text-body font-semibold text-text-secondary hover:text-text-primary hover:bg-surface-raised transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {importResult ? "Close" : "Cancel"}
             </button>
             <button
               onClick={handleImport}
               disabled={!selectedUser || selectedFiles.length === 0 || isImporting}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold bg-gradient-to-r from-accent-primary to-purple-600 text-white hover:shadow-lg hover:shadow-accent-primary/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
+              className="flex items-center gap-2 px-6 py-2.5 rounded-lg text-body font-semibold bg-gradient-to-r from-accent-primary to-purple-600 text-white hover:shadow-lg hover:shadow-accent-primary/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
             >
               {isImporting ? (
                 <>

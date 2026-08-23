@@ -169,7 +169,7 @@ export default function QueueManagementPage() {
             <AlertCircle className="h-5 w-5 text-destructive" />
             <div>
               <p className="font-medium">Failed to load queues</p>
-              <p className="text-sm text-muted-foreground">{error}</p>
+              <p className="text-body text-muted-foreground">{error}</p>
             </div>
           </CardContent>
         </Card>
@@ -193,7 +193,7 @@ export default function QueueManagementPage() {
               </div>
               {/* Show compact stats in header when collapsed */}
               {!statsExpanded && (
-                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                <div className="flex items-center gap-4 text-body text-muted-foreground">
                   <span>
                     Messages: <strong>{totalMessages.toLocaleString()}</strong>
                   </span>
@@ -216,13 +216,13 @@ export default function QueueManagementPage() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <Card className="border-muted">
                   <CardHeader className="pb-3">
-                    <CardDescription className="text-xs">Total Messages</CardDescription>
+                    <CardDescription className="text-caption">Total Messages</CardDescription>
                     <Heading variant="metric">{totalMessages.toLocaleString()}</Heading>
                   </CardHeader>
                 </Card>
                 <Card className="border-muted">
                   <CardHeader className="pb-3">
-                    <CardDescription className="text-xs">Active Consumers</CardDescription>
+                    <CardDescription className="text-caption">Active Consumers</CardDescription>
                     <Heading variant="metric">{totalConsumers}</Heading>
                   </CardHeader>
                 </Card>
@@ -232,7 +232,7 @@ export default function QueueManagementPage() {
                   }
                 >
                   <CardHeader className="pb-3">
-                    <CardDescription className="text-xs">Critical Queues</CardDescription>
+                    <CardDescription className="text-caption">Critical Queues</CardDescription>
                     <Heading variant="metric" className="flex items-center gap-2">
                       {criticalQueues}
                       {criticalQueues > 0 && <AlertTriangle className="h-5 w-5 text-destructive" />}
@@ -245,7 +245,7 @@ export default function QueueManagementPage() {
                   }
                 >
                   <CardHeader className="pb-3">
-                    <CardDescription className="text-xs">High Load Queues</CardDescription>
+                    <CardDescription className="text-caption">High Load Queues</CardDescription>
                     <Heading variant="metric" className="flex items-center gap-2">
                       {warningQueues}
                       {warningQueues > 0 && <TrendingUp className="h-5 w-5 text-yellow-600" />}
@@ -363,7 +363,7 @@ export default function QueueManagementPage() {
       <div className="flex justify-center">
         <button
           onClick={() => setAutoRefresh(!autoRefresh)}
-          className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+          className="text-caption text-muted-foreground hover:text-foreground transition-colors"
         >
           Auto-refresh: {autoRefresh ? "ON" : "OFF"} • Updates every 10s
         </button>

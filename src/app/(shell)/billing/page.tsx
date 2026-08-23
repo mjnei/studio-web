@@ -128,7 +128,7 @@ export default function BillingPage() {
         <div className="inline-flex items-center gap-1 rounded-xl bg-surface-panel p-1 shadow-sm border border-border-default min-w-min">
           <button
             onClick={() => setActiveTab("overview")}
-            className={`flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold transition-all duration-200 ${
+            className={`flex items-center gap-2 rounded-lg px-5 py-2 text-body font-semibold transition-all duration-200 ${
               activeTab === "overview"
                 ? "bg-accent-primary text-white shadow-md"
                 : "text-text-muted hover:text-text-primary hover:bg-surface-raised"
@@ -138,7 +138,7 @@ export default function BillingPage() {
           </button>
           <button
             onClick={() => setActiveTab("history")}
-            className={`flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold transition-all duration-200 ${
+            className={`flex items-center gap-2 rounded-lg px-5 py-2 text-body font-semibold transition-all duration-200 ${
               activeTab === "history"
                 ? "bg-accent-primary text-white shadow-md"
                 : "text-text-muted hover:text-text-primary hover:bg-surface-raised"
@@ -148,7 +148,7 @@ export default function BillingPage() {
           </button>
           <button
             onClick={() => setActiveTab("invoices")}
-            className={`flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold transition-all duration-200 ${
+            className={`flex items-center gap-2 rounded-lg px-5 py-2 text-body font-semibold transition-all duration-200 ${
               activeTab === "invoices"
                 ? "bg-accent-primary text-white shadow-md"
                 : "text-text-muted hover:text-text-primary hover:bg-surface-raised"
@@ -166,16 +166,18 @@ export default function BillingPage() {
             <div className="bg-gradient-to-br from-accent-cyan/10 via-accent-purple/5 to-surface-raised p-8">
               <div className="flex items-center justify-between mb-6">
                 <div>
-                  <p className="text-sm text-text-muted mb-2 uppercase tracking-wide font-medium">
+                  <p className="text-body text-text-muted mb-2 uppercase tracking-wide font-medium">
                     {t("billing.overview.currentBalance")}
                   </p>
                   <div className="flex items-baseline gap-3">
                     <Heading variant="metric" as="h2" className="text-text-primary">
                       {creditStatus.credits_remaining}
                     </Heading>
-                    <span className="text-lg text-text-muted">{t("billing.overview.credits")}</span>
+                    <span className="text-metric text-text-muted">
+                      {t("billing.overview.credits")}
+                    </span>
                   </div>
-                  <p className="text-sm text-text-secondary mt-2">
+                  <p className="text-body text-text-secondary mt-2">
                     {t("billing.overview.usedOfAllocation", {
                       used: creditStatus.credits_used,
                       allocation: creditStatus.monthly_allocation,
@@ -200,7 +202,7 @@ export default function BillingPage() {
                     }}
                   />
                 </div>
-                <div className="flex justify-between mt-2 text-xs text-text-muted">
+                <div className="flex justify-between mt-2 text-caption text-text-muted">
                   <span>
                     {Math.round(
                       (creditStatus.credits_used / creditStatus.monthly_allocation) * 100
@@ -218,10 +220,10 @@ export default function BillingPage() {
                 <div className="flex items-center gap-3">
                   <TrendingUp className="h-5 w-5 text-accent-cyan" />
                   <div>
-                    <p className="text-sm font-medium text-text-primary">
+                    <p className="text-body font-medium text-text-primary">
                       {t("billing.overview.upgradeSection")}
                     </p>
-                    <p className="text-xs text-text-muted">
+                    <p className="text-caption text-text-muted">
                       {t("billing.overview.upgradeDescription")}
                     </p>
                   </div>
@@ -238,13 +240,13 @@ export default function BillingPage() {
 
               {/* Success Message */}
               {creditsSuccess && (
-                <div className="mt-4 rounded-lg border border-status-completed/30 bg-status-completed/10 px-4 py-3 text-sm text-status-completed flex items-start gap-2">
+                <div className="mt-4 rounded-lg border border-status-completed/30 bg-status-completed/10 px-4 py-3 text-body text-status-completed flex items-start gap-2">
                   <Check className="h-4 w-4 mt-0.5 flex-shrink-0" />
                   <span>{t("billing.overview.successMessage")}</span>
                 </div>
               )}
               {creditsError && (
-                <div className="mt-4 rounded-lg border border-status-failed/30 bg-status-failed/10 px-4 py-3 text-sm text-status-failed flex items-start gap-2">
+                <div className="mt-4 rounded-lg border border-status-failed/30 bg-status-failed/10 px-4 py-3 text-body text-status-failed flex items-start gap-2">
                   <span>{creditsError}</span>
                 </div>
               )}
@@ -279,7 +281,7 @@ export default function BillingPage() {
                     <TrendingUp className="h-5 w-5 text-accent-cyan" />
                   </div>
                   <div>
-                    <p className="text-xs text-text-muted">
+                    <p className="text-caption text-text-muted">
                       {t("billing.overview.monthlyAllocation")}
                     </p>
                     <Heading variant="metric" className="text-text-primary">
@@ -287,7 +289,7 @@ export default function BillingPage() {
                     </Heading>
                   </div>
                 </div>
-                <p className="text-xs text-text-muted">
+                <p className="text-caption text-text-muted">
                   {t("billing.overview.monthlyAllocationDescription")}
                 </p>
               </div>
@@ -298,13 +300,15 @@ export default function BillingPage() {
                     <Coins className="h-5 w-5 text-accent-cyan" />
                   </div>
                   <div>
-                    <p className="text-xs text-text-muted">{t("billing.overview.creditsUsed")}</p>
+                    <p className="text-caption text-text-muted">
+                      {t("billing.overview.creditsUsed")}
+                    </p>
                     <Heading variant="metric" className="text-text-primary">
                       {creditStatus.credits_used}
                     </Heading>
                   </div>
                 </div>
-                <p className="text-xs text-text-muted">
+                <p className="text-caption text-text-muted">
                   {t("billing.overview.creditsUsedDescription")}
                 </p>
               </div>
@@ -315,13 +319,15 @@ export default function BillingPage() {
                     <Clock className="h-5 w-5 text-accent-cyan" />
                   </div>
                   <div>
-                    <p className="text-xs text-text-muted">{t("billing.overview.cycleReset")}</p>
-                    <p className="text-sm font-semibold text-text-primary">
+                    <p className="text-caption text-text-muted">
+                      {t("billing.overview.cycleReset")}
+                    </p>
+                    <p className="text-body font-semibold text-text-primary">
                       {formatDate(creditStatus.cycle_end_date)}
                     </p>
                   </div>
                 </div>
-                <p className="text-xs text-text-muted">
+                <p className="text-caption text-text-muted">
                   {t("billing.overview.cycleResetDescription")}
                 </p>
               </div>
@@ -334,7 +340,7 @@ export default function BillingPage() {
                   <Heading variant="label" as="h4" className="text-warning-text mb-1">
                     {t("billing.overview.nextAllocationReset")}
                   </Heading>
-                  <p className="text-sm text-text-muted">
+                  <p className="text-body text-text-muted">
                     {t("billing.overview.nextAllocationResetDescription")}{" "}
                     <span className="font-medium text-text-secondary">
                       {formatDate(creditStatus.cycle_end_date)}
@@ -380,7 +386,7 @@ export default function BillingPage() {
                   <Heading variant="label" as="h3" className="text-text-primary">
                     {t("billing.overview.currentPlan")}
                   </Heading>
-                  <p className="text-sm text-text-secondary capitalize">
+                  <p className="text-body text-text-secondary capitalize">
                     {creditStatus.membership_tier}
                   </p>
                 </div>
@@ -389,7 +395,7 @@ export default function BillingPage() {
                 </Button>
               </div>
 
-              <div className="grid gap-4 text-sm">
+              <div className="grid gap-4 text-body">
                 <div className="flex justify-between">
                   <span className="text-text-muted">
                     {t("billing.overview.subscriptionStatus")}
@@ -433,7 +439,7 @@ export default function BillingPage() {
             <div className="py-12 text-center">
               <History className="h-12 w-12 text-text-muted mx-auto mb-4 opacity-50" />
               <p className="text-text-muted">{t("billing.history.noTransactions")}</p>
-              <p className="text-xs text-text-muted mt-2">
+              <p className="text-caption text-text-muted mt-2">
                 {t("billing.history.noTransactionsDescription")}
               </p>
             </div>
@@ -456,21 +462,21 @@ export default function BillingPage() {
                       <Heading variant="label" as="h4" className="text-text-primary capitalize">
                         {transaction.transaction_type}
                       </Heading>
-                      <p className="text-xs text-text-muted">
+                      <p className="text-caption text-text-muted">
                         {transaction.description || t("billing.history.creditTransaction")}
                       </p>
-                      <p className="text-xs text-text-muted mt-0.5">
+                      <p className="text-caption text-text-muted mt-0.5">
                         {formatDate(transaction.created_at)}
                       </p>
                     </div>
                   </div>
                   <div className="text-right">
                     <p
-                      className={`text-sm font-semibold ${getTransactionColor(transaction.amount)}`}
+                      className={`text-body font-semibold ${getTransactionColor(transaction.amount)}`}
                     >
                       {formatAmount(transaction.amount)} {t("billing.overview.credits")}
                     </p>
-                    <p className="text-xs text-text-muted">
+                    <p className="text-caption text-text-muted">
                       {t("billing.history.balance")} {transaction.balance_after}
                     </p>
                   </div>
@@ -522,7 +528,7 @@ export default function BillingPage() {
             <Heading variant="subsection" as="h3" className="text-text-primary mb-2">
               {t("billing.help.needHelp")}
             </Heading>
-            <p className="text-sm text-text-muted mb-3">{t("billing.help.haveQuestions")}</p>
+            <p className="text-body text-text-muted mb-3">{t("billing.help.haveQuestions")}</p>
             <div className="flex gap-3">
               <Button variant="ghost" size="sm">
                 {t("billing.help.contactSupport")}
@@ -556,7 +562,7 @@ export default function BillingPage() {
                 </Text>
               </div>
             </div>
-            <p className="text-sm text-text-secondary mb-6">
+            <p className="text-body text-text-secondary mb-6">
               {t("billing.creditsModal.description")}
             </p>
             <div className="flex gap-3">

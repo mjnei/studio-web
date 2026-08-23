@@ -85,7 +85,7 @@ export default function ScriptPage() {
               <Heading variant="section" as="h2" className="text-text-primary">
                 {t("project.script.title")}
               </Heading>
-              <p className="mt-1 text-sm text-text-muted">{t("project.script.description")}</p>
+              <p className="mt-1 text-body text-text-muted">{t("project.script.description")}</p>
             </div>
           </div>
 
@@ -108,7 +108,7 @@ export default function ScriptPage() {
                   <Heading variant="label" as="h3" className="text-text-primary">
                     {state.movieTitle}
                   </Heading>
-                  <p className="mt-1 text-sm text-text-muted">
+                  <p className="mt-1 text-body text-text-muted">
                     {state.movieGenre && `${state.movieGenre} • `}
                     {state.movieRating &&
                       t("project.common.ratingValue", { value: state.movieRating.toFixed(1) })}
@@ -129,7 +129,7 @@ export default function ScriptPage() {
                   <Heading variant="subsection" as="h3" className="text-text-primary">
                     {isEditing ? t("project.script.editTitle") : t("project.script.currentTitle")}
                   </Heading>
-                  <div className="flex items-center gap-4 text-sm text-text-muted mt-1">
+                  <div className="flex items-center gap-4 text-body text-text-muted mt-1">
                     <div className="flex items-center gap-1">
                       <FileText className="h-3.5 w-3.5" />
                       <span>{t("project.common.words", { count: wordCount })}</span>
@@ -171,7 +171,7 @@ export default function ScriptPage() {
               <div className="space-y-3">
                 <div className="rounded-xl border border-border-default bg-surface-panel p-5">
                   <p
-                    className={`text-sm text-text-secondary leading-[1.8] whitespace-pre-wrap transition-all duration-300 ${
+                    className={`text-body text-text-secondary leading-[1.8] whitespace-pre-wrap transition-all duration-300 ${
                       isExpanded ? "" : "line-clamp-6"
                     }`}
                   >
@@ -185,7 +185,7 @@ export default function ScriptPage() {
                     onClick={() => setIsExpanded(!isExpanded)}
                     className="group flex items-center gap-2 px-4 py-2.5 rounded-lg bg-surface-raised hover:bg-surface-hover border border-border-default hover:border-accent-cyan/40 text-text-secondary hover:text-accent-cyan transition-all duration-200 shadow-sm hover:shadow-md"
                   >
-                    <span className="text-sm font-medium">
+                    <span className="text-body font-medium">
                       {isExpanded ? t("project.script.showLess") : t("project.script.showFull")}
                     </span>
                     {isExpanded ? (
@@ -201,13 +201,13 @@ export default function ScriptPage() {
               <textarea
                 value={scriptContent}
                 onChange={(e) => setScriptContent(e.target.value)}
-                className="min-h-[400px] w-full rounded-lg border-2 border-accent-cyan/50 bg-surface-raised p-4 text-sm text-text-primary placeholder-text-muted focus:outline-none focus:border-accent-cyan focus:ring-4 focus:ring-accent-cyan/20 transition-all"
+                className="min-h-[400px] w-full rounded-lg border-2 border-accent-cyan/50 bg-surface-raised p-4 text-body text-text-primary placeholder-text-muted focus:outline-none focus:border-accent-cyan focus:ring-4 focus:ring-accent-cyan/20 transition-all"
                 placeholder={t("project.script.placeholder")}
               />
             )}
 
             {isEditing && hasChanges && (
-              <div className="mt-3 flex items-center gap-2 text-xs text-accent-cyan bg-accent-cyan/5 rounded-lg p-3 border border-accent-cyan/10">
+              <div className="mt-3 flex items-center gap-2 text-caption text-accent-cyan bg-accent-cyan/5 rounded-lg p-3 border border-accent-cyan/10">
                 <FileText className="h-4 w-4 flex-shrink-0" />
                 <p>{t("project.script.autoSaveHint")}</p>
               </div>
@@ -240,13 +240,13 @@ export default function ScriptPage() {
                             })}
                           </span>
                           {script.isActive && (
-                            <span className="flex items-center gap-1 text-xs text-accent-cyan">
+                            <span className="flex items-center gap-1 text-caption text-accent-cyan">
                               <Check className="h-3 w-3" />
                               {t("project.common.active")}
                             </span>
                           )}
                         </div>
-                        <div className="mt-1 flex items-center gap-4 text-sm text-text-muted">
+                        <div className="mt-1 flex items-center gap-4 text-body text-text-muted">
                           <span>{t("project.common.words", { count: script.wordCount })}</span>
                           <span>{formatDuration(script.duration)}</span>
                           <span>{new Date(script.createdAt).toLocaleDateString()}</span>

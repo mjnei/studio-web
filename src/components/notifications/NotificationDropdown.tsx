@@ -37,7 +37,7 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
             {t("notifications.title")}
           </Heading>
           {unreadCount > 0 && (
-            <span className="text-[10px] sm:text-xs text-text-muted shrink-0">
+            <span className="text-[10px] sm:text-caption text-text-muted shrink-0">
               {t("notifications.newCount", { count: unreadCount })}
             </span>
           )}
@@ -70,7 +70,7 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
         {isLoading ? (
           <div className="p-6 sm:p-8 flex flex-col items-center justify-center text-text-muted">
             <Spinner size="md" className="text-accent-primary mb-2 sm:mb-3" />
-            <p className="text-xs sm:text-sm">{t("notifications.loading")}</p>
+            <p className="text-caption">{t("notifications.loading")}</p>
           </div>
         ) : notifications.length === 0 ? (
           <EmptyState
@@ -97,7 +97,7 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
       {notifications.length > 0 && (
         <div className="p-2 sm:p-3 border-t border-border-default bg-surface-raised">
           <Link href="/notifications" onClick={onClose}>
-            <Button variant="ghost" className="w-full text-xs sm:text-sm" size="sm">
+            <Button variant="ghost" className="w-full text-caption" size="sm">
               {t("notifications.viewAll")}
             </Button>
           </Link>

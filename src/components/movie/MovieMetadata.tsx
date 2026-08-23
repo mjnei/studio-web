@@ -28,11 +28,11 @@ export const MovieMetadata: React.FC<MovieMetadataProps> = ({
   const sizeClasses = {
     sm: {
       icon: "h-3 w-3",
-      text: "text-xs",
+      text: "text-caption",
     },
     md: {
       icon: "h-3.5 w-3.5",
-      text: "text-xs",
+      text: "text-caption",
     },
   };
 

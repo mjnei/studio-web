@@ -12,7 +12,7 @@ export function ViewModeTabs({ viewMode, onViewModeChange, libraryTotal }: ViewM
     <div className="mb-6 flex gap-2">
       <button
         onClick={() => onViewModeChange("library")}
-        className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+        className={`flex items-center gap-2 rounded-lg px-4 py-2 text-body font-medium transition-all ${
           viewMode === "library"
             ? "bg-accent-primary text-white"
             : "border border-border-default bg-surface-panel text-text-secondary hover:bg-surface-hover"
@@ -20,11 +20,11 @@ export function ViewModeTabs({ viewMode, onViewModeChange, libraryTotal }: ViewM
       >
         <Database className="h-4 w-4" />
         Movie Library
-        {libraryTotal > 0 && <span className="text-xs opacity-80">({libraryTotal})</span>}
+        {libraryTotal > 0 && <span className="text-caption opacity-80">({libraryTotal})</span>}
       </button>
       <button
         onClick={() => onViewModeChange("import")}
-        className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+        className={`flex items-center gap-2 rounded-lg px-4 py-2 text-body font-medium transition-all ${
           viewMode === "import"
             ? "bg-accent-primary text-white"
             : "border border-border-default bg-surface-panel text-text-secondary hover:bg-surface-hover"

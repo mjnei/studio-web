@@ -76,7 +76,7 @@ function InviteContent() {
       <Card variant="elevated" padding="lg" className="w-full">
         <div className="flex flex-col items-center justify-center py-12">
           <Spinner size="lg" className="text-accent-primary mb-4" />
-          <p className="text-sm text-text-secondary">{t("auth.invite.validating")}</p>
+          <p className="text-body text-text-secondary">{t("auth.invite.validating")}</p>
         </div>
       </Card>
     );
@@ -104,8 +104,8 @@ function InviteContent() {
 
           {/* Referral Code Display */}
           <div className="bg-surface-raised border border-border-default rounded-lg p-4 mb-6">
-            <p className="text-sm text-text-muted mb-1">{t("auth.invite.yourCode")}</p>
-            <code className="text-lg font-mono font-bold text-accent-primary">{code}</code>
+            <p className="text-body text-text-muted mb-1">{t("auth.invite.yourCode")}</p>
+            <code className="text-metric font-mono font-bold text-accent-primary">{code}</code>
           </div>
 
           {/* Reward Notice */}
@@ -115,7 +115,7 @@ function InviteContent() {
                 <Gift className="h-4 w-4 text-white" />
               </div>
               <div className="flex-1 text-left">
-                <p className="text-sm font-medium text-text-primary mb-1">
+                <p className="text-body font-medium text-text-primary mb-1">
                   {t("auth.invite.rewardMessage")}
                 </p>
               </div>
@@ -152,7 +152,7 @@ function InviteContent() {
             <Button onClick={handleSignupWithoutCode} variant="primary" fullWidth size="lg">
               {t("auth.invite.continueAnyway")}
             </Button>
-            <p className="text-xs text-text-muted">{t("auth.invite.noCodeRequired")}</p>
+            <p className="text-caption text-text-muted">{t("auth.invite.noCodeRequired")}</p>
           </div>
         </div>
       )}
@@ -169,7 +169,7 @@ export default function InvitePage() {
         <Card variant="elevated" padding="lg" className="w-full">
           <div className="flex flex-col items-center justify-center py-12">
             <Spinner size="lg" className="text-accent-primary mb-4" />
-            <p className="text-sm text-text-secondary">{t("common.loading")}</p>
+            <p className="text-body text-text-secondary">{t("common.loading")}</p>
           </div>
         </Card>
       }

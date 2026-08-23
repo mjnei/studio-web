@@ -192,7 +192,7 @@ export default function QueueDetailPage() {
             <AlertCircle className="h-5 w-5 text-destructive" />
             <div>
               <p className="font-medium">Failed to load queue details</p>
-              <p className="text-sm text-muted-foreground">{error}</p>
+              <p className="text-body text-muted-foreground">{error}</p>
             </div>
           </CardContent>
         </Card>
@@ -213,7 +213,7 @@ export default function QueueDetailPage() {
             </Button>
             <div>
               <Heading variant="page">{stats.metadata?.display_name || queueName}</Heading>
-              <p className="text-sm text-muted-foreground mt-1">
+              <p className="text-body text-muted-foreground mt-1">
                 {stats.metadata?.description || queueName}
               </p>
             </div>
@@ -250,7 +250,7 @@ export default function QueueDetailPage() {
             </div>
             {/* Show compact stats in header when collapsed */}
             {!statsExpanded && (
-              <div className="flex items-center gap-4 text-sm text-muted-foreground">
+              <div className="flex items-center gap-4 text-body text-muted-foreground">
                 <span>
                   Messages: <strong>{stats.message_count.toLocaleString()}</strong>
                 </span>
@@ -273,13 +273,13 @@ export default function QueueDetailPage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <Card className="border-muted">
                 <CardHeader className="pb-3">
-                  <CardDescription className="flex items-center gap-2 text-xs">
+                  <CardDescription className="flex items-center gap-2 text-caption">
                     <Activity className="h-4 w-4" />
                     Messages
                   </CardDescription>
                   <Heading variant="metric">{stats.message_count.toLocaleString()}</Heading>
                   {stats.metadata?.max_messages && (
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-caption text-muted-foreground mt-1">
                       {Math.round((stats.message_count / stats.metadata.max_messages) * 100)}%
                       capacity
                     </p>
@@ -289,12 +289,12 @@ export default function QueueDetailPage() {
 
               <Card className="border-muted">
                 <CardHeader className="pb-3">
-                  <CardDescription className="flex items-center gap-2 text-xs">
+                  <CardDescription className="flex items-center gap-2 text-caption">
                     <TrendingUp className="h-4 w-4" />
                     Consumers
                   </CardDescription>
                   <Heading variant="metric">{stats.consumer_count}</Heading>
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="text-caption text-muted-foreground mt-1">
                     {stats.consumer_count > 0 ? "Active" : "Inactive"}
                   </p>
                 </CardHeader>
@@ -302,11 +302,11 @@ export default function QueueDetailPage() {
 
               <Card className="border-muted">
                 <CardHeader className="pb-3">
-                  <CardDescription className="text-xs">Queue Type</CardDescription>
+                  <CardDescription className="text-caption">Queue Type</CardDescription>
                   <Heading variant="subsection" as="h3">
                     {stats.metadata?.is_job_queue ? "Job Queue" : "Result Queue"}
                   </Heading>
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="text-caption text-muted-foreground mt-1">
                     Category: {stats.metadata?.category?.toUpperCase()}
                   </p>
                 </CardHeader>
@@ -321,14 +321,14 @@ export default function QueueDetailPage() {
                   }
                 >
                   <CardHeader className="pb-3">
-                    <CardDescription className="text-xs">Dead-Letter Queue</CardDescription>
+                    <CardDescription className="text-caption">Dead-Letter Queue</CardDescription>
                     <Heading variant="metric" className="flex items-center gap-2">
                       {dlqStats.message_count}
                       {dlqStats.message_count > 0 && (
                         <AlertCircle className="h-5 w-5 text-destructive" />
                       )}
                     </Heading>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-caption text-muted-foreground mt-1">
                       {dlqStats.message_count > 0 ? "Failed messages" : "No failures"}
                     </p>
                   </CardHeader>
@@ -357,12 +357,12 @@ export default function QueueDetailPage() {
                   }`}
                 />
                 <div>
-                  <p className="font-semibold text-sm">
+                  <p className="font-semibold text-body">
                     Health Status: {health.status === "critical" && "Critical - Requires Attention"}
                     {health.status === "warning" && "Warning - High Load"}
                     {health.status === "healthy" && "Healthy - Normal Operation"}
                   </p>
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="text-caption text-muted-foreground mt-1">
                     {health.status === "critical" &&
                       "No consumers processing messages - jobs may be stuck"}
                     {health.status === "warning" &&
@@ -408,7 +408,7 @@ export default function QueueDetailPage() {
       <div className="flex justify-center">
         <button
           onClick={() => setAutoRefresh(!autoRefresh)}
-          className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+          className="text-caption text-muted-foreground hover:text-foreground transition-colors"
         >
           Auto-refresh: {autoRefresh ? "ON" : "OFF"} • Updates every 5s
         </button>

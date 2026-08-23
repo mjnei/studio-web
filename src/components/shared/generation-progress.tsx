@@ -12,8 +12,8 @@ export function GenerationProgress({
   return (
     <div className="rounded-lg border border-border-default bg-surface-panel p-4">
       <div className="mb-2 flex items-center justify-between">
-        <span className="text-sm font-medium text-text-primary">{label}</span>
-        <span className="text-xs text-text-muted">
+        <span className="text-body font-medium text-text-primary">{label}</span>
+        <span className="text-caption text-text-muted">
           {current}/{total} &middot; {pct}%
         </span>
       </div>

@@ -52,7 +52,7 @@ export function CreditStatus() {
         <Coins className="h-4 w-4 text-accent-cyan" />
         <div className="flex flex-col">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold text-text-primary">
+            <span className="text-body font-semibold text-text-primary">
               {creditBalance.credits_remaining}
             </span>
             <span className="text-caption text-text-muted hidden sm:inline">

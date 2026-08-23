@@ -37,7 +37,7 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({ summary }) => {
           </div>
         </div>
         <div className="flex items-center gap-2 text-text-muted">
-          <span className="text-xs font-medium hidden sm:inline">
+          <span className="text-caption font-medium hidden sm:inline">
             {isOpen ? t("jobs.analytics.hideInsights") : t("jobs.analytics.showInsights")}
           </span>
           {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}

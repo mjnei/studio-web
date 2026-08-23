@@ -56,7 +56,7 @@ export function TTSQueueStatus({ job }: TTSQueueStatusProps) {
         <div className="grid grid-cols-2 gap-4">
           {/* Position */}
           <div className="space-y-1">
-            <div className="flex items-center gap-1.5 text-xs text-text-muted">
+            <div className="flex items-center gap-1.5 text-caption text-text-muted">
               <Users className="h-3.5 w-3.5" />
               <span>{t("tts.queue.position")}</span>
             </div>
@@ -75,7 +75,7 @@ export function TTSQueueStatus({ job }: TTSQueueStatusProps) {
           {/* Jobs Ahead */}
           {job.jobs_ahead !== null && job.jobs_ahead !== undefined && (
             <div className="space-y-1">
-              <div className="text-xs text-text-muted">{t("tts.queue.jobsAhead")}</div>
+              <div className="text-caption text-text-muted">{t("tts.queue.jobsAhead")}</div>
               <Heading variant="metric" className="text-text-primary">
                 {job.jobs_ahead}
               </Heading>
@@ -87,10 +87,10 @@ export function TTSQueueStatus({ job }: TTSQueueStatusProps) {
         {hasWaitTime && (
           <div className="pt-3 border-t border-blue-500/10">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-text-muted">{t("tts.queue.estimatedWait")}</span>
+              <span className="text-body text-text-muted">{t("tts.queue.estimatedWait")}</span>
               <Badge
                 variant="outline"
-                className="text-sm font-semibold bg-blue-500/5 border-blue-500/20 text-blue-600"
+                className="text-body font-semibold bg-blue-500/5 border-blue-500/20 text-blue-600"
               >
                 {formatWaitTime(job.estimated_wait_seconds!)}
               </Badge>
@@ -101,7 +101,9 @@ export function TTSQueueStatus({ job }: TTSQueueStatusProps) {
         {/* Live Update Indicator */}
         <div className="flex items-center gap-2 pt-2">
           <div className="h-2 w-2 rounded-full bg-blue-500 animate-pulse" />
-          <span className="text-xs text-text-muted">{t("tts.queue.updatesAutomatically")}</span>
+          <span className="text-caption text-text-muted">
+            {t("tts.queue.updatesAutomatically")}
+          </span>
         </div>
       </div>
     </Card>

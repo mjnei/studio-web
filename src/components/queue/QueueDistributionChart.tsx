@@ -50,7 +50,7 @@ export function QueueDistributionChart({ queues }: QueueDistributionChartProps) 
     <div className="space-y-4">
       {sortedCategories.length === 0 ? (
         <div className="text-center py-8">
-          <p className="text-sm text-muted-foreground">No queue data available</p>
+          <p className="text-body text-muted-foreground">No queue data available</p>
         </div>
       ) : (
         <>
@@ -65,9 +65,9 @@ export function QueueDistributionChart({ queues }: QueueDistributionChartProps) 
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className={`w-2 h-2 rounded-full ${colors.bar}`} />
-                      <span className="text-sm font-medium capitalize">{category}</span>
+                      <span className="text-body font-medium capitalize">{category}</span>
                     </div>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-caption text-muted-foreground">
                       {stats.messageCount.toLocaleString()} msgs
                     </span>
                   </div>
@@ -77,7 +77,7 @@ export function QueueDistributionChart({ queues }: QueueDistributionChartProps) 
                       style={{ width: `${percentage}%` }}
                     />
                   </div>
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                  <div className="flex items-center justify-between text-caption text-muted-foreground">
                     <span>{percentage.toFixed(0)}%</span>
                     <span>{stats.queueCount} queue(s)</span>
                   </div>
@@ -89,12 +89,12 @@ export function QueueDistributionChart({ queues }: QueueDistributionChartProps) 
           {/* Summary Stats */}
           <div className="grid grid-cols-2 gap-2 pt-3 border-t">
             <div>
-              <p className="text-xs text-muted-foreground">Total Messages</p>
-              <p className="text-lg font-bold">{totalMessages.toLocaleString()}</p>
+              <p className="text-caption text-muted-foreground">Total Messages</p>
+              <p className="text-metric font-bold">{totalMessages.toLocaleString()}</p>
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">Categories</p>
-              <p className="text-lg font-bold">{Object.keys(categoryStats).length}</p>
+              <p className="text-caption text-muted-foreground">Categories</p>
+              <p className="text-metric font-bold">{Object.keys(categoryStats).length}</p>
             </div>
           </div>
         </>

@@ -83,11 +83,11 @@ export function QueueStatsCard({
 
         {/* Health Message */}
         {health.status !== "healthy" && (
-          <div className={`p-2 rounded text-sm mb-3 ${colors.badge}`}>{health.message}</div>
+          <div className={`p-2 rounded text-body mb-3 ${colors.badge}`}>{health.message}</div>
         )}
 
         {/* Queue Details */}
-        <div className="text-xs text-muted-foreground space-y-1">
+        <div className="text-caption text-muted-foreground space-y-1">
           <div className="flex justify-between">
             <span>Type:</span>
             <span className="font-medium">
@@ -114,7 +114,7 @@ export function QueueStatsCard({
             <button
               onClick={onViewDetails}
               disabled={isRefreshing}
-              className="flex-1 px-3 py-1.5 text-xs font-medium rounded border border-primary bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="flex-1 px-3 py-1.5 text-caption font-medium rounded border border-primary bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               View Details
             </button>
@@ -123,7 +123,7 @@ export function QueueStatsCard({
             <button
               onClick={onRefresh}
               disabled={isRefreshing}
-              className="px-3 py-1.5 text-xs font-medium rounded border border-muted-foreground/30 hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1.5"
+              className="px-3 py-1.5 text-caption font-medium rounded border border-muted-foreground/30 hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1.5"
             >
               <RefreshCw className={`h-3 w-3 ${isRefreshing ? "animate-spin" : ""}`} />
               Refresh

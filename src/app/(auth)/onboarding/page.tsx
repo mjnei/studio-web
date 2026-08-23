@@ -53,7 +53,7 @@ export default function OnboardingPage() {
               <div key={idx} className="flex items-center">
                 <div
                   className={`
-                    w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm
+                    w-10 h-10 rounded-full flex items-center justify-center font-semibold text-body
                     transition-all duration-300
                     ${
                       idx <= currentStep
@@ -68,11 +68,7 @@ export default function OnboardingPage() {
                   <div
                     className={`
                       h-1 w-16 mx-2 rounded-full transition-all duration-300
-                      ${
-                        idx < currentStep
-                          ? "bg-blue-600 dark:bg-blue-500"
-                          : "bg-gray-200 dark:bg-gray-700"
-                      }
+                      ${idx < currentStep ? "bg-blue-600 dark:bg-blue-500" : "bg-gray-200 dark:bg-gray-700"}
                     `}
                   />
                 )}
@@ -83,10 +79,10 @@ export default function OnboardingPage() {
           {/* Progress Bar for Mobile */}
           <div className="sm:hidden">
             <div className="flex items-center justify-between mb-3">
-              <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+              <span className="text-body font-semibold text-gray-700 dark:text-gray-300">
                 {t("onboarding.progress.stepOf", { current: currentStep + 1, total: totalSteps })}
               </span>
-              <span className="text-sm font-medium text-blue-600 dark:text-blue-400">
+              <span className="text-body font-medium text-blue-600 dark:text-blue-400">
                 {Math.round(((currentStep + 1) / totalSteps) * 100)}%
               </span>
             </div>

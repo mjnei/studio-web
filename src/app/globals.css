@@ -103,10 +103,10 @@
   --font-mono: var(--font-geist-mono);
 
   /* Font sizes — type scale.
-   * TW4 auto-generates text-{name} utilities from --text-* in @theme.
-   * Use text-page, text-section, etc. in components — NOT text-2xl / text-xl.
-   * Responsive steps: add --text-{role}-sm for sm: breakpoint overrides.
-   * See docs/TYPOGRAPHY.md for the full role reference. */
+ * TW4 auto-generates text-{name} utilities from --text-* in @theme.
+ * Use text-page, text-section, etc. in components — NOT text-2xl / text-page.
+ * Responsive steps: add --text-{role}-sm for sm: breakpoint overrides.
+ * See docs/TYPOGRAPHY.md for the full role reference. */
 
   /* Base (mobile-first) — aligned with sidebar density (nav: 14px, logo: 20px) */
   --text-display: 1.875rem; /* 30px — auth / onboarding heroes only */
@@ -383,9 +383,9 @@ body {
 }
 
 /* Fallback typography for bare headings (CMS/markdown/forgotten tags).
-   App UI MUST use Heading / PageHeader / CardTitle — see TYPOGRAPHY.md.
-   These rules use token-based classes (text-page etc.) so a single token
-   change updates both components and these fallbacks simultaneously. */
+  App UI MUST use Heading / PageHeader / CardTitle — see TYPOGRAPHY.md.
+  These rules use token-based classes (text-page etc.) so a single token
+  change updates both components and these fallbacks simultaneously. */
 @layer base {
   h1 {
     font-size: var(--text-page);

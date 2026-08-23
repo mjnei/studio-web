@@ -26,7 +26,7 @@ function formatRelativeTime(dateString: string): string {
 function StatusBadge({ status, isDeleted }: { status: string; isDeleted: boolean }) {
   if (isDeleted) {
     return (
-      <span className="inline-flex items-center rounded-full bg-red-500/10 px-2.5 py-0.5 text-xs font-semibold text-red-600">
+      <span className="inline-flex items-center rounded-full bg-red-500/10 px-2.5 py-0.5 text-caption font-semibold text-red-600">
         Deleted
       </span>
     );
@@ -38,7 +38,7 @@ function StatusBadge({ status, isDeleted }: { status: string; isDeleted: boolean
   };
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-caption font-semibold ${
         styles[status] || styles.draft
       }`}
     >
@@ -72,7 +72,7 @@ export function ProjectsTable({
 
   return (
     <div className="overflow-hidden rounded-xl border border-border-default bg-surface-panel">
-      <div className="hidden grid-cols-12 gap-3 border-b border-border-default px-4 py-3 text-xs font-semibold uppercase tracking-wider text-text-muted md:grid">
+      <div className="hidden grid-cols-12 gap-3 border-b border-border-default px-4 py-3 text-caption font-semibold uppercase tracking-wider text-text-muted md:grid">
         <div className="col-span-3">Project</div>
         <div className="col-span-3">Owner</div>
         <div className="col-span-2">Status</div>
@@ -91,15 +91,15 @@ export function ProjectsTable({
               <Heading variant="label" as="h3" className="text-text-primary">
                 {project.project_name || `Untitled #${project.id}`}
               </Heading>
-              <p className="mt-0.5 text-xs text-text-muted">
+              <p className="mt-0.5 text-caption text-text-muted">
                 ID {project.id}
                 {project.movie?.title ? ` · ${project.movie.title}` : ""}
               </p>
             </div>
 
             <div className="md:col-span-3">
-              <p className="text-sm text-text-primary">{project.user_name || "—"}</p>
-              <p className="text-xs text-text-muted">
+              <p className="text-body text-text-primary">{project.user_name || "—"}</p>
+              <p className="text-caption text-text-muted">
                 {project.user_email || `User #${project.user_id}`}
               </p>
             </div>
@@ -109,11 +109,11 @@ export function ProjectsTable({
             </div>
 
             <div className="md:col-span-1">
-              <span className="text-sm text-text-secondary">{project.last_step}</span>
+              <span className="text-body text-text-secondary">{project.last_step}</span>
             </div>
 
             <div className="md:col-span-1">
-              <span className="text-sm text-text-muted">
+              <span className="text-body text-text-muted">
                 {formatRelativeTime(project.updated_at)}
               </span>
             </div>

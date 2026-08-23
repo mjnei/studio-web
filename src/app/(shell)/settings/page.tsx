@@ -47,8 +47,8 @@ function SettingRow({ title, description, children }: SettingRowProps) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 py-3 border-b border-border-subtle last:border-0">
       <div className="flex-1">
-        <p className="text-sm font-medium text-text-primary">{title}</p>
-        {description && <p className="text-xs text-text-muted mt-1">{description}</p>}
+        <p className="text-body font-medium text-text-primary">{title}</p>
+        {description && <p className="text-caption text-text-muted mt-1">{description}</p>}
       </div>
       <div className="flex-shrink-0">{children}</div>
     </div>
@@ -148,13 +148,13 @@ export default function SettingsPage() {
           <CardContent>
             <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
               <div>
-                <label className="mb-2 block text-sm font-medium text-text-primary">
+                <label className="mb-2 block text-body font-medium text-text-primary">
                   {t("settings.projectDefaults.defaultVoice")}
                 </label>
                 <select
                   value={defaults.voice}
                   onChange={(e) => setDefaults((d) => ({ ...d, voice: e.target.value }))}
-                  className="w-full h-11 rounded-lg border border-border-default bg-surface-raised px-4 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary transition-all"
+                  className="w-full h-11 rounded-lg border border-border-default bg-surface-raised px-4 text-body text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary transition-all"
                 >
                   <option value="none">{t("settings.projectDefaults.voiceNone")}</option>
                   <option value="voice-a">{t("settings.projectDefaults.voiceA")}</option>
@@ -162,13 +162,13 @@ export default function SettingsPage() {
                 </select>
               </div>
               <div>
-                <label className="mb-2 block text-sm font-medium text-text-primary">
+                <label className="mb-2 block text-body font-medium text-text-primary">
                   {t("settings.projectDefaults.resolution")}
                 </label>
                 <select
                   value={defaults.resolution}
                   onChange={(e) => setDefaults((d) => ({ ...d, resolution: e.target.value }))}
-                  className="w-full h-11 rounded-lg border border-border-default bg-surface-raised px-4 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary transition-all"
+                  className="w-full h-11 rounded-lg border border-border-default bg-surface-raised px-4 text-body text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary transition-all"
                 >
                   <option value="720p">{t("settings.projectDefaults.resolution720p")}</option>
                   <option value="1080p">{t("settings.projectDefaults.resolution1080p")}</option>
@@ -176,13 +176,13 @@ export default function SettingsPage() {
                 </select>
               </div>
               <div>
-                <label className="mb-2 block text-sm font-medium text-text-primary">
+                <label className="mb-2 block text-body font-medium text-text-primary">
                   {t("settings.projectDefaults.frameRate")}
                 </label>
                 <select
                   value={defaults.fps}
                   onChange={(e) => setDefaults((d) => ({ ...d, fps: e.target.value }))}
-                  className="w-full h-11 rounded-lg border border-border-default bg-surface-raised px-4 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary transition-all"
+                  className="w-full h-11 rounded-lg border border-border-default bg-surface-raised px-4 text-body text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary transition-all"
                 >
                   <option value="24">{t("settings.projectDefaults.fps24")}</option>
                   <option value="30">{t("settings.projectDefaults.fps30")}</option>
@@ -190,13 +190,13 @@ export default function SettingsPage() {
                 </select>
               </div>
               <div>
-                <label className="mb-2 block text-sm font-medium text-text-primary">
+                <label className="mb-2 block text-body font-medium text-text-primary">
                   {t("settings.projectDefaults.exportFormat")}
                 </label>
                 <select
                   value={defaults.exportFormat}
                   onChange={(e) => setDefaults((d) => ({ ...d, exportFormat: e.target.value }))}
-                  className="w-full h-11 rounded-lg border border-border-default bg-surface-raised px-4 text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary transition-all"
+                  className="w-full h-11 rounded-lg border border-border-default bg-surface-raised px-4 text-body text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary transition-all"
                 >
                   <option value="mp4">{t("settings.projectDefaults.exportMp4")}</option>
                   <option value="webm">{t("settings.projectDefaults.exportWebm")}</option>
@@ -279,7 +279,7 @@ export default function SettingsPage() {
               title={t("settings.dataPrivacy.exportMyData")}
               description={t("settings.dataPrivacy.exportMyDataDesc")}
             >
-              <button className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border-default bg-surface-raised text-sm font-medium text-text-primary hover:bg-surface-hover transition-all">
+              <button className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border-default bg-surface-raised text-body font-medium text-text-primary hover:bg-surface-hover transition-all">
                 <Download className="h-4 w-4" aria-hidden />
                 {t("settings.dataPrivacy.requestExport")}
               </button>

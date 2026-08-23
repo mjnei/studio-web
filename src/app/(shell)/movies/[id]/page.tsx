@@ -125,7 +125,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
         <div className="mx-auto max-w-4xl px-4 py-3 sm:px-6">
           <Link
             href="/movies"
-            className="inline-flex items-center gap-2 rounded-lg bg-surface-panel/80 backdrop-blur-md border border-border-default/50 px-3 py-2 text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-surface-panel/90 transition-all shadow-lg"
+            className="inline-flex items-center gap-2 rounded-lg bg-surface-panel/80 backdrop-blur-md border border-border-default/50 px-3 py-2 text-body font-medium text-text-secondary hover:text-text-primary hover:bg-surface-panel/90 transition-all shadow-lg"
           >
             <ArrowLeft className="h-4 w-4" />
             {t("movies.detail.back")}
@@ -138,20 +138,20 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
         <div className="flex h-[60vh] items-center justify-center">
           <div className="flex flex-col items-center gap-2">
             <Spinner size="md" className="text-accent-cyan" />
-            <p className="text-sm text-text-muted">{t("movies.detail.loading")}</p>
+            <p className="text-body text-text-muted">{t("movies.detail.loading")}</p>
           </div>
         </div>
       ) : error ? (
         <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
           <div className="rounded-lg border border-border-default bg-surface-panel p-8 text-center">
             <AlertCircle className="mx-auto h-12 w-12 text-status-failed opacity-50 mb-3" />
-            <p className="text-sm text-text-primary font-medium mb-2">
+            <p className="text-body text-text-primary font-medium mb-2">
               {t("movies.detail.errorTitle")}
             </p>
-            <p className="text-sm text-text-muted mb-4">{error}</p>
+            <p className="text-body text-text-muted mb-4">{error}</p>
             <Link
               href="/movies"
-              className="inline-flex items-center gap-2 rounded-lg bg-accent-cyan px-4 py-2 text-sm font-medium text-white hover:bg-accent-cyan/90 transition-colors"
+              className="inline-flex items-center gap-2 rounded-lg bg-accent-cyan px-4 py-2 text-body font-medium text-white hover:bg-accent-cyan/90 transition-colors"
             >
               <ArrowLeft className="h-4 w-4" />
               {t("movies.detail.return")}
@@ -199,7 +199,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                 <button
                   onClick={handleCreateProject}
                   disabled={movieId === null || loading}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-accent-cyan px-5 py-3.5 text-sm font-semibold text-white shadow-lg shadow-accent-cyan/20 hover:bg-accent-cyan/90 hover:shadow-xl hover:shadow-accent-cyan/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-accent-cyan px-5 py-3.5 text-body font-semibold text-white shadow-lg shadow-accent-cyan/20 hover:bg-accent-cyan/90 hover:shadow-xl hover:shadow-accent-cyan/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
                 >
                   {loading ? (
                     <>
@@ -227,7 +227,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
-                        <span className="text-sm font-medium text-text-muted">
+                        <span className="text-body font-medium text-text-muted">
                           {t("movies.detail.rating")}
                         </span>
                       </div>
@@ -236,7 +236,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                           {movie.vote_average.toFixed(1)}
                         </Heading>
                         {movie.vote_count && (
-                          <span className="text-xs text-text-muted">
+                          <span className="text-caption text-text-muted">
                             ({movie.vote_count.toLocaleString()})
                           </span>
                         )}
@@ -247,7 +247,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <TrendingUp className="h-4 w-4 text-accent-cyan" />
-                        <span className="text-sm font-medium text-text-muted">
+                        <span className="text-body font-medium text-text-muted">
                           {t("movies.detail.popularity")}
                         </span>
                       </div>
@@ -270,18 +270,18 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                     </Heading>
                     {movie.imdb_id && (
                       <div>
-                        <p className="mb-1 text-xs font-medium text-text-muted">
+                        <p className="mb-1 text-caption font-medium text-text-muted">
                           {t("movies.detail.imdb")}
                         </p>
-                        <p className="text-sm font-mono text-text-primary">{movie.imdb_id}</p>
+                        <p className="text-body font-mono text-text-primary">{movie.imdb_id}</p>
                       </div>
                     )}
                     {movie.douban_id && (
                       <div>
-                        <p className="mb-1 text-xs font-medium text-text-muted">
+                        <p className="mb-1 text-caption font-medium text-text-muted">
                           {t("movies.detail.douban")}
                         </p>
-                        <p className="text-sm font-mono text-text-primary">{movie.douban_id}</p>
+                        <p className="text-body font-mono text-text-primary">{movie.douban_id}</p>
                       </div>
                     )}
                   </div>
@@ -300,7 +300,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                   )}
 
                   {/* Metadata Row */}
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-text-secondary">
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-body text-text-secondary">
                     {movie.release_date && (
                       <div className="flex items-center gap-1.5">
                         <Calendar className="h-4 w-4 text-accent-cyan" />
@@ -344,7 +344,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                         return (
                           <span
                             key={genreKey(genre, index)}
-                            className="rounded-lg bg-accent-cyan/10 px-3 py-1.5 text-xs font-semibold text-accent-cyan ring-1 ring-accent-cyan/20"
+                            className="rounded-lg bg-accent-cyan/10 px-3 py-1.5 text-caption font-semibold text-accent-cyan ring-1 ring-accent-cyan/20"
                           >
                             {name}
                           </span>
@@ -369,7 +369,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                     <Heading variant="subsection" as="h2" className="mb-3 text-text-primary">
                       {t("movies.detail.overview")}
                     </Heading>
-                    <p className="text-sm leading-loose text-text-secondary">{movie.overview}</p>
+                    <p className="text-body leading-loose text-text-secondary">{movie.overview}</p>
                   </div>
                 )}
               </div>

@@ -94,19 +94,19 @@ export default function DebugSSEPage() {
           <Heading variant="subsection" as="h2" className="text-text-primary">
             Auth Status
           </Heading>
-          <div className="space-y-2 text-sm text-text-secondary font-mono">
+          <div className="space-y-2 text-body text-text-secondary font-mono">
             <div>Authenticated: {isAuthenticated ? "✅ Yes" : "❌ No"}</div>
             <div>User: {user ? user.email : "Not logged in"}</div>
             <div>SSE Connected: {isSSEConnected ? "✅ Yes" : "❌ No"}</div>
             <div>Token: {token ? "✅ Present" : "❌ Missing"}</div>
             {token && (
               <>
-                <div className="text-xs break-all">
+                <div className="text-caption break-all">
                   Token (first 50 chars): {token.substring(0, 50)}...
                 </div>
                 <button
                   onClick={copyToken}
-                  className="mt-2 px-3 py-1 text-xs bg-surface-base hover:bg-surface-float rounded border border-border-default"
+                  className="mt-2 px-3 py-1 text-caption bg-surface-base hover:bg-surface-float rounded border border-border-default"
                 >
                   📋 Copy Full Token
                 </button>
@@ -136,9 +136,9 @@ export default function DebugSSEPage() {
           </Heading>
           <div className="bg-surface-base p-4 rounded max-h-96 overflow-y-auto">
             {logs.length === 0 ? (
-              <div className="text-text-muted text-sm">No logs yet</div>
+              <div className="text-text-muted text-body">No logs yet</div>
             ) : (
-              <div className="space-y-1 text-xs font-mono">
+              <div className="space-y-1 text-caption font-mono">
                 {logs.map((log, i) => (
                   <div key={i} className="text-text-secondary">
                     {log}
@@ -149,7 +149,7 @@ export default function DebugSSEPage() {
           </div>
           <button
             onClick={() => setLogs([])}
-            className="text-sm text-text-muted hover:text-text-secondary"
+            className="text-body text-text-muted hover:text-text-secondary"
           >
             Clear Logs
           </button>
@@ -159,7 +159,7 @@ export default function DebugSSEPage() {
           <Heading variant="subsection" as="h2" className="text-text-primary">
             Instructions
           </Heading>
-          <ol className="list-decimal list-inside space-y-2 text-sm text-text-secondary">
+          <ol className="list-decimal list-inside space-y-2 text-body text-text-secondary">
             <li>Check if you're authenticated (should show email above)</li>
             <li>Check if token is present</li>
             <li>Click "📋 Copy Full Token" to copy your access token</li>
@@ -167,7 +167,7 @@ export default function DebugSSEPage() {
             <li>Watch the logs for connection events</li>
             <li>
               Run backend test:{" "}
-              <code className="bg-surface-base px-2 py-1 rounded text-xs">
+              <code className="bg-surface-base px-2 py-1 rounded text-caption">
                 {`uv run python scripts/test_notifications_sse.py <email> <password>`}
               </code>
             </li>
@@ -177,10 +177,10 @@ export default function DebugSSEPage() {
             <Heading variant="label" as="h3" className="text-text-primary mb-2">
               🔧 Get Token from Console
             </Heading>
-            <p className="text-xs text-text-secondary mb-2">
+            <p className="text-caption text-text-secondary mb-2">
               You can also get the token from browser console (F12):
             </p>
-            <code className="block text-xs bg-black/20 p-2 rounded text-text-secondary">
+            <code className="block text-caption bg-black/20 p-2 rounded text-text-secondary">
               window.getAccessToken()
             </code>
           </div>
@@ -190,7 +190,7 @@ export default function DebugSSEPage() {
           <Heading variant="label" as="h3" className="text-amber-500 mb-2">
             ⚠️ Browser Console
           </Heading>
-          <p className="text-sm text-text-secondary">
+          <p className="text-body text-text-secondary">
             Open DevTools Console (F12) to see detailed [SSE] logs from NotificationProvider
           </p>
         </div>

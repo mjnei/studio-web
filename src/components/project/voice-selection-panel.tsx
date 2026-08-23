@@ -40,7 +40,7 @@ export function VoiceSelectionPanel({
         <div className="inline-flex items-center gap-2 rounded-xl bg-surface-panel p-1.5 shadow-sm border border-border-default">
           <button
             onClick={() => setTab("my")}
-            className={`relative flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold transition-all duration-200 ${
+            className={`relative flex items-center gap-2 rounded-lg px-6 py-2.5 text-body font-semibold transition-all duration-200 ${
               tab === "my"
                 ? "bg-gradient-to-r from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30"
                 : "text-text-muted hover:text-text-secondary hover:bg-surface-raised"
@@ -50,7 +50,7 @@ export function VoiceSelectionPanel({
             <span>{t("project.voice.myVoices")}</span>
             {ownVoices.length > 0 && (
               <span
-                className={`ml-1 rounded-full px-2 py-0.5 text-xs font-bold ${
+                className={`ml-1 rounded-full px-2 py-0.5 text-caption font-bold ${
                   tab === "my" ? "bg-white/20" : "bg-surface-raised"
                 }`}
               >
@@ -61,7 +61,7 @@ export function VoiceSelectionPanel({
 
           <button
             onClick={() => setTab("community")}
-            className={`relative flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold transition-all duration-200 ${
+            className={`relative flex items-center gap-2 rounded-lg px-6 py-2.5 text-body font-semibold transition-all duration-200 ${
               tab === "community"
                 ? "bg-gradient-to-r from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30"
                 : "text-text-muted hover:text-text-secondary hover:bg-surface-raised"
@@ -71,7 +71,7 @@ export function VoiceSelectionPanel({
             <span>{t("project.voice.community")}</span>
             {communityVoices.length > 0 && (
               <span
-                className={`ml-1 rounded-full px-2 py-0.5 text-xs font-bold ${
+                className={`ml-1 rounded-full px-2 py-0.5 text-caption font-bold ${
                   tab === "community" ? "bg-white/20" : "bg-surface-raised"
                 }`}
               >
@@ -92,7 +92,7 @@ export function VoiceSelectionPanel({
                 className="h-5 w-5 text-status-failed flex-shrink-0 mt-0.5"
                 aria-hidden
               />
-              <p className="text-sm text-status-failed">{voicesError}</p>
+              <p className="text-body text-status-failed">{voicesError}</p>
             </div>
           </Card>
         )}
@@ -147,10 +147,10 @@ export function VoiceSelectionPanel({
                               <Mic className="h-5 w-5 text-white" aria-hidden />
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className="font-semibold text-text-primary text-sm truncate">
+                              <p className="font-semibold text-text-primary text-body truncate">
                                 {voice.name}
                               </p>
-                              <p className="text-xs text-text-muted">
+                              <p className="text-caption text-text-muted">
                                 {t("project.voice.yourVoice")}
                               </p>
                             </div>
@@ -175,10 +175,10 @@ export function VoiceSelectionPanel({
                           <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-accent-primary/10 group-hover:bg-accent-primary/20 transition-colors">
                             <Plus className="h-5 w-5 text-accent-primary" aria-hidden />
                           </div>
-                          <p className="text-xs font-semibold text-text-primary mb-0.5">
+                          <p className="text-caption font-semibold text-text-primary mb-0.5">
                             {t("project.voice.addVoice")}
                           </p>
-                          <p className="text-xs text-text-muted">
+                          <p className="text-caption text-text-muted">
                             {canAddVoice
                               ? t("project.voice.remainingLeft", { count: remainingVoiceCount })
                               : t("project.voice.limitReached")}
@@ -221,10 +221,10 @@ export function VoiceSelectionPanel({
                             <Globe className="h-5 w-5 text-white" aria-hidden />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="font-semibold text-text-primary text-sm truncate">
+                            <p className="font-semibold text-text-primary text-body truncate">
                               {voice.name}
                             </p>
-                            <p className="text-xs text-text-muted flex items-center gap-1 truncate">
+                            <p className="text-caption text-text-muted flex items-center gap-1 truncate">
                               <User className="h-3 w-3 flex-shrink-0" aria-hidden />
                               <span className="truncate">@{voice.creator_username}</span>
                             </p>

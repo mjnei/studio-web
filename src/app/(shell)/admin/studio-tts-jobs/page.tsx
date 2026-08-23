@@ -274,7 +274,7 @@ export default function TTSJobsPage() {
             {/* Auto-refresh toggle */}
             <button
               onClick={() => setAutoRefresh(!autoRefresh)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-body font-semibold transition-all ${
                 autoRefresh
                   ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg shadow-green-500/30"
                   : "border-2 border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:bg-accent-primary/5"
@@ -288,7 +288,7 @@ export default function TTSJobsPage() {
             <button
               onClick={() => loadData()}
               disabled={isLoading}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold border-2 border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:text-accent-primary hover:bg-accent-primary/5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-body font-semibold border-2 border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:text-accent-primary hover:bg-accent-primary/5 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
               Refresh
@@ -298,7 +298,7 @@ export default function TTSJobsPage() {
             <button
               onClick={handleExportCSV}
               disabled={activeTab === "failed" ? !failedJobs.length : !completedJobs.length}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold bg-gradient-to-r from-accent-primary to-purple-600 text-white hover:shadow-lg hover:shadow-accent-primary/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-body font-semibold bg-gradient-to-r from-accent-primary to-purple-600 text-white hover:shadow-lg hover:shadow-accent-primary/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Download className="h-4 w-4" />
               Export CSV
@@ -307,7 +307,7 @@ export default function TTSJobsPage() {
         </div>
 
         {/* Last refresh time */}
-        <p className="text-xs text-text-muted">
+        <p className="text-caption text-text-muted">
           Last refreshed: {formatTime(lastRefresh)} {autoRefresh && "(auto-refresh every 5s)"}
         </p>
       </div>
@@ -329,7 +329,7 @@ export default function TTSJobsPage() {
             <div className="flex items-center gap-2 mb-6">
               <button
                 onClick={() => setActiveTab("failed")}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all ${
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-body font-semibold transition-all ${
                   activeTab === "failed"
                     ? "bg-red-500/10 text-red-600 border-2 border-red-500/30"
                     : "border-2 border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:bg-accent-primary/5"
@@ -337,7 +337,7 @@ export default function TTSJobsPage() {
               >
                 Failed Jobs
                 <span
-                  className={`px-2 py-0.5 rounded-full text-xs font-bold ${
+                  className={`px-2 py-0.5 rounded-full text-caption font-bold ${
                     activeTab === "failed"
                       ? "bg-red-600 text-white"
                       : "bg-text-muted/10 text-text-muted"
@@ -348,7 +348,7 @@ export default function TTSJobsPage() {
               </button>
               <button
                 onClick={() => setActiveTab("completed")}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all ${
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-body font-semibold transition-all ${
                   activeTab === "completed"
                     ? "bg-green-500/10 text-green-600 border-2 border-green-500/30"
                     : "border-2 border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:bg-accent-primary/5"
@@ -356,7 +356,7 @@ export default function TTSJobsPage() {
               >
                 Completed Jobs
                 <span
-                  className={`px-2 py-0.5 rounded-full text-xs font-bold ${
+                  className={`px-2 py-0.5 rounded-full text-caption font-bold ${
                     activeTab === "completed"
                       ? "bg-green-600 text-white"
                       : "bg-text-muted/10 text-text-muted"

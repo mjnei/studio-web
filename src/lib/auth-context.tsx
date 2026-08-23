@@ -219,7 +219,7 @@ export function AuthGuard({ children }: { children: ReactNode }) {
   if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center bg-surface-base">
-        <div className="text-sm text-text-muted">{t("common.loading")}</div>
+        <div className="text-body text-text-muted">{t("common.loading")}</div>
       </div>
     );
   }

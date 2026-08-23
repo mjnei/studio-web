@@ -138,7 +138,7 @@ export default function AuditLogsTable({
             <thead>
               <tr className="border-b-2 border-border bg-surface-raised">
                 <th
-                  className="cursor-pointer px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-text-muted hover:text-text-primary transition-colors"
+                  className="cursor-pointer px-4 py-3 text-left text-caption font-bold uppercase tracking-wider text-text-muted hover:text-text-primary transition-colors"
                   onClick={() => handleSort("created_at")}
                 >
                   <div className="flex items-center gap-1">
@@ -147,7 +147,7 @@ export default function AuditLogsTable({
                   </div>
                 </th>
                 <th
-                  className="cursor-pointer px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-text-muted hover:text-text-primary transition-colors"
+                  className="cursor-pointer px-4 py-3 text-left text-caption font-bold uppercase tracking-wider text-text-muted hover:text-text-primary transition-colors"
                   onClick={() => handleSort("user_id")}
                 >
                   <div className="flex items-center gap-1">
@@ -156,7 +156,7 @@ export default function AuditLogsTable({
                   </div>
                 </th>
                 <th
-                  className="cursor-pointer px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-text-muted hover:text-text-primary transition-colors"
+                  className="cursor-pointer px-4 py-3 text-left text-caption font-bold uppercase tracking-wider text-text-muted hover:text-text-primary transition-colors"
                   onClick={() => handleSort("action")}
                 >
                   <div className="flex items-center gap-1">
@@ -164,16 +164,16 @@ export default function AuditLogsTable({
                     <SortIcon field="action" />
                   </div>
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-text-muted">
+                <th className="px-4 py-3 text-left text-caption font-bold uppercase tracking-wider text-text-muted">
                   Resource
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-text-muted">
+                <th className="px-4 py-3 text-left text-caption font-bold uppercase tracking-wider text-text-muted">
                   IP Address
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-text-muted">
+                <th className="px-4 py-3 text-left text-caption font-bold uppercase tracking-wider text-text-muted">
                   Source
                 </th>
-                <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-text-muted">
+                <th className="px-4 py-3 text-left text-caption font-bold uppercase tracking-wider text-text-muted">
                   Details
                 </th>
               </tr>
@@ -185,17 +185,17 @@ export default function AuditLogsTable({
                     key={log.id}
                     className="border-b border-border hover:bg-surface-raised transition-colors"
                   >
-                    <td className="px-4 py-3 text-sm">
+                    <td className="px-4 py-3 text-body">
                       <div className="flex flex-col">
                         <span className="font-medium text-text-primary">
                           {formatRelativeTime(log.created_at)}
                         </span>
-                        <span className="text-xs text-text-muted">
+                        <span className="text-caption text-text-muted">
                           {new Date(log.created_at).toLocaleString()}
                         </span>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-sm">
+                    <td className="px-4 py-3 text-body">
                       <div className="flex items-center gap-1">
                         <span className="text-text-primary">{log.user_id || "System"}</span>
                         {log.user_id && (
@@ -208,17 +208,17 @@ export default function AuditLogsTable({
                         )}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-sm">
+                    <td className="px-4 py-3 text-body">
                       <ActionBadge action={log.action} />
                     </td>
-                    <td className="px-4 py-3 text-sm">
+                    <td className="px-4 py-3 text-body">
                       <div className="flex flex-col">
                         <span className="font-medium text-text-primary">
                           {log.resource_type || "N/A"}
                         </span>
                         {log.resource_id && (
                           <div className="flex items-center gap-1">
-                            <span className="text-xs text-text-muted truncate max-w-[150px]">
+                            <span className="text-caption text-text-muted truncate max-w-[150px]">
                               {log.resource_id}
                             </span>
                             <button
@@ -231,11 +231,13 @@ export default function AuditLogsTable({
                         )}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-sm text-text-muted">{log.ip_address || "N/A"}</td>
-                    <td className="px-4 py-3 text-sm">
+                    <td className="px-4 py-3 text-body text-text-muted">
+                      {log.ip_address || "N/A"}
+                    </td>
+                    <td className="px-4 py-3 text-body">
                       <SourceBadge source={log.source} />
                     </td>
-                    <td className="px-4 py-3 text-sm">
+                    <td className="px-4 py-3 text-body">
                       {log.changes && Object.keys(log.changes).length > 0 && (
                         <button
                           onClick={() => toggleRow(log.id)}
@@ -250,10 +252,10 @@ export default function AuditLogsTable({
                     <tr className="border-b border-border bg-surface-raised">
                       <td colSpan={7} className="px-4 py-3">
                         <div className="rounded-lg bg-background p-3">
-                          <p className="mb-2 text-xs font-bold uppercase text-text-muted">
+                          <p className="mb-2 text-caption font-bold uppercase text-text-muted">
                             Changes:
                           </p>
-                          <pre className="overflow-x-auto text-xs text-text-primary">
+                          <pre className="overflow-x-auto text-caption text-text-primary">
                             {JSON.stringify(log.changes, null, 2)}
                           </pre>
                         </div>
@@ -280,11 +282,11 @@ export default function AuditLogsTable({
                   <ActionBadge action={log.action} />
                   <SourceBadge source={log.source} />
                 </div>
-                <p className="text-sm text-text-muted">{formatRelativeTime(log.created_at)}</p>
+                <p className="text-body text-text-muted">{formatRelativeTime(log.created_at)}</p>
               </div>
             </div>
 
-            <div className="space-y-2 text-sm">
+            <div className="space-y-2 text-body">
               <div>
                 <span className="text-text-muted">User: </span>
                 <span className="text-text-primary font-medium">{log.user_id || "System"}</span>
@@ -300,7 +302,7 @@ export default function AuditLogsTable({
               {log.resource_id && (
                 <div className="flex items-center gap-1">
                   <span className="text-text-muted">ID: </span>
-                  <span className="text-text-primary text-xs truncate flex-1">
+                  <span className="text-text-primary text-caption truncate flex-1">
                     {log.resource_id}
                   </span>
                   <button
@@ -324,13 +326,13 @@ export default function AuditLogsTable({
               <div>
                 <button
                   onClick={() => toggleRow(log.id)}
-                  className="text-sm text-primary hover:text-primary-hover font-medium transition-colors"
+                  className="text-body text-primary hover:text-primary-hover font-medium transition-colors"
                 >
                   {expandedRows.has(log.id) ? "Hide Details" : "Show Details"}
                 </button>
                 {expandedRows.has(log.id) && (
                   <div className="mt-2 rounded-lg bg-background p-3">
-                    <pre className="overflow-x-auto text-xs text-text-primary">
+                    <pre className="overflow-x-auto text-caption text-text-primary">
                       {JSON.stringify(log.changes, null, 2)}
                     </pre>
                   </div>
@@ -343,7 +345,7 @@ export default function AuditLogsTable({
 
       {/* Pagination */}
       <div className="flex items-center justify-between rounded-xl border-2 border-border bg-surface-panel px-4 py-3">
-        <p className="text-sm text-text-muted">
+        <p className="text-body text-text-muted">
           Showing {(pagination.page - 1) * pagination.pageSize + 1} to{" "}
           {Math.min(pagination.page * pagination.pageSize, pagination.total)} of {pagination.total}{" "}
           logs
@@ -358,7 +360,7 @@ export default function AuditLogsTable({
             <ChevronLeft className="h-4 w-4" />
           </button>
 
-          <span className="text-sm font-medium text-text-primary">
+          <span className="text-body font-medium text-text-primary">
             Page {pagination.page} of {totalPages}
           </span>
 

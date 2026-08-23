@@ -58,7 +58,7 @@ export default function LoginPage() {
       <Card variant="elevated" padding="lg" className="w-full">
         <div className="flex flex-col items-center justify-center py-12">
           <Spinner size="lg" className="text-accent-primary mb-4" />
-          <p className="text-sm text-text-secondary">
+          <p className="text-body text-text-secondary">
             {isAuthenticated ? t("auth.login.redirecting") : t("auth.login.loading")}
           </p>
         </div>
@@ -78,7 +78,7 @@ export default function LoginPage() {
       </div>
 
       {error && (
-        <div className="mb-6 rounded-lg border border-status-failed/30 bg-status-failed/10 px-4 py-3 text-sm text-status-failed flex items-start gap-2">
+        <div className="mb-6 rounded-lg border border-status-failed/30 bg-status-failed/10 px-4 py-3 text-body text-status-failed flex items-start gap-2">
           <AlertCircle className="h-5 w-5 shrink-0 mt-0.5" />
           <span>{error}</span>
         </div>
@@ -110,7 +110,7 @@ export default function LoginPage() {
         <div className="text-right">
           <Link
             href="/forgot-password"
-            className="text-sm text-accent-primary hover:text-accent-secondary transition-colors"
+            className="text-body text-accent-primary hover:text-accent-secondary transition-colors"
           >
             {t("auth.login.forgotPassword")}
           </Link>
@@ -123,7 +123,7 @@ export default function LoginPage() {
 
       <div className="my-6 flex items-center gap-4">
         <div className="h-px flex-1 bg-border-default" />
-        <span className="text-xs font-medium text-text-muted uppercase tracking-wider">
+        <span className="text-caption font-medium text-text-muted uppercase tracking-wider">
           {t("auth.login.orContinueWith")}
         </span>
         <div className="h-px flex-1 bg-border-default" />
@@ -141,7 +141,7 @@ export default function LoginPage() {
       </Button>
 
       <div className="mt-6 text-center">
-        <p className="text-sm text-text-secondary">
+        <p className="text-body text-text-secondary">
           {t("auth.login.noAccount")}{" "}
           <Link
             href="/signup"

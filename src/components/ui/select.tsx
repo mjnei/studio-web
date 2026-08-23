@@ -128,20 +128,22 @@ export function Select({
   };
 
   const sizes = {
-    sm: "px-3 py-1.5 text-sm",
-    md: "px-4 py-2.5 text-sm",
-    lg: "px-4 py-3 text-base",
+    sm: "px-3 py-1.5 text-body",
+    md: "px-4 py-2.5 text-body",
+    lg: "px-4 py-3 text-body",
   };
 
   const dropdownSizes = {
-    sm: "text-sm",
-    md: "text-sm",
-    lg: "text-base",
+    sm: "text-body",
+    md: "text-body",
+    lg: "text-body",
   };
 
   return (
     <div className={`relative ${className}`}>
-      {label && <label className="mb-2 block text-sm font-medium text-text-primary">{label}</label>}
+      {label && (
+        <label className="mb-2 block text-body font-medium text-text-primary">{label}</label>
+      )}
 
       <div ref={selectRef} className="relative">
         <button
@@ -150,17 +152,17 @@ export function Select({
           onKeyDown={handleKeyDown}
           disabled={disabled}
           className={`
-            w-full flex items-center justify-between gap-2
-            rounded-lg border transition-all duration-200 ease-smooth
-            ${sizes[size]}
-            ${
-              error
-                ? "border-status-error bg-status-error/5 text-status-error"
-                : "border-border-default bg-surface-raised text-text-primary hover:border-border-strong focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
-            }
-            ${disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"}
-            focus:outline-none
-          `}
+ w-full flex items-center justify-between gap-2
+ rounded-lg border transition-all duration-200 ease-smooth
+ ${sizes[size]}
+ ${
+   error
+     ? "border-status-error bg-status-error/5 text-status-error"
+     : "border-border-default bg-surface-raised text-text-primary hover:border-border-strong focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
+ }
+ ${disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"}
+ focus:outline-none
+ `}
           aria-haspopup="listbox"
           aria-expanded={isOpen}
           aria-labelledby={label ? "select-label" : undefined}
@@ -202,7 +204,7 @@ export function Select({
                     setHighlightedIndex(0);
                   }}
                   placeholder={t("common.searchEllipsis")}
-                  className="w-full px-3 py-2 text-sm rounded-lg border border-border-default bg-surface-raised text-text-primary placeholder:text-text-secondary focus:outline-none focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
+                  className="w-full px-3 py-2 text-body rounded-lg border border-border-default bg-surface-raised text-text-primary placeholder:text-text-secondary focus:outline-none focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
                   onClick={(e) => e.stopPropagation()}
                 />
               </div>
@@ -210,7 +212,7 @@ export function Select({
 
             <div className="max-h-60 overflow-y-auto p-1">
               {filteredOptions.length === 0 ? (
-                <div className="px-3 py-6 text-center text-sm text-text-secondary">
+                <div className="px-3 py-6 text-center text-body text-text-secondary">
                   {t("common.noOptionsFound")}
                 </div>
               ) : (
@@ -222,18 +224,18 @@ export function Select({
                     onMouseEnter={() => setHighlightedIndex(index)}
                     disabled={option.disabled}
                     className={`
-                      w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg
-                      transition-all duration-150 ease-smooth text-left
-                      ${dropdownSizes[size]}
-                      ${option.disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"}
-                      ${
-                        option.value === value
-                          ? "bg-accent-muted text-accent-primary font-medium"
-                          : highlightedIndex === index
-                            ? "bg-surface-hover text-text-primary"
-                            : "text-text-primary hover:bg-surface-hover"
-                      }
-                    `}
+ w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg
+ transition-all duration-150 ease-smooth text-left
+ ${dropdownSizes[size]}
+ ${option.disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"}
+ ${
+   option.value === value
+     ? "bg-accent-muted text-accent-primary font-medium"
+     : highlightedIndex === index
+       ? "bg-surface-hover text-text-primary"
+       : "text-text-primary hover:bg-surface-hover"
+ }
+ `}
                     role="option"
                     aria-selected={option.value === value}
                   >
@@ -252,8 +254,10 @@ export function Select({
         )}
       </div>
 
-      {helperText && !error && <p className="mt-1.5 text-xs text-text-secondary">{helperText}</p>}
-      {error && <p className="mt-1.5 text-xs text-status-error">{error}</p>}
+      {helperText && !error && (
+        <p className="mt-1.5 text-caption text-text-secondary">{helperText}</p>
+      )}
+      {error && <p className="mt-1.5 text-caption text-status-error">{error}</p>}
     </div>
   );
 }
@@ -325,14 +329,16 @@ export function MultiSelect({
   };
 
   const sizes = {
-    sm: "px-3 py-1.5 text-sm min-h-[32px]",
-    md: "px-4 py-2.5 text-sm min-h-[42px]",
-    lg: "px-4 py-3 text-base min-h-[48px]",
+    sm: "px-3 py-1.5 text-body min-h-[32px]",
+    md: "px-4 py-2.5 text-body min-h-[42px]",
+    lg: "px-4 py-3 text-body min-h-[48px]",
   };
 
   return (
     <div className={`relative ${className}`}>
-      {label && <label className="mb-2 block text-sm font-medium text-text-primary">{label}</label>}
+      {label && (
+        <label className="mb-2 block text-body font-medium text-text-primary">{label}</label>
+      )}
 
       <div ref={selectRef} className="relative">
         <button
@@ -340,17 +346,17 @@ export function MultiSelect({
           onClick={() => !disabled && setIsOpen(!isOpen)}
           disabled={disabled}
           className={`
-            w-full flex items-center justify-between gap-2
-            rounded-lg border transition-all duration-200 ease-smooth
-            ${sizes[size]}
-            ${
-              error
-                ? "border-status-error bg-status-error/5"
-                : "border-border-default bg-surface-raised hover:border-border-strong focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
-            }
-            ${disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"}
-            focus:outline-none
-          `}
+ w-full flex items-center justify-between gap-2
+ rounded-lg border transition-all duration-200 ease-smooth
+ ${sizes[size]}
+ ${
+   error
+     ? "border-status-error bg-status-error/5"
+     : "border-border-default bg-surface-raised hover:border-border-strong focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
+ }
+ ${disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"}
+ focus:outline-none
+ `}
         >
           <div className="flex flex-wrap gap-1 flex-1">
             {selectedOptions.length === 0 ? (
@@ -359,7 +365,7 @@ export function MultiSelect({
               selectedOptions.map((option) => (
                 <span
                   key={option.value}
-                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-accent-muted text-accent-primary text-xs font-medium"
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-accent-muted text-accent-primary text-caption font-medium"
                 >
                   {option.label}
                 </span>
@@ -384,14 +390,14 @@ export function MultiSelect({
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={t("common.searchEllipsis")}
-                  className="w-full px-3 py-2 text-sm rounded-lg border border-border-default bg-surface-raised text-text-primary placeholder:text-text-secondary focus:outline-none focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
+                  className="w-full px-3 py-2 text-body rounded-lg border border-border-default bg-surface-raised text-text-primary placeholder:text-text-secondary focus:outline-none focus:border-accent-primary focus:ring-2 focus:ring-accent-primary/20"
                 />
               </div>
             )}
 
             <div className="max-h-60 overflow-y-auto p-1">
               {filteredOptions.length === 0 ? (
-                <div className="px-3 py-6 text-center text-sm text-text-secondary">
+                <div className="px-3 py-6 text-center text-body text-text-secondary">
                   {t("common.noOptionsFound")}
                 </div>
               ) : (
@@ -408,15 +414,15 @@ export function MultiSelect({
                       onClick={() => !isDisabled && handleToggle(option.value)}
                       disabled={isDisabled}
                       className={`
-                        w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg
-                        transition-all duration-150 ease-smooth text-left text-sm
-                        ${isDisabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"}
-                        ${
-                          isSelected
-                            ? "bg-accent-muted text-accent-primary font-medium"
-                            : "text-text-primary hover:bg-surface-hover"
-                        }
-                      `}
+ w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg
+ transition-all duration-150 ease-smooth text-left text-body
+ ${isDisabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"}
+ ${
+   isSelected
+     ? "bg-accent-muted text-accent-primary font-medium"
+     : "text-text-primary hover:bg-surface-hover"
+ }
+ `}
                     >
                       <span className="flex items-center gap-2">
                         {option.icon && <span className="text-text-secondary">{option.icon}</span>}
@@ -432,8 +438,10 @@ export function MultiSelect({
         )}
       </div>
 
-      {helperText && !error && <p className="mt-1.5 text-xs text-text-secondary">{helperText}</p>}
-      {error && <p className="mt-1.5 text-xs text-status-error">{error}</p>}
+      {helperText && !error && (
+        <p className="mt-1.5 text-caption text-text-secondary">{helperText}</p>
+      )}
+      {error && <p className="mt-1.5 text-caption text-status-error">{error}</p>}
     </div>
   );
 }

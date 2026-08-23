@@ -146,13 +146,11 @@ export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps)
               padding="none"
               interactive
               className={`
-                group cursor-pointer overflow-hidden transition-all duration-300
-                ${
-                  selectedMovie === movie.id
-                    ? "ring-2 ring-accent-primary shadow-lg shadow-accent-primary/20"
-                    : ""
-                }
-              `}
+ group cursor-pointer overflow-hidden transition-all duration-300
+ ${
+   selectedMovie === movie.id ? "ring-2 ring-accent-primary shadow-lg shadow-accent-primary/20" : ""
+ }
+ `}
               onClick={() => onSelect(movie)}
             >
               {/* Poster */}
@@ -177,7 +175,7 @@ export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps)
                 {/* Rating */}
                 <div className="absolute top-2 left-2 flex items-center gap-1 bg-black/70 backdrop-blur-sm px-2 py-1 rounded-lg">
                   <Star className="h-3 w-3 text-yellow-400 fill-yellow-400" />
-                  <span className="text-xs font-semibold text-white">{movie.rating}</span>
+                  <span className="text-caption font-semibold text-white">{movie.rating}</span>
                 </div>
               </div>
 
@@ -190,7 +188,7 @@ export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps)
                 >
                   {movie.title}
                 </Heading>
-                <div className="flex items-center gap-2 text-xs text-text-muted">
+                <div className="flex items-center gap-2 text-caption text-text-muted">
                   <span>{movie.year}</span>
                   <span>•</span>
                   <span>{movie.duration}</span>
@@ -223,10 +221,10 @@ export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps)
               <Check className="h-5 w-5 text-accent-primary" />
             </div>
             <div>
-              <p className="text-sm font-medium text-text-primary">
+              <p className="text-body font-medium text-text-primary">
                 {t("project.movieSelection.movieSelected")}
               </p>
-              <p className="text-xs text-text-secondary">
+              <p className="text-caption text-text-secondary">
                 {movies.find((m) => m.id === selectedMovie)?.title}
               </p>
             </div>

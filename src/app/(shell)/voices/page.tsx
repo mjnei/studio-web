@@ -224,7 +224,7 @@ export default function VoicesPage() {
         action={
           tab === "private" ? (
             <div className="flex items-center gap-3">
-              <span className="rounded-full bg-green-500/10 border border-green-500/30 px-3 py-1.5 text-xs font-medium text-green-600 whitespace-nowrap">
+              <span className="rounded-full bg-green-500/10 border border-green-500/30 px-3 py-1.5 text-caption font-medium text-green-600 whitespace-nowrap">
                 {voiceLimits.currentCount} / {voiceLimits.limit}{" "}
                 {t("voices.tabs.private").toLowerCase()}
               </span>
@@ -238,7 +238,7 @@ export default function VoicesPage() {
               </Button>
             </div>
           ) : (
-            <span className="rounded-full bg-accent-cyan/10 border border-accent-cyan/30 px-3 py-1.5 text-xs font-medium text-accent-cyan whitespace-nowrap">
+            <span className="rounded-full bg-accent-cyan/10 border border-accent-cyan/30 px-3 py-1.5 text-caption font-medium text-accent-cyan whitespace-nowrap">
               {communityVoices.length} {t("voices.tabs.community").toLowerCase()}
             </span>
           )
@@ -250,7 +250,7 @@ export default function VoicesPage() {
         <div className="inline-flex items-center gap-1 rounded-xl bg-surface-panel p-1 shadow-sm border border-border-default">
           <button
             onClick={() => setTab("private")}
-            className={`relative flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold transition-all duration-200 ${
+            className={`relative flex items-center gap-2 rounded-lg px-5 py-2 text-body font-semibold transition-all duration-200 ${
               tab === "private"
                 ? "bg-accent-primary text-white shadow-md"
                 : "text-text-muted hover:text-text-primary hover:bg-surface-raised"
@@ -260,7 +260,7 @@ export default function VoicesPage() {
             <span>{t("voices.tabs.private")}</span>
             {privateVoices.length > 0 && (
               <span
-                className={`ml-1 rounded-full px-2 py-0.5 text-xs font-bold ${
+                className={`ml-1 rounded-full px-2 py-0.5 text-caption font-bold ${
                   tab === "private"
                     ? "bg-white/20 text-white"
                     : "bg-surface-elevated text-text-muted"
@@ -273,7 +273,7 @@ export default function VoicesPage() {
 
           <button
             onClick={() => setTab("community")}
-            className={`relative flex items-center gap-2 rounded-lg px-5 py-2 text-sm font-semibold transition-all duration-200 ${
+            className={`relative flex items-center gap-2 rounded-lg px-5 py-2 text-body font-semibold transition-all duration-200 ${
               tab === "community"
                 ? "bg-accent-primary text-white shadow-md"
                 : "text-text-muted hover:text-text-primary hover:bg-surface-raised"
@@ -283,7 +283,7 @@ export default function VoicesPage() {
             <span>{t("voices.tabs.community")}</span>
             {communityVoices.length > 0 && (
               <span
-                className={`ml-1 rounded-full px-2 py-0.5 text-xs font-bold ${
+                className={`ml-1 rounded-full px-2 py-0.5 text-caption font-bold ${
                   tab === "community"
                     ? "bg-white/20 text-white"
                     : "bg-surface-elevated text-text-muted"
@@ -328,7 +328,7 @@ export default function VoicesPage() {
                 <Heading variant="label" as="h3" className="text-text-primary mb-1">
                   {t("voices.banners.privateInfo.title")}
                 </Heading>
-                <p className="text-xs text-text-secondary leading-relaxed">
+                <p className="text-caption text-text-secondary leading-relaxed">
                   {t("voices.banners.privateInfo.description")}
                 </p>
               </div>
@@ -344,7 +344,7 @@ export default function VoicesPage() {
             >
               <div className="flex items-start gap-3">
                 <AlertCircle className="h-5 w-5 text-status-error flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-status-error">{error}</p>
+                <p className="text-body text-status-error">{error}</p>
               </div>
             </Card>
           )}
@@ -400,7 +400,7 @@ export default function VoicesPage() {
                   <Heading variant="label" as="h3" className="text-text-primary mb-1">
                     {t("voices.addVoiceCard.title")}
                   </Heading>
-                  <p className="text-xs text-text-muted">
+                  <p className="text-caption text-text-muted">
                     {voiceLimits.canAdd
                       ? `${voiceLimits.remainingCount} ${voiceLimits.remainingCount === 1 ? t("voices.addVoiceCard.slotsRemaining").split(" ")[0] : t("voices.addVoiceCard.slotsRemaining").split(" ")[0]} ${t("voices.addVoiceCard.slotsRemaining").split(" ").slice(1).join(" ")}`
                       : voiceLimits.message}
@@ -427,7 +427,7 @@ export default function VoicesPage() {
                 <Heading variant="label" as="h3" className="text-text-primary mb-1">
                   {t("voices.banners.communityInfo.title")}
                 </Heading>
-                <p className="text-xs text-text-secondary leading-relaxed">
+                <p className="text-caption text-text-secondary leading-relaxed">
                   {t("voices.banners.communityInfo.description")}
                 </p>
               </div>
@@ -443,7 +443,7 @@ export default function VoicesPage() {
             >
               <div className="flex items-start gap-3">
                 <AlertCircle className="h-5 w-5 text-status-error flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-status-error">{communityError}</p>
+                <p className="text-body text-status-error">{communityError}</p>
               </div>
             </Card>
           )}

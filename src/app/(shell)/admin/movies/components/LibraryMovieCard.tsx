@@ -57,9 +57,9 @@ export function LibraryMovieCard({
                 {movie.title || movie.original_title}
               </Heading>
               {movie.original_title !== movie.title && (
-                <p className="mb-1 text-sm text-text-muted">{movie.original_title}</p>
+                <p className="mb-1 text-body text-text-muted">{movie.original_title}</p>
               )}
-              <div className="flex items-center gap-3 text-sm text-text-muted">
+              <div className="flex items-center gap-3 text-body text-text-muted">
                 {movie.release_date && (
                   <div className="flex items-center gap-1">
                     <Calendar className="h-3.5 w-3.5" />
@@ -72,8 +72,8 @@ export function LibraryMovieCard({
                     <span>{movie.vote_average.toFixed(1)}</span>
                   </div>
                 )}
-                <span className="text-xs">ID: {movie.id}</span>
-                {movie.douban_id && <span className="text-xs">Douban: {movie.douban_id}</span>}
+                <span className="text-caption">ID: {movie.id}</span>
+                {movie.douban_id && <span className="text-caption">Douban: {movie.douban_id}</span>}
               </div>
             </div>
 
@@ -81,14 +81,14 @@ export function LibraryMovieCard({
               <div className="flex gap-2">
                 <button
                   onClick={onSave}
-                  className="flex items-center gap-1 rounded-lg bg-green-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-green-700"
+                  className="flex items-center gap-1 rounded-lg bg-green-600 px-3 py-1.5 text-body font-medium text-white hover:bg-green-700"
                 >
                   <Save className="h-3.5 w-3.5" />
                   Save
                 </button>
                 <button
                   onClick={onCancelEditing}
-                  className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-base px-3 py-1.5 text-sm font-medium text-text-secondary hover:bg-surface-hover"
+                  className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-base px-3 py-1.5 text-body font-medium text-text-secondary hover:bg-surface-hover"
                   aria-label="Cancel editing"
                 >
                   <X className="h-3.5 w-3.5" aria-hidden />
@@ -98,21 +98,21 @@ export function LibraryMovieCard({
               <div className="flex gap-2">
                 <Link
                   href={`/admin/movies/${movie.id}`}
-                  className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-base px-3 py-1.5 text-sm font-medium text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all"
+                  className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-base px-3 py-1.5 text-body font-medium text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all"
                 >
                   <Eye className="h-3.5 w-3.5" />
                   View
                 </Link>
                 <button
                   onClick={onStartEditing}
-                  className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-base px-3 py-1.5 text-sm font-medium text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all"
+                  className="flex items-center gap-1 rounded-lg border border-border-default bg-surface-base px-3 py-1.5 text-body font-medium text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all"
                 >
                   <Edit2 className="h-3.5 w-3.5" />
                   Edit
                 </button>
                 <button
                   onClick={onDelete}
-                  className="flex items-center gap-1 rounded-lg border border-red-500/50 bg-red-500/10 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-500/20 transition-all"
+                  className="flex items-center gap-1 rounded-lg border border-red-500/50 bg-red-500/10 px-3 py-1.5 text-body font-medium text-red-600 hover:bg-red-500/20 transition-all"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                 </button>
@@ -121,20 +121,20 @@ export function LibraryMovieCard({
           </div>
 
           {movie.overview && (
-            <p className="mb-2 line-clamp-2 text-sm text-text-secondary">{movie.overview}</p>
+            <p className="mb-2 line-clamp-2 text-body text-text-secondary">{movie.overview}</p>
           )}
 
           {isEditing && editingData && (
             <div className="mt-2 rounded-lg border border-border-default bg-surface-base p-3">
               <div>
-                <label className="text-xs text-text-muted">Douban ID</label>
+                <label className="text-caption text-text-muted">Douban ID</label>
                 <input
                   type="text"
                   value={editingData.douban_id || ""}
                   onChange={(e) =>
                     onEditingDataChange({ ...editingData, douban_id: e.target.value })
                   }
-                  className="w-full rounded border border-border-default bg-surface-panel px-2 py-1 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
+                  className="w-full rounded border border-border-default bg-surface-panel px-2 py-1 text-body text-text-primary focus:border-accent-primary focus:outline-none"
                   placeholder="Optional"
                 />
               </div>
@@ -163,7 +163,7 @@ export function LibraryMovieCard({
         {movie.vote_average && movie.vote_average > 0 && (
           <div className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-black/70 px-2 py-1 backdrop-blur-sm">
             <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-            <span className="text-xs font-semibold text-white">
+            <span className="text-caption font-semibold text-white">
               {movie.vote_average.toFixed(1)}
             </span>
           </div>
@@ -176,48 +176,48 @@ export function LibraryMovieCard({
             {movie.title || movie.original_title}
           </Heading>
           {movie.original_title !== movie.title && (
-            <p className="mb-1 text-xs text-text-muted line-clamp-1">{movie.original_title}</p>
+            <p className="mb-1 text-caption text-text-muted line-clamp-1">{movie.original_title}</p>
           )}
           <div className="mb-2 flex flex-col gap-1">
             {movie.release_date && (
-              <div className="flex items-center gap-1 text-xs text-text-muted">
+              <div className="flex items-center gap-1 text-caption text-text-muted">
                 <Calendar className="h-3 w-3" />
                 <span>{new Date(movie.release_date).getFullYear()}</span>
               </div>
             )}
-            <div className="flex items-center gap-2 text-xs text-text-muted">
+            <div className="flex items-center gap-2 text-caption text-text-muted">
               <span>ID: {movie.id}</span>
               {movie.douban_id && <span>Douban: {movie.douban_id}</span>}
             </div>
           </div>
           {movie.overview && (
-            <p className="mb-3 line-clamp-2 text-xs text-text-secondary">{movie.overview}</p>
+            <p className="mb-3 line-clamp-2 text-caption text-text-secondary">{movie.overview}</p>
           )}
         </div>
 
         {isEditing && editingData ? (
           <div className="mt-3 pt-3 border-t border-border-default space-y-2">
             <div>
-              <label className="text-xs text-text-muted">Douban ID</label>
+              <label className="text-caption text-text-muted">Douban ID</label>
               <input
                 type="text"
                 value={editingData.douban_id || ""}
                 onChange={(e) => onEditingDataChange({ ...editingData, douban_id: e.target.value })}
-                className="w-full rounded border border-border-default bg-surface-base px-2 py-1 text-xs text-text-primary focus:border-accent-primary focus:outline-none"
+                className="w-full rounded border border-border-default bg-surface-base px-2 py-1 text-caption text-text-primary focus:border-accent-primary focus:outline-none"
                 placeholder="Optional"
               />
             </div>
             <div className="flex gap-2">
               <button
                 onClick={onSave}
-                className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-green-600 px-2 py-1.5 text-xs font-medium text-white hover:bg-green-700"
+                className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-green-600 px-2 py-1.5 text-caption font-medium text-white hover:bg-green-700"
               >
                 <Save className="h-3 w-3" />
                 Save
               </button>
               <button
                 onClick={onCancelEditing}
-                className="flex items-center justify-center gap-1 rounded-lg border border-border-default bg-surface-base px-2 py-1.5 text-xs font-medium text-text-secondary hover:bg-surface-hover"
+                className="flex items-center justify-center gap-1 rounded-lg border border-border-default bg-surface-base px-2 py-1.5 text-caption font-medium text-text-secondary hover:bg-surface-hover"
                 aria-label="Cancel editing"
               >
                 <X className="h-3 w-3" aria-hidden />
@@ -228,20 +228,20 @@ export function LibraryMovieCard({
           <div className="mt-3 pt-3 border-t border-border-default flex gap-2">
             <Link
               href={`/admin/movies/${movie.id}`}
-              className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-border-default bg-surface-base px-2 py-1.5 text-xs font-medium text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all"
+              className="flex flex-1 items-center justify-center gap-1 rounded-lg border border-border-default bg-surface-base px-2 py-1.5 text-caption font-medium text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all"
             >
               <Eye className="h-3 w-3" />
               View
             </Link>
             <button
               onClick={onStartEditing}
-              className="flex items-center justify-center gap-1 rounded-lg border border-border-default bg-surface-base px-2 py-1.5 text-xs font-medium text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all"
+              className="flex items-center justify-center gap-1 rounded-lg border border-border-default bg-surface-base px-2 py-1.5 text-caption font-medium text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all"
             >
               <Edit2 className="h-3 w-3" />
             </button>
             <button
               onClick={onDelete}
-              className="flex items-center justify-center gap-1 rounded-lg border border-red-500/50 bg-red-500/10 px-2 py-1.5 text-xs font-medium text-red-600 hover:bg-red-500/20 transition-all"
+              className="flex items-center justify-center gap-1 rounded-lg border border-red-500/50 bg-red-500/10 px-2 py-1.5 text-caption font-medium text-red-600 hover:bg-red-500/20 transition-all"
             >
               <Trash2 className="h-3 w-3" />
             </button>

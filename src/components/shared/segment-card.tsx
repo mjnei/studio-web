@@ -21,10 +21,10 @@ export function SegmentCard({
 }) {
   return (
     <div className={`rounded-md border-l-2 ${colorMap[color]} bg-surface-raised p-3`}>
-      <p className="mb-1 font-mono text-xs text-text-muted">
+      <p className="mb-1 font-mono text-caption text-text-muted">
         {start} — {end}
       </p>
-      <div className="text-sm text-text-secondary">{children}</div>
+      <div className="text-body text-text-secondary">{children}</div>
     </div>
   );
 }

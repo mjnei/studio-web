@@ -265,7 +265,7 @@ export default function AdminVoicesPage() {
           {/* Bulk Import Button */}
           <button
             onClick={() => setBulkImportModal(true)}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold bg-gradient-to-r from-accent-primary to-purple-600 text-white hover:shadow-lg hover:shadow-accent-primary/30 transition-all"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-body font-semibold bg-gradient-to-r from-accent-primary to-purple-600 text-white hover:shadow-lg hover:shadow-accent-primary/30 transition-all"
           >
             <Upload className="h-4 w-4" />
             Bulk Import
@@ -276,7 +276,7 @@ export default function AdminVoicesPage() {
         <div className="flex gap-1 p-1 rounded-xl bg-surface-raised border border-border-default w-fit">
           <button
             onClick={() => setViewType("pending")}
-            className={`flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold transition-all ${
+            className={`flex items-center gap-2 rounded-lg px-6 py-2.5 text-body font-semibold transition-all ${
               viewType === "pending"
                 ? "bg-gradient-to-r from-orange-500 to-yellow-600 text-white shadow-lg shadow-orange-500/30"
                 : "text-text-secondary hover:text-text-primary hover:bg-surface-panel"
@@ -285,7 +285,7 @@ export default function AdminVoicesPage() {
             <Clock className="h-4 w-4" />
             Pending
             <span
-              className={`ml-1 px-2 py-0.5 rounded-full text-xs font-bold ${
+              className={`ml-1 px-2 py-0.5 rounded-full text-caption font-bold ${
                 viewType === "pending" ? "bg-white/20" : "bg-orange-500/20 text-orange-600"
               }`}
             >
@@ -294,7 +294,7 @@ export default function AdminVoicesPage() {
           </button>
           <button
             onClick={() => setViewType("approved")}
-            className={`flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold transition-all ${
+            className={`flex items-center gap-2 rounded-lg px-6 py-2.5 text-body font-semibold transition-all ${
               viewType === "approved"
                 ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg shadow-green-500/30"
                 : "text-text-secondary hover:text-text-primary hover:bg-surface-panel"
@@ -303,7 +303,7 @@ export default function AdminVoicesPage() {
             <CheckCircle2 className="h-4 w-4" />
             Approved
             <span
-              className={`ml-1 px-2 py-0.5 rounded-full text-xs font-bold ${
+              className={`ml-1 px-2 py-0.5 rounded-full text-caption font-bold ${
                 viewType === "approved" ? "bg-white/20" : "bg-green-500/20 text-green-600"
               }`}
             >
@@ -312,7 +312,7 @@ export default function AdminVoicesPage() {
           </button>
           <button
             onClick={() => setViewType("all")}
-            className={`flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold transition-all ${
+            className={`flex items-center gap-2 rounded-lg px-6 py-2.5 text-body font-semibold transition-all ${
               viewType === "all"
                 ? "bg-gradient-to-r from-blue-500 to-cyan-600 text-white shadow-lg shadow-blue-500/30"
                 : "text-text-secondary hover:text-text-primary hover:bg-surface-panel"
@@ -321,7 +321,7 @@ export default function AdminVoicesPage() {
             <User className="h-4 w-4" />
             All Voices
             <span
-              className={`ml-1 px-2 py-0.5 rounded-full text-xs font-bold ${
+              className={`ml-1 px-2 py-0.5 rounded-full text-caption font-bold ${
                 viewType === "all" ? "bg-white/20" : "bg-blue-500/20 text-blue-600"
               }`}
             >
@@ -337,7 +337,7 @@ export default function AdminVoicesPage() {
           <div className="rounded-xl border border-border-default bg-gradient-to-br from-surface-panel to-surface-raised p-5 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-text-muted uppercase tracking-wider mb-1">
+                <p className="text-caption font-medium text-text-muted uppercase tracking-wider mb-1">
                   Total User Voices
                 </p>
                 <Heading variant="metric" className="text-text-primary">
@@ -352,7 +352,7 @@ export default function AdminVoicesPage() {
           <div className="rounded-xl border border-border-default bg-gradient-to-br from-surface-panel to-surface-raised p-5 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-text-muted uppercase tracking-wider mb-1">
+                <p className="text-caption font-medium text-text-muted uppercase tracking-wider mb-1">
                   Pending Approval
                 </p>
                 <Heading variant="metric" className="text-orange-600">
@@ -367,7 +367,7 @@ export default function AdminVoicesPage() {
           <div className="rounded-xl border border-border-default bg-gradient-to-br from-surface-panel to-surface-raised p-5 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-text-muted uppercase tracking-wider mb-1">
+                <p className="text-caption font-medium text-text-muted uppercase tracking-wider mb-1">
                   Approved
                 </p>
                 <Heading variant="metric" className="text-green-600">
@@ -403,7 +403,7 @@ export default function AdminVoicesPage() {
           )}
         </div>
         {searchTerm && (
-          <p className="mt-2 text-xs text-text-muted">
+          <p className="mt-2 text-caption text-text-muted">
             Found {filteredVoices.length} voice{filteredVoices.length !== 1 ? "s" : ""}
           </p>
         )}
@@ -438,7 +438,7 @@ export default function AdminVoicesPage() {
       ) : (
         <div className="space-y-2 rounded-2xl border border-border-default bg-surface-panel overflow-hidden">
           {/* Table Header */}
-          <div className="hidden md:grid md:grid-cols-12 gap-4 border-b border-border-default bg-surface-raised/50 px-6 py-3 text-sm font-semibold text-text-secondary">
+          <div className="hidden md:grid md:grid-cols-12 gap-4 border-b border-border-default bg-surface-raised/50 px-6 py-3 text-body font-semibold text-text-secondary">
             <div className="col-span-3">Voice Name</div>
             <div className="col-span-2">Creator</div>
             <div className="col-span-2">Status</div>
@@ -454,51 +454,55 @@ export default function AdminVoicesPage() {
             >
               <div className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-4 items-center">
                 <div className="col-span-1 md:col-span-3">
-                  <p className="text-sm font-semibold text-text-primary">{voice.name}</p>
+                  <p className="text-body font-semibold text-text-primary">{voice.name}</p>
                   {voice.duration_seconds && (
-                    <p className="mt-1 text-xs text-text-secondary">
+                    <p className="mt-1 text-caption text-text-secondary">
                       {Math.floor(voice.duration_seconds / 60)}:
                       {String(Math.floor(voice.duration_seconds % 60)).padStart(2, "0")}
                     </p>
                   )}
                 </div>
                 <div className="col-span-1 md:col-span-2">
-                  <div className="md:hidden text-xs font-medium text-text-muted mb-1">Creator</div>
-                  <p className="text-sm text-text-secondary flex items-center gap-1.5">
+                  <div className="md:hidden text-caption font-medium text-text-muted mb-1">
+                    Creator
+                  </div>
+                  <p className="text-body text-text-secondary flex items-center gap-1.5">
                     <User className="h-3.5 w-3.5" />@{voice.creator_username}
                   </p>
                 </div>
                 <div className="col-span-1 md:col-span-2">
-                  <div className="md:hidden text-xs font-medium text-text-muted mb-1">Status</div>
+                  <div className="md:hidden text-caption font-medium text-text-muted mb-1">
+                    Status
+                  </div>
                   {!voice.is_shared ? (
-                    <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold bg-gray-500/10 text-gray-600 border border-gray-500/30">
+                    <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-caption font-bold bg-gray-500/10 text-gray-600 border border-gray-500/30">
                       <User className="h-3.5 w-3.5" />
                       Private
                     </span>
                   ) : voice.is_approved ? (
-                    <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold bg-green-500/10 text-green-600 border border-green-500/30">
+                    <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-caption font-bold bg-green-500/10 text-green-600 border border-green-500/30">
                       <CheckCircle2 className="h-3.5 w-3.5" />
                       Approved
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold bg-orange-500/10 text-orange-600 border border-orange-500/30">
+                    <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-caption font-bold bg-orange-500/10 text-orange-600 border border-orange-500/30">
                       <Clock className="h-3.5 w-3.5" />
                       Pending
                     </span>
                   )}
                 </div>
                 <div className="col-span-1 md:col-span-2">
-                  <div className="md:hidden text-xs font-medium text-text-muted mb-1">
+                  <div className="md:hidden text-caption font-medium text-text-muted mb-1">
                     {voice.is_approved ? "Approved" : "Shared"}
                   </div>
-                  <p className="text-sm text-text-secondary">
+                  <p className="text-body text-text-secondary">
                     {voice.is_approved
                       ? formatRelativeTime(voice.admin_approved_at)
                       : formatRelativeTime(voice.created_at)}
                   </p>
                 </div>
                 <div className="col-span-1 md:col-span-3 flex flex-wrap items-center gap-2">
-                  <div className="md:hidden text-xs font-medium text-text-muted mb-1 w-full">
+                  <div className="md:hidden text-caption font-medium text-text-muted mb-1 w-full">
                     Actions
                   </div>
                   <button
@@ -509,7 +513,7 @@ export default function AdminVoicesPage() {
                         playVoiceAudio(voice.id);
                       }
                     }}
-                    className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition-all shadow-sm ${
+                    className={`flex items-center gap-2 rounded-lg px-3 py-2 text-body font-semibold transition-all shadow-sm ${
                       playingVoiceId === voice.id
                         ? "bg-gradient-to-r from-accent-primary to-purple-600 text-white shadow-accent-primary/30"
                         : "border-2 border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:text-accent-primary hover:bg-accent-primary/5"
@@ -532,7 +536,7 @@ export default function AdminVoicesPage() {
                     voice.is_approved ? (
                       <button
                         onClick={() => handleUnapprove(voice)}
-                        className="flex items-center gap-1.5 rounded-lg border-2 border-orange-500/50 bg-orange-500/10 px-3 py-2 text-sm font-medium text-orange-600 hover:bg-orange-500/20 transition-all"
+                        className="flex items-center gap-1.5 rounded-lg border-2 border-orange-500/50 bg-orange-500/10 px-3 py-2 text-body font-medium text-orange-600 hover:bg-orange-500/20 transition-all"
                       >
                         <XCircle className="h-4 w-4" />
                         <span className="hidden md:inline">Revoke</span>
@@ -540,7 +544,7 @@ export default function AdminVoicesPage() {
                     ) : (
                       <button
                         onClick={() => handleApprove(voice)}
-                        className="flex items-center gap-1.5 rounded-lg border-2 border-green-500/50 bg-green-500/10 px-3 py-2 text-sm font-medium text-green-600 hover:bg-green-500/20 transition-all"
+                        className="flex items-center gap-1.5 rounded-lg border-2 border-green-500/50 bg-green-500/10 px-3 py-2 text-body font-medium text-green-600 hover:bg-green-500/20 transition-all"
                       >
                         <ThumbsUp className="h-4 w-4" />
                         <span className="hidden md:inline">Approve</span>

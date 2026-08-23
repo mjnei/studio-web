@@ -24,7 +24,7 @@ export default function AuditStatsCard({ stats }: AuditStatsCardProps) {
               <Activity className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <p className="text-sm font-medium text-text-muted">Total Logs</p>
+              <p className="text-body font-medium text-text-muted">Total Logs</p>
               <Heading variant="metric" className="text-text-primary">
                 {stats.total_logs.toLocaleString()}
               </Heading>
@@ -38,7 +38,7 @@ export default function AuditStatsCard({ stats }: AuditStatsCardProps) {
               <Users className="h-5 w-5 text-blue-500" />
             </div>
             <div>
-              <p className="text-sm font-medium text-text-muted">Active Users</p>
+              <p className="text-body font-medium text-text-muted">Active Users</p>
               <Heading variant="metric" className="text-text-primary">
                 {stats.unique_users.toLocaleString()}
               </Heading>
@@ -52,7 +52,7 @@ export default function AuditStatsCard({ stats }: AuditStatsCardProps) {
               <BarChart3 className="h-5 w-5 text-purple-500" />
             </div>
             <div>
-              <p className="text-sm font-medium text-text-muted">Action Types</p>
+              <p className="text-body font-medium text-text-muted">Action Types</p>
               <Heading variant="metric" className="text-text-primary">
                 {Object.keys(stats.actions_by_type || {}).length}
               </Heading>
@@ -66,13 +66,13 @@ export default function AuditStatsCard({ stats }: AuditStatsCardProps) {
               <Calendar className="h-5 w-5 text-green-500" />
             </div>
             <div>
-              <p className="text-sm font-medium text-text-muted">Date Range</p>
-              <p className="text-sm font-bold text-text-primary">
+              <p className="text-body font-medium text-text-muted">Date Range</p>
+              <p className="text-body font-bold text-text-primary">
                 {stats.date_range?.start
                   ? new Date(stats.date_range.start).toLocaleDateString()
                   : "N/A"}
               </p>
-              <p className="text-xs text-text-muted">
+              <p className="text-caption text-text-muted">
                 to{" "}
                 {stats.date_range?.end
                   ? new Date(stats.date_range.end).toLocaleDateString()
@@ -98,7 +98,7 @@ export default function AuditStatsCard({ stats }: AuditStatsCardProps) {
               const percentage = (count / stats.total_logs) * 100;
               return (
                 <div key={action} className="space-y-1">
-                  <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center justify-between text-body">
                     <span className="font-medium text-text-primary">{action}</span>
                     <span className="text-text-muted">
                       {count.toLocaleString()} ({percentage.toFixed(1)}%)

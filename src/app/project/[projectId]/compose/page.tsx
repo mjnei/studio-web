@@ -236,7 +236,7 @@ export default function ComposePage() {
             <Heading variant="section" as="h2" className="text-text-primary">
               {t("project.compose.title")}
             </Heading>
-            <p className="mt-1 text-sm text-text-muted">{t("project.compose.description")}</p>
+            <p className="mt-1 text-body text-text-muted">{t("project.compose.description")}</p>
           </div>
 
           {/* Thumbnail Preview Card - Click to edit */}
@@ -277,7 +277,7 @@ export default function ComposePage() {
                                 e.stopPropagation();
                                 openActionModal("regenerate");
                               }}
-                              className="text-xs font-medium text-accent-cyan hover:text-accent-cyan-hover flex items-center gap-1 transition-colors"
+                              className="text-caption font-medium text-accent-cyan hover:text-accent-cyan-hover flex items-center gap-1 transition-colors"
                               title={t("project.compose.regenerateTitle")}
                             >
                               <RotateCcw className="h-3 w-3" />
@@ -287,7 +287,7 @@ export default function ComposePage() {
                                 e.stopPropagation();
                                 openActionModal("edit");
                               }}
-                              className="text-xs font-medium text-accent-cyan hover:text-accent-cyan-hover flex items-center gap-1 transition-colors"
+                              className="text-caption font-medium text-accent-cyan hover:text-accent-cyan-hover flex items-center gap-1 transition-colors"
                               title={t("project.compose.customizeTitle")}
                             >
                               <Edit2 className="h-3 w-3" />
@@ -300,7 +300,7 @@ export default function ComposePage() {
                         !state.thumbnailUrl ||
                         isRegenerating ? (
                           <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-xs font-medium text-accent-cyan flex items-center gap-1">
+                            <span className="text-caption font-medium text-accent-cyan flex items-center gap-1">
                               <Spinner className="h-3 w-3" /> {t("project.compose.generating")}
                             </span>
                             {/* Show retry button when generating */}
@@ -310,7 +310,7 @@ export default function ComposePage() {
                                   e.stopPropagation();
                                   openActionModal("retry");
                                 }}
-                                className="text-xs font-medium text-white bg-status-warning hover:bg-status-warning/90 flex items-center gap-1 transition-colors px-2 py-1 rounded"
+                                className="text-caption font-medium text-white bg-status-warning hover:bg-status-warning/90 flex items-center gap-1 transition-colors px-2 py-1 rounded"
                                 title={t("project.compose.retryHint")}
                               >
                                 <RotateCcw className="h-3 w-3" /> {t("common.retry")}
@@ -318,11 +318,11 @@ export default function ComposePage() {
                             )}
                           </div>
                         ) : state.thumbnailCompositionStatus === "processing" ? (
-                          <span className="text-xs font-medium text-accent-cyan flex items-center gap-1">
+                          <span className="text-caption font-medium text-accent-cyan flex items-center gap-1">
                             <Spinner className="h-3 w-3" /> {t("project.compose.processing")}
                           </span>
                         ) : state.thumbnailConfirmed ? (
-                          <span className="text-xs font-medium text-status-success flex items-center gap-1">
+                          <span className="text-caption font-medium text-status-success flex items-center gap-1">
                             <Check className="h-3 w-3" /> {t("project.compose.confirmed")}
                           </span>
                         ) : null}
@@ -334,12 +334,12 @@ export default function ComposePage() {
                     !state.thumbnailUrl ||
                     isRegenerating ? (
                       <div className="space-y-3">
-                        <p className="text-sm text-text-muted">
+                        <p className="text-body text-text-muted">
                           {isRegenerating
                             ? t("project.compose.regeneratingDesc")
                             : t("project.compose.generatingDesc")}
                         </p>
-                        <div className="text-xs text-text-muted space-y-1">
+                        <div className="text-caption text-text-muted space-y-1">
                           <p>• {t("project.compose.waitBullet1")}</p>
                           <p>• {t("project.compose.waitBullet2")}</p>
                           <p>• {t("project.compose.waitBullet3")}</p>
@@ -347,7 +347,7 @@ export default function ComposePage() {
                       </div>
                     ) : state.thumbnailConfirmed ? (
                       <div className="space-y-3">
-                        <p className="text-sm text-text-muted">
+                        <p className="text-body text-text-muted">
                           {t("project.compose.readyForVideo")}
                         </p>
 
@@ -366,7 +366,7 @@ export default function ComposePage() {
                           </div>
                         )}
 
-                        <div className="text-xs text-text-muted space-y-1">
+                        <div className="text-caption text-text-muted space-y-1">
                           <p>
                             •{" "}
                             {t("project.compose.textOverlay", {
@@ -386,7 +386,7 @@ export default function ComposePage() {
                               e.stopPropagation();
                               setShowThumbnailEditor(true);
                             }}
-                            className="mt-2 text-xs text-accent-cyan hover:text-accent-cyan-hover underline"
+                            className="mt-2 text-caption text-accent-cyan hover:text-accent-cyan-hover underline"
                           >
                             {t("project.compose.recustomize")}
                           </button>
@@ -395,7 +395,7 @@ export default function ComposePage() {
                     ) : (
                       <>
                         {/* Full view when not confirmed */}
-                        <p className="text-sm text-text-muted mb-3">
+                        <p className="text-body text-text-muted mb-3">
                           {state.thumbnailUrl
                             ? t("project.compose.customizeBefore")
                             : t("project.compose.availableShortly")}
@@ -427,10 +427,10 @@ export default function ComposePage() {
                               <Heading variant="label" as="h4" className="text-text-primary mb-2">
                                 {t("project.compose.customizationOptions")}
                               </Heading>
-                              <p className="text-sm text-text-muted mb-3">
+                              <p className="text-body text-text-muted mb-3">
                                 {t("project.compose.clickToOpen")}
                               </p>
-                              <div className="text-xs text-text-muted space-y-1">
+                              <div className="text-caption text-text-muted space-y-1">
                                 <p>• {t("project.compose.optionUpload")}</p>
                                 <p>• {t("project.compose.optionRegenerate")}</p>
                                 <p>• {t("project.compose.optionOverlay")}</p>
@@ -470,7 +470,7 @@ export default function ComposePage() {
                   <p className={`${typography.section} mb-2 text-accent-cyan`}>
                     "{state.scriptSummary}"
                   </p>
-                  <p className="text-xs text-text-muted">{t("project.compose.taglineHint")}</p>
+                  <p className="text-caption text-text-muted">{t("project.compose.taglineHint")}</p>
                 </div>
               </div>
             </Card>
@@ -480,26 +480,26 @@ export default function ComposePage() {
           <Card variant="elevated" padding="md">
             <div className="grid gap-4 sm:grid-cols-3">
               <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
+                <p className="text-caption font-medium uppercase tracking-wide text-text-muted">
                   {t("project.common.movie")}
                 </p>
-                <p className="mt-1 text-sm text-text-primary">
+                <p className="mt-1 text-body text-text-primary">
                   {state?.movieTitle || t("project.common.unknown")}
                 </p>
               </div>
               <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
+                <p className="text-caption font-medium uppercase tracking-wide text-text-muted">
                   {t("project.common.voice")}
                 </p>
-                <p className="mt-1 text-sm text-text-primary">
+                <p className="mt-1 text-body text-text-primary">
                   {state?.voiceName || t("project.common.notSelected")}
                 </p>
               </div>
               <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-text-muted">
+                <p className="text-caption font-medium uppercase tracking-wide text-text-muted">
                   {t("project.common.script")}
                 </p>
-                <p className="mt-1 text-sm text-text-primary">
+                <p className="mt-1 text-body text-text-primary">
                   {t("project.common.words", { count: wordCount })}
                 </p>
               </div>
@@ -523,17 +523,19 @@ export default function ComposePage() {
                     <Heading variant="label" as="h3" className="text-text-primary">
                       {t("project.common.yourScript")}
                     </Heading>
-                    <span className="text-xs font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0 group-hover:text-accent-cyan-hover">
+                    <span className="text-caption font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0 group-hover:text-accent-cyan-hover">
                       {t("project.common.clickToExpand")} <ChevronDown className="h-3 w-3" />
                     </span>
                   </div>
-                  <p className="text-sm text-text-muted mb-2">
+                  <p className="text-body text-text-muted mb-2">
                     {t("project.common.scriptMetaShort", {
                       count: activeScript.wordCount,
                       duration: scriptDuration,
                     })}
                   </p>
-                  <p className="text-sm text-text-secondary line-clamp-2">{activeScript.content}</p>
+                  <p className="text-body text-text-secondary line-clamp-2">
+                    {activeScript.content}
+                  </p>
                 </div>
               </div>
             </Card>
@@ -594,12 +596,12 @@ export default function ComposePage() {
                   <Heading variant="label" as="h4" className="text-text-primary mb-1">
                     {t("project.compose.generateNewImage")}
                   </Heading>
-                  <p className="text-sm text-text-secondary leading-relaxed">
+                  <p className="text-body text-text-secondary leading-relaxed">
                     {t("project.compose.generateNewImageDesc")}
                   </p>
                 </div>
               </div>
-              <div className="text-sm text-text-muted space-y-2 pl-2">
+              <div className="text-body text-text-muted space-y-2 pl-2">
                 <p className="flex items-start gap-2">
                   <span className="text-accent-cyan">•</span>
                   <span>{t("project.compose.takesSeconds")}</span>
@@ -622,12 +624,12 @@ export default function ComposePage() {
                   <Heading variant="label" as="h4" className="text-text-primary mb-1">
                     {t("project.compose.retryStuck")}
                   </Heading>
-                  <p className="text-sm text-text-secondary leading-relaxed">
+                  <p className="text-body text-text-secondary leading-relaxed">
                     {t("project.compose.retryStuckDesc")}
                   </p>
                 </div>
               </div>
-              <div className="text-sm text-text-muted space-y-2 pl-2">
+              <div className="text-body text-text-muted space-y-2 pl-2">
                 <p className="flex items-start gap-2">
                   <span className="text-status-warning">•</span>
                   <span>{t("project.compose.retryBullet1")}</span>
@@ -650,12 +652,12 @@ export default function ComposePage() {
                   <Heading variant="label" as="h4" className="text-text-primary mb-1">
                     {t("project.compose.customizeCurrent")}
                   </Heading>
-                  <p className="text-sm text-text-secondary leading-relaxed">
+                  <p className="text-body text-text-secondary leading-relaxed">
                     {t("project.compose.customizeCurrentDesc")}
                   </p>
                 </div>
               </div>
-              <div className="text-sm text-text-muted space-y-2 pl-2">
+              <div className="text-body text-text-muted space-y-2 pl-2">
                 <p className="flex items-start gap-2">
                   <span className="text-accent-cyan">•</span>
                   <span>{t("project.compose.editBullet1")}</span>

@@ -18,7 +18,7 @@ export function VersionSwitcher({
     <div className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1 rounded-md border border-border-default bg-surface-raised px-2 py-1 text-xs text-text-secondary hover:bg-surface-hover"
+        className="flex items-center gap-1 rounded-md border border-border-default bg-surface-raised px-2 py-1 text-caption text-text-secondary hover:bg-surface-hover"
       >
         {current}
         <ChevronDown className="h-3 w-3" aria-hidden />
@@ -32,7 +32,7 @@ export function VersionSwitcher({
                 onSelect(v);
                 setOpen(false);
               }}
-              className={`block w-full px-3 py-1.5 text-left text-xs ${
+              className={`block w-full px-3 py-1.5 text-left text-caption ${
                 v === current ? "text-accent-cyan" : "text-text-secondary hover:bg-surface-hover"
               }`}
             >

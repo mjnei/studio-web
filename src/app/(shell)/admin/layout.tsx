@@ -19,7 +19,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (isLoading) {
     return (
       <div className="flex h-full items-center justify-center">
-        <div className="text-sm text-text-muted">Loading...</div>
+        <div className="text-body text-text-muted">Loading...</div>
       </div>
     );
   }

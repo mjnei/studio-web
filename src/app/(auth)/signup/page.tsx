@@ -120,7 +120,7 @@ function SignupContent() {
       <Card variant="elevated" padding="lg" className="w-full">
         <div className="flex flex-col items-center justify-center py-12">
           <Spinner size="lg" className="text-accent-primary mb-4" />
-          <p className="text-sm text-text-secondary">
+          <p className="text-body text-text-secondary">
             {isAuthenticated ? t("auth.signup.redirecting") : t("auth.signup.loading")}
           </p>
         </div>
@@ -147,17 +147,17 @@ function SignupContent() {
               <Gift className="h-4 w-4 text-white" />
             </div>
             <div className="flex-1">
-              <p className="text-sm font-medium text-text-primary mb-1">
+              <p className="text-body font-medium text-text-primary mb-1">
                 {t("auth.signup.invitedBy", { name: referrerName })}
               </p>
-              <p className="text-xs text-text-muted">{t("auth.signup.rewardMessage")}</p>
+              <p className="text-caption text-text-muted">{t("auth.signup.rewardMessage")}</p>
             </div>
           </div>
         </div>
       )}
 
       {error && (
-        <div className="mb-6 rounded-lg border border-status-failed/30 bg-status-failed/10 px-4 py-3 text-sm text-status-failed flex items-start gap-2">
+        <div className="mb-6 rounded-lg border border-status-failed/30 bg-status-failed/10 px-4 py-3 text-body text-status-failed flex items-start gap-2">
           <AlertCircle className="h-5 w-5 shrink-0 mt-0.5" />
           <span>{error}</span>
         </div>
@@ -166,7 +166,7 @@ function SignupContent() {
       {/* Referral Code Input - Hidden when "Invited by" is displayed */}
       {!referralCode && !referrerName && (
         <div className="mb-6 flex flex-col items-center">
-          <label className="text-sm font-medium text-text-primary mb-2 self-start">
+          <label className="text-body font-medium text-text-primary mb-2 self-start">
             {t("auth.invite.yourCode")}
           </label>
           <InputOTP
@@ -187,8 +187,10 @@ function SignupContent() {
               <InputOTPSlot index={5} />
             </InputOTPGroup>
           </InputOTP>
-          {codeError && <p className="mt-2 text-xs text-status-failed self-start">{codeError}</p>}
-          <div className="mt-2 text-xs text-text-muted self-start">
+          {codeError && (
+            <p className="mt-2 text-caption text-status-failed self-start">{codeError}</p>
+          )}
+          <div className="mt-2 text-caption text-text-muted self-start">
             {t("auth.signup.referralBonusOptional")}
           </div>
         </div>
@@ -206,7 +208,7 @@ function SignupContent() {
       </Button>
 
       <div className="mt-6 text-center">
-        <p className="text-sm text-text-secondary">
+        <p className="text-body text-text-secondary">
           {t("auth.signup.haveAccount")}{" "}
           <Link
             href="/login"
@@ -229,7 +231,7 @@ export default function SignupPage() {
         <Card variant="elevated" padding="lg" className="w-full">
           <div className="flex flex-col items-center justify-center py-12">
             <Spinner size="lg" className="text-accent-primary mb-4" />
-            <p className="text-sm text-text-secondary">{t("common.loading")}</p>
+            <p className="text-body text-text-secondary">{t("common.loading")}</p>
           </div>
         </Card>
       }

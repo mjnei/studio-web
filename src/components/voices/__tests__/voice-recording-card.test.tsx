@@ -953,6 +953,6 @@ describe("VoiceRecordingCard - Type Safety", () => {
  */
 
 console.log("\n✅ VoiceRecordingCard Component Test Suite Ready");
-console.log("   Requirements: 3.1-3.7, 6.1, 6.4, 6.5, 7.3, 8.1, 8.2, 8.3");
-console.log("   Properties: Property 1, Property 4, Property 6");
-console.log("   Total Test Cases: 40+\n");
+console.log(" Requirements: 3.1-3.7, 6.1, 6.4, 6.5, 7.3, 8.1, 8.2, 8.3");
+console.log(" Properties: Property 1, Property 4, Property 6");
+console.log(" Total Test Cases: 40+\n");

@@ -85,7 +85,7 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
             <div className="flex items-center gap-2 mb-0.5">
               <h3
                 onClick={() => onPlay(job)}
-                className="text-sm font-semibold text-text-primary hover:text-accent-cyan cursor-pointer truncate"
+                className="text-body font-semibold text-text-primary hover:text-accent-cyan cursor-pointer truncate"
               >
                 {job.projectName}
               </h3>
@@ -95,10 +95,10 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
               </Badge>
             </div>
             {job.movieTitle && (
-              <p className="text-xs text-text-muted truncate mb-1">{job.movieTitle}</p>
+              <p className="text-caption text-text-muted truncate mb-1">{job.movieTitle}</p>
             )}
 
-            <div className="flex flex-wrap items-center gap-3 text-xs text-text-muted">
+            <div className="flex flex-wrap items-center gap-3 text-caption text-text-muted">
               <span>
                 {t("jobs.completedJob.voice")}:{" "}
                 <strong className="text-text-secondary">
@@ -228,13 +228,13 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
         <div>
           <h3
             onClick={() => onPlay(job)}
-            className="text-sm font-bold text-text-primary hover:text-accent-cyan cursor-pointer truncate"
+            className="text-body font-bold text-text-primary hover:text-accent-cyan cursor-pointer truncate"
             title={job.projectName}
           >
             {job.projectName}
           </h3>
           {job.movieTitle && (
-            <p className="text-xs text-text-muted truncate mt-0.5">{job.movieTitle}</p>
+            <p className="text-caption text-text-muted truncate mt-0.5">{job.movieTitle}</p>
           )}
         </div>
 
@@ -266,7 +266,7 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
             size="sm"
             onClick={() => onPlay(job)}
             leftIcon={<Play className="h-3.5 w-3.5" aria-hidden />}
-            className="flex-1 text-xs"
+            className="flex-1 text-caption"
           >
             {t("jobs.completedJob.play")}
           </Button>

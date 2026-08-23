@@ -110,7 +110,7 @@ export function ProjectCard({
           </div>
 
           {/* Metadata */}
-          <div className="flex items-center gap-3 text-xs text-text-muted">
+          <div className="flex items-center gap-3 text-caption text-text-muted">
             <div className="flex items-center gap-1">
               <Calendar className="h-3.5 w-3.5" />
               <span>{t("project.card.created", { date: createdDate })}</span>
@@ -188,7 +188,7 @@ export function ProjectCard({
               <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center">
                 <div className="flex flex-col items-center gap-2 text-white">
                   <Spinner size="md" />
-                  <span className="text-xs font-medium">
+                  <span className="text-caption font-medium">
                     {t("project.card.generatingThumbnail")}
                   </span>
                 </div>
@@ -229,7 +229,7 @@ export function ProjectCard({
                 )}
               </div>
               {showDelete && (
-                <div className="flex items-center gap-1 text-xs text-text-muted flex-shrink-0">
+                <div className="flex items-center gap-1 text-caption text-text-muted flex-shrink-0">
                   <Clock className="h-3 w-3" />
                   {updatedDate}
                 </div>

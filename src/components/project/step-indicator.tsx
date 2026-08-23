@@ -26,17 +26,17 @@ export function StepIndicator({ steps, currentStep }: StepIndicatorProps) {
                 {/* Circle */}
                 <div
                   className={`
-                    relative z-10 flex items-center justify-center
-                    w-10 h-10 rounded-full font-semibold text-sm
-                    transition-all duration-300 ease-smooth
-                    ${
-                      isCompleted
-                        ? "bg-gradient-to-r from-accent-secondary to-accent-primary text-white shadow-lg"
-                        : isCurrent
-                          ? "bg-accent-primary text-white shadow-lg shadow-accent-primary/30 ring-4 ring-accent-primary/20"
-                          : "bg-surface-raised border-2 border-border-default text-text-muted"
-                    }
-                  `}
+ relative z-10 flex items-center justify-center
+ w-10 h-10 rounded-full font-semibold text-body
+ transition-all duration-300 ease-smooth
+ ${
+   isCompleted
+     ? "bg-gradient-to-r from-accent-secondary to-accent-primary text-white shadow-lg"
+     : isCurrent
+       ? "bg-accent-primary text-white shadow-lg shadow-accent-primary/30 ring-4 ring-accent-primary/20"
+       : "bg-surface-raised border-2 border-border-default text-text-muted"
+ }
+ `}
                 >
                   {isCompleted ? <Check className="h-5 w-5" /> : <span>{step.number}</span>}
                 </div>
@@ -45,9 +45,9 @@ export function StepIndicator({ steps, currentStep }: StepIndicatorProps) {
                 <div className="text-center">
                   <p
                     className={`
-                      text-xs sm:text-sm font-medium transition-colors
-                      ${isCurrent ? "text-text-primary" : "text-text-secondary"}
-                    `}
+ text-caption font-medium transition-colors
+ ${isCurrent ? "text-text-primary" : "text-text-secondary"}
+ `}
                   >
                     {step.title}
                   </p>
@@ -59,13 +59,9 @@ export function StepIndicator({ steps, currentStep }: StepIndicatorProps) {
                 <div className="flex-1 h-0.5 mx-2 sm:mx-4 mb-8">
                   <div
                     className={`
-                      h-full transition-all duration-500
-                      ${
-                        isCompleted
-                          ? "bg-gradient-to-r from-accent-secondary to-accent-primary"
-                          : "bg-border-default"
-                      }
-                    `}
+ h-full transition-all duration-500
+ ${isCompleted ? "bg-gradient-to-r from-accent-secondary to-accent-primary" : "bg-border-default"}
+ `}
                   />
                 </div>
               )}

@@ -47,7 +47,7 @@ export const Pagination: React.FC<PaginationProps> = ({
         className
       )}
     >
-      <div className="flex items-center gap-2 text-sm text-text-muted">
+      <div className="flex items-center gap-2 text-body text-text-muted">
         <span>{t("common.pageOf", { current: currentPage, total: totalPages })}</span>
         {totalItems !== undefined && (
           <>
@@ -62,7 +62,7 @@ export const Pagination: React.FC<PaginationProps> = ({
           onClick={handlePrevious}
           disabled={!canGoPrevious}
           className={cn(
-            "flex items-center gap-1 rounded-lg border border-border-default bg-surface-base px-3 py-1.5 text-sm font-medium text-text-secondary transition-all",
+            "flex items-center gap-1 rounded-lg border border-border-default bg-surface-base px-3 py-1.5 text-body font-medium text-text-secondary transition-all",
             canGoPrevious
               ? "hover:bg-surface-hover hover:text-text-primary"
               : "cursor-not-allowed opacity-50"
@@ -76,7 +76,7 @@ export const Pagination: React.FC<PaginationProps> = ({
           onClick={handleNext}
           disabled={!canGoNext}
           className={cn(
-            "flex items-center gap-1 rounded-lg border border-border-default bg-surface-base px-3 py-1.5 text-sm font-medium text-text-secondary transition-all",
+            "flex items-center gap-1 rounded-lg border border-border-default bg-surface-base px-3 py-1.5 text-body font-medium text-text-secondary transition-all",
             canGoNext
               ? "hover:bg-surface-hover hover:text-text-primary"
               : "cursor-not-allowed opacity-50"

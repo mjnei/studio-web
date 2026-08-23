@@ -58,20 +58,20 @@ export function DLQInspector({ queueName, dlqStats }: DLQInspectorProps) {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">DLQ Name</span>
-            <code className="text-sm font-mono bg-muted px-2 py-1 rounded">{dlqName}</code>
+            <span className="text-body text-muted-foreground">DLQ Name</span>
+            <code className="text-body font-mono bg-muted px-2 py-1 rounded">{dlqName}</code>
           </div>
 
           <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">Failed Messages</span>
+            <span className="text-body text-muted-foreground">Failed Messages</span>
             <Badge variant={hasDLQMessages ? "destructive" : "outline"}>
               {dlqStats.message_count.toLocaleString()}
             </Badge>
           </div>
 
           <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">Consumers</span>
-            <span className="text-sm font-medium">{dlqStats.consumer_count}</span>
+            <span className="text-body text-muted-foreground">Consumers</span>
+            <span className="text-body font-medium">{dlqStats.consumer_count}</span>
           </div>
         </CardContent>
       </Card>
@@ -87,11 +87,11 @@ export function DLQInspector({ queueName, dlqStats }: DLQInspectorProps) {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="p-4 bg-destructive/10 rounded-lg">
-              <p className="text-sm text-muted-foreground">
+              <p className="text-body text-muted-foreground">
                 Messages in the dead-letter queue have failed processing multiple times. This could
                 indicate:
               </p>
-              <ul className="list-disc list-inside mt-2 space-y-1 text-sm text-muted-foreground">
+              <ul className="list-disc list-inside mt-2 space-y-1 text-body text-muted-foreground">
                 <li>Malformed message payloads</li>
                 <li>Bugs in the consumer service</li>
                 <li>External service failures (S3, database, etc.)</li>
@@ -103,7 +103,7 @@ export function DLQInspector({ queueName, dlqStats }: DLQInspectorProps) {
               <Heading variant="label" as="h4" className="font-medium">
                 Recommended Actions
               </Heading>
-              <ol className="list-decimal list-inside space-y-1 text-sm text-muted-foreground">
+              <ol className="list-decimal list-inside space-y-1 text-body text-muted-foreground">
                 <li>Investigate the root cause of failures in your logs</li>
                 <li>Fix the underlying issue in your worker service</li>
                 <li>Consider manually reprocessing messages (requires custom tooling)</li>
@@ -135,7 +135,7 @@ export function DLQInspector({ queueName, dlqStats }: DLQInspectorProps) {
             <div className="flex items-start gap-3 p-4 bg-green-500/10 rounded-lg">
               <Info className="h-5 w-5 text-green-500 mt-0.5" />
               <div className="flex-1">
-                <p className="text-sm text-muted-foreground">
+                <p className="text-body text-muted-foreground">
                   A clean DLQ indicates that all messages are being processed successfully without
                   repeated failures. This is the expected state for a healthy queue.
                 </p>
@@ -156,7 +156,7 @@ export function DLQInspector({ queueName, dlqStats }: DLQInspectorProps) {
             <Heading variant="label" as="h4" className="font-medium">
               Message Flow
             </Heading>
-            <ol className="list-decimal list-inside space-y-1 text-xs text-muted-foreground">
+            <ol className="list-decimal list-inside space-y-1 text-caption text-muted-foreground">
               <li>Message is published to the main queue ({queueName})</li>
               <li>Consumer attempts to process the message</li>
               <li>If processing fails, message is requeued (up to N retries)</li>
@@ -169,7 +169,7 @@ export function DLQInspector({ queueName, dlqStats }: DLQInspectorProps) {
             <Heading variant="label" as="h4" className="font-medium">
               Typical Retry Configuration
             </Heading>
-            <ul className="space-y-1 text-xs text-muted-foreground">
+            <ul className="space-y-1 text-caption text-muted-foreground">
               <li>
                 <strong>Max Retries:</strong> 3 attempts
               </li>
@@ -183,7 +183,7 @@ export function DLQInspector({ queueName, dlqStats }: DLQInspectorProps) {
           </div>
 
           <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
-            <p className="text-xs text-muted-foreground">
+            <p className="text-caption text-muted-foreground">
               <strong>Pro Tip:</strong> Set up monitoring alerts to notify you when DLQ message
               count exceeds 0. This allows you to respond quickly to processing issues before they
               accumulate.
@@ -195,7 +195,7 @@ export function DLQInspector({ queueName, dlqStats }: DLQInspectorProps) {
       {/* Future Enhancements Note */}
       <Card className="bg-muted/30">
         <CardContent className="pt-6">
-          <p className="text-xs text-muted-foreground">
+          <p className="text-caption text-muted-foreground">
             <strong>Future Enhancement:</strong> Message sampling and inspection tools will be added
             in a future release, allowing you to view actual message payloads and error details
             directly from this interface.

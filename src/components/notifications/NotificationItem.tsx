@@ -97,18 +97,18 @@ export function NotificationItem({ notification, onClose }: NotificationItemProp
         {/* Content */}
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
-            <h4 className="text-xs sm:text-sm font-medium text-text-primary line-clamp-1">
+            <h4 className="text-caption font-medium text-text-primary line-clamp-1">
               {notification.message_short}
             </h4>
             {!notification.is_read && (
               <span className="flex-shrink-0 h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-accent-primary mt-1 sm:mt-1.5" />
             )}
           </div>
-          <p className="text-[10px] sm:text-xs text-text-secondary mt-1 line-clamp-2">
+          <p className="text-[10px] sm:text-caption text-text-secondary mt-1 line-clamp-2">
             {notification.message_medium}
           </p>
           <div className="flex items-center justify-between mt-1.5 sm:mt-2">
-            <span className="text-[10px] sm:text-xs text-text-muted">{timeAgo}</span>
+            <span className="text-[10px] sm:text-caption text-text-muted">{timeAgo}</span>
             <div className="flex items-center gap-0.5 sm:gap-1 opacity-0 group-hover:opacity-100 sm:group-hover:opacity-100 group-active:opacity-100 transition-opacity">
               {!notification.is_read && (
                 <button

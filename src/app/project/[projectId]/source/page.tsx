@@ -93,7 +93,7 @@ export default function SourcePage() {
               <Heading variant="section" as="h2" className="text-text-primary">
                 {t("project.source.title")}
               </Heading>
-              <p className="mt-1 text-sm text-text-muted">
+              <p className="mt-1 text-body text-text-muted">
                 {isChanging
                   ? t("project.source.selectDifferent")
                   : t("project.source.viewSelected")}
@@ -129,28 +129,28 @@ export default function SourcePage() {
                   </div>
                   {state.movieGenre && (
                     <div className="mb-3">
-                      <span className="text-sm font-medium text-text-secondary">
+                      <span className="text-body font-medium text-text-secondary">
                         {t("project.common.genre")}:{" "}
                       </span>
-                      <span className="text-sm text-text-muted">{state.movieGenre}</span>
+                      <span className="text-body text-text-muted">{state.movieGenre}</span>
                     </div>
                   )}
                   {state.movieRating && (
                     <div className="mb-3">
-                      <span className="text-sm font-medium text-text-secondary">
+                      <span className="text-body font-medium text-text-secondary">
                         {t("project.common.rating")}:{" "}
                       </span>
-                      <span className="text-sm text-text-muted">
+                      <span className="text-body text-text-muted">
                         {state.movieRating.toFixed(1)}/10
                       </span>
                     </div>
                   )}
                   {state.movieDuration && (
                     <div className="mb-3">
-                      <span className="text-sm font-medium text-text-secondary">
+                      <span className="text-body font-medium text-text-secondary">
                         {t("project.common.duration")}:{" "}
                       </span>
-                      <span className="text-sm text-text-muted">
+                      <span className="text-body text-text-muted">
                         {t("project.common.durationMin", { minutes: state.movieDuration })}
                       </span>
                     </div>
@@ -159,7 +159,7 @@ export default function SourcePage() {
                     <div className="flex items-start gap-3">
                       <Info className="h-5 w-5 text-accent-cyan" />
                       <div className="flex-1">
-                        <p className="text-sm text-text-secondary">
+                        <p className="text-body text-text-secondary">
                           {t("project.source.changeWarning")}
                         </p>
                       </div>

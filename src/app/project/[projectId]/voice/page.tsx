@@ -220,10 +220,10 @@ export default function VoicePage() {
               <Heading variant="section" as="h2" className="text-text-primary">
                 {t("project.voice.title")}
               </Heading>
-              <p className="mt-1 text-sm text-text-muted">{t("project.voice.description")}</p>
+              <p className="mt-1 text-body text-text-muted">{t("project.voice.description")}</p>
             </div>
             {selectedVoiceId && selectedVoiceName && (
-              <div className="text-sm text-text-muted">
+              <div className="text-body text-text-muted">
                 {t("project.voice.selected")}{" "}
                 <span className="font-medium text-text-primary">{selectedVoiceName}</span>
               </div>
@@ -251,7 +251,7 @@ export default function VoicePage() {
                   <p className={`${typography.section} mb-2 text-accent-cyan`}>
                     &ldquo;{state.scriptSummary}&rdquo;
                   </p>
-                  <p className="text-xs text-text-muted">{t("project.voice.taglineHint")}</p>
+                  <p className="text-caption text-text-muted">{t("project.voice.taglineHint")}</p>
                 </div>
               </div>
             </Card>
@@ -273,17 +273,19 @@ export default function VoicePage() {
                     <Heading variant="label" as="h3" className="text-text-primary">
                       {t("project.common.yourScript")}
                     </Heading>
-                    <span className="text-xs font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0 group-hover:text-accent-cyan-hover">
+                    <span className="text-caption font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0 group-hover:text-accent-cyan-hover">
                       {t("project.common.clickToExpand")} <ChevronDown className="h-3 w-3" />
                     </span>
                   </div>
-                  <p className="text-sm text-text-muted mb-2">
+                  <p className="text-body text-text-muted mb-2">
                     {t("project.common.scriptMeta", {
                       count: activeScript.wordCount,
                       duration: formatDuration(activeScript.duration),
                     })}
                   </p>
-                  <p className="text-sm text-text-secondary line-clamp-2">{activeScript.content}</p>
+                  <p className="text-body text-text-secondary line-clamp-2">
+                    {activeScript.content}
+                  </p>
                 </div>
               </div>
             </Card>

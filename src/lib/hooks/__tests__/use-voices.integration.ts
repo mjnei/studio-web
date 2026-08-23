@@ -38,7 +38,7 @@ function pass(message: string) {
 function fail(message: string, error?: any) {
   log(`✗ FAIL: ${message}`, colors.red);
   if (error) {
-    log(`  Error: ${error.message}`, colors.red);
+    log(` Error: ${error.message}`, colors.red);
   }
 }
 
@@ -63,13 +63,13 @@ class MockVoiceClient {
   voices: any[] = [];
 
   async listVoices(skip = 0, limit = 100) {
-    log(`  [Mock] listVoices(skip=${skip}, limit=${limit})`, colors.yellow);
+    log(` [Mock] listVoices(skip=${skip}, limit=${limit})`, colors.yellow);
     // Simulate fetching voices from API
     return this.voices;
   }
 
   async getVoiceAudioUrl(id: number) {
-    log(`  [Mock] getVoiceAudioUrl(${id})`, colors.yellow);
+    log(` [Mock] getVoiceAudioUrl(${id})`, colors.yellow);
     // Simulate returning a presigned URL
     return {
       audio_url: `${API_BASE}/voices/${id}/stream`,
@@ -80,7 +80,7 @@ class MockVoiceClient {
 
   async uploadVoice(file: Blob, name: string, durationSeconds?: number) {
     log(
-      `  [Mock] uploadVoice(file: ${file.type}, name: "${name}", duration: ${durationSeconds})`,
+      ` [Mock] uploadVoice(file: ${file.type}, name: "${name}", duration: ${durationSeconds})`,
       colors.yellow
     );
     // Simulate creating a new voice
@@ -103,12 +103,12 @@ class MockVoiceClient {
   }
 
   async deleteVoice(id: number) {
-    log(`  [Mock] deleteVoice(${id})`, colors.yellow);
+    log(` [Mock] deleteVoice(${id})`, colors.yellow);
     this.voices = this.voices.filter((v) => v.id !== id);
   }
 
   async toggleVoiceSharing(id: number, isShared: boolean) {
-    log(`  [Mock] toggleVoiceSharing(${id}, ${isShared})`, colors.yellow);
+    log(` [Mock] toggleVoiceSharing(${id}, ${isShared})`, colors.yellow);
     const voice = this.voices.find((v) => v.id === id);
     if (voice) {
       voice.is_shared = isShared;
@@ -193,7 +193,7 @@ async function runTests() {
 
     // Step 1: List voices
     const voices = await mockClient.listVoices();
-    log(`  Fetched ${voices.length} voices`, colors.blue);
+    log(` Fetched ${voices.length} voices`, colors.blue);
 
     // Step 2: Fetch audio URLs for all voices in parallel
     const voicesWithUrls = await Promise.all(
@@ -207,7 +207,7 @@ async function runTests() {
             audio_expires_in: audioData.expires_in,
           };
         } catch {
-          log(`  Warning: Failed to fetch audio URL for voice ${voice.id}`, colors.yellow);
+          log(` Warning: Failed to fetch audio URL for voice ${voice.id}`, colors.yellow);
           return voice;
         }
       })
@@ -253,7 +253,7 @@ async function runTests() {
 
     // Step 2: Upload voice
     const uploadedVoice = await mockClient.uploadVoice(testFile, testName, testDuration);
-    log(`  Uploaded voice with ID ${uploadedVoice.id}`, colors.blue);
+    log(` Uploaded voice with ID ${uploadedVoice.id}`, colors.blue);
 
     // Step 3: Verify voice details
     if (uploadedVoice.name === testName) {
@@ -295,14 +295,14 @@ async function runTests() {
     log("Expected: Voice removed from voices array");
 
     const initialCount = mockClient.voices.length;
-    log(`  Initial voices: ${initialCount}`, colors.blue);
+    log(` Initial voices: ${initialCount}`, colors.blue);
 
     if (initialCount > 0) {
       const voiceToDelete = mockClient.voices[0];
       await mockClient.deleteVoice(voiceToDelete.id);
 
       const finalCount = mockClient.voices.length;
-      log(`  Final voices: ${finalCount}`, colors.blue);
+      log(` Final voices: ${finalCount}`, colors.blue);
 
       if (finalCount === initialCount - 1) {
         pass("Voice deleted and filtered from state");
@@ -313,7 +313,7 @@ async function runTests() {
         testResults.failed++;
       }
     } else {
-      info("  Skipped: No voices to delete");
+      info(" Skipped: No voices to delete");
     }
   } catch (error) {
     fail("Voice deletion test", error);
@@ -332,11 +332,11 @@ async function runTests() {
     if (mockClient.voices.length > 0) {
       const voice = mockClient.voices[0];
       const originalShared = voice.is_shared;
-      log(`  Original is_shared: ${originalShared}`, colors.blue);
+      log(` Original is_shared: ${originalShared}`, colors.blue);
 
       // Toggle sharing
       const updatedVoice = await mockClient.toggleVoiceSharing(voice.id, !originalShared);
-      log(`  Updated is_shared: ${updatedVoice.is_shared}`, colors.blue);
+      log(` Updated is_shared: ${updatedVoice.is_shared}`, colors.blue);
 
       if (updatedVoice.is_shared === !originalShared) {
         pass("Voice sharing toggle successful");
@@ -348,7 +348,7 @@ async function runTests() {
         testResults.failed++;
       }
     } else {
-      info("  Skipped: No voices to toggle sharing");
+      info(" Skipped: No voices to toggle sharing");
     }
   } catch (error) {
     fail("Voice sharing toggle test", error);
@@ -462,19 +462,19 @@ async function runTests() {
   if (testResults.failed === 0) {
     log("\n✅ All integration tests passed!", colors.green);
   } else {
-    log(`\n⚠️  ${testResults.failed} test(s) failed`, colors.red);
+    log(`\n⚠️ ${testResults.failed} test(s) failed`, colors.red);
   }
 
   log("\n**Validations:**", colors.cyan);
-  log("  - Requirement 2.1: Fetch voices on mount", colors.cyan);
-  log("  - Requirement 2.2: Audio URLs attached", colors.cyan);
-  log("  - Requirement 2.3: Upload with new parameters", colors.cyan);
-  log("  - Requirement 2.4: Delete with state update", colors.cyan);
-  log("  - Requirement 2.5: Toggle sharing", colors.cyan);
-  log("  - Requirement 2.6: Refetch capability", colors.cyan);
-  log("  - Property 1: Audio URL Retrieval Consistency", colors.cyan);
-  log("  - Property 2: Voice Upload Round Trip", colors.cyan);
-  log("  - Property 4: Voice Sharing State Consistency", colors.cyan);
+  log(" - Requirement 2.1: Fetch voices on mount", colors.cyan);
+  log(" - Requirement 2.2: Audio URLs attached", colors.cyan);
+  log(" - Requirement 2.3: Upload with new parameters", colors.cyan);
+  log(" - Requirement 2.4: Delete with state update", colors.cyan);
+  log(" - Requirement 2.5: Toggle sharing", colors.cyan);
+  log(" - Requirement 2.6: Refetch capability", colors.cyan);
+  log(" - Property 1: Audio URL Retrieval Consistency", colors.cyan);
+  log(" - Property 2: Voice Upload Round Trip", colors.cyan);
+  log(" - Property 4: Voice Sharing State Consistency", colors.cyan);
 
   return testResults.failed === 0;
 }

@@ -165,10 +165,10 @@ function ToastItem({ toast, onClose }: ToastItemProps) {
   return (
     <div
       className={`
-        pointer-events-auto w-full sm:w-96 rounded-lg border backdrop-blur-sm
-        shadow-lg animate-in slide-in-from-top-2 fade-in duration-300
-        ${variantStyle.bgColor} ${variantStyle.borderColor}
-      `}
+ pointer-events-auto w-full sm:w-96 rounded-lg border backdrop-blur-sm
+ shadow-lg animate-in slide-in-from-top-2 fade-in duration-300
+ ${variantStyle.bgColor} ${variantStyle.borderColor}
+ `}
     >
       <div className="flex items-start gap-2 sm:gap-3 p-3 sm:p-4">
         <div
@@ -177,11 +177,9 @@ function ToastItem({ toast, onClose }: ToastItemProps) {
           {variantStyle.icon}
         </div>
         <div className="flex-1 min-w-0">
-          <p className={`font-semibold text-xs sm:text-sm ${variantStyle.textColor}`}>
-            {toast.title}
-          </p>
+          <p className={`font-semibold text-caption ${variantStyle.textColor}`}>{toast.title}</p>
           {toast.description && (
-            <p className="mt-1 text-xs sm:text-sm text-text-secondary line-clamp-2">
+            <p className="mt-1 text-caption text-text-secondary line-clamp-2">
               {toast.description}
             </p>
           )}

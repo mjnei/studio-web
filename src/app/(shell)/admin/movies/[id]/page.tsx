@@ -187,7 +187,7 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
             ) : (
               <AlertCircle className="h-5 w-5 flex-shrink-0" />
             )}
-            <span className="text-sm font-medium">{toast.message}</span>
+            <span className="text-body font-medium">{toast.message}</span>
           </div>
         ))}
       </div>
@@ -198,17 +198,17 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
           <div className="flex items-center justify-between">
             <Link
               href="/admin/movies"
-              className="inline-flex items-center gap-2 text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
+              className="inline-flex items-center gap-2 text-body font-medium text-text-secondary hover:text-text-primary transition-colors"
             >
               <ArrowLeft className="h-4 w-4" />
               Back to Movies
             </Link>
             <div className="flex items-center gap-3">
-              <span className="text-sm text-text-muted">Locale:</span>
+              <span className="text-body text-text-muted">Locale:</span>
               <select
                 value={selectedLocale}
                 onChange={(e) => setSelectedLocale(e.target.value)}
-                className="rounded-lg border border-border-default bg-surface-base px-3 py-1.5 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
+                className="rounded-lg border border-border-default bg-surface-base px-3 py-1.5 text-body text-text-primary focus:border-accent-primary focus:outline-none"
               >
                 {SUPPORTED_LOCALES.map((locale) => (
                   <option key={locale} value={locale}>
@@ -226,18 +226,18 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
         <div className="flex h-[60vh] items-center justify-center">
           <div className="flex flex-col items-center gap-2">
             <Spinner size="md" className="text-accent-primary" />
-            <p className="text-sm text-text-muted">Loading movie details...</p>
+            <p className="text-body text-text-muted">Loading movie details...</p>
           </div>
         </div>
       ) : error ? (
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
           <div className="rounded-2xl border border-border-default bg-surface-panel p-8 text-center">
             <AlertCircle className="mx-auto h-12 w-12 text-red-500 opacity-50 mb-3" />
-            <p className="text-sm text-text-primary font-medium mb-2">Unable to load movie</p>
-            <p className="text-sm text-text-muted mb-4">{error}</p>
+            <p className="text-body text-text-primary font-medium mb-2">Unable to load movie</p>
+            <p className="text-body text-text-muted mb-4">{error}</p>
             <Link
               href="/admin/movies"
-              className="inline-flex items-center gap-2 rounded-lg bg-accent-primary px-4 py-2 text-sm font-medium text-white hover:bg-accent-primary/90 transition-colors"
+              className="inline-flex items-center gap-2 rounded-lg bg-accent-primary px-4 py-2 text-body font-medium text-white hover:bg-accent-primary/90 transition-colors"
             >
               <ArrowLeft className="h-4 w-4" />
               Return to Movies
@@ -284,11 +284,11 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                   {movie.vote_average && movie.vote_average > 0 && (
                     <div className="flex items-center gap-2">
                       <Star className="h-4 w-4 text-yellow-400 fill-yellow-400" />
-                      <span className="text-sm font-semibold text-text-primary">
+                      <span className="text-body font-semibold text-text-primary">
                         {movie.vote_average.toFixed(1)}
                       </span>
                       {movie.vote_count && (
-                        <span className="text-xs text-text-muted">
+                        <span className="text-caption text-text-muted">
                           ({movie.vote_count.toLocaleString()} votes)
                         </span>
                       )}
@@ -296,8 +296,8 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                   )}
                   {movie.popularity && (
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-medium text-text-muted">Popularity:</span>
-                      <span className="text-sm text-text-primary">
+                      <span className="text-caption font-medium text-text-muted">Popularity:</span>
+                      <span className="text-body text-text-primary">
                         {movie.popularity.toFixed(1)}
                       </span>
                     </div>
@@ -308,7 +308,7 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                 {isEditing && editingData ? (
                   <div className="space-y-3">
                     <div>
-                      <label className="mb-1 block text-xs font-medium text-text-muted">
+                      <label className="mb-1 block text-caption font-medium text-text-muted">
                         Douban ID
                       </label>
                       <input
@@ -317,14 +317,14 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                         onChange={(e) =>
                           setEditingData({ ...editingData, douban_id: e.target.value })
                         }
-                        className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
+                        className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 text-body text-text-primary focus:border-accent-primary focus:outline-none"
                         placeholder="Optional Douban ID"
                       />
                     </div>
                     <div className="flex gap-2">
                       <button
                         onClick={handleUpdate}
-                        className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 transition-colors"
+                        className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-body font-medium text-white hover:bg-green-700 transition-colors"
                       >
                         <Save className="h-4 w-4" />
                         Save
@@ -334,7 +334,7 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                           setIsEditing(false);
                           setEditingData(null);
                         }}
-                        className="flex items-center justify-center gap-2 rounded-lg border border-border-default bg-surface-base px-4 py-2 text-sm font-medium text-text-secondary hover:bg-surface-hover transition-colors"
+                        className="flex items-center justify-center gap-2 rounded-lg border border-border-default bg-surface-base px-4 py-2 text-body font-medium text-text-secondary hover:bg-surface-hover transition-colors"
                       >
                         <X className="h-4 w-4" />
                       </button>
@@ -350,14 +350,14 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                           douban_id: movie.douban_id || undefined,
                         });
                       }}
-                      className="flex items-center justify-center gap-2 rounded-lg border border-border-default bg-surface-base px-4 py-2 text-sm font-medium text-text-secondary hover:bg-surface-hover transition-colors"
+                      className="flex items-center justify-center gap-2 rounded-lg border border-border-default bg-surface-base px-4 py-2 text-body font-medium text-text-secondary hover:bg-surface-hover transition-colors"
                     >
                       <Edit2 className="h-4 w-4" />
                       Edit Movie
                     </button>
                     <button
                       onClick={handleDelete}
-                      className="flex items-center justify-center gap-2 rounded-lg border border-red-500/50 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-500/20 transition-colors"
+                      className="flex items-center justify-center gap-2 rounded-lg border border-red-500/50 bg-red-500/10 px-4 py-2 text-body font-medium text-red-600 hover:bg-red-500/20 transition-colors"
                     >
                       <Trash2 className="h-4 w-4" />
                       Delete Movie
@@ -377,7 +377,7 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                     <p className="mb-3 text-body text-text-muted">{movie.original_title}</p>
                   )}
 
-                  <div className="flex flex-wrap gap-4 items-center text-sm text-text-secondary mb-4">
+                  <div className="flex flex-wrap gap-4 items-center text-body text-text-secondary mb-4">
                     {movie.release_date && (
                       <div className="flex items-center gap-1.5">
                         <Calendar className="h-4 w-4" />
@@ -411,12 +411,12 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                   </Heading>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
-                      <p className="text-xs text-text-muted mb-1">TMDB ID</p>
+                      <p className="text-caption text-text-muted mb-1">TMDB ID</p>
                       <a
                         href={`https://www.themoviedb.org/movie/${movie.id}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-sm font-medium text-accent-primary hover:underline flex items-center gap-1"
+                        className="text-body font-medium text-accent-primary hover:underline flex items-center gap-1"
                       >
                         {movie.id}
                         <ExternalLink className="h-3 w-3" />
@@ -424,12 +424,12 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                     </div>
                     {movie.imdb_id && (
                       <div>
-                        <p className="text-xs text-text-muted mb-1">IMDb</p>
+                        <p className="text-caption text-text-muted mb-1">IMDb</p>
                         <a
                           href={`https://www.imdb.com/title/${movie.imdb_id}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-sm font-medium text-accent-primary hover:underline flex items-center gap-1"
+                          className="text-body font-medium text-accent-primary hover:underline flex items-center gap-1"
                         >
                           {movie.imdb_id}
                           <ExternalLink className="h-3 w-3" />
@@ -438,12 +438,12 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                     )}
                     {movie.douban_id && (
                       <div>
-                        <p className="text-xs text-text-muted mb-1">Douban</p>
+                        <p className="text-caption text-text-muted mb-1">Douban</p>
                         <a
                           href={`https://movie.douban.com/subject/${movie.douban_id}/`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-sm font-medium text-accent-primary hover:underline flex items-center gap-1"
+                          className="text-body font-medium text-accent-primary hover:underline flex items-center gap-1"
                         >
                           {movie.douban_id}
                           <ExternalLink className="h-3 w-3" />
@@ -468,7 +468,7 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                       {movie.genres.map((genre) => (
                         <span
                           key={genre.id}
-                          className="rounded-lg border border-border-default bg-surface-base px-3 py-1.5 text-sm font-medium text-text-primary"
+                          className="rounded-lg border border-border-default bg-surface-base px-3 py-1.5 text-body font-medium text-text-primary"
                         >
                           {genre.name}
                         </span>
@@ -490,7 +490,9 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                     <Heading variant="label" as="h2" className="text-text-primary mb-3">
                       Overview
                     </Heading>
-                    <p className="text-sm leading-relaxed text-text-secondary">{movie.overview}</p>
+                    <p className="text-body leading-relaxed text-text-secondary">
+                      {movie.overview}
+                    </p>
                   </div>
                 )}
 
@@ -528,7 +530,7 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                               </div>
                             )}
                             <div className="w-full">
-                              <p className="text-xs font-medium text-text-primary line-clamp-2">
+                              <p className="text-caption font-medium text-text-primary line-clamp-2">
                                 {credit.person.display_name}
                               </p>
                             </div>
@@ -570,11 +572,11 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                               </div>
                             )}
                             <div className="w-full">
-                              <p className="text-xs font-medium text-text-primary line-clamp-2">
+                              <p className="text-caption font-medium text-text-primary line-clamp-2">
                                 {credit.person.display_name}
                               </p>
                               {credit.character && (
-                                <p className="text-xs text-text-muted line-clamp-2">
+                                <p className="text-caption text-text-muted line-clamp-2">
                                   {credit.character}
                                 </p>
                               )}
@@ -583,7 +585,7 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                         ))}
                       </div>
                       {actors.length > 20 && (
-                        <p className="mt-3 text-xs text-text-muted text-center">
+                        <p className="mt-3 text-caption text-text-muted text-center">
                           Showing top 20 of {actors.length} cast members
                         </p>
                       )}
@@ -600,7 +602,7 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                         {producers.map((credit) => (
                           <span
                             key={credit.id}
-                            className="rounded-lg border border-border-default bg-surface-base px-3 py-1.5 text-sm text-text-primary"
+                            className="rounded-lg border border-border-default bg-surface-base px-3 py-1.5 text-body text-text-primary"
                           >
                             {credit.person.display_name}
                           </span>
@@ -619,7 +621,7 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                         {writers.map((credit) => (
                           <span
                             key={credit.id}
-                            className="rounded-lg border border-border-default bg-surface-base px-3 py-1.5 text-sm text-text-primary"
+                            className="rounded-lg border border-border-default bg-surface-base px-3 py-1.5 text-body text-text-primary"
                           >
                             {credit.person.display_name}
                           </span>

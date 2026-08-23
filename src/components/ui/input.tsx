@@ -16,7 +16,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="w-full">
         {label && (
-          <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
+          <label className="block text-body font-medium text-[var(--text-primary)] mb-2">
             {label}
           </label>
         )}
@@ -44,7 +44,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
             </div>
           )}
         </div>
-        {error && <p className="mt-1.5 text-sm text-[var(--status-error)]">{error}</p>}
+        {error && <p className="mt-1.5 text-body text-[var(--status-error)]">{error}</p>}
       </div>
     );
   }
@@ -62,7 +62,7 @@ export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
     return (
       <div className="w-full">
         {label && (
-          <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
+          <label className="block text-body font-medium text-[var(--text-primary)] mb-2">
             {label}
           </label>
         )}
@@ -75,7 +75,7 @@ export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
           ref={ref}
           {...props}
         />
-        {error && <p className="mt-1.5 text-sm text-[var(--status-error)]">{error}</p>}
+        {error && <p className="mt-1.5 text-body text-[var(--status-error)]">{error}</p>}
       </div>
     );
   }

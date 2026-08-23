@@ -117,15 +117,15 @@ export default function LeaderboardPage() {
               <Heading variant="subsection" as="p" className="mb-1 text-text-primary">
                 {leaderboard[1].user_name}
               </Heading>
-              <div className="mt-3 flex items-center justify-center gap-4 text-sm text-text-muted">
+              <div className="mt-3 flex items-center justify-center gap-4 text-body text-text-muted">
                 <div>
-                  <p className="text-xs">{t("referral.leaderboard.referrals")}</p>
+                  <p className="text-caption">{t("referral.leaderboard.referrals")}</p>
                   <Heading variant="subsection" as="p" className="text-text-primary">
                     {leaderboard[1].total_all_levels_referrals}
                   </Heading>
                 </div>
                 <div>
-                  <p className="text-xs">{t("referral.leaderboard.rewards")}</p>
+                  <p className="text-caption">{t("referral.leaderboard.rewards")}</p>
                   <Heading variant="subsection" as="p" className="text-accent-cyan">
                     {leaderboard[1].total_invite_rewards_earned}
                   </Heading>
@@ -162,15 +162,15 @@ export default function LeaderboardPage() {
               <Heading variant="section" as="p" className="mb-1 text-text-primary">
                 {leaderboard[0].user_name}
               </Heading>
-              <div className="mt-3 flex items-center justify-center gap-4 text-sm text-text-muted">
+              <div className="mt-3 flex items-center justify-center gap-4 text-body text-text-muted">
                 <div>
-                  <p className="text-xs">{t("referral.leaderboard.referrals")}</p>
+                  <p className="text-caption">{t("referral.leaderboard.referrals")}</p>
                   <Heading variant="metric" as="p" className="text-text-primary">
                     {leaderboard[0].total_all_levels_referrals}
                   </Heading>
                 </div>
                 <div>
-                  <p className="text-xs">{t("referral.leaderboard.rewards")}</p>
+                  <p className="text-caption">{t("referral.leaderboard.rewards")}</p>
                   <Heading variant="metric" as="p" className="text-accent-cyan">
                     {leaderboard[0].total_invite_rewards_earned}
                   </Heading>
@@ -207,15 +207,15 @@ export default function LeaderboardPage() {
               <Heading variant="subsection" as="p" className="mb-1 text-text-primary">
                 {leaderboard[2].user_name}
               </Heading>
-              <div className="mt-3 flex items-center justify-center gap-4 text-sm text-text-muted">
+              <div className="mt-3 flex items-center justify-center gap-4 text-body text-text-muted">
                 <div>
-                  <p className="text-xs">{t("referral.leaderboard.referrals")}</p>
+                  <p className="text-caption">{t("referral.leaderboard.referrals")}</p>
                   <Heading variant="subsection" as="p" className="text-text-primary">
                     {leaderboard[2].total_all_levels_referrals}
                   </Heading>
                 </div>
                 <div>
-                  <p className="text-xs">{t("referral.leaderboard.rewards")}</p>
+                  <p className="text-caption">{t("referral.leaderboard.rewards")}</p>
                   <Heading variant="subsection" as="p" className="text-accent-cyan">
                     {leaderboard[2].total_invite_rewards_earned}
                   </Heading>
@@ -239,7 +239,7 @@ export default function LeaderboardPage() {
               </CardDescription>
             </div>
             {cacheUpdatedAt && (
-              <div className="text-xs text-text-muted">
+              <div className="text-caption text-text-muted">
                 {t("referral.leaderboard.lastUpdated")}: {formatCacheTime(cacheUpdatedAt)}
               </div>
             )}
@@ -253,22 +253,22 @@ export default function LeaderboardPage() {
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[600px] text-sm">
+              <table className="w-full min-w-[600px] text-body">
                 <thead>
                   <tr className="border-b border-border-default text-left">
-                    <th className="pb-3 text-xs font-semibold text-text-secondary uppercase tracking-wider w-16">
+                    <th className="pb-3 text-caption font-semibold text-text-secondary uppercase tracking-wider w-16">
                       {t("referral.leaderboard.rank")}
                     </th>
-                    <th className="pb-3 text-xs font-semibold text-text-secondary uppercase tracking-wider">
+                    <th className="pb-3 text-caption font-semibold text-text-secondary uppercase tracking-wider">
                       {t("referral.leaderboard.user")}
                     </th>
-                    <th className="pb-3 text-xs font-semibold text-text-secondary uppercase tracking-wider text-right">
+                    <th className="pb-3 text-caption font-semibold text-text-secondary uppercase tracking-wider text-right">
                       {t("referral.leaderboard.direct")}
                     </th>
-                    <th className="pb-3 text-xs font-semibold text-text-secondary uppercase tracking-wider text-right">
+                    <th className="pb-3 text-caption font-semibold text-text-secondary uppercase tracking-wider text-right">
                       {t("referral.leaderboard.total")}
                     </th>
-                    <th className="pb-3 text-xs font-semibold text-text-secondary uppercase tracking-wider text-right">
+                    <th className="pb-3 text-caption font-semibold text-text-secondary uppercase tracking-wider text-right">
                       {t("referral.leaderboard.rewards")}
                     </th>
                   </tr>

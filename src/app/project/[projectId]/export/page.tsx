@@ -302,7 +302,7 @@ export default function ExportPage() {
             <Heading variant="subsection" as="h2" className="text-text-primary mb-2">
               {t("project.export.loadTimedOut")}
             </Heading>
-            <p className="text-sm text-text-secondary">{t("project.export.loadTimedOutDesc")}</p>
+            <p className="text-body text-text-secondary">{t("project.export.loadTimedOutDesc")}</p>
           </div>
           <Button
             variant="primary"
@@ -328,7 +328,7 @@ export default function ExportPage() {
               <Heading variant="section" as="h2" className="text-text-primary">
                 {t("project.export.title")}
               </Heading>
-              <p className="mt-1 text-sm text-text-muted">{t("project.export.description")}</p>
+              <p className="mt-1 text-body text-text-muted">{t("project.export.description")}</p>
             </div>
 
             <div className="group relative">
@@ -338,7 +338,7 @@ export default function ExportPage() {
               >
                 <Info className="h-4 w-4 text-text-muted group-hover:text-accent-cyan" />
               </button>
-              <div className="absolute right-0 top-10 z-10 hidden group-hover:block w-64 p-3 rounded-lg bg-surface-raised border border-border-default shadow-lg text-xs">
+              <div className="absolute right-0 top-10 z-10 hidden group-hover:block w-64 p-3 rounded-lg bg-surface-raised border border-border-default shadow-lg text-caption">
                 <p className="font-medium text-text-secondary mb-2">
                   {t("project.export.quickInfo")}
                 </p>
@@ -367,7 +367,7 @@ export default function ExportPage() {
                   <Heading variant="metric" className="text-success-text">
                     {completedVideos.length}
                   </Heading>
-                  <p className="text-xs text-text-muted">{t("project.export.completed")}</p>
+                  <p className="text-caption text-text-muted">{t("project.export.completed")}</p>
                 </div>
               </div>
             </Card>
@@ -381,7 +381,7 @@ export default function ExportPage() {
                   <Heading variant="metric" className="text-accent-cyan">
                     {processingVideos.length}
                   </Heading>
-                  <p className="text-xs text-text-muted">{t("project.export.processing")}</p>
+                  <p className="text-caption text-text-muted">{t("project.export.processing")}</p>
                 </div>
               </div>
             </Card>
@@ -395,7 +395,7 @@ export default function ExportPage() {
                   <Heading variant="metric" className="text-error-text">
                     {failedVideos.length}
                   </Heading>
-                  <p className="text-xs text-text-muted">{t("project.export.failed")}</p>
+                  <p className="text-caption text-text-muted">{t("project.export.failed")}</p>
                 </div>
               </div>
             </Card>
@@ -411,7 +411,7 @@ export default function ExportPage() {
                 </Heading>
                 <div className="flex items-center gap-2">
                   {creditStatus && (
-                    <div className="text-xs text-text-muted">
+                    <div className="text-caption text-text-muted">
                       {formatCredits(creditStatus.credits_remaining)}
                     </div>
                   )}
@@ -439,7 +439,7 @@ export default function ExportPage() {
               {/* Version Selector */}
               {completedVideos.length > 1 && (
                 <div className="mb-4 flex items-center gap-2">
-                  <span className="text-xs font-medium text-text-muted flex-shrink-0">
+                  <span className="text-caption font-medium text-text-muted flex-shrink-0">
                     {t("project.export.versionLabel")}
                   </span>
                   <div className="flex gap-2 overflow-x-auto">
@@ -448,7 +448,7 @@ export default function ExportPage() {
                         key={video.id}
                         type="button"
                         onClick={() => setSelectedVideoId(video.id)}
-                        className={`flex-shrink-0 px-3 py-1.5 rounded text-xs font-medium transition-all ${
+                        className={`flex-shrink-0 px-3 py-1.5 rounded text-caption font-medium transition-all ${
                           video.id === displayVideo.id
                             ? "bg-accent-cyan text-white"
                             : "bg-surface-raised text-text-secondary hover:bg-surface-raised-hover border border-border-default"
@@ -475,10 +475,10 @@ export default function ExportPage() {
                 ) : (
                   <div className="w-full h-full flex flex-col items-center justify-center gap-2 p-6 text-center">
                     <Film className="h-10 w-10 text-text-muted" aria-hidden />
-                    <p className="text-sm font-medium text-text-secondary">
+                    <p className="text-body font-medium text-text-secondary">
                       {t("project.export.videoUnavailable")}
                     </p>
-                    <p className="text-xs text-text-muted max-w-xs">
+                    <p className="text-caption text-text-muted max-w-xs">
                       {t("project.export.videoUnavailableDesc")}
                     </p>
                   </div>
@@ -486,7 +486,7 @@ export default function ExportPage() {
               </div>
 
               {/* Video metadata */}
-              <div className="grid gap-4 grid-cols-2 lg:grid-cols-4 text-xs p-3 rounded-lg bg-surface-base border border-border-default mb-4">
+              <div className="grid gap-4 grid-cols-2 lg:grid-cols-4 text-caption p-3 rounded-lg bg-surface-base border border-border-default mb-4">
                 <div>
                   <span className="font-medium text-text-muted">
                     {t("project.export.voiceLabel")}
@@ -570,7 +570,7 @@ export default function ExportPage() {
                 <Heading variant="subsection" as="h3" className="text-text-primary mb-2">
                   {t("project.export.readyTitle")}
                 </Heading>
-                <p className="text-sm text-text-muted mb-6">{t("project.export.readyDesc")}</p>
+                <p className="text-body text-text-muted mb-6">{t("project.export.readyDesc")}</p>
 
                 {creditStatus && (
                   <div className="mb-6 flex justify-center">
@@ -601,7 +601,7 @@ export default function ExportPage() {
                 </Button>
 
                 {creditStatus && creditStatus.credits_remaining < 1 && (
-                  <p className="mt-3 text-xs text-error-text">
+                  <p className="mt-3 text-caption text-error-text">
                     {t("project.export.insufficientCredits")}
                   </p>
                 )}
@@ -623,10 +623,10 @@ export default function ExportPage() {
                   <div className="flex items-start gap-3">
                     <AlertCircle className="h-5 w-5 text-error-text flex-shrink-0" aria-hidden />
                     <div>
-                      <p className="text-sm font-medium text-text-primary">
+                      <p className="text-body font-medium text-text-primary">
                         {t("project.export.processingTimedOut")}
                       </p>
-                      <p className="text-xs text-text-secondary mt-1">
+                      <p className="text-caption text-text-secondary mt-1">
                         {t("project.export.processingTimedOutDesc")}
                       </p>
                     </div>
@@ -650,17 +650,17 @@ export default function ExportPage() {
                       <div className="flex items-center gap-3 flex-1">
                         <Spinner className="h-5 w-5 text-accent-cyan flex-shrink-0" />
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-text-primary">
+                          <p className="text-body font-medium text-text-primary">
                             {t("project.common.version", { number: video.generation_attempt })}
                           </p>
-                          <p className="text-xs text-text-muted">
+                          <p className="text-caption text-text-muted">
                             {video.status === "queued"
                               ? t("project.export.queuedProcessing")
                               : t("project.export.generatingVideo")}
                           </p>
                         </div>
                       </div>
-                      <span className="text-xs px-2 py-1 rounded bg-accent-cyan/10 text-accent-cyan">
+                      <span className="text-caption px-2 py-1 rounded bg-accent-cyan/10 text-accent-cyan">
                         {getStatusLabel(video.status)}
                       </span>
                     </div>
@@ -685,10 +685,10 @@ export default function ExportPage() {
                     <div className="flex items-center gap-3 flex-1 min-w-0">
                       <AlertCircle className="h-5 w-5 text-error-text flex-shrink-0" aria-hidden />
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-text-primary">
+                        <p className="text-body font-medium text-text-primary">
                           {t("project.common.version", { number: video.generation_attempt })}
                         </p>
-                        <p className="text-xs text-error-text truncate">
+                        <p className="text-caption text-error-text truncate">
                           {video.error_message || t("project.export.generationFailed")}
                         </p>
                       </div>
@@ -696,7 +696,7 @@ export default function ExportPage() {
                     <button
                       type="button"
                       onClick={() => handleDeleteVideo(video.id)}
-                      className="text-xs text-text-muted hover:text-error-text font-medium ml-2"
+                      className="text-caption text-text-muted hover:text-error-text font-medium ml-2"
                       title={t("project.export.deleteVideo")}
                       aria-label={t("project.export.deleteVideo")}
                     >
@@ -712,7 +712,7 @@ export default function ExportPage() {
           {videos && videos.length > 1 && (
             <Card variant="elevated" padding="md">
               <details className="group">
-                <summary className="flex items-center gap-2 cursor-pointer text-sm font-medium text-text-primary hover:text-accent-cyan transition-colors select-none py-2">
+                <summary className="flex items-center gap-2 cursor-pointer text-body font-medium text-text-primary hover:text-accent-cyan transition-colors select-none py-2">
                   <ChevronRight className="h-4 w-4 group-open:rotate-90 transition-transform" />
                   <span>{t("project.export.viewAllVersions", { count: videos.length })}</span>
                 </summary>
@@ -742,14 +742,14 @@ export default function ExportPage() {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
-                            <p className="text-sm font-medium text-text-primary">
+                            <p className="text-body font-medium text-text-primary">
                               {t("project.common.version", { number: video.generation_attempt })}
                             </p>
                             {(video.status === "processing" || video.status === "queued") && (
                               <Spinner className="h-3 w-3 text-accent-cyan" />
                             )}
                             <span
-                              className={`text-xs px-2 py-0.5 rounded ${
+                              className={`text-caption px-2 py-0.5 rounded ${
                                 video.status === "completed"
                                   ? "bg-success-bg text-success-text"
                                   : video.status === "failed"
@@ -760,7 +760,7 @@ export default function ExportPage() {
                               {getStatusLabel(video.status)}
                             </span>
                           </div>
-                          <p className="text-xs text-text-muted mt-1">
+                          <p className="text-caption text-text-muted mt-1">
                             {new Date(video.created_at).toLocaleDateString(dateLocale, {
                               month: "short",
                               day: "numeric",
@@ -777,7 +777,7 @@ export default function ExportPage() {
                               <button
                                 type="button"
                                 onClick={() => setSelectedVideoId(video.id)}
-                                className="text-xs text-accent-cyan hover:text-accent-cyan-hover font-medium px-2 py-1"
+                                className="text-caption text-accent-cyan hover:text-accent-cyan-hover font-medium px-2 py-1"
                               >
                                 {t("common.view")}
                               </button>
@@ -837,7 +837,7 @@ export default function ExportPage() {
             size="md"
           >
             <div className="space-y-4">
-              <p className="text-sm text-text-muted">{t("project.export.choosePlatform")}</p>
+              <p className="text-body text-text-muted">{t("project.export.choosePlatform")}</p>
 
               <div className="space-y-3">
                 {/* X.com (Twitter) */}
@@ -862,7 +862,7 @@ export default function ExportPage() {
                     >
                       {t("project.export.shareXTitle")}
                     </Heading>
-                    <p className="text-xs text-text-muted mt-0.5">
+                    <p className="text-caption text-text-muted mt-0.5">
                       {t("project.export.shareXSubtitle")}
                     </p>
                   </div>
@@ -894,7 +894,7 @@ export default function ExportPage() {
                     >
                       {t("project.export.shareWeChatTitle")}
                     </Heading>
-                    <p className="text-xs text-text-muted mt-0.5">
+                    <p className="text-caption text-text-muted mt-0.5">
                       {t("project.export.shareWeChatSubtitle")}
                     </p>
                   </div>
@@ -903,7 +903,7 @@ export default function ExportPage() {
               </div>
 
               <div className="pt-4 border-t border-border-default">
-                <p className="text-xs text-text-muted text-center">
+                <p className="text-caption text-text-muted text-center">
                   {t("project.export.morePlatforms")}
                 </p>
               </div>

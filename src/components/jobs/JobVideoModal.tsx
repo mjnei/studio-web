@@ -52,7 +52,7 @@ export const JobVideoModal: React.FC<JobVideoModalProps> = ({ job, onClose }) =>
           </div>
         )}
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs text-text-muted bg-surface-panel p-3 rounded-lg border border-border-default">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-caption text-text-muted bg-surface-panel p-3 rounded-lg border border-border-default">
           <div>
             <span className="font-semibold text-text-secondary">{t("jobs.modal.voice")}:</span>{" "}
             {job.voice_name || t("jobs.modal.default")}

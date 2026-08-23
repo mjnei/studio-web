@@ -7,7 +7,7 @@
  * - `as`      controls the HTML element emitted (for a11y / document outline).
  *
  * The `label` variant defaults to `<p>` — it is intentionally NOT a heading
- * element by default because its visual size (text-sm) is often used for
+ * element by default because its visual size (text-label / text-body) is often used for
  * dense UI chrome where the heading level should be explicit. Pass `as="h2"`
  * (or any level) when the label needs to appear in the document outline.
  *

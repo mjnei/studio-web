@@ -203,7 +203,7 @@ export function ThumbnailEditorModal({
             onChange={(e) => setThumbnailText(e.target.value)}
             placeholder={t("project.thumbnailEditor.overlayPlaceholder")}
             maxLength={200}
-            className="w-full rounded-lg border border-border-default bg-surface-base px-4 py-2.5 text-base text-text-primary placeholder-text-muted focus:border-accent-cyan focus:outline-none focus:ring-2 focus:ring-accent-cyan/20 transition-all"
+            className="w-full rounded-lg border border-border-default bg-surface-base px-4 py-2.5 text-body text-text-primary placeholder-text-muted focus:border-accent-cyan focus:outline-none focus:ring-2 focus:ring-accent-cyan/20 transition-all"
           />
         </div>
 
@@ -245,7 +245,7 @@ export function ThumbnailEditorModal({
             >
               <Minus className="h-4 w-4 text-text-secondary" />
             </button>
-            <span className="px-2 text-xs font-medium text-text-primary min-w-[3rem] text-center">
+            <span className="px-2 text-caption font-medium text-text-primary min-w-[3rem] text-center">
               {textSize.toFixed(1)}x
             </span>
             <button
@@ -262,7 +262,7 @@ export function ThumbnailEditorModal({
           <select
             value={textFont}
             onChange={(e) => setTextFont(e.target.value)}
-            className="px-3 py-2 rounded-lg border border-border-default bg-surface-raised text-sm text-text-primary focus:border-accent-cyan focus:outline-none focus:ring-2 focus:ring-accent-cyan/20 transition-all cursor-pointer"
+            className="px-3 py-2 rounded-lg border border-border-default bg-surface-raised text-body text-text-primary focus:border-accent-cyan focus:outline-none focus:ring-2 focus:ring-accent-cyan/20 transition-all cursor-pointer"
             title={t("project.thumbnailEditor.fontStyle")}
           >
             {FONT_OPTIONS.map((font) => (
@@ -287,7 +287,7 @@ export function ThumbnailEditorModal({
             <select
               value={textColor}
               onChange={(e) => setTextColor(e.target.value)}
-              className="pr-3 py-2 text-sm text-text-primary bg-transparent border-0 focus:outline-none cursor-pointer"
+              className="pr-3 py-2 text-body text-text-primary bg-transparent border-0 focus:outline-none cursor-pointer"
             >
               {COLOR_PRESETS.map((preset) => (
                 <option key={preset.value} value={preset.value}>
@@ -355,7 +355,7 @@ export function ThumbnailEditorModal({
               onChange={(e) => setCustomPrompt(e.target.value)}
               placeholder={t("project.thumbnailEditor.customPromptPlaceholder")}
               rows={3}
-              className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 text-sm text-text-primary placeholder-text-muted focus:border-accent-cyan focus:outline-none focus:ring-2 focus:ring-accent-cyan/20 transition-all resize-none"
+              className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 text-body text-text-primary placeholder-text-muted focus:border-accent-cyan focus:outline-none focus:ring-2 focus:ring-accent-cyan/20 transition-all resize-none"
             />
             <Button
               variant="primary"
@@ -373,7 +373,7 @@ export function ThumbnailEditorModal({
 
         {/* Live Preview */}
         <div className="space-y-2">
-          <label className="text-xs font-medium text-text-muted uppercase tracking-wide">
+          <label className="text-caption font-medium text-text-muted uppercase tracking-wide">
             {t("project.thumbnailEditor.livePreview")}
           </label>
           <div className="relative aspect-video rounded-lg overflow-hidden bg-surface-raised border-2 border-border-default">
@@ -381,7 +381,7 @@ export function ThumbnailEditorModal({
               <div className="absolute inset-0 flex items-center justify-center bg-surface-base/80 z-10">
                 <div className="text-center">
                   <Spinner size="md" className="text-accent-cyan mx-auto mb-2" />
-                  <p className="text-sm text-text-muted">
+                  <p className="text-body text-text-muted">
                     {t("project.thumbnailEditor.generatingNew")}
                   </p>
                 </div>
@@ -392,7 +392,7 @@ export function ThumbnailEditorModal({
               <div className="absolute inset-0 flex items-center justify-center bg-surface-base/80 z-10">
                 <div className="text-center">
                   <Spinner size="md" className="text-accent-cyan mx-auto mb-2" />
-                  <p className="text-sm text-text-muted">
+                  <p className="text-body text-text-muted">
                     {t("project.thumbnailEditor.aiGenerating")}
                   </p>
                 </div>
@@ -439,8 +439,8 @@ export function ThumbnailEditorModal({
               <div className="flex items-center justify-center h-full text-text-muted">
                 <div className="text-center">
                   <Sparkles className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                  <p className="text-sm">{t("project.thumbnailEditor.noThumbnail")}</p>
-                  <p className="text-xs">{t("project.thumbnailEditor.noThumbnailHint")}</p>
+                  <p className="text-body">{t("project.thumbnailEditor.noThumbnail")}</p>
+                  <p className="text-caption">{t("project.thumbnailEditor.noThumbnailHint")}</p>
                 </div>
               </div>
             )}
@@ -449,7 +449,7 @@ export function ThumbnailEditorModal({
           {/* Upload Warning */}
           {uploadWarning && (
             <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2">
-              <p className="text-xs text-amber-400">{uploadWarning}</p>
+              <p className="text-caption text-amber-400">{uploadWarning}</p>
             </div>
           )}
         </div>

@@ -121,14 +121,14 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
         </Text>
 
         {!hasExistingPassword && (
-          <div className="flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400 px-4">
+          <div className="flex items-center justify-center gap-2 text-body text-gray-500 dark:text-gray-400 px-4">
             <Shield className="h-4 w-4" aria-hidden="true" />
             <span>{t("onboarding.password.securityHint")}</span>
           </div>
         )}
 
         {hasExistingPassword && (
-          <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded-xl text-sm font-medium border border-green-200 dark:border-green-800">
+          <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 rounded-xl text-body font-medium border border-green-200 dark:border-green-800">
             <CheckCircle2 className="h-5 w-5" aria-hidden="true" />
             <span>{t("onboarding.password.alreadyConfigured")}</span>
           </div>
@@ -141,7 +141,7 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
         <div>
           <label
             htmlFor="password"
-            className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
+            className="block text-body font-semibold text-gray-700 dark:text-gray-300 mb-2"
           >
             {t("onboarding.password.passwordLabel")}
           </label>
@@ -152,7 +152,7 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={hasExistingPassword}
-              className="w-full px-4 py-3.5 pr-12 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-500/30 focus:border-purple-500 dark:bg-gray-700 dark:text-white disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:text-gray-400 dark:disabled:text-gray-500 disabled:cursor-not-allowed transition-all text-base"
+              className="w-full px-4 py-3.5 pr-12 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-500/30 focus:border-purple-500 dark:bg-gray-700 dark:text-white disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:text-gray-400 dark:disabled:text-gray-500 disabled:cursor-not-allowed transition-all text-body"
               placeholder={t("onboarding.password.passwordPlaceholder")}
               aria-describedby={error ? "password-error" : undefined}
             />
@@ -179,11 +179,11 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
           {password && !hasExistingPassword && (
             <div className="mt-3">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
+                <span className="text-caption font-medium text-gray-600 dark:text-gray-400">
                   {t("onboarding.password.strength")}
                 </span>
                 <span
-                  className={`text-xs font-semibold ${
+                  className={`text-caption font-semibold ${
                     passwordStrength.strength <= 2
                       ? "text-red-600 dark:text-red-400"
                       : passwordStrength.strength <= 3
@@ -222,7 +222,7 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
         <div>
           <label
             htmlFor="confirm-password"
-            className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2"
+            className="block text-body font-semibold text-gray-700 dark:text-gray-300 mb-2"
           >
             {t("onboarding.password.confirmPasswordLabel")}
           </label>
@@ -233,7 +233,7 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               disabled={hasExistingPassword}
-              className="w-full px-4 py-3.5 pr-12 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-500/30 focus:border-purple-500 dark:bg-gray-700 dark:text-white disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:text-gray-400 dark:disabled:text-gray-500 disabled:cursor-not-allowed transition-all text-base"
+              className="w-full px-4 py-3.5 pr-12 border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-500/30 focus:border-purple-500 dark:bg-gray-700 dark:text-white disabled:bg-gray-100 dark:disabled:bg-gray-800 disabled:text-gray-400 dark:disabled:text-gray-500 disabled:cursor-not-allowed transition-all text-body"
               placeholder={t("onboarding.password.confirmPasswordPlaceholder")}
               aria-describedby={error ? "password-error" : undefined}
             />
@@ -265,7 +265,7 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
                     className="h-4 w-4 text-green-600 dark:text-green-400"
                     aria-hidden="true"
                   />
-                  <span className="text-xs text-green-600 dark:text-green-400 font-medium">
+                  <span className="text-caption text-green-600 dark:text-green-400 font-medium">
                     {t("onboarding.password.match")}
                   </span>
                 </>
@@ -275,7 +275,7 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
                     className="h-4 w-4 text-red-600 dark:text-red-400"
                     aria-hidden="true"
                   />
-                  <span className="text-xs text-red-600 dark:text-red-400 font-medium">
+                  <span className="text-caption text-red-600 dark:text-red-400 font-medium">
                     {t("onboarding.password.noMatch")}
                   </span>
                 </>
@@ -288,7 +288,7 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
         {error && (
           <div
             id="password-error"
-            className="flex items-start gap-3 p-4 bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-xl text-sm text-red-800 dark:text-red-300"
+            className="flex items-start gap-3 p-4 bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-xl text-body text-red-800 dark:text-red-300"
             role="alert"
             aria-live="polite"
           >
@@ -301,7 +301,7 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
         <button
           type="submit"
           disabled={loading || hasExistingPassword}
-          className="w-full px-6 py-3.5 sm:py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 dark:from-purple-500 dark:to-pink-500 dark:hover:from-purple-600 dark:hover:to-pink-600 text-white font-semibold rounded-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-purple-500/50 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-base sm:text-lg"
+          className="w-full px-6 py-3.5 sm:py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 dark:from-purple-500 dark:to-pink-500 dark:hover:from-purple-600 dark:hover:to-pink-600 text-white font-semibold rounded-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-purple-500/50 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-body sm:text-metric"
         >
           {loading ? (
             <span className="flex items-center justify-center gap-2">

@@ -36,7 +36,7 @@ export function ActiveRecordingView({
               {formatRecordingTime(duration)}
             </Heading>
           </div>
-          <p className="text-xs text-text-muted">
+          <p className="text-caption text-text-muted">
             {t("voices.recording.ofMax", { time: maxDurationLabel })}
           </p>
         </div>
@@ -56,7 +56,7 @@ export function ActiveRecordingView({
       >
         <Square className="h-9 w-9 fill-red-500 text-red-500" aria-hidden />
       </button>
-      <p className="text-sm text-text-secondary animate-pulse">
+      <p className="text-body text-text-secondary animate-pulse">
         {t("voices.recording.recordingTap")}
       </p>
     </div>

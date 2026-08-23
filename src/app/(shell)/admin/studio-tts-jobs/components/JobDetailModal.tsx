@@ -59,7 +59,7 @@ export function JobDetailModal({ job, open, onClose }: JobDetailModalProps) {
 
     return (
       <span
-        className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-bold border ${badge.bg} ${badge.text} ${badge.border}`}
+        className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-body font-bold border ${badge.bg} ${badge.text} ${badge.border}`}
       >
         {badge.icon}
         {status}
@@ -76,7 +76,7 @@ export function JobDetailModal({ job, open, onClose }: JobDetailModalProps) {
             <Heading variant="section" as="h2" className="text-text-primary">
               Job Details
             </Heading>
-            <p className="text-sm text-text-muted mt-1">#{job.job_id}</p>
+            <p className="text-body text-text-muted mt-1">#{job.job_id}</p>
           </div>
           <button
             onClick={onClose}
@@ -91,7 +91,7 @@ export function JobDetailModal({ job, open, onClose }: JobDetailModalProps) {
         <div className="p-6 space-y-6">
           {/* Status */}
           <div>
-            <label className="text-xs font-medium text-text-muted uppercase tracking-wider">
+            <label className="text-caption font-medium text-text-muted uppercase tracking-wider">
               Status
             </label>
             <div className="mt-2">{getStatusBadge(job.status)}</div>
@@ -100,19 +100,19 @@ export function JobDetailModal({ job, open, onClose }: JobDetailModalProps) {
           {/* Timestamps */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="text-xs font-medium text-text-muted uppercase tracking-wider">
+              <label className="text-caption font-medium text-text-muted uppercase tracking-wider">
                 Created At
               </label>
               <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
-                <p className="text-sm text-text-primary">{formatDateTime(job.created_at)}</p>
+                <p className="text-body text-text-primary">{formatDateTime(job.created_at)}</p>
               </div>
             </div>
             <div>
-              <label className="text-xs font-medium text-text-muted uppercase tracking-wider">
+              <label className="text-caption font-medium text-text-muted uppercase tracking-wider">
                 Completed At
               </label>
               <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
-                <p className="text-sm text-text-primary">{formatDateTime(job.completed_at)}</p>
+                <p className="text-body text-text-primary">{formatDateTime(job.completed_at)}</p>
               </div>
             </div>
           </div>
@@ -120,34 +120,36 @@ export function JobDetailModal({ job, open, onClose }: JobDetailModalProps) {
           {/* Duration */}
           {job.duration_seconds && (
             <div>
-              <label className="text-xs font-medium text-text-muted uppercase tracking-wider">
+              <label className="text-caption font-medium text-text-muted uppercase tracking-wider">
                 Duration
               </label>
               <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
-                <p className="text-sm text-text-primary">{formatDuration(job.duration_seconds)}</p>
+                <p className="text-body text-text-primary">
+                  {formatDuration(job.duration_seconds)}
+                </p>
               </div>
             </div>
           )}
 
           {/* Voice ID */}
           <div>
-            <label className="text-xs font-medium text-text-muted uppercase tracking-wider flex items-center gap-2">
+            <label className="text-caption font-medium text-text-muted uppercase tracking-wider flex items-center gap-2">
               <Mic className="h-3.5 w-3.5" />
               Voice ID
             </label>
             <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
-              <p className="text-sm text-text-primary">Voice #{job.voice_id}</p>
+              <p className="text-body text-text-primary">Voice #{job.voice_id}</p>
             </div>
           </div>
 
           {/* Project ID */}
           {job.project_id && (
             <div>
-              <label className="text-xs font-medium text-text-muted uppercase tracking-wider">
+              <label className="text-caption font-medium text-text-muted uppercase tracking-wider">
                 Project ID
               </label>
               <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
-                <p className="text-sm text-text-primary">Project #{job.project_id}</p>
+                <p className="text-body text-text-primary">Project #{job.project_id}</p>
               </div>
             </div>
           )}
@@ -155,12 +157,12 @@ export function JobDetailModal({ job, open, onClose }: JobDetailModalProps) {
           {/* Text */}
           {job.text && (
             <div>
-              <label className="text-xs font-medium text-text-muted uppercase tracking-wider flex items-center gap-2">
+              <label className="text-caption font-medium text-text-muted uppercase tracking-wider flex items-center gap-2">
                 <FileText className="h-3.5 w-3.5" />
                 Input Text
               </label>
               <div className="mt-2 rounded-lg border border-border-default bg-surface-panel p-4">
-                <p className="text-sm text-text-primary whitespace-pre-wrap">{job.text}</p>
+                <p className="text-body text-text-primary whitespace-pre-wrap">{job.text}</p>
               </div>
             </div>
           )}
@@ -168,12 +170,12 @@ export function JobDetailModal({ job, open, onClose }: JobDetailModalProps) {
           {/* Error Message */}
           {job.error_message && (
             <div>
-              <label className="text-xs font-medium text-text-muted uppercase tracking-wider flex items-center gap-2">
+              <label className="text-caption font-medium text-text-muted uppercase tracking-wider flex items-center gap-2">
                 <XCircle className="h-3.5 w-3.5 text-red-500" />
                 Error Message
               </label>
               <div className="mt-2 rounded-lg border-2 border-red-500/50 bg-red-500/10 p-4">
-                <p className="text-sm text-red-600 font-mono">{job.error_message}</p>
+                <p className="text-body text-red-600 font-mono">{job.error_message}</p>
               </div>
             </div>
           )}
@@ -181,7 +183,7 @@ export function JobDetailModal({ job, open, onClose }: JobDetailModalProps) {
           {/* Audio URL */}
           {job.audio_url && (
             <div>
-              <label className="text-xs font-medium text-text-muted uppercase tracking-wider">
+              <label className="text-caption font-medium text-text-muted uppercase tracking-wider">
                 Audio URL
               </label>
               <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
@@ -189,7 +191,7 @@ export function JobDetailModal({ job, open, onClose }: JobDetailModalProps) {
                   href={job.audio_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-accent-primary hover:underline break-all"
+                  className="text-body text-accent-primary hover:underline break-all"
                 >
                   {job.audio_url}
                 </a>
@@ -202,7 +204,7 @@ export function JobDetailModal({ job, open, onClose }: JobDetailModalProps) {
         <div className="sticky bottom-0 border-t border-border-default bg-surface-panel px-6 py-4">
           <button
             onClick={onClose}
-            className="w-full rounded-lg bg-gradient-to-r from-accent-primary to-purple-600 px-4 py-2.5 text-sm font-semibold text-white hover:shadow-lg hover:shadow-accent-primary/30 transition-all"
+            className="w-full rounded-lg bg-gradient-to-r from-accent-primary to-purple-600 px-4 py-2.5 text-body font-semibold text-white hover:shadow-lg hover:shadow-accent-primary/30 transition-all"
           >
             Close
           </button>

@@ -7,7 +7,16 @@
  * these strings — no per-component changes required.
  *
  * Prefer these (or Heading / Text) over ad-hoc text-* sizes.
+ *
+ * Legacy Tailwind → token mapping (do not use left column in new code):
+ *   text-xs → text-caption   (12px)
+ *   text-sm → text-body      (14px)
+ *   text-base → text-body    (14px; was 16px pre-2026-08 scale)
+ *   text-lg → text-metric     (18px)
+ *   text-xl → text-page      (20px)
+ *
  * @see docs/TYPOGRAPHY.md
+ * @see docs/TYPOGRAPHY_REFACTOR.md
  */
 export const typography = {
   display: "text-display sm:text-display-sm leading-display font-bold tracking-tight",

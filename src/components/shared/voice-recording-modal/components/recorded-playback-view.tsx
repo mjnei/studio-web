@@ -35,7 +35,7 @@ export function RecordedPlaybackView({
     <div className="flex flex-col gap-5 py-4">
       {maxReached && (
         <div className="rounded-lg bg-amber-500/10 border border-amber-500/20 px-3 py-2">
-          <p className="text-xs text-amber-300">{t("voices.recording.maxReached")}</p>
+          <p className="text-caption text-amber-300">{t("voices.recording.maxReached")}</p>
         </div>
       )}
 
@@ -47,7 +47,7 @@ export function RecordedPlaybackView({
           <Heading variant="subsection" as="h3" className="text-text-primary mb-1">
             {t("voices.recording.completeTitle")}
           </Heading>
-          <p className="text-sm text-text-muted">
+          <p className="text-body text-text-muted">
             {t("voices.recording.completeHint", { time: formatRecordingTime(duration) })}
           </p>
         </div>
@@ -79,7 +79,7 @@ export function RecordedPlaybackView({
             style={{ width: `${Math.max(playbackProgress * 100, 0)}%` }}
           />
           <div className="relative flex items-center justify-end w-full pr-2">
-            <span className="text-xs font-mono text-text-muted tabular-nums">
+            <span className="text-caption font-mono text-text-muted tabular-nums">
               {formatRecordingTime(isPlaying || playbackProgress > 0 ? playbackTime : duration)}
             </span>
           </div>

@@ -134,14 +134,14 @@ export default function AuditLogsPage() {
                 <Heading variant="page" className="text-text-primary">
                   Audit Logs
                 </Heading>
-                <p className="text-sm text-text-muted">View and filter system activity logs</p>
+                <p className="text-body text-text-muted">View and filter system activity logs</p>
               </div>
             </div>
 
             <button
               onClick={handleExportCSV}
               disabled={logs.length === 0}
-              className="flex items-center gap-2 rounded-xl border-2 border-border bg-surface-panel px-4 py-2 text-sm font-medium hover:bg-surface-raised disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="flex items-center gap-2 rounded-xl border-2 border-border bg-surface-panel px-4 py-2 text-body font-medium hover:bg-surface-raised disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               <Download className="h-4 w-4" />
               Export CSV
@@ -150,14 +150,14 @@ export default function AuditLogsPage() {
 
           {/* Data Source Toggle */}
           <div className="flex items-center gap-3">
-            <span className="text-sm font-medium text-text-primary">Data Source:</span>
+            <span className="text-body font-medium text-text-primary">Data Source:</span>
             <div className="flex gap-2">
               <button
                 onClick={() => {
                   setDataSource("postgres");
                   setPagination((prev) => ({ ...prev, page: 1 }));
                 }}
-                className={`flex items-center gap-2 rounded-xl border-2 px-4 py-2 text-sm font-medium transition-colors ${
+                className={`flex items-center gap-2 rounded-xl border-2 px-4 py-2 text-body font-medium transition-colors ${
                   dataSource === "postgres"
                     ? "border-blue-500 bg-blue-500/10 text-blue-500"
                     : "border-border bg-surface-panel text-text-secondary hover:bg-surface-raised"
@@ -171,7 +171,7 @@ export default function AuditLogsPage() {
                   setDataSource("axiom");
                   setPagination((prev) => ({ ...prev, page: 1 }));
                 }}
-                className={`flex items-center gap-2 rounded-xl border-2 px-4 py-2 text-sm font-medium transition-colors ${
+                className={`flex items-center gap-2 rounded-xl border-2 px-4 py-2 text-body font-medium transition-colors ${
                   dataSource === "axiom"
                     ? "border-purple-500 bg-purple-500/10 text-purple-500"
                     : "border-border bg-surface-panel text-text-secondary hover:bg-surface-raised"
@@ -196,12 +196,12 @@ export default function AuditLogsPage() {
               <Heading variant="label" as="h3" className="text-text-primary mb-1">
                 Currently viewing: <span className="capitalize">{dataSource}</span>
               </Heading>
-              <p className="text-sm text-text-muted mb-2">
+              <p className="text-body text-text-muted mb-2">
                 {dataSource === "postgres"
                   ? "Fast operational queries for recent audit logs (30-90 days). Best for quick lookups and filtering."
                   : "Powerful analytics engine with long-term compliance data (years). Best for detailed analysis and aggregations."}
               </p>
-              <div className="text-xs text-text-muted">
+              <div className="text-caption text-text-muted">
                 {dataSource === "postgres"
                   ? "💡 Tip: Use PostgreSQL for recent activity, fast pagination, and user/action filtering."
                   : "💡 Tip: Use Axiom for historical analysis, custom APL queries, and compliance reports."}

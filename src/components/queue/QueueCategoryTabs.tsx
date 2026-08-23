@@ -32,7 +32,9 @@ export function QueueCategoryTabs({
             <TabsTrigger key={category} value={category} className="relative">
               {label}
               {count !== undefined && (
-                <span className="ml-2 px-1.5 py-0.5 text-xs rounded-full bg-muted">{count}</span>
+                <span className="ml-2 px-1.5 py-0.5 text-caption rounded-full bg-muted">
+                  {count}
+                </span>
               )}
             </TabsTrigger>
           );

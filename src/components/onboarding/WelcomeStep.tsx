@@ -59,7 +59,7 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
           return (
             <div
               key={idx}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-gray-700/50 rounded-full border border-gray-200 dark:border-gray-600 text-sm sm:text-base"
+              className="flex items-center gap-2 px-4 py-2 bg-gray-50 dark:bg-gray-700/50 rounded-full border border-gray-200 dark:border-gray-600 text-body"
             >
               <Icon className="h-4 w-4 text-blue-600 dark:text-blue-400" aria-hidden="true" />
               <span className="text-gray-700 dark:text-gray-300 font-medium whitespace-nowrap">
@@ -73,7 +73,7 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
       {/* Get Started Button */}
       <button
         onClick={onNext}
-        className="group relative px-8 sm:px-10 py-3.5 sm:py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 dark:from-blue-500 dark:to-purple-500 dark:hover:from-blue-600 dark:hover:to-purple-600 text-white font-semibold rounded-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/50 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:-translate-y-0.5 text-base sm:text-lg"
+        className="group relative px-8 sm:px-10 py-3.5 sm:py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 dark:from-blue-500 dark:to-purple-500 dark:hover:from-blue-600 dark:hover:to-purple-600 text-white font-semibold rounded-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/50 shadow-lg shadow-blue-500/30 hover:shadow-xl hover:shadow-blue-500/40 hover:-translate-y-0.5 text-body sm:text-metric"
         aria-label={t("onboarding.welcome.getStartedAria")}
       >
         <span className="flex items-center gap-2 justify-center">

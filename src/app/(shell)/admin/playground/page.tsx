@@ -209,7 +209,7 @@ export default function PlaygroundPage() {
                     <Heading variant="label" as="h3" className="text-text-primary mb-1">
                       Processing Audio
                     </Heading>
-                    <p className="text-xs text-text-secondary">
+                    <p className="text-caption text-text-secondary">
                       Status: {currentJob.status} • This usually takes 10-30 seconds
                     </p>
                   </div>
@@ -223,7 +223,9 @@ export default function PlaygroundPage() {
               <Heading variant="label" as="h3" className="text-red-600 mb-2">
                 Generation Failed
               </Heading>
-              <p className="text-xs text-red-600">{currentJob.error || "Unknown error occurred"}</p>
+              <p className="text-caption text-red-600">
+                {currentJob.error || "Unknown error occurred"}
+              </p>
             </div>
           )}
         </div>
@@ -238,7 +240,7 @@ export default function PlaygroundPage() {
               {history.length > 0 && (
                 <button
                   onClick={() => setClearHistoryModal(true)}
-                  className="flex items-center gap-2 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-xs font-medium text-text-secondary hover:border-red-500 hover:text-red-600 hover:bg-red-500/5 transition-all"
+                  className="flex items-center gap-2 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-caption font-medium text-text-secondary hover:border-red-500 hover:text-red-600 hover:bg-red-500/5 transition-all"
                 >
                   <Trash2 className="h-3.5 w-3.5" />
                   Clear History

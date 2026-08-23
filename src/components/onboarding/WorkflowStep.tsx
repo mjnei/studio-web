@@ -63,15 +63,15 @@ export default function WorkflowStep({ onNext, onBack }: WorkflowStepProps) {
               <div className="relative mb-3">
                 <div
                   className={`
-                  w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center
-                  bg-gradient-to-br ${step.color} shadow-md
-                  group-hover:scale-105 transition-transform duration-300
-                `}
+ w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center
+ bg-gradient-to-br ${step.color} shadow-md
+ group-hover:scale-105 transition-transform duration-300
+ `}
                 >
                   <Icon className="h-6 w-6 sm:h-7 sm:w-7 text-white" aria-hidden="true" />
                 </div>
                 <span
-                  className="absolute -top-1.5 -right-1.5 w-5 h-5 sm:w-6 sm:h-6 bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-xs font-bold rounded-full flex items-center justify-center border-2 border-gray-200 dark:border-gray-700 shadow-sm"
+                  className="absolute -top-1.5 -right-1.5 w-5 h-5 sm:w-6 sm:h-6 bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-caption font-bold rounded-full flex items-center justify-center border-2 border-gray-200 dark:border-gray-700 shadow-sm"
                   aria-label={t("onboarding.workflow.step").replace("{number}", `${index + 1}`)}
                 >
                   {index + 1}
@@ -107,7 +107,7 @@ export default function WorkflowStep({ onNext, onBack }: WorkflowStepProps) {
             className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5"
             aria-hidden
           />
-          <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
+          <p className="text-caption text-gray-700 dark:text-gray-300">
             {t("onboarding.workflow.info")}
           </p>
         </div>
@@ -117,14 +117,14 @@ export default function WorkflowStep({ onNext, onBack }: WorkflowStepProps) {
       <div className="flex flex-col-reverse sm:flex-row justify-between gap-2 sm:gap-3">
         <button
           onClick={onBack}
-          className="w-full sm:w-auto px-6 py-2.5 sm:py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-semibold rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 text-sm sm:text-base"
+          className="w-full sm:w-auto px-6 py-2.5 sm:py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-semibold rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 text-body"
           aria-label={t("onboarding.workflow.goBack")}
         >
           {t("onboarding.workflow.back")}
         </button>
         <button
           onClick={onNext}
-          className="w-full sm:w-auto px-6 py-2.5 sm:py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 dark:from-blue-500 dark:to-purple-500 dark:hover:from-blue-600 dark:hover:to-purple-600 text-white font-semibold rounded-lg transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/50 shadow-lg hover:shadow-xl text-sm sm:text-base"
+          className="w-full sm:w-auto px-6 py-2.5 sm:py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 dark:from-blue-500 dark:to-purple-500 dark:hover:from-blue-600 dark:hover:to-purple-600 text-white font-semibold rounded-lg transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/50 shadow-lg hover:shadow-xl text-body"
           aria-label={t("onboarding.workflow.continueTakeStep")}
         >
           {t("onboarding.workflow.continue")}

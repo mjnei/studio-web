@@ -118,7 +118,7 @@ export default function CompletionStep() {
         {/* Retry Button */}
         <button
           onClick={handleRetry}
-          className="px-8 sm:px-10 py-3.5 sm:py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 dark:from-blue-500 dark:to-purple-500 dark:hover:from-blue-600 dark:hover:to-purple-600 text-white font-semibold rounded-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/50 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-base sm:text-lg"
+          className="px-8 sm:px-10 py-3.5 sm:py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 dark:from-blue-500 dark:to-purple-500 dark:hover:from-blue-600 dark:hover:to-purple-600 text-white font-semibold rounded-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/50 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-body sm:text-metric"
         >
           {t("onboarding.completion.tryAgain")}
         </button>
@@ -212,7 +212,7 @@ export default function CompletionStep() {
             className="p-4 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-xl border border-gray-200 dark:border-gray-600"
           >
             <div className="text-3xl mb-2">{item.emoji}</div>
-            <div className="text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300">
+            <div className="text-caption font-medium text-gray-700 dark:text-gray-300">
               {item.label}
             </div>
           </div>
@@ -222,7 +222,7 @@ export default function CompletionStep() {
       {/* Manual Redirect Button */}
       <button
         onClick={handleManualRedirect}
-        className="group w-full sm:w-auto px-8 sm:px-10 py-3.5 sm:py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 dark:from-blue-500 dark:to-purple-500 dark:hover:from-blue-600 dark:hover:to-purple-600 text-white font-semibold rounded-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/50 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-base sm:text-lg"
+        className="group w-full sm:w-auto px-8 sm:px-10 py-3.5 sm:py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 dark:from-blue-500 dark:to-purple-500 dark:hover:from-blue-600 dark:hover:to-purple-600 text-white font-semibold rounded-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/50 shadow-lg hover:shadow-xl hover:-translate-y-0.5 text-body sm:text-metric"
       >
         <span className="flex items-center justify-center gap-2">
           {t("onboarding.completion.goToDashboard")}
@@ -234,7 +234,7 @@ export default function CompletionStep() {
       </button>
 
       {/* Countdown */}
-      <div className="mt-6 flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+      <div className="mt-6 flex items-center justify-center gap-2 text-body text-gray-500 dark:text-gray-400">
         <Spinner size="sm" className="text-gray-400 dark:text-gray-500" />
         <span>
           {t("onboarding.completion.redirect")

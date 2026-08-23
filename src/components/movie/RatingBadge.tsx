@@ -23,17 +23,17 @@ export const RatingBadge: React.FC<RatingBadgeProps> = ({
     sm: {
       container: "px-1.5 py-0.5",
       icon: "h-3 w-3",
-      text: "text-xs",
+      text: "text-caption",
     },
     md: {
       container: "px-2 py-1",
       icon: "h-3.5 w-3.5",
-      text: "text-xs",
+      text: "text-caption",
     },
     lg: {
       container: "px-2.5 py-1.5",
       icon: "h-4 w-4",
-      text: "text-sm",
+      text: "text-body",
     },
   };
 

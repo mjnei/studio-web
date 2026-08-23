@@ -162,21 +162,21 @@ export function VoiceCard({
     if (variant === "private") {
       if (voice.is_shared && !voice.is_approved) {
         return (
-          <span className="inline-flex items-center gap-1 rounded-full bg-yellow-500/10 border border-yellow-500/30 px-2 py-1 text-xs font-semibold text-yellow-600">
+          <span className="inline-flex items-center gap-1 rounded-full bg-yellow-500/10 border border-yellow-500/30 px-2 py-1 text-caption font-semibold text-yellow-600">
             <Clock className="h-3 w-3" />
             {t("voices.status.pendingReview")}
           </span>
         );
       }
       return (
-        <span className="inline-flex items-center gap-1 rounded-full bg-gray-500/10 border border-gray-500/30 px-2 py-1 text-xs font-semibold text-gray-600">
+        <span className="inline-flex items-center gap-1 rounded-full bg-gray-500/10 border border-gray-500/30 px-2 py-1 text-caption font-semibold text-gray-600">
           <Lock className="h-3 w-3" />
           {t("voices.status.private")}
         </span>
       );
     } else {
       return (
-        <span className="inline-flex items-center gap-1 rounded-full bg-green-500/10 border border-green-500/30 px-2 py-1 text-xs font-semibold text-green-600">
+        <span className="inline-flex items-center gap-1 rounded-full bg-green-500/10 border border-green-500/30 px-2 py-1 text-caption font-semibold text-green-600">
           <CheckCircle2 className="h-3 w-3" />
           {t("voices.status.approved")}
         </span>
@@ -200,7 +200,7 @@ export function VoiceCard({
         </div>
 
         {/* Metadata */}
-        <div className="flex items-center gap-2 text-xs text-text-muted flex-wrap">
+        <div className="flex items-center gap-2 text-caption text-text-muted flex-wrap">
           {variant === "community" && creatorInfo && (
             <>
               <div className="flex items-center gap-1">
@@ -225,7 +225,7 @@ export function VoiceCard({
           {formatLanguageKey(voice.language) && (
             <>
               <span>•</span>
-              <span className="inline-flex items-center rounded-full bg-blue-500/10 border border-blue-500/30 px-2 py-0.5 text-xs font-medium text-blue-600">
+              <span className="inline-flex items-center rounded-full bg-blue-500/10 border border-blue-500/30 px-2 py-0.5 text-caption font-medium text-blue-600">
                 {t(formatLanguageKey(voice.language)!)}
               </span>
             </>
@@ -244,17 +244,17 @@ export function VoiceCard({
             {isLoading ? (
               <>
                 <Spinner size="sm" className="text-current" />
-                <span className="text-sm">{t("voices.playback.loading")}</span>
+                <span className="text-body">{t("voices.playback.loading")}</span>
               </>
             ) : isPlaying ? (
               <>
                 <Pause className="h-4 w-4" />
-                <span className="text-sm">{t("voices.playback.pause")}</span>
+                <span className="text-body">{t("voices.playback.pause")}</span>
               </>
             ) : (
               <>
                 <Play className="h-4 w-4" />
-                <span className="text-sm">{t("voices.playback.play")}</span>
+                <span className="text-body">{t("voices.playback.play")}</span>
               </>
             )}
           </button>

@@ -27,7 +27,7 @@ export function LocaleImportSelector({
           <Heading variant="label" as="h2" className="text-text-primary">
             Translation Locales to Import
           </Heading>
-          <p className="mt-1 text-xs text-text-muted">
+          <p className="mt-1 text-caption text-text-muted">
             {selectedLocales.length} of {SUPPORTED_LOCALES.length} locales selected
           </p>
         </div>
@@ -43,7 +43,7 @@ export function LocaleImportSelector({
           <div className="mb-3 flex items-center justify-between">
             <button
               onClick={onToggleAll}
-              className="text-xs font-medium text-accent-primary hover:text-accent-primary/80"
+              className="text-caption font-medium text-accent-primary hover:text-accent-primary/80"
             >
               {selectedLocales.length === SUPPORTED_LOCALES.length ? "Deselect All" : "Select All"}
             </button>
@@ -53,7 +53,7 @@ export function LocaleImportSelector({
               <button
                 key={locale}
                 onClick={() => onToggleLocale(locale)}
-                className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-all ${
+                className={`rounded-lg px-3 py-1.5 text-body font-medium transition-all ${
                   selectedLocales.includes(locale)
                     ? "bg-accent-primary text-white"
                     : "border border-border-default bg-surface-base text-text-secondary hover:bg-surface-hover"
@@ -63,7 +63,7 @@ export function LocaleImportSelector({
               </button>
             ))}
           </div>
-          <p className="mt-3 text-xs text-text-muted">
+          <p className="mt-3 text-caption text-text-muted">
             Movie titles, overviews, genres, person names, and character names will be fetched in
             selected languages
           </p>

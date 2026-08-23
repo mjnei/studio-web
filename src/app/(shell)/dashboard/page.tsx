@@ -168,7 +168,7 @@ export default function DashboardPage() {
                       {stat.value}
                     </Heading>
                   </CardHeader>
-                  <p className="text-xs text-text-muted">{stat.description}</p>
+                  <p className="text-caption text-text-muted">{stat.description}</p>
                 </div>
                 <div
                   className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${stat.gradient} text-white shadow-md transition-all duration-300 ease-smooth group-hover:scale-110 group-hover:shadow-lg`}

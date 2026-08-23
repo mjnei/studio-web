@@ -41,7 +41,7 @@ export function InsufficientCreditsModal({
             <Heading variant="label" as="h4" className="text-warning-text font-medium">
               {t("billing.credits.notEnoughCredits")}
             </Heading>
-            <p className="mt-1 text-sm text-text-muted">
+            <p className="mt-1 text-body text-text-muted">
               {t("billing.credits.notEnoughMessage", {
                 needed: requiredCredits,
                 have: creditStatus?.credits_remaining || 0,
@@ -58,12 +58,12 @@ export function InsufficientCreditsModal({
             </Heading>
             <div className="p-4 rounded-lg bg-surface-raised border border-border-default">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-text-secondary capitalize">
+                <span className="text-body font-medium text-text-secondary capitalize">
                   {t("billing.credits.planLabel", { tier: currentTier })}
                 </span>
                 <div className="flex items-center gap-2">
                   <Coins className="h-4 w-4 text-text-muted" />
-                  <span className="text-sm text-text-primary">
+                  <span className="text-body text-text-primary">
                     {t("billing.credits.creditsOf", {
                       remaining: creditStatus.credits_remaining,
                       allocation: creditStatus.monthly_allocation,
@@ -71,7 +71,7 @@ export function InsufficientCreditsModal({
                   </span>
                 </div>
               </div>
-              <div className="text-xs text-text-muted">
+              <div className="text-caption text-text-muted">
                 {t("billing.credits.resetsOn", {
                   date: new Date(creditStatus.cycle_end_date).toLocaleDateString(
                     locale === "chs" ? "zh-CN" : "en-US",

@@ -23,7 +23,7 @@ export function IdleRecordingView({
           <Heading variant="subsection" as="h3" className="text-text-primary mb-1">
             {t("voices.recording.readyTitle")}
           </Heading>
-          <p className="text-sm text-text-muted">{t("voices.recording.readyHint")}</p>
+          <p className="text-body text-text-muted">{t("voices.recording.readyHint")}</p>
         </div>
       </div>
       <button
@@ -34,7 +34,7 @@ export function IdleRecordingView({
         <div className="absolute inset-0 rounded-full bg-red-400 opacity-0 group-hover:opacity-20 transition-opacity" />
         <Circle className="h-8 w-8 fill-white text-white" aria-hidden />
       </button>
-      <p className="text-xs text-center text-text-muted">
+      <p className="text-caption text-center text-text-muted">
         {t("voices.recording.maxDuration", { time: maxDurationLabel })}
       </p>
     </div>

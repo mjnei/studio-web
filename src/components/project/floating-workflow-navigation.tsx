@@ -135,7 +135,7 @@ export function FloatingWorkflowNavigation({
               <div key={step.key} className="flex items-center flex-shrink-0">
                 {/* Circle */}
                 <div
-                  className={`flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded-full text-[10px] sm:text-xs font-semibold transition-all duration-300 ${
+                  className={`flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded-full text-[10px] sm:text-caption font-semibold transition-all duration-300 ${
                     isCompleted
                       ? "bg-accent-cyan text-white"
                       : isCurrent
@@ -153,7 +153,7 @@ export function FloatingWorkflowNavigation({
                 </div>
                 {/* Label — hidden on mobile, visible on sm+ */}
                 <span
-                  className={`ml-1 hidden md:inline text-xs transition-colors duration-300 ${
+                  className={`ml-1 hidden md:inline text-caption transition-colors duration-300 ${
                     isCurrent
                       ? "font-medium text-text-primary"
                       : isCompleted
@@ -186,7 +186,7 @@ export function FloatingWorkflowNavigation({
                 size="sm"
                 leftIcon={<ArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
                 onClick={handleBack}
-                className="shadow-lg sm:size-md text-xs sm:text-sm touch-manipulation"
+                className="shadow-lg sm:size-md text-caption touch-manipulation"
                 aria-label={backLabel || t("project.nav.goBack")}
               >
                 <span className="hidden sm:inline">{backLabel || t("common.back")}</span>
@@ -199,7 +199,7 @@ export function FloatingWorkflowNavigation({
               size="sm"
               leftIcon={<Home className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
               onClick={handleGoHome}
-              className="shadow-lg sm:size-md text-xs sm:text-sm touch-manipulation"
+              className="shadow-lg sm:size-md text-caption touch-manipulation"
               title={t("project.nav.goToProjects")}
               aria-label={t("project.nav.goToProjectsHome")}
             >
@@ -218,7 +218,7 @@ export function FloatingWorkflowNavigation({
                 }
                 onClick={handleNext}
                 disabled={isProcessing}
-                className="shadow-lg sm:size-md text-xs sm:text-sm touch-manipulation"
+                className="shadow-lg sm:size-md text-caption touch-manipulation"
                 aria-label={resolvedNextLabel || t("project.nav.continueToNextStep")}
               >
                 <span className="hidden sm:inline">{resolvedNextLabel}</span>

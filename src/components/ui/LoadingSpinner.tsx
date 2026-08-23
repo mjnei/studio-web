@@ -34,11 +34,11 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
         <Spinner size={size} className="text-accent-primary" />
         <span className="sr-only">{loadingText}</span>
         {message && (
-          <p aria-hidden="true" className="text-sm font-medium text-text-primary">
+          <p aria-hidden="true" className="text-body font-medium text-text-primary">
             {message}
           </p>
         )}
-        {description && <p className="text-xs text-text-muted">{description}</p>}
+        {description && <p className="text-caption text-text-muted">{description}</p>}
       </div>
     </div>
   );

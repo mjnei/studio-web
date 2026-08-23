@@ -39,7 +39,7 @@ export function VoiceSelector({ value, onChange }: VoiceSelectorProps) {
 
   return (
     <div className="relative">
-      <label className="block text-sm font-medium text-text-secondary mb-2">Voice</label>
+      <label className="block text-body font-medium text-text-secondary mb-2">Voice</label>
 
       {/* Dropdown Button */}
       <button
@@ -53,11 +53,13 @@ export function VoiceSelector({ value, onChange }: VoiceSelectorProps) {
           </div>
           {selectedVoice ? (
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-text-primary truncate">{selectedVoice.name}</p>
-              <p className="text-xs text-text-muted">{selectedVoice.language}</p>
+              <p className="text-body font-medium text-text-primary truncate">
+                {selectedVoice.name}
+              </p>
+              <p className="text-caption text-text-muted">{selectedVoice.language}</p>
             </div>
           ) : (
-            <span className="text-sm text-text-muted">
+            <span className="text-body text-text-muted">
               {isLoading ? "Loading voices..." : "Select a voice"}
             </span>
           )}
@@ -79,7 +81,7 @@ export function VoiceSelector({ value, onChange }: VoiceSelectorProps) {
                 placeholder="Search voices..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="flex-1 bg-transparent text-sm text-text-primary placeholder-text-muted focus:outline-none"
+                className="flex-1 bg-transparent text-body text-text-primary placeholder-text-muted focus:outline-none"
               />
             </div>
           </div>
@@ -87,7 +89,7 @@ export function VoiceSelector({ value, onChange }: VoiceSelectorProps) {
           {/* Voice List */}
           <div className="max-h-64 overflow-y-auto">
             {filteredVoices.length === 0 ? (
-              <div className="p-4 text-center text-sm text-text-muted">
+              <div className="p-4 text-center text-body text-text-muted">
                 {isLoading ? "Loading..." : "No voices found"}
               </div>
             ) : (
@@ -115,13 +117,13 @@ export function VoiceSelector({ value, onChange }: VoiceSelectorProps) {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p
-                      className={`text-sm font-medium truncate ${
+                      className={`text-body font-medium truncate ${
                         voice.id === value ? "text-accent-primary" : "text-text-primary"
                       }`}
                     >
                       {voice.name}
                     </p>
-                    <p className="text-xs text-text-muted">
+                    <p className="text-caption text-text-muted">
                       {voice.language} • {voice.is_approved ? "Community" : "Own"}
                     </p>
                   </div>

@@ -67,7 +67,7 @@ export default function NotificationsPage() {
             <select
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
-              className="w-full sm:hidden rounded-lg border border-border-default bg-surface-panel px-3 py-2 text-sm font-medium text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent"
+              className="w-full sm:hidden rounded-lg border border-border-default bg-surface-panel px-3 py-2 text-body font-medium text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent"
             >
               {NOTIFICATION_FILTERS_WITH_LABELS.map((filterOption) => (
                 <option key={filterOption.value} value={filterOption.value}>
@@ -83,7 +83,7 @@ export default function NotificationsPage() {
                 <button
                   key={filterOption.value}
                   onClick={() => setFilter(filterOption.value)}
-                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                  className={`px-3 py-1.5 rounded-lg text-body font-medium transition-all ${
                     filter === filterOption.value
                       ? "bg-accent-primary text-white"
                       : "bg-surface-raised text-text-secondary hover:bg-surface-hover hover:text-text-primary border border-border-default"
@@ -129,7 +129,7 @@ export default function NotificationsPage() {
         {isLoading ? (
           <div className="p-12 flex flex-col items-center justify-center">
             <Spinner size="lg" className="text-accent-primary mb-4" />
-            <p className="text-sm text-text-muted">{t("notifications.loading")}</p>
+            <p className="text-body text-text-muted">{t("notifications.loading")}</p>
           </div>
         ) : filteredNotifications.length === 0 ? (
           <EmptyState

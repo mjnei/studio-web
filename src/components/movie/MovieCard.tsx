@@ -89,7 +89,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
                   return (
                     <span
                       key={typeof genre === "string" ? genre : idx}
-                      className="rounded-md bg-accent-cyan/10 px-2 py-0.5 text-xs font-medium text-accent-cyan"
+                      className="rounded-md bg-accent-cyan/10 px-2 py-0.5 text-caption font-medium text-accent-cyan"
                     >
                       {genreName}
                     </span>
@@ -110,7 +110,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
           </div>
 
           {/* Cast & Crew */}
-          <div className="space-y-1.5 text-xs">
+          <div className="space-y-1.5 text-caption">
             {movie.directors && movie.directors.length > 0 && (
               <div className="flex items-start gap-2">
                 <span className="font-medium text-text-muted">{t("movies.director")}:</span>

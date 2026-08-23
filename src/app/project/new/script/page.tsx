@@ -101,7 +101,7 @@ export default function NewProjectScriptPage() {
             <Heading variant="section" as="h2" className="text-text-primary">
               {t("project.script.createTitle")}
             </Heading>
-            <p className="mt-1 text-sm text-text-muted">
+            <p className="mt-1 text-body text-text-muted">
               {t("project.script.createDescription", { title: selectedMovie.title })}
             </p>
           </div>
@@ -124,7 +124,7 @@ export default function NewProjectScriptPage() {
                 <Heading variant="label" as="h3" className="text-text-primary">
                   {selectedMovie.title}
                 </Heading>
-                <p className="mt-1 text-sm text-text-muted">
+                <p className="mt-1 text-body text-text-muted">
                   {selectedMovie.genre && `${selectedMovie.genre.join(", ")} • `}
                   {selectedMovie.rating &&
                     t("project.common.ratingValue", {
@@ -144,11 +144,13 @@ export default function NewProjectScriptPage() {
               <Heading variant="subsection" as="h3" className="mb-2 text-text-primary">
                 {t("project.script.writeTitle")}
               </Heading>
-              <p className="mb-6 text-sm text-text-muted">{t("project.script.writeDescription")}</p>
+              <p className="mb-6 text-body text-text-muted">
+                {t("project.script.writeDescription")}
+              </p>
               <textarea
                 value={scriptContent}
                 onChange={(e) => setScriptContent(e.target.value)}
-                className="mb-4 min-h-[300px] w-full rounded-md border border-border-default bg-surface-raised p-4 text-left text-sm text-text-primary placeholder-text-muted focus:border-accent-cyan focus:outline-none"
+                className="mb-4 min-h-[300px] w-full rounded-md border border-border-default bg-surface-raised p-4 text-left text-body text-text-primary placeholder-text-muted focus:border-accent-cyan focus:outline-none"
                 placeholder={t("project.script.placeholder")}
               />
             </div>

@@ -22,19 +22,19 @@ interface ExternalImageProps {
  * @example
  * // TMDB poster with responsive sizing
  * <ExternalImage
- *   src={tmdbImageUrl(movie.poster_path, "w500")}
- *   alt={movie.title}
- *   fill
- *   sizes="(max-width: 768px) 100vw, 50vw"
+ * src={tmdbImageUrl(movie.poster_path, "w500")}
+ * alt={movie.title}
+ * fill
+ * sizes="(max-width: 768px) 100vw, 50vw"
  * />
  *
  * @example
  * // Fixed-size profile image
  * <ExternalImage
- *   src={tmdbImageUrl(actor.profile_path, "w185")}
- *   alt={actor.name}
- *   width={48}
- *   height={48}
+ * src={tmdbImageUrl(actor.profile_path, "w185")}
+ * alt={actor.name}
+ * width={48}
+ * height={48}
  * />
  */
 export function ExternalImage({

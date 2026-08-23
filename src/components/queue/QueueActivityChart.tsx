@@ -88,7 +88,7 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span>Activity Trend (Last Hour)</span>
-            <div className="flex items-center gap-2 text-sm font-normal">
+            <div className="flex items-center gap-2 text-body font-normal">
               {trend > 0 ? (
                 <>
                   <TrendingUp className="h-4 w-4 text-red-500" />
@@ -120,7 +120,7 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
         <CardContent>
           <div className="space-y-2">
             {/* Y-axis labels */}
-            <div className="flex justify-between text-xs text-muted-foreground mb-2">
+            <div className="flex justify-between text-caption text-muted-foreground mb-2">
               <span>0</span>
               <span>{Math.floor(maxMessages / 2)}</span>
               <span>{maxMessages}</span>
@@ -195,7 +195,7 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
             </div>
 
             {/* X-axis labels */}
-            <div className="flex justify-between text-xs text-muted-foreground mt-2">
+            <div className="flex justify-between text-caption text-muted-foreground mt-2">
               <span>{history[0]?.timestamp || ""}</span>
               <span>{history[Math.floor(history.length / 2)]?.timestamp || ""}</span>
               <span>{history[history.length - 1]?.timestamp || ""}</span>
@@ -213,7 +213,7 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
         <CardContent>
           <div className="space-y-2">
             {/* Y-axis labels */}
-            <div className="flex justify-between text-xs text-muted-foreground mb-2">
+            <div className="flex justify-between text-caption text-muted-foreground mb-2">
               <span>0</span>
               <span>{Math.max(1, Math.floor(maxConsumers / 2))}</span>
               <span>{Math.max(1, maxConsumers)}</span>
@@ -280,7 +280,7 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
             </div>
 
             {/* X-axis labels */}
-            <div className="flex justify-between text-xs text-muted-foreground mt-2">
+            <div className="flex justify-between text-caption text-muted-foreground mt-2">
               <span>{history[0]?.timestamp || ""}</span>
               <span>{history[Math.floor(history.length / 2)]?.timestamp || ""}</span>
               <span>{history[history.length - 1]?.timestamp || ""}</span>
@@ -292,7 +292,7 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
       {/* Note about data collection */}
       <Card className="bg-muted/30">
         <CardContent className="pt-6">
-          <p className="text-xs text-muted-foreground">
+          <p className="text-caption text-muted-foreground">
             <strong>Note:</strong> Activity data is collected client-side during your current
             session. Historical data from before you opened this page is not available. For
             persistent monitoring, consider setting up a monitoring service.

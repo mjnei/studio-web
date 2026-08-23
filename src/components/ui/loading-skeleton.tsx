@@ -128,7 +128,7 @@ export function InlineLoadingSkeleton({ message }: { message?: string }) {
       role="status"
       aria-live="polite"
       aria-busy="true"
-      className="flex items-center justify-center py-8 text-text-muted text-sm border border-dashed border-border-default rounded-lg bg-surface-base/50"
+      className="flex items-center justify-center py-8 text-text-muted text-body border border-dashed border-border-default rounded-lg bg-surface-base/50"
     >
       <Spinner className="h-5 w-5 text-accent-primary mr-2" />
       <span className="sr-only">{loadingText}</span>

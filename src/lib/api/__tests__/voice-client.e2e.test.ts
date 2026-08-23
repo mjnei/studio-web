@@ -106,7 +106,7 @@ async function runTests() {
       results.passed++;
     } catch (error) {
       console.error(`✗ ${name}`);
-      console.error(`  ${(error as Error).message}`);
+      console.error(` ${(error as Error).message}`);
       results.failed++;
       results.errors.push(name);
     }
@@ -329,7 +329,7 @@ async function runTests() {
     if (results.failed > 0) {
       console.log("\nFailed Tests:");
       for (const error of results.errors) {
-        console.log(`  - ${error}`);
+        console.log(` - ${error}`);
       }
     }
 

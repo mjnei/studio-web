@@ -48,12 +48,12 @@ export function ProjectFilters({ filters, onFilterChange, onClear }: ProjectFilt
           <Filter className="h-5 w-5 text-text-muted" />
           <span className="font-medium text-text-primary">Filters</span>
           {activeCount > 0 && (
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs font-bold text-white">
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-caption font-bold text-white">
               {activeCount}
             </span>
           )}
         </div>
-        <span className="text-sm text-text-muted">{isExpanded ? "Hide" : "Show"}</span>
+        <span className="text-body text-text-muted">{isExpanded ? "Hide" : "Show"}</span>
       </button>
 
       <div
@@ -72,7 +72,7 @@ export function ProjectFilters({ filters, onFilterChange, onClear }: ProjectFilt
             <button
               type="button"
               onClick={clear}
-              className="flex items-center gap-1 text-sm text-text-muted transition-colors hover:text-text-primary"
+              className="flex items-center gap-1 text-body text-text-muted transition-colors hover:text-text-primary"
             >
               <X className="h-4 w-4" aria-hidden />
               Clear
@@ -88,7 +88,7 @@ export function ProjectFilters({ filters, onFilterChange, onClear }: ProjectFilt
               placeholder="Search by name..."
               value={local.q || ""}
               onChange={(e) => setLocal((prev) => ({ ...prev, q: e.target.value || undefined }))}
-              className="w-full rounded-lg border border-border-default bg-surface-raised py-2 pl-9 pr-3 text-sm text-text-primary"
+              className="w-full rounded-lg border border-border-default bg-surface-raised py-2 pl-9 pr-3 text-body text-text-primary"
             />
           </div>
 
@@ -100,7 +100,7 @@ export function ProjectFilters({ filters, onFilterChange, onClear }: ProjectFilt
                 status: (e.target.value || undefined) as AdminProjectStatus | undefined,
               }))
             }
-            className="rounded-lg border border-border-default bg-surface-raised px-3 py-2 text-sm text-text-primary"
+            className="rounded-lg border border-border-default bg-surface-raised px-3 py-2 text-body text-text-primary"
           >
             <option value="">All statuses</option>
             {STATUSES.map((s) => (
@@ -118,7 +118,7 @@ export function ProjectFilters({ filters, onFilterChange, onClear }: ProjectFilt
                 step: (e.target.value || undefined) as AdminProjectStep | undefined,
               }))
             }
-            className="rounded-lg border border-border-default bg-surface-raised px-3 py-2 text-sm text-text-primary"
+            className="rounded-lg border border-border-default bg-surface-raised px-3 py-2 text-body text-text-primary"
           >
             <option value="">All steps</option>
             {STEPS.map((s) => (
@@ -138,12 +138,12 @@ export function ProjectFilters({ filters, onFilterChange, onClear }: ProjectFilt
                 user_id: e.target.value ? Number(e.target.value) : undefined,
               }))
             }
-            className="rounded-lg border border-border-default bg-surface-raised px-3 py-2 text-sm text-text-primary"
+            className="rounded-lg border border-border-default bg-surface-raised px-3 py-2 text-body text-text-primary"
           />
         </div>
 
         <div className="flex flex-wrap items-center gap-4">
-          <label className="flex items-center gap-2 text-sm text-text-secondary">
+          <label className="flex items-center gap-2 text-body text-text-secondary">
             <input
               type="checkbox"
               checked={!!local.deleted_only}
@@ -157,7 +157,7 @@ export function ProjectFilters({ filters, onFilterChange, onClear }: ProjectFilt
             />
             Deleted only
           </label>
-          <label className="flex items-center gap-2 text-sm text-text-secondary">
+          <label className="flex items-center gap-2 text-body text-text-secondary">
             <input
               type="checkbox"
               checked={!!local.include_deleted && !local.deleted_only}
@@ -174,7 +174,7 @@ export function ProjectFilters({ filters, onFilterChange, onClear }: ProjectFilt
           <button
             type="button"
             onClick={apply}
-            className="ml-auto rounded-lg bg-accent-primary px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+            className="ml-auto rounded-lg bg-accent-primary px-4 py-2 text-body font-medium text-white hover:opacity-90"
           >
             Apply
           </button>

@@ -37,7 +37,7 @@ function pass(message: string) {
 function fail(message: string, error?: any) {
   log(`✗ FAIL: ${message}`, colors.red);
   if (error) {
-    log(`  Error: ${error.message}`, colors.red);
+    log(` Error: ${error.message}`, colors.red);
   }
 }
 
@@ -78,9 +78,9 @@ async function testFormDataSerialization() {
     // const file = new Blob([audioData], { type: "audio/webm" });
 
     log("Test case: Upload with file, name, and duration_seconds");
-    log("  - File: Blob with audio/webm MIME type");
-    log("  - Name: 'Test Voice'");
-    log("  - Duration: 45.5 seconds");
+    log(" - File: Blob with audio/webm MIME type");
+    log(" - Name: 'Test Voice'");
+    log(" - Duration: 45.5 seconds");
 
     pass("Form data includes 'file' field with Blob");
     pass("Form data includes 'name' field with string value");
@@ -167,26 +167,26 @@ async function testResponseStructures() {
 
   try {
     log("VoiceResponse fields:");
-    pass("  - id: number");
-    pass("  - user_id: number");
-    pass("  - name: string");
-    pass("  - audio_path: string");
-    pass("  - mime_type: string");
-    pass("  - language?: string | null");
-    pass("  - duration_seconds?: number | null");
-    pass("  - is_shared: boolean");
-    pass("  - is_approved: boolean");
-    pass("  - is_deleted: boolean");
-    pass("  - admin_approved_at?: string | null");
-    pass("  - created_at: string");
-    pass("  - updated_at: string");
+    pass(" - id: number");
+    pass(" - user_id: number");
+    pass(" - name: string");
+    pass(" - audio_path: string");
+    pass(" - mime_type: string");
+    pass(" - language?: string | null");
+    pass(" - duration_seconds?: number | null");
+    pass(" - is_shared: boolean");
+    pass(" - is_approved: boolean");
+    pass(" - is_deleted: boolean");
+    pass(" - admin_approved_at?: string | null");
+    pass(" - created_at: string");
+    pass(" - updated_at: string");
 
     log("\nAvailableVoicesResponse structure:");
-    pass("  - own_voices: VoiceResponse[]");
-    pass("  - community_voices: VoiceWithCreator[]");
+    pass(" - own_voices: VoiceResponse[]");
+    pass(" - community_voices: VoiceWithCreator[]");
 
     log("\nVoiceWithCreator fields (extends VoiceResponse):");
-    pass("  - creator_username: string");
+    pass(" - creator_username: string");
   } catch (error) {
     fail("Response structures", error);
   }
@@ -203,7 +203,7 @@ async function testFileNamingSanitization() {
       { input: "My Voice", expected: "my-voice" },
       { input: "Voice! (2024) #test", expected: "voice-2024-test" },
       { input: "UPPERCASE NAME", expected: "uppercase-name" },
-      { input: "Multiple   Spaces", expected: "multiple-spaces" },
+      { input: "Multiple Spaces", expected: "multiple-spaces" },
       { input: "Special@#$%Characters", expected: "specialcharacters" },
     ];
 

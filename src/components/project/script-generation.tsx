@@ -173,7 +173,7 @@ export function ScriptGeneration({
                 <textarea
                   value={script}
                   onChange={(e) => onScriptChange(e.target.value)}
-                  className="w-full min-h-[400px] p-6 bg-surface-base text-text-primary font-mono text-sm border-none focus:outline-none focus:ring-0 resize-none"
+                  className="w-full min-h-[400px] p-6 bg-surface-base text-text-primary font-mono text-body border-none focus:outline-none focus:ring-0 resize-none"
                   placeholder={t("project.script.placeholder")}
                 />
               ) : (
@@ -195,10 +195,10 @@ export function ScriptGeneration({
                 <Sparkles className="h-4 w-4 text-accent-primary" />
               </div>
               <div>
-                <p className="text-sm font-medium text-text-primary mb-1">
+                <p className="text-body font-medium text-text-primary mb-1">
                   {t("project.scriptGen.proTips")}
                 </p>
-                <ul className="text-xs text-text-secondary space-y-1">
+                <ul className="text-caption text-text-secondary space-y-1">
                   <li>• {t("project.scriptGen.tip1")}</li>
                   <li>• {t("project.scriptGen.tip2")}</li>
                   <li>• {t("project.scriptGen.tip3")}</li>

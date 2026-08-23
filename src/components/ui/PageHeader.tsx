@@ -31,9 +31,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
                 {title}
               </Heading>
               {description && (
-                <p
-                  className={cn(typography.body, "mt-2 text-[var(--text-secondary)]")}
-                >
+                <p className={cn(typography.body, "mt-2 text-[var(--text-secondary)]")}>
                   {description}
                 </p>
               )}

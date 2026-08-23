@@ -186,10 +186,10 @@ export default function HelpPage() {
                       >
                         {article.title}
                       </Heading>
-                      <p className="text-xs text-text-muted leading-relaxed">
+                      <p className="text-caption text-text-muted leading-relaxed">
                         {article.description}
                       </p>
-                      <div className="mt-3 flex items-center gap-1 text-xs text-accent-cyan opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="mt-3 flex items-center gap-1 text-caption text-accent-cyan opacity-0 group-hover:opacity-100 transition-opacity">
                         {t("help.gettingStarted.readMore")}
                         <ExternalLink className="h-3 w-3" />
                       </div>

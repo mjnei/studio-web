@@ -59,7 +59,7 @@ export function JobHistory({ jobs, onPlay, onDelete }: JobHistoryProps) {
 
     return (
       <span
-        className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold ${badge.bg} ${badge.text}`}
+        className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-caption font-bold ${badge.bg} ${badge.text}`}
       >
         {badge.icon}
         {status}
@@ -71,8 +71,10 @@ export function JobHistory({ jobs, onPlay, onDelete }: JobHistoryProps) {
     return (
       <div className="rounded-xl border border-border-default bg-surface-panel p-6 text-center">
         <Clock className="h-12 w-12 text-text-muted mx-auto mb-3 opacity-50" />
-        <p className="text-sm text-text-secondary">No recent jobs</p>
-        <p className="text-xs text-text-muted mt-1">Your playground job history will appear here</p>
+        <p className="text-body text-text-secondary">No recent jobs</p>
+        <p className="text-caption text-text-muted mt-1">
+          Your playground job history will appear here
+        </p>
       </div>
     );
   }
@@ -107,26 +109,26 @@ export function JobHistory({ jobs, onPlay, onDelete }: JobHistoryProps) {
                 {/* Status and Time */}
                 <div className="flex items-center gap-2 mb-2">
                   {getStatusBadge(job.status)}
-                  <span className="text-xs text-text-muted">
+                  <span className="text-caption text-text-muted">
                     {formatRelativeTime(job.created_at)}
                   </span>
                   {job.duration_seconds && (
-                    <span className="text-xs text-text-muted">
+                    <span className="text-caption text-text-muted">
                       • {job.duration_seconds.toFixed(1)}s
                     </span>
                   )}
                   {job.status === "completed" && job.audio_url && (
-                    <span className="text-xs text-accent-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="text-caption text-accent-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity">
                       • Click to play
                     </span>
                   )}
                 </div>
 
                 {/* Text Preview */}
-                <p className="text-sm text-text-secondary line-clamp-2 mb-2">{job.text}</p>
+                <p className="text-body text-text-secondary line-clamp-2 mb-2">{job.text}</p>
 
                 {/* Speed Ratio */}
-                <div className="flex items-center gap-2 text-xs text-text-muted">
+                <div className="flex items-center gap-2 text-caption text-text-muted">
                   <span>Speed: {job.speed_ratio.toFixed(1)}x</span>
                   <span>•</span>
                   <span>Voice #{job.voice_id}</span>
@@ -135,7 +137,7 @@ export function JobHistory({ jobs, onPlay, onDelete }: JobHistoryProps) {
                 {/* Error */}
                 {job.error && (
                   <div className="mt-2 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2">
-                    <p className="text-xs text-red-600">{job.error}</p>
+                    <p className="text-caption text-red-600">{job.error}</p>
                   </div>
                 )}
               </div>

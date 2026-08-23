@@ -51,7 +51,7 @@ export function Tooltip({ content, children, position = "top", delay = 200 }: To
 
       {isVisible && (
         <div
-          className={`absolute ${positionStyles[position]} px-3 py-2 bg-surface-elevated text-text-primary text-xs font-medium rounded-lg shadow-lg border border-border-default whitespace-nowrap z-50 animate-fade-in`}
+          className={`absolute ${positionStyles[position]} px-3 py-2 bg-surface-elevated text-text-primary text-caption font-medium rounded-lg shadow-lg border border-border-default whitespace-nowrap z-50 animate-fade-in`}
         >
           {content}
           <div

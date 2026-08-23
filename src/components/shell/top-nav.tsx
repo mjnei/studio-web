@@ -34,7 +34,7 @@ export function TopNav() {
           <input
             type="text"
             placeholder={t("common.searchEllipsis")}
-            className="w-64 rounded-lg border border-border-default bg-surface-raised pl-9 pr-3 py-1.5 text-sm text-text-primary placeholder-text-muted focus:border-accent-primary focus-ring transition-all hover:border-border-strong"
+            className="w-64 rounded-lg border border-border-default bg-surface-raised pl-9 pr-3 py-1.5 text-body text-text-primary placeholder-text-muted focus:border-accent-primary focus-ring transition-all hover:border-border-strong"
           />
         </div>
 

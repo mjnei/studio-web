@@ -36,11 +36,11 @@ export function VoiceNamingForm({
         <Heading variant="subsection" as="h3" className="text-text-primary mb-1">
           {t("voices.recording.nameTitle")}
         </Heading>
-        <p className="text-sm text-text-muted">{t("voices.recording.nameSubtitle")}</p>
+        <p className="text-body text-text-muted">{t("voices.recording.nameSubtitle")}</p>
       </div>
 
       <div>
-        <label htmlFor="voice-name" className="block text-sm font-medium text-text-primary mb-2">
+        <label htmlFor="voice-name" className="block text-body font-medium text-text-primary mb-2">
           {t("voices.recording.voiceName")}
         </label>
         <div className="relative">
@@ -62,7 +62,7 @@ export function VoiceNamingForm({
             disabled={isSaving}
           />
           {nameError && (
-            <p className="mt-2 text-xs text-red-400 flex items-center gap-1">
+            <p className="mt-2 text-caption text-red-400 flex items-center gap-1">
               <AlertCircle className="h-3 w-3" aria-hidden />
               {t("voices.recording.nameRequired")}
             </p>
@@ -72,7 +72,7 @@ export function VoiceNamingForm({
         <button
           onClick={onGenerateName}
           disabled={isSaving}
-          className="mt-3 flex items-center gap-2 text-sm text-accent-cyan hover:text-accent-cyan/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="mt-3 flex items-center gap-2 text-body text-accent-cyan hover:text-accent-cyan/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Sparkles className="h-4 w-4" aria-hidden />
           {t("voices.recording.generateRandom")}
@@ -82,7 +82,7 @@ export function VoiceNamingForm({
       <div>
         <label
           htmlFor="voice-language"
-          className="block text-sm font-medium text-text-primary mb-2"
+          className="block text-body font-medium text-text-primary mb-2"
         >
           {t("voices.recording.language")}
         </label>

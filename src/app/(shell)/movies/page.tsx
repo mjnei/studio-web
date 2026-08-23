@@ -86,7 +86,7 @@ export default function MoviesPage() {
         title={t("movies.title")}
         description={t("movies.description")}
         action={
-          <span className="rounded-full bg-accent-cyan/10 px-3 py-1.5 text-xs font-medium text-accent-cyan whitespace-nowrap">
+          <span className="rounded-full bg-accent-cyan/10 px-3 py-1.5 text-caption font-medium text-accent-cyan whitespace-nowrap">
             {movies.length === 1
               ? t("movies.countSingular", { count: movies.length })
               : t("movies.count", { count: movies.length })}

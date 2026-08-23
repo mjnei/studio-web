@@ -42,11 +42,11 @@ export default function AdminTMDBPage() {
 
           <p className="mb-2 text-text-secondary">TMDB import has been merged with TMDB Movies</p>
 
-          <p className="mb-6 text-sm text-text-muted">
+          <p className="mb-6 text-body text-text-muted">
             Redirecting you to the unified movies page...
           </p>
 
-          <div className="flex items-center justify-center gap-2 rounded-lg border border-border-default bg-surface-panel px-4 py-2 text-sm text-text-muted">
+          <div className="flex items-center justify-center gap-2 rounded-lg border border-border-default bg-surface-panel px-4 py-2 text-body text-text-muted">
             <span>/admin/tmdb</span>
             <ArrowRight className="h-4 w-4" />
             <span className="font-medium text-accent-primary">/admin/movies</span>
@@ -55,7 +55,7 @@ export default function AdminTMDBPage() {
           <div className="mt-8">
             <button
               onClick={() => router.push("/admin/movies")}
-              className="rounded-lg bg-accent-primary px-6 py-2 text-sm font-medium text-white hover:bg-accent-primary/90 transition-all"
+              className="rounded-lg bg-accent-primary px-6 py-2 text-body font-medium text-white hover:bg-accent-primary/90 transition-all"
             >
               Go to Movies Page Now
             </button>

@@ -149,11 +149,11 @@ export function HealthIndicator({ queues }: HealthIndicatorProps) {
             >
               <div className="flex items-center gap-2">
                 <slice.icon className={`h-4 w-4 ${slice.iconColor}`} />
-                <span className="text-xs text-muted-foreground">{slice.label}</span>
+                <span className="text-caption text-muted-foreground">{slice.label}</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium">{slice.count}</span>
-                <span className="text-xs text-muted-foreground w-8 text-right">
+                <span className="text-body font-medium">{slice.count}</span>
+                <span className="text-caption text-muted-foreground w-8 text-right">
                   {total > 0 ? `${slice.percent}%` : "0%"}
                 </span>
               </div>
@@ -164,7 +164,7 @@ export function HealthIndicator({ queues }: HealthIndicatorProps) {
 
       {/* Summary */}
       <div className="pt-2 border-t">
-        <p className="text-xs text-muted-foreground">
+        <p className="text-caption text-muted-foreground">
           <span className="font-medium text-foreground">{healthyPercent}%</span> of queues are
           healthy
         </p>

@@ -63,7 +63,9 @@ export function VoiceSelectionCard({
           ) : type === "recording" ? (
             <Mic className="h-5 w-5 text-accent-purple" />
           ) : (
-            <div className="text-sm font-bold text-accent-cyan">{name.charAt(0).toUpperCase()}</div>
+            <div className="text-body font-bold text-accent-cyan">
+              {name.charAt(0).toUpperCase()}
+            </div>
           )}
         </div>
 
@@ -72,7 +74,7 @@ export function VoiceSelectionCard({
             <div className="flex-1 min-w-0">
               <h4 className="font-medium text-text-primary truncate">{name}</h4>
               {metadata && (
-                <p className="mt-1 text-xs text-text-muted">
+                <p className="mt-1 text-caption text-text-muted">
                   {[
                     metadata.gender,
                     metadata.accent,
@@ -84,10 +86,10 @@ export function VoiceSelectionCard({
                 </p>
               )}
               {description && (
-                <p className="mt-1 text-xs text-text-secondary line-clamp-2">{description}</p>
+                <p className="mt-1 text-caption text-text-secondary line-clamp-2">{description}</p>
               )}
               {isPreviewLoading && (
-                <div className="mt-2 text-xs text-text-muted flex items-center gap-1">
+                <div className="mt-2 text-caption text-text-muted flex items-center gap-1">
                   <Spinner className="h-3 w-3 text-accent-cyan" />
                   <span>{t("voices.playback.loading")}</span>
                 </div>

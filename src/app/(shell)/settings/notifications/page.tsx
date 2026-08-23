@@ -90,7 +90,7 @@ export default function NotificationSettingsPage() {
         breadcrumbs={
           <Link
             href="/settings"
-            className="inline-flex items-center gap-2 text-sm text-text-muted hover:text-text-primary transition-colors group"
+            className="inline-flex items-center gap-2 text-body text-text-muted hover:text-text-primary transition-colors group"
           >
             <ChevronLeft className="h-4 w-4 group-hover:-translate-x-0.5 transition-transform" />
             <span>{t("notificationSettings.backToSettings")}</span>
@@ -161,7 +161,7 @@ export default function NotificationSettingsPage() {
 
                           {/* In-App Toggle */}
                           <label className="flex flex-col items-center gap-2 cursor-pointer">
-                            <span className="text-xs font-medium text-text-muted">
+                            <span className="text-caption font-medium text-text-muted">
                               {t("notificationSettings.inApp")}
                             </span>
                             <button
@@ -191,7 +191,7 @@ export default function NotificationSettingsPage() {
             <div className="sticky bottom-6 flex justify-center">
               <div className="bg-surface-panel rounded-xl border border-border-default shadow-2xl p-4 flex items-center gap-3">
                 {saveSuccess && (
-                  <span className="text-sm text-status-success font-medium flex items-center gap-2">
+                  <span className="text-body text-status-success font-medium flex items-center gap-2">
                     <Check className="h-4 w-4" aria-hidden />
                     {t("notificationSettings.preferencesSaved")}
                   </span>

@@ -169,7 +169,7 @@ function RailLink({
       className={`flex items-center gap-3 lg:gap-2.5 rounded-lg transition-all duration-200 focus-ring ${
         collapsed
           ? "justify-center px-0 py-2.5 lg:py-2"
-          : "px-3 py-2.5 text-sm font-medium lg:px-2.5 lg:py-2"
+          : "px-3 py-2.5 text-body font-medium lg:px-2.5 lg:py-2"
       } ${
         active
           ? "bg-gradient-to-r from-accent-secondary/20 via-accent-primary/20 to-accent-tertiary/20 text-accent-primary shadow-sm border border-accent-primary/30"
@@ -187,7 +187,7 @@ function LogoMark({ collapsed }: { collapsed?: boolean }) {
   return (
     <Link
       href="/dashboard"
-      className="flex items-center gap-2 text-xl font-bold group focus-ring rounded-lg"
+      className="flex items-center gap-2 text-page font-bold group focus-ring rounded-lg"
     >
       <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-accent-secondary via-accent-primary to-accent-tertiary shadow-md group-hover:shadow-lg transition-all">
         <Icon icon={Activity} size="sm" className="text-white" />
@@ -215,7 +215,7 @@ function UserSection({ collapsed, onNavigate }: { collapsed?: boolean; onNavigat
       <Link
         href="/profile"
         onClick={onNavigate}
-        className={`flex items-center gap-3 lg:gap-2.5 rounded-lg text-sm transition-all focus-ring ${
+        className={`flex items-center gap-3 lg:gap-2.5 rounded-lg text-body transition-all focus-ring ${
           collapsed
             ? "justify-center p-0"
             : "px-3 py-2.5 hover:bg-surface-hover border border-transparent hover:border-border-default lg:px-2.5 lg:py-2"
@@ -231,13 +231,13 @@ function UserSection({ collapsed, onNavigate }: { collapsed?: boolean; onNavigat
             height={40}
           />
         ) : (
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-accent-secondary to-accent-primary text-sm font-bold text-white shadow-lg">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-accent-secondary to-accent-primary text-body font-bold text-white shadow-lg">
             {initials}
           </span>
         )}
         {!collapsed && (
           <div className="flex-1 overflow-hidden">
-            <p className="truncate text-sm font-medium text-text-primary">{displayName}</p>
+            <p className="truncate text-body font-medium text-text-primary">{displayName}</p>
             <p className="truncate text-caption text-text-secondary">{displayEmail}</p>
           </div>
         )}

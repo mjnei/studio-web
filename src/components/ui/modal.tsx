@@ -308,7 +308,7 @@ export function AlertModal({
     >
       <div className="flex gap-4">
         {icon && <div className={`flex-shrink-0 ${iconColors[variant]}`}>{icon}</div>}
-        <p className="text-text-primary text-sm leading-relaxed">{message}</p>
+        <p className="text-text-primary text-body leading-relaxed">{message}</p>
       </div>
     </Modal>
   );

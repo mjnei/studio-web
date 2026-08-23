@@ -73,7 +73,7 @@ export const FailedJobCard: React.FC<FailedJobCardProps> = ({
               )}
             </div>
 
-            <div className="text-xs text-text-muted text-right">
+            <div className="text-caption text-text-muted text-right">
               <span>
                 {t("jobs.failedJob.attempt")} #{job.generation_attempt}
               </span>
@@ -81,7 +81,7 @@ export const FailedJobCard: React.FC<FailedJobCardProps> = ({
           </div>
 
           {/* Error Message Box */}
-          <div className="p-2.5 rounded-md bg-status-failed/10 border border-status-failed/20 text-xs text-status-failed space-y-0.5">
+          <div className="p-2.5 rounded-md bg-status-failed/10 border border-status-failed/20 text-caption text-status-failed space-y-0.5">
             <p className="font-semibold flex items-center gap-1.5">
               <AlertTriangle className="h-3.5 w-3.5 flex-shrink-0" aria-hidden />
               {t("jobs.failedJob.generationFailed", { progress: job.progress })}
@@ -92,7 +92,7 @@ export const FailedJobCard: React.FC<FailedJobCardProps> = ({
           </div>
 
           {/* Metadata */}
-          <div className="flex flex-wrap items-center gap-4 text-xs text-text-muted">
+          <div className="flex flex-wrap items-center gap-4 text-caption text-text-muted">
             <span>
               {t("jobs.failedJob.voice")}:{" "}
               <strong className="text-text-secondary">

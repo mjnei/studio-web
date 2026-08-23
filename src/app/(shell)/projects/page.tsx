@@ -134,7 +134,7 @@ export default function ProjectsPage() {
         description={t("projects.description")}
         action={
           <div className="flex items-center gap-3">
-            <span className="rounded-full bg-accent-cyan/10 px-3 py-1.5 text-xs font-medium text-accent-cyan whitespace-nowrap">
+            <span className="rounded-full bg-accent-cyan/10 px-3 py-1.5 text-caption font-medium text-accent-cyan whitespace-nowrap">
               {projects.length}{" "}
               {projects.length === 1 ? t("projects.badge.singular") : t("projects.badge.plural")}
             </span>
@@ -203,14 +203,14 @@ export default function ProjectsPage() {
         loading={deleting}
       >
         <div className="space-y-3">
-          <p className="text-sm text-text-secondary">
+          <p className="text-body text-text-secondary">
             {t("projects.delete.confirm")}{" "}
             <span className="font-semibold text-text-primary">
               {(projectToDelete?.project_name || projectToDelete?.movie?.title) ??
                 t("projects.untitled")}
             </span>
           </p>
-          <p className="text-sm text-text-secondary">{t("projects.delete.restoreInfo")}</p>
+          <p className="text-body text-text-secondary">{t("projects.delete.restoreInfo")}</p>
         </div>
       </FormModal>
     </div>

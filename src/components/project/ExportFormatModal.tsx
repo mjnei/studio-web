@@ -117,7 +117,7 @@ export function ExportFormatModal({ isOpen, onClose, videoUrl, onExport }: Expor
           <Heading variant="label" as="h4" className="text-text-primary mb-3 font-medium">
             {t("project.exportModal.summary")}
           </Heading>
-          <div className="space-y-2 text-sm">
+          <div className="space-y-2 text-body">
             <div className="flex justify-between">
               <span className="text-text-secondary">{t("project.exportModal.summaryFormat")}</span>
               <span className="text-text-primary font-medium">
@@ -149,7 +149,7 @@ export function ExportFormatModal({ isOpen, onClose, videoUrl, onExport }: Expor
 
         {/* Coming Soon Note */}
         <div className="p-3 rounded-lg bg-accent-cyan/5 border border-accent-cyan/20">
-          <p className="text-xs text-accent-cyan">
+          <p className="text-caption text-accent-cyan">
             <strong>{t("project.exportModal.note")}</strong>{" "}
             {t("project.exportModal.comingSoonNote")}
           </p>

@@ -385,7 +385,7 @@ export default function PreviewPage() {
             <Heading variant="section" as="h2" className="text-text-primary">
               {t("project.preview.title")}
             </Heading>
-            <p className="mt-1 text-sm text-text-muted">{t("project.preview.description")}</p>
+            <p className="mt-1 text-body text-text-muted">{t("project.preview.description")}</p>
           </div>
 
           {/* Main Audio Player Card */}
@@ -429,7 +429,7 @@ export default function PreviewPage() {
                   {ttsJob?.status === "failed" && t("project.preview.generationFailed")}
                 </Heading>
 
-                <p className="text-sm text-text-muted">
+                <p className="text-body text-text-muted">
                   {!ttsJob && !ttsError && t("project.preview.settingUp")}
                   {ttsJob?.status === "queued" && t("project.preview.inQueue")}
                   {ttsJob?.status === "processing" &&
@@ -472,26 +472,26 @@ export default function PreviewPage() {
                         value={currentTime}
                         onChange={handleSeek}
                         className="w-full h-2 bg-surface-panel rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none
-                        [&::-webkit-slider-thumb]:w-4
-                        [&::-webkit-slider-thumb]:h-4
-                        [&::-webkit-slider-thumb]:rounded-full
-                        [&::-webkit-slider-thumb]:bg-gradient-to-br
-                        [&::-webkit-slider-thumb]:from-green-500
-                        [&::-webkit-slider-thumb]:to-emerald-500
-                        [&::-webkit-slider-thumb]:cursor-pointer
-                        [&::-webkit-slider-thumb]:shadow-lg
-                        [&::-webkit-slider-thumb]:hover:shadow-glow-hover
-                        [&::-webkit-slider-thumb]:transition-all
-                        [&::-moz-range-thumb]:w-4
-                        [&::-moz-range-thumb]:h-4
-                        [&::-moz-range-thumb]:rounded-full
-                        [&::-moz-range-thumb]:bg-gradient-to-br
-                        [&::-moz-range-thumb]:from-green-500
-                        [&::-moz-range-thumb]:to-emerald-500
-                        [&::-moz-range-thumb]:border-0
-                        [&::-moz-range-thumb]:cursor-pointer"
+ [&::-webkit-slider-thumb]:w-4
+ [&::-webkit-slider-thumb]:h-4
+ [&::-webkit-slider-thumb]:rounded-full
+ [&::-webkit-slider-thumb]:bg-gradient-to-br
+ [&::-webkit-slider-thumb]:from-green-500
+ [&::-webkit-slider-thumb]:to-emerald-500
+ [&::-webkit-slider-thumb]:cursor-pointer
+ [&::-webkit-slider-thumb]:shadow-lg
+ [&::-webkit-slider-thumb]:hover:shadow-glow-hover
+ [&::-webkit-slider-thumb]:transition-all
+ [&::-moz-range-thumb]:w-4
+ [&::-moz-range-thumb]:h-4
+ [&::-moz-range-thumb]:rounded-full
+ [&::-moz-range-thumb]:bg-gradient-to-br
+ [&::-moz-range-thumb]:from-green-500
+ [&::-moz-range-thumb]:to-emerald-500
+ [&::-moz-range-thumb]:border-0
+ [&::-moz-range-thumb]:cursor-pointer"
                       />
-                      <div className="flex items-center justify-between mt-2 text-xs text-text-muted">
+                      <div className="flex items-center justify-between mt-2 text-caption text-text-muted">
                         <span>{formatTime(currentTime)}</span>
                         <span>{duration ? formatTime(duration) : "--:--"}</span>
                       </div>
@@ -544,18 +544,18 @@ export default function PreviewPage() {
                         onChange={handleVolumeChange}
                         title={t("project.preview.volume")}
                         className="flex-1 h-1.5 bg-surface-panel rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none
-                        [&::-webkit-slider-thumb]:w-3
-                        [&::-webkit-slider-thumb]:h-3
-                        [&::-webkit-slider-thumb]:rounded-full
-                        [&::-webkit-slider-thumb]:bg-accent-primary
-                        [&::-webkit-slider-thumb]:cursor-pointer
-                        [&::-webkit-slider-thumb]:transition-all
-                        [&::-moz-range-thumb]:w-3
-                        [&::-moz-range-thumb]:h-3
-                        [&::-moz-range-thumb]:rounded-full
-                        [&::-moz-range-thumb]:bg-accent-primary
-                        [&::-moz-range-thumb]:border-0
-                        [&::-moz-range-thumb]:cursor-pointer"
+ [&::-webkit-slider-thumb]:w-3
+ [&::-webkit-slider-thumb]:h-3
+ [&::-webkit-slider-thumb]:rounded-full
+ [&::-webkit-slider-thumb]:bg-accent-primary
+ [&::-webkit-slider-thumb]:cursor-pointer
+ [&::-webkit-slider-thumb]:transition-all
+ [&::-moz-range-thumb]:w-3
+ [&::-moz-range-thumb]:h-3
+ [&::-moz-range-thumb]:rounded-full
+ [&::-moz-range-thumb]:bg-accent-primary
+ [&::-moz-range-thumb]:border-0
+ [&::-moz-range-thumb]:cursor-pointer"
                       />
                       <Volume2 className="h-4 w-4 text-text-muted flex-shrink-0" />
                     </div>
@@ -604,7 +604,7 @@ export default function PreviewPage() {
             {ttsJob && (
               <div className="bg-surface-panel px-8 py-4 border-t border-border-default">
                 <div className="flex flex-wrap items-center justify-between gap-4">
-                  <div className="flex items-center gap-4 text-sm flex-wrap">
+                  <div className="flex items-center gap-4 text-body flex-wrap">
                     <div className="flex items-center gap-2">
                       <span className="text-text-muted">{t("project.preview.jobId")}</span>
                       <Badge variant="outline" className="font-mono">
@@ -638,7 +638,7 @@ export default function PreviewPage() {
                     )}
                   </div>
                   {ttsJob.status === "completed" && (
-                    <div className="flex items-center gap-2 text-xs text-accent-tertiary">
+                    <div className="flex items-center gap-2 text-caption text-accent-tertiary">
                       <Sparkles className="h-4 w-4" />
                       <span>{t("project.preview.cachedOptimized")}</span>
                     </div>
@@ -663,23 +663,23 @@ export default function PreviewPage() {
               <CardContent>
                 <div className="space-y-3">
                   <div>
-                    <p className="text-xs text-text-muted uppercase tracking-wide mb-1">
+                    <p className="text-caption text-text-muted uppercase tracking-wide mb-1">
                       {t("project.preview.projectName")}
                     </p>
                     <p className="font-medium text-text-primary">{projectName}</p>
                   </div>
                   <div>
-                    <p className="text-xs text-text-muted uppercase tracking-wide mb-1">
+                    <p className="text-caption text-text-muted uppercase tracking-wide mb-1">
                       {t("project.common.voice")}
                     </p>
                     <p className="font-medium text-text-primary">{voiceName}</p>
                   </div>
                   {activeScript && (
                     <div>
-                      <p className="text-xs text-text-muted uppercase tracking-wide mb-1">
+                      <p className="text-caption text-text-muted uppercase tracking-wide mb-1">
                         {t("project.common.script")}
                       </p>
-                      <p className="text-sm text-text-secondary">
+                      <p className="text-body text-text-secondary">
                         {t("project.common.scriptMetaShort", {
                           count: activeScript.wordCount,
                           duration: scriptDuration,
@@ -708,11 +708,11 @@ export default function PreviewPage() {
               </CardHeader>
               <CardContent>
                 <div className="rounded-lg bg-surface-panel p-4 border border-border-default">
-                  <p className="text-sm text-text-primary leading-relaxed line-clamp-3">
+                  <p className="text-body text-text-primary leading-relaxed line-clamp-3">
                     &ldquo;{previewText}&rdquo;
                   </p>
                 </div>
-                <div className="mt-3 flex items-center gap-2 text-xs text-accent-tertiary group-hover:text-accent-tertiary-hover transition-colors">
+                <div className="mt-3 flex items-center gap-2 text-caption text-accent-tertiary group-hover:text-accent-tertiary-hover transition-colors">
                   <Info className="h-3.5 w-3.5" />
                   <span>{t("project.preview.clickFullScript")}</span>
                 </div>

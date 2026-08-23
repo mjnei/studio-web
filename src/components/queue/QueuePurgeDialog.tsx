@@ -69,21 +69,21 @@ export function QueuePurgeDialog({ queue, open, onOpenChange, onSuccess }: Queue
       confirmText={isPurging ? "Purging..." : "Purge Queue"}
       loading={isPurging}
     >
-      <div className="space-y-3 text-sm">
+      <div className="space-y-3 text-body">
         <p className="flex items-center gap-2">
           <AlertTriangle className="h-5 w-5 text-destructive shrink-0" />
           You are about to <strong>permanently delete all messages</strong> from:
         </p>
         <div className="p-3 bg-muted rounded-md">
           <p className="font-medium">{queue.metadata?.display_name || queue.queue_name}</p>
-          <p className="text-xs text-muted-foreground mt-1">{queue.metadata?.description}</p>
+          <p className="text-caption text-muted-foreground mt-1">{queue.metadata?.description}</p>
         </div>
         {previewData && (
           <div className="p-3 bg-red-100 dark:bg-red-900/20 border border-red-300 dark:border-red-800 rounded-md">
-            <p className="text-sm font-medium text-red-900 dark:text-red-200">
+            <p className="text-body font-medium text-red-900 dark:text-red-200">
               {previewData.messages.toLocaleString()} messages will be deleted
             </p>
-            <p className="text-xs text-red-700 dark:text-red-400 mt-1">
+            <p className="text-caption text-red-700 dark:text-red-400 mt-1">
               This action cannot be undone.
             </p>
           </div>

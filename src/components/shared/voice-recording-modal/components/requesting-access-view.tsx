@@ -13,7 +13,7 @@ export function RequestingAccessView({ translate: t }: RequestingAccessViewProps
         <Spinner className="h-16 w-16 text-accent-cyan" />
         <Mic className="absolute h-7 w-7 text-accent-cyan" aria-hidden />
       </div>
-      <p className="text-sm text-text-secondary">{t("voices.recording.requestingAccess")}</p>
+      <p className="text-body text-text-secondary">{t("voices.recording.requestingAccess")}</p>
     </div>
   );
 }

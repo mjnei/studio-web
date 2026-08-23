@@ -70,7 +70,7 @@ export function VoiceLimitDialog({
         </Heading>
 
         {/* Message */}
-        <p className="text-sm text-text-secondary text-center mb-6">
+        <p className="text-body text-text-secondary text-center mb-6">
           <span className="font-semibold text-text-primary">
             {t("voices.limitDialog.message")
               .replace("{current}", currentCount.toString())
@@ -91,7 +91,7 @@ export function VoiceLimitDialog({
                       ? t("voices.limitDialog.proUpgradeTitle")
                       : t("voices.limitDialog.premiumUpgradeTitle")}
                   </Heading>
-                  <p className="text-xs text-text-secondary">
+                  <p className="text-caption text-text-secondary">
                     {tier === "free"
                       ? t("voices.limitDialog.proUpgradeDescription")
                       : t("voices.limitDialog.premiumUpgradeDescription")}
@@ -122,7 +122,7 @@ export function VoiceLimitDialog({
 
         {/* Tip for Premium users */}
         {isAtMax && (
-          <p className="mt-4 text-xs text-center text-text-muted">
+          <p className="mt-4 text-caption text-center text-text-muted">
             💡 {t("voices.limitDialog.premiumTip")}
           </p>
         )}

@@ -140,10 +140,10 @@ export default function ReferralPage() {
             <div className="flex flex-col gap-3">
               <div className="flex flex-col sm:flex-row gap-3">
                 <div className="flex-1 rounded-lg border border-border-default bg-surface-raised px-4 py-3">
-                  <p className="text-xs font-medium text-text-muted mb-1">
+                  <p className="text-caption font-medium text-text-muted mb-1">
                     {t("referral.inviteCard.yourReferralLink")}
                   </p>
-                  <p className="truncate text-sm text-text-primary font-mono">
+                  <p className="truncate text-body text-text-primary font-mono">
                     {codeData.invite_link}
                   </p>
                 </div>
@@ -158,10 +158,10 @@ export default function ReferralPage() {
                 </Button>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-medium text-text-muted">
+                <span className="text-caption font-medium text-text-muted">
                   {t("referral.inviteCard.yourCode")}
                 </span>
-                <code className="rounded-lg bg-accent-muted px-3 py-1.5 text-sm font-mono text-accent-primary font-semibold">
+                <code className="rounded-lg bg-accent-muted px-3 py-1.5 text-body font-mono text-accent-primary font-semibold">
                   {codeData.referral_code}
                 </code>
               </div>
@@ -179,7 +179,9 @@ export default function ReferralPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-text-muted mb-1">{t("referral.stats.directReferrals")}</p>
+              <p className="text-body text-text-muted mb-1">
+                {t("referral.stats.directReferrals")}
+              </p>
               <Heading variant="metric" className="text-text-primary">
                 {stats.total_direct_referrals}
               </Heading>
@@ -197,7 +199,7 @@ export default function ReferralPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-text-muted mb-1">{t("referral.stats.totalReferrals")}</p>
+              <p className="text-body text-text-muted mb-1">{t("referral.stats.totalReferrals")}</p>
               <Heading variant="metric" className="text-text-primary">
                 {stats.total_all_levels_referrals}
               </Heading>
@@ -215,7 +217,7 @@ export default function ReferralPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-text-muted mb-1">{t("referral.stats.rewardsEarned")}</p>
+              <p className="text-body text-text-muted mb-1">{t("referral.stats.rewardsEarned")}</p>
               <Heading variant="metric" className="text-accent-cyan">
                 {stats.total_invite_rewards_earned}
               </Heading>
@@ -257,9 +259,9 @@ export default function ReferralPage() {
                       <Trophy className="h-6 w-6 text-white" />
                     </div>
                   )}
-                  <p className="text-sm font-semibold text-text-primary">{achievement.name}</p>
-                  <p className="text-xs text-text-muted mt-1">{achievement.description}</p>
-                  <p className="text-xs text-text-secondary mt-1">
+                  <p className="text-body font-semibold text-text-primary">{achievement.name}</p>
+                  <p className="text-caption text-text-muted mt-1">{achievement.description}</p>
+                  <p className="text-caption text-text-secondary mt-1">
                     {formatDate(achievement.earned_at)}
                   </p>
                 </div>
@@ -282,22 +284,22 @@ export default function ReferralPage() {
             <EmptyState icon={<Users aria-hidden />} title={t("referral.history.noReferrals")} />
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[600px] text-sm">
+              <table className="w-full min-w-[600px] text-body">
                 <thead>
                   <tr className="border-b border-border-default text-left">
-                    <th className="pb-3 text-xs font-semibold text-text-secondary uppercase tracking-wider">
+                    <th className="pb-3 text-caption font-semibold text-text-secondary uppercase tracking-wider">
                       {t("referral.history.referee")}
                     </th>
-                    <th className="pb-3 text-xs font-semibold text-text-secondary uppercase tracking-wider">
+                    <th className="pb-3 text-caption font-semibold text-text-secondary uppercase tracking-wider">
                       {t("referral.history.date")}
                     </th>
-                    <th className="pb-3 text-xs font-semibold text-text-secondary uppercase tracking-wider">
+                    <th className="pb-3 text-caption font-semibold text-text-secondary uppercase tracking-wider">
                       {t("referral.history.level")}
                     </th>
-                    <th className="pb-3 text-xs font-semibold text-text-secondary uppercase tracking-wider">
+                    <th className="pb-3 text-caption font-semibold text-text-secondary uppercase tracking-wider">
                       {t("referral.history.downstream")}
                     </th>
-                    <th className="pb-3 text-xs font-semibold text-text-secondary uppercase tracking-wider text-right">
+                    <th className="pb-3 text-caption font-semibold text-text-secondary uppercase tracking-wider text-right">
                       {t("referral.history.rewards")}
                     </th>
                   </tr>
@@ -310,7 +312,7 @@ export default function ReferralPage() {
                     >
                       <td className="py-3">
                         <p className="font-medium text-text-primary">{row.referee_name}</p>
-                        <p className="text-xs text-text-muted">{row.referee_email}</p>
+                        <p className="text-caption text-text-muted">{row.referee_email}</p>
                       </td>
                       <td className="py-3 text-text-muted">{formatDate(row.created_at)}</td>
                       <td className="py-3">

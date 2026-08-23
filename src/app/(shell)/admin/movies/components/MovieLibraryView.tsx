@@ -72,11 +72,11 @@ export function MovieLibraryView({
         </div>
         <div className="flex shrink-0 flex-wrap items-center gap-2">
           <LayoutToggle layoutMode={layoutMode} onLayoutChange={onLayoutChange} />
-          <span className="text-sm text-text-muted">Locale:</span>
+          <span className="text-body text-text-muted">Locale:</span>
           <select
             value={selectedLocale}
             onChange={(e) => onLocaleChange(e.target.value)}
-            className="rounded-lg border border-border-default bg-surface-panel px-3 py-2 text-sm text-text-primary focus:border-accent-primary focus:outline-none"
+            className="rounded-lg border border-border-default bg-surface-panel px-3 py-2 text-body text-text-primary focus:border-accent-primary focus:outline-none"
           >
             {SUPPORTED_LOCALES.map((locale) => (
               <option key={locale} value={locale}>
@@ -101,7 +101,7 @@ export function MovieLibraryView({
             !searchTerm && (
               <button
                 onClick={onSwitchToImport}
-                className="flex items-center gap-2 rounded-lg bg-accent-primary px-4 py-2 text-sm font-medium text-white hover:bg-accent-primary/90"
+                className="flex items-center gap-2 rounded-lg bg-accent-primary px-4 py-2 text-body font-medium text-white hover:bg-accent-primary/90"
               >
                 <Download className="h-4 w-4" />
                 Import from TMDB

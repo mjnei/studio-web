@@ -55,13 +55,13 @@ export function ProjectStatsCard({ stats }: ProjectStatsCardProps) {
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="mb-1 text-xs font-medium uppercase tracking-wider text-text-muted">
+                <p className="mb-1 text-caption font-medium uppercase tracking-wider text-text-muted">
                   {card.label}
                 </p>
                 <Heading variant="metric" className="text-text-primary">
                   {card.value}
                 </Heading>
-                <p className="mt-1 text-xs text-text-secondary">{card.hint}</p>
+                <p className="mt-1 text-caption text-text-secondary">{card.hint}</p>
               </div>
               <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${card.bg}`}>
                 <Icon className={`h-6 w-6 ${card.color}`} />

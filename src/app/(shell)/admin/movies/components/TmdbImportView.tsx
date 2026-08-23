@@ -81,7 +81,7 @@ export function TmdbImportView({
           <button
             onClick={() => onSearch(1)}
             disabled={isSearching || !searchQuery.trim()}
-            className="flex shrink-0 items-center justify-center rounded-lg bg-accent-primary px-4 py-3 text-sm font-medium text-white hover:bg-accent-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all sm:px-6"
+            className="flex shrink-0 items-center justify-center rounded-lg bg-accent-primary px-4 py-3 text-body font-medium text-white hover:bg-accent-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all sm:px-6"
             aria-label="Search TMDB"
           >
             <Search className="h-4 w-4" />
@@ -94,7 +94,7 @@ export function TmdbImportView({
       {!isSearching && searchResults.length > 0 && (
         <>
           <div className="mb-4 flex items-center justify-between">
-            <p className="text-sm text-text-secondary">
+            <p className="text-body text-text-secondary">
               Found {totalResults.toLocaleString()} results • Page {page} of {totalPages}
             </p>
             <LayoutToggle layoutMode={layoutMode} onLayoutChange={onLayoutChange} />
