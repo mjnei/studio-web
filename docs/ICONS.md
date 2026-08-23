@@ -4,6 +4,25 @@ Product UI icons use **Lucide React** (`lucide-react`). Brand logos that Lucide 
 
 Loading spinners are **not** icons — use `Spinner` / `LoadingSpinner` from `@/components/ui`.
 
+### Spinner tier (`Spinner` / `LoadingSpinner`)
+
+Both components share the same **`size`** tokens via `Spinner` (`@/components/ui/spinner`). `LoadingSpinner` wraps `Spinner` with status semantics and optional message — do not pass ad-hoc `h-N w-N` sizes to it.
+
+| `size` | Class | Pixels | Typical use |
+|--------|-------|--------|-------------|
+| `sm` | `h-4 w-4` | 16 | Button loading, compact inline |
+| `md` *(default)* | `h-8 w-8` | 32 | Panel/section loading, dropdowns |
+| `lg` | `h-12 w-12` | 48 | Full-page or `fullHeight` loading blocks |
+
+Maps to the standard icon tier where it matters: `sm` = Icon `sm`, `md` = Icon `xl`, `lg` = EmptyState ring `md`.
+
+```tsx
+<Spinner size="sm" className="text-accent-primary" />
+<LoadingSpinner size="lg" message={t("voices.errors.loadingVoices")} fullHeight />
+```
+
+One-off dimensions (`h-3`, `h-5`, `h-7`, …) are OK on bare `<Spinner />` for dense contextual layout — not on `LoadingSpinner`.
+
 ---
 
 ## Libraries
@@ -144,7 +163,7 @@ Sidebar icons are defined in `src/components/shell/drawer-content.tsx` via `icon
 | Item | Status |
 |------|--------|
 | Lucide migration + brand icons | Done |
-| Spinner primitive (`Spinner` / `LoadingSpinner`) | Done — `@/components/ui/spinner`, `@/components/ui/LoadingSpinner` |
+| Spinner primitive (`Spinner` / `LoadingSpinner`) | Done — shared `size` tokens (`sm`/`md`/`lg`); `@/components/ui/spinner`, `@/components/ui/LoadingSpinner` |
 | Class order (`h-N w-N` on Lucide) | Done |
 | Empty-state pattern (`EmptyState` + hero tier) | Done — primary surfaces migrated |
 | `aria-hidden` on decorative icons | Partial — job cards, admin empties; broader rollout continues |

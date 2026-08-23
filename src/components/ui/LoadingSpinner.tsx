@@ -13,12 +13,6 @@ interface LoadingSpinnerProps {
   fullHeight?: boolean;
 }
 
-const legacySizeClasses = {
-  sm: "h-5 w-5",
-  md: "h-8 w-8",
-  lg: "h-10 w-10",
-} as const;
-
 export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   size = "md",
   message,
@@ -37,7 +31,7 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
       className={cn("flex items-center justify-center", fullHeight && "min-h-[400px]", className)}
     >
       <div className="flex flex-col items-center gap-3">
-        <Spinner className={cn("text-accent-primary", legacySizeClasses[size])} />
+        <Spinner size={size} className="text-accent-primary" />
         <span className="sr-only">{loadingText}</span>
         {message && (
           <p aria-hidden="true" className="text-sm font-medium text-text-primary">
