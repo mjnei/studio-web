@@ -40,6 +40,8 @@ export function useTmdbImport({
       setTimeout(() => {
         searchInputRef.current?.focus();
       }, 100);
+    } else {
+      setLocalesExpanded(false);
     }
   }, [enabled]);
 

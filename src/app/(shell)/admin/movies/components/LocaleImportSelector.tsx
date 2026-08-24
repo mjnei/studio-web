@@ -21,7 +21,7 @@ export function LocaleImportSelector({
       <button
         type="button"
         onClick={() => onExpandedChange(!expanded)}
-        className="flex h-full min-h-[48px] shrink-0 items-center gap-2 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-left transition-colors hover:bg-surface-hover sm:px-4"
+        className="flex shrink-0 items-center gap-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2 text-left transition-colors hover:bg-surface-hover"
         aria-expanded={expanded}
         aria-label="Translation locales to import"
       >
