@@ -1,16 +1,57 @@
 "use client";
 
-import { Layers } from "lucide-react";
+import { useState } from "react";
+import { Layers, RefreshCw } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
+import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { useI18n } from "@/i18n";
+
+const getBackgroundVideoSrc = (index: number) => `/videos/background${index}.mp4`;
+
+const canLoadVideo = (src: string) =>
+  new Promise<boolean>((resolve) => {
+    const video = document.createElement("video");
+
+    const cleanup = () => {
+      video.onloadeddata = null;
+      video.onerror = null;
+    };
+
+    video.preload = "metadata";
+    video.onloadeddata = () => {
+      cleanup();
+      resolve(true);
+    };
+    video.onerror = () => {
+      cleanup();
+      resolve(false);
+    };
+    video.src = src;
+  });
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { t } = useI18n();
   const isOnboardingPage = pathname === "/onboarding";
+  const [backgroundIndex, setBackgroundIndex] = useState(1);
+  const [isSwitchingBackground, setIsSwitchingBackground] = useState(false);
+
+  const handleNextBackground = async () => {
+    if (isSwitchingBackground) {
+      return;
+    }
+
+    setIsSwitchingBackground(true);
+
+    const nextIndex = backgroundIndex + 1;
+    const nextVideoExists = await canLoadVideo(getBackgroundVideoSrc(nextIndex));
+
+    setBackgroundIndex(nextVideoExists ? nextIndex : 1);
+    setIsSwitchingBackground(false);
+  };
 
   // For onboarding page, render children directly without wrapper
   if (isOnboardingPage) {
@@ -23,13 +64,14 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       {/* Full-screen Video Background */}
       <div className="absolute inset-0 pointer-events-none">
         <video
+          key={backgroundIndex}
           autoPlay
           loop
           muted
           playsInline
           className="absolute inset-0 w-full h-full object-cover"
         >
-          <source src="/images/background.mp4" type="video/mp4" />
+          <source src={getBackgroundVideoSrc(backgroundIndex)} type="video/mp4" />
         </video>
         {/* Dark gradient overlay for branding and aesthetics */}
         <div className="absolute inset-0 bg-black/20" />
@@ -54,6 +96,19 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         {/* Right Side Form */}
         <div className="flex flex-col w-full lg:w-1/2 items-center justify-center p-4">
           <div className="w-full max-w-md relative">
+            <div className="mb-4 flex justify-end">
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={() => void handleNextBackground()}
+                isLoading={isSwitchingBackground}
+                className="border border-white/20 bg-black/35 text-white backdrop-blur-md hover:bg-black/45"
+                leftIcon={!isSwitchingBackground ? <RefreshCw className="h-4 w-4" aria-hidden /> : undefined}
+              >
+              </Button>
+            </div>
+
             {/* Mobile Branding */}
             <div className="mb-8 text-center lg:hidden">
               <div className="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-2xl bg-gradient-to-br from-accent-secondary via-accent-primary to-accent-tertiary shadow-lg">
