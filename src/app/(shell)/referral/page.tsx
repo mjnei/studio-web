@@ -10,9 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { Heading } from "@/components/ui/heading";
 import { Badge } from "@/components/ui/badge";
-import { Grid } from "@/components/ui/Grid";
 import {
   getMyReferralCode,
   getMyReferralHistory,
@@ -171,7 +169,7 @@ export default function ReferralPage() {
       </Card>
 
       {/* Stats Grid */}
-      <Grid cols={3} gap="md" className="mb-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
         <Card
           variant="elevated"
           padding="md"
@@ -182,9 +180,9 @@ export default function ReferralPage() {
               <p className="text-body text-text-muted mb-1">
                 {t("referral.stats.directReferrals")}
               </p>
-              <Heading variant="metric" className="text-text-primary">
+              <p className="text-body font-bold text-2xl text-text-primary">
                 {stats.total_direct_referrals}
-              </Heading>
+              </p>
             </div>
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center group-hover:scale-110 transition-transform">
               <Users className="h-6 w-6 text-white" />
@@ -200,9 +198,9 @@ export default function ReferralPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-body text-text-muted mb-1">{t("referral.stats.totalReferrals")}</p>
-              <Heading variant="metric" className="text-text-primary">
+              <p className="text-body font-bold text-2xl text-text-primary">
                 {stats.total_all_levels_referrals}
-              </Heading>
+              </p>
             </div>
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center group-hover:scale-110 transition-transform">
               <TrendingUp className="h-6 w-6 text-white" />
@@ -213,21 +211,21 @@ export default function ReferralPage() {
         <Card
           variant="elevated"
           padding="md"
-          className="group hover:border-accent-cyan/40 transition-all"
+          className="group hover:border-accent-cyan/40 transition-all col-span-2 sm:col-span-1"
         >
           <div className="flex items-center justify-between">
             <div>
               <p className="text-body text-text-muted mb-1">{t("referral.stats.rewardsEarned")}</p>
-              <Heading variant="metric" className="text-accent-cyan">
+              <p className="text-body font-bold text-2xl text-accent-cyan">
                 {stats.total_invite_rewards_earned}
-              </Heading>
+              </p>
             </div>
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center group-hover:scale-110 transition-transform">
               <Award className="h-6 w-6 text-white" />
             </div>
           </div>
         </Card>
-      </Grid>
+      </div>
 
       {/* Achievements */}
       {stats.achievements && stats.achievements.length > 0 && (
