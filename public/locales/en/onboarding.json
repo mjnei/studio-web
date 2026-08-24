@@ -95,7 +95,7 @@
         "publish": "Publish"
       },
       "goToDashboard": "Go to Dashboard",
-      "redirect": "Redirecting in {seconds} second{plural}...",
+      "redirect": "Redirecting in {seconds} seconds...",
       "error": "Something Went Wrong",
       "tryAgain": "Try Again",
       "completionAriaLabel": "Completion status"

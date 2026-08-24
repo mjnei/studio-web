@@ -401,7 +401,9 @@ export default function VoicesPage() {
                   </Heading>
                   <p className="text-caption text-text-muted">
                     {voiceLimits.canAdd
-                      ? `${voiceLimits.remainingCount} ${voiceLimits.remainingCount === 1 ? t("voices.addVoiceCard.slotsRemaining").split(" ")[0] : t("voices.addVoiceCard.slotsRemaining").split(" ")[0]} ${t("voices.addVoiceCard.slotsRemaining").split(" ").slice(1).join(" ")}`
+                      ? t("voices.addVoiceCard.slotsRemaining", {
+                          count: voiceLimits.remainingCount,
+                        })
                       : voiceLimits.message}
                   </p>
                 </div>

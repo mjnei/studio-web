@@ -25,7 +25,7 @@ export default function ForgotPasswordPage() {
           {t("auth.forgotPassword.successTitle")}
         </Heading>
         <Text variant="body" className="mb-6 text-text-secondary">
-          {t("auth.forgotPassword.successMessage").replace("{email}", email)}
+          {t("auth.forgotPassword.successMessage", { email })}
         </Text>
         <Link href="/login">
           <Button variant="primary" size="lg" fullWidth>

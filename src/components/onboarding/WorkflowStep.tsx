@@ -73,7 +73,7 @@ export default function WorkflowStep({ onNext, onBack }: WorkflowStepProps) {
                 </div>
                 <span
                   className="absolute -top-1.5 -right-1.5 w-5 h-5 sm:w-6 sm:h-6 bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-caption font-bold rounded-full flex items-center justify-center border-2 border-gray-200 dark:border-gray-700 shadow-sm"
-                  aria-label={t("onboarding.workflow.step").replace("{number}", `${index + 1}`)}
+                  aria-label={t("onboarding.workflow.step", { number: index + 1 })}
                 >
                   {index + 1}
                 </span>

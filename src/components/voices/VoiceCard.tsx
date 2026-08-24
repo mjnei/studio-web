@@ -22,7 +22,10 @@ interface VoiceCardProps {
 /**
  * Format relative time for display
  */
-function formatRelativeTime(dateString: string, t: (key: string) => string): string {
+function formatRelativeTime(
+  dateString: string,
+  t: (key: string, options?: Record<string, unknown>) => string
+): string {
   const date = new Date(dateString);
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
@@ -33,16 +36,16 @@ function formatRelativeTime(dateString: string, t: (key: string) => string): str
   const diffWeeks = Math.floor(diffDays / 7);
 
   if (diffSec < 60) return t("voices.metadata.justNow");
-  if (diffMin < 60) return `${diffMin}${t("voices.metadata.minutesAgo").slice(-7)}`; // Extract "m ago"
-  if (diffHours < 24) return `${diffHours}${t("voices.metadata.hoursAgo").slice(-7)}`; // Extract "h ago"
-  if (diffDays < 7) return `${diffDays}${t("voices.metadata.daysAgo").slice(-7)}`; // Extract "d ago"
-  if (diffWeeks < 4) return `${diffWeeks}${t("voices.metadata.weeksAgo").slice(-7)}`; // Extract "w ago"
+  if (diffMin < 60) return t("voices.metadata.minutesAgo", { count: diffMin });
+  if (diffHours < 24) return t("voices.metadata.hoursAgo", { count: diffHours });
+  if (diffDays < 7) return t("voices.metadata.daysAgo", { count: diffDays });
+  if (diffWeeks < 4) return t("voices.metadata.weeksAgo", { count: diffWeeks });
 
   const months = Math.floor(diffDays / 30);
-  if (months < 12) return `${months}${t("voices.metadata.monthsAgo").slice(-8)}`; // Extract "mo ago"
+  if (months < 12) return t("voices.metadata.monthsAgo", { count: months });
 
   const years = Math.floor(diffDays / 365);
-  return `${years}${t("voices.metadata.yearsAgo").slice(-7)}`; // Extract "y ago"
+  return t("voices.metadata.yearsAgo", { count: years });
 }
 
 /**

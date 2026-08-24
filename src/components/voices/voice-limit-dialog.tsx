@@ -72,10 +72,11 @@ export function VoiceLimitDialog({
         {/* Message */}
         <p className="text-body text-text-secondary text-center mb-6">
           <span className="font-semibold text-text-primary">
-            {t("voices.limitDialog.message")
-              .replace("{current}", currentCount.toString())
-              .replace("{limit}", limit.toString())
-              .replace("{tier}", tierName)}
+            {t("voices.limitDialog.message", {
+              current: currentCount,
+              limit,
+              tier: tierName,
+            })}
           </span>
         </p>
 
