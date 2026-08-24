@@ -25,7 +25,7 @@
 
 ## Scope & Purpose
 
-This is the **canonical frontend design system** for Huavoi Studio (TTS and AI-driven video generation). Tokens live in `src/app/globals.css`. Shared primitives live in `src/components/ui/`. Role-based type scale details are in [TYPOGRAPHY.md](../TYPOGRAPHY.md). Loading primitives and remaining loading TODOs are in [LOADING_TODO.md](../LOADING_TODO.md). Agent summary: [AGENTS.md](../../AGENTS.md).
+This is the **canonical frontend design system** for Huavoi Studio (TTS and AI-driven video generation). Tokens live in `src/app/globals.css`. Shared primitives live in `src/components/ui/`. Role-based type scale details are in [TYPOGRAPHY.md](../TYPOGRAPHY.md). Loading primitives (`Spinner`, `LoadingSpinner`, skeletons) are documented in this file. Agent summary: [AGENTS.md](../../AGENTS.md).
 
 > [!IMPORTANT]
 > **Scope Rule**: These guidelines apply to **all frontend user-facing pages**. `src/app/(shell)/admin` is not held to the same premium consumer aesthetic — density and internal utility win there — but it **should still use the same tokens, type roles, Button/Input/Select/Spinner primitives, and icon size scale**.
@@ -35,12 +35,10 @@ This is the **canonical frontend design system** for Huavoi Studio (TTS and AI-d
 
 ### Related docs
 
-| Topic                                         | Source of truth                                     |
-| --------------------------------------------- | --------------------------------------------------- |
-| Type roles, tokens, Heading/Text API          | [TYPOGRAPHY.md](../TYPOGRAPHY.md)                   |
-| Typography migration status / allowlists      | [TYPOGRAPHY_REFACTOR.md](../TYPOGRAPHY_REFACTOR.md) |
-| Spinners, skeletons, stuck-loading TODOs      | [LOADING_TODO.md](../LOADING_TODO.md)               |
-| Agent conventions (port, i18n, icons pointer) | [AGENTS.md](../../AGENTS.md)                        |
+| Topic                                         | Source of truth                   |
+| --------------------------------------------- | --------------------------------- |
+| Type roles, tokens, Heading/Text API          | [TYPOGRAPHY.md](../TYPOGRAPHY.md) |
+| Agent conventions (port, i18n, icons pointer) | [AGENTS.md](../../AGENTS.md)      |
 
 This document covers:
 
@@ -87,7 +85,7 @@ Huavoi Studio's frontend embodies a premium, state-of-the-art aesthetic that is 
 
 ## Typography
 
-**Full guide**: [TYPOGRAPHY.md](../TYPOGRAPHY.md). **Migration log**: [TYPOGRAPHY_REFACTOR.md](../TYPOGRAPHY_REFACTOR.md).
+**Full guide**: [TYPOGRAPHY.md](../TYPOGRAPHY.md).
 
 The app uses a **role-based type scale**. Sizes live in `@theme` tokens in `src/app/globals.css`. Class strings live in `src/components/ui/typography.ts`. `Heading`, `Text`, `PageHeader`, and `CardTitle` consume those roles.
 
@@ -126,7 +124,7 @@ Do **not** use legacy Tailwind steps (`text-xs`, `text-sm`, `text-base`, `text-l
 
 ## Icons
 
-Product UI icons use **Lucide React** (`lucide-react`). Brand logos that Lucide does not provide live in `@/components/icons`. Agent-facing summary: [AGENTS.md](../../AGENTS.md) § Icons. Spinners are **not** icons — see [LOADING_TODO.md](../LOADING_TODO.md).
+Product UI icons use **Lucide React** (`lucide-react`). Brand logos that Lucide does not provide live in `@/components/icons`. Agent-facing summary: [AGENTS.md](../../AGENTS.md) § Icons. Spinners are **not** icons — see [Spinner and LoadingSpinner](#11-spinner-and-loadingspinner).
 
 ### Libraries
 
@@ -343,7 +341,7 @@ Primitives live in `src/components/ui/` (React 19, TypeScript, Tailwind CSS 4). 
 - **Raw `<select>`** remains for compact chrome only: `LanguageSwitcher` and the thumbnail editor toolbar (font/color). Prefer shared `Select` for form fields.
 - **Raw `<input>`** remains for checkboxes, file pickers, range sliders, color pickers, OTP, and a few password-reveal fields. Prefer `Input` for text/search/date/number fields.
 - **Raw `<textarea>`** remains for large script editors (`script-generation`, project script pages) and the thumbnail caption editor. Prefer `TextArea` for ordinary multi-line forms (playground TTS uses `TextArea`).
-- **`Label` primitive** (`field` | `meta` tones) is used by `Input` / `TextArea` / `Select`. Migrate remaining raw `<label>` call sites (job detail meta rows, checkbox rows) when touched.
+- **`Label` primitive** (`field` | `meta` tones) is used by `Input` / `TextArea` / `Select` and TTS job detail modals. Remaining raw `<label>` is mostly checkbox rows and a few auth fields.
 - **Raw `<button>`** is justified inside `Select`, `Pagination`, `LayoutToggle`, drawer collapse, and notification bell. Product CTAs and form submits should use `Button`.
 - **`Icon` wrapper** is required for sidebar/nav; most other Lucide call sites still use direct `h-N w-N` sizing.
 
@@ -580,7 +578,7 @@ const MyComponent = () => {
 - **Rule**: animated loading is **never** raw `Loader2` + `animate-spin`. Use `Spinner` (compact) or `LoadingSpinner` (block with `role="status"`).
 - **`Spinner` sizes**: `sm` `h-4 w-4`, `md` `h-8 w-8`, `lg` `h-12 w-12`. One-off dimensions via `className` on bare `<Spinner />` are OK for dense layout. Do **not** pass ad-hoc `h-N w-N` to `LoadingSpinner`.
 - **`LoadingSpinner`**: wraps `Spinner`, optional `message` / `description` / `fullHeight`. Import from `@/components/ui/LoadingSpinner` (PascalCase file).
-- **Skeletons**: `LoadingSkeleton` (`card` | `text` | `grid` | `list` | `poster`) for section placeholders; `PageLoadingSkeleton` / `InlineLoadingSkeleton` for page/inline waits; low-level `Skeleton` for custom shapes. See [LOADING_TODO.md](../LOADING_TODO.md).
+- **Skeletons**: `LoadingSkeleton` (`card` | `text` | `grid` | `list` | `poster`) for section placeholders; `PageLoadingSkeleton` / `InlineLoadingSkeleton` for page/inline waits; low-level `Skeleton` for custom shapes. Dashboard recent projects / popular movies use section skeletons while fetching. Export generation uses `useStuckAsync` for timeout + retry when load or processing stalls.
 
 ```tsx
 import { Spinner } from "@/components/ui/spinner";
@@ -611,6 +609,7 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Input, TextArea } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Select, MultiSelect } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Heading, Text } from "@/components/ui";
@@ -921,7 +920,7 @@ className = "p-4 md:p-6 lg:p-8";
 
 ### Testing Checklist
 
-Target viewports for visual QA (typography Phase 6e is still **unchecked** in [TYPOGRAPHY_REFACTOR.md](../TYPOGRAPHY_REFACTOR.md)):
+Target viewports for visual QA (human spot-checks at 375px / 1280px remain open in [TYPOGRAPHY.md](../TYPOGRAPHY.md)):
 
 - **320px** — smallest mobile
 - **375px** — common mobile
@@ -1267,13 +1266,13 @@ className = "flex flex-col md:flex-row gap-4";
 | Spinners                | `Spinner` / `LoadingSpinner`             | Implemented; `Button` loading uses `Spinner`                                          |
 | Control height          | `h-8` / `h-9` / `h-10` (32–40px)         | Shared primitives match; form `Select` uses padding scale (`sm`/`md`/`lg`)            |
 | Touch 44×44 everywhere  | Not the product standard                 | Dense 36px default; bump only isolated mobile chrome                                  |
-| Visual QA at 375 / 1280 | Required for typography Phase 6e         | Still open in `TYPOGRAPHY_REFACTOR.md`                                                |
+| Visual QA at 375 / 1280 | Human spot-check after density pass      | Still open in [TYPOGRAPHY.md](../TYPOGRAPHY.md)                                       |
 
 ---
 
 ## Testing & Verification
 
-Do **not** treat historical “all pages tested” notes as current. After the Aug 2026 density/typography pass, human spot-checks at 375px and 1280px (shell, project workflow, admin, auth) remain on the typography refactor checklist.
+Do **not** treat historical “all pages tested” notes as current. After the Aug 2026 density/typography pass, human spot-checks at 375px and 1280px (shell, project workflow, admin, auth) remain on the [TYPOGRAPHY.md](../TYPOGRAPHY.md) checklist.
 
 **Still true in code**:
 

@@ -18,8 +18,6 @@ The frontend is **partially standardized**:
 This audit was compared against:
 
 - `docs/TYPOGRAPHY.md`
-- `docs/TYPOGRAPHY_REFACTOR.md`
-- `docs/LOADING_TODO.md`
 - `docs/guides/DESIGN_SYSTEM.md`
 - `AGENTS.md`
 
@@ -52,7 +50,7 @@ This matches the intent described in `docs/guides/DESIGN_SYSTEM.md`:
 
 ### Spinner guidance is implemented correctly
 
-`docs/LOADING_TODO.md` says spinners should go through `Spinner` / `LoadingSpinner`, not ad-hoc Lucide loading icons. The primitive implementation matches that guidance:
+`docs/guides/DESIGN_SYSTEM.md` says spinners should go through `Spinner` / `LoadingSpinner`, not ad-hoc Lucide loading icons. The primitive implementation matches that guidance:
 
 - `src/components/ui/spinner.tsx`
 - `src/components/ui/LoadingSpinner.tsx`
@@ -110,21 +108,15 @@ The product standard is the shared `Select` padding scale (`sm` / `md` / `lg`). 
 
 #### 3. Label strategy is inconsistent across the app
 
-`Label` (`src/components/ui/label.tsx`) now exists with `field` and `meta` tones. `Input` / `TextArea` / `Select` use it. Remaining mix:
+`Label` (`src/components/ui/label.tsx`) now exists with `field` and `meta` tones. `Input` / `TextArea` / `Select` and TTS job detail modals use it. Remaining mix:
 
-- uppercase caption labels on TTS job detail modals (read-only meta grids)
 - checkbox/toggle rows that wrap a native `<input type="checkbox">`
+- a few auth/signup field labels still hand-rolled (candidate for `Input`’s built-in `label`)
 
 Examples:
 
-- body-style labels
-  - `src/app/(shell)/settings/page.tsx`
-  - `src/components/shared/voice-recording-modal/components/voice-naming-form.tsx`
-  - `src/app/(auth)/signup/page.tsx`
-
-- caption/metadata labels
-  - `src/app/(shell)/admin/studio-tts-jobs/components/JobDetailModal.tsx`
-  - `src/app/(shell)/admin/playground-tts-jobs/components/PlaygroundJobDetailModal.tsx`
+- body-style labels still raw in places
+  - `src/app/(auth)/signup/page.tsx` (OTP / invite fields)
 
 - checkbox/toggle labels
   - `src/components/notifications/NotificationPreferencesModal.tsx`
@@ -206,13 +198,7 @@ The following documentation is accurate based on the current code:
   - `text-micro` allowlist language matches the remaining code
   - `Heading` / `Text` direction is correct
 
-- `docs/TYPOGRAPHY_REFACTOR.md`
-  - the remaining arbitrary text-size exceptions still match the documented allowlist
-
-- `docs/LOADING_TODO.md`
-  - spinner guidance matches `Spinner`, `LoadingSpinner`, and `Button`
-
-- `docs/guides/DESIGN_SYSTEM.md` icon size tiers
+- `docs/guides/DESIGN_SYSTEM.md` icon size tiers and spinner rules
   - the dominant icon sizes in code match the documented `xs`/`sm`/`md`/`lg`/`xl` scale
 
 ### Partially inaccurate or outdated (resolved)
@@ -239,10 +225,10 @@ The following documentation is accurate based on the current code:
 
 ### Still open
 
-- Migrate uppercase meta labels on TTS job detail modals to `Label tone="meta"` (+ optional uppercase class).
 - Optionally migrate `LanguageSwitcher` to shared `Select` without breaking top-nav density.
 - Broader `Icon` wrapper adoption outside the sidebar.
-- Human visual QA at 375px / 1280px (typography Phase 6e).
+- Checkbox/toggle rows still use native `<label>` wrappers (acceptable).
+- Human visual QA at 375px / 1280px (see [TYPOGRAPHY.md](./TYPOGRAPHY.md)).
 
 ## Bottom line
 
