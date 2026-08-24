@@ -532,13 +532,13 @@ import { useToast, ToastProvider } from "@/components/ui/toast";
 
 Every shell page uses `PageHeader` for the title. Chrome lives in at most two zones — never a second row that only holds buttons (for example, Create CTA in the header and `LayoutToggle` on the next row).
 
-**Zone A — `PageHeader`:** one horizontal band. Left: title, then optional description and **meta** on the same row (count as muted caption or a count pill). Right: a single action cluster (`flex flex-wrap items-center justify-end gap-2 sm:gap-3`) in this order:
+**Zone A — `PageHeader`:** one horizontal band. Left: title, then optional description and **meta** on the same row. String `meta` renders as a cyan count pill; custom nodes (e.g. a quota pill) are allowed. Right: a single action cluster (`flex flex-wrap items-center justify-end gap-2 sm:gap-3`) in this order:
 
 1. **View chrome** (`LayoutToggle`) — when there is no search/filter toolbar
 2. **Secondary** (Refresh, Export, outline) — optional
 3. **Primary** (Create / Add) — rightmost
 
-Count meta is status, not a control. Do not put it in the action cluster. Exception: quota that explains a CTA (Voices private `3 / 5`) may stay next to that button.
+Count meta is status, not a control. Put counts in `meta` (cyan pill, inline with the description). Quota that explains a CTA (Voices private `3 / 5`) uses a custom pill in `meta` and keeps Add Voice in the action cluster.
 
 **Zone B — toolbar (optional):** only when there is real content chrome — search, filters, tabs, or sort. Put `LayoutToggle` here when that toolbar already exists (Jobs, Movies, Queues). Do not put the primary Create CTA in the toolbar.
 

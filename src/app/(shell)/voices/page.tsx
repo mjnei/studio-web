@@ -223,24 +223,24 @@ export default function VoicesPage() {
         description={t("voices.library.description")}
         action={
           tab === "private" ? (
-            <div className="flex items-center gap-3">
-              <span className="rounded-full bg-green-500/10 border border-green-500/30 px-3 py-1.5 text-caption font-medium text-green-600 whitespace-nowrap">
-                {voiceLimits.currentCount} / {voiceLimits.limit}{" "}
-                {t("voices.tabs.private").toLowerCase()}
-              </span>
-              <Button
-                variant="primary"
-                size="md"
-                onClick={handleAddVoiceClick}
-                leftIcon={<Plus className="h-4 w-4" />}
-              >
-                {t("voices.addVoice")}
-              </Button>
-            </div>
-          ) : (
-            <span className="rounded-full bg-accent-cyan/10 border border-accent-cyan/30 px-3 py-1.5 text-caption font-medium text-accent-cyan whitespace-nowrap">
-              {communityVoices.length} {t("voices.tabs.community").toLowerCase()}
+            <Button
+              variant="primary"
+              size="md"
+              onClick={handleAddVoiceClick}
+              leftIcon={<Plus className="h-4 w-4" />}
+            >
+              {t("voices.addVoice")}
+            </Button>
+          ) : undefined
+        }
+        meta={
+          tab === "private" ? (
+            <span className="rounded-full bg-green-500/10 border border-green-500/30 px-3 py-1.5 text-caption font-medium text-green-600 whitespace-nowrap">
+              {voiceLimits.currentCount} / {voiceLimits.limit}{" "}
+              {t("voices.tabs.private").toLowerCase()}
             </span>
+          ) : (
+            `${communityVoices.length} ${t("voices.tabs.community").toLowerCase()}`
           )
         }
       />

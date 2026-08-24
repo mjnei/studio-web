@@ -43,9 +43,9 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
                   )}
                   {meta &&
                     (isStringMeta ? (
-                      <Text variant="caption" as="span" className="text-[var(--text-muted)]">
+                      <span className="inline-flex shrink-0 rounded-full bg-accent-cyan/10 px-3 py-1.5 text-caption font-medium text-accent-cyan whitespace-nowrap">
                         {meta}
-                      </Text>
+                      </span>
                     ) : (
                       <span className="inline-flex shrink-0">{meta}</span>
                     ))}
