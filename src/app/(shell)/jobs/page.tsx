@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Video, RefreshCw, Sparkles } from "lucide-react";
+import { AlertTriangle, CheckCircle2, RefreshCw, Video } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,6 @@ import { useI18n } from "@/i18n";
 
 import { useJobs } from "@/lib/hooks/use-jobs";
 import { StatusCards } from "@/components/jobs/StatusCards";
-import { AnalyticsPanel } from "@/components/jobs/AnalyticsPanel";
 import { FiltersBar } from "@/components/jobs/FiltersBar";
 import { BulkActionsBar } from "@/components/jobs/BulkActionsBar";
 import { ActiveJobCard } from "@/components/jobs/ActiveJobCard";
@@ -75,47 +74,34 @@ export default function JobsPage() {
   };
 
   const isAllSelected = filteredJobs.length > 0 && selectedJobIds.size === filteredJobs.length;
+  const totalJobsMeta = `${summary.totalCount} ${t("jobs.status.total").toLowerCase()}`;
 
   return (
     <div className="max-w-7xl mx-auto pb-12">
       <PageHeader
         title={t("jobs.dashboard.title")}
         description={t("jobs.dashboard.description")}
+        meta={totalJobsMeta}
         action={
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="md"
-              leftIcon={<RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />}
-              onClick={() => refetch()}
-              disabled={isRefreshing}
-            >
-              {t("jobs.dashboard.refresh")}
-            </Button>
-            <Button
-              variant="primary"
-              size="md"
-              leftIcon={<Sparkles className="h-4 w-4" />}
-              onClick={() => router.push("/projects")}
-            >
-              {t("jobs.dashboard.newProject")}
-            </Button>
-          </div>
+          <Button
+            variant="secondary"
+            size="icon"
+            onClick={() => refetch()}
+            disabled={isRefreshing}
+            title={t("jobs.dashboard.refresh")}
+            aria-label={t("jobs.dashboard.refresh")}
+          >
+            <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
+          </Button>
         }
       />
 
-      {/* Top Metric Cards */}
       <StatusCards
         summary={summary}
         activeFilter={filters.status}
         onSelectFilter={(status) => setFilters((prev) => ({ ...prev, status }))}
-        onRetryAllFailed={retryAllFailed}
       />
 
-      {/* Analytics Insights */}
-      <AnalyticsPanel summary={summary} />
-
-      {/* Search & Filter Controls */}
       <FiltersBar
         filters={filters}
         onChangeFilters={setFilters}
@@ -126,7 +112,6 @@ export default function JobsPage() {
         totalResultsCount={filteredJobs.length}
       />
 
-      {/* Sticky Bulk Operations Toolbar */}
       <BulkActionsBar
         selectedCount={selectedJobIds.size}
         totalFilteredCount={filteredJobs.length}
@@ -137,7 +122,6 @@ export default function JobsPage() {
         isAllSelected={isAllSelected}
       />
 
-      {/* Empty State: No jobs total */}
       {allJobs.length === 0 ? (
         <EmptyState
           size="lg"
@@ -151,7 +135,6 @@ export default function JobsPage() {
           }
         />
       ) : filteredJobs.length === 0 ? (
-        /* Empty State: No matching filter results */
         <EmptyState
           size="lg"
           icon={<Video aria-hidden />}
@@ -178,7 +161,6 @@ export default function JobsPage() {
         />
       ) : (
         <div className="space-y-8">
-          {/* Active / Rendering Jobs Section */}
           {activeJobs.length > 0 && (
             <section className="space-y-4">
               <div className="flex items-center justify-between border-b border-border-default pb-2">
@@ -204,7 +186,6 @@ export default function JobsPage() {
             </section>
           )}
 
-          {/* Failed Jobs Section */}
           {failedJobs.length > 0 && (
             <section className="space-y-4">
               <div className="flex items-center justify-between border-b border-border-default pb-2">
@@ -213,8 +194,17 @@ export default function JobsPage() {
                   as="h2"
                   className="text-status-failed flex items-center gap-2"
                 >
-                  ⚠️ {t("jobs.sections.failed")} ({failedJobs.length})
+                  <AlertTriangle className="h-4 w-4" aria-hidden />
+                  {t("jobs.sections.failed")} ({failedJobs.length})
                 </Heading>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  leftIcon={<RefreshCw className="h-3.5 w-3.5" />}
+                  onClick={retryAllFailed}
+                >
+                  {t("jobs.status.retryAll")}
+                </Button>
               </div>
               <div className="grid grid-cols-1 gap-4">
                 {failedJobs.map((job) => (
@@ -232,7 +222,6 @@ export default function JobsPage() {
             </section>
           )}
 
-          {/* Completed Jobs Section */}
           {completedJobs.length > 0 && (
             <section className="space-y-4">
               <div className="flex items-center justify-between border-b border-border-default pb-2">
@@ -241,7 +230,8 @@ export default function JobsPage() {
                   as="h2"
                   className="text-text-primary flex items-center gap-2"
                 >
-                  🎬 {t("jobs.sections.completed")} ({completedJobs.length})
+                  <CheckCircle2 className="h-4 w-4 text-status-success" aria-hidden />
+                  {t("jobs.sections.completed")} ({completedJobs.length})
                 </Heading>
               </div>
               <div className={getGridClass()}>
@@ -263,7 +253,6 @@ export default function JobsPage() {
         </div>
       )}
 
-      {/* Video Preview Modal */}
       <JobVideoModal job={activeVideoModalJob} onClose={() => setActiveVideoModalJob(null)} />
     </div>
   );

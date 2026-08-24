@@ -7,7 +7,7 @@ import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { LayoutToggle } from "@/components/ui/LayoutToggle";
 import { useI18n } from "@/i18n";
-import { JobFilters, JobStatusFilter, LayoutMode } from "@/types/jobs";
+import { JobFilters, LayoutMode } from "@/types/jobs";
 
 interface Option {
   value: string;
@@ -35,13 +35,6 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
 }) => {
   const { t } = useI18n();
 
-  const statusOptions = [
-    { value: "all", label: t("jobs.filters.allStatuses") },
-    { value: "active", label: t("jobs.filters.active") },
-    { value: "completed", label: t("jobs.filters.completed") },
-    { value: "failed", label: t("jobs.filters.failed") },
-  ];
-
   const sortOptions = [
     { value: "date", label: t("jobs.filters.sortByDate") },
     { value: "status", label: t("jobs.filters.sortByStatus") },
@@ -67,9 +60,8 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
 
   return (
     <div className="space-y-3 mb-6">
-      <div className="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between">
-        {/* Search */}
-        <div className="flex-1 min-w-[240px]">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+        <div className="flex-1 lg:max-w-md">
           <Input
             placeholder={t("jobs.filters.searchPlaceholder")}
             value={filters.search}
@@ -78,25 +70,9 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
           />
         </div>
 
-        {/* Filter controls */}
-        <div className="flex flex-wrap gap-2 items-center">
-          {/* Status Filter */}
-          <div className="w-36">
-            <Select
-              value={filters.status}
-              onChange={(value) =>
-                onChangeFilters((prev) => ({
-                  ...prev,
-                  status: value as JobStatusFilter,
-                }))
-              }
-              options={statusOptions}
-            />
-          </div>
-
-          {/* Project Filter */}
+        <div className="flex flex-wrap items-center gap-2">
           {projectOptions.length > 0 && (
-            <div className="w-40">
+            <div className="w-full sm:w-44">
               <Select
                 value={filters.projects[0] || "all"}
                 onChange={(value) =>
@@ -113,9 +89,8 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
             </div>
           )}
 
-          {/* Voice Filter */}
           {voiceOptions.length > 0 && (
-            <div className="w-36">
+            <div className="w-full sm:w-40">
               <Select
                 value={filters.voices[0] || "all"}
                 onChange={(value) =>
@@ -129,8 +104,7 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
             </div>
           )}
 
-          {/* Sort By */}
-          <div className="w-44">
+          <div className="w-full sm:w-48">
             <Select
               value={filters.sortBy}
               onChange={(value) =>
@@ -143,7 +117,6 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
             />
           </div>
 
-          {/* Sort Direction toggle */}
           <Button
             variant="outline"
             size="sm"
@@ -171,7 +144,6 @@ export const FiltersBar: React.FC<FiltersBarProps> = ({
         </div>
       </div>
 
-      {/* Active filters bar & reset button */}
       {hasActiveFilters && (
         <div className="flex items-center justify-between text-caption text-text-muted bg-surface-panel px-3 py-1.5 rounded-md border border-border-default">
           <span>{t("jobs.filters.showing", { count: totalResultsCount })}</span>
