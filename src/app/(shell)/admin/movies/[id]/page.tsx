@@ -22,6 +22,7 @@ import {
 import Link from "next/link";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
+import { Select } from "@/components/ui/select";
 import { ExternalImage } from "@/components/ui/ExternalImage";
 import { Heading } from "@/components/ui/heading";
 import {
@@ -206,17 +207,13 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
             </Link>
             <div className="flex items-center gap-3">
               <span className="text-body text-text-muted">Locale:</span>
-              <select
+              <Select
+                size="sm"
                 value={selectedLocale}
-                onChange={(e) => setSelectedLocale(e.target.value)}
-                className="rounded-lg border border-border-default bg-surface-base px-3 py-1.5 text-body text-text-primary focus:border-accent-primary focus:outline-none"
-              >
-                {SUPPORTED_LOCALES.map((locale) => (
-                  <option key={locale} value={locale}>
-                    {locale}
-                  </option>
-                ))}
-              </select>
+                onChange={setSelectedLocale}
+                options={SUPPORTED_LOCALES.map((locale) => ({ value: locale, label: locale }))}
+                className="w-[8.5rem]"
+              />
             </div>
           </div>
         </div>

@@ -213,7 +213,7 @@ export function VoiceBulkImportModal({ open, onClose, onSuccess }: VoiceBulkImpo
             </label>
             <div className="relative">
               <div className="flex items-center gap-3 rounded-xl border-2 border-border-default bg-surface-panel px-4 py-3 focus-within:border-accent-primary transition-colors">
-                <Search className="h-5 w-5 text-text-muted flex-shrink-0" />
+                <Search className="h-4 w-4 text-text-muted flex-shrink-0" />
                 <input
                   type="text"
                   placeholder="Search by name or email..."

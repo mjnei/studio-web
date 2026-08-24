@@ -4,6 +4,7 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Pagination } from "@/components/ui/Pagination";
 import { Button } from "@/components/ui/button";
+import { Select } from "@/components/ui/select";
 import type { AdminMovieResponse } from "@/lib/api/admin";
 import { SUPPORTED_LOCALES } from "../constants";
 import type { EditingMovie } from "../types";
@@ -61,7 +62,7 @@ export function MovieLibraryView({
     <>
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex min-w-0 flex-1 items-center gap-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
-          <Search className="h-5 w-5 shrink-0 text-text-muted" />
+          <Search className="h-4 w-4 shrink-0 text-text-muted" />
           <input
             type="text"
             placeholder="Search movies by title..."
@@ -74,17 +75,13 @@ export function MovieLibraryView({
         <div className="flex shrink-0 flex-wrap items-center gap-2">
           <LayoutToggle layoutMode={layoutMode} onLayoutChange={onLayoutChange} />
           <span className="text-body text-text-muted">Locale:</span>
-          <select
+          <Select
+            size="sm"
             value={selectedLocale}
-            onChange={(e) => onLocaleChange(e.target.value)}
-            className="rounded-lg border border-border-default bg-surface-panel px-3 py-2 text-body text-text-primary focus:border-accent-primary focus:outline-none"
-          >
-            {SUPPORTED_LOCALES.map((locale) => (
-              <option key={locale} value={locale}>
-                {locale}
-              </option>
-            ))}
-          </select>
+            onChange={onLocaleChange}
+            options={SUPPORTED_LOCALES.map((locale) => ({ value: locale, label: locale }))}
+            className="w-[8.5rem]"
+          />
         </div>
       </div>
 

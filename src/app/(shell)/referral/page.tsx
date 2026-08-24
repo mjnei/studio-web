@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { Heading } from "@/components/ui/heading";
 import { Badge } from "@/components/ui/badge";
 import {
   getMyReferralCode,
@@ -186,9 +187,9 @@ export default function ReferralPage() {
               <p className="text-body text-text-muted mb-1">
                 {t("referral.stats.directReferrals")}
               </p>
-              <p className="text-body font-bold text-2xl text-text-primary">
+              <Heading variant="metric" className="text-text-primary">
                 {stats.total_direct_referrals}
-              </p>
+              </Heading>
             </div>
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center group-hover:scale-110 transition-transform">
               <Users className="h-6 w-6 text-white" />
@@ -204,9 +205,9 @@ export default function ReferralPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-body text-text-muted mb-1">{t("referral.stats.totalReferrals")}</p>
-              <p className="text-body font-bold text-2xl text-text-primary">
+              <Heading variant="metric" className="text-text-primary">
                 {stats.total_all_levels_referrals}
-              </p>
+              </Heading>
             </div>
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center group-hover:scale-110 transition-transform">
               <TrendingUp className="h-6 w-6 text-white" />
@@ -222,9 +223,9 @@ export default function ReferralPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-body text-text-muted mb-1">{t("referral.stats.rewardsEarned")}</p>
-              <p className="text-body font-bold text-2xl text-accent-cyan">
+              <Heading variant="metric" className="text-accent-cyan">
                 {stats.total_invite_rewards_earned}
-              </p>
+              </Heading>
             </div>
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center group-hover:scale-110 transition-transform">
               <Award className="h-6 w-6 text-white" />

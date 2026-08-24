@@ -2,6 +2,8 @@
 
 import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
 import { Filter, Search, X } from "lucide-react";
 import { useState } from "react";
 import type { AdminProjectFilter, AdminProjectStatus, AdminProjectStep } from "@/types/admin";
@@ -82,54 +84,47 @@ export function ProjectFilters({ filters, onFilterChange, onClear }: ProjectFilt
         </div>
 
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
-          <div className="relative md:col-span-2 lg:col-span-1">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
-            <input
+          <div className="md:col-span-2 lg:col-span-1">
+            <Input
               type="text"
               placeholder="Search by name..."
               value={local.q || ""}
               onChange={(e) => setLocal((prev) => ({ ...prev, q: e.target.value || undefined }))}
-              className="w-full rounded-lg border border-border-default bg-surface-raised py-2 pl-9 pr-3 text-body text-text-primary"
+              icon={<Search className="h-4 w-4" />}
             />
           </div>
 
-          <select
+          <Select
+            size="sm"
             value={local.status || ""}
-            onChange={(e) =>
+            onChange={(status) =>
               setLocal((prev) => ({
                 ...prev,
-                status: (e.target.value || undefined) as AdminProjectStatus | undefined,
+                status: (status || undefined) as AdminProjectStatus | undefined,
               }))
             }
-            className="rounded-lg border border-border-default bg-surface-raised px-3 py-2 text-body text-text-primary"
-          >
-            <option value="">All statuses</option>
-            {STATUSES.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
+            options={[
+              { value: "", label: "All statuses" },
+              ...STATUSES.map((s) => ({ value: s, label: s })),
+            ]}
+          />
 
-          <select
+          <Select
+            size="sm"
             value={local.step || ""}
-            onChange={(e) =>
+            onChange={(step) =>
               setLocal((prev) => ({
                 ...prev,
-                step: (e.target.value || undefined) as AdminProjectStep | undefined,
+                step: (step || undefined) as AdminProjectStep | undefined,
               }))
             }
-            className="rounded-lg border border-border-default bg-surface-raised px-3 py-2 text-body text-text-primary"
-          >
-            <option value="">All steps</option>
-            {STEPS.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select>
+            options={[
+              { value: "", label: "All steps" },
+              ...STEPS.map((s) => ({ value: s, label: s })),
+            ]}
+          />
 
-          <input
+          <Input
             type="number"
             placeholder="User ID"
             value={local.user_id ?? ""}
@@ -139,7 +134,6 @@ export function ProjectFilters({ filters, onFilterChange, onClear }: ProjectFilt
                 user_id: e.target.value ? Number(e.target.value) : undefined,
               }))
             }
-            className="rounded-lg border border-border-default bg-surface-raised px-3 py-2 text-body text-text-primary"
           />
         </div>
 

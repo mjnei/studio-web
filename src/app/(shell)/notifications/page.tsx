@@ -8,6 +8,7 @@ import { NotificationPreferencesModal } from "@/components/notifications/Notific
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Bell, Settings, CheckCheck, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Select } from "@/components/ui/select";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Spinner } from "@/components/ui/spinner";
 
@@ -64,17 +65,17 @@ export default function NotificationsPage() {
           {/* Filters */}
           <div className="w-full sm:w-auto">
             {/* Mobile: Dropdown */}
-            <select
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-              className="w-full sm:hidden rounded-lg border border-border-default bg-surface-panel px-3 py-2 text-body font-medium text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary focus:border-transparent"
-            >
-              {NOTIFICATION_FILTERS_WITH_LABELS.map((filterOption) => (
-                <option key={filterOption.value} value={filterOption.value}>
-                  {filterOption.label}
-                </option>
-              ))}
-            </select>
+            <div className="w-full sm:hidden">
+              <Select
+                size="sm"
+                value={filter}
+                onChange={setFilter}
+                options={NOTIFICATION_FILTERS_WITH_LABELS.map((filterOption) => ({
+                  value: filterOption.value,
+                  label: filterOption.label,
+                }))}
+              />
+            </div>
 
             {/* Desktop: Button group */}
             <div className="hidden sm:flex items-center gap-2 flex-wrap">

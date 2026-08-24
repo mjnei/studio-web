@@ -15,6 +15,7 @@ import {
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/button";
+import { Select } from "@/components/ui/select";
 import { useI18n } from "@/i18n";
 
 function Toggle({ checked, onChange }: { checked: boolean; onChange: () => void }) {
@@ -140,62 +141,46 @@ export default function SettingsPage() {
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
-              <div>
-                <label className="mb-2 block text-body font-medium text-text-primary">
-                  {t("settings.projectDefaults.defaultVoice")}
-                </label>
-                <select
-                  value={defaults.voice}
-                  onChange={(e) => setDefaults((d) => ({ ...d, voice: e.target.value }))}
-                  className="w-full h-11 rounded-lg border border-border-default bg-surface-raised px-4 text-body text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary transition-all"
-                >
-                  <option value="none">{t("settings.projectDefaults.voiceNone")}</option>
-                  <option value="voice-a">{t("settings.projectDefaults.voiceA")}</option>
-                  <option value="voice-b">{t("settings.projectDefaults.voiceB")}</option>
-                </select>
-              </div>
-              <div>
-                <label className="mb-2 block text-body font-medium text-text-primary">
-                  {t("settings.projectDefaults.resolution")}
-                </label>
-                <select
-                  value={defaults.resolution}
-                  onChange={(e) => setDefaults((d) => ({ ...d, resolution: e.target.value }))}
-                  className="w-full h-11 rounded-lg border border-border-default bg-surface-raised px-4 text-body text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary transition-all"
-                >
-                  <option value="720p">{t("settings.projectDefaults.resolution720p")}</option>
-                  <option value="1080p">{t("settings.projectDefaults.resolution1080p")}</option>
-                  <option value="4k">{t("settings.projectDefaults.resolution4k")}</option>
-                </select>
-              </div>
-              <div>
-                <label className="mb-2 block text-body font-medium text-text-primary">
-                  {t("settings.projectDefaults.frameRate")}
-                </label>
-                <select
-                  value={defaults.fps}
-                  onChange={(e) => setDefaults((d) => ({ ...d, fps: e.target.value }))}
-                  className="w-full h-11 rounded-lg border border-border-default bg-surface-raised px-4 text-body text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary transition-all"
-                >
-                  <option value="24">{t("settings.projectDefaults.fps24")}</option>
-                  <option value="30">{t("settings.projectDefaults.fps30")}</option>
-                  <option value="60">{t("settings.projectDefaults.fps60")}</option>
-                </select>
-              </div>
-              <div>
-                <label className="mb-2 block text-body font-medium text-text-primary">
-                  {t("settings.projectDefaults.exportFormat")}
-                </label>
-                <select
-                  value={defaults.exportFormat}
-                  onChange={(e) => setDefaults((d) => ({ ...d, exportFormat: e.target.value }))}
-                  className="w-full h-11 rounded-lg border border-border-default bg-surface-raised px-4 text-body text-text-primary focus:outline-none focus:ring-2 focus:ring-accent-primary transition-all"
-                >
-                  <option value="mp4">{t("settings.projectDefaults.exportMp4")}</option>
-                  <option value="webm">{t("settings.projectDefaults.exportWebm")}</option>
-                  <option value="mov">{t("settings.projectDefaults.exportMov")}</option>
-                </select>
-              </div>
+              <Select
+                label={t("settings.projectDefaults.defaultVoice")}
+                value={defaults.voice}
+                onChange={(voice) => setDefaults((d) => ({ ...d, voice }))}
+                options={[
+                  { value: "none", label: t("settings.projectDefaults.voiceNone") },
+                  { value: "voice-a", label: t("settings.projectDefaults.voiceA") },
+                  { value: "voice-b", label: t("settings.projectDefaults.voiceB") },
+                ]}
+              />
+              <Select
+                label={t("settings.projectDefaults.resolution")}
+                value={defaults.resolution}
+                onChange={(resolution) => setDefaults((d) => ({ ...d, resolution }))}
+                options={[
+                  { value: "720p", label: t("settings.projectDefaults.resolution720p") },
+                  { value: "1080p", label: t("settings.projectDefaults.resolution1080p") },
+                  { value: "4k", label: t("settings.projectDefaults.resolution4k") },
+                ]}
+              />
+              <Select
+                label={t("settings.projectDefaults.frameRate")}
+                value={defaults.fps}
+                onChange={(fps) => setDefaults((d) => ({ ...d, fps }))}
+                options={[
+                  { value: "24", label: t("settings.projectDefaults.fps24") },
+                  { value: "30", label: t("settings.projectDefaults.fps30") },
+                  { value: "60", label: t("settings.projectDefaults.fps60") },
+                ]}
+              />
+              <Select
+                label={t("settings.projectDefaults.exportFormat")}
+                value={defaults.exportFormat}
+                onChange={(exportFormat) => setDefaults((d) => ({ ...d, exportFormat }))}
+                options={[
+                  { value: "mp4", label: t("settings.projectDefaults.exportMp4") },
+                  { value: "webm", label: t("settings.projectDefaults.exportWebm") },
+                  { value: "mov", label: t("settings.projectDefaults.exportMov") },
+                ]}
+              />
             </div>
           </CardContent>
         </Card>

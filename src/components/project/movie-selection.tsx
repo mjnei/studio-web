@@ -116,7 +116,7 @@ export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps)
           placeholder={t("project.movieSelection.searchPlaceholder")}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          icon={<Search className="h-5 w-5" />}
+          icon={<Search className="h-4 w-4" />}
         />
       </div>
 

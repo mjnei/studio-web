@@ -1,5 +1,7 @@
 import { AlertCircle, Check, Globe, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
 import { Heading } from "@/components/ui/heading";
 import { RECORDING_LANGUAGES } from "../constants";
@@ -39,45 +41,22 @@ export function VoiceNamingForm({
         <p className="text-body text-text-muted">{t("voices.recording.nameSubtitle")}</p>
       </div>
 
-      <div>
-        <label htmlFor="voice-name" className="block text-body font-medium text-text-primary mb-2">
-          {t("voices.recording.voiceName")}
-        </label>
-        <div className="relative">
-          <input
-            id="voice-name"
-            type="text"
-            value={voiceName}
-            onChange={(e) => onVoiceNameChange(e.target.value)}
-            placeholder={t("voices.recording.namePlaceholder")}
-            className={`w-full rounded-xl border ${
-              nameError ? "border-red-500 bg-red-500/5" : "border-border-default bg-surface-raised"
-            } px-4 py-3 text-text-primary placeholder-text-muted transition-colors focus:border-accent-cyan focus:outline-none focus:ring-2 focus:ring-accent-cyan/20`}
-            autoFocus
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !isSaving) {
-                onSave();
-              }
-            }}
-            disabled={isSaving}
-          />
-          {nameError && (
-            <p className="mt-2 text-caption text-red-400 flex items-center gap-1">
-              <AlertCircle className="h-3 w-3" aria-hidden />
-              {t("voices.recording.nameRequired")}
-            </p>
-          )}
-        </div>
-
-        <button
-          onClick={onGenerateName}
-          disabled={isSaving}
-          className="mt-3 flex items-center gap-2 text-body text-accent-cyan hover:text-accent-cyan/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <Sparkles className="h-4 w-4" aria-hidden />
-          {t("voices.recording.generateRandom")}
-        </button>
-      </div>
+      <Input
+        label={t("voices.recording.voiceName")}
+        id="voice-name"
+        type="text"
+        value={voiceName}
+        onChange={(e) => onVoiceNameChange(e.target.value)}
+        placeholder={t("voices.recording.namePlaceholder")}
+        error={nameError ? t("voices.recording.nameRequired") : undefined}
+        autoFocus
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && !isSaving) {
+            onSave();
+          }
+        }}
+        disabled={isSaving}
+      />
 
       <div>
         <label

@@ -23,6 +23,12 @@ const typographyRestrictedSyntax = [
       "Use @theme typography tokens (text-body, text-caption, text-page, …) instead of legacy Tailwind text-xs–text-xl. See docs/TYPOGRAPHY.md.",
   },
   {
+    selector:
+      "JSXAttribute[name.name='className'][value.value=/(?:^|\\s)text-(2xl|3xl|4xl|5xl)(?:\\s|$)/]",
+    message:
+      "Use <Heading variant=\"page|display|metric\"> instead of text-2xl+. Decorative glyphs belong on the typography allowlist. See docs/TYPOGRAPHY.md.",
+  },
+  {
     selector: "JSXAttribute[name.name='className'][value.value=/text-\\[\\d+px\\]/]",
     message:
       "Avoid arbitrary text-[Npx] sizes. Use text-caption, text-micro, or an allowlisted chart/decorative exception. See docs/TYPOGRAPHY.md.",

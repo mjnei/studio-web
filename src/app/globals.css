@@ -104,7 +104,7 @@
 
   /* Font sizes — type scale.
  * TW4 auto-generates text-{name} utilities from --text-* in @theme.
- * Use text-page, text-section, etc. in components — NOT text-2xl / text-page.
+ * Use text-page, text-section, etc. in components — NOT legacy text-2xl / text-xl.
  * Responsive steps: add --text-{role}-sm for sm: breakpoint overrides.
  * See docs/TYPOGRAPHY.md for the full role reference. */
 

@@ -67,7 +67,7 @@ export function TmdbImportView({
       <div className="mb-6 rounded-2xl border border-border-default bg-surface-panel p-4 sm:p-6">
         <div className="flex gap-2 sm:gap-3">
           <div className="flex min-w-0 flex-1 items-center gap-2 rounded-lg border border-border-default bg-surface-base px-3 py-3 sm:gap-3 sm:px-4">
-            <Search className="h-5 w-5 shrink-0 text-text-muted" />
+            <Search className="h-4 w-4 shrink-0 text-text-muted" />
             <input
               ref={searchInputRef}
               type="text"

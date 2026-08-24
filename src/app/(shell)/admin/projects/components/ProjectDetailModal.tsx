@@ -2,6 +2,7 @@
 
 import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
+import { Select } from "@/components/ui/select";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { AdminProject, AdminProjectStatus } from "@/types/admin";
@@ -111,17 +112,13 @@ export function ProjectDetailModal({
                 Status override
               </p>
               <div className="flex flex-wrap items-center gap-2">
-                <select
+                <Select
+                  size="sm"
                   value={status}
-                  onChange={(e) => setStatus(e.target.value as AdminProjectStatus)}
-                  className="rounded-lg border border-border-default bg-surface-panel px-3 py-2 text-body text-text-primary"
-                >
-                  {STATUSES.map((s) => (
-                    <option key={s} value={s}>
-                      {s}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(value) => setStatus(value as AdminProjectStatus)}
+                  options={STATUSES.map((s) => ({ value: s, label: s }))}
+                  className="min-w-[10rem]"
+                />
                 <Button
                   type="button"
                   size="md"

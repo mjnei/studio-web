@@ -65,13 +65,13 @@ Huavoi Studio's frontend embodies a premium, state-of-the-art aesthetic that is 
 #### Visual Styling
 - **Backgrounds**: Use layered surface colors (`var(--surface-base)` and `var(--surface-raised)`) with subtle ambient gradient glows (`bg-gradient-to-br from-accent/10 to-transparent blur-xl`) to establish depth.
 - **Cards & Containers**: Default to glassmorphic or elevated styles. Typical pattern: `bg-surface-raised border border-border-default shadow-md`. Add `hover:border-border-strong` for interactive elements.
-- **Typography**: Adhere strictly to the role-based type scale (`page`, `section`, `subsection`, `label`, `body`, `caption`, `metric`). Do not use ad-hoc Tailwind sizes like `text-2xl`. Utilize modern fonts (e.g., Geist, Inter) over browser defaults.
-- **Colors**: Never use plain primary colors (e.g., raw `#FF0000`). Use the defined `status-*` or `accent-*` CSS variables and gradients (e.g., `from-accent-cyan to-accent-primary`) for premium impact.
+- **Typography**: Use the role-based type scale (`page`, `section`, `subsection`, `label`, `body`, `caption`, `metric`, `micro`). Do not use ad-hoc Tailwind sizes like `text-2xl`. Font is Geist (`--font-geist-sans` / `--font-geist-mono`).
+- **Colors**: Prefer `status-*` / `accent-*` tokens. Avoid new raw hex except in `globals.css`.
 
 #### Interaction & Motion
 - **Micro-animations**: Every clickable element should respond to interaction. Buttons and cards must scale up slightly (e.g., `hover:scale-105`) or brighten on hover.
 - **Transitions**: Apply `transition-all duration-200 ease-smooth` to interactive surfaces. 
-- **Loading States**: Use dynamic shimmering skeletons or pulsating soft glows to indicate background activity.
+- **Loading States**: Prefer `LoadingSkeleton` / `Skeleton` shimmer for content placeholders and `Spinner` / `LoadingSpinner` for explicit waits. Do not leave sections blank while fetching when a skeleton pattern exists (see dashboard).
 
 #### Media & AI Workflows (TTS & Video)
 - **Audio & Voice Selection**: Use `Card variant="interactive"` with play/pause micro-animations for voice browsing. Highlight the currently selected voice using `border-accent-primary` or a glowing shadow.
@@ -296,24 +296,59 @@ Values below match `globals.css` as of August 24, 2026.
 
 ### Overview
 
-**Total Components**: 10 production-ready UI components
+Primitives live in `src/components/ui/` (React 19, TypeScript, Tailwind CSS 4). **Barrel exports** (`src/components/ui/index.ts`) currently re-export: `Button`, `Badge`, `Input`/`TextArea`, `Card` family, `EmptyState`, `PageHeader`, `LoadingSpinner`, `Spinner`, `Icon`, `Grid`, `Heading`, `Text`, `typography`. Other modules are imported from their file path.
 
-All components are located in `src/components/ui/` and are built with React 19, TypeScript, and Tailwind CSS 4.
+**New UI must use these primitives.** Several pages still use raw HTML controls with copied classes — treat that as incomplete migration, not a pattern to extend.
+
+| Primitive | File | In barrel? | Notes |
+|-----------|------|------------|-------|
+| `Button` | `button.tsx` | yes | Includes `destructive` |
+| `Card` (+ Header/Title/…) | `card.tsx` | yes | `CardTitle` = `Heading variant="section"` |
+| `Input` / `TextArea` | `input.tsx` | yes | Default input height `h-9` |
+| `Select` / `MultiSelect` | `select.tsx` | no | Custom listbox (not native `<select>`) |
+| `Badge` | `badge.tsx` | yes | Includes `destructive` (same look as `error`) |
+| `Heading` / `Text` | `heading.tsx` / `text.tsx` | yes | RSC-safe |
+| `PageHeader` | `PageHeader.tsx` | yes | Page `h1` via `variant="page"` |
+| `EmptyState` | `EmptyState.tsx` | yes | Owns hero icon rings |
+| `Icon` | `icon.tsx` | yes | Nav + dense repeated UI |
+| `Spinner` | `spinner.tsx` | yes | Animated `Loader2` |
+| `LoadingSpinner` | `LoadingSpinner.tsx` | yes | Status block wrapping `Spinner` |
+| `LoadingSkeleton` / `PageLoadingSkeleton` / `InlineLoadingSkeleton` | `loading-skeleton.tsx` | no | Page/section placeholders |
+| `Skeleton` | `skeleton.tsx` | no | Low-level shimmer shapes |
+| `Modal` / `ConfirmModal` / `FormModal` / `AlertModal` / `InputModal` | `modal.tsx` | no | `InputModal` uses a raw `<input>` internally |
+| `ToastProvider` / `useToast` | `toast.tsx` | no | Also wrapped by `@/lib/hooks/use-toast` |
+| `Tooltip` | `tooltip.tsx` | no | |
+| `Grid` | `Grid.tsx` | yes | |
+| `LayoutToggle` | `LayoutToggle.tsx` | no | Raw icon buttons, `h-9` cluster |
+| `Pagination` | `Pagination.tsx` | no | Raw `<button>` internals |
+| `Tabs` | `tabs.tsx` | no | |
+| `AlertDialog` | `alert-dialog.tsx` | no | |
+| `InputOTP` | `input-otp.tsx` | no | |
+| `ExternalImage` | `ExternalImage.tsx` | no | |
+
+### Adoption gaps (current code)
+
+- **Raw `<select>`** still used in settings, notifications filters, language switcher, some admin filters, thumbnail editor, voice naming form, and similar. Heights differ (`h-11` on settings vs `h-9` on language switcher vs `py-2` compact filters). Prefer shared `Select` for new work; native `<select>` is acceptable only for tiny chrome like `LanguageSwitcher` until it is migrated.
+- **Raw `<input>`** still used in admin filters, top-nav search, some modals, playground, profile, and file/range controls. Prefer `Input` for text/search fields. Range sliders, checkboxes, file inputs, and OTP remain native by nature.
+- **Raw `<textarea>`** still used for script editors and playground. Shared `TextArea` is for ordinary form fields. Large script editors may stay custom (`bg-surface-panel`, taller min-height) but should keep token text classes (`text-body`) and matching focus rings.
+- **No `Label` primitive.** `Input`/`Select` use `<Text as="label" variant="body" className="… font-medium">`. Pages mix body-weight labels, caption/uppercase labels, and unlabeled checkboxes.
+- **Raw `<button>`** is justified inside `Select`, `Pagination`, `LayoutToggle`, drawer collapse, and notification bell. Product CTAs and form submits should use `Button`.
 
 ### Core Components
 
 #### 1. Button
 - **File**: `src/components/ui/button.tsx`
-- **Variants**: primary, secondary, outline, ghost, danger, success
-- **Sizes**: sm (h-8 / 32px — dense chrome), md (h-9 / 36px, default — PageHeader & modal CTAs), lg (h-10 / 40px — auth only), icon (h-9)
+- **Variants**: `primary`, `secondary`, `outline`, `ghost`, `danger`, `destructive`, `success`
+  - `danger` uses `--status-error`. `destructive` uses `bg-red-600` (slightly different). Both exist; prefer `danger` for new work unless matching an existing `destructive` surface (queue purge).
+- **Sizes**: `sm` (`h-8` / 32px — dense chrome), `md` (`h-9` / 36px, default — PageHeader & modal CTAs), `lg` (`h-10` / 40px — auth / full-width), `icon` (`h-9 w-9`)
 - **Size roles**: Do not mix sizes for the same role. Page actions & modal footers = `md`; card rows / filters / toolbars / floating nav = `sm`; auth full-width = `lg`.
-- **Features**: Loading state (via `loading` or `isLoading` prop), left/right icons, full width option
-- **Usage**: Actions, navigation, form submissions
+- **Features**: Loading via `loading` or `isLoading` (renders `<Spinner size="sm" />` + i18n “Loading”, sets `aria-busy` / `aria-disabled`), `leftIcon` / `rightIcon`, `fullWidth`
+- **Inline icons**: pass Lucide at `h-4 w-4` (standard `sm` tier)
 
 ```tsx
 import { Button } from "@/components/ui/button";
 
-<Button variant="primary" size="md" loading={false} leftIcon={<IconComponent />}>
+<Button variant="primary" size="md" loading={false} leftIcon={<IconComponent className="h-4 w-4" />}>
   Click me
 </Button>
 ```
@@ -340,10 +375,10 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 #### 3. Input & TextArea
 - **File**: `src/components/ui/input.tsx`
-- **Features**: Label, error state, left/right icons
-- **States**: Default, focus, error, disabled
-- **Components**: `Input` for single-line, `TextArea` for multi-line
-- **Usage**: Forms, search, filters
+- **Features**: Optional `label` (via `Text as="label"`), `error`, `leftIcon` / `icon` / `rightIcon`
+- **Default field**: `h-9 px-3.5 text-body` — aligned with `Button` `md`
+- **TextArea**: `min-h-[88px] px-3.5 py-2.5 text-body`
+- **Usage**: Forms, search, filters. Many routes still use raw `<input>`/`<textarea>` — migrate those rather than copying their classes.
 
 ```tsx
 import { Input, TextArea } from "@/components/ui/input";
@@ -368,9 +403,10 @@ import { Input, TextArea } from "@/components/ui/input";
 
 #### 4. Badge
 - **File**: `src/components/ui/badge.tsx`
-- **Variants**: default, primary, secondary, success, warning, error, info, outline
-- **Sizes**: sm, md, lg
+- **Variants**: `default`, `primary`, `secondary`, `success`, `warning`, `error`, `destructive`, `info`, `outline`
+- **Sizes**: `sm`, `md` (`text-caption`), `lg` (`text-body`)
 - **Usage**: Status indicators, tags, counts
+- `error` and `destructive` currently share the same red styles.
 
 ```tsx
 import { Badge } from "@/components/ui/badge";
@@ -450,9 +486,10 @@ import { Modal, ConfirmModal, FormModal } from "@/components/ui/modal";
 
 #### 8. Select
 - **File**: `src/components/ui/select.tsx`
-- **Features**: Single selection, searchable, custom options
-- **Properties**: `value`, `onChange`, `options`, `searchable`, `disabled`
-- **Usage**: Dropdown selection menus
+- **Features**: Custom listbox (not a native `<select>`), optional search, optional leading icon, label / helper / error via `Text`
+- **Sizes**: `sm` (`px-3 py-1.5`), `md` (`px-3.5 py-2`, default), `lg` (`px-4 py-2.5`) — padding-based, not a fixed `h-9`/`h-11`
+- **Properties**: `value`, `onChange`, `options`, `searchable`, `disabled`, `label`, `helperText`, `error`
+- **Usage**: Dropdown selection menus. Search field inside the dropdown is a raw `<input>` by design.
 
 ```tsx
 import { Select } from "@/components/ui/select";
@@ -520,43 +557,46 @@ const MyComponent = () => {
 };
 ```
 
-#### 11. Loading Spinner
-- **File**: `src/components/ui/loading-spinner.tsx`
-- **Sizes**: sm, md, lg
-- **Features**: Customizable colors and speed
-- **Usage**: Loading indicators for async operations
+#### 11. Spinner and LoadingSpinner
+- **Files**: `src/components/ui/spinner.tsx`, `src/components/ui/LoadingSpinner.tsx`
+- **Rule**: animated loading is **never** raw `Loader2` + `animate-spin`. Use `Spinner` (compact) or `LoadingSpinner` (block with `role="status"`).
+- **`Spinner` sizes**: `sm` `h-4 w-4`, `md` `h-8 w-8`, `lg` `h-12 w-12`. One-off dimensions via `className` on bare `<Spinner />` are OK for dense layout. Do **not** pass ad-hoc `h-N w-N` to `LoadingSpinner`.
+- **`LoadingSpinner`**: wraps `Spinner`, optional `message` / `description` / `fullHeight`. Import from `@/components/ui/LoadingSpinner` (PascalCase file).
+- **Skeletons**: `LoadingSkeleton` (`card` | `text` | `grid` | `list` | `poster`) for section placeholders; `PageLoadingSkeleton` / `InlineLoadingSkeleton` for page/inline waits; low-level `Skeleton` for custom shapes. See [LOADING_TODO.md](../LOADING_TODO.md).
 
 ```tsx
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { Spinner } from "@/components/ui/spinner";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
-<LoadingSpinner size="md" />
+<Spinner size="md" className="text-accent-primary" />
+<LoadingSpinner size="md" message="Loading projects…" />
 ```
+
+#### 12. PageHeader, Heading, Text
+- **Files**: `PageHeader.tsx`, `heading.tsx`, `text.tsx`, `typography.ts`
+- Shell pages use `PageHeader` for the route title (`Heading variant="page"`). Description is `Text variant="body"`. String `meta` renders as a cyan count pill.
+- Do not put a second row of buttons under the header that only holds chrome — see [Page header (two zones)](#page-header-two-zones).
 
 ---
 
 ## Import Guide
 
 ```tsx
-// Buttons & Actions
 import { Button } from "@/components/ui/button";
-
-// Cards & Containers
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
-
-// Forms & Inputs
 import { Input, TextArea } from "@/components/ui/input";
 import { Select, MultiSelect } from "@/components/ui/select";
-
-// Feedback
 import { Badge } from "@/components/ui/badge";
+import { Heading, Text } from "@/components/ui";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { Icon } from "@/components/ui/icon";
+import { Spinner } from "@/components/ui/spinner";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { LoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip } from "@/components/ui/tooltip";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
-
-// Modals & Dialogs
 import { Modal, ConfirmModal, FormModal } from "@/components/ui/modal";
-
-// Notifications
 import { useToast, ToastProvider } from "@/components/ui/toast";
 ```
 
@@ -778,7 +818,7 @@ className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center sm:min
 
 ### Design Rationale
 
-1. **Never Single Column**: All grid modes maintain a minimum of 2 columns on mobile (except lists) to ensure content doesn't feel cramped or endlessly scrollable
+1. **Prefer multi-column on browse grids**: poster/movie grids stay 2+ columns on mobile. Card lists and `Grid` default to **1 column on mobile** then 2/3 at `sm`/`lg` (`src/components/ui/Grid.tsx`). Lists stay single column.
 
 2. **Progressive Scaling**: Column count increases smoothly with viewport width:
    - 320px: Compact, thumb-friendly navigation
@@ -799,8 +839,8 @@ className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center sm:min
 
 1. **Mobile-First Approach**: Base styles are for mobile (320px), enhanced with `sm:`, `md:`, `lg:`, `xl:` prefixes for larger screens
 2. **Progressive Enhancement**: Simpler layouts on mobile, more complex on desktop
-3. **Touch-Friendly Targets**: Minimum 44×44px clickable areas on all interactive elements
-4. **Readable Text**: Minimum 16px on mobile, scales naturally on desktop
+3. **Dense controls**: Shared buttons/inputs are 32–40px (`h-8` / `h-9` / `h-10`). Bump isolated primary mobile chrome toward 44px only when needed — do not apply 44×44 to every control.
+4. **Readable text**: App body is **14px** (`text-body`). Minimum readable copy is **12px** (`text-caption`). Do not use 16px mobile body as a separate scale.
 5. **Flexible Containers**: Use `flex-col` on mobile, `flex-row` on desktop
 
 ---
@@ -828,10 +868,7 @@ className="flex flex-col sm:flex-row gap-3"
 className="grid gap-4 grid-cols-1 sm:grid-cols-2"
 ```
 
-**Text Sizes** (smaller mobile, larger desktop):
-```tsx
-className="text-base md:text-lg lg:text-xl"
-```
+**Text sizes**: do not bump sizes per breakpoint on pages. Roles own responsive steps (`text-page sm:text-page-sm` for page titles; `display` heroes only). Body stays `text-body`.
 
 **Padding** (less mobile, more desktop):
 ```tsx
@@ -842,21 +879,20 @@ className="p-4 md:p-6 lg:p-8"
 
 ### Testing Checklist
 
-Test these **critical viewports**:
-- ✅ **320px** - Smallest mobile (iPhone SE)
-- ✅ **375px** - Common mobile (iPhone 12/13)
-- ✅ **768px** - Tablet portrait (iPad)
-- ✅ **1024px** - Tablet landscape / Desktop
-- ✅ **1920px** - Desktop HD (common)
-- ⏳ **2560px** - 4K displays (enhancement, not critical)
+Target viewports for visual QA (typography Phase 6e is still **unchecked** in [TYPOGRAPHY_REFACTOR.md](../TYPOGRAPHY_REFACTOR.md)):
 
-**Testing Guidelines**:
-- ✅ No horizontal scrolling at any viewport
-- ✅ Touch targets >= 44×44px (test with real finger, not mouse)
-- ✅ Text doesn't overflow containers
-- ✅ Images scale properly
-- ✅ Forms are usable on mobile keyboards
-- ✅ Modals don't overflow screen
+- **320px** — smallest mobile
+- **375px** — common mobile
+- **768px** — tablet portrait
+- **1024px** — tablet landscape / desktop
+- **1280px / 1920px** — large desktop
+
+**Guidelines**:
+- No horizontal scrolling
+- Shared controls stay on the 32–40px scale unless a specific mobile chrome needs a larger hit area
+- Text does not overflow; use `truncate` / `line-clamp-*`
+- Forms usable with mobile keyboards
+- Modals do not overflow the viewport
 
 ## Animation & Transitions
 
@@ -906,34 +942,35 @@ Test these **critical viewports**:
 ### CSS Variables Quick Copy
 
 ```css
-/* Surface Colors */
+/* Surfaces — src/app/globals.css :root */
 --surface-base: #0a0e17
 --surface-panel: #0f1419
 --surface-raised: #161b22
 --surface-hover: #1c2128
 --surface-elevated: #21262d
 
-/* Text Colors */
+/* Text */
 --text-primary: #f1f5f9
---text-secondary: #94a3b8
---text-muted: #64748b
+--text-secondary: #cbd5e1
+--text-muted: #94a3b8
 --text-disabled: #475569
 
-/* Accent Colors */
+/* Accents */
 --accent-primary: #6366f1
 --accent-secondary: #8b5cf6
 --accent-tertiary: #06b6d4
+--accent-cyan: #06b6d4
 --accent-muted: rgba(99, 102, 241, 0.15)
 
-/* Status Colors */
---status-success: #22c55e
+/* Status */
+--status-success: #10b981
+--status-completed: #22c55e
 --status-error: #ef4444
+--status-failed: #ef4444
 --status-warning: #f59e0b
 --status-info: #3b82f6
 --status-processing: #3b82f6
---status-completed: #22c55e
 --status-queued: #6b7280
---status-failed: #ef4444
 
 /* Transitions */
 --transition-ultra-fast: 75ms
@@ -951,16 +988,17 @@ Test these **critical viewports**:
 - `gap-3` - Gap between items (12px)
 - `gap-6` - Gap between items (24px)
 
-**Text** (prefer roles — see [TYPOGRAPHY.md](../TYPOGRAPHY.md)):
+**Text** (roles — see [TYPOGRAPHY.md](../TYPOGRAPHY.md)):
 - Page title → `<PageHeader>` / `<Heading variant="page">`
 - Card / section → `<CardTitle>` / `<Heading variant="section">`
 - Dense group label → `<Heading variant="label" as="h2">`
 - Hero / brand → `<Heading variant="display">` (allowlisted surfaces only)
 - Stat number → `<Heading variant="metric">`
-- Helper / meta → `<Text variant="caption">` or `text-xs text-text-muted`
+- Helper / meta → `<Text variant="caption">` or `text-caption text-text-muted`
+- Badge / overlay chrome → `text-micro` (not paragraphs)
 - Colors: `text-text-primary`, `text-text-secondary`, `text-text-muted`
-- Avoid new `text-2xl` / `text-3xl` / `text-4xl` on headings — tune `--text-*` tokens instead
-- Body chrome sizes still OK: `text-sm`, `text-base`, `truncate`, `line-clamp-2`
+- Avoid new `text-xs`–`text-2xl` and `text-[Npx]` — ESLint will error; tune `--text-*` tokens instead
+- Truncation OK: `truncate`, `line-clamp-2`
 
 **Layout**:
 - `flex` - Flex container
@@ -1118,10 +1156,7 @@ className="bg-gradient-to-r from-indigo-500 to-purple-500"
 
 ### Common Responsive Patterns
 
-**Text Responsive Sizes:**
-```tsx
-className="text-sm md:text-base lg:text-lg"
-```
+**Text**: use roles / token utilities (`text-body`, `text-caption`, `text-page`), not `text-sm md:text-base lg:text-lg`.
 
 **Padding Responsive:**
 ```tsx
@@ -1170,86 +1205,54 @@ className="flex flex-col md:flex-row gap-4"
 ---
 
 
-## Quick Reference - What's Documented vs. What's Implemented
+## Documented vs implemented (Aug 24, 2026)
 
-| Feature | Documented | Implemented | Verified | Notes |
-|---------|-----------|-------------|----------|-------|
-| Breakpoints (5 patterns) | ✅ | ✅ | ✅ | sm, md, lg, xl, 2xl |
-| Touch Targets (44×44px) | ✅ | ✅ | ✅ | All icon buttons updated |
-| Grid Patterns (5 types) | ✅ | ✅ | ✅ | Used consistently across pages |
-| Mobile Dropdowns | ✅ | ✅ | ✅ | Notifications filters, etc. |
-| Responsive Padding | ✅ | ✅ | ✅ | `p-4 sm:p-6 lg:p-8` |
-| Max-Width Container | ✅ | ✅ | ✅ | `max-w-7xl mx-auto` |
-| Text Truncation | ✅ | ✅ | ⏳ | Implemented, could use audit |
-| Overflow Prevention | ✅ | ✅ | ✅ | `overflow-x-hidden` on layout |
-| Layout Toggle | ✅ | ✅ | ✅ | Projects, Movies, Admin |
-| Button Responsive Width | ✅ | ✅ | ✅ | Profile, Billing, etc. |
+| Area | Standard | Current implementation |
+|------|----------|------------------------|
+| Type roles / tokens | Use `Heading` / `Text` / token utilities | Adopted app-wide; ESLint enforces; referral stats still `text-2xl` |
+| Buttons | Shared `Button` + size roles | Primitive matches this doc; some chrome still raw `<button>` |
+| Forms | `Input` / `TextArea` / `Select` | Primitives exist; many routes still use raw controls |
+| Labels | Shared label pattern | No `Label` component; mixed body vs caption/uppercase labels |
+| Icons | Lucide + size tokens; `Icon` for nav | Size scale is followed; `Icon` wrapper mainly in the sidebar |
+| Spinners | `Spinner` / `LoadingSpinner` | Implemented; `Button` loading uses `Spinner` |
+| Control height | `h-8` / `h-9` / `h-10` (32–40px) | Shared primitives match; some raw selects still `h-11` |
+| Touch 44×44 everywhere | Not the product standard | Dense 36px default; bump only isolated mobile chrome |
+| Visual QA at 375 / 1280 | Required for typography Phase 6e | Still open in `TYPOGRAPHY_REFACTOR.md` |
 
 ---
 
 ## Testing & Verification
 
-### Manual Testing Completed ✅
+Do **not** treat historical “all pages tested” notes as current. After the Aug 2026 density/typography pass, human spot-checks at 375px and 1280px (shell, project workflow, admin, auth) remain on the typography refactor checklist.
 
-All pages tested at:
-- **320px** (iPhone SE) - ✅ No horizontal scroll
-- **375px** (iPhone 12/13) - ✅ Comfortable spacing
-- **768px** (iPad portrait) - ✅ 2-3 column grids
-- **1024px** (iPad landscape) - ✅ 3-4 column grids
-- **1920px** (Desktop HD) - ✅ Full utilization
-
----
-
-### Responsive Design Compliance
-
-✅ **Mobile Optimization**
-- All pages tested at 320px, 375px, 768px, 1024px, 1920px
-- No horizontal scrolling on any viewport
-- Touch targets >= 44×44px on all interactive elements
-- Proper text truncation and overflow handling
-
-✅ **Grid Consistency**
-- Standardized 5 responsive patterns across all pages
-- Mobile-first approach with proper breakpoint progression
-- Consistent gap sizing (3, 4, 6px)
-- Max-width container for readability
-
-✅ **Accessibility**
-- WCAG AA color contrast throughout
-- Keyboard navigation on all interactive elements
-- Proper ARIA labels on icon buttons and toggle controls
-- Focus states on all buttons
-
-✅ **Performance**
-- Optimized CSS with Tailwind utilities
-- No unnecessary CSS-in-JS
-- Animations use transform/opacity (GPU-accelerated)
-- Responsive images with proper sizing
+**Still true in code**:
+- Mobile-first Tailwind breakpoints
+- Common page shell `max-w-7xl mx-auto`
+- Layout toggle on Projects, Movies, and admin movies
+- Overflow handling on shell layouts
+- `Button` loading a11y (`aria-busy` / `aria-disabled`)
 
 ---
 
 ## Performance Tips
 
-✅ **DO**:
+**DO**:
 - Use `transform` for animations
 - Use `opacity` changes for fading
 - Keep animations under 300ms
 - Use CSS instead of JavaScript
 - Use `shadow-glow` for emphasis
-- Cache component refs when needed
 
-❌ **DON'T**:
+**DON'T**:
 - Animate width/height
 - Animate left/top position
-- Use setTimeout for animations
-- Have multiple animations simultaneously
-- Use excessive filter effects
-- Hardcode colors
+- Use `setTimeout` for animations
+- Hardcode hex colors when a token exists
 
 ---
 
-**Last Updated**: August 4, 2026  
-**Version**: 2.1  
-**Status**: ✅ Complete - All responsive design fixes verified and implemented  
+**Last Updated**: August 24, 2026  
+**Version**: 2.4  
+**Status**: Living — tokens and primitives match code; form/icon adoption is incomplete  
 **Maintained by**: Frontend Team  
 **Repository**: `studio-web/`
