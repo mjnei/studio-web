@@ -2,11 +2,12 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { FileText, ChevronDown, Sparkles } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { Sliders, FileText, Sparkles, Mic } from "lucide-react";
 import { Heading } from "@/components/ui/heading";
 import { PageHeader } from "@/components/ui/PageHeader";
-import { typography } from "@/components/ui/typography";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { ContextDrawer } from "@/components/ui/context-drawer";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { useVoiceLimits } from "@/lib/hooks/use-voice-limits";
 import { useVoicePreview } from "@/lib/hooks/use-voice-preview";
@@ -16,7 +17,6 @@ import { VoiceSelectionPanel } from "@/components/project/voice-selection-panel"
 import { SpeechRateControl } from "@/components/project/speech-rate-control";
 import { VoiceRecordingModal } from "@/components/shared/voice-recording-modal";
 import { VoiceLimitDialog } from "@/components/voices/voice-limit-dialog";
-import { FullScriptModal } from "@/components/project/full-script-modal";
 import { useToast } from "@/components/ui/toast";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { getAvailableVoices, getVoiceAudioUrl } from "@/lib/api/voice-client";
@@ -45,7 +45,7 @@ export default function VoicePage() {
   });
   const [showRecorder, setShowRecorder] = useState(false);
   const [showLimitDialog, setShowLimitDialog] = useState(false);
-  const [showFullScriptModal, setShowFullScriptModal] = useState(false);
+  const [showParametersDrawer, setShowParametersDrawer] = useState(false);
   const [isAdvancing, setIsAdvancing] = useState(false);
   const [hasScheduledAgnes, setHasScheduledAgnes] = useState(false);
   const [ratio, setRatio] = useState(1.0);
@@ -225,6 +225,16 @@ export default function VoicePage() {
           <PageHeader
             title={t("project.voice.title")}
             description={t("project.voice.description")}
+            actions={
+              <Button
+                variant="outline"
+                size="sm"
+                leftIcon={<Sliders className="h-4 w-4" />}
+                onClick={() => setShowParametersDrawer(true)}
+              >
+                Speed &amp; Script Reference ({ratio.toFixed(1)}x)
+              </Button>
+            }
           />
 
           {/* Revisit Banner if voice was already selected */}
@@ -238,79 +248,7 @@ export default function VoicePage() {
             />
           )}
 
-          {/* Agnes AI Background Status Pill */}
-          <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-accent-primary/10 border border-accent-primary/20 text-caption text-text-secondary">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-primary opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-accent-primary"></span>
-            </span>
-            <Sparkles className="h-3.5 w-3.5 text-accent-primary" />
-            <span>
-              Agnes AI is preparing title suggestions &amp; thumbnail concepts in the background
-            </span>
-          </div>
-
-          {state?.scriptSummary && (
-            <Card
-              variant="elevated"
-              padding="md"
-              className="bg-gradient-to-br from-accent-cyan/5 to-transparent border-accent-cyan/20"
-            >
-              <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted shrink-0">
-                  <FileText className="h-5 w-5 text-accent-cyan" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <Heading
-                    variant="label"
-                    as="h3"
-                    className="mb-2 uppercase tracking-wide text-text-secondary"
-                  >
-                    {t("project.common.scriptTagline")}
-                  </Heading>
-                  <p className={`${typography.section} mb-2 text-accent-cyan`}>
-                    &ldquo;{state.scriptSummary}&rdquo;
-                  </p>
-                  <p className="text-caption text-text-muted">{t("project.voice.taglineHint")}</p>
-                </div>
-              </div>
-            </Card>
-          )}
-
-          {activeScript && (
-            <Card
-              variant="elevated"
-              padding="md"
-              className="cursor-pointer hover:border-accent-cyan/30 hover:bg-surface-raised transition-all group"
-              onClick={() => setShowFullScriptModal(true)}
-            >
-              <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted shrink-0">
-                  <FileText className="h-5 w-5 text-accent-cyan" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-4 mb-2">
-                    <Heading variant="label" as="h3" className="text-text-primary">
-                      {t("project.common.yourScript")}
-                    </Heading>
-                    <span className="text-caption font-medium text-accent-cyan flex items-center gap-1 shrink-0 group-hover:text-accent-cyan-hover">
-                      {t("project.common.clickToExpand")} <ChevronDown className="h-3 w-3" />
-                    </span>
-                  </div>
-                  <p className="text-body text-text-muted mb-2">
-                    {t("project.common.scriptMeta", {
-                      count: activeScript.wordCount,
-                      duration: formatDuration(activeScript.duration),
-                    })}
-                  </p>
-                  <p className="text-body text-text-secondary line-clamp-2">
-                    {activeScript.content}
-                  </p>
-                </div>
-              </div>
-            </Card>
-          )}
-
+          {/* Dominant Hero Interaction: Voice Talent Selection Panel */}
           <VoiceSelectionPanel
             ownVoices={ownVoices}
             communityVoices={communityVoices}
@@ -324,35 +262,105 @@ export default function VoicePage() {
             canAddVoice={voiceLimits.canAdd}
             remainingVoiceCount={voiceLimits.remainingCount}
           />
-
-          {selectedVoiceId && <SpeechRateControl ratio={ratio} onRatioChange={setRatio} />}
-
-          <VoiceRecordingModal
-            isOpen={showRecorder}
-            onClose={() => setShowRecorder(false)}
-            onSaved={handleRecordingSaved}
-          />
-
-          {showLimitDialog && (
-            <VoiceLimitDialog
-              tier={voiceLimits.tier}
-              currentCount={voiceLimits.currentCount}
-              limit={voiceLimits.limit}
-              upgradeRequired={voiceLimits.upgradeRequired}
-              onClose={() => setShowLimitDialog(false)}
-              onUpgrade={handleUpgradeClick}
-            />
-          )}
         </div>
       </div>
 
-      {activeScript && (
-        <FullScriptModal
-          isOpen={showFullScriptModal}
-          onClose={() => setShowFullScriptModal(false)}
-          scriptContent={activeScript.content}
-          wordCount={activeScript.wordCount}
-          duration={activeScript.duration}
+      {/* Contextual Drawer: Voice Tuning & Script Parameters */}
+      <ContextDrawer
+        open={showParametersDrawer}
+        onClose={() => setShowParametersDrawer(false)}
+        title="Voice Tuning &amp; Script"
+        description="Speech pacing, narrative text, and voice limits"
+        icon={<Sliders className="h-5 w-5" />}
+        badge={
+          <Badge variant="accent" size="sm">
+            {ratio.toFixed(1)}x Pacing
+          </Badge>
+        }
+      >
+        <div className="space-y-6">
+          {/* Speech Rate Control */}
+          <div className="space-y-3 rounded-xl bg-surface-panel p-4 border border-border-default">
+            <Heading variant="label" as="h4" className="text-text-primary">
+              Narration Speed
+            </Heading>
+            <SpeechRateControl ratio={ratio} onRatioChange={setRatio} />
+          </div>
+
+          {/* Agnes AI Background Status */}
+          <div className="flex items-center gap-2.5 p-3 rounded-xl bg-accent-primary/10 border border-accent-primary/20 text-caption text-text-secondary">
+            <Sparkles className="h-4 w-4 text-accent-primary shrink-0" />
+            <span>
+              Agnes AI is preparing title suggestions &amp; thumbnail concepts in the background
+            </span>
+          </div>
+
+          {/* Script Tagline & Full Script */}
+          {activeScript && (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Heading
+                  variant="label"
+                  as="h4"
+                  className="text-text-primary flex items-center gap-1.5"
+                >
+                  <FileText className="h-4 w-4 text-accent-cyan" />
+                  Script Reference
+                </Heading>
+                <span className="text-caption text-text-muted">
+                  {activeScript.wordCount} words (~{formatDuration(activeScript.duration)})
+                </span>
+              </div>
+              <div className="rounded-xl bg-surface-panel p-4 border border-border-default max-h-60 overflow-y-auto">
+                <p className="text-body text-text-secondary leading-relaxed whitespace-pre-wrap">
+                  {activeScript.content}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Custom Voice Limits & Record Trigger */}
+          <div className="rounded-xl bg-surface-panel p-4 border border-border-default space-y-3">
+            <div className="flex items-center justify-between">
+              <Heading
+                variant="label"
+                as="h4"
+                className="text-text-primary flex items-center gap-1.5"
+              >
+                <Mic className="h-4 w-4 text-accent-primary" />
+                Custom Voice Slot
+              </Heading>
+              <Badge variant="default" size="sm">
+                {voiceLimits.currentCount} / {voiceLimits.limit} Used
+              </Badge>
+            </div>
+            <Button
+              variant="secondary"
+              size="sm"
+              leftIcon={<Mic className="h-4 w-4" />}
+              onClick={handleAddVoiceClick}
+              className="w-full"
+            >
+              Record New Custom Voice
+            </Button>
+          </div>
+        </div>
+      </ContextDrawer>
+
+      <VoiceRecordingModal
+        isOpen={showRecorder}
+        onClose={() => setShowRecorder(false)}
+        onSaved={handleRecordingSaved}
+      />
+
+      {showLimitDialog && (
+        <VoiceLimitDialog
+          tier={voiceLimits.tier}
+          currentCount={voiceLimits.currentCount}
+          limit={voiceLimits.limit}
+          upgradeRequired={voiceLimits.upgradeRequired}
+          onClose={() => setShowLimitDialog(false)}
+          onUpgrade={handleUpgradeClick}
         />
       )}
 

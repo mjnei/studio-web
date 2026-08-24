@@ -1,9 +1,8 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useMemo, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import {
-  CheckCircle2,
   FileText,
   Mic2,
   AlertCircle,
@@ -12,25 +11,25 @@ import {
   Volume2,
   VolumeX,
   RotateCcw,
-  RotateCw,
-  Info,
   Sparkles,
   RefreshCw,
+  Sliders,
+  Radio,
 } from "lucide-react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { Heading } from "@/components/ui/heading";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { ContextDrawer } from "@/components/ui/context-drawer";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
-import { FullScriptModal } from "@/components/project/full-script-modal";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { TTSQueueStatus } from "@/components/project/tts-queue-status";
-import { WaveformEqualizer } from "@/components/ui/waveform-equalizer";
 import { createTTSJob, getTTSJob, type TTSJobResponse } from "@/lib/project-client";
 import { useI18n } from "@/i18n";
+import { formatDuration } from "@/lib/utils/time-format";
 
 export default function PreviewPage() {
   const params = useParams();
@@ -39,7 +38,7 @@ export default function PreviewPage() {
   const { state, activeScript, isLoading } = useProjectState(projectId);
   const { t } = useI18n();
 
-  const [showFullScriptModal, setShowFullScriptModal] = useState(false);
+  const [showTelemetryDrawer, setShowTelemetryDrawer] = useState(false);
   const [ttsJob, setTtsJob] = useState<TTSJobResponse | null>(null);
   const [ttsError, setTtsError] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -50,19 +49,6 @@ export default function PreviewPage() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const isCreatingJobRef = useRef(false);
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
-
-  const getStatusLabel = useCallback(
-    (status: string) => {
-      const statusKeys: Record<string, string> = {
-        completed: "project.status.completed",
-        processing: "project.status.processing",
-        queued: "project.status.queued",
-        failed: "project.status.failed",
-      };
-      return statusKeys[status] ? t(statusKeys[status]) : status;
-    },
-    [t]
-  );
 
   const createNewTTSJob = useCallback(
     async (voiceId: string, voiceName?: string) => {
@@ -327,22 +313,10 @@ export default function PreviewPage() {
   const canProceed = ttsJob?.status === "completed" && !!ttsJob.audio_url;
   const isProcessing = ttsJob?.status === "queued" || ttsJob?.status === "processing";
   const isIdle = !ttsJob && !isProcessing && !ttsError;
-  const projectName = state?.projectName || state?.movieTitle || t("project.preview.yourProject");
 
   const voiceName = ttsJob?.voice_name || state?.voiceName || t("project.preview.selectedVoice");
 
-  const previewText = (() => {
-    if (!activeScript?.content) return t("project.preview.defaultPreviewText");
-    const sentences = activeScript.content.match(/[^.!?]+[.!?]+/g);
-    if (!sentences || sentences.length === 0) {
-      return activeScript.content.substring(0, 200);
-    }
-    return sentences[0].trim();
-  })();
-
-  const scriptDuration = activeScript
-    ? `${Math.floor(activeScript.duration / 60)}:${(activeScript.duration % 60).toString().padStart(2, "0")}`
-    : "";
+  const scriptDuration = activeScript ? formatDuration(activeScript.duration) : "";
 
   if (isLoading) {
     return <PageLoadingSkeleton message={t("project.common.loadingProject")} />;
@@ -355,6 +329,16 @@ export default function PreviewPage() {
           <PageHeader
             title={t("project.preview.title")}
             description={t("project.preview.description")}
+            actions={
+              <Button
+                variant="outline"
+                size="sm"
+                leftIcon={<Sliders className="h-4 w-4" />}
+                onClick={() => setShowTelemetryDrawer(true)}
+              >
+                Telemetry &amp; Script Reference
+              </Button>
+            }
           />
 
           {/* Hidden audio element */}
@@ -372,14 +356,14 @@ export default function PreviewPage() {
               padding="lg"
               className="border-2 border-accent-primary/30 bg-gradient-to-br from-accent-primary/10 via-surface-panel to-surface-panel text-center"
             >
-              <div className="max-w-xl mx-auto py-6 space-y-4">
+              <div className="max-w-xl mx-auto py-10 space-y-6">
                 <div className="flex justify-center">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-primary/20 text-accent-primary shadow-glow">
-                    <Mic2 className="h-8 w-8" />
+                  <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-accent-primary/20 text-accent-primary shadow-glow">
+                    <Mic2 className="h-10 w-10" />
                   </div>
                 </div>
                 <div>
-                  <Heading variant="subsection" as="h3" className="text-text-primary">
+                  <Heading variant="section" as="h3" className="text-text-primary">
                     Ready to Synthesize Narration
                   </Heading>
                   <p className="mt-1 text-body text-text-muted">
@@ -389,14 +373,14 @@ export default function PreviewPage() {
                 </div>
                 <Button
                   variant="primary"
-                  size="md"
-                  leftIcon={<Sparkles className="h-4 w-4" />}
+                  size="lg"
+                  leftIcon={<Sparkles className="h-5 w-5" />}
                   onClick={() => {
                     if (state?.voiceId) {
                       createNewTTSJob(state.voiceId, state.voiceName);
                     }
                   }}
-                  className="shadow-glow-hover"
+                  className="shadow-glow-hover font-semibold"
                 >
                   🎙️ Generate Full Audio Preview (0 Video Credits Charged)
                 </Button>
@@ -411,7 +395,7 @@ export default function PreviewPage() {
               padding="lg"
               className="border-accent-primary/30 bg-surface-panel"
             >
-              <div className="max-w-xl mx-auto py-8 text-center space-y-6">
+              <div className="max-w-xl mx-auto py-12 text-center space-y-6">
                 <div className="flex items-center justify-center">
                   <div className="flex h-20 w-20 items-center justify-center rounded-full bg-accent-primary/15 shadow-glow">
                     <Spinner size="lg" className="text-accent-primary" />
@@ -429,22 +413,15 @@ export default function PreviewPage() {
                   </p>
                 </div>
 
-                {/* Queue telemetry status component */}
-                {ttsJob?.status === "queued" && (
-                  <div className="max-w-md mx-auto">
-                    <TTSQueueStatus job={ttsJob} />
-                  </div>
-                )}
-
-                {/* Pulsating equalizer skeleton */}
+                {/* Pulsating visualizer skeleton */}
                 <div className="flex items-center justify-center gap-1.5 py-4">
-                  {Array.from({ length: 16 }).map((_, i) => (
+                  {Array.from({ length: 24 }).map((_, i) => (
                     <div
                       key={i}
-                      className="w-1.5 bg-accent-primary/40 rounded-full animate-pulse"
+                      className="w-1.5 bg-accent-primary/50 rounded-full animate-pulse"
                       style={{
-                        height: `${20 + ((i * 19) % 50)}px`,
-                        animationDelay: `${(i * 0.1) % 0.8}s`,
+                        height: `${16 + ((i * 17) % 48)}px`,
+                        animationDelay: `${(i * 0.08) % 0.8}s`,
                         animationDuration: "1s",
                       }}
                     />
@@ -454,32 +431,31 @@ export default function PreviewPage() {
             </Card>
           )}
 
-          {/* ── State 3: READY / STUDIO AUDIO DECK ── */}
+          {/* ── State 3: READY / DOMINANT STUDIO AUDIO DECK ── */}
           {ttsJob?.status === "completed" && ttsJob.audio_url && (
             <Card
               variant="elevated"
               padding="none"
-              className="overflow-hidden border-accent-primary/30"
+              className="overflow-hidden border-accent-primary/30 shadow-xl"
             >
-              <div className="bg-gradient-to-br from-accent-primary/15 via-surface-panel to-accent-cyan/10 p-6 sm:p-8">
+              <div className="bg-gradient-to-br from-accent-primary/15 via-surface-panel to-accent-cyan/10 p-6 sm:p-10">
                 {/* Visualizer header */}
-                <div className="flex items-center justify-between gap-4 mb-6">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-primary text-white shadow-glow">
-                      <Volume2 className="h-5 w-5" />
+                <div className="flex items-center justify-between gap-4 mb-8">
+                  <div className="flex items-center gap-3.5">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent-primary text-white shadow-glow">
+                      <Volume2 className="h-6 w-6" />
                     </div>
                     <div>
-                      <Heading variant="label" as="h3" className="text-text-primary">
-                        Studio Audio Narration
+                      <Heading variant="subsection" as="h3" className="text-text-primary">
+                        Studio Audio Narration Deck
                       </Heading>
                       <p className="text-caption text-text-muted">
                         Narrated by{" "}
-                        <span className="text-text-primary font-medium">{voiceName}</span>
+                        <span className="text-text-primary font-semibold">{voiceName}</span>
                       </p>
                     </div>
                   </div>
 
-                  {/* Cache Transparency Badge */}
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-accent-cyan/15 text-accent-cyan border border-accent-cyan/30 text-caption font-medium shadow-sm">
                     <Sparkles className="h-3.5 w-3.5" />
                     {t("project.preview.cachedOptimized")}
@@ -487,7 +463,7 @@ export default function PreviewPage() {
                 </div>
 
                 {/* Interactive Waveform & Controls Deck */}
-                <div className="rounded-2xl bg-surface-elevated/90 backdrop-blur-md p-6 border border-border-default space-y-6">
+                <div className="rounded-3xl bg-surface-elevated/95 backdrop-blur-xl p-6 sm:p-8 border border-border-default space-y-8 shadow-lg">
                   {/* Waveform Scrubber Bar */}
                   <div className="space-y-2">
                     <input
@@ -496,17 +472,19 @@ export default function PreviewPage() {
                       max={duration || 100}
                       value={currentTime}
                       onChange={handleSeek}
-                      className="w-full h-2.5 bg-surface-panel rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-accent-primary [&::-webkit-slider-thumb]:shadow-glow [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:hover:scale-125"
+                      className="w-full h-3 bg-surface-panel rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-accent-primary [&::-webkit-slider-thumb]:shadow-glow [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:hover:scale-125"
                     />
-                    <div className="flex items-center justify-between text-caption font-mono text-text-muted">
-                      <span>{formatTime(currentTime)}</span>
+                    <div className="flex items-center justify-between text-caption font-mono text-text-muted px-1">
+                      <span className="font-semibold text-text-primary">
+                        {formatTime(currentTime)}
+                      </span>
                       <span>{duration ? formatTime(duration) : "--:--"}</span>
                     </div>
                   </div>
 
                   {/* Main Playback Action Deck */}
-                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                    {/* Re-synthesize & Skip Controls */}
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+                    {/* Skip Back Controls */}
                     <div className="flex items-center gap-2">
                       <Button
                         variant="ghost"
@@ -515,9 +493,7 @@ export default function PreviewPage() {
                         onClick={resetAudio}
                         title={t("project.preview.resetToStart")}
                       >
-                        <span className="hidden md:inline">
-                          {t("project.preview.resetToStart")}
-                        </span>
+                        Reset
                       </Button>
                       <Button
                         variant="secondary"
@@ -534,13 +510,13 @@ export default function PreviewPage() {
                       <button
                         type="button"
                         onClick={togglePlayPause}
-                        className="h-16 w-16 rounded-full bg-accent-primary p-0 flex items-center justify-center shadow-glow-hover hover:scale-105 transition-all text-white font-semibold flex-shrink-0"
+                        className="h-20 w-20 rounded-full bg-accent-primary p-0 flex items-center justify-center shadow-glow-hover hover:scale-105 active:scale-95 transition-all text-white font-semibold flex-shrink-0"
                         title={isPlaying ? t("project.preview.pause") : t("project.preview.play")}
                       >
                         {isPlaying ? (
-                          <Pause className="h-8 w-8 fill-white" />
+                          <Pause className="h-9 w-9 fill-white" />
                         ) : (
-                          <Play className="h-8 w-8 ml-1 fill-white" />
+                          <Play className="h-9 w-9 ml-1 fill-white" />
                         )}
                       </button>
                     </div>
@@ -574,7 +550,7 @@ export default function PreviewPage() {
                         step="0.01"
                         value={isMuted ? 0 : volume}
                         onChange={handleVolumeChange}
-                        className="w-20 sm:w-24 h-1.5 bg-surface-panel rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-accent-primary"
+                        className="w-24 h-2 bg-surface-panel rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-accent-primary"
                       />
                     </div>
                   </div>
@@ -619,90 +595,79 @@ export default function PreviewPage() {
               </div>
             </Card>
           )}
-
-          {/* Context Meta Cards Grid */}
-          <div className="grid gap-4 md:grid-cols-2">
-            {/* Project Summary Card */}
-            <Card variant="elevated" padding="md">
-              <CardHeader>
-                <div className="flex items-center gap-2">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent-primary/20 text-accent-primary">
-                    <CheckCircle2 className="h-5 w-5" />
-                  </div>
-                  <CardTitle>{t("project.preview.projectDetails")}</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div>
-                    <p className="text-micro text-text-muted uppercase tracking-wider mb-0.5">
-                      {t("project.preview.projectName")}
-                    </p>
-                    <p className="font-semibold text-text-primary">{projectName}</p>
-                  </div>
-                  <div>
-                    <p className="text-micro text-text-muted uppercase tracking-wider mb-0.5">
-                      {t("project.common.voice")}
-                    </p>
-                    <p className="font-medium text-text-primary">{voiceName}</p>
-                  </div>
-                  {activeScript && (
-                    <div>
-                      <p className="text-micro text-text-muted uppercase tracking-wider mb-0.5">
-                        {t("project.common.script")}
-                      </p>
-                      <p className="text-caption text-text-secondary">
-                        {t("project.common.scriptMetaShort", {
-                          count: activeScript.wordCount,
-                          duration: scriptDuration,
-                        })}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Script Preview Card */}
-            <Card
-              variant="elevated"
-              padding="md"
-              className="cursor-pointer hover:border-accent-cyan/40 transition-all group"
-              onClick={() => setShowFullScriptModal(true)}
-            >
-              <CardHeader>
-                <div className="flex items-center gap-2">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent-cyan/20 text-accent-cyan">
-                    <FileText className="h-5 w-5" />
-                  </div>
-                  <CardTitle>{t("project.preview.scriptPreview")}</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="rounded-xl bg-surface-panel p-3.5 border border-border-default">
-                  <p className="text-body text-text-secondary leading-relaxed line-clamp-3">
-                    &ldquo;{previewText}&rdquo;
-                  </p>
-                </div>
-                <div className="mt-3 flex items-center gap-1.5 text-caption text-accent-cyan group-hover:underline">
-                  <Info className="h-3.5 w-3.5" />
-                  <span>{t("project.preview.clickFullScript")}</span>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
         </div>
       </div>
 
-      {activeScript && (
-        <FullScriptModal
-          isOpen={showFullScriptModal}
-          onClose={() => setShowFullScriptModal(false)}
-          scriptContent={activeScript.content}
-          wordCount={activeScript.wordCount}
-          duration={activeScript.duration}
-        />
-      )}
+      {/* Contextual Drawer: Audio Parameters & Telemetry */}
+      <ContextDrawer
+        open={showTelemetryDrawer}
+        onClose={() => setShowTelemetryDrawer(false)}
+        title="Mastering Telemetry &amp; Script"
+        description="Queue logs, cache diagnostics, and narration text"
+        icon={<Radio className="h-5 w-5" />}
+        badge={
+          <Badge variant={canProceed ? "success" : "default"} size="sm">
+            {canProceed ? "Audio Verified" : "Standby"}
+          </Badge>
+        }
+      >
+        <div className="space-y-6">
+          {/* Queue telemetry status component */}
+          {ttsJob && (
+            <div className="space-y-2">
+              <Heading variant="label" as="h4" className="text-text-primary">
+                RabbitMQ Pipeline Telemetry
+              </Heading>
+              <TTSQueueStatus job={ttsJob} />
+            </div>
+          )}
+
+          {/* Script breakdown */}
+          {activeScript && (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Heading
+                  variant="label"
+                  as="h4"
+                  className="text-text-primary flex items-center gap-1.5"
+                >
+                  <FileText className="h-4 w-4 text-accent-cyan" />
+                  Narration Script
+                </Heading>
+                <span className="text-caption text-text-muted">{activeScript.wordCount} words</span>
+              </div>
+              <div className="rounded-xl bg-surface-panel p-4 border border-border-default max-h-60 overflow-y-auto">
+                <p className="text-body text-text-secondary leading-relaxed whitespace-pre-wrap">
+                  {activeScript.content}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Re-synthesize Trigger */}
+          <div className="rounded-xl bg-surface-panel p-4 border border-border-default space-y-2">
+            <Heading variant="label" as="h4" className="text-text-primary">
+              Re-synthesize Audio
+            </Heading>
+            <p className="text-caption text-text-muted">
+              Trigger a fresh TTS render to re-sample narration with modified voice parameters.
+            </p>
+            <Button
+              variant="secondary"
+              size="sm"
+              leftIcon={<RefreshCw className="h-4 w-4" />}
+              onClick={() => {
+                if (state?.voiceId) {
+                  createNewTTSJob(state.voiceId, state.voiceName);
+                }
+              }}
+              className="w-full"
+            >
+              Re-generate Audio Sample
+            </Button>
+          </div>
+        </div>
+      </ContextDrawer>
 
       <FloatingWorkflowNavigation
         projectId={projectId}

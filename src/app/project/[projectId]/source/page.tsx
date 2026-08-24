@@ -311,8 +311,9 @@ export default function SourcePage() {
               Movie Synopsis &amp; Catalog Details
             </Heading>
             <p className="text-body text-text-secondary leading-relaxed">
-              {state?.movieTitle} has been verified and registered into the project pipeline.
-              Script generation will automatically extract key narrative beats and plot arcs from this catalog entry.
+              {state?.movieTitle} has been verified and registered into the project pipeline. Script
+              generation will automatically extract key narrative beats and plot arcs from this
+              catalog entry.
             </p>
           </div>
 

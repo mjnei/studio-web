@@ -3,17 +3,18 @@
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { Check, ChevronDown, FileText, Edit2, Sparkles, X } from "lucide-react";
+import { Check, Edit2, Sparkles, X, Layers, Film, FileText } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { Badge } from "@/components/ui/badge";
+import { ContextDrawer } from "@/components/ui/context-drawer";
 import { typography } from "@/components/ui/typography";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { StepRevisitBanner } from "@/components/project/step-revisit-banner";
-import { FullScriptModal } from "@/components/project/full-script-modal";
 import { PageLoadingSkeleton, InlineLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import {
   updateProjectName,
@@ -36,7 +37,7 @@ export default function ProjectDetailsPage() {
   const [aiSuggestions, setAiSuggestions] = useState<NameSuggestion[]>([]);
   const [loadingAiSuggestions, setLoadingAiSuggestions] = useState(false);
   const [savingName, setSavingName] = useState(false);
-  const [showFullScriptModal, setShowFullScriptModal] = useState(false);
+  const [showContextDrawer, setShowContextDrawer] = useState(false);
   const [hasFetchedSuggestions, setHasFetchedSuggestions] = useState(false);
 
   // Generate fallback suggestions locally without API call
@@ -191,7 +192,7 @@ export default function ProjectDetailsPage() {
 
       suggestions.forEach(addUnique);
 
-      return uniqueSuggestions.slice(0, 3);
+      return uniqueSuggestions.slice(0, 4);
     },
     [t]
   );
@@ -310,6 +311,16 @@ export default function ProjectDetailsPage() {
           <PageHeader
             title={t("project.details.title")}
             description={t("project.details.description")}
+            actions={
+              <Button
+                variant="outline"
+                size="sm"
+                leftIcon={<Layers className="h-4 w-4" />}
+                onClick={() => setShowContextDrawer(true)}
+              >
+                Project Assets &amp; Context
+              </Button>
+            }
           />
 
           {/* Step Revisit Banner if name is already defined */}
@@ -322,130 +333,7 @@ export default function ProjectDetailsPage() {
             />
           )}
 
-          {/* Project Thumbnail Status Pre-fetch Card */}
-          {state?.thumbnailUrl && state?.thumbnailStatus === "completed" && (
-            <Card variant="elevated" padding="md">
-              <div className="flex flex-col md:grid md:grid-cols-2 md:gap-6">
-                <div className="flex items-center gap-2 mb-3 md:col-span-2">
-                  <Sparkles className="h-4 w-4 text-accent-cyan" />
-                  <Heading variant="label" as="h3" className="text-text-primary">
-                    {t("project.details.aiThumbnail")}
-                  </Heading>
-                </div>
-
-                <div className="aspect-video rounded-xl overflow-hidden bg-surface-raised border border-border-default">
-                  <Image
-                    src={state.thumbnailUrl}
-                    alt={t("project.details.thumbnailAlt")}
-                    className="w-full h-full object-cover"
-                    width={500}
-                    height={280}
-                    onError={(e) => {
-                      const img = e.target as HTMLImageElement;
-                      img.style.display = "none";
-                    }}
-                  />
-                </div>
-
-                <div className="mt-3 md:mt-0 flex flex-col justify-center">
-                  <Heading variant="label" as="h4" className="text-text-primary mb-2">
-                    {t("project.details.aboutThumbnail")}
-                  </Heading>
-                  <p className="text-body text-text-muted mb-3">
-                    {t("project.details.aboutThumbnailDesc")}
-                  </p>
-                  <div className="text-caption text-text-muted space-y-1">
-                    <p>• {t("project.details.aboutBullet1")}</p>
-                    <p>• {t("project.details.aboutBullet2")}</p>
-                    <p>• {t("project.details.aboutBullet3")}</p>
-                  </div>
-                </div>
-              </div>
-            </Card>
-          )}
-
-          {/* Thumbnail Generating Indicator */}
-          {state?.thumbnailStatus === "generating" && (
-            <Card variant="elevated" padding="md" className="border-accent-cyan/30">
-              <div className="flex items-center gap-3">
-                <Spinner className="h-5 w-5 text-accent-cyan shrink-0" />
-                <div className="flex-1">
-                  <Heading variant="label" as="h3" className="text-text-primary">
-                    {t("project.details.generatingThumbnail")}
-                  </Heading>
-                  <p className="mt-0.5 text-caption text-text-muted">
-                    {t("project.details.generatingThumbnailDesc")}
-                  </p>
-                </div>
-              </div>
-            </Card>
-          )}
-
-          {/* Movie info card */}
-          {state?.movieTitle && (
-            <Card variant="elevated" padding="md">
-              <div className="flex items-center gap-4">
-                {state.moviePoster && (
-                  <div className="h-20 w-14 overflow-hidden rounded-md bg-surface-raised shrink-0 border border-border-default">
-                    <Image
-                      src={state.moviePoster}
-                      alt={state.movieTitle}
-                      className="h-full w-full object-cover"
-                      width={56}
-                      height={80}
-                    />
-                  </div>
-                )}
-                <div className="flex-1 min-w-0">
-                  <Heading variant="label" as="h3" className="text-text-primary truncate">
-                    {state.movieTitle}
-                  </Heading>
-                  <p className="mt-0.5 text-caption text-text-muted">
-                    {state.movieGenre && `${state.movieGenre} • `}
-                    {state.movieRating &&
-                      t("project.common.ratingValue", { value: state.movieRating.toFixed(1) })}
-                  </p>
-                </div>
-              </div>
-            </Card>
-          )}
-
-          {/* Script preview */}
-          {activeScript && (
-            <Card
-              variant="elevated"
-              padding="md"
-              className="hover:border-border-hover transition-colors cursor-pointer"
-              onClick={() => setShowFullScriptModal(true)}
-            >
-              <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted shrink-0">
-                  <FileText className="h-5 w-5 text-accent-cyan" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-4 mb-2">
-                    <Heading variant="label" as="h3" className="text-text-primary">
-                      {t("project.common.yourScript")}
-                    </Heading>
-                    <span className="text-caption font-medium text-accent-cyan flex items-center gap-1 shrink-0">
-                      {t("project.common.clickToExpand")} <ChevronDown className="h-3 w-3" />
-                    </span>
-                  </div>
-                  <p className="text-body text-text-muted mb-2">
-                    {t("project.common.scriptMeta", {
-                      count: activeScript.wordCount,
-                      duration: formatDuration(activeScript.duration),
-                    })}
-                  </p>
-                  <p className="text-body text-text-secondary line-clamp-2 leading-relaxed">
-                    {activeScript.content}
-                  </p>
-                </div>
-              </div>
-            </Card>
-          )}
-
-          {/* Hero Project Title & Suggestions Container */}
+          {/* Dominant Hero: Project Title & Suggestions Studio Deck */}
           <Card
             variant="elevated"
             padding="lg"
@@ -454,7 +342,7 @@ export default function ProjectDetailsPage() {
             <div className="mb-6">
               <div className="flex items-center justify-between gap-2.5 mb-4">
                 <div className="flex items-center gap-2.5">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-primary text-white shadow-sm">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent-primary text-white shadow-glow">
                     <Edit2 className="h-4 w-4" />
                   </div>
                   <div>
@@ -472,7 +360,7 @@ export default function ProjectDetailsPage() {
                 </div>
 
                 {/* Character Counter */}
-                <span className="text-caption text-text-muted font-mono">
+                <span className="text-caption text-text-muted font-mono px-2 py-1 rounded bg-surface-base border border-border-default">
                   {projectName.length} / 80
                 </span>
               </div>
@@ -486,33 +374,23 @@ export default function ProjectDetailsPage() {
                   value={projectName}
                   onChange={(e) => setNameDraft(e.target.value)}
                   placeholder={t("project.details.namePlaceholder")}
-                  className={`${typography.section} w-full rounded-xl border-2 border-accent-primary/40 bg-surface-base px-5 py-4 text-text-primary placeholder-text-muted/60 shadow-glow transition-all focus:border-accent-primary focus:outline-none focus:ring-4 focus:ring-accent-primary/20`}
+                  className={`${typography.section} w-full rounded-2xl border-2 border-accent-primary/40 bg-surface-base px-6 py-4 text-text-primary placeholder-text-muted/60 shadow-glow transition-all focus:border-accent-primary focus:outline-none focus:ring-4 focus:ring-accent-primary/20`}
                 />
                 {projectName.trim() && (
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
                     <button
                       type="button"
                       onClick={() => setNameDraft("")}
-                      className="p-1 rounded-full text-text-muted hover:text-text-primary hover:bg-surface-raised transition-colors"
+                      className="p-1.5 rounded-full text-text-muted hover:text-text-primary hover:bg-surface-raised transition-colors"
                       title={t("common.clear")}
                     >
                       <X className="h-4 w-4" />
                     </button>
-                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-500/20 text-green-500">
-                      <Check className="h-3.5 w-3.5 stroke-[3]" />
+                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-green-500/20 text-green-500">
+                      <Check className="h-4 w-4 stroke-[3]" />
                     </div>
                   </div>
                 )}
-              </div>
-
-              <div className="mt-3 flex items-start gap-2 text-caption text-text-muted bg-surface-base/60 rounded-lg p-3 border border-border-default">
-                <Sparkles className="h-4 w-4 text-accent-primary shrink-0 mt-0.5" />
-                <p>
-                  <span className="font-medium text-text-secondary">
-                    {t("project.details.nameTip")}
-                  </span>{" "}
-                  {t("project.details.nameTipDesc")}
-                </p>
               </div>
             </div>
 
@@ -520,7 +398,7 @@ export default function ProjectDetailsPage() {
             {(loadingAiSuggestions ||
               aiSuggestions.length > 0 ||
               fallbackSuggestions.length > 0) && (
-              <div>
+              <div className="pt-2 border-t border-border-default">
                 <div className="flex items-center justify-between gap-2 mb-3">
                   <div className="flex items-center gap-2">
                     <Heading variant="label" as="h4" className="text-text-secondary">
@@ -531,7 +409,7 @@ export default function ProjectDetailsPage() {
                   {activeScript?.content && (
                     <span className="inline-flex items-center gap-1 text-micro text-accent-primary font-medium">
                       <Sparkles className="h-3 w-3" />
-                      {t("project.details.aiGenerated")}
+                      Agnes AI Title Generator
                     </span>
                   )}
                 </div>
@@ -549,6 +427,7 @@ export default function ProjectDetailsPage() {
                     return (
                       <button
                         key={`ai-${idx}`}
+                        type="button"
                         onClick={() => handleSuggestionClick(suggestion)}
                         className={`group relative text-left p-4 rounded-xl border transition-all duration-200 ${
                           isSelected
@@ -596,6 +475,7 @@ export default function ProjectDetailsPage() {
                     return (
                       <button
                         key={`fallback-${idx}`}
+                        type="button"
                         onClick={() => handleSuggestionClick(suggestion)}
                         className={`group text-left p-4 rounded-xl border transition-all duration-200 ${
                           isSelected
@@ -636,15 +516,93 @@ export default function ProjectDetailsPage() {
         </div>
       </div>
 
-      {activeScript && (
-        <FullScriptModal
-          isOpen={showFullScriptModal}
-          onClose={() => setShowFullScriptModal(false)}
-          scriptContent={activeScript.content}
-          wordCount={activeScript.wordCount}
-          duration={activeScript.duration}
-        />
-      )}
+      {/* Contextual Drawer: Project Context & Assets */}
+      <ContextDrawer
+        open={showContextDrawer}
+        onClose={() => setShowContextDrawer(false)}
+        title="Project Context &amp; Assets"
+        description="Movie source, script details, and cover preview"
+        icon={<Layers className="h-5 w-5" />}
+        badge={
+          <Badge variant="default" size="sm">
+            {state?.movieTitle || "Movie"}
+          </Badge>
+        }
+      >
+        <div className="space-y-6">
+          {/* Movie Details Reference */}
+          {state?.movieTitle && (
+            <div className="flex items-center gap-4 p-3.5 rounded-xl bg-surface-panel border border-border-default">
+              {state.moviePoster && (
+                <div className="h-20 w-14 overflow-hidden rounded-lg bg-surface-raised shrink-0 border border-border-default">
+                  <Image
+                    src={state.moviePoster}
+                    alt={state.movieTitle}
+                    className="h-full w-full object-cover"
+                    width={56}
+                    height={80}
+                  />
+                </div>
+              )}
+              <div className="flex-1 min-w-0">
+                <p className="text-micro uppercase tracking-wider text-text-muted">Source Film</p>
+                <Heading variant="label" as="h4" className="text-text-primary truncate">
+                  {state.movieTitle}
+                </Heading>
+                <p className="mt-0.5 text-caption text-text-muted">
+                  {state.movieGenre && `${state.movieGenre} • `}
+                  {state.movieRating && `★ ${state.movieRating.toFixed(1)}/10`}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Script Reference */}
+          {activeScript && (
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Heading
+                  variant="label"
+                  as="h4"
+                  className="text-text-primary flex items-center gap-1.5"
+                >
+                  <FileText className="h-4 w-4 text-accent-cyan" />
+                  Script Text
+                </Heading>
+                <span className="text-caption text-text-muted">
+                  {activeScript.wordCount} words (~{formatDuration(activeScript.duration)})
+                </span>
+              </div>
+              <div className="rounded-xl bg-surface-panel p-4 border border-border-default max-h-56 overflow-y-auto">
+                <p className="text-body text-text-secondary leading-relaxed whitespace-pre-wrap">
+                  {activeScript.content}
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* AI Thumbnail Generation Status */}
+          {state?.thumbnailUrl && state?.thumbnailStatus === "completed" && (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-accent-cyan" />
+                <Heading variant="label" as="h4" className="text-text-primary">
+                  Cover Art Background Concept
+                </Heading>
+              </div>
+              <div className="aspect-video rounded-xl overflow-hidden bg-surface-raised border border-border-default">
+                <Image
+                  src={state.thumbnailUrl}
+                  alt="AI Thumbnail preview"
+                  className="w-full h-full object-cover"
+                  width={400}
+                  height={225}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+      </ContextDrawer>
 
       <FloatingWorkflowNavigation
         projectId={projectId}

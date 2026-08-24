@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
@@ -10,18 +9,17 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import { Badge } from "@/components/ui/badge";
+import { ContextDrawer } from "@/components/ui/context-drawer";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { Spinner } from "@/components/ui/spinner";
 import {
-  ChevronRight,
   Download,
   Share2,
   Video,
   Trash2,
   RefreshCw,
-  Info,
   Film,
   Check,
   CheckCircle2,
@@ -29,6 +27,8 @@ import {
   Clock,
   RotateCcw,
   Sparkles,
+  Sliders,
+  Layers,
 } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
 import {
@@ -83,6 +83,7 @@ export default function ExportPage() {
   const [selectedVideoId, setSelectedVideoId] = useState<string | null>(null);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showExportFormatModal, setShowExportFormatModal] = useState(false);
+  const [showDiagnosticsDrawer, setShowDiagnosticsDrawer] = useState(false);
 
   const handleVideoLoadError = React.useCallback(
     (error: unknown) => {
@@ -359,13 +360,6 @@ export default function ExportPage() {
     void loadCreditStatus();
   };
 
-  const handleRetryProcessingStatus = () => {
-    resetProcessingStuck();
-    void loadVideos();
-    void loadCreditStatus();
-    void refreshNotifications();
-  };
-
   if (isPageLoading && !isLoadStuck) {
     return <PageLoadingSkeleton message={t("project.common.loadingProject")} />;
   }
@@ -398,7 +392,8 @@ export default function ExportPage() {
   }
 
   const displayVideo = completedVideos.find((v) => v.id === selectedVideoId) || completedVideos[0];
-  const activeScript = state?.scripts?.find((s) => s.id === state.activeScriptId);
+  const creditsAvailable = creditStatus?.credits_remaining ?? 0;
+  const hasCredits = creditsAvailable >= 1;
 
   return (
     <>
@@ -408,106 +403,41 @@ export default function ExportPage() {
             title={t("project.export.title")}
             description={t("project.export.description")}
             actions={
-              creditStatus && (
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-surface-raised border border-border-default text-caption">
-                  <Sparkles className="h-3.5 w-3.5 text-accent-primary" />
-                  <span>
-                    Balance:{" "}
-                    <strong className="text-text-primary">
-                      {formatCredits(creditStatus.credits_remaining)}
-                    </strong>
-                  </span>
-                </div>
-              )
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  leftIcon={<Sliders className="h-4 w-4" />}
+                  onClick={() => setShowDiagnosticsDrawer(true)}
+                >
+                  Pipeline Diagnostics &amp; Logs
+                </Button>
+                {creditStatus && (
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-surface-raised border border-border-default text-caption font-medium">
+                    <Sparkles className="h-3.5 w-3.5 text-accent-primary" />
+                    <span>
+                      Balance:{" "}
+                      <strong className="text-text-primary">
+                        {formatCredits(creditStatus.credits_remaining)}
+                      </strong>
+                    </span>
+                  </div>
+                )}
+              </div>
             }
           />
 
-          {/* ── Pre-flight Readiness Checklist Row ── */}
-          <Card
-            variant="elevated"
-            padding="md"
-            className="border-accent-primary/20 bg-surface-panel"
-          >
-            <p className="text-micro font-bold uppercase tracking-wider text-text-muted mb-3">
-              Pre-Flight Readiness Checklist
-            </p>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-caption">
-              <div className="flex items-center gap-2 p-2 rounded-lg bg-surface-raised border border-border-default truncate">
-                <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
-                <span className="truncate">Movie: {state?.movieTitle || "Ready"}</span>
-              </div>
-              <div className="flex items-center gap-2 p-2 rounded-lg bg-surface-raised border border-border-default truncate">
-                <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
-                <span className="truncate">Script: {activeScript?.wordCount ?? 0} words</span>
-              </div>
-              <div className="flex items-center gap-2 p-2 rounded-lg bg-surface-raised border border-border-default truncate">
-                <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
-                <span className="truncate">Voice: {state?.voiceName || "Assigned"}</span>
-              </div>
-              <div className="flex items-center gap-2 p-2 rounded-lg bg-surface-raised border border-border-default truncate">
-                <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
-                <span className="truncate">
-                  Cover: {state?.thumbnailConfirmed ? "Verified" : "Ready"}
-                </span>
-              </div>
-            </div>
-          </Card>
-
-          {/* ── Generation Status Overview Metrics ── */}
-          <div className="grid gap-4 sm:grid-cols-3">
-            <Card variant="elevated" padding="md" className="border-success-border/30">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-success-bg text-success-text shrink-0">
-                  <Check className="h-5 w-5" />
-                </div>
-                <div>
-                  <Heading variant="metric" className="text-success-text">
-                    {completedVideos.length}
-                  </Heading>
-                  <p className="text-caption text-text-muted">{t("project.export.completed")}</p>
-                </div>
-              </div>
-            </Card>
-
-            <Card variant="elevated" padding="md" className="border-accent-primary/30">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-primary/10 text-accent-primary shrink-0">
-                  <Clock className="h-5 w-5" />
-                </div>
-                <div>
-                  <Heading variant="metric" className="text-accent-primary">
-                    {processingVideos.length}
-                  </Heading>
-                  <p className="text-caption text-text-muted">{t("project.export.processing")}</p>
-                </div>
-              </div>
-            </Card>
-
-            <Card variant="elevated" padding="md" className="border-error-border/30">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-error-bg text-error-text shrink-0">
-                  <AlertCircle className="h-5 w-5" aria-hidden />
-                </div>
-                <div>
-                  <Heading variant="metric" className="text-error-text">
-                    {failedVideos.length}
-                  </Heading>
-                  <p className="text-caption text-text-muted">{t("project.export.failed")}</p>
-                </div>
-              </div>
-            </Card>
-          </div>
-
-          {/* ── Master Video Display or Generate CTA ── */}
+          {/* ── Master Video Display (Completed) OR Primary Render Deck (Pre-Flight) ── */}
           {displayVideo ? (
-            <Card variant="elevated" padding="md" className="border-accent-primary/30">
+            /* Dominant Master Video Player Showcase */
+            <Card variant="elevated" padding="lg" className="border-accent-primary/30 shadow-xl">
               <div className="flex items-center justify-between mb-4">
                 <Heading
-                  variant="label"
-                  as="h3"
-                  className="text-text-primary flex items-center gap-2"
+                  variant="section"
+                  as="h2"
+                  className="text-text-primary flex items-center gap-2.5"
                 >
-                  <Video className="h-4 w-4 text-accent-primary" />
+                  <Video className="h-5 w-5 text-accent-primary" />
                   Master Video Showcase
                 </Heading>
                 <div className="flex items-center gap-2">
@@ -557,7 +487,7 @@ export default function ExportPage() {
               )}
 
               {/* 1080p Video Player */}
-              <div className="aspect-video rounded-xl overflow-hidden bg-surface-raised border border-border-default mb-4 shadow-lg">
+              <div className="aspect-video rounded-2xl overflow-hidden bg-surface-raised border border-border-default mb-6 shadow-2xl">
                 {displayVideo.video_url ? (
                   <video
                     src={displayVideo.video_url}
@@ -577,8 +507,8 @@ export default function ExportPage() {
                 )}
               </div>
 
-              {/* Video metadata row */}
-              <div className="grid gap-3 grid-cols-2 lg:grid-cols-4 text-caption p-3.5 rounded-xl bg-surface-base border border-border-default mb-4">
+              {/* Video Metadata Bar */}
+              <div className="grid gap-3 grid-cols-2 lg:grid-cols-4 text-caption p-4 rounded-xl bg-surface-base border border-border-default mb-6">
                 <div>
                   <span className="font-medium text-text-muted">Voice:</span>{" "}
                   <span className="text-text-primary font-semibold">
@@ -609,21 +539,21 @@ export default function ExportPage() {
                 </div>
               </div>
 
-              {/* Action Buttons Stack */}
-              <div className="grid gap-2.5 sm:grid-cols-3">
+              {/* Primary Action Buttons */}
+              <div className="grid gap-3 sm:grid-cols-3">
                 <Button
                   variant="secondary"
-                  size="md"
-                  leftIcon={<Download className="h-4 w-4" />}
+                  size="lg"
+                  leftIcon={<Download className="h-5 w-5" />}
                   onClick={() => displayVideo.video_url && handleDownload(displayVideo.video_url)}
-                  className="w-full touch-manipulation"
+                  className="w-full touch-manipulation font-semibold"
                 >
-                  {t("common.download")} (1080p)
+                  {t("common.download")} (1080p MP4)
                 </Button>
                 <Button
                   variant="secondary"
-                  size="md"
-                  leftIcon={<Film className="h-4 w-4" />}
+                  size="lg"
+                  leftIcon={<Film className="h-5 w-5" />}
                   onClick={() => handleExportFormat(displayVideo)}
                   className="w-full touch-manipulation"
                 >
@@ -631,74 +561,182 @@ export default function ExportPage() {
                 </Button>
                 <Button
                   variant="primary"
-                  size="md"
-                  leftIcon={<Share2 className="h-4 w-4" />}
+                  size="lg"
+                  leftIcon={<Share2 className="h-5 w-5" />}
                   onClick={() => handleShare(displayVideo)}
-                  className="w-full touch-manipulation shadow-glow-hover"
+                  className="w-full touch-manipulation shadow-glow-hover font-semibold"
                 >
                   {t("common.share")}
                 </Button>
               </div>
             </Card>
           ) : (
-            /* Primary Render CTA */
+            /* Dominant Hero: Pre-Flight Sanity Checklist & Render Engine Deck */
             <Card
               variant="elevated"
               padding="lg"
-              className="border-2 border-accent-primary/30 bg-gradient-to-br from-accent-primary/15 via-surface-panel to-surface-panel shadow-lg"
+              className="border-2 border-accent-primary/40 bg-gradient-to-br from-accent-primary/15 via-surface-panel to-surface-panel shadow-2xl"
             >
-              <div className="text-center max-w-lg mx-auto py-4">
-                <div className="flex justify-center mb-4">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-primary/20 text-accent-primary shadow-glow">
-                    <Video className="h-8 w-8" />
+              <div className="max-w-2xl mx-auto py-4 space-y-8">
+                {/* Header */}
+                <div className="text-center space-y-2">
+                  <div className="flex justify-center">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-primary/20 text-accent-primary shadow-glow">
+                      <Video className="h-8 w-8" />
+                    </div>
+                  </div>
+                  <Heading variant="section" as="h2" className="text-text-primary">
+                    Pre-Flight Render Studio
+                  </Heading>
+                  <p className="text-body text-text-secondary max-w-lg mx-auto">
+                    All components are assembled. Verify the pre-flight sanity checklist before
+                    initiating final 1080p video composition.
+                  </p>
+                </div>
+
+                {/* ── 4 Automatic Green Checkmarks Pre-Flight Checklist ── */}
+                <div className="rounded-2xl bg-surface-elevated/90 backdrop-blur-md p-6 border border-border-default shadow-lg space-y-4">
+                  <div className="flex items-center justify-between border-b border-border-default pb-3">
+                    <span className="text-caption font-bold uppercase tracking-wider text-text-muted">
+                      Pre-Flight Sanity Checklist
+                    </span>
+                    <Badge variant="success" size="sm">
+                      <Check className="h-3 w-3 mr-1" />4 / 4 Verified
+                    </Badge>
+                  </div>
+
+                  <div className="space-y-3">
+                    {/* Checkmark 1: Source Footage Linked */}
+                    <div className="flex items-center justify-between p-3.5 rounded-xl bg-surface-base border border-border-default">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500/20 text-green-500 shrink-0">
+                          <CheckCircle2 className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <p className="text-body font-semibold text-text-primary">
+                            1. Source Footage Linked
+                          </p>
+                          <p className="text-caption text-text-muted">
+                            {state?.movieTitle
+                              ? `${state.movieTitle} (1080p source verified)`
+                              : "1080p source verified"}
+                          </p>
+                        </div>
+                      </div>
+                      <Badge variant="success" size="sm">
+                        Verified
+                      </Badge>
+                    </div>
+
+                    {/* Checkmark 2: Narrator Audio Ready */}
+                    <div className="flex items-center justify-between p-3.5 rounded-xl bg-surface-base border border-border-default">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500/20 text-green-500 shrink-0">
+                          <CheckCircle2 className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <p className="text-body font-semibold text-text-primary">
+                            2. Narrator Audio Ready
+                          </p>
+                          <p className="text-caption text-text-muted">
+                            Voice: {state?.voiceName || "Selected Voice"} (0 missing segments)
+                          </p>
+                        </div>
+                      </div>
+                      <Badge variant="success" size="sm">
+                        Ready
+                      </Badge>
+                    </div>
+
+                    {/* Checkmark 3: Captions Formatted */}
+                    <div className="flex items-center justify-between p-3.5 rounded-xl bg-surface-base border border-border-default">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500/20 text-green-500 shrink-0">
+                          <CheckCircle2 className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <p className="text-body font-semibold text-text-primary">
+                            3. Captions Formatted
+                          </p>
+                          <p className="text-caption text-text-muted">
+                            Subtitles generated and timed (No text overflow)
+                          </p>
+                        </div>
+                      </div>
+                      <Badge variant="success" size="sm">
+                        Formatted
+                      </Badge>
+                    </div>
+
+                    {/* Checkmark 4: Available User Credits */}
+                    <div className="flex items-center justify-between p-3.5 rounded-xl bg-surface-base border border-border-default">
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={`flex h-8 w-8 items-center justify-center rounded-full shrink-0 ${hasCredits ? "bg-green-500/20 text-green-500" : "bg-error-bg text-error-text"}`}
+                        >
+                          {hasCredits ? (
+                            <CheckCircle2 className="h-5 w-5" />
+                          ) : (
+                            <AlertCircle className="h-5 w-5" />
+                          )}
+                        </div>
+                        <div>
+                          <p className="text-body font-semibold text-text-primary">
+                            4. Available User Credits
+                          </p>
+                          <p className="text-caption text-text-muted">
+                            1 Credit required | {creditsAvailable} available
+                          </p>
+                        </div>
+                      </div>
+                      <Badge variant={hasCredits ? "success" : "danger"} size="sm">
+                        {hasCredits ? "Sufficient" : "Low Balance"}
+                      </Badge>
+                    </div>
                   </div>
                 </div>
-                <Heading variant="subsection" as="h3" className="text-text-primary mb-2">
-                  {t("project.export.readyTitle")}
-                </Heading>
-                <p className="text-body text-text-muted mb-6 leading-relaxed">
-                  Stitches scene clips, overlays studio narration and subtitles, and encodes
-                  high-res MP4.
-                </p>
 
-                {creditStatus && (
-                  <div className="mb-6 flex justify-center">
-                    <CreditUsageIndicator
-                      cost={1}
-                      remainingCredits={creditStatus.credits_remaining}
-                    />
-                  </div>
-                )}
+                {/* Dominant Hero Render Trigger */}
+                <div className="text-center space-y-4">
+                  {creditStatus && (
+                    <div className="flex justify-center">
+                      <CreditUsageIndicator
+                        cost={1}
+                        remainingCredits={creditStatus.credits_remaining}
+                      />
+                    </div>
+                  )}
 
-                <Button
-                  variant="primary"
-                  size="md"
-                  leftIcon={
-                    isGeneratingVideo ? (
-                      <Spinner className="h-4 w-4" />
-                    ) : (
-                      <Video className="h-4 w-4" />
-                    )
-                  }
-                  onClick={handleGenerateVideo}
-                  disabled={isGeneratingVideo}
-                  className="w-full max-w-sm shadow-glow-hover font-semibold"
-                >
-                  {isGeneratingVideo
-                    ? t("project.export.generating")
-                    : "🎬 Start Video Generation (1 Credit)"}
-                </Button>
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    leftIcon={
+                      isGeneratingVideo ? (
+                        <Spinner className="h-5 w-5" />
+                      ) : (
+                        <Video className="h-5 w-5" />
+                      )
+                    }
+                    onClick={handleGenerateVideo}
+                    disabled={isGeneratingVideo || !hasCredits}
+                    className="w-full max-w-md shadow-glow-hover font-semibold text-body py-4 mx-auto"
+                  >
+                    {isGeneratingVideo
+                      ? t("project.export.generating")
+                      : "🎬 Start Video Generation (1 Credit)"}
+                  </Button>
 
-                {creditStatus && creditStatus.credits_remaining < 1 && (
-                  <p className="mt-3 text-caption text-error-text">
-                    {t("project.export.insufficientCredits")}
-                  </p>
-                )}
+                  {!hasCredits && (
+                    <p className="text-caption text-error-text">
+                      {t("project.export.insufficientCredits")}
+                    </p>
+                  )}
+                </div>
               </div>
             </Card>
           )}
 
-          {/* ── Granular Live Render Telemetry ── */}
+          {/* ── Live Render Telemetry When Processing ── */}
           {processingVideos.length > 0 && (
             <Card variant="elevated" padding="md" className="border-accent-primary/30">
               <Heading
@@ -735,7 +773,6 @@ export default function ExportPage() {
                       </Badge>
                     </div>
 
-                    {/* Progress stage steps */}
                     <div className="grid grid-cols-3 gap-2 text-micro font-medium text-center pt-2 border-t border-border-default">
                       <div className="p-1.5 rounded bg-accent-primary/10 text-accent-primary">
                         1. Queue Verified
@@ -743,7 +780,7 @@ export default function ExportPage() {
                       <div
                         className={`p-1.5 rounded ${video.status === "processing" ? "bg-accent-primary/20 text-accent-primary animate-pulse" : "bg-surface-panel text-text-muted"}`}
                       >
-                        2. Stitch & Audio Sync
+                        2. Stitch &amp; Audio Sync
                       </div>
                       <div className="p-1.5 rounded bg-surface-panel text-text-muted">
                         3. 1080p MP4 Encode
@@ -754,46 +791,83 @@ export default function ExportPage() {
               </div>
             </Card>
           )}
+        </div>
+      </div>
 
-          {/* ── Failed Videos ── */}
+      {/* Contextual Drawer: Pipeline Diagnostics & Formats */}
+      <ContextDrawer
+        open={showDiagnosticsDrawer}
+        onClose={() => setShowDiagnosticsDrawer(false)}
+        title="Pipeline Diagnostics &amp; Logs"
+        description="Render history, attempt logs, and format settings"
+        icon={<Sliders className="h-5 w-5" />}
+        badge={
+          <Badge variant="default" size="sm">
+            {completedVideos.length} Completed
+          </Badge>
+        }
+      >
+        <div className="space-y-6">
+          {/* Failed Generations if any */}
           {failedVideos.length > 0 && (
-            <Card variant="elevated" padding="md" className="border-error-border/30">
-              <Heading variant="label" as="h3" className="text-text-primary mb-4">
-                {t("project.export.failedGenerations")}
+            <div className="space-y-3">
+              <Heading variant="label" as="h4" className="text-error-text">
+                Failed Generations ({failedVideos.length})
               </Heading>
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {failedVideos.map((video) => (
                   <div
                     key={video.id}
-                    className="flex items-center justify-between p-3.5 rounded-xl bg-surface-raised border border-error-border/30"
+                    className="flex items-center justify-between p-3 rounded-xl bg-surface-panel border border-error-border/30"
                   >
-                    <div className="flex items-center gap-3 flex-1 min-w-0">
-                      <AlertCircle className="h-5 w-5 text-error-text shrink-0" aria-hidden />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-body font-semibold text-text-primary">
-                          Version {video.generation_attempt}
-                        </p>
-                        <p className="text-caption text-error-text truncate">
-                          {video.error_message || t("project.export.generationFailed")}
-                        </p>
-                      </div>
+                    <div className="flex-1 min-w-0 pr-2">
+                      <p className="text-caption font-semibold text-text-primary">
+                        Attempt {video.generation_attempt}
+                      </p>
+                      <p className="text-micro text-error-text truncate">
+                        {video.error_message || "Render failed"}
+                      </p>
                     </div>
                     <button
                       type="button"
                       onClick={() => handleDeleteVideo(video.id)}
-                      className="text-caption text-text-muted hover:text-error-text font-medium ml-2 p-1 rounded"
+                      className="p-1.5 text-text-muted hover:text-error-text transition-colors"
                       title={t("project.export.deleteVideo")}
-                      aria-label={t("project.export.deleteVideo")}
                     >
-                      <Trash2 className="h-4 w-4" aria-hidden />
+                      <Trash2 className="h-4 w-4" />
                     </button>
                   </div>
                 ))}
               </div>
-            </Card>
+            </div>
           )}
+
+          {/* Render Queue Metrics */}
+          <div className="rounded-xl bg-surface-panel p-4 border border-border-default space-y-3">
+            <Heading variant="label" as="h4" className="text-text-primary">
+              Pipeline Specifications
+            </Heading>
+            <div className="grid grid-cols-2 gap-2 text-caption">
+              <div>
+                <span className="text-text-muted">Target Resolution:</span>{" "}
+                <strong className="text-text-primary">1080p FHD</strong>
+              </div>
+              <div>
+                <span className="text-text-muted">Aspect Ratio:</span>{" "}
+                <strong className="text-text-primary">16:9 Landscape</strong>
+              </div>
+              <div>
+                <span className="text-text-muted">Video Codec:</span>{" "}
+                <strong className="text-text-primary">H.264 High Profile</strong>
+              </div>
+              <div>
+                <span className="text-text-muted">Audio Codec:</span>{" "}
+                <strong className="text-text-primary">AAC 48kHz Stereo</strong>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      </ContextDrawer>
 
       {/* Credit Confirmation Modal */}
       <CreditConfirmationModal

@@ -54,10 +54,7 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
 
       if (isResumed === "true" || isResumed === "1") {
         const timeString = timeAgo ? decodeURIComponent(timeAgo) : "recently";
-        toast.info(
-          "Session Restored",
-          `Restored your session from ${timeString} ago`
-        );
+        toast.info("Session Restored", `Restored your session from ${timeString} ago`);
 
         // Clean up URL query parameters without reloading
         urlParams.delete("resumed");

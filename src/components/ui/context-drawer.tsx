@@ -90,7 +90,12 @@ export function ContextDrawer({
             )}
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2 flex-wrap">
-                <Heading id="drawer-title" variant="subsection" as="h2" className="text-text-primary truncate">
+                <Heading
+                  id="drawer-title"
+                  variant="subsection"
+                  as="h2"
+                  className="text-text-primary truncate"
+                >
                   {title}
                 </Heading>
                 {badge}
@@ -114,9 +119,7 @@ export function ContextDrawer({
         </div>
 
         {/* Scrollable Body */}
-        <div className="flex-1 overflow-y-auto p-5 md:p-6 space-y-6">
-          {children}
-        </div>
+        <div className="flex-1 overflow-y-auto p-5 md:p-6 space-y-6">{children}</div>
 
         {/* Optional Footer */}
         {footer && (

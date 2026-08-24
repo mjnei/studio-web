@@ -36,7 +36,9 @@ export function formatDuration(seconds: number): string {
 /**
  * Format timestamp into human-readable relative time (e.g. "5 minutes", "2 hours", "yesterday")
  */
-export function formatRelativeTimeAgo(dateInput: string | Date | number | undefined | null): string {
+export function formatRelativeTimeAgo(
+  dateInput: string | Date | number | undefined | null
+): string {
   if (!dateInput) return "recently";
   const date = new Date(dateInput);
   if (isNaN(date.getTime())) return "recently";
