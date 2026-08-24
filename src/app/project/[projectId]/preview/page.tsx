@@ -93,7 +93,6 @@ export default function PreviewPage() {
     async (jobId: string) => {
       if (isCreatingJobRef.current) return;
 
-      // Don't reload if we already have this job
       if (ttsJob && String(ttsJob.id) === jobId) {
         return;
       }
@@ -179,15 +178,13 @@ export default function PreviewPage() {
   }, [isPlaying, ttsJob]);
 
   // Initialize TTS job when project/voice/script are ready. Job creation is an
-  // external network side effect; state updates happen only after await.
+  // external network side effect; state updates happen only in promise callbacks.
   useEffect(() => {
     if (!state || !activeScript || isLoading) return;
 
-    // Get voice info from state or localStorage
     let voiceId = state.voiceId;
     let voiceName = state.voiceName;
 
-    // Fallback: Try to get voice info from localStorage if not in state
     if (!voiceId) {
       try {
         const storedVoice = localStorage.getItem(`project_${projectId}_voice`);
@@ -203,52 +200,79 @@ export default function PreviewPage() {
       }
     }
 
-    // Check if voice is available - if not, the component will show error elsewhere
     if (!voiceId) {
       return;
     }
 
-    // Convert both IDs to strings for comparison
     const currentVoiceId = String(voiceId);
     const loadedVoiceId = ttsJob?.voice_id ? String(ttsJob.voice_id) : null;
     const currentScriptId = activeScript?.id ? String(activeScript.id) : null;
     const loadedScriptId = ttsJob?.script_id ? String(ttsJob.script_id) : null;
 
-    // Check if voice has changed compared to loaded job
-    if (ttsJob && loadedVoiceId && loadedVoiceId !== currentVoiceId) {
-      void createNewTTSJob(voiceId, voiceName);
+    const shouldCreateBecauseVoiceChanged =
+      !!ttsJob && !!loadedVoiceId && loadedVoiceId !== currentVoiceId;
+    const shouldCreateBecauseScriptChanged =
+      !!ttsJob && !!currentScriptId && !!loadedScriptId && loadedScriptId !== currentScriptId;
+    const alreadyLoadedMatchingJob =
+      !!ttsJob && loadedVoiceId === currentVoiceId && loadedScriptId === currentScriptId;
+
+    if (alreadyLoadedMatchingJob) {
       return;
     }
 
-    // Check if script version has changed (user selected a different script version)
-    if (ttsJob && currentScriptId && loadedScriptId && loadedScriptId !== currentScriptId) {
-      void createNewTTSJob(voiceId, voiceName);
-      return;
+    let cancelled = false;
+
+    if (shouldCreateBecauseVoiceChanged || shouldCreateBecauseScriptChanged || !state.activeTtsJobId) {
+      if (!isCreatingJobRef.current) {
+        isCreatingJobRef.current = true;
+        createTTSJob({
+          projectId: String(state.id),
+          scriptId: String(activeScript.id),
+          voiceId: voiceId,
+          voiceName: voiceName,
+          scriptText: activeScript.content,
+          language: "zh",
+          autoActivate: true,
+        })
+          .then((job) => {
+            if (cancelled) return;
+            setTtsJob(job);
+            setTtsError(null);
+          })
+          .catch((error) => {
+            console.error("Failed to create TTS job:", error);
+            if (cancelled) return;
+            setTtsError(
+              error instanceof Error ? error.message : t("project.preview.createJobFailed")
+            );
+          })
+          .finally(() => {
+            isCreatingJobRef.current = false;
+          });
+      }
+    } else if (state.activeTtsJobId) {
+      if (!isCreatingJobRef.current) {
+        getTTSJob(String(state.activeTtsJobId))
+          .then((job) => {
+            if (!cancelled) {
+              setTtsJob(job);
+            }
+          })
+          .catch((error) => {
+            console.error("Failed to load TTS job:", error);
+            if (!cancelled) {
+              setTtsError(
+                error instanceof Error ? error.message : t("project.preview.loadJobFailed")
+              );
+            }
+          });
+      }
     }
 
-    // If we already have a loaded job with the same voice and same script, don't re-create
-    // (Backend will handle content hash matching to determine if synthesis is needed)
-    if (ttsJob && loadedVoiceId === currentVoiceId && loadedScriptId === currentScriptId) {
-      return;
-    }
-
-    // Load existing job if we have an active TTS job ID
-    if (state.activeTtsJobId) {
-      void loadTTSJob(String(state.activeTtsJobId));
-      return;
-    }
-
-    // Otherwise create a new job (backend will match or create)
-    void createNewTTSJob(voiceId, voiceName);
-  }, [
-    state,
-    activeScript,
-    ttsJob,
-    isLoading,
-    projectId,
-    createNewTTSJob,
-    loadTTSJob,
-  ]);
+    return () => {
+      cancelled = true;
+    };
+  }, [state, activeScript, ttsJob, isLoading, projectId, t]);
 
   // Audio event handlers
   useEffect(() => {

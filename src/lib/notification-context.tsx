@@ -63,6 +63,16 @@ interface NotificationContextValue {
 
 const NotificationContext = createContext<NotificationContextValue | null>(null);
 
+function mapBackendPreferences(response: BackendPreferencesResponse): NotificationPreferences {
+  const transformed: NotificationPreferences = {};
+  response.preferences.forEach((pref) => {
+    transformed[pref.notification_type] = {
+      in_app: pref.enabled_in_app,
+    };
+  });
+  return transformed;
+}
+
 interface NotificationProviderProps {
   children: ReactNode;
 }
@@ -178,16 +188,7 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
 
     try {
       const response = await request<BackendPreferencesResponse>("/notifications/preferences");
-
-      // Transform backend format to frontend format
-      const transformed: NotificationPreferences = {};
-      response.preferences.forEach((pref) => {
-        transformed[pref.notification_type] = {
-          in_app: pref.enabled_in_app,
-        };
-      });
-
-      setPreferences(transformed);
+      setPreferences(mapBackendPreferences(response));
     } catch (error) {
       console.error("Failed to fetch preferences:", error);
     } finally {
@@ -398,14 +399,55 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
   }, [isAuthenticated]); // Only depend on isAuthenticated, not connectSSE to avoid reconnection loops
 
   // Initial data fetch when authenticated
-
   useEffect(() => {
-    if (isAuthenticated) {
-      refreshNotifications();
-      refreshUnreadCount();
-      fetchPreferences();
-    }
-  }, [isAuthenticated, refreshNotifications, refreshUnreadCount, fetchPreferences]);
+    if (!isAuthenticated) return;
+
+    let cancelled = false;
+
+    request<{ notifications: Notification[] }>("/notifications?limit=50&offset=0")
+      .then((response) => {
+        if (!cancelled) {
+          setNotifications(response.notifications || []);
+        }
+      })
+      .catch((error) => {
+        console.error("Failed to fetch notifications:", error);
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      });
+
+    request<{ count: number }>("/notifications/unread-count")
+      .then((response) => {
+        if (!cancelled) {
+          setUnreadCount(response.count || 0);
+        }
+      })
+      .catch((error) => {
+        console.error("Failed to fetch unread count:", error);
+      });
+
+    request<BackendPreferencesResponse>("/notifications/preferences")
+      .then((response) => {
+        if (!cancelled) {
+          setPreferences(mapBackendPreferences(response));
+        }
+      })
+      .catch((error) => {
+        console.error("Failed to fetch preferences:", error);
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setPreferencesLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isAuthenticated]);
 
   // Set up periodic polling for unread count (fallback if SSE fails)
   useEffect(() => {

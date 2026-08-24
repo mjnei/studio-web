@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { Check, ChevronDown, FileText, Edit2, Sparkles } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
@@ -319,10 +319,9 @@ export default function ProjectDetailsPage() {
   ]);
 
   // Derive local fallback suggestions from the movie title (no sync effect).
-  const fallbackSuggestions = useMemo(() => {
-    if (!state?.movieTitle) return [];
-    return generateLocalFallbackSuggestions(state.movieTitle);
-  }, [state?.movieTitle, generateLocalFallbackSuggestions]);
+  const fallbackSuggestions = state?.movieTitle
+    ? generateLocalFallbackSuggestions(state.movieTitle)
+    : [];
 
   // Editable name: local draft overrides derived server/fallback value.
   const projectName = nameDraft ?? state?.projectName ?? fallbackSuggestions[0]?.name ?? "";

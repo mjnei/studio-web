@@ -80,6 +80,35 @@ export default function ExportPage() {
   const [showShareModal, setShowShareModal] = useState(false);
   const [showExportFormatModal, setShowExportFormatModal] = useState(false);
 
+  const handleVideoLoadError = React.useCallback(
+    (error: unknown) => {
+      console.error("Failed to load videos:", error);
+      const apiError = error as { status?: number; message?: string };
+      if (apiError.status === 404) {
+        toast.error(t("project.common.projectNotFound"), t("project.common.projectNotFoundDesc"));
+        setTimeout(() => {
+          router.push("/projects");
+        }, 2000);
+      } else {
+        toast.error(t("project.export.loadVideosFailed"), t("project.export.loadVideosFailedDesc"));
+      }
+    },
+    [toast, router, t]
+  );
+
+  const applyVideosResponse = React.useCallback((response: { videos: VideoGenerationResponse[] }) => {
+    setVideos(response.videos);
+    setSelectedVideoId((current) => {
+      if (current) return current;
+      const firstCompleted = response.videos.find((v) => v.status === "completed");
+      if (firstCompleted) {
+        console.log("🎬 [Export] Setting first completed video as selected:", firstCompleted.id);
+        return firstCompleted.id;
+      }
+      return null;
+    });
+  }, []);
+
   // ── Video data loaders ─────────────────────────────────────────────────────
   const loadVideos = React.useCallback(async () => {
     console.log("🎬 [Export] loadVideos called");
@@ -91,33 +120,13 @@ export default function ExportPage() {
         "videos",
         response.videos.map((v) => ({ id: v.id, status: v.status }))
       );
-      setVideos(response.videos);
-
-      // Only auto-select first completed video if none selected yet
-      setSelectedVideoId((current) => {
-        if (current) return current; // Already have selection
-        const firstCompleted = response.videos.find((v) => v.status === "completed");
-        if (firstCompleted) {
-          console.log("🎬 [Export] Setting first completed video as selected:", firstCompleted.id);
-          return firstCompleted.id;
-        }
-        return null;
-      });
+      applyVideosResponse(response);
     } catch (error) {
-      console.error("Failed to load videos:", error);
-      const apiError = error as { status?: number; message?: string };
-      if (apiError.status === 404) {
-        toast.error(t("project.common.projectNotFound"), t("project.common.projectNotFoundDesc"));
-        setTimeout(() => {
-          router.push("/projects");
-        }, 2000);
-      } else {
-        toast.error(t("project.export.loadVideosFailed"), t("project.export.loadVideosFailedDesc"));
-      }
+      handleVideoLoadError(error);
     } finally {
       setIsLoadingVideos(false);
     }
-  }, [projectId, toast, router, t]);
+  }, [projectId, applyVideosResponse, handleVideoLoadError]);
 
   const loadCreditStatus = React.useCallback(async () => {
     try {
@@ -138,9 +147,49 @@ export default function ExportPage() {
 
   React.useEffect(() => {
     if (!projectId) return;
-    void loadVideos();
-    void loadCreditStatus();
-  }, [projectId, loadVideos, loadCreditStatus]);
+    let cancelled = false;
+
+    getProjectVideos(projectId)
+      .then((response) => {
+        if (cancelled) return;
+        console.log(
+          "🎬 [Export] Loaded videos:",
+          response.videos.length,
+          "videos",
+          response.videos.map((v) => ({ id: v.id, status: v.status }))
+        );
+        setVideos(response.videos);
+        setSelectedVideoId((current) => {
+          if (current) return current;
+          const firstCompleted = response.videos.find((v) => v.status === "completed");
+          return firstCompleted ? firstCompleted.id : null;
+        });
+      })
+      .catch((error) => {
+        if (!cancelled) {
+          handleVideoLoadError(error);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setIsLoadingVideos(false);
+        }
+      });
+
+    getCreditStatus()
+      .then((status) => {
+        if (!cancelled) {
+          setCreditStatus(status);
+        }
+      })
+      .catch((error) => {
+        console.error("Failed to load credit status:", error);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [projectId, handleVideoLoadError]);
 
   // Listen for video completion notifications
   const { notifications } = useNotifications();
@@ -149,15 +198,54 @@ export default function ExportPage() {
     const latestNotification = notifications[0];
     console.log("🔔 [Export] Notifications changed, latest:", latestNotification);
     if (
-      latestNotification &&
-      latestNotification.notification_type === "video_job_completed" &&
-      latestNotification.project_id?.toString() === projectId
+      !(
+        latestNotification &&
+        latestNotification.notification_type === "video_job_completed" &&
+        latestNotification.project_id?.toString() === projectId
+      )
     ) {
-      console.log("📹 Video completed notification received, refreshing videos...");
-      void loadVideos();
-      void loadCreditStatus();
+      return;
     }
-  }, [notifications, projectId, loadVideos, loadCreditStatus]);
+
+    console.log("📹 Video completed notification received, refreshing videos...");
+    let cancelled = false;
+
+    getProjectVideos(projectId)
+      .then((response) => {
+        if (!cancelled) {
+          setVideos(response.videos);
+          setSelectedVideoId((current) => {
+            if (current) return current;
+            const firstCompleted = response.videos.find((v) => v.status === "completed");
+            return firstCompleted ? firstCompleted.id : null;
+          });
+        }
+      })
+      .catch((error) => {
+        if (!cancelled) {
+          handleVideoLoadError(error);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setIsLoadingVideos(false);
+        }
+      });
+
+    getCreditStatus()
+      .then((status) => {
+        if (!cancelled) {
+          setCreditStatus(status);
+        }
+      })
+      .catch((error) => {
+        console.error("Failed to load credit status:", error);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [notifications, projectId, handleVideoLoadError]);
 
   // Poll video job status over HTTP (see studio-backend/docs/SSE (Server-Sent Events).md)
   React.useEffect(() => {

@@ -53,8 +53,33 @@ export default function AdminProjectsPage() {
   }, [filters, pagination.page, pagination.pageSize, toast]);
 
   useEffect(() => {
-    void loadData();
-  }, [loadData]);
+    let cancelled = false;
+
+    Promise.all([
+      getAdminProjectStats(),
+      getAdminProjects(pagination.page, pagination.pageSize, filters),
+    ])
+      .then(([statsData, listData]) => {
+        if (cancelled) return;
+        setStats(statsData);
+        setProjects(listData.projects);
+        setPagination((prev) => ({ ...prev, total: listData.total }));
+      })
+      .catch((error: unknown) => {
+        if (cancelled) return;
+        const message = error instanceof Error ? error.message : "An error occurred";
+        toast.error("Failed to load projects", message);
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [filters, pagination.page, pagination.pageSize, toast]);
 
   function handleRefresh() {
     setIsLoading(true);
