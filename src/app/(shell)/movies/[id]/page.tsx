@@ -200,11 +200,11 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                 <Button
                   size="md"
                   fullWidth
+                  variant="primary"
                   onClick={handleCreateProject}
                   disabled={movieId === null || loading}
                   isLoading={loading}
                   leftIcon={<Play className="h-5 w-5" />}
-                  className="bg-accent-cyan shadow-lg shadow-accent-cyan/20 hover:bg-accent-cyan/90 hover:shadow-xl hover:shadow-accent-cyan/30"
                 >
                   {t("movies.detail.createProject")}
                 </Button>

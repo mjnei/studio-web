@@ -242,7 +242,7 @@ export function VoiceCard({
             variant="ghost"
             onClick={togglePlayback}
             disabled={isLoading}
-            className="flex-1 bg-accent-primary/10 hover:bg-accent-primary/20 text-accent-primary"
+            className="flex-1"
             leftIcon={
               isLoading ? (
                 <Spinner size="sm" className="text-current" />
@@ -266,10 +266,10 @@ export function VoiceCard({
               {!voice.is_shared && onShare && (
                 <Button
                   size="icon"
-                  variant="secondary"
+                  variant="success"
                   onClick={() => onShare(voice.id)}
                   title={t("voices.actions.shareWithCommunity")}
-                  className="border-green-500/50 bg-green-500/10 text-green-600 hover:bg-green-500/20"
+                  aria-label={t("voices.actions.shareWithCommunity")}
                 >
                   <Share2 className="h-4 w-4" />
                 </Button>
@@ -280,7 +280,7 @@ export function VoiceCard({
                   variant="secondary"
                   onClick={() => onUnshare(voice.id)}
                   title={t("voices.actions.makePrivate")}
-                  className="border-orange-500/50 bg-orange-500/10 text-orange-600 hover:bg-orange-500/20"
+                  aria-label={t("voices.actions.makePrivate")}
                 >
                   <Lock className="h-4 w-4" />
                 </Button>
@@ -291,10 +291,10 @@ export function VoiceCard({
           {(variant === "private" || (variant === "community" && isOwnVoice)) && (
             <Button
               size="icon"
-              variant="secondary"
+              variant="danger"
               onClick={() => onDelete(voice.id)}
               title={t("voices.actions.deleteVoice")}
-              className="border-red-500/50 bg-red-500/10 text-red-600 hover:bg-red-500/20"
+              aria-label={t("voices.actions.deleteVoice")}
             >
               <Trash2 className="h-4 w-4" />
             </Button>

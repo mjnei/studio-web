@@ -541,17 +541,15 @@ export default function AdminVoicesPage() {
                         variant="secondary"
                         onClick={() => handleUnapprove(voice)}
                         leftIcon={<XCircle className="h-4 w-4" />}
-                        className="border-orange-500/50 bg-orange-500/10 text-orange-600 hover:bg-orange-500/20"
                       >
                         <span className="hidden md:inline">Revoke</span>
                       </Button>
                     ) : (
                       <Button
                         size="sm"
-                        variant="secondary"
+                        variant="success"
                         onClick={() => handleApprove(voice)}
                         leftIcon={<ThumbsUp className="h-4 w-4" />}
-                        className="border-green-500/50 bg-green-500/10 text-green-600 hover:bg-green-500/20"
                       >
                         <span className="hidden md:inline">Approve</span>
                       </Button>

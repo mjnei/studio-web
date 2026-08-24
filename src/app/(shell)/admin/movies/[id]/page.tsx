@@ -339,6 +339,7 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                           setIsEditing(false);
                           setEditingData(null);
                         }}
+                        aria-label="Cancel edit"
                       >
                         <X className="h-4 w-4" />
                       </Button>
@@ -362,10 +363,9 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                     </Button>
                     <Button
                       size="md"
-                      variant="outline"
+                      variant="danger"
                       onClick={handleDelete}
                       leftIcon={<Trash2 className="h-4 w-4" />}
-                      className="border-red-500/50 bg-red-500/10 text-red-600 hover:bg-red-500/20"
                     >
                       Delete Movie
                     </Button>

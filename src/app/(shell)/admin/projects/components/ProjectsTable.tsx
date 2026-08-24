@@ -126,28 +126,29 @@ export function ProjectsTable({
                 size="icon"
                 onClick={() => onView(project)}
                 title="View details"
+                aria-label="View details"
               >
                 <Eye className="h-4 w-4" />
               </Button>
               {project.is_deleted ? (
                 <Button
                   type="button"
-                  variant="secondary"
+                  variant="success"
                   size="icon"
                   onClick={() => onRestore(project)}
                   title="Restore"
-                  className="text-green-600 hover:bg-green-500/10"
+                  aria-label="Restore"
                 >
                   <RotateCcw className="h-4 w-4" />
                 </Button>
               ) : (
                 <Button
                   type="button"
-                  variant="secondary"
+                  variant="danger"
                   size="icon"
                   onClick={() => onDelete(project)}
                   title="Soft delete"
-                  className="text-red-600 hover:bg-red-500/10"
+                  aria-label="Soft delete"
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
