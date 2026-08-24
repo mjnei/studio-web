@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, Home, Check } from "lucide-react";
+import { ArrowLeft, ArrowRight, Home, Check, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSidebar } from "@/components/shell/sidebar-context";
 import { useI18n } from "@/i18n";
@@ -50,13 +50,32 @@ export function FloatingWorkflowNavigation({
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
-  // On large screens, offset the bar to the right of the sidebar so it
-  // doesn't overlap the left rail (mirrors w-64/w-16 in project-shell.tsx).
+  // On large screens, offset the bar to the right of the sidebar
   const sidebarOffsetClass = isNarrow ? "left-0" : collapsed ? "left-16" : "left-64";
 
   const currentStepIndex = stepOrder[currentStep];
   const isFirstStep = currentStepIndex === 0;
   const isLastStep = currentStepIndex === stepKeys.length - 1;
+
+  // Creative Phase determination
+  const phaseInfo =
+    currentStepIndex <= 1
+      ? {
+          key: "phaseConcept",
+          label: t("project.nav.phaseConcept"),
+          badgeClass: "bg-accent-secondary/15 text-accent-secondary border-accent-secondary/30",
+        }
+      : currentStepIndex <= 4
+        ? {
+            key: "phaseProduction",
+            label: t("project.nav.phaseProduction"),
+            badgeClass: "bg-accent-primary/15 text-accent-primary border-accent-primary/30",
+          }
+        : {
+            key: "phaseMastering",
+            label: t("project.nav.phaseMastering"),
+            badgeClass: "bg-accent-cyan/15 text-accent-cyan border-accent-cyan/30",
+          };
 
   const steps = stepKeys.map((key) => ({
     key,
@@ -82,6 +101,14 @@ export function FloatingWorkflowNavigation({
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
+
+  const handleStepClick = (targetIndex: number, targetKey: string) => {
+    if (isProcessing) return;
+    // Allow clicking completed steps or current step
+    if (targetIndex < currentStepIndex) {
+      router.push(`/project/${projectId}/${targetKey}`);
+    }
+  };
 
   const handleBack = () => {
     if (onBack) {
@@ -120,86 +147,120 @@ export function FloatingWorkflowNavigation({
         paddingBottom: "env(safe-area-inset-bottom, 0px)",
       }}
     >
-      {/* Backdrop blur effect */}
-      <div className="absolute inset-0 bg-surface-panel/95 backdrop-blur-xl border-t border-border-default" />
+      {/* Backdrop panel with glassmorphism */}
+      <div className="absolute inset-0 bg-surface-panel/90 backdrop-blur-2xl border-t border-border-strong shadow-2xl" />
 
-      {/* Navigation content */}
-      <div className="relative mx-auto max-w-7xl px-2 pt-2 pb-3 sm:px-4 sm:pt-3 sm:pb-4 md:px-6">
-        {/* Step indicator bar */}
-        <div className="mb-2 sm:mb-3 flex items-center justify-center gap-0.5 sm:gap-1.5 overflow-x-auto scrollbar-hide px-2">
-          {steps.map((step, index) => {
-            const isCompleted = index < currentStepIndex;
-            const isCurrent = index === currentStepIndex;
+      {/* Navigation container */}
+      <div className="relative mx-auto max-w-5xl px-3 py-2 sm:px-5 sm:py-3">
+        {/* Top meta row on tablet/desktop: Phase indicator & Step track */}
+        <div className="mb-2 flex items-center justify-between gap-3">
+          {/* Phase Badge */}
+          <div className="hidden sm:flex items-center gap-1.5">
+            <span
+              className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border text-micro font-medium uppercase tracking-wider ${phaseInfo.badgeClass}`}
+            >
+              <Sparkles className="h-3 w-3" />
+              {phaseInfo.label}
+            </span>
+          </div>
 
-            return (
-              <div key={step.key} className="flex items-center flex-shrink-0">
-                {/* Circle */}
-                <div
-                  className={`flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded-full text-micro sm:text-caption font-semibold transition-all duration-300 ${
-                    isCompleted
-                      ? "bg-accent-cyan text-white"
-                      : isCurrent
-                        ? "bg-accent-cyan text-white ring-2 sm:ring-4 ring-accent-cyan/20"
-                        : "bg-surface-raised border border-border-default text-text-muted"
-                  }`}
-                  aria-label={`${t("project.nav.stepAria", { number: index + 1, label: step.label })}${isCurrent ? t("project.nav.stepCurrent") : ""}${isCompleted ? t("project.nav.stepCompleted") : ""}`}
-                  role="status"
-                >
-                  {isCompleted ? (
-                    <Check className="h-2.5 w-2.5 sm:h-3 sm:w-3" strokeWidth={3} />
-                  ) : (
-                    index + 1
+          {/* Stepper Dots Track */}
+          <div className="flex-1 flex items-center justify-center gap-1 sm:gap-2 overflow-x-auto scrollbar-hide py-1">
+            {steps.map((step, index) => {
+              const isCompleted = index < currentStepIndex;
+              const isCurrent = index === currentStepIndex;
+              const isClickable = isCompleted && !isProcessing;
+
+              return (
+                <div key={step.key} className="flex items-center flex-shrink-0 group">
+                  {/* Step Hit Target */}
+                  <button
+                    type="button"
+                    onClick={() => handleStepClick(index, step.key)}
+                    disabled={!isClickable}
+                    title={`${step.label}${isCurrent ? ` (${t("project.nav.stepCurrent")})` : isCompleted ? ` (${t("project.nav.stepCompleted")})` : ""}`}
+                    className={`flex items-center gap-1.5 p-1 rounded-lg transition-all ${
+                      isClickable
+                        ? "cursor-pointer hover:bg-surface-hover/80"
+                        : "cursor-default"
+                    }`}
+                    aria-label={`${t("project.nav.stepAria", { number: index + 1, label: step.label })}${
+                      isCurrent ? t("project.nav.stepCurrent") : ""
+                    }${isCompleted ? t("project.nav.stepCompleted") : ""}`}
+                  >
+                    {/* Circle */}
+                    <div
+                      className={`flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded-full text-caption font-semibold transition-all duration-300 ${
+                        isCompleted
+                          ? "bg-accent-cyan text-surface-base font-bold shadow-sm group-hover:scale-110"
+                          : isCurrent
+                            ? "bg-accent-primary text-white ring-4 ring-accent-primary/25 shadow-glow scale-105"
+                            : "bg-surface-raised border border-border-default text-text-muted"
+                      }`}
+                    >
+                      {isCompleted ? (
+                        <Check className="h-3.5 w-3.5" strokeWidth={3} />
+                      ) : (
+                        index + 1
+                      )}
+                    </div>
+
+                    {/* Label - visible on desktop lg+ */}
+                    <span
+                      className={`hidden lg:inline text-caption transition-colors duration-200 ${
+                        isCurrent
+                          ? "font-semibold text-text-primary"
+                          : isCompleted
+                            ? "text-accent-cyan font-medium group-hover:underline"
+                            : "text-text-muted"
+                      }`}
+                    >
+                      {step.label}
+                    </span>
+                  </button>
+
+                  {/* Connector Bar */}
+                  {index < steps.length - 1 && (
+                    <div
+                      className={`mx-0.5 sm:mx-1 h-0.5 w-2 sm:w-3 md:w-5 rounded-full transition-colors duration-300 ${
+                        isCompleted ? "bg-accent-cyan" : "bg-border-default"
+                      }`}
+                    />
                   )}
                 </div>
-                {/* Label — hidden on mobile, visible on sm+ */}
-                <span
-                  className={`ml-1 hidden md:inline text-caption transition-colors duration-300 ${
-                    isCurrent
-                      ? "font-medium text-text-primary"
-                      : isCompleted
-                        ? "text-accent-cyan"
-                        : "text-text-muted"
-                  }`}
-                >
-                  {step.label}
-                </span>
-                {/* Connector */}
-                {index < steps.length - 1 && (
-                  <div
-                    className={`mx-1 sm:mx-1.5 h-px w-3 sm:w-4 md:w-6 transition-colors duration-300 ${
-                      isCompleted ? "bg-accent-cyan" : "bg-border-default"
-                    }`}
-                  />
-                )}
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
+
+          {/* Quick Step Counter on mobile/tablet */}
+          <div className="hidden sm:flex lg:hidden items-center text-micro text-text-muted">
+            {currentStepIndex + 1} / {steps.length}
+          </div>
         </div>
 
-        {/* Back / Home / Next row */}
-        <div className="flex items-center justify-between gap-2 sm:gap-4">
-          {/* Left side - Back button */}
-          <div className="flex items-center gap-1 sm:gap-2">
+        {/* Action Controls Row */}
+        <div className="flex items-center justify-between gap-2 sm:gap-4 pt-1">
+          {/* Left Actions: Back & Projects Home */}
+          <div className="flex items-center gap-1.5 sm:gap-2">
             {!isFirstStep && canGoBack && !isProcessing && (
               <Button
                 variant="secondary"
                 size="sm"
-                leftIcon={<ArrowLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
+                leftIcon={<ArrowLeft className="h-4 w-4" />}
                 onClick={handleBack}
-                className="shadow-lg touch-manipulation"
+                className="touch-manipulation"
                 aria-label={backLabel || t("project.nav.goBack")}
               >
                 <span className="hidden sm:inline">{backLabel || t("common.back")}</span>
               </Button>
             )}
 
-            {/* Projects home button — always visible */}
             <Button
               variant="ghost"
               size="sm"
-              leftIcon={<Home className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
+              leftIcon={<Home className="h-4 w-4" />}
               onClick={handleGoHome}
-              className="shadow-lg touch-manipulation"
+              className="touch-manipulation"
               title={t("project.nav.goToProjects")}
               aria-label={t("project.nav.goToProjectsHome")}
             >
@@ -207,18 +268,19 @@ export function FloatingWorkflowNavigation({
             </Button>
           </div>
 
-          {/* Right side - Next button */}
-          <div className="flex items-center gap-1 sm:gap-2">
+          {/* Right Action: Next Button */}
+          <div className="flex items-center gap-2">
             {canGoNext && (
               <Button
                 variant="primary"
                 size="sm"
                 rightIcon={
-                  !isLastStep ? <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> : undefined
+                  !isLastStep ? <ArrowRight className="h-4 w-4" /> : undefined
                 }
                 onClick={handleNext}
                 disabled={isProcessing}
-                className="shadow-lg touch-manipulation"
+                loading={isProcessing}
+                className="shadow-glow-hover touch-manipulation font-medium"
                 aria-label={resolvedNextLabel || t("project.nav.continueToNextStep")}
               >
                 <span className="hidden sm:inline">{resolvedNextLabel}</span>
@@ -228,8 +290,7 @@ export function FloatingWorkflowNavigation({
               </Button>
             )}
 
-            {/* Placeholder to maintain layout balance when next button is hidden */}
-            {!canGoNext && <div className="w-16 sm:w-24 md:w-32" />}
+            {!canGoNext && <div className="w-16 sm:w-24" />}
           </div>
         </div>
       </div>

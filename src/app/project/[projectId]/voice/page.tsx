@@ -2,14 +2,16 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { FileText, ChevronDown } from "lucide-react";
+import { FileText, ChevronDown, Sparkles } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { typography } from "@/components/ui/typography";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { useVoiceLimits } from "@/lib/hooks/use-voice-limits";
 import { useVoicePreview } from "@/lib/hooks/use-voice-preview";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
+import { StepRevisitBanner } from "@/components/project/step-revisit-banner";
 import { VoiceSelectionPanel } from "@/components/project/voice-selection-panel";
 import { SpeechRateControl } from "@/components/project/speech-rate-control";
 import { VoiceRecordingModal } from "@/components/shared/voice-recording-modal";
@@ -30,7 +32,7 @@ export default function VoicePage() {
   const projectId = params.projectId as string;
   const { state, updateVoice, activeScript, isLoading } = useProjectState(projectId);
   const { error: toastError, success: toastSuccess } = useToast();
-  const { playVoicePreview } = useVoicePreview();
+  const { playVoicePreview, playingVoiceId } = useVoicePreview();
 
   const [availableVoicesLoading, setAvailableVoicesLoading] = useState(true);
   const [availableVoicesError, setAvailableVoicesError] = useState<string | null>(null);
@@ -49,6 +51,7 @@ export default function VoicePage() {
   const [ratio, setRatio] = useState(1.0);
   const voiceLimits = useVoiceLimits();
 
+  // Schedule Agnes background asset jobs
   useEffect(() => {
     const scheduleAgnesJobsIfNeeded = async () => {
       if (!projectId || !activeScript?.content) return;
@@ -124,6 +127,10 @@ export default function VoicePage() {
     }
 
     const voiceType = ownVoices.some((v) => v.id === voiceId) ? "own" : "community";
+    await playVoicePreview(voiceId, voiceType, ownVoices, communityVoices);
+  };
+
+  const handlePreviewToggle = async (voiceId: number, voiceType: "own" | "community") => {
     await playVoicePreview(voiceId, voiceType, ownVoices, communityVoices);
   };
 
@@ -214,20 +221,31 @@ export default function VoicePage() {
   return (
     <>
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col gap-6 pb-24">
-          <div className="flex items-center justify-between">
-            <div>
-              <Heading variant="section" as="h2" className="text-text-primary">
-                {t("project.voice.title")}
-              </Heading>
-              <p className="mt-1 text-body text-text-muted">{t("project.voice.description")}</p>
-            </div>
-            {selectedVoiceId && selectedVoiceName && (
-              <div className="text-body text-text-muted">
-                {t("project.voice.selected")}{" "}
-                <span className="font-medium text-text-primary">{selectedVoiceName}</span>
-              </div>
-            )}
+        <div className="flex flex-col gap-6 pb-28">
+          <PageHeader
+            title={t("project.voice.title")}
+            description={t("project.voice.description")}
+          />
+
+          {/* Revisit Banner if voice was already selected */}
+          {selectedVoiceId && selectedVoiceName && (
+            <StepRevisitBanner
+              label={t("project.common.voice")}
+              value={selectedVoiceName}
+              meta={`${ratio.toFixed(1)}x Rate`}
+              onContinue={handleContinue}
+              continueLabel={t("project.nav.continueToDetails")}
+            />
+          )}
+
+          {/* Agnes AI Background Status Pill */}
+          <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-accent-primary/10 border border-accent-primary/20 text-caption text-text-secondary">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-primary opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-accent-primary"></span>
+            </span>
+            <Sparkles className="h-3.5 w-3.5 text-accent-primary" />
+            <span>Agnes AI is preparing title suggestions &amp; thumbnail concepts in the background</span>
           </div>
 
           {state?.scriptSummary && (
@@ -237,7 +255,7 @@ export default function VoicePage() {
               className="bg-gradient-to-br from-accent-cyan/5 to-transparent border-accent-cyan/20"
             >
               <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted flex-shrink-0">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted shrink-0">
                   <FileText className="h-5 w-5 text-accent-cyan" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -265,7 +283,7 @@ export default function VoicePage() {
               onClick={() => setShowFullScriptModal(true)}
             >
               <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted flex-shrink-0">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted shrink-0">
                   <FileText className="h-5 w-5 text-accent-cyan" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -273,7 +291,7 @@ export default function VoicePage() {
                     <Heading variant="label" as="h3" className="text-text-primary">
                       {t("project.common.yourScript")}
                     </Heading>
-                    <span className="text-caption font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0 group-hover:text-accent-cyan-hover">
+                    <span className="text-caption font-medium text-accent-cyan flex items-center gap-1 shrink-0 group-hover:text-accent-cyan-hover">
                       {t("project.common.clickToExpand")} <ChevronDown className="h-3 w-3" />
                     </span>
                   </div>
@@ -295,9 +313,11 @@ export default function VoicePage() {
             ownVoices={ownVoices}
             communityVoices={communityVoices}
             selectedVoiceId={selectedVoiceId}
+            playingVoiceId={playingVoiceId}
             isLoadingVoices={availableVoicesLoading}
             voicesError={availableVoicesError}
             onVoiceSelect={handleVoiceSelect}
+            onPreviewToggle={handlePreviewToggle}
             onAddVoice={handleAddVoiceClick}
             canAddVoice={voiceLimits.canAdd}
             remainingVoiceCount={voiceLimits.remainingCount}

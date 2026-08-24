@@ -68,6 +68,9 @@
       "statusCompleted": "Completed"
     },
     "nav": {
+      "phaseConcept": "Phase A: Concept",
+      "phaseProduction": "Phase B: Production",
+      "phaseMastering": "Phase C: Mastering",
       "source": "Source",
       "script": "Script",
       "voice": "Voice",

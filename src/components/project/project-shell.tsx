@@ -146,7 +146,16 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
             </div>
           </div>
         </header>
-        <main className="flex-1 overflow-y-auto bg-surface-base p-4 md:p-6">{children}</main>
+        <main className="relative flex-1 overflow-y-auto bg-surface-base p-4 md:p-6">
+          {projectState?.moviePoster && (
+            <div
+              className="pointer-events-none fixed inset-0 z-0 bg-cover bg-center filter blur-3xl opacity-5 dark:opacity-10 transition-opacity duration-700"
+              style={{ backgroundImage: `url(${projectState.moviePoster})` }}
+              aria-hidden
+            />
+          )}
+          <div className="relative z-10">{children}</div>
+        </main>
       </div>
 
       {isNarrow && mobileOpen && (

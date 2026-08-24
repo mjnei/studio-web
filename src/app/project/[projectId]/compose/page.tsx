@@ -6,14 +6,17 @@ import { useState } from "react";
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { typography } from "@/components/ui/typography";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
+import { StepRevisitBanner } from "@/components/project/step-revisit-banner";
 import { FullScriptModal } from "@/components/project/full-script-modal";
 import { ThumbnailEditorModal } from "@/components/project/ThumbnailEditorModal";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { FileText, ChevronDown, Sparkles, Check, RotateCcw, Edit2 } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import {
@@ -42,7 +45,6 @@ export default function ComposePage() {
   const [isAdvancing, setIsAdvancing] = useState(false);
   const [isRegenerating, setIsRegenerating] = useState(false);
 
-  // Use refs to track notification state instead of useState to avoid state updates in effects
   const toastShownRef = React.useRef<{
     completed?: boolean;
     failed?: boolean;
@@ -50,85 +52,67 @@ export default function ComposePage() {
     scheduledThumbnail?: boolean;
   }>({});
 
-  // Check and schedule thumbnail if needed on page load (once)
   React.useEffect(() => {
     const checkAndScheduleThumbnailIfNeeded = async () => {
-      if (!state) return; // Wait for state to load
+      if (!state) return;
 
-      // Skip if already completed or currently generating
       if (state?.thumbnailStatus === "completed" || state?.thumbnailStatus === "generating") {
         return;
       }
 
-      // Only schedule once
       if (toastShownRef.current.scheduledThumbnail) {
         return;
       }
 
-      // Not ready - schedule if needed
       try {
-        const result = await scheduleAgnesJobs(projectId, false, true); // Thumbnail only
+        const result = await scheduleAgnesJobs(projectId, false, true);
         console.log("Scheduled thumbnail generation:", result);
         toastShownRef.current.scheduledThumbnail = true;
       } catch (error) {
         console.error("Failed to schedule thumbnail:", error);
-        toastShownRef.current.scheduledThumbnail = true; // Mark as attempted even if failed
+        toastShownRef.current.scheduledThumbnail = true;
       }
     };
 
     checkAndScheduleThumbnailIfNeeded();
   }, [projectId, state]);
 
-  // Poll thumbnail status if not yet completed (see studio-backend/docs/SSE (Server-Sent Events).md)
+  // Poll thumbnail status if not yet completed
   React.useEffect(() => {
-    // Poll when thumbnail is not ready yet (no thumbnailUrl) or currently generating
     const shouldPoll = !state?.thumbnailUrl || state?.thumbnailStatus === "generating";
 
     if (shouldPoll && !state?.thumbnailConfirmed) {
       const interval = setInterval(() => {
-        refresh(); // Refresh project state to check thumbnail status
-      }, 10000); // Increased from 8s to 10s polling interval
+        refresh();
+      }, 10000);
 
       return () => clearInterval(interval);
     }
   }, [state?.thumbnailUrl, state?.thumbnailStatus, state?.thumbnailConfirmed, refresh]);
 
-  // Show toast when composition completes or fails
   React.useEffect(() => {
     const isInProgress = state?.thumbnailCompositionStatus === "processing";
 
-    // Only show toast once per status change
     if (state?.thumbnailCompositionStatus === "completed") {
       if (!toastShownRef.current.completed) {
-        // Avoid duplicate toasts
         toastShownRef.current.completed = true;
         toastShownRef.current.inProgress = false;
         toastShownRef.current.failed = false;
-        console.info("[Compose] Thumbnail composition completed", {
-          confirmed: state.thumbnailConfirmed,
-          finalUrl: state.finalThumbnailUrl ? "SET" : "MISSING",
-        });
         toast.success(t("project.compose.toastReady"), t("project.compose.toastReadyDesc"));
       }
     } else if (state?.thumbnailCompositionStatus === "failed" && toastShownRef.current.inProgress) {
       toastShownRef.current.failed = true;
       toastShownRef.current.inProgress = false;
-      console.error(`[Compose] Thumbnail composition failed: ${state.thumbnailCompositionError}`);
       toast.error(
         t("project.compose.toastCompositionFailed"),
         state.thumbnailCompositionError || t("project.compose.toastCompositionFailedDesc")
       );
     } else if (isInProgress) {
-      // Started queuing or processing
       if (!toastShownRef.current.inProgress) {
         toastShownRef.current.inProgress = true;
         toastShownRef.current.completed = false;
-        console.debug(
-          `[Compose] Thumbnail composition ${state?.thumbnailCompositionStatus}, starting poll`
-        );
       }
     } else if (state?.thumbnailCompositionStatus === "idle") {
-      // Reset tracking on idle
       toastShownRef.current.inProgress = false;
     }
   }, [
@@ -141,10 +125,8 @@ export default function ComposePage() {
   ]);
 
   const handleThumbnailFinalized = async () => {
-    // Start polling for completion
     await refresh();
     setShowThumbnailEditor(false);
-
     toast.info(t("project.compose.toastProcessing"), t("project.compose.toastProcessingDesc"));
   };
 
@@ -157,9 +139,7 @@ export default function ComposePage() {
         t("project.compose.toastRegenerating"),
         t("project.compose.toastRegeneratingDesc")
       );
-      // Reset the scheduled flag to allow re-checking
       toastShownRef.current.scheduledThumbnail = false;
-      // Refresh to get the updated status
       await refresh();
     } catch (error) {
       console.error("Failed to regenerate thumbnail:", error);
@@ -176,10 +156,8 @@ export default function ComposePage() {
     setIsRegenerating(true);
     setShowActionModal(false);
     try {
-      // Call the new retry endpoint that cancels stuck jobs and re-schedules
       await retryThumbnailGeneration(projectId);
       toast.success(t("project.compose.toastRetrying"), t("project.compose.toastRetryingDesc"));
-      // Refresh to get the updated status
       await refresh();
     } catch (error) {
       console.error("Failed to retry generation:", error);
@@ -228,225 +206,170 @@ export default function ComposePage() {
     ? `${Math.floor(activeScript.duration / 60)}:${(activeScript.duration % 60).toString().padStart(2, "0")}`
     : "";
 
+  const currentDisplayImage =
+    state?.finalThumbnailUrl ||
+    state?.customThumbnailUrl ||
+    state?.thumbnailUrl;
+
   return (
     <>
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col gap-6 pb-24">
-          <div>
-            <Heading variant="section" as="h2" className="text-text-primary">
-              {t("project.compose.title")}
-            </Heading>
-            <p className="mt-1 text-body text-text-muted">{t("project.compose.description")}</p>
-          </div>
+        <div className="flex flex-col gap-6 pb-28">
+          <PageHeader
+            title={t("project.compose.title")}
+            description={t("project.compose.description")}
+          />
 
-          {/* Thumbnail Preview Card - Click to edit */}
-          {state && (
-            <Card
-              variant="elevated"
-              padding="md"
-              className={
-                state.thumbnailConfirmed
-                  ? "border-status-success/30 bg-surface-raised"
-                  : state.thumbnailStatus === "generating" || !state.thumbnailUrl
-                    ? "border-accent-cyan/30 bg-surface-raised"
-                    : "border-border-default bg-surface-raised"
-              }
-            >
-              <div className="flex flex-col gap-4">
-                <div className="flex items-start gap-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted flex-shrink-0">
-                    {state.thumbnailStatus === "generating" ||
-                    !state.thumbnailUrl ||
-                    isRegenerating ? (
-                      <Spinner className="h-5 w-5 text-accent-cyan" />
-                    ) : (
-                      <Sparkles className="h-5 w-5 text-accent-cyan" />
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-4 mb-2">
-                      <Heading variant="label" as="h3" className="text-text-primary">
-                        {t("project.compose.projectThumbnail")}
-                      </Heading>
-                      <div className="flex items-center gap-2 flex-shrink-0">
-                        {/* Action buttons - visible when thumbnail is ready */}
-                        {!isRegenerating && state.thumbnailUrl && (
-                          <>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                openActionModal("regenerate");
-                              }}
-                              className="text-caption font-medium text-accent-cyan hover:text-accent-cyan-hover flex items-center gap-1 transition-colors"
-                              title={t("project.compose.regenerateTitle")}
-                            >
-                              <RotateCcw className="h-3 w-3" />
-                            </button>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                openActionModal("edit");
-                              }}
-                              className="text-caption font-medium text-accent-cyan hover:text-accent-cyan-hover flex items-center gap-1 transition-colors"
-                              title={t("project.compose.customizeTitle")}
-                            >
-                              <Edit2 className="h-3 w-3" />
-                            </button>
-                          </>
-                        )}
+          {/* Revisit Banner if thumbnail is confirmed */}
+          {state?.thumbnailConfirmed && (
+            <StepRevisitBanner
+              label="Thumbnail Cover"
+              value={state.thumbnailText || "Cover Image Confirmed"}
+              meta="16:9 Landscape"
+              onContinue={handleContinue}
+              continueLabel={t("project.nav.continueToExport")}
+            />
+          )}
 
-                        {/* Status indicators */}
-                        {state.thumbnailStatus === "generating" ||
-                        !state.thumbnailUrl ||
-                        isRegenerating ? (
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-caption font-medium text-accent-cyan flex items-center gap-1">
-                              <Spinner className="h-3 w-3" /> {t("project.compose.generating")}
-                            </span>
-                            {/* Show retry button when generating */}
-                            {!isRegenerating && (
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  openActionModal("retry");
-                                }}
-                                className="text-caption font-medium text-white bg-status-warning hover:bg-status-warning/90 flex items-center gap-1 transition-colors px-2 py-1 rounded"
-                                title={t("project.compose.retryHint")}
-                              >
-                                <RotateCcw className="h-3 w-3" /> {t("common.retry")}
-                              </button>
-                            )}
-                          </div>
-                        ) : state.thumbnailCompositionStatus === "processing" ? (
-                          <span className="text-caption font-medium text-accent-cyan flex items-center gap-1">
-                            <Spinner className="h-3 w-3" /> {t("project.compose.processing")}
-                          </span>
-                        ) : state.thumbnailConfirmed ? (
-                          <span className="text-caption font-medium text-status-success flex items-center gap-1">
-                            <Check className="h-3 w-3" /> {t("project.compose.confirmed")}
-                          </span>
-                        ) : null}
-                      </div>
+          {/* 16:9 Split Live Studio Canvas (Desktop Side-by-Side, Mobile Stacked) */}
+          <Card variant="elevated" padding="lg" className="border-accent-cyan/30">
+            <div className="flex flex-col lg:grid lg:grid-cols-12 gap-6">
+              {/* Left Column: Live 16:9 Canvas Preview */}
+              <div className="lg:col-span-7 space-y-3">
+                <div className="flex items-center justify-between">
+                  <Heading variant="label" as="h3" className="text-text-primary flex items-center gap-2">
+                    <Sparkles className="h-4 w-4 text-accent-cyan" />
+                    Live 16:9 Cover Canvas
+                  </Heading>
+                  <span className="text-micro font-mono text-text-muted px-2 py-0.5 rounded bg-surface-raised border border-border-default">
+                    1920 × 1080 (16:9)
+                  </span>
+                </div>
+
+                {/* 16:9 Aspect Video Container */}
+                <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-surface-raised border border-border-default shadow-lg group">
+                  {state?.thumbnailStatus === "generating" || isRegenerating ? (
+                    <div className="w-full h-full flex flex-col items-center justify-center gap-3 p-6 text-center bg-surface-panel/80">
+                      <Spinner size="lg" className="text-accent-cyan" />
+                      <p className="text-body font-medium text-text-primary">
+                        {isRegenerating ? t("project.compose.toastRegenerating") : t("project.compose.generating")}
+                      </p>
+                      <p className="text-caption text-text-muted max-w-xs">
+                        {t("project.compose.generatingDesc")}
+                      </p>
                     </div>
-
-                    {/* Show loading message when generating base thumbnail or waiting for it */}
-                    {state.thumbnailStatus === "generating" ||
-                    !state.thumbnailUrl ||
-                    isRegenerating ? (
-                      <div className="space-y-3">
-                        <p className="text-body text-text-muted">
-                          {isRegenerating
-                            ? t("project.compose.regeneratingDesc")
-                            : t("project.compose.generatingDesc")}
-                        </p>
-                        <div className="text-caption text-text-muted space-y-1">
-                          <p>• {t("project.compose.waitBullet1")}</p>
-                          <p>• {t("project.compose.waitBullet2")}</p>
-                          <p>• {t("project.compose.waitBullet3")}</p>
-                        </div>
-                      </div>
-                    ) : state.thumbnailConfirmed ? (
-                      <div className="space-y-3">
-                        <p className="text-body text-text-muted">
-                          {t("project.compose.readyForVideo")}
-                        </p>
-
-                        {/* Show confirmed thumbnail image */}
-                        {state.finalThumbnailUrl && (
-                          <div className="max-w-sm">
-                            <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default">
-                              <Image
-                                src={state.finalThumbnailUrl}
-                                alt={t("project.compose.confirmedAlt")}
-                                className="w-full h-full object-cover"
-                                width={400}
-                                height={225}
-                              />
-                            </div>
-                          </div>
-                        )}
-
-                        <div className="text-caption text-text-muted space-y-1">
-                          <p>
-                            •{" "}
-                            {t("project.compose.textOverlay", {
-                              text: state.thumbnailText || t("common.none"),
-                            })}
+                  ) : currentDisplayImage ? (
+                    <>
+                      <Image
+                        src={currentDisplayImage}
+                        alt={t("project.compose.thumbnailAlt")}
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        width={640}
+                        height={360}
+                      />
+                      {/* Live Text Overlay Preview if present on raw image */}
+                      {state?.thumbnailText && !state.finalThumbnailUrl && (
+                        <div className="absolute inset-0 flex items-center justify-center p-6 bg-black/30">
+                          <p className="text-display font-extrabold text-white text-center drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)] uppercase tracking-wider font-sans">
+                            {state.thumbnailText}
                           </p>
-                          <p>
-                            •{" "}
-                            {t("project.compose.baseImage", {
-                              type: state.customThumbnailUrl
-                                ? t("project.compose.customUpload")
-                                : t("project.compose.aiGenerated"),
-                            })}
-                          </p>
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setShowThumbnailEditor(true);
-                            }}
-                            className="mt-2 text-caption text-accent-cyan hover:text-accent-cyan-hover underline"
-                          >
-                            {t("project.compose.recustomize")}
-                          </button>
                         </div>
-                      </div>
-                    ) : (
-                      <>
-                        {/* Full view when not confirmed */}
-                        <p className="text-body text-text-muted mb-3">
-                          {state.thumbnailUrl
-                            ? t("project.compose.customizeBefore")
-                            : t("project.compose.availableShortly")}
-                        </p>
+                      )}
+                    </>
+                  ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center gap-3 p-6 text-center bg-surface-panel">
+                      <Sparkles className="h-10 w-10 text-text-muted" />
+                      <p className="text-body text-text-muted">{t("project.compose.availableShortly")}</p>
+                    </div>
+                  )}
+                </div>
 
-                        {/* Thumbnail Preview with side-by-side layout on medium+ screens */}
-                        {(state.thumbnailUrl ||
-                          state.customThumbnailUrl ||
-                          state.finalThumbnailUrl) && (
-                          <div className="flex flex-col md:grid md:grid-cols-2 md:gap-6">
-                            {/* Thumbnail - Half width on medium+ screens */}
-                            <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default md:rounded-xl">
-                              <Image
-                                src={
-                                  state.finalThumbnailUrl ||
-                                  state.customThumbnailUrl ||
-                                  state.thumbnailUrl ||
-                                  ""
-                                }
-                                alt={t("project.compose.thumbnailAlt")}
-                                className="w-full h-full object-cover"
-                                width={500}
-                                height={280}
-                              />
-                            </div>
+                {/* Canvas Action Bar */}
+                <div className="flex items-center justify-between gap-2 pt-1">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    leftIcon={<RotateCcw className="h-3.5 w-3.5" />}
+                    onClick={() => openActionModal("regenerate")}
+                    disabled={isRegenerating || state?.thumbnailStatus === "generating"}
+                  >
+                    {t("project.compose.regenerateTitle")}
+                  </Button>
 
-                            {/* Action/Info section - Half width on medium+ screens */}
-                            <div className="mt-3 md:mt-0 flex flex-col justify-center">
-                              <Heading variant="label" as="h4" className="text-text-primary mb-2">
-                                {t("project.compose.customizationOptions")}
-                              </Heading>
-                              <p className="text-body text-text-muted mb-3">
-                                {t("project.compose.clickToOpen")}
-                              </p>
-                              <div className="text-caption text-text-muted space-y-1">
-                                <p>• {t("project.compose.optionUpload")}</p>
-                                <p>• {t("project.compose.optionRegenerate")}</p>
-                                <p>• {t("project.compose.optionOverlay")}</p>
-                                <p>• {t("project.compose.optionAdjust")}</p>
-                                <p>• {t("project.compose.optionPreview")}</p>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </div>
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    leftIcon={<Edit2 className="h-3.5 w-3.5" />}
+                    onClick={() => setShowThumbnailEditor(true)}
+                  >
+                    {t("project.compose.customizeTitle")}
+                  </Button>
                 </div>
               </div>
-            </Card>
-          )}
+
+              {/* Right Column: Customization Controls & Presets */}
+              <div className="lg:col-span-5 flex flex-col justify-between space-y-4 pt-2 lg:pt-0 lg:pl-4 lg:border-l lg:border-border-default">
+                <div className="space-y-4">
+                  <div>
+                    <Heading variant="label" as="h4" className="text-text-primary mb-1">
+                      {t("project.compose.customizationOptions")}
+                    </Heading>
+                    <p className="text-caption text-text-muted">
+                      {t("project.compose.customizeBefore")}
+                    </p>
+                  </div>
+
+                  {/* Typography Style Presets */}
+                  <div className="space-y-2">
+                    <p className="text-caption font-semibold text-text-secondary uppercase tracking-wider">
+                      Typography Presets
+                    </p>
+                    <div className="grid grid-cols-2 gap-2">
+                      {[
+                        { name: "Cinematic Gold", style: "border-yellow-500/40 text-yellow-400 bg-yellow-500/10" },
+                        { name: "Neon Cyan", style: "border-cyan-500/40 text-cyan-400 bg-cyan-500/10" },
+                        { name: "Minimalist Clean", style: "border-white/40 text-white bg-white/10" },
+                        { name: "Breaking Red", style: "border-red-500/40 text-red-400 bg-red-500/10" },
+                      ].map((preset) => (
+                        <button
+                          key={preset.name}
+                          type="button"
+                          onClick={() => setShowThumbnailEditor(true)}
+                          className={`p-2.5 rounded-lg border text-caption font-medium text-left transition-all hover:scale-105 ${preset.style}`}
+                        >
+                          {preset.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Confirmed Details */}
+                  {state?.thumbnailConfirmed && (
+                    <div className="p-3.5 rounded-xl bg-status-success/10 border border-status-success/30 space-y-1.5">
+                      <div className="flex items-center gap-2 text-status-success font-semibold text-caption">
+                        <Check className="h-4 w-4" />
+                        <span>Cover Art Verified</span>
+                      </div>
+                      <p className="text-micro text-text-muted">
+                        Ready for final 1080p video composition in Step 7.
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="pt-2">
+                  <Button
+                    variant="secondary"
+                    size="md"
+                    onClick={() => setShowThumbnailEditor(true)}
+                    className="w-full"
+                  >
+                    Open Full Studio Editor
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </Card>
 
           {/* Script Tagline */}
           {state?.scriptSummary && (
@@ -456,55 +379,52 @@ export default function ComposePage() {
               className="bg-gradient-to-br from-accent-cyan/5 to-transparent border-accent-cyan/20"
             >
               <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted flex-shrink-0">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted shrink-0">
                   <Sparkles className="h-5 w-5 text-accent-cyan" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <Heading
                     variant="label"
                     as="h3"
-                    className="mb-2 uppercase tracking-wide text-text-secondary"
+                    className="mb-1 uppercase tracking-wide text-text-secondary"
                   >
                     {t("project.common.scriptTagline")}
                   </Heading>
-                  <p className={`${typography.section} mb-2 text-accent-cyan`}>
-                    "{state.scriptSummary}"
+                  <p className={`${typography.section} text-accent-cyan`}>
+                    &ldquo;{state.scriptSummary}&rdquo;
                   </p>
-                  <p className="text-caption text-text-muted">{t("project.compose.taglineHint")}</p>
                 </div>
               </div>
             </Card>
           )}
 
-          {/* Project summary */}
-          <Card variant="elevated" padding="md">
-            <div className="grid gap-4 sm:grid-cols-3">
-              <div>
-                <p className="text-caption font-medium uppercase tracking-wide text-text-muted">
-                  {t("project.common.movie")}
-                </p>
-                <p className="mt-1 text-body text-text-primary">
-                  {state?.movieTitle || t("project.common.unknown")}
-                </p>
-              </div>
-              <div>
-                <p className="text-caption font-medium uppercase tracking-wide text-text-muted">
-                  {t("project.common.voice")}
-                </p>
-                <p className="mt-1 text-body text-text-primary">
-                  {state?.voiceName || t("project.common.notSelected")}
-                </p>
-              </div>
-              <div>
-                <p className="text-caption font-medium uppercase tracking-wide text-text-muted">
-                  {t("project.common.script")}
-                </p>
-                <p className="mt-1 text-body text-text-primary">
-                  {t("project.common.words", { count: wordCount })}
-                </p>
-              </div>
-            </div>
-          </Card>
+          {/* Project Details Grid */}
+          <div className="grid gap-4 sm:grid-cols-3">
+            <Card variant="elevated" padding="md">
+              <p className="text-micro font-medium uppercase tracking-wider text-text-muted">
+                {t("project.common.movie")}
+              </p>
+              <p className="mt-1 font-semibold text-body text-text-primary truncate">
+                {state?.movieTitle || t("project.common.unknown")}
+              </p>
+            </Card>
+            <Card variant="elevated" padding="md">
+              <p className="text-micro font-medium uppercase tracking-wider text-text-muted">
+                {t("project.common.voice")}
+              </p>
+              <p className="mt-1 font-semibold text-body text-text-primary truncate">
+                {state?.voiceName || t("project.common.notSelected")}
+              </p>
+            </Card>
+            <Card variant="elevated" padding="md">
+              <p className="text-micro font-medium uppercase tracking-wider text-text-muted">
+                {t("project.common.script")}
+              </p>
+              <p className="mt-1 font-semibold text-body text-text-primary">
+                {t("project.common.words", { count: wordCount })}
+              </p>
+            </Card>
+          </div>
 
           {/* Script preview card */}
           {activeScript && (
@@ -515,19 +435,19 @@ export default function ComposePage() {
               onClick={() => setShowFullScriptModal(true)}
             >
               <div className="flex items-start gap-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted flex-shrink-0">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan-muted shrink-0">
                   <FileText className="h-5 w-5 text-accent-cyan" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-4 mb-2">
+                  <div className="flex items-center justify-between gap-4 mb-1">
                     <Heading variant="label" as="h3" className="text-text-primary">
                       {t("project.common.yourScript")}
                     </Heading>
-                    <span className="text-caption font-medium text-accent-cyan flex items-center gap-1 flex-shrink-0 group-hover:text-accent-cyan-hover">
+                    <span className="text-caption font-medium text-accent-cyan flex items-center gap-1 shrink-0 group-hover:underline">
                       {t("project.common.clickToExpand")} <ChevronDown className="h-3 w-3" />
                     </span>
                   </div>
-                  <p className="text-body text-text-muted mb-2">
+                  <p className="text-caption text-text-muted mb-1.5">
                     {t("project.common.scriptMetaShort", {
                       count: activeScript.wordCount,
                       duration: scriptDuration,
@@ -543,7 +463,7 @@ export default function ComposePage() {
         </div>
       </div>
 
-      {/* Thumbnail Action Confirmation Modal */}
+      {/* Confirmation Modal */}
       <Modal
         open={showActionModal}
         onClose={() => setShowActionModal(false)}
@@ -571,13 +491,6 @@ export default function ComposePage() {
                     : handleEditThumbnail
               }
               loading={isRegenerating}
-              leftIcon={
-                actionModalType === "regenerate" || actionModalType === "retry" ? (
-                  <RotateCcw className="h-4 w-4" />
-                ) : (
-                  <Edit2 className="h-4 w-4" />
-                )
-              }
             >
               {actionModalType === "regenerate"
                 ? t("project.compose.regenerate")
@@ -589,95 +502,11 @@ export default function ComposePage() {
         }
       >
         <div className="space-y-4">
-          {actionModalType === "regenerate" ? (
-            <>
-              <div className="flex items-start gap-3 p-4 rounded-lg bg-accent-cyan/5 border border-accent-cyan/20">
-                <RotateCcw className="h-5 w-5 text-accent-cyan flex-shrink-0 mt-0.5" />
-                <div>
-                  <Heading variant="label" as="h4" className="text-text-primary mb-1">
-                    {t("project.compose.generateNewImage")}
-                  </Heading>
-                  <p className="text-body text-text-secondary leading-relaxed">
-                    {t("project.compose.generateNewImageDesc")}
-                  </p>
-                </div>
-              </div>
-              <div className="text-body text-text-muted space-y-2 pl-2">
-                <p className="flex items-start gap-2">
-                  <span className="text-accent-cyan">•</span>
-                  <span>{t("project.compose.takesSeconds")}</span>
-                </p>
-                <p className="flex items-start gap-2">
-                  <span className="text-accent-cyan">•</span>
-                  <span>{t("project.compose.customizeAfter")}</span>
-                </p>
-                <p className="flex items-start gap-2">
-                  <span className="text-accent-cyan">•</span>
-                  <span>{t("project.compose.customizationsReset")}</span>
-                </p>
-              </div>
-            </>
-          ) : actionModalType === "retry" ? (
-            <>
-              <div className="flex items-start gap-3 p-4 rounded-lg bg-status-warning/5 border border-status-warning/20">
-                <RotateCcw className="h-5 w-5 text-status-warning flex-shrink-0 mt-0.5" />
-                <div>
-                  <Heading variant="label" as="h4" className="text-text-primary mb-1">
-                    {t("project.compose.retryStuck")}
-                  </Heading>
-                  <p className="text-body text-text-secondary leading-relaxed">
-                    {t("project.compose.retryStuckDesc")}
-                  </p>
-                </div>
-              </div>
-              <div className="text-body text-text-muted space-y-2 pl-2">
-                <p className="flex items-start gap-2">
-                  <span className="text-status-warning">•</span>
-                  <span>{t("project.compose.retryBullet1")}</span>
-                </p>
-                <p className="flex items-start gap-2">
-                  <span className="text-status-warning">•</span>
-                  <span>{t("project.compose.retryBullet2")}</span>
-                </p>
-                <p className="flex items-start gap-2">
-                  <span className="text-status-warning">•</span>
-                  <span>{t("project.compose.retryBullet3")}</span>
-                </p>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="flex items-start gap-3 p-4 rounded-lg bg-accent-cyan/5 border border-accent-cyan/20">
-                <Edit2 className="h-5 w-5 text-accent-cyan flex-shrink-0 mt-0.5" />
-                <div>
-                  <Heading variant="label" as="h4" className="text-text-primary mb-1">
-                    {t("project.compose.customizeCurrent")}
-                  </Heading>
-                  <p className="text-body text-text-secondary leading-relaxed">
-                    {t("project.compose.customizeCurrentDesc")}
-                  </p>
-                </div>
-              </div>
-              <div className="text-body text-text-muted space-y-2 pl-2">
-                <p className="flex items-start gap-2">
-                  <span className="text-accent-cyan">•</span>
-                  <span>{t("project.compose.editBullet1")}</span>
-                </p>
-                <p className="flex items-start gap-2">
-                  <span className="text-accent-cyan">•</span>
-                  <span>{t("project.compose.editBullet2")}</span>
-                </p>
-                <p className="flex items-start gap-2">
-                  <span className="text-accent-cyan">•</span>
-                  <span>{t("project.compose.editBullet3")}</span>
-                </p>
-                <p className="flex items-start gap-2">
-                  <span className="text-accent-cyan">•</span>
-                  <span>{t("project.compose.editBullet4")}</span>
-                </p>
-              </div>
-            </>
-          )}
+          <p className="text-body text-text-secondary leading-relaxed">
+            {actionModalType === "regenerate"
+              ? t("project.compose.generateNewImageDesc")
+              : t("project.compose.retryStuckDesc")}
+          </p>
         </div>
       </Modal>
 
@@ -691,7 +520,7 @@ export default function ComposePage() {
         />
       )}
 
-      {/* Full Script Modal — using the shared component */}
+      {/* Full Script Modal */}
       {activeScript && (
         <FullScriptModal
           isOpen={showFullScriptModal}

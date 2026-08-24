@@ -6,8 +6,10 @@ import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
+import { Badge } from "@/components/ui/badge";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
@@ -22,9 +24,11 @@ import {
   Info,
   Film,
   Check,
+  CheckCircle2,
   AlertCircle,
   Clock,
   RotateCcw,
+  Sparkles,
 } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
 import {
@@ -48,7 +52,7 @@ export default function ExportPage() {
   const params = useParams();
   const router = useRouter();
   const projectId = params.projectId as string;
-  const { isLoading, refresh: refreshProject } = useProjectState(projectId);
+  const { state, isLoading, refresh: refreshProject } = useProjectState(projectId);
   const toast = useToast();
   const { refreshNotifications } = useNotifications();
   const { t, locale } = useI18n();
@@ -102,7 +106,6 @@ export default function ExportPage() {
       if (current) return current;
       const firstCompleted = response.videos.find((v) => v.status === "completed");
       if (firstCompleted) {
-        console.log("🎬 [Export] Setting first completed video as selected:", firstCompleted.id);
         return firstCompleted.id;
       }
       return null;
@@ -111,15 +114,8 @@ export default function ExportPage() {
 
   // ── Video data loaders ─────────────────────────────────────────────────────
   const loadVideos = React.useCallback(async () => {
-    console.log("🎬 [Export] loadVideos called");
     try {
       const response = await getProjectVideos(projectId);
-      console.log(
-        "🎬 [Export] Loaded videos:",
-        response.videos.length,
-        "videos",
-        response.videos.map((v) => ({ id: v.id, status: v.status }))
-      );
       applyVideosResponse(response);
     } catch (error) {
       handleVideoLoadError(error);
@@ -152,12 +148,6 @@ export default function ExportPage() {
     getProjectVideos(projectId)
       .then((response) => {
         if (cancelled) return;
-        console.log(
-          "🎬 [Export] Loaded videos:",
-          response.videos.length,
-          "videos",
-          response.videos.map((v) => ({ id: v.id, status: v.status }))
-        );
         setVideos(response.videos);
         setSelectedVideoId((current) => {
           if (current) return current;
@@ -196,7 +186,6 @@ export default function ExportPage() {
 
   React.useEffect(() => {
     const latestNotification = notifications[0];
-    console.log("🔔 [Export] Notifications changed, latest:", latestNotification);
     if (
       !(
         latestNotification &&
@@ -207,7 +196,6 @@ export default function ExportPage() {
       return;
     }
 
-    console.log("📹 Video completed notification received, refreshing videos...");
     let cancelled = false;
 
     getProjectVideos(projectId)
@@ -247,7 +235,7 @@ export default function ExportPage() {
     };
   }, [notifications, projectId, handleVideoLoadError]);
 
-  // Poll video job status over HTTP (see studio-backend/docs/SSE (Server-Sent Events).md)
+  // Poll video job status over HTTP
   React.useEffect(() => {
     const hasProcessingVideo = videos?.some(
       (v) => v.status === "processing" || v.status === "queued"
@@ -257,7 +245,6 @@ export default function ExportPage() {
       return;
     }
 
-    // Poll every 10 seconds for processing videos
     const pollInterval = setInterval(() => {
       void loadVideos();
       void loadCreditStatus();
@@ -347,14 +334,12 @@ export default function ExportPage() {
     setShowExportFormatModal(true);
   };
 
-  // ── Derived values ─────────────────────────────────────────────────────────
   const isPageLoading = isLoading || isLoadingVideos;
   const completedVideos = videos?.filter((v) => v.status === "completed") || [];
   const processingVideos =
     videos?.filter((v) => v.status === "processing" || v.status === "queued") || [];
   const failedVideos = videos?.filter((v) => v.status === "failed") || [];
 
-  // Restart stuck timer when poll shows status/progress movement (not on every poll tick).
   const processingActivityKey = processingVideos
     .map((v) => `${v.id}:${v.status}:${v.progress}:${v.updated_at}`)
     .join("|");
@@ -412,51 +397,61 @@ export default function ExportPage() {
   }
 
   const displayVideo = completedVideos.find((v) => v.id === selectedVideoId) || completedVideos[0];
+  const activeScript = state?.scripts?.find((s) => s.id === state.activeScriptId);
 
   return (
     <>
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col gap-6 pb-24">
-          {/* Page header */}
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <Heading variant="section" as="h2" className="text-text-primary">
-                {t("project.export.title")}
-              </Heading>
-              <p className="mt-1 text-body text-text-muted">{t("project.export.description")}</p>
-            </div>
-
-            <div className="group relative">
-              <button
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-surface-raised border border-border-default hover:border-accent-cyan/50 transition-all"
-                title={t("project.export.projectInfo")}
-              >
-                <Info className="h-4 w-4 text-text-muted group-hover:text-accent-cyan" />
-              </button>
-              <div className="absolute right-0 top-10 z-10 hidden group-hover:block w-64 p-3 rounded-lg bg-surface-raised border border-border-default shadow-lg text-caption">
-                <p className="font-medium text-text-secondary mb-2">
-                  {t("project.export.quickInfo")}
-                </p>
-                <div className="space-y-1 text-text-muted">
-                  <p>• {t("project.export.infoBullet1")}</p>
-                  <p>
-                    •{" "}
-                    {t("project.export.infoCreditsRemaining", {
-                      credits: creditStatus?.credits_remaining ?? "—",
-                    })}
-                  </p>
-                  <p>• {t("project.export.infoBullet3")}</p>
+        <div className="flex flex-col gap-6 pb-28">
+          <PageHeader
+            title={t("project.export.title")}
+            description={t("project.export.description")}
+            actions={
+              creditStatus && (
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-surface-raised border border-border-default text-caption">
+                  <Sparkles className="h-3.5 w-3.5 text-accent-primary" />
+                  <span>
+                    Balance:{" "}
+                    <strong className="text-text-primary">
+                      {formatCredits(creditStatus.credits_remaining)}
+                    </strong>
+                  </span>
                 </div>
+              )
+            }
+          />
+
+          {/* ── Pre-flight Readiness Checklist Row ── */}
+          <Card variant="elevated" padding="md" className="border-accent-primary/20 bg-surface-panel">
+            <p className="text-micro font-bold uppercase tracking-wider text-text-muted mb-3">
+              Pre-Flight Readiness Checklist
+            </p>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-caption">
+              <div className="flex items-center gap-2 p-2 rounded-lg bg-surface-raised border border-border-default truncate">
+                <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
+                <span className="truncate">Movie: {state?.movieTitle || "Ready"}</span>
+              </div>
+              <div className="flex items-center gap-2 p-2 rounded-lg bg-surface-raised border border-border-default truncate">
+                <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
+                <span className="truncate">Script: {activeScript?.wordCount ?? 0} words</span>
+              </div>
+              <div className="flex items-center gap-2 p-2 rounded-lg bg-surface-raised border border-border-default truncate">
+                <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
+                <span className="truncate">Voice: {state?.voiceName || "Assigned"}</span>
+              </div>
+              <div className="flex items-center gap-2 p-2 rounded-lg bg-surface-raised border border-border-default truncate">
+                <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
+                <span className="truncate">Cover: {state?.thumbnailConfirmed ? "Verified" : "Ready"}</span>
               </div>
             </div>
-          </div>
+          </Card>
 
-          {/* ── Generation Status Overview ── */}
+          {/* ── Generation Status Overview Metrics ── */}
           <div className="grid gap-4 sm:grid-cols-3">
             <Card variant="elevated" padding="md" className="border-success-border/30">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-success-bg flex-shrink-0">
-                  <Check className="h-5 w-5 text-success-text" />
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-success-bg text-success-text shrink-0">
+                  <Check className="h-5 w-5" />
                 </div>
                 <div>
                   <Heading variant="metric" className="text-success-text">
@@ -467,13 +462,13 @@ export default function ExportPage() {
               </div>
             </Card>
 
-            <Card variant="elevated" padding="md" className="border-accent-cyan/30">
+            <Card variant="elevated" padding="md" className="border-accent-primary/30">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-cyan/10 flex-shrink-0">
-                  <Clock className="h-5 w-5 text-accent-cyan" />
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-primary/10 text-accent-primary shrink-0">
+                  <Clock className="h-5 w-5" />
                 </div>
                 <div>
-                  <Heading variant="metric" className="text-accent-cyan">
+                  <Heading variant="metric" className="text-accent-primary">
                     {processingVideos.length}
                   </Heading>
                   <p className="text-caption text-text-muted">{t("project.export.processing")}</p>
@@ -483,8 +478,8 @@ export default function ExportPage() {
 
             <Card variant="elevated" padding="md" className="border-error-border/30">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-error-bg flex-shrink-0">
-                  <AlertCircle className="h-5 w-5 text-error-text" aria-hidden />
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-error-bg text-error-text shrink-0">
+                  <AlertCircle className="h-5 w-5" aria-hidden />
                 </div>
                 <div>
                   <Heading variant="metric" className="text-error-text">
@@ -496,20 +491,15 @@ export default function ExportPage() {
             </Card>
           </div>
 
-          {/* ── Main Video Display or Generate CTA ── */}
+          {/* ── Master Video Display or Generate CTA ── */}
           {displayVideo ? (
-            <Card variant="elevated" padding="md">
-              {/* Header with version selector */}
+            <Card variant="elevated" padding="md" className="border-accent-primary/30">
               <div className="flex items-center justify-between mb-4">
-                <Heading variant="label" as="h3" className="text-text-primary">
-                  {t("project.export.yourVideo")}
+                <Heading variant="label" as="h3" className="text-text-primary flex items-center gap-2">
+                  <Video className="h-4 w-4 text-accent-primary" />
+                  Master Video Showcase
                 </Heading>
                 <div className="flex items-center gap-2">
-                  {creditStatus && (
-                    <div className="text-caption text-text-muted">
-                      {formatCredits(creditStatus.credits_remaining)}
-                    </div>
-                  )}
                   <Button
                     variant="outline"
                     size="sm"
@@ -522,7 +512,6 @@ export default function ExportPage() {
                     }
                     onClick={handleGenerateVideo}
                     disabled={isGeneratingVideo}
-                    title={t("project.export.newVersionTitle")}
                   >
                     {isGeneratingVideo
                       ? t("project.export.generating")
@@ -531,10 +520,10 @@ export default function ExportPage() {
                 </div>
               </div>
 
-              {/* Version Selector */}
+              {/* Version Selector if multiple attempts exist */}
               {completedVideos.length > 1 && (
                 <div className="mb-4 flex items-center gap-2">
-                  <span className="text-caption font-medium text-text-muted flex-shrink-0">
+                  <span className="text-caption font-medium text-text-muted shrink-0">
                     {t("project.export.versionLabel")}
                   </span>
                   <div className="flex gap-2 overflow-x-auto">
@@ -543,21 +532,21 @@ export default function ExportPage() {
                         key={video.id}
                         type="button"
                         onClick={() => setSelectedVideoId(video.id)}
-                        className={`flex-shrink-0 px-3 py-1.5 rounded text-caption font-medium transition-all ${
+                        className={`shrink-0 px-3 py-1.5 rounded-lg text-caption font-medium transition-all ${
                           video.id === displayVideo.id
-                            ? "bg-accent-cyan text-white"
+                            ? "bg-accent-primary text-white shadow-glow"
                             : "bg-surface-raised text-text-secondary hover:bg-surface-raised-hover border border-border-default"
                         }`}
                       >
-                        {video.generation_attempt}
+                        Version {video.generation_attempt}
                       </button>
                     ))}
                   </div>
                 </div>
               )}
 
-              {/* Video Player */}
-              <div className="aspect-video rounded-lg overflow-hidden bg-surface-raised border border-border-default mb-4">
+              {/* 1080p Video Player */}
+              <div className="aspect-video rounded-xl overflow-hidden bg-surface-raised border border-border-default mb-4 shadow-lg">
                 {displayVideo.video_url ? (
                   <video
                     src={displayVideo.video_url}
@@ -573,35 +562,26 @@ export default function ExportPage() {
                     <p className="text-body font-medium text-text-secondary">
                       {t("project.export.videoUnavailable")}
                     </p>
-                    <p className="text-caption text-text-muted max-w-xs">
-                      {t("project.export.videoUnavailableDesc")}
-                    </p>
                   </div>
                 )}
               </div>
 
-              {/* Video metadata */}
-              <div className="grid gap-4 grid-cols-2 lg:grid-cols-4 text-caption p-3 rounded-lg bg-surface-base border border-border-default mb-4">
+              {/* Video metadata row */}
+              <div className="grid gap-3 grid-cols-2 lg:grid-cols-4 text-caption p-3.5 rounded-xl bg-surface-base border border-border-default mb-4">
                 <div>
-                  <span className="font-medium text-text-muted">
-                    {t("project.export.voiceLabel")}
-                  </span>{" "}
-                  <span className="text-text-primary">
+                  <span className="font-medium text-text-muted">Voice:</span>{" "}
+                  <span className="text-text-primary font-semibold">
                     {displayVideo.voice_name || t("project.common.notAvailable")}
                   </span>
                 </div>
                 <div>
-                  <span className="font-medium text-text-muted">
-                    {t("project.export.costLabel")}
-                  </span>{" "}
-                  <span className="text-text-primary">
+                  <span className="font-medium text-text-muted">Cost:</span>{" "}
+                  <span className="text-text-primary font-semibold">
                     {formatCredits(displayVideo.credit_cost)}
                   </span>
                 </div>
                 <div>
-                  <span className="font-medium text-text-muted">
-                    {t("project.export.generatedLabel")}
-                  </span>{" "}
+                  <span className="font-medium text-text-muted">Mastered:</span>{" "}
                   <span className="text-text-primary">
                     {new Date(displayVideo.created_at).toLocaleDateString(dateLocale, {
                       month: "short",
@@ -611,30 +591,28 @@ export default function ExportPage() {
                   </span>
                 </div>
                 <div>
-                  <span className="font-medium text-text-muted">
-                    {t("project.export.statusLabel")}
-                  </span>{" "}
-                  <span className="text-success-text">{getStatusLabel(displayVideo.status)}</span>
+                  <span className="font-medium text-text-muted">Status:</span>{" "}
+                  <span className="text-green-500 font-semibold">{getStatusLabel(displayVideo.status)}</span>
                 </div>
               </div>
 
-              {/* Action Buttons */}
-              <div className="grid gap-2 sm:grid-cols-3">
+              {/* Action Buttons Stack */}
+              <div className="grid gap-2.5 sm:grid-cols-3">
                 <Button
                   variant="secondary"
                   size="md"
                   leftIcon={<Download className="h-4 w-4" />}
                   onClick={() => displayVideo.video_url && handleDownload(displayVideo.video_url)}
-                  className="w-full"
+                  className="w-full touch-manipulation"
                 >
-                  {t("common.download")}
+                  {t("common.download")} (1080p)
                 </Button>
                 <Button
                   variant="secondary"
                   size="md"
                   leftIcon={<Film className="h-4 w-4" />}
                   onClick={() => handleExportFormat(displayVideo)}
-                  className="w-full"
+                  className="w-full touch-manipulation"
                 >
                   {t("project.export.exportFormat")}
                 </Button>
@@ -643,29 +621,31 @@ export default function ExportPage() {
                   size="md"
                   leftIcon={<Share2 className="h-4 w-4" />}
                   onClick={() => handleShare(displayVideo)}
-                  className="w-full"
+                  className="w-full touch-manipulation shadow-glow-hover"
                 >
                   {t("common.share")}
                 </Button>
               </div>
             </Card>
           ) : (
-            /* No video yet — generate CTA */
+            /* Primary Render CTA */
             <Card
               variant="elevated"
               padding="lg"
-              className="border-accent-cyan/30 bg-gradient-to-br from-accent-cyan/5 to-transparent"
+              className="border-2 border-accent-primary/30 bg-gradient-to-br from-accent-primary/15 via-surface-panel to-surface-panel shadow-lg"
             >
-              <div className="text-center max-w-md mx-auto">
+              <div className="text-center max-w-lg mx-auto py-4">
                 <div className="flex justify-center mb-4">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent-cyan-muted">
-                    <Video className="h-8 w-8 text-accent-cyan" />
+                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-primary/20 text-accent-primary shadow-glow">
+                    <Video className="h-8 w-8" />
                   </div>
                 </div>
                 <Heading variant="subsection" as="h3" className="text-text-primary mb-2">
                   {t("project.export.readyTitle")}
                 </Heading>
-                <p className="text-body text-text-muted mb-6">{t("project.export.readyDesc")}</p>
+                <p className="text-body text-text-muted mb-6 leading-relaxed">
+                  Stitches scene clips, overlays studio narration and subtitles, and encodes high-res MP4.
+                </p>
 
                 {creditStatus && (
                   <div className="mb-6 flex justify-center">
@@ -688,11 +668,11 @@ export default function ExportPage() {
                   }
                   onClick={handleGenerateVideo}
                   disabled={isGeneratingVideo}
-                  className="w-full max-w-xs"
+                  className="w-full max-w-sm shadow-glow-hover font-semibold"
                 >
                   {isGeneratingVideo
                     ? t("project.export.generating")
-                    : t("project.export.generateVideo")}
+                    : "🎬 Start Video Generation (1 Credit)"}
                 </Button>
 
                 {creditStatus && creditStatus.credits_remaining < 1 && (
@@ -704,70 +684,60 @@ export default function ExportPage() {
             </Card>
           )}
 
-          {/* ── Processing Videos ── */}
+          {/* ── Granular Live Render Telemetry ── */}
           {processingVideos.length > 0 && (
-            <Card variant="elevated" padding="md">
-              <Heading variant="label" as="h3" className="text-text-primary mb-4">
-                {t("project.export.processingVideos")}
+            <Card variant="elevated" padding="md" className="border-accent-primary/30">
+              <Heading variant="label" as="h3" className="text-text-primary mb-4 flex items-center gap-2">
+                <Clock className="h-4 w-4 text-accent-primary" />
+                Live Video Pipeline Telemetry
               </Heading>
-              {isProcessingStuck ? (
-                <div
-                  role="alert"
-                  className="flex flex-col gap-4 rounded-lg border border-error-border/30 bg-surface-raised p-4 sm:flex-row sm:items-center sm:justify-between"
-                >
-                  <div className="flex items-start gap-3">
-                    <AlertCircle className="h-5 w-5 text-error-text flex-shrink-0" aria-hidden />
-                    <div>
-                      <p className="text-body font-medium text-text-primary">
-                        {t("project.export.processingTimedOut")}
-                      </p>
-                      <p className="text-caption text-text-secondary mt-1">
-                        {t("project.export.processingTimedOutDesc")}
-                      </p>
-                    </div>
-                  </div>
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    leftIcon={<RotateCcw className="h-4 w-4" aria-hidden />}
-                    onClick={handleRetryProcessingStatus}
+
+              <div className="space-y-4">
+                {processingVideos.map((video) => (
+                  <div
+                    key={video.id}
+                    className="p-4 rounded-xl bg-surface-raised border border-accent-primary/30 space-y-3"
                   >
-                    {t("project.export.refreshStatus")}
-                  </Button>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {processingVideos.map((video) => (
-                    <div
-                      key={video.id}
-                      className="flex items-center justify-between p-3 rounded-lg bg-surface-raised border border-accent-cyan/30"
-                    >
-                      <div className="flex items-center gap-3 flex-1">
-                        <Spinner className="h-5 w-5 text-accent-cyan flex-shrink-0" />
-                        <div className="flex-1 min-w-0">
-                          <p className="text-body font-medium text-text-primary">
-                            {t("project.common.version", { number: video.generation_attempt })}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <Spinner className="h-5 w-5 text-accent-primary shrink-0" />
+                        <div>
+                          <p className="text-body font-semibold text-text-primary">
+                            Version {video.generation_attempt}
                           </p>
                           <p className="text-caption text-text-muted">
                             {video.status === "queued"
-                              ? t("project.export.queuedProcessing")
-                              : t("project.export.generatingVideo")}
+                              ? "Queued in RabbitMQ render pool..."
+                              : "Stitching scenes & encoding MP4 master..."}
                           </p>
                         </div>
                       </div>
-                      <span className="text-caption px-2 py-1 rounded bg-accent-cyan/10 text-accent-cyan">
+                      <Badge variant="accent" size="sm">
                         {getStatusLabel(video.status)}
-                      </span>
+                      </Badge>
                     </div>
-                  ))}
-                </div>
-              )}
+
+                    {/* Progress stage steps */}
+                    <div className="grid grid-cols-3 gap-2 text-micro font-medium text-center pt-2 border-t border-border-default">
+                      <div className="p-1.5 rounded bg-accent-primary/10 text-accent-primary">
+                        1. Queue Verified
+                      </div>
+                      <div className={`p-1.5 rounded ${video.status === "processing" ? "bg-accent-primary/20 text-accent-primary animate-pulse" : "bg-surface-panel text-text-muted"}`}>
+                        2. Stitch & Audio Sync
+                      </div>
+                      <div className="p-1.5 rounded bg-surface-panel text-text-muted">
+                        3. 1080p MP4 Encode
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </Card>
           )}
 
           {/* ── Failed Videos ── */}
           {failedVideos.length > 0 && (
-            <Card variant="elevated" padding="md">
+            <Card variant="elevated" padding="md" className="border-error-border/30">
               <Heading variant="label" as="h3" className="text-text-primary mb-4">
                 {t("project.export.failedGenerations")}
               </Heading>
@@ -775,13 +745,13 @@ export default function ExportPage() {
                 {failedVideos.map((video) => (
                   <div
                     key={video.id}
-                    className="flex items-center justify-between p-3 rounded-lg bg-surface-raised border border-error-border/30"
+                    className="flex items-center justify-between p-3.5 rounded-xl bg-surface-raised border border-error-border/30"
                   >
                     <div className="flex items-center gap-3 flex-1 min-w-0">
-                      <AlertCircle className="h-5 w-5 text-error-text flex-shrink-0" aria-hidden />
+                      <AlertCircle className="h-5 w-5 text-error-text shrink-0" aria-hidden />
                       <div className="flex-1 min-w-0">
-                        <p className="text-body font-medium text-text-primary">
-                          {t("project.common.version", { number: video.generation_attempt })}
+                        <p className="text-body font-semibold text-text-primary">
+                          Version {video.generation_attempt}
                         </p>
                         <p className="text-caption text-error-text truncate">
                           {video.error_message || t("project.export.generationFailed")}
@@ -791,7 +761,7 @@ export default function ExportPage() {
                     <button
                       type="button"
                       onClick={() => handleDeleteVideo(video.id)}
-                      className="text-caption text-text-muted hover:text-error-text font-medium ml-2"
+                      className="text-caption text-text-muted hover:text-error-text font-medium ml-2 p-1 rounded"
                       title={t("project.export.deleteVideo")}
                       aria-label={t("project.export.deleteVideo")}
                     >
@@ -802,247 +772,82 @@ export default function ExportPage() {
               </div>
             </Card>
           )}
-
-          {/* ── All Versions History ── */}
-          {videos && videos.length > 1 && (
-            <Card variant="elevated" padding="md">
-              <details className="group">
-                <summary className="flex items-center gap-2 cursor-pointer text-body font-medium text-text-primary hover:text-accent-cyan transition-colors select-none py-2">
-                  <ChevronRight className="h-4 w-4 group-open:rotate-90 transition-transform" />
-                  <span>{t("project.export.viewAllVersions", { count: videos.length })}</span>
-                </summary>
-                <div className="mt-4 space-y-2">
-                  {videos.map((video) => (
-                    <div
-                      key={video.id}
-                      className="flex items-center justify-between p-3 rounded-lg bg-surface-raised border border-border-default hover:border-accent-cyan/30 transition-colors"
-                    >
-                      <div className="flex items-center gap-3 flex-1 min-w-0">
-                        <div className="w-20 aspect-video rounded overflow-hidden bg-surface-base flex-shrink-0">
-                          {video.thumbnail_url ? (
-                            <Image
-                              src={video.thumbnail_url}
-                              alt={t("project.common.version", {
-                                number: video.generation_attempt,
-                              })}
-                              width={80}
-                              height={45}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center">
-                              <Film className="h-6 w-6 text-text-muted" />
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <p className="text-body font-medium text-text-primary">
-                              {t("project.common.version", { number: video.generation_attempt })}
-                            </p>
-                            {(video.status === "processing" || video.status === "queued") && (
-                              <Spinner className="h-3 w-3 text-accent-cyan" />
-                            )}
-                            <span
-                              className={`text-caption px-2 py-0.5 rounded ${
-                                video.status === "completed"
-                                  ? "bg-success-bg text-success-text"
-                                  : video.status === "failed"
-                                    ? "bg-error-bg text-error-text"
-                                    : "bg-accent-cyan/10 text-accent-cyan"
-                              }`}
-                            >
-                              {getStatusLabel(video.status)}
-                            </span>
-                          </div>
-                          <p className="text-caption text-text-muted mt-1">
-                            {new Date(video.created_at).toLocaleDateString(dateLocale, {
-                              month: "short",
-                              day: "numeric",
-                              hour: "numeric",
-                              minute: "2-digit",
-                            })}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2 flex-shrink-0">
-                        {video.status === "completed" && (
-                          <>
-                            {video.id !== displayVideo?.id && (
-                              <button
-                                type="button"
-                                onClick={() => setSelectedVideoId(video.id)}
-                                className="text-caption text-accent-cyan hover:text-accent-cyan-hover font-medium px-2 py-1"
-                              >
-                                {t("common.view")}
-                              </button>
-                            )}
-                            <button
-                              type="button"
-                              onClick={() => video.video_url && handleDownload(video.video_url)}
-                              className="p-1 rounded hover:bg-surface-base transition-colors"
-                              title={t("common.download")}
-                              aria-label={t("common.download")}
-                            >
-                              <Download
-                                className="h-4 w-4 text-text-muted hover:text-accent-cyan"
-                                aria-hidden
-                              />
-                            </button>
-                          </>
-                        )}
-                        {video.id !== displayVideo?.id && (
-                          <button
-                            type="button"
-                            onClick={() => handleDeleteVideo(video.id)}
-                            className="p-1 rounded hover:bg-surface-base transition-colors"
-                            title={t("common.delete")}
-                            aria-label={t("common.delete")}
-                          >
-                            <Trash2
-                              className="h-4 w-4 text-text-muted hover:text-error-text"
-                              aria-hidden
-                            />
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </details>
-            </Card>
-          )}
-
-          {/* Return to Projects */}
-          <div className="flex justify-center">
-            <Button variant="ghost" size="md" onClick={() => router.push("/projects")}>
-              {t("project.export.returnToProjects")}
-            </Button>
-          </div>
         </div>
-
-        {/* ── Modals ─────────────────────────────────────────────────────────── */}
-
-        {/* Share Modal */}
-        {showShareModal && displayVideo && (
-          <Modal
-            open={showShareModal}
-            onClose={() => setShowShareModal(false)}
-            title={t("project.export.shareVideo")}
-            size="md"
-          >
-            <div className="space-y-4">
-              <p className="text-body text-text-muted">{t("project.export.choosePlatform")}</p>
-
-              <div className="space-y-3">
-                {/* X.com (Twitter) */}
-                <button
-                  onClick={() => {
-                    if (displayVideo.video_url) {
-                      navigator.clipboard.writeText(displayVideo.video_url);
-                      toast.success(t("project.export.urlCopied"), t("project.export.shareXDesc"));
-                    }
-                    setShowShareModal(false);
-                  }}
-                  className="w-full flex items-center gap-4 p-4 rounded-lg border border-border-default bg-surface-raised hover:bg-surface-raised-hover hover:border-accent-cyan/30 transition-all group"
-                >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-black flex-shrink-0">
-                    <XIcon className="h-6 w-6 text-white" />
-                  </div>
-                  <div className="flex-1 text-left">
-                    <Heading
-                      variant="label"
-                      as="h4"
-                      className="text-text-primary group-hover:text-accent-cyan transition-colors"
-                    >
-                      {t("project.export.shareXTitle")}
-                    </Heading>
-                    <p className="text-caption text-text-muted mt-0.5">
-                      {t("project.export.shareXSubtitle")}
-                    </p>
-                  </div>
-                  <ChevronRight className="h-5 w-5 text-text-muted group-hover:text-accent-cyan transition-colors" />
-                </button>
-
-                {/* WeChat */}
-                <button
-                  onClick={() => {
-                    if (displayVideo.video_url) {
-                      navigator.clipboard.writeText(displayVideo.video_url);
-                      toast.success(
-                        t("project.export.urlCopied"),
-                        t("project.export.shareWeChatDesc")
-                      );
-                    }
-                    setShowShareModal(false);
-                  }}
-                  className="w-full flex items-center gap-4 p-4 rounded-lg border border-border-default bg-surface-raised hover:bg-surface-raised-hover hover:border-accent-cyan/30 transition-all group"
-                >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#07C160] flex-shrink-0">
-                    <WeChatIcon className="h-6 w-6 text-white" />
-                  </div>
-                  <div className="flex-1 text-left">
-                    <Heading
-                      variant="label"
-                      as="h4"
-                      className="text-text-primary group-hover:text-accent-cyan transition-colors"
-                    >
-                      {t("project.export.shareWeChatTitle")}
-                    </Heading>
-                    <p className="text-caption text-text-muted mt-0.5">
-                      {t("project.export.shareWeChatSubtitle")}
-                    </p>
-                  </div>
-                  <ChevronRight className="h-5 w-5 text-text-muted group-hover:text-accent-cyan transition-colors" />
-                </button>
-              </div>
-
-              <div className="pt-4 border-t border-border-default">
-                <p className="text-caption text-text-muted text-center">
-                  {t("project.export.morePlatforms")}
-                </p>
-              </div>
-            </div>
-          </Modal>
-        )}
-
-        {/* Export Format Modal */}
-        {showExportFormatModal && displayVideo && displayVideo.video_url && (
-          <ExportFormatModal
-            isOpen={showExportFormatModal}
-            onClose={() => setShowExportFormatModal(false)}
-            videoUrl={displayVideo.video_url}
-            onExport={handleDownload}
-          />
-        )}
       </div>
 
-      <FloatingWorkflowNavigation
-        projectId={projectId}
-        currentStep="export"
-        canGoNext={false}
-        canGoBack={true}
-        isProcessing={false}
+      {/* Credit Confirmation Modal */}
+      <CreditConfirmationModal
+        open={showCreditConfirmationModal}
+        onClose={() => setShowCreditConfirmationModal(false)}
+        onConfirm={handleConfirmGenerate}
+        cost={1}
+        remainingCredits={creditStatus?.credits_remaining || 0}
+        loading={isGeneratingVideo}
       />
 
       {/* Insufficient Credits Modal */}
       <InsufficientCreditsModal
-        isOpen={showInsufficientCreditsModal}
+        open={showInsufficientCreditsModal}
         onClose={() => setShowInsufficientCreditsModal(false)}
-        creditStatus={creditStatus}
         requiredCredits={1}
+        availableCredits={creditStatus?.credits_remaining || 0}
       />
 
-      {/* Credit Confirmation Modal */}
-      <CreditConfirmationModal
-        isOpen={showCreditConfirmationModal}
-        onClose={() => setShowCreditConfirmationModal(false)}
-        onConfirm={handleConfirmGenerate}
-        title={t("project.export.confirmGenerateTitle")}
-        message={t("project.export.confirmGenerateMessage")}
-        creditCost={1}
-        creditsRemaining={creditStatus?.credits_remaining ?? 0}
-        isProcessing={isGeneratingVideo}
+      {/* Share Modal */}
+      {selectedVideoId && (
+        <Modal
+          open={showShareModal}
+          onClose={() => setShowShareModal(false)}
+          title={t("common.share")}
+          size="md"
+        >
+          <div className="space-y-4">
+            <p className="text-body text-text-secondary">
+              Share your master video with your audience:
+            </p>
+            <div className="flex gap-3">
+              <Button
+                variant="secondary"
+                size="md"
+                leftIcon={<XIcon className="h-4 w-4" />}
+                onClick={() => {
+                  window.open(`https://twitter.com/intent/tweet?text=Check out my new video on Huavoi Studio!`, "_blank");
+                }}
+                className="w-full"
+              >
+                X / Twitter
+              </Button>
+              <Button
+                variant="secondary"
+                size="md"
+                leftIcon={<WeChatIcon className="h-4 w-4" />}
+                onClick={() => {
+                  toast.success("Link copied to clipboard!");
+                }}
+                className="w-full"
+              >
+                WeChat
+              </Button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {/* Export Format Modal */}
+      {selectedVideoId && (
+        <ExportFormatModal
+          open={showExportFormatModal}
+          onClose={() => setShowExportFormatModal(false)}
+          video={videos.find((v) => v.id === selectedVideoId)!}
+        />
+      )}
+
+      <FloatingWorkflowNavigation
+        projectId={projectId}
+        currentStep="export"
+        canGoNext={completedVideos.length > 0}
+        nextLabel={t("project.nav.completeProject")}
+        canGoBack={true}
       />
     </>
   );

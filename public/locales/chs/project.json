@@ -68,6 +68,9 @@
       "statusCompleted": "已完成"
     },
     "nav": {
+      "phaseConcept": "阶段 A：概念构思",
+      "phaseProduction": "阶段 B：内容制作",
+      "phaseMastering": "阶段 C：后期成片",
       "source": "片源",
       "script": "脚本",
       "voice": "音色",

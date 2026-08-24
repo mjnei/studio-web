@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useToast } from "@/components/ui/toast";
 import { useI18n } from "@/i18n";
 import { getVoiceAudioUrl } from "@/lib/api/voice-client";
 import type { VoiceResponse, VoiceWithCreator } from "@/lib/types/api";
 
-function stopAudio(audioRef: React.RefObject<HTMLAudioElement | null>) {
+function stopAudioElement(audioRef: React.RefObject<HTMLAudioElement | null>) {
   if (!audioRef.current) return;
 
   audioRef.current.pause();
@@ -21,12 +21,18 @@ export function useVoicePreview() {
   const { error: toastError } = useToast();
   const { t } = useI18n();
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [playingVoiceId, setPlayingVoiceId] = useState<number | null>(null);
 
   useEffect(() => {
     return () => {
-      stopAudio(audioRef);
+      stopAudioElement(audioRef);
     };
   }, []);
+
+  const stopPreview = () => {
+    stopAudioElement(audioRef);
+    setPlayingVoiceId(null);
+  };
 
   const playVoicePreview = async (
     voiceId: number,
@@ -34,7 +40,14 @@ export function useVoicePreview() {
     ownVoices: VoiceResponse[],
     communityVoices: VoiceWithCreator[]
   ) => {
-    stopAudio(audioRef);
+    // If clicking currently playing voice, pause it
+    if (playingVoiceId === voiceId) {
+      stopPreview();
+      return;
+    }
+
+    stopAudioElement(audioRef);
+    setPlayingVoiceId(null);
 
     try {
       const voiceData =
@@ -78,22 +91,28 @@ export function useVoicePreview() {
       const blob = await response.blob();
       const blobUrl = URL.createObjectURL(blob);
 
-      audioRef.current = new Audio(blobUrl);
-      audioRef.current.onended = () => {
+      const audio = new Audio(blobUrl);
+      audioRef.current = audio;
+
+      audio.onended = () => {
+        setPlayingVoiceId(null);
         URL.revokeObjectURL(blobUrl);
       };
-      audioRef.current.onerror = (e) => {
-        console.error("Audio playback error:", audioRef.current?.error, e);
+      audio.onerror = (e) => {
+        console.error("Audio playback error:", audio.error, e);
+        setPlayingVoiceId(null);
         toastError(t("project.voice.playbackFailed"), t("project.voice.playbackFailedPlay"));
         URL.revokeObjectURL(blobUrl);
       };
 
-      await audioRef.current.play();
+      await audio.play();
+      setPlayingVoiceId(voiceId);
     } catch (err) {
       console.error("Failed to load/play audio:", err);
+      setPlayingVoiceId(null);
       toastError(t("project.voice.playbackFailed"), t("project.voice.playbackFailedLoad"));
     }
   };
 
-  return { playVoicePreview };
+  return { playVoicePreview, stopPreview, playingVoiceId };
 }
