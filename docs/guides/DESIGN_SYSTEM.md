@@ -528,6 +528,35 @@ import { useToast, ToastProvider } from "@/components/ui/toast";
 </PageContainer>
 ```
 
+### Page header (two zones)
+
+Every shell page uses `PageHeader` for the title. Chrome lives in at most two zones — never a second row that only holds buttons (for example, Create CTA in the header and `LayoutToggle` on the next row).
+
+**Zone A — `PageHeader`:** one horizontal band. Left: title, optional description, then optional **meta** (item counts as muted caption text — `meta` prop, not a pill). Right: a single action cluster (`flex flex-wrap items-center justify-end gap-2 sm:gap-3`) in this order:
+
+1. **View chrome** (`LayoutToggle`) — when there is no search/filter toolbar
+2. **Secondary** (Refresh, Export, outline) — optional
+3. **Primary** (Create / Add) — rightmost
+
+Count meta is status, not a control. Do not put it in the action cluster. Exception: quota that explains a CTA (Voices private `3 / 5`) may stay next to that button.
+
+**Zone B — toolbar (optional):** only when there is real content chrome — search, filters, tabs, or sort. Put `LayoutToggle` here when that toolbar already exists (Jobs, Movies, Queues). Do not put the primary Create CTA in the toolbar.
+
+```tsx
+<PageHeader
+  title="…"
+  description="…"
+  meta="12 projects"
+  action={
+    <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3">
+      {/* LayoutToggle → secondary → primary */}
+    </div>
+  }
+/>
+```
+
+Header buttons use `size="md"`; toolbar controls use `sm` / `icon`. On mobile, `PageHeader` stacks title above actions (`flex-col sm:flex-row`); the action cluster may wrap as one group, not as a separate toolbar row.
+
 ### Card Grid Pattern
 ```typescript
 <Grid cols={3} gap="md">

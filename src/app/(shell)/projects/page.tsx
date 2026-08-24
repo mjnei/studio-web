@@ -132,12 +132,18 @@ export default function ProjectsPage() {
       <PageHeader
         title={t("projects.title")}
         description={t("projects.description")}
+        meta={
+          !loading
+            ? `${projects.length} ${
+                projects.length === 1 ? t("projects.badge.singular") : t("projects.badge.plural")
+              }`
+            : undefined
+        }
         action={
-          <div className="flex items-center gap-3">
-            <span className="rounded-full bg-accent-cyan/10 px-3 py-1.5 text-caption font-medium text-accent-cyan whitespace-nowrap">
-              {projects.length}{" "}
-              {projects.length === 1 ? t("projects.badge.singular") : t("projects.badge.plural")}
-            </span>
+          <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3">
+            {!loading && projects.length > 0 && (
+              <LayoutToggle layoutMode={layoutMode} onLayoutChange={handleLayoutChange} />
+            )}
             <Link href="/project/new">
               <Button variant="primary" size="md" leftIcon={<Plus className="h-4 w-4" />}>
                 {t("projects.new")}
@@ -146,13 +152,6 @@ export default function ProjectsPage() {
           </div>
         }
       />
-
-      {/* Layout Controls */}
-      {!loading && projects.length > 0 && (
-        <div className="mb-6 flex justify-end">
-          <LayoutToggle layoutMode={layoutMode} onLayoutChange={handleLayoutChange} />
-        </div>
-      )}
 
       {showLoading ? (
         <LoadingSpinner

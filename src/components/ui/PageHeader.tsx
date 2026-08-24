@@ -6,6 +6,8 @@ import { Text } from "./text";
 interface PageHeaderProps {
   title: React.ReactNode;
   description?: React.ReactNode;
+  /** Count or other status text under the title — not action chrome. */
+  meta?: React.ReactNode;
   action?: React.ReactNode;
   breadcrumbs?: React.ReactNode;
   className?: string;
@@ -14,11 +16,13 @@ interface PageHeaderProps {
 export const PageHeader: React.FC<PageHeaderProps> = ({
   title,
   description,
+  meta,
   action,
   breadcrumbs,
   className,
 }) => {
   const isStringTitle = typeof title === "string";
+  const isStringMeta = typeof meta === "string";
 
   return (
     <div className={cn("mb-6 sm:mb-8", className)}>
@@ -35,6 +39,21 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
                   {description}
                 </Text>
               )}
+              {meta &&
+                (isStringMeta ? (
+                  <Text
+                    variant="caption"
+                    as="p"
+                    className={cn(
+                      description ? "mt-1" : "mt-2",
+                      "text-[var(--text-muted)]"
+                    )}
+                  >
+                    {meta}
+                  </Text>
+                ) : (
+                  <div className={description ? "mt-1" : "mt-2"}>{meta}</div>
+                ))}
             </>
           ) : (
             <div>{title}</div>
