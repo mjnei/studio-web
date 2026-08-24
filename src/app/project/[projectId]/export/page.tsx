@@ -83,7 +83,6 @@ export default function ExportPage() {
   // ── Video data loaders ─────────────────────────────────────────────────────
   const loadVideos = React.useCallback(async () => {
     console.log("🎬 [Export] loadVideos called");
-    setIsLoadingVideos(true);
     try {
       const response = await getProjectVideos(projectId);
       console.log(
@@ -129,11 +128,18 @@ export default function ExportPage() {
     }
   }, []);
 
+  const [videosProjectId, setVideosProjectId] = useState(projectId);
+  if (projectId !== videosProjectId) {
+    setVideosProjectId(projectId);
+    setIsLoadingVideos(true);
+    setVideos([]);
+    setSelectedVideoId(null);
+  }
+
   React.useEffect(() => {
-    if (projectId) {
-      void loadVideos();
-      void loadCreditStatus();
-    }
+    if (!projectId) return;
+    void loadVideos();
+    void loadCreditStatus();
   }, [projectId, loadVideos, loadCreditStatus]);
 
   // Listen for video completion notifications

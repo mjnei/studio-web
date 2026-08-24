@@ -14,31 +14,33 @@ interface AudioPlayerProps {
 }
 
 export function AudioPlayer({ audioUrl, jobId, jobName, onDismiss }: AudioPlayerProps) {
+  const [sourceUrl, setSourceUrl] = useState(audioUrl);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
+  const [waveformHeights] = useState(() =>
+    Array.from({ length: 40 }, () => Math.random() * 100)
+  );
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Auto-play when component mounts
-  useEffect(() => {
-    if (audioRef.current) {
-      void audioRef.current.play();
-      setIsPlaying(true);
-    }
-  }, []);
-
-  // Reset player when audio URL changes
-  useEffect(() => {
+  // Reset player state when the audio source changes (render-time adjustment).
+  if (audioUrl !== sourceUrl) {
+    setSourceUrl(audioUrl);
     setIsPlaying(false);
     setCurrentTime(0);
     setDuration(0);
-    if (audioRef.current) {
-      audioRef.current.load();
-      void audioRef.current.play();
-      setIsPlaying(true);
-    }
+  }
+
+  // Synchronize the audio element with the external URL (load + autoplay).
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.load();
+    void audio.play().catch(() => {
+      // Autoplay may be blocked; play/pause listeners keep UI in sync.
+    });
   }, [audioUrl]);
 
   useEffect(() => {
@@ -53,10 +55,17 @@ export function AudioPlayer({ audioUrl, jobId, jobName, onDismiss }: AudioPlayer
       setCurrentTime(audio.currentTime);
     };
 
+    const handlePlay = () => {
+      setIsPlaying(true);
+    };
+
+    const handlePause = () => {
+      setIsPlaying(false);
+    };
+
     const handleEnded = () => {
       setIsPlaying(false);
       setCurrentTime(0);
-      // Auto-dismiss when playback finishes
       if (onDismiss) {
         onDismiss();
       }
@@ -71,16 +80,20 @@ export function AudioPlayer({ audioUrl, jobId, jobName, onDismiss }: AudioPlayer
 
     audio.addEventListener("loadedmetadata", handleLoadedMetadata);
     audio.addEventListener("timeupdate", handleTimeUpdate);
+    audio.addEventListener("play", handlePlay);
+    audio.addEventListener("pause", handlePause);
     audio.addEventListener("ended", handleEnded);
     audio.addEventListener("error", handleError);
 
     return () => {
       audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
       audio.removeEventListener("timeupdate", handleTimeUpdate);
+      audio.removeEventListener("play", handlePlay);
+      audio.removeEventListener("pause", handlePause);
       audio.removeEventListener("ended", handleEnded);
       audio.removeEventListener("error", handleError);
     };
-  }, [onDismiss]);
+  }, [onDismiss, audioUrl]);
 
   const togglePlay = () => {
     if (!audioRef.current) return;
@@ -90,7 +103,6 @@ export function AudioPlayer({ audioUrl, jobId, jobName, onDismiss }: AudioPlayer
     } else {
       void audioRef.current.play();
     }
-    setIsPlaying(!isPlaying);
   };
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -125,7 +137,6 @@ export function AudioPlayer({ audioUrl, jobId, jobName, onDismiss }: AudioPlayer
     setCurrentTime(0);
     if (!isPlaying) {
       void audioRef.current.play();
-      setIsPlaying(true);
     }
   };
 
@@ -190,12 +201,12 @@ export function AudioPlayer({ audioUrl, jobId, jobName, onDismiss }: AudioPlayer
         {/* Waveform visualization (placeholder) */}
         <div className="mb-4 h-20 rounded-lg bg-surface-base border border-border-default flex items-center justify-center">
           <div className="flex items-end gap-1 h-16">
-            {Array.from({ length: 40 }).map((_, i) => (
+            {waveformHeights.map((height, i) => (
               <div
                 key={i}
                 className="w-1 bg-accent-primary rounded-t transition-all"
                 style={{
-                  height: `${Math.random() * 100}%`,
+                  height: `${height}%`,
                   opacity: currentTime > (i / 40) * duration ? 1 : 0.3,
                 }}
               />

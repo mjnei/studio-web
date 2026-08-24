@@ -193,6 +193,14 @@ export function useProjectState(projectId: string) {
   const [state, setState] = useState<ProjectState | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const [loadedProjectId, setLoadedProjectId] = useState(projectId);
+
+  if (projectId !== loadedProjectId) {
+    setLoadedProjectId(projectId);
+    setIsLoading(true);
+    setError(null);
+    setState(null);
+  }
 
   const refresh = useCallback(async () => {
     setIsLoading(true);
@@ -228,25 +236,30 @@ export function useProjectState(projectId: string) {
     // Wait for auth to initialize before fetching project data
     if (isAuthLoading) return;
 
-    // Start loading immediately
-    setIsLoading(true);
-    setError(null);
+    let cancelled = false;
 
-    // Fetch data asynchronously
     (async () => {
       try {
         const [project, scripts] = await Promise.all([
           getProject(projectId),
           listProjectScripts(projectId).catch(() => []),
         ]);
+        if (cancelled) return;
         setState(mapProject(project, scripts));
       } catch (err) {
+        if (cancelled) return;
         setError(err instanceof Error ? err : new Error("Unable to load project"));
         setState(null);
       } finally {
-        setIsLoading(false);
+        if (!cancelled) {
+          setIsLoading(false);
+        }
       }
     })();
+
+    return () => {
+      cancelled = true;
+    };
   }, [projectId, isAuthLoading]);
 
   // Poll for thumbnail generation status

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNotifications } from "@/lib/notification-context";
 import { X, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -22,13 +22,14 @@ export function NotificationPreferencesModal({
   const { preferences, updatePreferences, preferencesLoading } = useNotifications();
   const { t } = useI18n();
   const [localPreferences, setLocalPreferences] = useState(preferences || {});
+  const [preferencesSource, setPreferencesSource] = useState(preferences);
   const [isSaving, setIsSaving] = useState(false);
 
-  useEffect(() => {
-    if (preferences) {
-      setLocalPreferences(preferences);
-    }
-  }, [preferences]);
+  // Editable draft: re-initialize when server preferences change.
+  if (preferences && preferences !== preferencesSource) {
+    setPreferencesSource(preferences);
+    setLocalPreferences(preferences);
+  }
 
   if (!isOpen) return null;
 

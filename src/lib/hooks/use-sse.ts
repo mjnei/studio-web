@@ -19,7 +19,7 @@ interface UseSSEOptions<T> {
  * uses fetch with ReadableStream to implement SSE with Authorization header.
  */
 export function useSSE<T>({ url, enabled, onMessage, onError, shouldClose }: UseSSEOptions<T>) {
-  const [isConnected, setIsConnected] = useState(false);
+  const [connected, setIsConnected] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);
   const readerRef = useRef<ReadableStreamDefaultReader<Uint8Array> | null>(null);
 
@@ -52,7 +52,6 @@ export function useSSE<T>({ url, enabled, onMessage, onError, shouldClose }: Use
         readerRef.current.cancel();
         readerRef.current = null;
       }
-      setIsConnected(false);
       return;
     }
 
@@ -155,5 +154,5 @@ export function useSSE<T>({ url, enabled, onMessage, onError, shouldClose }: Use
     };
   }, [url, enabled]); // Only depend on url and enabled, callbacks are in refs
 
-  return { isConnected };
+  return { isConnected: enabled && connected };
 }

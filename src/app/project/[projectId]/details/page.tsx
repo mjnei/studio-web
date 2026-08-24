@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import Image from "next/image";
 import { Check, ChevronDown, FileText, Edit2, Sparkles } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
@@ -30,11 +30,7 @@ export default function ProjectDetailsPage() {
   const projectId = params.projectId as string;
   const { state, isLoading, activeScript } = useProjectState(projectId);
 
-  const [projectName, setProjectName] = useState(() => {
-    // Will be initialized from state in another effect
-    return "";
-  });
-  const [fallbackSuggestions, setFallbackSuggestions] = useState<NameSuggestion[]>([]);
+  const [nameDraft, setNameDraft] = useState<string | null>(null);
   const [aiSuggestions, setAiSuggestions] = useState<NameSuggestion[]>([]);
   const [loadingAiSuggestions, setLoadingAiSuggestions] = useState(false);
   const [savingName, setSavingName] = useState(false);
@@ -322,27 +318,17 @@ export default function ProjectDetailsPage() {
     fetchAiNameSuggestionsWithScheduling,
   ]);
 
-  // Initialize project name from existing state (if already set) or use first fallback
-  useEffect(() => {
-    if (state?.movieTitle) {
-      const suggestions = generateLocalFallbackSuggestions(state.movieTitle);
-      setFallbackSuggestions(suggestions);
-    }
+  // Derive local fallback suggestions from the movie title (no sync effect).
+  const fallbackSuggestions = useMemo(() => {
+    if (!state?.movieTitle) return [];
+    return generateLocalFallbackSuggestions(state.movieTitle);
   }, [state?.movieTitle, generateLocalFallbackSuggestions]);
 
-  // Use existing project name if available, otherwise use first fallback suggestion
-  useEffect(() => {
-    if (projectName) return; // Already set
-
-    if (state?.projectName) {
-      setProjectName(state.projectName);
-    } else if (fallbackSuggestions.length > 0) {
-      setProjectName(fallbackSuggestions[0].name);
-    }
-  }, [state?.projectName, fallbackSuggestions, projectName]);
+  // Editable name: local draft overrides derived server/fallback value.
+  const projectName = nameDraft ?? state?.projectName ?? fallbackSuggestions[0]?.name ?? "";
 
   const handleSuggestionClick = (suggestion: NameSuggestion) => {
-    setProjectName(suggestion.name);
+    setNameDraft(suggestion.name);
   };
 
   // Save project name and continue
@@ -553,7 +539,7 @@ export default function ProjectDetailsPage() {
                   id="projectName"
                   type="text"
                   value={projectName}
-                  onChange={(e) => setProjectName(e.target.value)}
+                  onChange={(e) => setNameDraft(e.target.value)}
                   placeholder={t("project.details.namePlaceholder")}
                   className={`${typography.section} w-full rounded-xl border-2 border-accent-cyan/50 bg-surface-base px-5 py-4 text-text-primary placeholder-text-muted/60 shadow-[0_0_20px_rgba(34,211,238,0.12)] transition-all hover:shadow-[0_0_25px_rgba(34,211,238,0.2)] focus:border-accent-cyan focus:outline-none focus:ring-4 focus:ring-accent-cyan/25`}
                 />

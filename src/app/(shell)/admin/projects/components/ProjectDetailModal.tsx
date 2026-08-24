@@ -4,7 +4,7 @@ import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { AdminProject, AdminProjectStatus } from "@/types/admin";
 
 interface ProjectDetailModalProps {
@@ -26,12 +26,17 @@ export function ProjectDetailModal({
   onDelete,
   onRestore,
 }: ProjectDetailModalProps) {
-  const [status, setStatus] = useState<AdminProjectStatus>("draft");
+  const [status, setStatus] = useState<AdminProjectStatus>(project?.status ?? "draft");
+  const [statusSource, setStatusSource] = useState(project);
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    if (project) setStatus(project.status);
-  }, [project]);
+  // Editable draft: re-initialize when the selected project identity/status changes.
+  if (project !== statusSource) {
+    setStatusSource(project);
+    if (project) {
+      setStatus(project.status);
+    }
+  }
 
   if (!open || !project) return null;
 

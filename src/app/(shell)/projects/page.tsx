@@ -59,7 +59,6 @@ export default function ProjectsPage() {
   useEffect(() => {
     let isMounted = true;
 
-    setLoading(true);
     listProjects(true)
       .then((data) => {
         if (isMounted) {
@@ -83,7 +82,7 @@ export default function ProjectsPage() {
     return () => {
       isMounted = false;
     };
-  }, [toast]);
+  }, [toast, t]);
 
   const handleDeleteClick = (project: ProjectResponse) => {
     setProjectToDelete(project);

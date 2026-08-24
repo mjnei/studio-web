@@ -23,6 +23,23 @@ interface AuditLogsTableProps {
 type SortField = "created_at" | "action" | "user_id";
 type SortDirection = "asc" | "desc";
 
+function SortIcon({
+  field,
+  sortField,
+  sortDirection,
+}: {
+  field: SortField;
+  sortField: SortField;
+  sortDirection: SortDirection;
+}) {
+  if (sortField !== field) return null;
+  return sortDirection === "asc" ? (
+    <ChevronUp className="h-4 w-4" aria-hidden />
+  ) : (
+    <ChevronDown className="h-4 w-4" aria-hidden />
+  );
+}
+
 export default function AuditLogsTable({
   logs,
   isLoading,
@@ -98,15 +115,6 @@ export default function AuditLogsTable({
     }
   });
 
-  const SortIcon = ({ field }: { field: SortField }) => {
-    if (sortField !== field) return null;
-    return sortDirection === "asc" ? (
-      <ChevronUp className="h-4 w-4" aria-hidden />
-    ) : (
-      <ChevronDown className="h-4 w-4" aria-hidden />
-    );
-  };
-
   if (isLoading) {
     return (
       <div className="rounded-xl border-2 border-border bg-surface-panel p-8">
@@ -143,7 +151,7 @@ export default function AuditLogsTable({
                 >
                   <div className="flex items-center gap-1">
                     Timestamp
-                    <SortIcon field="created_at" />
+                    <SortIcon field="created_at" sortField={sortField} sortDirection={sortDirection} />
                   </div>
                 </th>
                 <th
@@ -152,7 +160,7 @@ export default function AuditLogsTable({
                 >
                   <div className="flex items-center gap-1">
                     User
-                    <SortIcon field="user_id" />
+                    <SortIcon field="user_id" sortField={sortField} sortDirection={sortDirection} />
                   </div>
                 </th>
                 <th
@@ -161,7 +169,7 @@ export default function AuditLogsTable({
                 >
                   <div className="flex items-center gap-1">
                     Action
-                    <SortIcon field="action" />
+                    <SortIcon field="action" sortField={sortField} sortDirection={sortDirection} />
                   </div>
                 </th>
                 <th className="px-4 py-3 text-left text-caption font-bold uppercase tracking-wider text-text-muted">

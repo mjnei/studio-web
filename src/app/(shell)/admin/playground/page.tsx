@@ -20,13 +20,19 @@ import type { PlaygroundTTSRequest, PlaygroundJob } from "@/types/admin";
 
 export default function PlaygroundPage() {
   const toast = useToast();
-  const [isLoading, setIsLoading] = useState(false);
+  const [submitPending, setSubmitPending] = useState(false);
   const [isLoadingHistory, setIsLoadingHistory] = useState(true);
   const [currentJob, setCurrentJob] = useState<PlaygroundJob | null>(null);
   const [history, setHistory] = useState<PlaygroundJob[]>([]);
   const [clearHistoryModal, setClearHistoryModal] = useState(false);
   const [pollingInterval, setPollingInterval] = useState<NodeJS.Timeout | null>(null);
   const [showAudioPlayer, setShowAudioPlayer] = useState(false);
+
+  const jobInFlight =
+    currentJob?.status === "pending" ||
+    currentJob?.status === "queued" ||
+    currentJob?.status === "processing";
+  const isLoading = submitPending || !!jobInFlight;
 
   const loadHistory = useCallback(async () => {
     try {
@@ -111,7 +117,7 @@ export default function PlaygroundPage() {
   }, [pollingInterval]);
 
   const handleSubmit = async (data: PlaygroundTTSRequest) => {
-    setIsLoading(true);
+    setSubmitPending(true);
     try {
       const job = await createPlaygroundTTSJob(data);
       setCurrentJob(job);
@@ -120,9 +126,8 @@ export default function PlaygroundPage() {
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "An error occurred";
       toast.error("Failed to create TTS job", message);
-      setIsLoading(false);
     } finally {
-      // Keep loading state until job completes
+      setSubmitPending(false);
     }
   };
 
@@ -162,13 +167,6 @@ export default function PlaygroundPage() {
       toast.error("Failed to clear history", message);
     }
   };
-
-  // Update loading state when job completes
-  useEffect(() => {
-    if (currentJob && (currentJob.status === "completed" || currentJob.status === "failed")) {
-      setIsLoading(false);
-    }
-  }, [currentJob]);
 
   return (
     <div className="mx-auto max-w-7xl pb-32">

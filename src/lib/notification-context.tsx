@@ -71,10 +71,22 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
   const { isAuthenticated } = useAuth();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(isAuthenticated);
   const [preferences, setPreferences] = useState<NotificationPreferences | null>(null);
-  const [preferencesLoading, setPreferencesLoading] = useState(false);
+  const [preferencesLoading, setPreferencesLoading] = useState(isAuthenticated);
   const [isSSEConnected, setIsSSEConnected] = useState(false);
+  const [authLoadKey, setAuthLoadKey] = useState(isAuthenticated);
+
+  if (isAuthenticated !== authLoadKey) {
+    setAuthLoadKey(isAuthenticated);
+    if (isAuthenticated) {
+      setIsLoading(true);
+      setPreferencesLoading(true);
+    } else {
+      setIsLoading(false);
+      setPreferencesLoading(false);
+    }
+  }
 
   const eventSourceRef = useRef<EventSource | null>(null);
   const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -87,7 +99,6 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
     if (!isAuthenticated) return;
 
     try {
-      setIsLoading(true);
       const response = await request<{ notifications: Notification[] }>(
         "/notifications?limit=50&offset=0"
       );
@@ -166,7 +177,6 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
     if (!isAuthenticated) return;
 
     try {
-      setPreferencesLoading(true);
       const response = await request<BackendPreferencesResponse>("/notifications/preferences");
 
       // Transform backend format to frontend format

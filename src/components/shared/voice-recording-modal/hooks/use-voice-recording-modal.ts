@@ -63,11 +63,12 @@ export function useVoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecord
     }
   }, []);
 
-  const cleanup = useCallback(() => {
+  const releaseMediaResources = useCallback(() => {
     clearTimer();
-    stopPlayback();
-    releaseStream();
+    audioRef.current?.pause();
+    if (audioRef.current) audioRef.current.currentTime = 0;
     audioRef.current = null;
+    releaseStream();
 
     if (recorderRef.current?.state === "recording") {
       recorderRef.current.stop();
@@ -80,7 +81,14 @@ export function useVoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecord
       URL.revokeObjectURL(recordingUrlRef.current);
       recordingUrlRef.current = null;
     }
-  }, [clearTimer, releaseStream, stopPlayback]);
+  }, [clearTimer, releaseStream]);
+
+  const cleanup = useCallback(() => {
+    releaseMediaResources();
+    setIsPlaying(false);
+    setPlaybackProgress(0);
+    setPlaybackTime(0);
+  }, [releaseMediaResources]);
 
   const resetUi = useCallback(() => {
     setPhase("idle");
@@ -91,6 +99,9 @@ export function useVoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecord
     setVoiceName("");
     setLanguage("en");
     setNameError(false);
+    setIsPlaying(false);
+    setPlaybackProgress(0);
+    setPlaybackTime(0);
   }, []);
 
   const attachAudio = useCallback(
@@ -119,15 +130,32 @@ export function useVoiceRecordingModal({ isOpen, onClose, onSaved }: VoiceRecord
     [stopPlayback, t]
   );
 
-  useEffect(() => () => cleanup(), [cleanup]);
+  // Unmount: release microphone/audio resources without relying on UI state sync.
+  useEffect(() => () => releaseMediaResources(), [releaseMediaResources]);
 
-  useEffect(() => {
-    if (!isOpen) {
-      cleanup();
-      return;
+  const [wasOpen, setWasOpen] = useState(false);
+  if (isOpen !== wasOpen) {
+    setWasOpen(isOpen);
+    if (isOpen) {
+      setPhase("idle");
+      setError(null);
+      setElapsed(0);
+      setRecording(null);
+      setIsSaving(false);
+      setVoiceName("");
+      setLanguage("en");
+      setNameError(false);
+      setIsPlaying(false);
+      setPlaybackProgress(0);
+      setPlaybackTime(0);
     }
-    resetUi();
-  }, [isOpen, cleanup, resetUi]);
+  }
+
+  // Close: release external media resources. UI reset happens when reopening.
+  useEffect(() => {
+    if (isOpen) return;
+    releaseMediaResources();
+  }, [isOpen, releaseMediaResources]);
 
   const startRecording = useCallback(async () => {
     cleanup();

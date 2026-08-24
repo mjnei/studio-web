@@ -16,24 +16,29 @@ export function useStuckAsync(
   timeoutMs = DEFAULT_TIMEOUT_MS,
   activityKey?: string
 ): { isStuck: boolean; reset: () => void } {
-  const [isStuck, setIsStuck] = useState(false);
   const [generation, setGeneration] = useState(0);
+  const [timedOut, setTimedOut] = useState(false);
+  const sessionKey = `${isActive}:${generation}:${activityKey ?? ""}:${timeoutMs}`;
+  const [activeSession, setActiveSession] = useState(sessionKey);
+
+  if (sessionKey !== activeSession) {
+    setActiveSession(sessionKey);
+    if (timedOut) {
+      setTimedOut(false);
+    }
+  }
 
   const reset = useCallback(() => {
-    setIsStuck(false);
+    setTimedOut(false);
     setGeneration((g) => g + 1);
   }, []);
 
   useEffect(() => {
-    if (!isActive) {
-      setIsStuck(false);
-      return;
-    }
+    if (!isActive) return;
 
-    setIsStuck(false); // progress detected (activityKey changed) or explicit reset — restart clean
-    const timer = window.setTimeout(() => setIsStuck(true), timeoutMs);
+    const timer = window.setTimeout(() => setTimedOut(true), timeoutMs);
     return () => window.clearTimeout(timer);
   }, [isActive, timeoutMs, generation, activityKey]);
 
-  return { isStuck, reset };
+  return { isStuck: isActive && timedOut, reset };
 }

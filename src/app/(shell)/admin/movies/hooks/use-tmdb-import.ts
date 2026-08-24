@@ -35,14 +35,18 @@ export function useTmdbImport({
   const [importedMovieIds, setImportedMovieIds] = useState<Set<number>>(new Set());
   const [localesExpanded, setLocalesExpanded] = useState(false);
 
+  // When the import tab is inactive, treat the locale picker as collapsed without
+  // syncing that into an effect. Persist the underlying preference only while enabled.
+  if (!enabled && localesExpanded) {
+    setLocalesExpanded(false);
+  }
+
   useEffect(() => {
-    if (enabled) {
-      setTimeout(() => {
-        searchInputRef.current?.focus();
-      }, 100);
-    } else {
-      setLocalesExpanded(false);
-    }
+    if (!enabled) return;
+    const timer = setTimeout(() => {
+      searchInputRef.current?.focus();
+    }, 100);
+    return () => clearTimeout(timer);
   }, [enabled]);
 
   const handleSearch = async (searchPage: number = 1) => {

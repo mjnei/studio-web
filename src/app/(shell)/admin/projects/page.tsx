@@ -36,7 +36,6 @@ export default function AdminProjectsPage() {
   const [modalOpen, setModalOpen] = useState(false);
 
   const loadData = useCallback(async () => {
-    setIsLoading(true);
     try {
       const [statsData, listData] = await Promise.all([
         getAdminProjectStats(),
@@ -54,8 +53,13 @@ export default function AdminProjectsPage() {
   }, [filters, pagination.page, pagination.pageSize, toast]);
 
   useEffect(() => {
-    loadData();
+    void loadData();
   }, [loadData]);
+
+  function handleRefresh() {
+    setIsLoading(true);
+    void loadData();
+  }
 
   function handleFilterChange(next: AdminProjectFilter) {
     setFilters(next);
@@ -146,7 +150,7 @@ export default function AdminProjectsPage() {
           type="button"
           variant="secondary"
           size="md"
-          onClick={loadData}
+          onClick={handleRefresh}
           leftIcon={<RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />}
         >
           Refresh

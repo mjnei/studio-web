@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import type { QueueStats } from "@/lib/types/queue";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 
@@ -15,59 +14,54 @@ interface DataPoint {
   consumerCount: number;
 }
 
+function createSeedHistory(stats: QueueStats): DataPoint[] {
+  const initialData: DataPoint[] = [];
+
+  // Generate last hour of data (12 points, 5 minutes apart) with a stable wave.
+  for (let i = 11; i >= 0; i--) {
+    initialData.push({
+      timestamp: `-${i * 5}m`,
+      messageCount: Math.max(0, stats.message_count + ((i % 5) - 2) * 2),
+      consumerCount: stats.consumer_count,
+    });
+  }
+
+  return initialData;
+}
+
 export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps) {
-  const [history, setHistory] = useState<DataPoint[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [history, setHistory] = useState<DataPoint[]>(() => createSeedHistory(stats));
+  const [trackedQueue, setTrackedQueue] = useState(queueName);
+  const [lastCounts, setLastCounts] = useState({
+    messageCount: stats.message_count,
+    consumerCount: stats.consumer_count,
+  });
 
-  // Simulate collecting historical data
-  // In a real implementation, this would fetch from a time-series database or API
-  useEffect(() => {
-    // Initialize with current data
-    const now = new Date();
-    const initialData: DataPoint[] = [];
-
-    // Generate last hour of data (12 points, 5 minutes apart)
-    for (let i = 11; i >= 0; i--) {
-      const timestamp = new Date(now.getTime() - i * 5 * 60 * 1000);
-      initialData.push({
-        timestamp: timestamp.toLocaleTimeString(),
-        messageCount: Math.max(0, stats.message_count + Math.floor(Math.random() * 20 - 10)),
-        consumerCount: stats.consumer_count,
-      });
-    }
-
-    setHistory(initialData);
-    setLoading(false);
-  }, [queueName, stats.message_count, stats.consumer_count]);
-
-  // Update history with new data point every time stats change
-  useEffect(() => {
-    if (loading) return;
-
-    const newDataPoint: DataPoint = {
-      timestamp: new Date().toLocaleTimeString(),
+  // Re-seed when navigating to a different queue.
+  if (queueName !== trackedQueue) {
+    setTrackedQueue(queueName);
+    setHistory(createSeedHistory(stats));
+    setLastCounts({
       messageCount: stats.message_count,
       consumerCount: stats.consumer_count,
-    };
-
-    setHistory((prev) => {
-      const updated = [...prev.slice(1), newDataPoint]; // Keep last 12 points
-      return updated;
     });
-  }, [stats.message_count, stats.consumer_count, loading]);
-
-  if (loading) {
-    return (
-      <Card>
-        <CardHeader>
-          <Skeleton className="h-6 w-48" />
-          <Skeleton className="h-4 w-64 mt-2" />
-        </CardHeader>
-        <CardContent>
-          <Skeleton className="h-64 w-full" />
-        </CardContent>
-      </Card>
-    );
+  } else if (
+    stats.message_count !== lastCounts.messageCount ||
+    stats.consumer_count !== lastCounts.consumerCount
+  ) {
+    // Append a rolling data point when live stats change.
+    setLastCounts({
+      messageCount: stats.message_count,
+      consumerCount: stats.consumer_count,
+    });
+    setHistory((prev) => [
+      ...prev.slice(1),
+      {
+        timestamp: "now",
+        messageCount: stats.message_count,
+        consumerCount: stats.consumer_count,
+      },
+    ]);
   }
 
   // Calculate trend

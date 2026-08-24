@@ -1,18 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { LayoutMode } from "@/components/ui/LayoutToggle";
 import { LAYOUT_STORAGE_KEY } from "../constants";
 
-export function useAdminMoviesLayout() {
-  const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid-md");
+function readStoredLayoutMode(): LayoutMode {
+  if (typeof window === "undefined") return "grid-md";
+  const saved = localStorage.getItem(LAYOUT_STORAGE_KEY);
+  if (saved === "grid-sm" || saved === "grid-md" || saved === "list") {
+    return saved;
+  }
+  return "grid-md";
+}
 
-  useEffect(() => {
-    const saved = localStorage.getItem(LAYOUT_STORAGE_KEY);
-    if (saved && (saved === "grid-sm" || saved === "grid-md" || saved === "list")) {
-      setLayoutMode(saved as LayoutMode);
-    }
-  }, []);
+export function useAdminMoviesLayout() {
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>(readStoredLayoutMode);
 
   const handleLayoutChange = (mode: LayoutMode) => {
     setLayoutMode(mode);

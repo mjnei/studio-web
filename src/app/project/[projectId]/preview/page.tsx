@@ -63,16 +63,10 @@ export default function PreviewPage() {
   const createNewTTSJob = useCallback(
     async (voiceId: string, voiceName?: string) => {
       if (!state || !activeScript || isCreatingJobRef.current) return;
+      if (!voiceId) return;
 
-      if (!voiceId) {
-        setTtsError(t("project.preview.voiceIncomplete"));
-        return;
-      }
-
+      isCreatingJobRef.current = true;
       try {
-        isCreatingJobRef.current = true;
-        setTtsError(null);
-
         const job = await createTTSJob({
           projectId: String(state.id),
           scriptId: String(activeScript.id),
@@ -84,6 +78,7 @@ export default function PreviewPage() {
         });
 
         setTtsJob(job);
+        setTtsError(null);
       } catch (error) {
         console.error("Failed to create TTS job:", error);
         setTtsError(error instanceof Error ? error.message : t("project.preview.createJobFailed"));
@@ -183,8 +178,8 @@ export default function PreviewPage() {
     }
   }, [isPlaying, ttsJob]);
 
-  // Initialize TTS job
-
+  // Initialize TTS job when project/voice/script are ready. Job creation is an
+  // external network side effect; state updates happen only after await.
   useEffect(() => {
     if (!state || !activeScript || isLoading) return;
 
@@ -221,13 +216,13 @@ export default function PreviewPage() {
 
     // Check if voice has changed compared to loaded job
     if (ttsJob && loadedVoiceId && loadedVoiceId !== currentVoiceId) {
-      createNewTTSJob(voiceId, voiceName);
+      void createNewTTSJob(voiceId, voiceName);
       return;
     }
 
     // Check if script version has changed (user selected a different script version)
     if (ttsJob && currentScriptId && loadedScriptId && loadedScriptId !== currentScriptId) {
-      createNewTTSJob(voiceId, voiceName);
+      void createNewTTSJob(voiceId, voiceName);
       return;
     }
 
@@ -239,20 +234,18 @@ export default function PreviewPage() {
 
     // Load existing job if we have an active TTS job ID
     if (state.activeTtsJobId) {
-      loadTTSJob(String(state.activeTtsJobId));
+      void loadTTSJob(String(state.activeTtsJobId));
       return;
     }
 
     // Otherwise create a new job (backend will match or create)
-    createNewTTSJob(voiceId, voiceName);
+    void createNewTTSJob(voiceId, voiceName);
   }, [
-    state?.activeTtsJobId,
-    activeScript?.id,
+    state,
+    activeScript,
+    ttsJob,
     isLoading,
     projectId,
-    ttsJob?.voice_id,
-    ttsJob?.script_id,
-    state?.voiceId,
     createNewTTSJob,
     loadTTSJob,
   ]);
@@ -359,14 +352,15 @@ export default function PreviewPage() {
     return ttsJob?.voice_name || state?.voiceName || t("project.preview.selectedVoice");
   }, [ttsJob?.voice_name, state?.voiceName, t]);
 
-  const previewText = useMemo(() => {
+  // Derive preview text without manual memoization so the React Compiler can optimize it.
+  const previewText = (() => {
     if (!activeScript?.content) return t("project.preview.defaultPreviewText");
     const sentences = activeScript.content.match(/[^.!?]+[.!?]+/g);
     if (!sentences || sentences.length === 0) {
       return activeScript.content.substring(0, 200);
     }
     return sentences[0].trim();
-  }, [activeScript?.content, t]);
+  })();
 
   const scriptDuration = activeScript
     ? `${Math.floor(activeScript.duration / 60)}:${(activeScript.duration % 60).toString().padStart(2, "0")}`
