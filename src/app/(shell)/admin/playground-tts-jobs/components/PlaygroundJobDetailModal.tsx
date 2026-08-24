@@ -2,6 +2,7 @@
 
 import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 
 import {
   X,
@@ -108,9 +109,9 @@ export function PlaygroundJobDetailModal({ job, open, onClose }: PlaygroundJobDe
         <div className="p-6 space-y-6">
           {/* Status */}
           <div>
-            <label className="text-caption font-medium text-text-muted uppercase tracking-wider">
+            <Label tone="meta" className="uppercase tracking-wider">
               Status
-            </label>
+            </Label>
             <div className="mt-2 flex items-center gap-3">
               {getStatusBadge(job.status)}
               {job.retry_count > 0 && (
@@ -122,17 +123,17 @@ export function PlaygroundJobDetailModal({ job, open, onClose }: PlaygroundJobDe
           {/* Timestamps */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="text-caption font-medium text-text-muted uppercase tracking-wider">
+              <Label tone="meta" className="uppercase tracking-wider">
                 Created At
-              </label>
+              </Label>
               <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
                 <p className="text-body text-text-primary">{formatDateTime(job.created_at)}</p>
               </div>
             </div>
             <div>
-              <label className="text-caption font-medium text-text-muted uppercase tracking-wider">
+              <Label tone="meta" className="uppercase tracking-wider">
                 Completed At
-              </label>
+              </Label>
               <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
                 <p className="text-body text-text-primary">{formatDateTime(job.completed_at)}</p>
               </div>
@@ -141,9 +142,9 @@ export function PlaygroundJobDetailModal({ job, open, onClose }: PlaygroundJobDe
 
           {/* Expires At */}
           <div>
-            <label className="text-caption font-medium text-text-muted uppercase tracking-wider">
+            <Label tone="meta" className="uppercase tracking-wider">
               Expires At (30-day cleanup)
-            </label>
+            </Label>
             <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
               <p className="text-body text-text-primary">{formatDateTime(job.expires_at)}</p>
             </div>
@@ -152,17 +153,17 @@ export function PlaygroundJobDetailModal({ job, open, onClose }: PlaygroundJobDe
           {/* Audio Duration & Synthesis Time */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="text-caption font-medium text-text-muted uppercase tracking-wider">
+              <Label tone="meta" className="uppercase tracking-wider">
                 Audio Duration
-              </label>
+              </Label>
               <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
                 <p className="text-body text-text-primary">{formatDuration(job.audio_duration)}</p>
               </div>
             </div>
             <div>
-              <label className="text-caption font-medium text-text-muted uppercase tracking-wider">
+              <Label tone="meta" className="uppercase tracking-wider">
                 Synthesis Time
-              </label>
+              </Label>
               <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
                 <p className="text-body text-text-primary">
                   {formatDuration(job.synthesis_duration_seconds)}
@@ -173,10 +174,10 @@ export function PlaygroundJobDetailModal({ job, open, onClose }: PlaygroundJobDe
 
           {/* Voice ID */}
           <div>
-            <label className="text-caption font-medium text-text-muted uppercase tracking-wider flex items-center gap-2">
+            <Label tone="meta" className="uppercase tracking-wider flex items-center gap-2">
               <Mic className="h-3.5 w-3.5" />
               Voice Source
-            </label>
+            </Label>
             <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
               <p className="text-body text-text-primary">
                 {job.voice_id
@@ -189,18 +190,18 @@ export function PlaygroundJobDetailModal({ job, open, onClose }: PlaygroundJobDe
           {/* Language & Speed */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="text-caption font-medium text-text-muted uppercase tracking-wider flex items-center gap-2">
+              <Label tone="meta" className="uppercase tracking-wider flex items-center gap-2">
                 <Globe className="h-3.5 w-3.5" />
                 Language
-              </label>
+              </Label>
               <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
                 <p className="text-body text-text-primary">{job.language}</p>
               </div>
             </div>
             <div>
-              <label className="text-caption font-medium text-text-muted uppercase tracking-wider">
+              <Label tone="meta" className="uppercase tracking-wider">
                 Speed Ratio
-              </label>
+              </Label>
               <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
                 <p className="text-body text-text-primary">{job.ratio}x</p>
               </div>
@@ -210,9 +211,9 @@ export function PlaygroundJobDetailModal({ job, open, onClose }: PlaygroundJobDe
           {/* Client Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="text-caption font-medium text-text-muted uppercase tracking-wider">
+              <Label tone="meta" className="uppercase tracking-wider">
                 Client IP (Hashed)
-              </label>
+              </Label>
               <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
                 <p className="text-caption font-mono text-text-primary">
                   {formatIPHash(job.client_ip_address)}
@@ -220,9 +221,9 @@ export function PlaygroundJobDetailModal({ job, open, onClose }: PlaygroundJobDe
               </div>
             </div>
             <div>
-              <label className="text-caption font-medium text-text-muted uppercase tracking-wider">
+              <Label tone="meta" className="uppercase tracking-wider">
                 Correlation ID
-              </label>
+              </Label>
               <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
                 <p className="text-caption font-mono text-text-primary">{job.correlation_id}</p>
               </div>
@@ -232,9 +233,9 @@ export function PlaygroundJobDetailModal({ job, open, onClose }: PlaygroundJobDe
           {/* User Agent */}
           {job.user_agent && (
             <div>
-              <label className="text-caption font-medium text-text-muted uppercase tracking-wider">
+              <Label tone="meta" className="uppercase tracking-wider">
                 User Agent
-              </label>
+              </Label>
               <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
                 <p className="text-caption text-text-primary break-all">{job.user_agent}</p>
               </div>
@@ -243,10 +244,10 @@ export function PlaygroundJobDetailModal({ job, open, onClose }: PlaygroundJobDe
 
           {/* Text */}
           <div>
-            <label className="text-caption font-medium text-text-muted uppercase tracking-wider flex items-center gap-2">
+            <Label tone="meta" className="uppercase tracking-wider flex items-center gap-2">
               <FileText className="h-3.5 w-3.5" />
               Input Text
-            </label>
+            </Label>
             <div className="mt-2 rounded-lg border border-border-default bg-surface-panel p-4">
               <p className="text-body text-text-primary whitespace-pre-wrap">{job.text}</p>
             </div>
@@ -255,10 +256,10 @@ export function PlaygroundJobDetailModal({ job, open, onClose }: PlaygroundJobDe
           {/* Error Message */}
           {job.error_message && (
             <div>
-              <label className="text-caption font-medium text-text-muted uppercase tracking-wider flex items-center gap-2">
+              <Label tone="meta" className="uppercase tracking-wider flex items-center gap-2">
                 <XCircle className="h-3.5 w-3.5 text-red-500" />
                 Error Message
-              </label>
+              </Label>
               <div className="mt-2 rounded-lg border-2 border-red-500/50 bg-red-500/10 p-4">
                 <p className="text-body text-red-600 font-mono">{job.error_message}</p>
               </div>
@@ -268,9 +269,9 @@ export function PlaygroundJobDetailModal({ job, open, onClose }: PlaygroundJobDe
           {/* Audio Path */}
           {job.audio_path && (
             <div>
-              <label className="text-caption font-medium text-text-muted uppercase tracking-wider">
+              <Label tone="meta" className="uppercase tracking-wider">
                 Audio Path
-              </label>
+              </Label>
               <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
                 <p className="text-caption text-accent-primary font-mono break-all">
                   {job.audio_path}

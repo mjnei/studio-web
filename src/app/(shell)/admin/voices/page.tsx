@@ -19,6 +19,7 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 import { VoiceBulkImportModal } from "@/components/admin/VoiceBulkImportModal";
 import {
@@ -385,24 +386,25 @@ export default function AdminVoicesPage() {
 
       {/* Search Bar */}
       <div className="mb-6">
-        <div className="flex items-center gap-3 rounded-xl border-2 border-border-default bg-surface-panel px-4 py-3 focus-within:border-accent-primary transition-colors shadow-sm">
-          <Search className="h-4 w-4 text-text-muted flex-shrink-0" />
-          <input
-            type="text"
-            placeholder="Search by voice name or creator username..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="flex-1 bg-transparent text-text-primary placeholder-text-muted focus:outline-none"
-          />
-          {searchTerm && (
-            <button
-              onClick={() => setSearchTerm("")}
-              className="text-text-muted hover:text-text-primary transition-colors"
-            >
-              <span className="sr-only">Clear search</span>×
-            </button>
-          )}
-        </div>
+        <Input
+          type="search"
+          placeholder="Search by voice name or creator username..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          icon={<Search className="h-4 w-4" />}
+          rightIcon={
+            searchTerm ? (
+              <button
+                type="button"
+                onClick={() => setSearchTerm("")}
+                className="text-text-muted hover:text-text-primary transition-colors"
+                aria-label="Clear search"
+              >
+                ×
+              </button>
+            ) : undefined
+          }
+        />
         {searchTerm && (
           <p className="mt-2 text-caption text-text-muted">
             Found {filteredVoices.length} voice{filteredVoices.length !== 1 ? "s" : ""}

@@ -4,6 +4,7 @@ import { Check, ChevronDown } from "lucide-react";
 import { useState, useRef, useEffect, ReactNode } from "react";
 import { useI18n } from "@/i18n";
 import { Text } from "./text";
+import { Label } from "./label";
 
 export interface SelectOption {
   value: string;
@@ -142,11 +143,7 @@ export function Select({
 
   return (
     <div className={`relative ${className}`}>
-      {label && (
-        <Text as="label" variant="body" className="mb-2 block font-medium text-text-primary">
-          {label}
-        </Text>
-      )}
+      {label && <Label>{label}</Label>}
 
       <div ref={selectRef} className="relative">
         <button
@@ -345,11 +342,7 @@ export function MultiSelect({
 
   return (
     <div className={`relative ${className}`}>
-      {label && (
-        <Text as="label" variant="body" className="mb-2 block font-medium text-text-primary">
-          {label}
-        </Text>
-      )}
+      {label && <Label>{label}</Label>}
 
       <div ref={selectRef} className="relative">
         <button

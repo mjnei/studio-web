@@ -2,6 +2,7 @@ import { Film, Trash2, Edit2, Calendar, Star, Save, X, Eye } from "lucide-react"
 import Link from "next/link";
 import { ExternalImage } from "@/components/ui/ExternalImage";
 import { Heading } from "@/components/ui/heading";
+import { Input } from "@/components/ui/input";
 import type { LayoutMode } from "@/components/ui/LayoutToggle";
 import type { AdminMovieResponse } from "@/lib/api/admin";
 import type { EditingMovie } from "../types";
@@ -126,18 +127,16 @@ export function LibraryMovieCard({
 
           {isEditing && editingData && (
             <div className="mt-2 rounded-lg border border-border-default bg-surface-base p-3">
-              <div>
-                <label className="text-caption text-text-muted">Douban ID</label>
-                <input
-                  type="text"
-                  value={editingData.douban_id || ""}
-                  onChange={(e) =>
-                    onEditingDataChange({ ...editingData, douban_id: e.target.value })
-                  }
-                  className="w-full rounded border border-border-default bg-surface-panel px-2 py-1 text-body text-text-primary focus:border-accent-primary focus:outline-none"
-                  placeholder="Optional"
-                />
-              </div>
+              <Input
+                label="Douban ID"
+                labelTone="meta"
+                type="text"
+                value={editingData.douban_id || ""}
+                onChange={(e) =>
+                  onEditingDataChange({ ...editingData, douban_id: e.target.value })
+                }
+                placeholder="Optional"
+              />
             </div>
           )}
         </div>
@@ -197,16 +196,14 @@ export function LibraryMovieCard({
 
         {isEditing && editingData ? (
           <div className="mt-3 pt-3 border-t border-border-default space-y-2">
-            <div>
-              <label className="text-caption text-text-muted">Douban ID</label>
-              <input
-                type="text"
-                value={editingData.douban_id || ""}
-                onChange={(e) => onEditingDataChange({ ...editingData, douban_id: e.target.value })}
-                className="w-full rounded border border-border-default bg-surface-base px-2 py-1 text-caption text-text-primary focus:border-accent-primary focus:outline-none"
-                placeholder="Optional"
-              />
-            </div>
+            <Input
+              label="Douban ID"
+              labelTone="meta"
+              type="text"
+              value={editingData.douban_id || ""}
+              onChange={(e) => onEditingDataChange({ ...editingData, douban_id: e.target.value })}
+              placeholder="Optional"
+            />
             <div className="flex gap-2">
               <button
                 onClick={onSave}

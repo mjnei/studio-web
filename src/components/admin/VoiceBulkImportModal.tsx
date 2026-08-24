@@ -6,6 +6,8 @@ import { useToast } from "@/components/ui/toast";
 import { Spinner } from "@/components/ui/spinner";
 import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { adminSearchUsers, adminBulkUploadVoices, type UserSearchResult } from "@/lib/api/admin";
 
 interface VoiceBulkImportModalProps {
@@ -208,30 +210,27 @@ export function VoiceBulkImportModal({ open, onClose, onSuccess }: VoiceBulkImpo
         <div className="p-6 space-y-6">
           {/* User Selection */}
           <div>
-            <label className="block text-body font-semibold text-text-primary mb-2">
-              Target User *
-            </label>
             <div className="relative">
-              <div className="flex items-center gap-3 rounded-xl border-2 border-border-default bg-surface-panel px-4 py-3 focus-within:border-accent-primary transition-colors">
-                <Search className="h-4 w-4 text-text-muted flex-shrink-0" />
-                <input
-                  type="text"
-                  placeholder="Search by name or email..."
-                  value={userSearchQuery}
-                  onChange={(e) => {
-                    setUserSearchQuery(e.target.value);
-                    if (selectedUser && e.target.value !== selectedUser.name) {
-                      setSelectedUser(null);
-                    }
-                  }}
-                  onFocus={() => {
-                    if (userSearchResults.length > 0) setShowUserDropdown(true);
-                  }}
-                  disabled={isImporting}
-                  className="flex-1 bg-transparent text-text-primary placeholder-text-muted focus:outline-none disabled:opacity-50"
-                />
-                {isSearching && <Spinner size="sm" className="text-text-muted" />}
-              </div>
+              <Input
+                label="Target user *"
+                type="search"
+                placeholder="Search by name or email..."
+                value={userSearchQuery}
+                onChange={(e) => {
+                  setUserSearchQuery(e.target.value);
+                  if (selectedUser && e.target.value !== selectedUser.name) {
+                    setSelectedUser(null);
+                  }
+                }}
+                onFocus={() => {
+                  if (userSearchResults.length > 0) setShowUserDropdown(true);
+                }}
+                disabled={isImporting}
+                icon={<Search className="h-4 w-4" />}
+                rightIcon={
+                  isSearching ? <Spinner size="sm" className="text-text-muted" /> : undefined
+                }
+              />
 
               {/* User Dropdown */}
               {showUserDropdown && userSearchResults.length > 0 && (
@@ -283,9 +282,7 @@ export function VoiceBulkImportModal({ open, onClose, onSuccess }: VoiceBulkImpo
 
           {/* File Upload */}
           <div>
-            <label className="block text-body font-semibold text-text-primary mb-2">
-              Audio Files *
-            </label>
+            <Label>Audio files *</Label>
             <div
               onClick={() => !isImporting && fileInputRef.current?.click()}
               className={`relative rounded-xl border-2 border-dashed border-border-default bg-surface-panel p-8 text-center transition-colors ${
@@ -325,9 +322,7 @@ export function VoiceBulkImportModal({ open, onClose, onSuccess }: VoiceBulkImpo
           {/* Selected Files List */}
           {selectedFiles.length > 0 && (
             <div>
-              <label className="block text-body font-semibold text-text-primary mb-2">
-                Selected Files ({selectedFiles.length})
-              </label>
+              <Label>Selected files ({selectedFiles.length})</Label>
               <div className="rounded-xl border border-border-default bg-surface-panel overflow-hidden max-h-64 overflow-y-auto">
                 {selectedFiles.map((file, index) => (
                   <div

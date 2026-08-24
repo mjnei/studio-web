@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { TextArea } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { VoiceSelector } from "./VoiceSelector";
 import type { PlaygroundTTSRequest } from "@/types/admin";
 
@@ -37,16 +39,13 @@ export function PlaygroundForm({ onSubmit, isLoading }: PlaygroundFormProps) {
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Text Input */}
       <div>
-        <label className="block text-body font-medium text-text-secondary mb-2">
-          Text to Synthesize
-        </label>
-        <textarea
+        <TextArea
+          label="Text to synthesize"
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="Enter the text you want to convert to speech..."
           rows={6}
           maxLength={2000}
-          className="w-full rounded-lg border-2 border-border-default bg-surface-base px-4 py-3 text-body text-text-primary placeholder-text-muted focus:border-accent-primary focus:outline-none transition-colors resize-y"
           disabled={isLoading}
         />
         <div className="mt-2 flex items-center justify-between">
@@ -75,7 +74,7 @@ export function PlaygroundForm({ onSubmit, isLoading }: PlaygroundFormProps) {
       {/* Speed Ratio Slider */}
       <div>
         <div className="flex items-center justify-between mb-2">
-          <label className="text-body font-medium text-text-secondary">Speech Speed</label>
+          <Label className="mb-0">Speech speed</Label>
           <span className="text-body font-bold text-accent-primary">{speedRatio.toFixed(1)}x</span>
         </div>
         <input

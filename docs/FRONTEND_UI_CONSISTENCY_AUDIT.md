@@ -71,30 +71,21 @@ The largest consistency gap is forms. The codebase has reusable primitives:
 
 But many screens still use raw controls with hand-authored classes instead of shared components.
 
-Examples:
+Examples (remaining after Aug 24, 2026 migrations):
 
 - Raw `<select>` instead of shared `Select`
-  - `src/app/(shell)/settings/page.tsx`
-  - `src/app/(shell)/notifications/page.tsx`
-  - `src/app/(shell)/admin/projects/components/ProjectFilters.tsx`
-  - `src/components/shared/LanguageSwitcher.tsx`
-  - `src/components/project/ThumbnailEditorModal.tsx`
-  - `src/components/shared/voice-recording-modal/components/voice-naming-form.tsx`
+  - `src/components/shared/LanguageSwitcher.tsx` (compact top-nav chrome)
+  - `src/components/project/ThumbnailEditorModal.tsx` (toolbar font/color)
 
 - Raw `<input>` instead of shared `Input`
-  - `src/app/(shell)/admin/projects/components/ProjectFilters.tsx`
-  - `src/app/(shell)/admin/audit-logs/components/AuditFilters.tsx`
-  - `src/components/ui/modal.tsx`
-  - `src/components/shared/voice-recording-modal/components/voice-naming-form.tsx`
-  - `src/app/(shell)/admin/movies/components/MovieLibraryView.tsx`
-  - `src/components/shell/top-nav.tsx`
+  - password-reveal fields (`src/components/onboarding/PasswordStep.tsx`)
+  - checkboxes / file / range / color (intentionally native)
 
 - Raw `<textarea>` instead of shared `TextArea`
-  - `src/components/project/script-generation.tsx`
+  - `src/components/project/script-generation.tsx` (script editor)
   - `src/app/project/new/script/page.tsx`
   - `src/app/project/[projectId]/script/page.tsx`
   - `src/components/project/ThumbnailEditorModal.tsx`
-  - `src/app/(shell)/admin/playground/components/PlaygroundForm.tsx`
 
 Impact:
 
@@ -110,29 +101,19 @@ The shared `Select` component uses:
 - `md`: `px-3.5 py-2 text-body`
 - `lg`: `px-4 py-2.5 text-body`
 
-Several raw `<select>` implementations are taller and styled differently, for example:
+Several raw `<select>` implementations used a different height. Settings, notifications, and admin project filters now use shared `Select`. Remaining native selects:
 
-- `src/app/(shell)/settings/page.tsx` uses `h-11 px-4`
 - `src/components/shared/LanguageSwitcher.tsx` uses `h-9 px-2.5 pr-7`
-- `src/app/(shell)/notifications/page.tsx` uses `px-3 py-2`
-- `src/app/(shell)/admin/projects/components/ProjectFilters.tsx` uses `px-3 py-2`
+- `src/components/project/ThumbnailEditorModal.tsx` uses compact toolbar styling
 
-This means the project currently has **at least three select silhouettes** in active use:
-
-1. shared `Select`
-2. raw compact selects
-3. taller settings-page selects
-
-That is a real style inconsistency, not just an implementation detail.
+The product standard is the shared `Select` padding scale (`sm` / `md` / `lg`). Native `<select>` is only for tiny chrome.
 
 #### 3. Label strategy is inconsistent across the app
 
-There is no dedicated `Label` primitive. Labels are implemented using a mix of:
+`Label` (`src/components/ui/label.tsx`) now exists with `field` and `meta` tones. `Input` / `TextArea` / `Select` use it. Remaining mix:
 
-- `Text as="label"` in shared primitives like `Input` and `Select`
-- raw `<label>` with `text-body font-medium`
-- raw `<label>` with `text-caption font-medium uppercase tracking-wider`
-- raw `<span>` next to checkbox inputs
+- uppercase caption labels on TTS job detail modals (read-only meta grids)
+- checkbox/toggle rows that wrap a native `<input type="checkbox">`
 
 Examples:
 
@@ -144,7 +125,6 @@ Examples:
 - caption/metadata labels
   - `src/app/(shell)/admin/studio-tts-jobs/components/JobDetailModal.tsx`
   - `src/app/(shell)/admin/playground-tts-jobs/components/PlaygroundJobDetailModal.tsx`
-  - `src/app/(shell)/admin/audit-logs/components/AuditFilters.tsx`
 
 - checkbox/toggle labels
   - `src/components/notifications/NotificationPreferencesModal.tsx`
@@ -182,21 +162,7 @@ Observed common sizes:
 - `h-3` / `h-3.5`: compact row actions and dense controls
 - `h-8`, `h-12`, `h-16`: hero/decorative usage
 
-This generally aligns with the documented icon scale, but there are a few places where similar UI patterns use different sizes:
-
-- search adornments vary between `h-4 w-4` and `h-5 w-5`
-  - `src/app/(shell)/movies/page.tsx`: `h-4 w-4`
-  - `src/app/(shell)/admin/movies/components/MovieLibraryView.tsx`: `h-5 w-5`
-  - `src/app/(shell)/admin/playground/components/VoiceSelector.tsx`: `h-4 w-4`
-  - `src/app/(shell)/admin/movies/components/TmdbImportView.tsx`: both `h-5 w-5` and `h-4 w-4`
-
-- a few compact action areas mix `h-3` and `h-3.5`
-  - `src/app/project/[projectId]/compose/page.tsx`
-  - `src/app/project/[projectId]/details/page.tsx`
-  - `src/components/jobs/CompletedJobCard.tsx`
-  - `src/app/(shell)/profile/page.tsx`
-
-These are relatively small inconsistencies, but they are visible in dense admin and project workflow UIs.
+This generally aligns with the documented icon scale. Search adornments are standardized to `h-4 w-4`. Compact row actions may still mix `h-3` and `h-3.5` (allowed fractional density).
 
 #### 6. Some button surfaces use raw `<button>` intentionally, but styling is duplicated
 
@@ -220,17 +186,14 @@ This is not a defect by itself, but it is a maintenance risk.
 
 ### Low priority
 
-#### 7. A few screens still hardcode large text utilities where role-based primitives would be clearer
+#### 7. Decorative large glyphs remain on the typography allowlist
 
-The typography docs strongly prefer `Heading` roles over large one-off text utilities. Most of the app already follows that, but a few remaining cases stand out:
+Allowlisted decorative exceptions remain:
 
-- `src/app/(shell)/referral/page.tsx`
-  - stats use `text-2xl` directly on `<p>` elements
-- allowlisted decorative exceptions remain:
-  - `src/components/onboarding/CompletionStep.tsx` uses `text-3xl` for emoji
-  - `src/app/(shell)/profile/page.tsx` uses `text-4xl` for avatar initials
+- `src/components/onboarding/CompletionStep.tsx` uses `text-3xl` for emoji
+- `src/app/(shell)/profile/page.tsx` uses `text-4xl` for avatar initials
 
-The decorative cases match the docs. The referral stat cards are the clearest remaining non-allowlisted drift and would be better expressed with `Heading variant="metric"` or a shared stat-number style.
+Referral stats now use `<Heading variant="metric">`. ESLint bans `text-2xl`–`text-5xl` outside the allowlist.
 
 ## Documentation accuracy check
 
@@ -252,69 +215,35 @@ The following documentation is accurate based on the current code:
 - `docs/guides/DESIGN_SYSTEM.md` icon size tiers
   - the dominant icon sizes in code match the documented `xs`/`sm`/`md`/`lg`/`xl` scale
 
-### Partially inaccurate or outdated
+### Partially inaccurate or outdated (resolved)
 
-#### 1. `AGENTS.md` icon pointer is outdated
-
-`AGENTS.md` says icon conventions live in `docs/ICONS.md`, but the actual icon guidance lives in:
-
-- `docs/guides/DESIGN_SYSTEM.md`
-
-No `docs/ICONS.md` file exists in the repo at the time of this audit.
-
-#### 2. `docs/guides/DESIGN_SYSTEM.md` overstates component-library consistency
-
-The document is useful as a standard, but several parts read more like a target state than the current implementation:
-
-- It presents the UI library as the canonical component path.
-- In practice, many app surfaces still use raw form elements and bespoke labels.
-- It describes `Input & TextArea` and `Button` well, but does not reflect the extent of raw `<input>`, `<textarea>`, and `<select>` usage still present in route code.
-
-#### 3. `docs/guides/DESIGN_SYSTEM.md` button variant list is outdated
-
-The docs list:
-
-- `primary`
-- `secondary`
-- `outline`
-- `ghost`
-- `danger`
-- `success`
-
-But `src/components/ui/button.tsx` currently also supports:
-
-- `destructive`
-
-#### 4. The docs imply stronger `Icon` wrapper adoption than the code shows
-
-The icon section is technically correct that `Icon` is for nav and repeated dense-UI patterns, but the current implementation uses it only sparingly outside navigation-related surfaces. The wrapper exists and works, but it is **not yet the dominant pattern**.
+1. ~~`AGENTS.md` icon pointer~~ — now points at `docs/guides/DESIGN_SYSTEM.md` § Icons.
+2. ~~`DESIGN_SYSTEM.md` overstated adoption~~ — v2.4 documents adoption gaps and remaining raw controls.
+3. ~~Button variants missing `destructive`~~ — documented.
+4. `Icon` wrapper adoption remains sparse outside nav (still accurate).
 
 ## Recommended next steps
 
 ### Phase 1: document reality clearly
 
-1. ~~Update `AGENTS.md` to point at `docs/guides/DESIGN_SYSTEM.md` instead of `docs/ICONS.md`.~~ Done (Aug 24, 2026).
-2. ~~Update `docs/guides/DESIGN_SYSTEM.md`~~ Done in v2.4 (`destructive`, adoption gaps, token values).
+1. ~~Update `AGENTS.md` to point at `docs/guides/DESIGN_SYSTEM.md` instead of `docs/ICONS.md`.~~ Done.
+2. ~~Update `docs/guides/DESIGN_SYSTEM.md`~~ Done in v2.4+.
 
 ### Phase 2: reduce real UI drift
 
-1. Standardize selects first.
-   - Replace repeated raw `<select>` implementations with the shared `Select` where practical.
-   - Decide whether the product standard should be 36px-ish (`h-9`) or 44px-ish (`h-11`) for settings/forms.
+1. ~~Standardize selects~~ — settings, notifications, admin filters, locale pickers, voice naming use shared `Select`. Remaining: `LanguageSwitcher`, thumbnail toolbar.
+2. ~~TextArea for ordinary forms~~ — playground TTS migrated; script editors stay custom.
+3. ~~`Label` primitive~~ — `field` / `meta` tones; wired into `Input` / `TextArea` / `Select`.
+4. ~~Search adornments~~ — standardized to `h-4 w-4`.
+5. ~~Referral stats~~ — `<Heading variant="metric">`.
 
-2. Standardize textarea usage.
-   - Create a clear rule for when to use shared `TextArea` versus intentionally custom editor-like textareas.
-   - Likely exceptions: large script editors in project workflow pages.
+### Still open
 
-3. Introduce a dedicated `Label` primitive or explicit label utility.
-   - This would reduce repeated `text-body font-medium ...` and `text-caption uppercase ...` patterns.
-
-4. Normalize search-field adornment sizes.
-   - Pick one default for search inputs (`h-4 w-4` or `h-5 w-5`) and apply it consistently.
-
-5. Migrate remaining stat-number one-offs to typography roles.
-   - Start with `src/app/(shell)/referral/page.tsx`.
+- Migrate uppercase meta labels on TTS job detail modals to `Label tone="meta"` (+ optional uppercase class).
+- Optionally migrate `LanguageSwitcher` to shared `Select` without breaking top-nav density.
+- Broader `Icon` wrapper adoption outside the sidebar.
+- Human visual QA at 375px / 1280px (typography Phase 6e).
 
 ## Bottom line
 
-The frontend is in **good shape on typography and general button sizing**, but **forms remain fragmented** and **icon standardization is only partially enforced**. The current documentation is mostly sound as a design target, but it should be updated to better reflect the real level of primitive adoption in the codebase today.
+Typography, button sizing, search adornments, and most form fields are aligned with shared primitives. Remaining drift is concentrated in **intentional editors** (script textareas), **compact chrome** (`LanguageSwitcher`, thumbnail toolbar), **checkbox/meta label rows**, and **partial `Icon` wrapper adoption**.

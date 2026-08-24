@@ -22,6 +22,7 @@ import {
 import Link from "next/link";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { ExternalImage } from "@/components/ui/ExternalImage";
 import { Heading } from "@/components/ui/heading";
@@ -305,20 +306,16 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                 {/* Actions */}
                 {isEditing && editingData ? (
                   <div className="space-y-3">
-                    <div>
-                      <label className="mb-1 block text-caption font-medium text-text-muted">
-                        Douban ID
-                      </label>
-                      <input
-                        type="text"
-                        value={editingData.douban_id || ""}
-                        onChange={(e) =>
-                          setEditingData({ ...editingData, douban_id: e.target.value })
-                        }
-                        className="w-full rounded-lg border border-border-default bg-surface-base px-3 py-2 text-body text-text-primary focus:border-accent-primary focus:outline-none"
-                        placeholder="Optional Douban ID"
-                      />
-                    </div>
+                    <Input
+                      label="Douban ID"
+                      labelTone="meta"
+                      type="text"
+                      value={editingData.douban_id || ""}
+                      onChange={(e) =>
+                        setEditingData({ ...editingData, douban_id: e.target.value })
+                      }
+                      placeholder="Optional Douban ID"
+                    />
                     <div className="flex gap-2">
                       <Button
                         size="md"

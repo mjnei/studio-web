@@ -5,6 +5,7 @@ import { useEffect, useRef, ReactNode, useState } from "react";
 import { Button } from "./button";
 import { Heading } from "./heading";
 import { Text } from "./text";
+import { Input } from "./input";
 import { useI18n } from "@/i18n";
 
 export interface ModalProps {
@@ -370,13 +371,12 @@ export function InputModal({
         </>
       }
     >
-      <input
+      <Input
         type={inputType}
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder={placeholder}
         disabled={loading}
-        className="w-full rounded-lg border border-border-default bg-surface-base px-4 py-2 text-text-primary placeholder-text-muted focus:border-accent-primary focus:outline-none focus-ring disabled:opacity-50"
         autoFocus
       />
     </Modal>

@@ -120,7 +120,7 @@ Do **not** use legacy Tailwind steps (`text-xs`, `text-sm`, `text-base`, `text-l
 ### Implemented vs still-migrating
 
 - **Implemented**: tokens, `typography.ts`, `Heading`, `Text`, `PageHeader`, `CardTitle`/`CardDescription`, ESLint enforcement, bulk `text-xs`–`text-xl` → token utilities.
-- **Still migrating**: some dense UI uses `text-body` / `text-caption` strings instead of `<Text>`; there is **no shared `Label` primitive** (labels are `Text as="label"` on `Input`/`Select`, or raw `<label>` on some pages). Native `<select>` remains for compact chrome (`LanguageSwitcher`) and a few toolbars.
+- **Still migrating**: some dense UI uses `text-body` / `text-caption` strings instead of `<Text>`; remaining raw `<label>` on checkbox rows and uppercase meta grids in job detail modals. Native `<select>` remains for compact chrome (`LanguageSwitcher`, thumbnail toolbar).
 
 ---
 
@@ -315,7 +315,8 @@ Primitives live in `src/components/ui/` (React 19, TypeScript, Tailwind CSS 4). 
 | -------------------------------------------------------------------- | -------------------------- | ---------- | --------------------------------------------- |
 | `Button`                                                             | `button.tsx`               | yes        | Includes `destructive`                        |
 | `Card` (+ Header/Title/…)                                            | `card.tsx`                 | yes        | `CardTitle` = `Heading variant="section"`     |
-| `Input` / `TextArea`                                                 | `input.tsx`                | yes        | Default input height `h-9`                    |
+| `Input` / `TextArea`                                                 | `input.tsx`                | yes        | Default input height `h-9`; uses `Label`      |
+| `Label`                                                              | `label.tsx`                | yes        | `field` (body) / `meta` (caption) tones       |
 | `Select` / `MultiSelect`                                             | `select.tsx`               | no         | Custom listbox (not native `<select>`)        |
 | `Badge`                                                              | `badge.tsx`                | yes        | Includes `destructive` (same look as `error`) |
 | `Heading` / `Text`                                                   | `heading.tsx` / `text.tsx` | yes        | RSC-safe                                      |
@@ -326,7 +327,7 @@ Primitives live in `src/components/ui/` (React 19, TypeScript, Tailwind CSS 4). 
 | `LoadingSpinner`                                                     | `LoadingSpinner.tsx`       | yes        | Status block wrapping `Spinner`               |
 | `LoadingSkeleton` / `PageLoadingSkeleton` / `InlineLoadingSkeleton`  | `loading-skeleton.tsx`     | no         | Page/section placeholders                     |
 | `Skeleton`                                                           | `skeleton.tsx`             | no         | Low-level shimmer shapes                      |
-| `Modal` / `ConfirmModal` / `FormModal` / `AlertModal` / `InputModal` | `modal.tsx`                | no         | `InputModal` uses a raw `<input>` internally  |
+| `Modal` / `ConfirmModal` / `FormModal` / `AlertModal` / `InputModal` | `modal.tsx`                | no         | `InputModal` uses shared `Input`              |
 | `ToastProvider` / `useToast`                                         | `toast.tsx`                | no         | Also wrapped by `@/lib/hooks/use-toast`       |
 | `Tooltip`                                                            | `tooltip.tsx`              | no         |                                               |
 | `Grid`                                                               | `Grid.tsx`                 | yes        |                                               |
@@ -339,11 +340,12 @@ Primitives live in `src/components/ui/` (React 19, TypeScript, Tailwind CSS 4). 
 
 ### Adoption gaps (current code)
 
-- **Raw `<select>`** still used in settings, notifications filters, language switcher, some admin filters, thumbnail editor, voice naming form, and similar. Heights differ (`h-11` on settings vs `h-9` on language switcher vs `py-2` compact filters). Prefer shared `Select` for new work; native `<select>` is acceptable only for tiny chrome like `LanguageSwitcher` until it is migrated.
-- **Raw `<input>`** still used in admin filters, top-nav search, some modals, playground, profile, and file/range controls. Prefer `Input` for text/search fields. Range sliders, checkboxes, file inputs, and OTP remain native by nature.
-- **Raw `<textarea>`** still used for script editors and playground. Shared `TextArea` is for ordinary form fields. Large script editors may stay custom (`bg-surface-panel`, taller min-height) but should keep token text classes (`text-body`) and matching focus rings.
-- **No `Label` primitive.** `Input`/`Select` use `<Text as="label" variant="body" className="… font-medium">`. Pages mix body-weight labels, caption/uppercase labels, and unlabeled checkboxes.
+- **Raw `<select>`** remains for compact chrome only: `LanguageSwitcher` and the thumbnail editor toolbar (font/color). Prefer shared `Select` for form fields.
+- **Raw `<input>`** remains for checkboxes, file pickers, range sliders, color pickers, OTP, and a few password-reveal fields. Prefer `Input` for text/search/date/number fields.
+- **Raw `<textarea>`** remains for large script editors (`script-generation`, project script pages) and the thumbnail caption editor. Prefer `TextArea` for ordinary multi-line forms (playground TTS uses `TextArea`).
+- **`Label` primitive** (`field` | `meta` tones) is used by `Input` / `TextArea` / `Select`. Migrate remaining raw `<label>` call sites (job detail meta rows, checkbox rows) when touched.
 - **Raw `<button>`** is justified inside `Select`, `Pagination`, `LayoutToggle`, drawer collapse, and notification bell. Product CTAs and form submits should use `Button`.
+- **`Icon` wrapper** is required for sidebar/nav; most other Lucide call sites still use direct `h-N w-N` sizing.
 
 ### Core Components
 
@@ -391,33 +393,30 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 </Card>;
 ```
 
-#### 3. Input & TextArea
+#### 3. Input, TextArea & Label
 
-- **File**: `src/components/ui/input.tsx`
-- **Features**: Optional `label` (via `Text as="label"`), `error`, `leftIcon` / `icon` / `rightIcon`
+- **Files**: `src/components/ui/input.tsx`, `src/components/ui/label.tsx`
+- **Features**: Optional `label` (via `Label`, `htmlFor` wired with `useId`), `labelTone` (`field` | `meta`), `error` (`Text` caption), `leftIcon` / `icon` / `rightIcon`, `wrapperClassName`
 - **Default field**: `h-9 px-3.5 text-body` — aligned with `Button` `md`
 - **TextArea**: `min-h-[88px] px-3.5 py-2.5 text-body`
-- **Usage**: Forms, search, filters. Many routes still use raw `<input>`/`<textarea>` — migrate those rather than copying their classes.
+- **Label tones**: `field` = body + primary (forms); `meta` = caption + muted (filters / definition rows)
+- **Usage**: Forms, search, filters. Prefer these over raw `<input>` / `<textarea>` / `<label>`. Large script editors may stay custom.
 
 ```tsx
 import { Input, TextArea } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
-// Input
 <Input
   label="Email"
   type="email"
   placeholder="user@example.com"
   error="Invalid email"
-  icon={<IconMail />}
+  icon={<IconMail className="h-4 w-4" />}
 />
 
-// TextArea
-<TextArea
-  label="Description"
-  placeholder="Enter description..."
-  error="Description is required"
-  rows={4}
-/>
+<TextArea label="Description" placeholder="Enter description..." rows={4} />
+
+<Label tone="meta">From</Label>
 ```
 
 #### 4. Badge

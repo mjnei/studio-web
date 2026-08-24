@@ -2,6 +2,7 @@
 
 import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 
 import { X, Clock, CheckCircle2, XCircle, Zap, FileText, Mic } from "lucide-react";
 import type { TTSJob } from "@/types/admin";
@@ -88,26 +89,26 @@ export function JobDetailModal({ job, open, onClose }: JobDetailModalProps) {
         <div className="p-6 space-y-6">
           {/* Status */}
           <div>
-            <label className="text-caption font-medium text-text-muted uppercase tracking-wider">
+            <Label tone="meta" className="uppercase tracking-wider">
               Status
-            </label>
+            </Label>
             <div className="mt-2">{getStatusBadge(job.status)}</div>
           </div>
 
           {/* Timestamps */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="text-caption font-medium text-text-muted uppercase tracking-wider">
+              <Label tone="meta" className="uppercase tracking-wider">
                 Created At
-              </label>
+              </Label>
               <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
                 <p className="text-body text-text-primary">{formatDateTime(job.created_at)}</p>
               </div>
             </div>
             <div>
-              <label className="text-caption font-medium text-text-muted uppercase tracking-wider">
+              <Label tone="meta" className="uppercase tracking-wider">
                 Completed At
-              </label>
+              </Label>
               <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
                 <p className="text-body text-text-primary">{formatDateTime(job.completed_at)}</p>
               </div>
@@ -117,9 +118,9 @@ export function JobDetailModal({ job, open, onClose }: JobDetailModalProps) {
           {/* Duration */}
           {job.duration_seconds && (
             <div>
-              <label className="text-caption font-medium text-text-muted uppercase tracking-wider">
+              <Label tone="meta" className="uppercase tracking-wider">
                 Duration
-              </label>
+              </Label>
               <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
                 <p className="text-body text-text-primary">
                   {formatDuration(job.duration_seconds)}
@@ -130,10 +131,10 @@ export function JobDetailModal({ job, open, onClose }: JobDetailModalProps) {
 
           {/* Voice ID */}
           <div>
-            <label className="text-caption font-medium text-text-muted uppercase tracking-wider flex items-center gap-2">
+            <Label tone="meta" className="uppercase tracking-wider flex items-center gap-2">
               <Mic className="h-3.5 w-3.5" />
               Voice ID
-            </label>
+            </Label>
             <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
               <p className="text-body text-text-primary">Voice #{job.voice_id}</p>
             </div>
@@ -142,9 +143,9 @@ export function JobDetailModal({ job, open, onClose }: JobDetailModalProps) {
           {/* Project ID */}
           {job.project_id && (
             <div>
-              <label className="text-caption font-medium text-text-muted uppercase tracking-wider">
+              <Label tone="meta" className="uppercase tracking-wider">
                 Project ID
-              </label>
+              </Label>
               <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
                 <p className="text-body text-text-primary">Project #{job.project_id}</p>
               </div>
@@ -154,10 +155,10 @@ export function JobDetailModal({ job, open, onClose }: JobDetailModalProps) {
           {/* Text */}
           {job.text && (
             <div>
-              <label className="text-caption font-medium text-text-muted uppercase tracking-wider flex items-center gap-2">
+              <Label tone="meta" className="uppercase tracking-wider flex items-center gap-2">
                 <FileText className="h-3.5 w-3.5" />
                 Input Text
-              </label>
+              </Label>
               <div className="mt-2 rounded-lg border border-border-default bg-surface-panel p-4">
                 <p className="text-body text-text-primary whitespace-pre-wrap">{job.text}</p>
               </div>
@@ -167,10 +168,10 @@ export function JobDetailModal({ job, open, onClose }: JobDetailModalProps) {
           {/* Error Message */}
           {job.error_message && (
             <div>
-              <label className="text-caption font-medium text-text-muted uppercase tracking-wider flex items-center gap-2">
+              <Label tone="meta" className="uppercase tracking-wider flex items-center gap-2">
                 <XCircle className="h-3.5 w-3.5 text-red-500" />
                 Error Message
-              </label>
+              </Label>
               <div className="mt-2 rounded-lg border-2 border-red-500/50 bg-red-500/10 p-4">
                 <p className="text-body text-red-600 font-mono">{job.error_message}</p>
               </div>
@@ -180,9 +181,9 @@ export function JobDetailModal({ job, open, onClose }: JobDetailModalProps) {
           {/* Audio URL */}
           {job.audio_url && (
             <div>
-              <label className="text-caption font-medium text-text-muted uppercase tracking-wider">
+              <Label tone="meta" className="uppercase tracking-wider">
                 Audio URL
-              </label>
+              </Label>
               <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
                 <a
                   href={job.audio_url}

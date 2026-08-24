@@ -1,5 +1,6 @@
 import { Film, Search, Database } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { LayoutToggle, type LayoutMode } from "@/components/ui/LayoutToggle";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -58,19 +59,17 @@ export function TmdbImportView({
     <>
       <div className="mb-6 flex flex-wrap items-center gap-2 sm:gap-4">
         <div className="flex min-w-0 flex-1 items-center gap-2">
-          <div className="flex min-w-0 flex-1 items-center gap-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
-            <Search className="h-4 w-4 shrink-0 text-text-muted" />
-            <input
-              ref={searchInputRef}
-              type="text"
-              placeholder="Search for a movie by title on TMDB..."
-              value={searchQuery}
-              onChange={(e) => onSearchQueryChange(e.target.value)}
-              onKeyPress={onSearchKeyPress}
-              disabled={isSearching}
-              className="min-w-0 flex-1 bg-transparent text-text-primary placeholder-text-muted focus:outline-none disabled:opacity-50"
-            />
-          </div>
+          <Input
+            ref={searchInputRef}
+            type="search"
+            placeholder="Search for a movie by title on TMDB..."
+            value={searchQuery}
+            onChange={(e) => onSearchQueryChange(e.target.value)}
+            onKeyPress={onSearchKeyPress}
+            disabled={isSearching}
+            icon={<Search className="h-4 w-4" />}
+            wrapperClassName="min-w-0 flex-1"
+          />
           <Button
             size="icon"
             onClick={() => onSearch(1)}

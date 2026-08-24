@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { Mic, Search, ChevronDown } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { getAvailableVoices } from "@/lib/api/voice-client";
 import type { VoiceResponse } from "@/lib/types/api";
 
@@ -39,7 +41,7 @@ export function VoiceSelector({ value, onChange }: VoiceSelectorProps) {
 
   return (
     <div className="relative">
-      <label className="block text-body font-medium text-text-secondary mb-2">Voice</label>
+      <Label>Voice</Label>
 
       {/* Dropdown Button */}
       <button
@@ -65,7 +67,7 @@ export function VoiceSelector({ value, onChange }: VoiceSelectorProps) {
           )}
         </div>
         <ChevronDown
-          className={`h-5 w-5 text-text-muted flex-shrink-0 transition-transform ${isOpen ? "rotate-180" : ""}`}
+          className={`h-4 w-4 text-text-muted flex-shrink-0 transition-transform ${isOpen ? "rotate-180" : ""}`}
         />
       </button>
 
@@ -74,16 +76,13 @@ export function VoiceSelector({ value, onChange }: VoiceSelectorProps) {
         <div className="absolute z-50 mt-2 w-full rounded-xl border border-border-default bg-surface-base shadow-2xl overflow-hidden">
           {/* Search */}
           <div className="p-3 border-b border-border-default bg-surface-panel">
-            <div className="flex items-center gap-2 rounded-lg border border-border-default bg-surface-base px-3 py-2">
-              <Search className="h-4 w-4 text-text-muted flex-shrink-0" />
-              <input
-                type="text"
-                placeholder="Search voices..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="flex-1 bg-transparent text-body text-text-primary placeholder-text-muted focus:outline-none"
-              />
-            </div>
+            <Input
+              type="search"
+              placeholder="Search voices..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              icon={<Search className="h-4 w-4" />}
+            />
           </div>
 
           {/* Voice List */}
