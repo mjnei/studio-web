@@ -221,18 +221,6 @@ export default function VoicesPage() {
       <PageHeader
         title={t("voices.library.title")}
         description={t("voices.library.description")}
-        action={
-          tab === "private" ? (
-            <Button
-              variant="primary"
-              size="md"
-              onClick={handleAddVoiceClick}
-              leftIcon={<Plus className="h-4 w-4" />}
-            >
-              {t("voices.addVoice")}
-            </Button>
-          ) : undefined
-        }
         meta={
           tab === "private" ? (
             <span className="rounded-full bg-green-500/10 border border-green-500/30 px-3 py-1.5 text-caption font-medium text-green-600 whitespace-nowrap">
@@ -334,6 +322,17 @@ export default function VoicesPage() {
               </div>
             </div>
           </Card>
+
+          <div className="mb-6 flex justify-end">
+            <Button
+              variant="primary"
+              size="md"
+              onClick={handleAddVoiceClick}
+              leftIcon={<Plus className="h-4 w-4" />}
+            >
+              {t("voices.addVoice")}
+            </Button>
+          </div>
 
           {/* Error Message */}
           {error && (
