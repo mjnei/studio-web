@@ -78,9 +78,7 @@ export function TmdbMovieCard({
               size="sm"
               onClick={onImport}
               disabled={isImporting}
-              leftIcon={
-                isImporting ? <Spinner size="sm" /> : <Download className="h-4 w-4" />
-              }
+              leftIcon={isImporting ? <Spinner size="sm" /> : <Download className="h-4 w-4" />}
             >
               {isImporting ? "Importing..." : "Import to Database"}
             </Button>
@@ -149,9 +147,7 @@ export function TmdbMovieCard({
               fullWidth
               onClick={onImport}
               disabled={isImporting}
-              leftIcon={
-                isImporting ? <Spinner size="sm" /> : <Download className="h-4 w-4" />
-              }
+              leftIcon={isImporting ? <Spinner size="sm" /> : <Download className="h-4 w-4" />}
             >
               {isImporting ? "Importing..." : "Import"}
             </Button>

@@ -85,12 +85,7 @@ export function NotificationPreferencesModal({
               </Text>
             </div>
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onClose}
-            aria-label={t("common.close")}
-          >
+          <Button variant="ghost" size="icon" onClick={onClose} aria-label={t("common.close")}>
             <X className="h-5 w-5" aria-hidden />
           </Button>
         </div>

@@ -54,13 +54,7 @@ export function ProjectDetailModal({
             </Heading>
             <p className="mt-1 text-body text-text-muted">Project ID {project.id}</p>
           </div>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            onClick={onClose}
-            aria-label="Close"
-          >
+          <Button type="button" variant="ghost" size="icon" onClick={onClose} aria-label="Close">
             <X className="h-5 w-5" aria-hidden />
           </Button>
         </div>

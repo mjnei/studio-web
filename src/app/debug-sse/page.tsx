@@ -121,12 +121,7 @@ export default function DebugSSEPage() {
             <Heading variant="subsection" as="h2" className="text-text-primary">
               Manual SSE Test
             </Heading>
-            <Button
-              variant="primary"
-              size="md"
-              onClick={testSSEConnection}
-              disabled={!token}
-            >
+            <Button variant="primary" size="md" onClick={testSSEConnection} disabled={!token}>
               Test SSE Connection
             </Button>
           </div>

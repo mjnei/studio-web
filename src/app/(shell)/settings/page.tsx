@@ -86,7 +86,12 @@ export default function SettingsPage() {
         title={t("settings.title")}
         description={t("settings.description")}
         action={
-          <Button variant="primary" size="md" onClick={handleSave} leftIcon={saved ? <Check className="h-4 w-4" /> : <SettingsIcon className="h-4 w-4" />}>
+          <Button
+            variant="primary"
+            size="md"
+            onClick={handleSave}
+            leftIcon={saved ? <Check className="h-4 w-4" /> : <SettingsIcon className="h-4 w-4" />}
+          >
             {saved ? t("settings.saved") : t("settings.saveChanges")}
           </Button>
         }

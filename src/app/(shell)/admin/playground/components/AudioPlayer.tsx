@@ -181,12 +181,7 @@ export function AudioPlayer({ audioUrl, jobId, jobName, onDismiss }: AudioPlayer
             >
               Download
             </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleDismiss}
-              aria-label="Close player"
-            >
+            <Button variant="ghost" size="icon" onClick={handleDismiss} aria-label="Close player">
               <X className="h-4 w-4" aria-hidden />
             </Button>
           </div>

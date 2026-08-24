@@ -17,12 +17,11 @@ interface LayoutToggleProps {
   };
 }
 
-const MODES: { mode: LayoutMode; labelKey: "small" | "medium" | "list"; Icon: typeof Grid3x3 }[] =
-  [
-    { mode: "grid-sm", labelKey: "small", Icon: Grid3x3 },
-    { mode: "grid-md", labelKey: "medium", Icon: LayoutGrid },
-    { mode: "list", labelKey: "list", Icon: List },
-  ];
+const MODES: { mode: LayoutMode; labelKey: "small" | "medium" | "list"; Icon: typeof Grid3x3 }[] = [
+  { mode: "grid-sm", labelKey: "small", Icon: Grid3x3 },
+  { mode: "grid-md", labelKey: "medium", Icon: LayoutGrid },
+  { mode: "list", labelKey: "list", Icon: List },
+];
 
 export function LayoutToggle({ layoutMode, onLayoutChange, labels }: LayoutToggleProps) {
   const defaultLabels = {

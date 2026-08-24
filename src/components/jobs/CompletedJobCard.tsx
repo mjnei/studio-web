@@ -120,7 +120,12 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
           {/* Quick Actions */}
           <div className="flex items-center gap-1.5 self-end sm:self-center">
             <Tooltip content={t("jobs.completedJob.previewVideo")} position="top">
-              <Button variant="ghost" size="icon" onClick={() => onPlay(job)} aria-label={t("jobs.completedJob.previewVideo")}>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => onPlay(job)}
+                aria-label={t("jobs.completedJob.previewVideo")}
+              >
                 <Play className="h-4 w-4" aria-hidden />
               </Button>
             </Tooltip>
