@@ -56,9 +56,17 @@ export default function ReferralPage() {
     loadData();
   }, [t, toast]);
 
+  // TODO(backend): The API response `invite_link` reflects the request Host header,
+  // which produces LAN IPs in dev (e.g. http://192.168.x.x:3020/...).
+  // Fix: add a FRONTEND_BASE_URL env var on the backend and use it to construct
+  // `invite_link` in GET /referrals/code. Once fixed, revert this to codeData.invite_link.
+  const inviteLink = codeData
+    ? `${window.location.origin}/invite?code=${codeData.referral_code}`
+    : null;
+
   const handleCopy = () => {
-    if (codeData) {
-      navigator.clipboard.writeText(codeData.invite_link);
+    if (inviteLink) {
+      navigator.clipboard.writeText(inviteLink);
       setCopied(true);
       toast.success(t("referral.inviteCard.copied"), "");
       setTimeout(() => setCopied(false), 2000);
@@ -142,7 +150,7 @@ export default function ReferralPage() {
                     {t("referral.inviteCard.yourReferralLink")}
                   </p>
                   <p className="truncate text-body text-text-primary font-mono">
-                    {codeData.invite_link}
+                    {inviteLink}
                   </p>
                 </div>
                 <Button
