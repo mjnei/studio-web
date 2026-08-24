@@ -65,11 +65,6 @@ function InviteContent() {
     router.push(`/signup?code=${code}`);
   };
 
-  const handleSignupWithoutCode = () => {
-    // Redirect to signup without code
-    router.push("/signup");
-  };
-
   // Show loading while checking auth or validating code
   if (authLoading || validating) {
     return (
@@ -147,13 +142,13 @@ function InviteContent() {
             {errorMessage}
           </Text>
 
-          {/* Action Buttons */}
-          <div className="space-y-3">
-            <Button onClick={handleSignupWithoutCode} variant="primary" fullWidth size="lg">
-              {t("auth.invite.continueAnyway")}
-            </Button>
-            <p className="text-caption text-text-muted">{t("auth.invite.noCodeRequired")}</p>
-          </div>
+          <Text variant="body" className="text-text-muted mb-6">
+            {t("auth.invite.codeRequiredHint")}
+          </Text>
+
+          <Button onClick={() => router.push("/signup")} variant="secondary" fullWidth size="lg">
+            {t("auth.invite.enterDifferentCode")}
+          </Button>
         </div>
       )}
     </Card>

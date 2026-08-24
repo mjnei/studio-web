@@ -110,17 +110,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const loginWithGoogle = useCallback(
     async (referralCode?: string | null) => {
-      const credential = await signInWithPopup(auth, googleProvider);
-      const idToken = await credential.user.getIdToken();
-      await loginWithFirebase(idToken, referralCode);
-      const me = await getMe();
-      setUser(me);
+      try {
+        const credential = await signInWithPopup(auth, googleProvider);
+        const idToken = await credential.user.getIdToken();
+        await loginWithFirebase(idToken, referralCode);
+        const me = await getMe();
+        setUser(me);
 
-      // Redirect based on onboarding status
-      if (!me.onboarding_completed) {
-        router.push(ONBOARDING_ROUTE);
-      } else {
-        router.push("/dashboard");
+        // Redirect based on onboarding status
+        if (!me.onboarding_completed) {
+          router.push(ONBOARDING_ROUTE);
+        } else {
+          router.push("/dashboard");
+        }
+      } catch (err) {
+        // Clear Firebase session if backend rejected (e.g. missing referral for new account)
+        try {
+          await firebaseSignOut(auth);
+        } catch {
+          /* ignore */
+        }
+        throw err;
       }
     },
     [router]

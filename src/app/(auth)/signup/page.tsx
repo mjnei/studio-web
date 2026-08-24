@@ -5,10 +5,10 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { AlertCircle, Gift, KeyRound } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import { isReferralInvalidError, isReferralRequiredError } from "@/lib/api-client";
 import { useI18n } from "@/i18n";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { validateReferralCode } from "@/lib/api/referral-client";
@@ -29,6 +29,7 @@ function SignupContent() {
   const [validatingCode, setValidatingCode] = useState(false);
   const [manualCode, setManualCode] = useState("");
   const [codeError, setCodeError] = useState<string | null>(null);
+  const needsReferralNotice = searchParams.get("reason") === "referral_required";
 
   const handleCodeValidation = useCallback(
     async (code: string): Promise<boolean> => {
@@ -84,30 +85,44 @@ function SignupContent() {
 
   async function handleGoogleSignup() {
     setError("");
+    setCodeError(null);
+
+    let codeToUse: string | null = null;
+
+    if (manualCode.trim()) {
+      const isValid = await handleCodeValidation(manualCode);
+      if (!isValid) {
+        setCodeError(t("auth.invite.invalidCode"));
+        setError(t("auth.signup.referralInvalid"));
+        toast.error(t("auth.signup.errorTitle"), t("auth.signup.referralInvalid"));
+        return;
+      }
+      codeToUse = manualCode.toUpperCase();
+    } else if (referralCode) {
+      codeToUse = referralCode;
+    } else {
+      setCodeError(t("auth.signup.referralRequired"));
+      setError(t("auth.signup.referralRequired"));
+      toast.error(t("auth.signup.errorTitle"), t("auth.signup.referralRequired"));
+      return;
+    }
+
     setLoading(true);
 
     try {
-      let codeToUse: string | null = null;
-
-      // If user entered a manual code, validate it first
-      if (manualCode.trim()) {
-        const isValid = await handleCodeValidation(manualCode);
-        if (isValid) {
-          codeToUse = manualCode;
-        } else {
-          // Invalid code - skip it and continue without referral
-          console.log("Invalid referral code, continuing without it");
-          codeToUse = null;
-        }
-      } else if (referralCode) {
-        // Use referral code from query params (already validated)
-        codeToUse = referralCode;
-      }
-
       await loginWithGoogle(codeToUse);
       toast.success(t("auth.signup.successTitle"), t("auth.signup.successMessage"));
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : t("auth.signup.errorGoogle");
+      let msg = err instanceof Error ? err.message : t("auth.signup.errorGoogle");
+      if (isReferralRequiredError(err)) {
+        msg = t("auth.signup.referralRequired");
+        setCodeError(msg);
+      } else if (isReferralInvalidError(err)) {
+        msg = t("auth.signup.referralInvalid");
+        setCodeError(msg);
+        setReferralCode(null);
+        setReferrerName(null);
+      }
       setError(msg);
       toast.error(t("auth.signup.errorTitle"), msg);
       setLoading(false);
@@ -139,6 +154,13 @@ function SignupContent() {
         </Text>
       </div>
 
+      {needsReferralNotice && !referralCode && (
+        <div className="mb-6 rounded-lg border border-accent-primary/30 bg-accent-primary/10 px-4 py-3 text-body text-text-primary flex items-start gap-2">
+          <KeyRound className="h-5 w-5 shrink-0 mt-0.5 text-accent-primary" />
+          <span>{t("auth.signup.referralRequiredFromLogin")}</span>
+        </div>
+      )}
+
       {/* Referral Code Notice */}
       {referralCode && referrerName && !validatingCode && (
         <div className="mb-6 rounded-lg border border-accent-cyan/30 bg-gradient-to-br from-accent-cyan/10 to-accent-primary/10 px-4 py-3">
@@ -167,20 +189,19 @@ function SignupContent() {
       {!referralCode && !referrerName && (
         <div className="mb-6 flex flex-col items-center">
           <label className="text-body font-medium text-text-primary mb-2 self-start">
-            {t("auth.invite.yourCode")}
+            {t("auth.invite.yourCode")} <span className="text-status-failed">*</span>
           </label>
           <InputOTP
             maxLength={6}
             value={manualCode}
             onChange={handleManualCodeChange}
-            disabled={validatingCode}
+            disabled={validatingCode || loading}
           >
             <InputOTPGroup>
               <InputOTPSlot index={0} />
               <InputOTPSlot index={1} />
               <InputOTPSlot index={2} />
             </InputOTPGroup>
-            {/* <InputOTPSeparator /> */}
             <InputOTPGroup>
               <InputOTPSlot index={3} />
               <InputOTPSlot index={4} />
@@ -191,7 +212,7 @@ function SignupContent() {
             <p className="mt-2 text-caption text-status-failed self-start">{codeError}</p>
           )}
           <div className="mt-2 text-caption text-text-muted self-start">
-            {t("auth.signup.referralBonusOptional")}
+            {t("auth.signup.referralBonusRequired")}
           </div>
         </div>
       )}

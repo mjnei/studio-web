@@ -122,7 +122,8 @@ export async function request<T>(path: string, options: RequestInit = {}): Promi
     try {
       const errorJson = JSON.parse(errorText);
       throw new ApiError(res.status, errorJson.detail || errorJson.message || errorText);
-    } catch {
+    } catch (err) {
+      if (err instanceof ApiError) throw err;
       throw new ApiError(res.status, errorText);
     }
   }
@@ -137,6 +138,19 @@ export class ApiError extends Error {
     super(message);
     this.status = status;
   }
+}
+
+/** Backend rejects new-account creation without a referral code. */
+export const REFERRAL_CODE_REQUIRED = "Referral code is required to create an account";
+/** Backend rejects new-account creation with an unknown referral code. */
+export const REFERRAL_CODE_INVALID = "Invalid referral code";
+
+export function isReferralRequiredError(error: unknown): boolean {
+  return error instanceof Error && error.message.includes(REFERRAL_CODE_REQUIRED);
+}
+
+export function isReferralInvalidError(error: unknown): boolean {
+  return error instanceof Error && error.message.includes(REFERRAL_CODE_INVALID);
 }
 
 export async function loginWithFirebase(
