@@ -44,7 +44,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .vscode/settings.json
-public/images/background*.mp4
+public/videos/background*.mp4
 
 # CodeGraph local indexes
 .codegraph/

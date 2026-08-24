@@ -149,9 +149,7 @@ export default function ReferralPage() {
                   <p className="text-caption font-medium text-text-muted mb-1">
                     {t("referral.inviteCard.yourReferralLink")}
                   </p>
-                  <p className="truncate text-body text-text-primary font-mono">
-                    {inviteLink}
-                  </p>
+                  <p className="truncate text-body text-text-primary font-mono">{inviteLink}</p>
                 </div>
                 <Button
                   variant="primary"
