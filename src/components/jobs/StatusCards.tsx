@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Play, CheckCircle2, AlertTriangle, Video } from "lucide-react";
+import { Play, CheckCircle2, AlertTriangle } from "lucide-react";
 import { useI18n } from "@/i18n";
 import { JobsSummary, JobStatusFilter } from "@/types/jobs";
 import { cn } from "@/lib/utils/cn";
@@ -14,16 +14,10 @@ interface StatusCardsProps {
 
 const STATUS_ITEMS: Array<{
   value: JobStatusFilter;
-  icon: typeof Video;
+  icon: typeof Play;
   colorClass: string;
   getCount: (summary: JobsSummary) => number;
 }> = [
-  {
-    value: "all",
-    icon: Video,
-    colorClass: "text-accent-primary",
-    getCount: (summary) => summary.totalCount,
-  },
   {
     value: "active",
     icon: Play,
@@ -48,46 +42,47 @@ export const StatusCards: React.FC<StatusCardsProps> = ({ summary, activeFilter,
   const { t } = useI18n();
 
   return (
-    <div className="mb-6 flex flex-wrap items-center gap-2 rounded-xl border border-border-default bg-surface-panel p-1">
-      {STATUS_ITEMS.map(({ value, icon: Icon, colorClass, getCount }) => {
-        const isActive = activeFilter === value;
-        return (
-          <button
-            key={value}
-            type="button"
-            onClick={() => onSelectFilter(value)}
-            className={cn(
-              "inline-flex min-w-[9rem] flex-1 items-center justify-between gap-3 rounded-lg px-3 py-2 text-left transition-all",
-              isActive
-                ? "bg-accent-primary text-white shadow-sm"
-                : "text-text-secondary hover:bg-surface-hover hover:text-text-primary"
-            )}
-            aria-pressed={isActive}
-          >
-            <span className="flex items-center gap-2">
+    <div className="mb-6">
+      <div className="inline-flex items-center gap-1 rounded-xl bg-surface-panel p-1 shadow-sm border border-border-default">
+        {STATUS_ITEMS.map(({ value, icon: Icon, colorClass, getCount }) => {
+          const isActive = activeFilter === value;
+          const count = getCount(summary);
+          return (
+            <button
+              key={value}
+              type="button"
+              onClick={() => onSelectFilter(value)}
+              className={cn(
+                "relative flex items-center gap-2 rounded-lg px-5 py-2 text-body font-semibold transition-all duration-200",
+                isActive
+                  ? "bg-accent-primary text-white shadow-md"
+                  : "text-text-muted hover:text-text-primary hover:bg-surface-raised"
+              )}
+              aria-pressed={isActive}
+            >
               <Icon
                 className={cn(
                   "h-4 w-4",
                   isActive ? "text-white" : colorClass,
-                  value === "active" && getCount(summary) > 0 && !isActive ? "animate-pulse" : ""
+                  value === "active" && count > 0 && !isActive ? "animate-pulse" : ""
                 )}
                 aria-hidden
               />
-              <span className="text-body font-medium">
-                {value === "all" ? t("jobs.status.total") : t(`jobs.status.${value}`)}
-              </span>
-            </span>
-            <span
-              className={cn(
-                "rounded-full px-2 py-0.5 text-caption font-semibold",
-                isActive ? "bg-white/20 text-white" : "bg-surface-elevated text-text-primary"
+              <span>{t(`jobs.status.${value}`)}</span>
+              {count > 0 && (
+                <span
+                  className={cn(
+                    "ml-1 rounded-full px-2 py-0.5 text-caption font-bold",
+                    isActive ? "bg-white/20 text-white" : "bg-surface-elevated text-text-muted"
+                  )}
+                >
+                  {count}
+                </span>
               )}
-            >
-              {getCount(summary)}
-            </span>
-          </button>
-        );
-      })}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 };
