@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { AlertTriangle, CheckCircle2, RefreshCw, Video } from "lucide-react";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -49,6 +49,16 @@ export default function JobsPage() {
   } = useJobs();
 
   const [activeVideoModalJob, setActiveVideoModalJob] = useState<VideoJob | null>(null);
+  const [defaultFilterApplied, setDefaultFilterApplied] = useState(false);
+
+  // Once jobs load, default to "active" if any active jobs exist, otherwise "completed"
+  useEffect(() => {
+    if (!isLoading && !defaultFilterApplied && filters.status === "all") {
+      const defaultStatus = summary.activeCount > 0 ? "active" : "completed";
+      setFilters((prev) => ({ ...prev, status: defaultStatus }));
+      setDefaultFilterApplied(true);
+    }
+  }, [isLoading, defaultFilterApplied, summary.activeCount, filters.status, setFilters]);
 
   if (isLoading) {
     return <PageLoadingSkeleton message={t("jobs.loading")} />;

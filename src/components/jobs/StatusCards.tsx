@@ -38,7 +38,11 @@ const STATUS_ITEMS: Array<{
   },
 ];
 
-export const StatusCards: React.FC<StatusCardsProps> = ({ summary, activeFilter, onSelectFilter }) => {
+export const StatusCards: React.FC<StatusCardsProps> = ({
+  summary,
+  activeFilter,
+  onSelectFilter,
+}) => {
   const { t } = useI18n();
 
   return (
