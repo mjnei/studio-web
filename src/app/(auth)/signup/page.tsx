@@ -110,8 +110,12 @@ function SignupContent() {
     setLoading(true);
 
     try {
-      await loginWithGoogle(codeToUse);
-      toast.success(t("auth.signup.successTitle"), t("auth.signup.successMessage"));
+      const { isNewUser } = await loginWithGoogle(codeToUse);
+      if (isNewUser) {
+        toast.success(t("auth.signup.successTitle"), t("auth.signup.successMessage"));
+      } else {
+        toast.success(t("auth.login.successTitle"), t("auth.login.successMessageGoogle"));
+      }
     } catch (err: unknown) {
       let msg = err instanceof Error ? err.message : t("auth.signup.errorGoogle");
       if (isReferralRequiredError(err)) {

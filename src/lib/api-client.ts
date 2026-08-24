@@ -153,16 +153,23 @@ export function isReferralInvalidError(error: unknown): boolean {
   return error instanceof Error && error.message.includes(REFERRAL_CODE_INVALID);
 }
 
+export interface AuthTokenResponse {
+  access_token: string;
+  token_type?: string;
+  is_comeback_user?: boolean;
+  is_new_user?: boolean;
+}
+
 export async function loginWithFirebase(
   idToken: string,
   referralCode?: string | null
-): Promise<{ access_token: string }> {
+): Promise<AuthTokenResponse> {
   const body: { id_token: string; referral_code?: string } = { id_token: idToken };
   if (referralCode) {
     body.referral_code = referralCode;
   }
 
-  const res = await request<{ access_token: string }>("/auth/firebase-login", {
+  const res = await request<AuthTokenResponse>("/auth/firebase-login", {
     method: "POST",
     body: JSON.stringify(body),
   });

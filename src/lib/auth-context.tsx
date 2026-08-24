@@ -21,7 +21,10 @@ type AuthContextValue = {
   user: UserResponse | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  loginWithGoogle: (referralCode?: string | null) => Promise<void>;
+  loginWithGoogle: (referralCode?: string | null) => Promise<{
+    isNewUser: boolean;
+    isComebackUser: boolean;
+  }>;
   loginWithPassword: (email: string, password: string) => Promise<void>;
   signupWithPassword: (
     email: string,
@@ -113,7 +116,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         const credential = await signInWithPopup(auth, googleProvider);
         const idToken = await credential.user.getIdToken();
-        await loginWithFirebase(idToken, referralCode);
+        const tokenRes = await loginWithFirebase(idToken, referralCode);
         const me = await getMe();
         setUser(me);
 
@@ -123,6 +126,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         } else {
           router.push("/dashboard");
         }
+
+        return {
+          isNewUser: Boolean(tokenRes.is_new_user),
+          isComebackUser: Boolean(tokenRes.is_comeback_user),
+        };
       } catch (err) {
         // Clear Firebase session if backend rejected (e.g. missing referral for new account)
         try {
