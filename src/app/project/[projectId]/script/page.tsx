@@ -181,19 +181,20 @@ export default function ScriptPage() {
 
                 {/* Expand/Collapse button */}
                 <div className="flex items-center justify-center">
-                  <button
+                  <Button
+                    variant="secondary"
+                    size="md"
                     onClick={() => setIsExpanded(!isExpanded)}
-                    className="group flex items-center gap-2 px-4 py-2.5 rounded-lg bg-surface-raised hover:bg-surface-hover border border-border-default hover:border-accent-cyan/40 text-text-secondary hover:text-accent-cyan transition-all duration-200 shadow-sm hover:shadow-md"
+                    rightIcon={
+                      isExpanded ? (
+                        <ChevronUp className="h-4 w-4" />
+                      ) : (
+                        <ChevronDown className="h-4 w-4" />
+                      )
+                    }
                   >
-                    <span className="text-body font-medium">
-                      {isExpanded ? t("project.script.showLess") : t("project.script.showFull")}
-                    </span>
-                    {isExpanded ? (
-                      <ChevronUp className="h-4 w-4 group-hover:-translate-y-0.5 transition-transform" />
-                    ) : (
-                      <ChevronDown className="h-4 w-4 group-hover:translate-y-0.5 transition-transform" />
-                    )}
-                  </button>
+                    {isExpanded ? t("project.script.showLess") : t("project.script.showFull")}
+                  </Button>
                 </div>
               </div>
             ) : (

@@ -38,15 +38,17 @@ export function VoiceSelectionPanel({
     <Card variant="elevated" padding="lg">
       <div className="space-y-4">
         <div className="inline-flex items-center gap-2 rounded-xl bg-surface-panel p-1.5 shadow-sm border border-border-default">
-          <button
+          <Button
+            variant={tab === "my" ? "primary" : "ghost"}
+            size="md"
             onClick={() => setTab("my")}
-            className={`relative flex items-center gap-2 rounded-lg px-6 py-2.5 text-body font-semibold transition-all duration-200 ${
+            leftIcon={<Mic className="h-4 w-4" aria-hidden />}
+            className={
               tab === "my"
-                ? "bg-gradient-to-r from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30"
-                : "text-text-muted hover:text-text-secondary hover:bg-surface-raised"
-            }`}
+                ? "bg-gradient-to-r from-accent-primary to-purple-600 shadow-lg shadow-accent-primary/30"
+                : ""
+            }
           >
-            <Mic className="h-4 w-4" aria-hidden />
             <span>{t("project.voice.myVoices")}</span>
             {ownVoices.length > 0 && (
               <span
@@ -57,17 +59,19 @@ export function VoiceSelectionPanel({
                 {ownVoices.length}
               </span>
             )}
-          </button>
+          </Button>
 
-          <button
+          <Button
+            variant={tab === "community" ? "primary" : "ghost"}
+            size="md"
             onClick={() => setTab("community")}
-            className={`relative flex items-center gap-2 rounded-lg px-6 py-2.5 text-body font-semibold transition-all duration-200 ${
+            leftIcon={<Globe className="h-4 w-4" aria-hidden />}
+            className={
               tab === "community"
-                ? "bg-gradient-to-r from-accent-primary to-purple-600 text-white shadow-lg shadow-accent-primary/30"
-                : "text-text-muted hover:text-text-secondary hover:bg-surface-raised"
-            }`}
+                ? "bg-gradient-to-r from-accent-primary to-purple-600 shadow-lg shadow-accent-primary/30"
+                : ""
+            }
           >
-            <Globe className="h-4 w-4" aria-hidden />
             <span>{t("project.voice.community")}</span>
             {communityVoices.length > 0 && (
               <span
@@ -78,7 +82,7 @@ export function VoiceSelectionPanel({
                 {communityVoices.length}
               </span>
             )}
-          </button>
+          </Button>
         </div>
 
         {voicesError && (

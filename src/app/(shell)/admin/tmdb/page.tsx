@@ -1,6 +1,7 @@
 "use client";
 
 import { Heading } from "@/components/ui/heading";
+import { Button } from "@/components/ui/button";
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -53,12 +54,7 @@ export default function AdminTMDBPage() {
           </div>
 
           <div className="mt-8">
-            <button
-              onClick={() => router.push("/admin/movies")}
-              className="rounded-lg bg-accent-primary px-6 py-2 text-body font-medium text-white hover:bg-accent-primary/90 transition-all"
-            >
-              Go to Movies Page Now
-            </button>
+            <Button onClick={() => router.push("/admin/movies")}>Go to Movies Page Now</Button>
           </div>
         </div>
       </div>

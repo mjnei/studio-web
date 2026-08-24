@@ -2,6 +2,7 @@ import { Film, FileText, Info, Mic, Video } from "lucide-react";
 import { useI18n } from "@/i18n";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
+import { Button } from "@/components/ui/button";
 
 interface WorkflowStepProps {
   onNext: () => void;
@@ -115,20 +116,24 @@ export default function WorkflowStep({ onNext, onBack }: WorkflowStepProps) {
 
       {/* Navigation Buttons - Compact */}
       <div className="flex flex-col-reverse sm:flex-row justify-between gap-2 sm:gap-3">
-        <button
+        <Button
+          variant="secondary"
+          size="lg"
           onClick={onBack}
-          className="w-full sm:w-auto px-6 py-2.5 sm:py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-semibold rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 text-body"
           aria-label={t("onboarding.workflow.goBack")}
+          className="w-full sm:w-auto"
         >
           {t("onboarding.workflow.back")}
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="primary"
+          size="lg"
           onClick={onNext}
-          className="w-full sm:w-auto px-6 py-2.5 sm:py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 dark:from-blue-500 dark:to-purple-500 dark:hover:from-blue-600 dark:hover:to-purple-600 text-white font-semibold rounded-lg transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/50 shadow-lg hover:shadow-xl text-body"
           aria-label={t("onboarding.workflow.continueTakeStep")}
+          className="w-full sm:w-auto"
         >
           {t("onboarding.workflow.continue")}
-        </button>
+        </Button>
       </div>
     </div>
   );
