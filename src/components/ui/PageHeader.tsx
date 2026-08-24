@@ -34,26 +34,23 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
               <Heading variant="page" className="text-[var(--text-primary)]">
                 {title}
               </Heading>
-              {description && (
-                <Text variant="body" className="mt-2 text-[var(--text-secondary)]">
-                  {description}
-                </Text>
+              {(description || meta) && (
+                <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+                  {description && (
+                    <Text variant="body" as="span" className="text-[var(--text-secondary)]">
+                      {description}
+                    </Text>
+                  )}
+                  {meta &&
+                    (isStringMeta ? (
+                      <Text variant="caption" as="span" className="text-[var(--text-muted)]">
+                        {meta}
+                      </Text>
+                    ) : (
+                      <span className="inline-flex shrink-0">{meta}</span>
+                    ))}
+                </div>
               )}
-              {meta &&
-                (isStringMeta ? (
-                  <Text
-                    variant="caption"
-                    as="p"
-                    className={cn(
-                      description ? "mt-1" : "mt-2",
-                      "text-[var(--text-muted)]"
-                    )}
-                  >
-                    {meta}
-                  </Text>
-                ) : (
-                  <div className={description ? "mt-1" : "mt-2"}>{meta}</div>
-                ))}
             </>
           ) : (
             <div>{title}</div>

@@ -532,7 +532,7 @@ import { useToast, ToastProvider } from "@/components/ui/toast";
 
 Every shell page uses `PageHeader` for the title. Chrome lives in at most two zones — never a second row that only holds buttons (for example, Create CTA in the header and `LayoutToggle` on the next row).
 
-**Zone A — `PageHeader`:** one horizontal band. Left: title, optional description, then optional **meta** (item counts as muted caption text — `meta` prop, not a pill). Right: a single action cluster (`flex flex-wrap items-center justify-end gap-2 sm:gap-3`) in this order:
+**Zone A — `PageHeader`:** one horizontal band. Left: title, then optional description and **meta** on the same row (count as muted caption or a count pill). Right: a single action cluster (`flex flex-wrap items-center justify-end gap-2 sm:gap-3`) in this order:
 
 1. **View chrome** (`LayoutToggle`) — when there is no search/filter toolbar
 2. **Secondary** (Refresh, Export, outline) — optional

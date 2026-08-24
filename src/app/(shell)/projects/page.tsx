@@ -133,11 +133,12 @@ export default function ProjectsPage() {
         title={t("projects.title")}
         description={t("projects.description")}
         meta={
-          !loading
-            ? `${projects.length} ${
-                projects.length === 1 ? t("projects.badge.singular") : t("projects.badge.plural")
-              }`
-            : undefined
+          !loading ? (
+            <span className="inline-flex rounded-full bg-accent-cyan/10 px-3 py-1.5 text-caption font-medium text-accent-cyan whitespace-nowrap">
+              {projects.length}{" "}
+              {projects.length === 1 ? t("projects.badge.singular") : t("projects.badge.plural")}
+            </span>
+          ) : undefined
         }
         action={
           <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3">
