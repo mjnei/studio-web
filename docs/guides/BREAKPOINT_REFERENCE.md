@@ -42,6 +42,7 @@ Mobile First Approach (min-width)
 ## 🎨 Standardized Grid Patterns
 
 ### Pattern 1: Small Cards (Posters, Thumbnails, Avatars)
+
 **Use Case**: Movie posters, voice cards, user avatars
 
 ```tsx
@@ -57,16 +58,20 @@ grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6
 ```
 
 **Example**:
+
 ```tsx
 // Movies page, Voices page (community grid)
 <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-  {items.map(item => <SmallCard key={item.id} {...item} />)}
+  {items.map((item) => (
+    <SmallCard key={item.id} {...item} />
+  ))}
 </div>
 ```
 
 ---
 
 ### Pattern 2: Medium Cards (Project Cards, Feature Cards)
+
 **Use Case**: Project cards, feature highlights, blog posts
 
 ```tsx
@@ -80,16 +85,20 @@ grid-cols-1 sm:grid-cols-2 lg:grid-cols-3
 ```
 
 **Example**:
+
 ```tsx
 // Projects page, Dashboard recent projects
 <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-  {projects.map(project => <ProjectCard key={project.id} {...project} />)}
+  {projects.map((project) => (
+    <ProjectCard key={project.id} {...project} />
+  ))}
 </div>
 ```
 
 ---
 
 ### Pattern 3: Large Cards (Detailed Items, Forms)
+
 **Use Case**: Detailed forms, large content blocks, settings panels
 
 ```tsx
@@ -102,16 +111,20 @@ grid-cols-1 lg:grid-cols-2
 ```
 
 **Example**:
+
 ```tsx
 // Settings page, Profile sections
 <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
-  {sections.map(section => <LargeCard key={section.id} {...section} />)}
+  {sections.map((section) => (
+    <LargeCard key={section.id} {...section} />
+  ))}
 </div>
 ```
 
 ---
 
 ### Pattern 4: Stats/Metrics Cards
+
 **Use Case**: Dashboard metrics, analytics, KPI cards
 
 ```tsx
@@ -124,10 +137,13 @@ grid-cols-2 lg:grid-cols-4
 ```
 
 **Example**:
+
 ```tsx
 // Dashboard stats, Admin metrics
 <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-  {stats.map(stat => <StatCard key={stat.id} {...stat} />)}
+  {stats.map((stat) => (
+    <StatCard key={stat.id} {...stat} />
+  ))}
 </div>
 ```
 
@@ -136,6 +152,7 @@ grid-cols-2 lg:grid-cols-4
 ## 🚫 Common Anti-Patterns
 
 ### ❌ Anti-Pattern 1: Skipping Mobile
+
 ```tsx
 // ❌ BAD - No mobile layout (assumes 640px+ minimum)
 md:grid-cols-3
@@ -145,6 +162,7 @@ grid-cols-1 sm:grid-cols-2 md:grid-cols-3
 ```
 
 ### ❌ Anti-Pattern 2: Too Many Columns on Mobile
+
 ```tsx
 // ❌ BAD - 3 columns on 320px screen = ~100px per card
 grid-cols-3
@@ -154,6 +172,7 @@ grid-cols-2 sm:grid-cols-3
 ```
 
 ### ❌ Anti-Pattern 3: Inconsistent Breakpoints
+
 ```tsx
 // ❌ BAD - Different pages using different patterns for same content type
 // Projects page:
@@ -168,6 +187,7 @@ grid-cols-1 sm:grid-cols-2 lg:grid-cols-3
 ```
 
 ### ❌ Anti-Pattern 4: Ignoring Intermediate Breakpoints
+
 ```tsx
 // ❌ BAD - Big jump from 1 to 4 columns
 grid-cols-1 lg:grid-cols-4
@@ -181,18 +201,20 @@ grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4
 ## 📐 Spacing & Gap Standards
 
 ### Grid Gaps
+
 ```tsx
 // Small items (tight spacing)
-gap-3  // 12px - thumbnails, small cards
+gap - 3; // 12px - thumbnails, small cards
 
 // Medium items (normal spacing)
-gap-4  // 16px - project cards, medium cards
+gap - 4; // 16px - project cards, medium cards
 
 // Large items (loose spacing)
-gap-6  // 24px - sections, large blocks
+gap - 6; // 24px - sections, large blocks
 ```
 
 ### Container Padding
+
 ```tsx
 // Standard page container
 <div className="px-4 sm:px-6 lg:px-8">
@@ -204,6 +226,7 @@ gap-6  // 24px - sections, large blocks
 ```
 
 ### Section Spacing
+
 ```tsx
 // Between major sections
 mb-6 lg:mb-8
@@ -264,9 +287,7 @@ mb-6 lg:mb-8
 
 ```tsx
 // ✅ GOOD - Full width on mobile, fixed width on desktop
-<div className="w-full sm:max-w-md md:max-w-lg lg:max-w-xl">
-  {/* Modal content */}
-</div>
+<div className="w-full sm:max-w-md md:max-w-lg lg:max-w-xl">{/* Modal content */}</div>
 
 // Result:
 // Mobile:  Full width (easier to read)
@@ -275,63 +296,51 @@ mb-6 lg:mb-8
 
 ---
 
-## 📱 Touch Target Guidelines
+## Touch Target Guidelines
 
-### Minimum Sizes (iOS/Android HIG)
-- **Minimum**: 44×44px (Apple HIG)
-- **Recommended**: 48×48px (Material Design)
-- **Comfortable**: 56×56px (Large fingers)
+Shared product controls are **dense** (32–40px): `Button` `sm`/`md`/`lg`/`icon` is `h-8` / `h-9` / `h-10` / `h-9`. That is the studio-web standard — not a 44×44px floor on every control.
 
-### Implementation
+Bump toward 44px **only** for isolated primary mobile chrome (e.g. a standalone icon control that is the main tap target). Prefer `Button size="icon"` (`h-9`) over raw `min-h-[44px]` buttons.
 
 ```tsx
-// ❌ BAD - Too small (24×24px)
-<button className="p-1">
-  <Icon className="h-4 w-4" />
-</button>
+// Product CTA — use Button, not a raw 44px button
+<Button variant="primary" size="md">Save</Button>
 
-// ⚠️ OK - Minimum (44×44px)
-<button className="p-2 min-w-[44px] min-h-[44px]">
-  <Icon className="h-5 w-5" />
-</button>
-
-// ✅ GOOD - Comfortable (48×48px)
-<button className="p-2.5 min-w-[48px] min-h-[48px]">
-  <Icon className="h-5 w-5" />
-</button>
+// Icon-only chrome
+<Button variant="ghost" size="icon" aria-label="Notifications">
+  <Bell className="h-4 w-4" aria-hidden />
+</Button>
 ```
+
+Platform HIG 44×44 remains a useful check for **primary mobile** hit areas, not a reason to restyle every toolbar control.
 
 ---
 
-## 🎨 Typography Scaling
+## Typography Scaling
 
-### Responsive Font Sizes
+Use role tokens, not per-breakpoint `text-sm` / `text-2xl` utilities. Full scale: [TYPOGRAPHY.md](../TYPOGRAPHY.md).
 
-```tsx
-// Page titles
-text-2xl sm:text-3xl lg:text-4xl
+| Need           | Classes / component                                                       |
+| -------------- | ------------------------------------------------------------------------- |
+| Page titles    | `<PageHeader>` / `<Heading variant="page">` (`text-page sm:text-page-sm`) |
+| Section titles | `<CardTitle>` / `<Heading variant="section">`                             |
+| Body           | `text-body` or `<Text variant="body">`                                    |
+| Meta           | `text-caption` or `<Text variant="caption">`                              |
+| Stats          | `<Heading variant="metric">`                                              |
 
-// Section headings
-text-xl sm:text-2xl lg:text-3xl
-
-// Body text
-text-sm sm:text-base
-
-// Small text
-text-xs sm:text-sm
-```
+Do not add page-level responsive size bumps (`text-sm sm:text-base`). Roles own the `sm:` steps.
 
 ### Line Heights
 
 ```tsx
 // Tight (headings)
-leading-tight
+leading - tight;
 
 // Normal (body)
-leading-normal
+leading - normal;
 
 // Relaxed (long form content)
-leading-relaxed
+leading - relaxed;
 ```
 
 ---
@@ -355,6 +364,7 @@ leading-relaxed
 ### Chrome DevTools Device Emulation
 
 Common test sizes:
+
 - 320px - iPhone SE (smallest)
 - 375px - iPhone 12/13 (common)
 - 768px - iPad Portrait (tablet)
@@ -399,7 +409,7 @@ BREAKPOINTS          GRID PATTERNS               SPACING
 sm:  640px           Small cards:                Tight:   gap-3
 md:  768px           2-3-4-5-6 cols              Normal:  gap-4
 lg:  1024px                                      Loose:   gap-6
-xl:  1280px          Medium cards:               
+xl:  1280px          Medium cards:
 2xl: 1536px          1-2-3 cols                  PADDING
                                                  ────────
 DEVICES              Large cards:                Mobile:  p-4

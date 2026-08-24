@@ -21,6 +21,7 @@ pnpm format:check # Prettier (check)
 **Path alias**: `@/*` → `./src/*`
 
 **Layout hierarchy**:
+
 - `/app/project/layout.tsx` provides `SidebarProvider` context
 - `/app/project/[projectId]/layout.tsx` wraps `ProjectShell`
 - `/app/project/new/layout.tsx` wraps `NewProjectShell`
@@ -31,6 +32,7 @@ pnpm format:check # Prettier (check)
 ## Environment
 
 Copy `.env.example` to `.env.local`. Requires:
+
 - `NEXT_PUBLIC_API_URL` (backend API)
 - Firebase config (6 variables)
 
@@ -65,6 +67,7 @@ Do not document SSE behavior in this repo. Canonical status for notifications SS
 **Translation principles** (for translators and new locales): **`docs/TRANSLATION_GUIDE.md`** — product UI phrasing over literal translation; locked glossary (onboarding, voices, credits, etc.).
 
 **Usage**:
+
 ```tsx
 import { useI18n } from "@/i18n";
 

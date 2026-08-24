@@ -35,14 +35,15 @@ This is the **canonical frontend design system** for Huavoi Studio (TTS and AI-d
 
 ### Related docs
 
-| Topic | Source of truth |
-|-------|-----------------|
-| Type roles, tokens, Heading/Text API | [TYPOGRAPHY.md](../TYPOGRAPHY.md) |
-| Typography migration status / allowlists | [TYPOGRAPHY_REFACTOR.md](../TYPOGRAPHY_REFACTOR.md) |
-| Spinners, skeletons, stuck-loading TODOs | [LOADING_TODO.md](../LOADING_TODO.md) |
-| Agent conventions (port, i18n, icons pointer) | [AGENTS.md](../../AGENTS.md) |
+| Topic                                         | Source of truth                                     |
+| --------------------------------------------- | --------------------------------------------------- |
+| Type roles, tokens, Heading/Text API          | [TYPOGRAPHY.md](../TYPOGRAPHY.md)                   |
+| Typography migration status / allowlists      | [TYPOGRAPHY_REFACTOR.md](../TYPOGRAPHY_REFACTOR.md) |
+| Spinners, skeletons, stuck-loading TODOs      | [LOADING_TODO.md](../LOADING_TODO.md)               |
+| Agent conventions (port, i18n, icons pointer) | [AGENTS.md](../../AGENTS.md)                        |
 
 This document covers:
+
 - Color tokens as implemented in `globals.css`
 - The current `src/components/ui/` inventory and APIs
 - Responsive breakpoints and grid patterns in use
@@ -63,17 +64,20 @@ Huavoi Studio's frontend embodies a premium, state-of-the-art aesthetic that is 
 ### Global Design Guidelines
 
 #### Visual Styling
+
 - **Backgrounds**: Use layered surface colors (`var(--surface-base)` and `var(--surface-raised)`) with subtle ambient gradient glows (`bg-gradient-to-br from-accent/10 to-transparent blur-xl`) to establish depth.
 - **Cards & Containers**: Default to glassmorphic or elevated styles. Typical pattern: `bg-surface-raised border border-border-default shadow-md`. Add `hover:border-border-strong` for interactive elements.
 - **Typography**: Use the role-based type scale (`page`, `section`, `subsection`, `label`, `body`, `caption`, `metric`, `micro`). Do not use ad-hoc Tailwind sizes like `text-2xl`. Font is Geist (`--font-geist-sans` / `--font-geist-mono`).
 - **Colors**: Prefer `status-*` / `accent-*` tokens. Avoid new raw hex except in `globals.css`.
 
 #### Interaction & Motion
+
 - **Micro-animations**: Every clickable element should respond to interaction. Buttons and cards must scale up slightly (e.g., `hover:scale-105`) or brighten on hover.
-- **Transitions**: Apply `transition-all duration-200 ease-smooth` to interactive surfaces. 
+- **Transitions**: Apply `transition-all duration-200 ease-smooth` to interactive surfaces.
 - **Loading States**: Prefer `LoadingSkeleton` / `Skeleton` shimmer for content placeholders and `Spinner` / `LoadingSpinner` for explicit waits. Do not leave sections blank while fetching when a skeleton pattern exists (see dashboard).
 
 #### Media & AI Workflows (TTS & Video)
+
 - **Audio & Voice Selection**: Use `Card variant="interactive"` with play/pause micro-animations for voice browsing. Highlight the currently selected voice using `border-accent-primary` or a glowing shadow.
 - **Script & Text Editors**: Editor areas should use `bg-surface-panel` to provide a subtle contrast against the page background, helping focus user attention on content creation.
 - **Generation Status**: Use step-based progress indicators with smooth transitions. Apply pulsating animations (`animate-pulse`) or glowing borders for elements in an active "processing" state (e.g., video rendering, TTS generation).
@@ -91,33 +95,32 @@ Do **not** use legacy Tailwind steps (`text-xs`, `text-sm`, `text-base`, `text-l
 
 ### Current scale (Aug 2026, sidebar-aligned density)
 
-| Role | Token | Size | Component |
-|------|-------|------|-----------|
-| `display` | `--text-display` / `--text-display-sm` | 30px / 36px | `<Heading variant="display">` — auth/onboarding heroes only |
-| `page` | `--text-page` / `--text-page-sm` | 20px / 22px | `PageHeader` title or `<Heading variant="page">` |
-| `section` | `--text-section` | 16px | `CardTitle` / `<Heading variant="section">` |
-| `subsection` | `--text-subsection` | 14px | `<Heading variant="subsection">` |
-| `label` | `--text-label` | 14px | `<Heading variant="label">` (defaults to `<p>`; pass `as="h2"` for outline) |
-| `body` / `body-lg` | `--text-body` | 14px | `<Text variant="body">` or `text-body` |
-| `caption` | `--text-caption` | 12px | `<Text variant="caption">` or `text-caption` — minimum readable copy |
-| `micro` | `--text-micro` | 10px | badges / overlays only (`text-micro`) |
-| `metric` | `--text-metric` | 18px | `<Heading variant="metric">` — includes `tabular-nums` |
+| Role               | Token                                  | Size        | Component                                                                   |
+| ------------------ | -------------------------------------- | ----------- | --------------------------------------------------------------------------- |
+| `display`          | `--text-display` / `--text-display-sm` | 30px / 36px | `<Heading variant="display">` — auth/onboarding heroes only                 |
+| `page`             | `--text-page` / `--text-page-sm`       | 20px / 22px | `PageHeader` title or `<Heading variant="page">`                            |
+| `section`          | `--text-section`                       | 16px        | `CardTitle` / `<Heading variant="section">`                                 |
+| `subsection`       | `--text-subsection`                    | 14px        | `<Heading variant="subsection">`                                            |
+| `label`            | `--text-label`                         | 14px        | `<Heading variant="label">` (defaults to `<p>`; pass `as="h2"` for outline) |
+| `body` / `body-lg` | `--text-body`                          | 14px        | `<Text variant="body">` or `text-body`                                      |
+| `caption`          | `--text-caption`                       | 12px        | `<Text variant="caption">` or `text-caption` — minimum readable copy        |
+| `micro`            | `--text-micro`                         | 10px        | badges / overlays only (`text-micro`)                                       |
+| `metric`           | `--text-metric`                        | 18px        | `<Heading variant="metric">` — includes `tabular-nums`                      |
 
 `body { font-size: var(--text-body) }` is 14px. `bodyLg` is the same pixel size as `body`; emphasize with weight/color, not a larger size.
 
 ### Allowlisted non-role sizes (do not copy elsewhere)
 
-| Pattern | Location | Reason |
-|---------|----------|--------|
-| `text-3xl` | `CompletionStep.tsx` emoji | Decorative glyph |
-| `text-4xl` | `profile/page.tsx` avatar initial | Decorative glyph |
-| `text-[8px]` / `text-[14px]` | `HealthIndicator.tsx` | Chart SVG labels |
-| `text-2xl` on `<p>` | `referral/page.tsx` stats | **Drift** — should be `<Heading variant="metric">` |
+| Pattern                      | Location                          | Reason           |
+| ---------------------------- | --------------------------------- | ---------------- |
+| `text-3xl`                   | `CompletionStep.tsx` emoji        | Decorative glyph |
+| `text-4xl`                   | `profile/page.tsx` avatar initial | Decorative glyph |
+| `text-[8px]` / `text-[14px]` | `HealthIndicator.tsx`             | Chart SVG labels |
 
 ### Implemented vs still-migrating
 
 - **Implemented**: tokens, `typography.ts`, `Heading`, `Text`, `PageHeader`, `CardTitle`/`CardDescription`, ESLint enforcement, bulk `text-xs`–`text-xl` → token utilities.
-- **Still migrating**: some dense UI uses `text-body` / `text-caption` strings instead of `<Text>`; referral stats still use `text-2xl`; there is **no shared `Label` primitive** (labels are `Text as="label"` on `Input`/`Select`, or raw `<label>` on many pages).
+- **Still migrating**: some dense UI uses `text-body` / `text-caption` strings instead of `<Text>`; there is **no shared `Label` primitive** (labels are `Text as="label"` on `Input`/`Select`, or raw `<label>` on some pages). Native `<select>` remains for compact chrome (`LanguageSwitcher`) and a few toolbars.
 
 ---
 
@@ -127,12 +130,12 @@ Product UI icons use **Lucide React** (`lucide-react`). Brand logos that Lucide 
 
 ### Libraries
 
-| Source | Path | When to use |
-|--------|------|-------------|
-| Lucide | `import { … } from "lucide-react"` | All standard UI icons |
-| Brand SVGs | `GoogleIcon`, `XIcon`, `WeChatIcon` from `@/components/icons` | OAuth and platform share only |
-| `Icon` wrapper | `@/components/ui/icon` | **Required for sidebar/nav.** Recommended for repeated dense-UI. Direct Lucide + `h-N w-N` is still the dominant pattern elsewhere — that is a migration target, not a second standard. |
-| `EmptyState` | `@/components/ui/EmptyState` | Page/tab/list “nothing here” blocks; owns hero-tier icon sizing |
+| Source         | Path                                                          | When to use                                                                                                                                                                             |
+| -------------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Lucide         | `import { … } from "lucide-react"`                            | All standard UI icons                                                                                                                                                                   |
+| Brand SVGs     | `GoogleIcon`, `XIcon`, `WeChatIcon` from `@/components/icons` | OAuth and platform share only                                                                                                                                                           |
+| `Icon` wrapper | `@/components/ui/icon`                                        | **Required for sidebar/nav.** Recommended for repeated dense-UI. Direct Lucide + `h-N w-N` is still the dominant pattern elsewhere — that is a migration target, not a second standard. |
+| `EmptyState`   | `@/components/ui/EmptyState`                                  | Page/tab/list “nothing here” blocks; owns hero-tier icon sizing                                                                                                                         |
 
 Do not add `react-icons`, Heroicons, or inline duplicate SVGs for icons Lucide already ships.
 
@@ -142,23 +145,23 @@ Use **`className="h-N w-N"`** (height before width) on Lucide, or a shared compo
 
 **Standard tier** (`Icon` / direct Lucide) — dense UI:
 
-| Token | Class | Pixels | Typical use |
-|-------|-------|--------|-------------|
-| `xs` | `h-3 w-3` | 12 | Badges, compact table actions |
-| `sm` | `h-4 w-4` | 16 | Buttons, inline actions, form controls |
-| `md` | `h-5 w-5` | 20 | Sidebar nav, toolbar icons |
-| `lg` | `h-6 w-6` | 24 | Card headers, modals |
-| `xl` | `h-8 w-8` | 32 | Prominent inline accents (not page empties) |
+| Token | Class     | Pixels | Typical use                                 |
+| ----- | --------- | ------ | ------------------------------------------- |
+| `xs`  | `h-3 w-3` | 12     | Badges, compact table actions               |
+| `sm`  | `h-4 w-4` | 16     | Buttons, inline actions, form controls      |
+| `md`  | `h-5 w-5` | 20     | Sidebar nav, toolbar icons                  |
+| `lg`  | `h-6 w-6` | 24     | Card headers, modals                        |
+| `xl`  | `h-8 w-8` | 32     | Prominent inline accents (not page empties) |
 
 Fractional sizes (`h-3.5 w-3.5`) are allowed for dense row actions.
 
 **Hero tier** (`EmptyState` only) — 40–64 px:
 
-| `EmptyState` size | Ring class | Pixels | Typical use |
-|-------------------|------------|--------|-------------|
-| `sm` | `h-10 w-10` | 40 | Dropdown/panel empties, compact bordered blocks |
-| `md` *(default)* | `h-12 w-12` | 48 | Standard page/tab empty states |
-| `lg` | `h-16 w-16` | 64 | Primary empty pages (jobs, movies, dashboard) |
+| `EmptyState` size | Ring class  | Pixels | Typical use                                     |
+| ----------------- | ----------- | ------ | ----------------------------------------------- |
+| `sm`              | `h-10 w-10` | 40     | Dropdown/panel empties, compact bordered blocks |
+| `md` _(default)_  | `h-12 w-12` | 48     | Standard page/tab empty states                  |
+| `lg`              | `h-16 w-16` | 64     | Primary empty pages (jobs, movies, dashboard)   |
 
 `EmptyState` fills the ring via `[&_svg]:h-full [&_svg]:w-full`. **Pass Lucide icons without `h-N w-N`** — only color utilities and `aria-hidden` when decorative.
 
@@ -166,13 +169,13 @@ One-off heroes outside `EmptyState` (preview player, poster placeholders, billin
 
 ### Empty states
 
-| Context | Pattern |
-|---------|---------|
-| Page or tab list empty | `<EmptyState size="md" … />`; `lg` for flagship empties, `sm` for panels |
-| Bordered empty inside a card/grid | `<EmptyState variant="bordered" size="sm" className="col-span-full" … />` |
-| Error empty (failed fetch) | `<EmptyState icon={…} title={…} description={error} />` |
-| Admin “all clear” tabs (no failed / rate-limited / completed rows) | `CheckCircle2`, not `XCircle` |
-| Admin TTS row Retry | `RotateCcw`, not `RefreshCw` |
+| Context                                                            | Pattern                                                                   |
+| ------------------------------------------------------------------ | ------------------------------------------------------------------------- |
+| Page or tab list empty                                             | `<EmptyState size="md" … />`; `lg` for flagship empties, `sm` for panels  |
+| Bordered empty inside a card/grid                                  | `<EmptyState variant="bordered" size="sm" className="col-span-full" … />` |
+| Error empty (failed fetch)                                         | `<EmptyState icon={…} title={…} description={error} />`                   |
+| Admin “all clear” tabs (no failed / rate-limited / completed rows) | `CheckCircle2`, not `XCircle`                                             |
+| Admin TTS row Retry                                                | `RotateCcw`, not `RefreshCw`                                              |
 
 ```tsx
 <EmptyState
@@ -186,26 +189,26 @@ One-off heroes outside `EmptyState` (preview player, poster placeholders, billin
 
 ### Semantic glossary
 
-| Meaning | Icon | Notes |
-|---------|------|-------|
-| Success / completed | `CheckCircle2` | Not `CheckCircle`; also admin “all clear” empties |
-| Error / failure | `AlertCircle` or `XCircle` | Messages vs failed job rows — not for positive empties |
-| Warning / destructive confirm | `AlertTriangle` | Purge dialogs, stale-job alerts |
-| Info | `Info` | Neutral hints |
-| Edit content | `Edit2` | Not `Edit`, `Edit3`, or `Pencil` |
-| Reload list | `RefreshCw` | Add `animate-spin` while in flight |
-| Retry / undo | `RotateCcw` | Job retry, reset playback — not `RefreshCw` |
-| Close dismiss | `X` | Modals, filters, toasts |
-| In progress (static metric) | `Loader2` | Not animated — stat labels only |
-| Loading (animated) | `<Spinner />` | Never raw `Loader2` + `animate-spin` |
+| Meaning                       | Icon                       | Notes                                                  |
+| ----------------------------- | -------------------------- | ------------------------------------------------------ |
+| Success / completed           | `CheckCircle2`             | Not `CheckCircle`; also admin “all clear” empties      |
+| Error / failure               | `AlertCircle` or `XCircle` | Messages vs failed job rows — not for positive empties |
+| Warning / destructive confirm | `AlertTriangle`            | Purge dialogs, stale-job alerts                        |
+| Info                          | `Info`                     | Neutral hints                                          |
+| Edit content                  | `Edit2`                    | Not `Edit`, `Edit3`, or `Pencil`                       |
+| Reload list                   | `RefreshCw`                | Add `animate-spin` while in flight                     |
+| Retry / undo                  | `RotateCcw`                | Job retry, reset playback — not `RefreshCw`            |
+| Close dismiss                 | `X`                        | Modals, filters, toasts                                |
+| In progress (static metric)   | `Loader2`                  | Not animated — stat labels only                        |
+| Loading (animated)            | `<Spinner />`              | Never raw `Loader2` + `animate-spin`                   |
 
 ### Brand icons
 
-| Component | Default size | Use |
-|-----------|--------------|-----|
-| `GoogleIcon` | `h-5 w-5` | OAuth buttons |
-| `XIcon` | `h-5 w-5` | Share modals |
-| `WeChatIcon` | `h-5 w-5` | Share modals |
+| Component    | Default size | Use           |
+| ------------ | ------------ | ------------- |
+| `GoogleIcon` | `h-5 w-5`    | OAuth buttons |
+| `XIcon`      | `h-5 w-5`    | Share modals  |
+| `WeChatIcon` | `h-5 w-5`    | Share modals  |
 
 Defaults include `aria-hidden={true}`. Parent buttons must expose accessible names.
 
@@ -236,6 +239,7 @@ Colors are defined as CSS custom properties in `:root` in `src/app/globals.css` 
 Values below match `globals.css` as of August 24, 2026.
 
 ### Surface Colors
+
 - `--surface-base`: #0a0e17 (Page background)
 - `--surface-panel`: #0f1419 (Panel background)
 - `--surface-raised`: #161b22 (Card background)
@@ -244,12 +248,14 @@ Values below match `globals.css` as of August 24, 2026.
 - `--surface-overlay`: rgba(10, 14, 23, 0.8)
 
 ### Borders
+
 - `--border-default`: rgba(255, 255, 255, 0.08)
 - `--border-subtle`: rgba(255, 255, 255, 0.04)
 - `--border-strong`: rgba(255, 255, 255, 0.15)
 - `--border-focus`: rgba(99, 102, 241, 0.5)
 
 ### Accent Colors
+
 - `--accent-primary`: #6366f1 (Indigo — primary actions)
 - `--accent-secondary`: #8b5cf6 (Purple)
 - `--accent-tertiary` / `--accent-cyan`: #06b6d4
@@ -258,12 +264,14 @@ Values below match `globals.css` as of August 24, 2026.
 - `--accent-strong`: rgba(99, 102, 241, 0.25)
 
 ### Text Colors
+
 - `--text-primary`: #f1f5f9
 - `--text-secondary`: #cbd5e1
 - `--text-muted`: #94a3b8
 - `--text-disabled`: #475569
 
 ### Status Colors
+
 - `--status-success`: #10b981
 - `--status-completed`: #22c55e
 - `--status-error` / `--status-failed`: #ef4444
@@ -272,6 +280,7 @@ Values below match `globals.css` as of August 24, 2026.
 - `--status-queued`: #6b7280
 
 ### Shadow Variables
+
 - `--shadow-sm`: Small shadow effect
 - `--shadow-md`: Medium shadow effect
 - `--shadow-lg`: Large shadow effect
@@ -279,6 +288,7 @@ Values below match `globals.css` as of August 24, 2026.
 - `--shadow-glow-hover`: Hover glow shadow
 
 ### Animation Timing
+
 - `--transition-ultra-fast`: 75ms
 - `--transition-fast`: 150ms
 - `--transition-base`: 200ms
@@ -286,6 +296,7 @@ Values below match `globals.css` as of August 24, 2026.
 - `--transition-slower`: 500ms
 
 ### Gradient Patterns
+
 - **Blue → Cyan**: Notifications, Privacy features
 - **Purple → Pink**: Projects, Files
 - **Green → Emerald**: Audio, Voice
@@ -300,31 +311,31 @@ Primitives live in `src/components/ui/` (React 19, TypeScript, Tailwind CSS 4). 
 
 **New UI must use these primitives.** Several pages still use raw HTML controls with copied classes — treat that as incomplete migration, not a pattern to extend.
 
-| Primitive | File | In barrel? | Notes |
-|-----------|------|------------|-------|
-| `Button` | `button.tsx` | yes | Includes `destructive` |
-| `Card` (+ Header/Title/…) | `card.tsx` | yes | `CardTitle` = `Heading variant="section"` |
-| `Input` / `TextArea` | `input.tsx` | yes | Default input height `h-9` |
-| `Select` / `MultiSelect` | `select.tsx` | no | Custom listbox (not native `<select>`) |
-| `Badge` | `badge.tsx` | yes | Includes `destructive` (same look as `error`) |
-| `Heading` / `Text` | `heading.tsx` / `text.tsx` | yes | RSC-safe |
-| `PageHeader` | `PageHeader.tsx` | yes | Page `h1` via `variant="page"` |
-| `EmptyState` | `EmptyState.tsx` | yes | Owns hero icon rings |
-| `Icon` | `icon.tsx` | yes | Nav + dense repeated UI |
-| `Spinner` | `spinner.tsx` | yes | Animated `Loader2` |
-| `LoadingSpinner` | `LoadingSpinner.tsx` | yes | Status block wrapping `Spinner` |
-| `LoadingSkeleton` / `PageLoadingSkeleton` / `InlineLoadingSkeleton` | `loading-skeleton.tsx` | no | Page/section placeholders |
-| `Skeleton` | `skeleton.tsx` | no | Low-level shimmer shapes |
-| `Modal` / `ConfirmModal` / `FormModal` / `AlertModal` / `InputModal` | `modal.tsx` | no | `InputModal` uses a raw `<input>` internally |
-| `ToastProvider` / `useToast` | `toast.tsx` | no | Also wrapped by `@/lib/hooks/use-toast` |
-| `Tooltip` | `tooltip.tsx` | no | |
-| `Grid` | `Grid.tsx` | yes | |
-| `LayoutToggle` | `LayoutToggle.tsx` | no | Raw icon buttons, `h-9` cluster |
-| `Pagination` | `Pagination.tsx` | no | Raw `<button>` internals |
-| `Tabs` | `tabs.tsx` | no | |
-| `AlertDialog` | `alert-dialog.tsx` | no | |
-| `InputOTP` | `input-otp.tsx` | no | |
-| `ExternalImage` | `ExternalImage.tsx` | no | |
+| Primitive                                                            | File                       | In barrel? | Notes                                         |
+| -------------------------------------------------------------------- | -------------------------- | ---------- | --------------------------------------------- |
+| `Button`                                                             | `button.tsx`               | yes        | Includes `destructive`                        |
+| `Card` (+ Header/Title/…)                                            | `card.tsx`                 | yes        | `CardTitle` = `Heading variant="section"`     |
+| `Input` / `TextArea`                                                 | `input.tsx`                | yes        | Default input height `h-9`                    |
+| `Select` / `MultiSelect`                                             | `select.tsx`               | no         | Custom listbox (not native `<select>`)        |
+| `Badge`                                                              | `badge.tsx`                | yes        | Includes `destructive` (same look as `error`) |
+| `Heading` / `Text`                                                   | `heading.tsx` / `text.tsx` | yes        | RSC-safe                                      |
+| `PageHeader`                                                         | `PageHeader.tsx`           | yes        | Page `h1` via `variant="page"`                |
+| `EmptyState`                                                         | `EmptyState.tsx`           | yes        | Owns hero icon rings                          |
+| `Icon`                                                               | `icon.tsx`                 | yes        | Nav + dense repeated UI                       |
+| `Spinner`                                                            | `spinner.tsx`              | yes        | Animated `Loader2`                            |
+| `LoadingSpinner`                                                     | `LoadingSpinner.tsx`       | yes        | Status block wrapping `Spinner`               |
+| `LoadingSkeleton` / `PageLoadingSkeleton` / `InlineLoadingSkeleton`  | `loading-skeleton.tsx`     | no         | Page/section placeholders                     |
+| `Skeleton`                                                           | `skeleton.tsx`             | no         | Low-level shimmer shapes                      |
+| `Modal` / `ConfirmModal` / `FormModal` / `AlertModal` / `InputModal` | `modal.tsx`                | no         | `InputModal` uses a raw `<input>` internally  |
+| `ToastProvider` / `useToast`                                         | `toast.tsx`                | no         | Also wrapped by `@/lib/hooks/use-toast`       |
+| `Tooltip`                                                            | `tooltip.tsx`              | no         |                                               |
+| `Grid`                                                               | `Grid.tsx`                 | yes        |                                               |
+| `LayoutToggle`                                                       | `LayoutToggle.tsx`         | no         | Raw icon buttons, `h-9` cluster               |
+| `Pagination`                                                         | `Pagination.tsx`           | no         | Raw `<button>` internals                      |
+| `Tabs`                                                               | `tabs.tsx`                 | no         |                                               |
+| `AlertDialog`                                                        | `alert-dialog.tsx`         | no         |                                               |
+| `InputOTP`                                                           | `input-otp.tsx`            | no         |                                               |
+| `ExternalImage`                                                      | `ExternalImage.tsx`        | no         |                                               |
 
 ### Adoption gaps (current code)
 
@@ -337,6 +348,7 @@ Primitives live in `src/components/ui/` (React 19, TypeScript, Tailwind CSS 4). 
 ### Core Components
 
 #### 1. Button
+
 - **File**: `src/components/ui/button.tsx`
 - **Variants**: `primary`, `secondary`, `outline`, `ghost`, `danger`, `destructive`, `success`
   - `danger` uses `--status-error`. `destructive` uses `bg-red-600` (slightly different). Both exist; prefer `danger` for new work unless matching an existing `destructive` surface (queue purge).
@@ -348,12 +360,18 @@ Primitives live in `src/components/ui/` (React 19, TypeScript, Tailwind CSS 4). 
 ```tsx
 import { Button } from "@/components/ui/button";
 
-<Button variant="primary" size="md" loading={false} leftIcon={<IconComponent className="h-4 w-4" />}>
+<Button
+  variant="primary"
+  size="md"
+  loading={false}
+  leftIcon={<IconComponent className="h-4 w-4" />}
+>
   Click me
-</Button>
+</Button>;
 ```
 
 #### 2. Card
+
 - **File**: `src/components/ui/card.tsx`
 - **Variants**: default, elevated, interactive, gradient
 - **Padding**: none, sm, md, lg
@@ -370,10 +388,11 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
     <CardDescription>Description</CardDescription>
   </CardHeader>
   <CardContent>Content here</CardContent>
-</Card>
+</Card>;
 ```
 
 #### 3. Input & TextArea
+
 - **File**: `src/components/ui/input.tsx`
 - **Features**: Optional `label` (via `Text as="label"`), `error`, `leftIcon` / `icon` / `rightIcon`
 - **Default field**: `h-9 px-3.5 text-body` — aligned with `Button` `md`
@@ -384,8 +403,8 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input, TextArea } from "@/components/ui/input";
 
 // Input
-<Input 
-  label="Email" 
+<Input
+  label="Email"
   type="email"
   placeholder="user@example.com"
   error="Invalid email"
@@ -402,6 +421,7 @@ import { Input, TextArea } from "@/components/ui/input";
 ```
 
 #### 4. Badge
+
 - **File**: `src/components/ui/badge.tsx`
 - **Variants**: `default`, `primary`, `secondary`, `success`, `warning`, `error`, `destructive`, `info`, `outline`
 - **Sizes**: `sm`, `md` (`text-caption`), `lg` (`text-body`)
@@ -417,6 +437,7 @@ import { Badge } from "@/components/ui/badge";
 ```
 
 #### 5. Skeleton
+
 - **File**: `src/components/ui/skeleton.tsx`
 - **Variants**: text, circular, rectangular, rounded
 - **Properties**: `width`, `height` for sizing
@@ -430,10 +451,11 @@ import { Skeleton } from "@/components/ui/skeleton";
   <Skeleton variant="text" />
   <Skeleton variant="text" width="80%" />
   <Skeleton variant="circular" width={48} height={48} />
-</div>
+</div>;
 ```
 
 #### 6. Tooltip
+
 - **File**: `src/components/ui/tooltip.tsx`
 - **Positions**: top, right, bottom, left
 - **Properties**: `content`, `delay` (ms)
@@ -444,10 +466,11 @@ import { Tooltip } from "@/components/ui/tooltip";
 
 <Tooltip content="Click to open" position="top" delay={200}>
   <button>Hover me</button>
-</Tooltip>
+</Tooltip>;
 ```
 
 #### 7. Modal
+
 - **File**: `src/components/ui/modal.tsx`
 - **Components**: `Modal`, `ConfirmModal`, `FormModal`, `AlertModal`, `InputModal`
 - **Sizes**: sm, md, lg, xl, full
@@ -464,7 +487,7 @@ import { Modal, ConfirmModal, FormModal } from "@/components/ui/modal";
 </Modal>
 
 // Confirmation Modal
-<ConfirmModal 
+<ConfirmModal
   open={isOpen}
   onClose={handleClose}
   onConfirm={handleDelete}
@@ -485,6 +508,7 @@ import { Modal, ConfirmModal, FormModal } from "@/components/ui/modal";
 ```
 
 #### 8. Select
+
 - **File**: `src/components/ui/select.tsx`
 - **Features**: Custom listbox (not a native `<select>`), optional search, optional leading icon, label / helper / error via `Text`
 - **Sizes**: `sm` (`px-3 py-1.5`), `md` (`px-3.5 py-2`, default), `lg` (`px-4 py-2.5`) — padding-based, not a fixed `h-9`/`h-11`
@@ -499,13 +523,14 @@ import { Select } from "@/components/ui/select";
   onChange={setValue}
   options={[
     { value: "1", label: "Option 1" },
-    { value: "2", label: "Option 2" }
+    { value: "2", label: "Option 2" },
   ]}
   searchable
-/>
+/>;
 ```
 
 #### 9. MultiSelect
+
 - **File**: `src/components/ui/select.tsx` (exported alongside `Select`)
 - **Features**: Multiple selections, searchable, max selections limit
 - **Properties**: `value`, `onChange`, `options`, `maxSelections`, `searchable`
@@ -514,16 +539,11 @@ import { Select } from "@/components/ui/select";
 ```tsx
 import { MultiSelect } from "@/components/ui/select";
 
-<MultiSelect
-  value={values}
-  onChange={setValues}
-  options={options}
-  maxSelections={3}
-  searchable
-/>
+<MultiSelect value={values} onChange={setValues} options={options} maxSelections={3} searchable />;
 ```
 
 #### 10. Toast Notifications
+
 - **File**: `src/components/ui/toast.tsx`
 - **Provider**: `ToastProvider` (setup in root layout)
 - **Hook**: `useToast()`
@@ -536,9 +556,7 @@ import { MultiSelect } from "@/components/ui/select";
 // Setup in root layout
 import { ToastProvider } from "@/components/ui/toast";
 
-<ToastProvider position="top-right">
-  {children}
-</ToastProvider>
+<ToastProvider position="top-right">{children}</ToastProvider>;
 
 // Use in components
 import { useToast } from "@/components/ui/toast";
@@ -558,6 +576,7 @@ const MyComponent = () => {
 ```
 
 #### 11. Spinner and LoadingSpinner
+
 - **Files**: `src/components/ui/spinner.tsx`, `src/components/ui/LoadingSpinner.tsx`
 - **Rule**: animated loading is **never** raw `Loader2` + `animate-spin`. Use `Spinner` (compact) or `LoadingSpinner` (block with `role="status"`).
 - **`Spinner` sizes**: `sm` `h-4 w-4`, `md` `h-8 w-8`, `lg` `h-12 w-12`. One-off dimensions via `className` on bare `<Spinner />` are OK for dense layout. Do **not** pass ad-hoc `h-N w-N` to `LoadingSpinner`.
@@ -573,6 +592,7 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 ```
 
 #### 12. PageHeader, Heading, Text
+
 - **Files**: `PageHeader.tsx`, `heading.tsx`, `text.tsx`, `typography.ts`
 - Shell pages use `PageHeader` for the route title (`Heading variant="page"`). Description is `Text variant="body"`. String `meta` renders as a cyan count pill.
 - Do not put a second row of buttons under the header that only holds chrome — see [Page header (two zones)](#page-header-two-zones).
@@ -583,7 +603,14 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 ```tsx
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
 import { Input, TextArea } from "@/components/ui/input";
 import { Select, MultiSelect } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
@@ -603,6 +630,7 @@ import { useToast, ToastProvider } from "@/components/ui/toast";
 ## Layout Patterns
 
 ### Page Structure
+
 ```
 <PageContainer>
   <PageHeader title="..." description="..." action={<Button />} />
@@ -644,6 +672,7 @@ Count meta is status, not a control. Put counts in `meta` (cyan pill, inline wit
 Header buttons use `size="md"`; toolbar controls use `sm` / `icon`. On mobile, `PageHeader` stacks title above actions (`flex-col sm:flex-row`); the action cluster may wrap as one group, not as a separate toolbar row.
 
 ### Card Grid Pattern
+
 ```typescript
 <Grid cols={3} gap="md">
   {items.map(item => (
@@ -659,6 +688,7 @@ Header buttons use `size="md"`; toolbar controls use `sm` / `icon`. On mobile, `
 ```
 
 ### Empty State Pattern
+
 ```typescript
 {items.length === 0 && (
   <EmptyState
@@ -677,14 +707,14 @@ Header buttons use `size="md"`; toolbar controls use `sm` / `icon`. On mobile, `
 
 The project uses standard Tailwind CSS breakpoints with mobile-first approach:
 
-| Breakpoint | Min Width | Class Prefix | Use Case |
-|-----------|-----------|--------------|----------|
-| None (base) | 0px | — | Mobile-first default (320px+) |
-| sm | 640px | `sm:` | Mobile landscape / small tablets |
-| md | 768px | `md:` | Tablet portrait (iPad) |
-| lg | 1024px | `lg:` | Tablet landscape / desktop |
-| xl | 1280px | `xl:` | Large desktop screens |
-| 2xl | 1536px | `2xl:` | Ultra-wide displays (4K) |
+| Breakpoint  | Min Width | Class Prefix | Use Case                         |
+| ----------- | --------- | ------------ | -------------------------------- |
+| None (base) | 0px       | —            | Mobile-first default (320px+)    |
+| sm          | 640px     | `sm:`        | Mobile landscape / small tablets |
+| md          | 768px     | `md:`        | Tablet portrait (iPad)           |
+| lg          | 1024px    | `lg:`        | Tablet landscape / desktop       |
+| xl          | 1280px    | `xl:`        | Large desktop screens            |
+| 2xl         | 1536px    | `2xl:`       | Ultra-wide displays (4K)         |
 
 **Key Principle**: Always start with base styles for mobile, then add breakpoints for larger screens. Never skip breakpoints in the middle (e.g., ✅ `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3` vs ❌ `md:grid-cols-3`).
 
@@ -693,16 +723,17 @@ The project uses standard Tailwind CSS breakpoints with mobile-first approach:
 The frontend uses a flexible grid layout system with these standardized patterns to maximize content display across all screen sizes while ensuring optimal user experience. All grid patterns follow mobile-first principles and prevent single-column layouts on mobile to maintain readability.
 
 #### Pattern 1: Small Cards (Dense Grid) - 2-3-4-5-6 Columns
+
 **Best for**: Browsing and discovering many items quickly (posters, thumbnails, avatars)
 
 - **Mobile (320px+)**: 2 columns
-- **sm (640px+)**: 3 columns  
+- **sm (640px+)**: 3 columns
 - **md (768px+)**: 4 columns
 - **lg (1024px+)**: 5 columns
 - **xl (1280px+)**: 6 columns
 
 ```tsx
-className="grid gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
+className = "grid gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6";
 ```
 
 **Used in**: Movies page (primary layout)
@@ -710,6 +741,7 @@ className="grid gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 x
 ---
 
 #### Pattern 2: Medium Cards (Balanced Grid) - 1-2-3 Columns ⭐ **MOST COMMON**
+
 **Best for**: Default view with good balance between detail and overview (projects, features, content cards)
 
 - **Mobile (320px+)**: 1-2 columns (varies by page)
@@ -717,19 +749,21 @@ className="grid gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 x
 - **lg (1024px+)**: 3 columns
 
 ```tsx
-className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+className = "grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3";
 ```
 
 **Used in**: Projects page (grid-md layout), Admin sections
 
 **Variant with full-width mobile (2 cols)**:
+
 ```tsx
-className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+className = "grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4";
 ```
 
 ---
 
 #### Pattern 3: Large Cards (Spacious Grid) - 2-3 Columns
+
 **Best for**: Detailed content with focus on individual items (profile sections, detailed cards)
 
 - **Mobile (320px+)**: 2 columns
@@ -737,19 +771,20 @@ className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
 - **lg (1024px+)**: 3 columns
 
 ```tsx
-className="grid gap-6 grid-cols-2 md:grid-cols-2 lg:grid-cols-3"
+className = "grid gap-6 grid-cols-2 md:grid-cols-2 lg:grid-cols-3";
 ```
 
 ---
 
 #### Pattern 4: Stats/Metrics - 2-4 Columns
+
 **Best for**: Dashboard statistics and key metrics
 
 - **Mobile (320px+)**: 2 columns
 - **lg (1024px+)**: 4 columns
 
 ```tsx
-className="grid gap-4 grid-cols-2 lg:grid-cols-4"
+className = "grid gap-4 grid-cols-2 lg:grid-cols-4";
 ```
 
 **Used in**: Admin dashboard stats, billing overview
@@ -757,6 +792,7 @@ className="grid gap-4 grid-cols-2 lg:grid-cols-4"
 ---
 
 #### Pattern 5: List View
+
 **Best for**: Detailed information with extended metadata
 
 - **All sizes**: Single row per item
@@ -764,7 +800,7 @@ className="grid gap-4 grid-cols-2 lg:grid-cols-4"
 - All metadata visible at once
 
 ```tsx
-className="space-y-3" // or space-y-4
+className = "space-y-3"; // or space-y-4
 ```
 
 ---
@@ -799,12 +835,14 @@ const getGridClass = () => {
 Prefer dense desktop controls; keep comfortable hit areas on mobile primary actions:
 
 **Icon / toolbar buttons** (mobile-first hit area when used as primary chrome):
+
 ```tsx
-className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center sm:min-w-0 sm:min-h-0"
+className = "p-2 min-w-[36px] min-h-[36px] flex items-center justify-center sm:min-w-0 sm:min-h-0";
 // Default Button size="icon" is h-9 (36px); bump with min-h-[44px] only for isolated mobile chrome
 ```
 
 **Regular Buttons** (shared scale):
+
 ```tsx
 // Default size="md" = h-9 (36px) — matches Input / Select denser type scale
 // size="lg" = h-10 (40px) — auth / full-width primary CTAs
@@ -848,31 +886,36 @@ className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center sm:min
 ### Responsive Patterns - Copy & Paste
 
 **Flex Layout** (stack on mobile, row on desktop):
+
 ```tsx
-className="flex flex-col sm:flex-row gap-4"
+className = "flex flex-col sm:flex-row gap-4";
 ```
 
 **Grid Columns** (1 col mobile, 2 col tablet, 3 col desktop):
+
 ```tsx
-className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4";
 ```
 
 **Button Group** (full-width mobile, auto width desktop):
+
 ```tsx
-className="flex flex-col sm:flex-row gap-3"
+className = "flex flex-col sm:flex-row gap-3";
 // with buttons: className="w-full sm:w-auto"
 ```
 
 **Input Group** (stack mobile, 2 cols desktop):
+
 ```tsx
-className="grid gap-4 grid-cols-1 sm:grid-cols-2"
+className = "grid gap-4 grid-cols-1 sm:grid-cols-2";
 ```
 
 **Text sizes**: do not bump sizes per breakpoint on pages. Roles own responsive steps (`text-page sm:text-page-sm` for page titles; `display` heroes only). Body stays `text-body`.
 
 **Padding** (less mobile, more desktop):
+
 ```tsx
-className="p-4 md:p-6 lg:p-8"
+className = "p-4 md:p-6 lg:p-8";
 ```
 
 ---
@@ -888,6 +931,7 @@ Target viewports for visual QA (typography Phase 6e is still **unchecked** in [T
 - **1280px / 1920px** — large desktop
 
 **Guidelines**:
+
 - No horizontal scrolling
 - Shared controls stay on the 32–40px scale unless a specific mobile chrome needs a larger hit area
 - Text does not overflow; use `truncate` / `line-clamp-*`
@@ -897,6 +941,7 @@ Target viewports for visual QA (typography Phase 6e is still **unchecked** in [T
 ## Animation & Transitions
 
 ### Standard Timing
+
 - **Ultra Fast**: 75ms (micro-interactions)
 - **Fast**: 150ms (hover states)
 - **Base**: 200ms (standard transitions)
@@ -904,11 +949,13 @@ Target viewports for visual QA (typography Phase 6e is still **unchecked** in [T
 - **Slower**: 500ms (complex animations)
 
 ### Easing Functions
+
 - **smooth**: cubic-bezier(0.4, 0, 0.2, 1)
 - **sharp**: cubic-bezier(0.5, 0, 1, 0.5)
 - **bounce**: cubic-bezier(0.68, -0.55, 0.265, 1.55)
 
 ### Common Animations
+
 - **fade-in**: Opacity 0 → 1
 - **slide-in**: Transform with opacity
 - **pulse-soft**: Soft opacity pulse
@@ -917,21 +964,25 @@ Target viewports for visual QA (typography Phase 6e is still **unchecked** in [T
 ## Accessibility
 
 ### Focus Management
+
 - Visible focus rings on all interactive elements
 - Custom focus styles with `focus-ring` utility
 - Skip-to-content links where appropriate
 
 ### Color Contrast
+
 - All text meets WCAG AA standards (4.5:1 for normal text)
 - Interactive elements have sufficient contrast
 - Status colors distinguishable for colorblind users
 
 ### Keyboard Navigation
+
 - All interactive elements keyboard accessible
 - Logical tab order
 - Keyboard shortcuts where appropriate
 
 ### Screen Readers
+
 - Semantic HTML elements
 - ARIA labels where needed
 - Alt text for images
@@ -943,52 +994,28 @@ Target viewports for visual QA (typography Phase 6e is still **unchecked** in [T
 
 ```css
 /* Surfaces — src/app/globals.css :root */
---surface-base: #0a0e17
---surface-panel: #0f1419
---surface-raised: #161b22
---surface-hover: #1c2128
---surface-elevated: #21262d
-
-/* Text */
---text-primary: #f1f5f9
---text-secondary: #cbd5e1
---text-muted: #94a3b8
---text-disabled: #475569
-
-/* Accents */
---accent-primary: #6366f1
---accent-secondary: #8b5cf6
---accent-tertiary: #06b6d4
---accent-cyan: #06b6d4
---accent-muted: rgba(99, 102, 241, 0.15)
-
-/* Status */
---status-success: #10b981
---status-completed: #22c55e
---status-error: #ef4444
---status-failed: #ef4444
---status-warning: #f59e0b
---status-info: #3b82f6
---status-processing: #3b82f6
---status-queued: #6b7280
-
-/* Transitions */
---transition-ultra-fast: 75ms
---transition-fast: 150ms
---transition-base: 200ms
---transition-slow: 300ms
---transition-slower: 500ms
+--surface-base: #0a0e17 --surface-panel: #0f1419 --surface-raised: #161b22 --surface-hover: #1c2128
+  --surface-elevated: #21262d /* Text */ --text-primary: #f1f5f9 --text-secondary: #cbd5e1
+  --text-muted: #94a3b8 --text-disabled: #475569 /* Accents */ --accent-primary: #6366f1
+  --accent-secondary: #8b5cf6 --accent-tertiary: #06b6d4 --accent-cyan: #06b6d4
+  --accent-muted: rgba(99, 102, 241, 0.15) /* Status */ --status-success: #10b981
+  --status-completed: #22c55e --status-error: #ef4444 --status-failed: #ef4444
+  --status-warning: #f59e0b --status-info: #3b82f6 --status-processing: #3b82f6
+  --status-queued: #6b7280 /* Transitions */ --transition-ultra-fast: 75ms --transition-fast: 150ms
+  --transition-base: 200ms --transition-slow: 300ms --transition-slower: 500ms;
 ```
 
 ### Common Tailwind Utilities
 
 **Spacing (4px grid)**:
+
 - `p-4` - Padding (16px)
 - `m-4` - Margin (16px)
 - `gap-3` - Gap between items (12px)
 - `gap-6` - Gap between items (24px)
 
 **Text** (roles — see [TYPOGRAPHY.md](../TYPOGRAPHY.md)):
+
 - Page title → `<PageHeader>` / `<Heading variant="page">`
 - Card / section → `<CardTitle>` / `<Heading variant="section">`
 - Dense group label → `<Heading variant="label" as="h2">`
@@ -1001,6 +1028,7 @@ Target viewports for visual QA (typography Phase 6e is still **unchecked** in [T
 - Truncation OK: `truncate`, `line-clamp-2`
 
 **Layout**:
+
 - `flex` - Flex container
 - `flex-col` - Column direction
 - `grid` - Grid container
@@ -1009,6 +1037,7 @@ Target viewports for visual QA (typography Phase 6e is still **unchecked** in [T
 - `gap-4` - Gap between flex/grid items
 
 **Effects**:
+
 - `shadow-glow` - Glow shadow
 - `shadow-glow-hover` - Hover glow
 - `transition-all` - Animate all properties
@@ -1017,12 +1046,17 @@ Target viewports for visual QA (typography Phase 6e is still **unchecked** in [T
 ### Common Component Patterns
 
 **Stat Card with Gradient Icon:**
+
 ```tsx
 <Card variant="elevated" interactive>
   <div className="flex items-start justify-between">
     <div className="flex-1">
-      <Text variant="caption" className="text-text-secondary">Metric Title</Text>
-      <Heading variant="metric" className="text-text-primary">123</Heading>
+      <Text variant="caption" className="text-text-secondary">
+        Metric Title
+      </Text>
+      <Heading variant="metric" className="text-text-primary">
+        123
+      </Heading>
     </div>
     <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 text-white">
       <IconComponent className="h-6 w-6" />
@@ -1032,6 +1066,7 @@ Target viewports for visual QA (typography Phase 6e is still **unchecked** in [T
 ```
 
 **Empty State:**
+
 ```tsx
 <EmptyState
   size="md"
@@ -1043,9 +1078,10 @@ Target viewports for visual QA (typography Phase 6e is still **unchecked** in [T
 ```
 
 **Loading Skeleton List:**
+
 ```tsx
 <div className="space-y-3">
-  {[1, 2, 3].map(i => (
+  {[1, 2, 3].map((i) => (
     <div key={i} className="flex gap-3">
       <Skeleton variant="circular" width={48} height={48} />
       <div className="flex-1 space-y-2">
@@ -1058,17 +1094,23 @@ Target viewports for visual QA (typography Phase 6e is still **unchecked** in [T
 ```
 
 **Action Bar:**
+
 ```tsx
 <div className="flex flex-col gap-3 border-t border-border-default pt-4 sm:flex-row">
-  <Button variant="primary" fullWidth>Save</Button>
-  <Button variant="secondary" fullWidth>Cancel</Button>
+  <Button variant="primary" fullWidth>
+    Save
+  </Button>
+  <Button variant="secondary" fullWidth>
+    Cancel
+  </Button>
 </div>
 ```
 
 **Responsive Grid Layout:**
+
 ```tsx
 <div className="grid gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-  {items.map(item => (
+  {items.map((item) => (
     <Card key={item.id} variant="elevated" interactive>
       {/* Card content */}
     </Card>
@@ -1077,16 +1119,17 @@ Target viewports for visual QA (typography Phase 6e is still **unchecked** in [T
 ```
 
 **Search and Filter Bar:**
+
 ```tsx
 <div className="flex flex-col gap-4 sm:flex-row">
-  <Input
-    placeholder="Search..."
-    icon={<Search className="h-4 w-4" />}
-    className="flex-1"
-  />
+  <Input placeholder="Search..." icon={<Search className="h-4 w-4" />} className="flex-1" />
   <div className="flex gap-2">
-    <Button variant="secondary" size="md">Filter</Button>
-    <Button variant="primary" size="md">Search</Button>
+    <Button variant="secondary" size="md">
+      Filter
+    </Button>
+    <Button variant="primary" size="md">
+      Search
+    </Button>
   </div>
 </div>
 ```
@@ -1095,63 +1138,69 @@ Target viewports for visual QA (typography Phase 6e is still **unchecked** in [T
 
 ```tsx
 // Fade effects
-className="fade-in"
-className="fade-out"
+className = "fade-in";
+className = "fade-out";
 
 // Slide effects
-className="slide-in-from-left"
-className="slide-in-from-right"
-className="slide-in-from-top"
-className="slide-in-from-bottom"
+className = "slide-in-from-left";
+className = "slide-in-from-right";
+className = "slide-in-from-top";
+className = "slide-in-from-bottom";
 
 // Scale effects
-className="hover:scale-105 transition-transform duration-200"
+className = "hover:scale-105 transition-transform duration-200";
 
 // Smooth transitions
-className="transition-all duration-200 ease-in-out"
+className = "transition-all duration-200 ease-in-out";
 
 // Pulse effect
-className="animate-pulse"
+className = "animate-pulse";
 
 // Shimmer effect (for skeletons)
-className="shimmer"
+className = "shimmer";
 ```
 
 ### Focus Ring for Accessibility
 
 ```tsx
 // Using the focus-ring utility
-className="focus-ring"
+className = "focus-ring";
 
 // Or manual implementation
-className="focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-primary focus-visible:ring-offset-2"
+className =
+  "focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-primary focus-visible:ring-offset-2";
 ```
 
 ### Gradient Color Combinations
 
 **Blue → Cyan** (Notifications, Info):
+
 ```tsx
-className="bg-gradient-to-r from-blue-500 to-cyan-500"
+className = "bg-gradient-to-r from-blue-500 to-cyan-500";
 ```
 
 **Purple → Pink** (Projects, Creative):
+
 ```tsx
-className="bg-gradient-to-r from-purple-500 to-pink-500"
+className = "bg-gradient-to-r from-purple-500 to-pink-500";
 ```
 
 **Green → Emerald** (Success, Voice):
+
 ```tsx
-className="bg-gradient-to-r from-green-500 to-emerald-500"
+className = "bg-gradient-to-r from-green-500 to-emerald-500";
 ```
 
 **Orange → Red** (Warnings, Video):
+
 ```tsx
-className="bg-gradient-to-r from-orange-500 to-red-500"
+className = "bg-gradient-to-r from-orange-500 to-red-500";
 ```
 
 **Indigo → Purple** (Primary, Actions):
+
 ```tsx
-className="bg-gradient-to-r from-indigo-500 to-purple-500"
+className = "bg-gradient-to-r from-indigo-500 to-purple-500";
 ```
 
 ### Common Responsive Patterns
@@ -1159,18 +1208,21 @@ className="bg-gradient-to-r from-indigo-500 to-purple-500"
 **Text**: use roles / token utilities (`text-body`, `text-caption`, `text-page`), not `text-sm md:text-base lg:text-lg`.
 
 **Padding Responsive:**
+
 ```tsx
-className="p-4 md:p-6 lg:p-8"
+className = "p-4 md:p-6 lg:p-8";
 ```
 
 **Grid Responsive Columns:**
+
 ```tsx
-className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+className = "grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
 ```
 
 **Flex Responsive Direction:**
+
 ```tsx
-className="flex flex-col md:flex-row gap-4"
+className = "flex flex-col md:flex-row gap-4";
 ```
 
 ---
@@ -1204,20 +1256,19 @@ className="flex flex-col md:flex-row gap-4"
 
 ---
 
-
 ## Documented vs implemented (Aug 24, 2026)
 
-| Area | Standard | Current implementation |
-|------|----------|------------------------|
-| Type roles / tokens | Use `Heading` / `Text` / token utilities | Adopted app-wide; ESLint enforces; referral stats still `text-2xl` |
-| Buttons | Shared `Button` + size roles | Primitive matches this doc; some chrome still raw `<button>` |
-| Forms | `Input` / `TextArea` / `Select` | Primitives exist; many routes still use raw controls |
-| Labels | Shared label pattern | No `Label` component; mixed body vs caption/uppercase labels |
-| Icons | Lucide + size tokens; `Icon` for nav | Size scale is followed; `Icon` wrapper mainly in the sidebar |
-| Spinners | `Spinner` / `LoadingSpinner` | Implemented; `Button` loading uses `Spinner` |
-| Control height | `h-8` / `h-9` / `h-10` (32–40px) | Shared primitives match; some raw selects still `h-11` |
-| Touch 44×44 everywhere | Not the product standard | Dense 36px default; bump only isolated mobile chrome |
-| Visual QA at 375 / 1280 | Required for typography Phase 6e | Still open in `TYPOGRAPHY_REFACTOR.md` |
+| Area                    | Standard                                 | Current implementation                                                                |
+| ----------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------- |
+| Type roles / tokens     | Use `Heading` / `Text` / token utilities | Adopted app-wide; ESLint enforces; decorative allowlist for emoji/avatar/chart labels |
+| Buttons                 | Shared `Button` + size roles             | Primitive matches this doc; some chrome still raw `<button>`                          |
+| Forms                   | `Input` / `TextArea` / `Select`          | Primitives exist; many routes still use raw controls                                  |
+| Labels                  | Shared label pattern                     | No `Label` component; mixed body vs caption/uppercase labels                          |
+| Icons                   | Lucide + size tokens; `Icon` for nav     | Size scale is followed; `Icon` wrapper mainly in the sidebar                          |
+| Spinners                | `Spinner` / `LoadingSpinner`             | Implemented; `Button` loading uses `Spinner`                                          |
+| Control height          | `h-8` / `h-9` / `h-10` (32–40px)         | Shared primitives match; form `Select` uses padding scale (`sm`/`md`/`lg`)            |
+| Touch 44×44 everywhere  | Not the product standard                 | Dense 36px default; bump only isolated mobile chrome                                  |
+| Visual QA at 375 / 1280 | Required for typography Phase 6e         | Still open in `TYPOGRAPHY_REFACTOR.md`                                                |
 
 ---
 
@@ -1226,6 +1277,7 @@ className="flex flex-col md:flex-row gap-4"
 Do **not** treat historical “all pages tested” notes as current. After the Aug 2026 density/typography pass, human spot-checks at 375px and 1280px (shell, project workflow, admin, auth) remain on the typography refactor checklist.
 
 **Still true in code**:
+
 - Mobile-first Tailwind breakpoints
 - Common page shell `max-w-7xl mx-auto`
 - Layout toggle on Projects, Movies, and admin movies
@@ -1237,6 +1289,7 @@ Do **not** treat historical “all pages tested” notes as current. After the A
 ## Performance Tips
 
 **DO**:
+
 - Use `transform` for animations
 - Use `opacity` changes for fading
 - Keep animations under 300ms
@@ -1244,6 +1297,7 @@ Do **not** treat historical “all pages tested” notes as current. After the A
 - Use `shadow-glow` for emphasis
 
 **DON'T**:
+
 - Animate width/height
 - Animate left/top position
 - Use `setTimeout` for animations

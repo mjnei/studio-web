@@ -95,7 +95,6 @@ export function ProjectFilters({ filters, onFilterChange, onClear }: ProjectFilt
           </div>
 
           <Select
-            size="sm"
             value={local.status || ""}
             onChange={(status) =>
               setLocal((prev) => ({
@@ -110,7 +109,6 @@ export function ProjectFilters({ filters, onFilterChange, onClear }: ProjectFilt
           />
 
           <Select
-            size="sm"
             value={local.step || ""}
             onChange={(step) =>
               setLocal((prev) => ({

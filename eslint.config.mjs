@@ -26,7 +26,7 @@ const typographyRestrictedSyntax = [
     selector:
       "JSXAttribute[name.name='className'][value.value=/(?:^|\\s)text-(2xl|3xl|4xl|5xl)(?:\\s|$)/]",
     message:
-      "Use <Heading variant=\"page|display|metric\"> instead of text-2xl+. Decorative glyphs belong on the typography allowlist. See docs/TYPOGRAPHY.md.",
+      'Use <Heading variant="page|display|metric"> instead of text-2xl+. Decorative glyphs belong on the typography allowlist. See docs/TYPOGRAPHY.md.',
   },
   {
     selector: "JSXAttribute[name.name='className'][value.value=/text-\\[\\d+px\\]/]",

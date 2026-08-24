@@ -293,11 +293,8 @@ The icon section is technically correct that `Icon` is for nav and repeated dens
 
 ### Phase 1: document reality clearly
 
-1. Update `AGENTS.md` to point at `docs/guides/DESIGN_SYSTEM.md` instead of `docs/ICONS.md`.
-2. Update `docs/guides/DESIGN_SYSTEM.md`:
-   - add `destructive` to the button variant list
-   - clarify that raw form controls still exist in route code and are a migration target
-   - clarify that `Icon` is required for nav and recommended, but not yet universally adopted
+1. ~~Update `AGENTS.md` to point at `docs/guides/DESIGN_SYSTEM.md` instead of `docs/ICONS.md`.~~ Done (Aug 24, 2026).
+2. ~~Update `docs/guides/DESIGN_SYSTEM.md`~~ Done in v2.4 (`destructive`, adoption gaps, token values).
 
 ### Phase 2: reduce real UI drift
 

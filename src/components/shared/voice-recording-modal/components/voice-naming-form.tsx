@@ -1,4 +1,4 @@
-import { AlertCircle, Check, Globe, Sparkles } from "lucide-react";
+import { Check, Globe, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
@@ -41,50 +41,45 @@ export function VoiceNamingForm({
         <p className="text-body text-text-muted">{t("voices.recording.nameSubtitle")}</p>
       </div>
 
-      <Input
-        label={t("voices.recording.voiceName")}
-        id="voice-name"
-        type="text"
-        value={voiceName}
-        onChange={(e) => onVoiceNameChange(e.target.value)}
-        placeholder={t("voices.recording.namePlaceholder")}
-        error={nameError ? t("voices.recording.nameRequired") : undefined}
-        autoFocus
-        onKeyDown={(e) => {
-          if (e.key === "Enter" && !isSaving) {
-            onSave();
-          }
-        }}
-        disabled={isSaving}
-      />
-
       <div>
-        <label
-          htmlFor="voice-language"
-          className="block text-body font-medium text-text-primary mb-2"
+        <Input
+          label={t("voices.recording.voiceName")}
+          id="voice-name"
+          type="text"
+          value={voiceName}
+          onChange={(e) => onVoiceNameChange(e.target.value)}
+          placeholder={t("voices.recording.namePlaceholder")}
+          error={nameError ? t("voices.recording.nameRequired") : undefined}
+          autoFocus
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !isSaving) {
+              onSave();
+            }
+          }}
+          disabled={isSaving}
+        />
+        <button
+          type="button"
+          onClick={onGenerateName}
+          disabled={isSaving}
+          className="mt-3 flex items-center gap-2 text-body text-accent-cyan hover:text-accent-cyan/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {t("voices.recording.language")}
-        </label>
-        <div className="relative">
-          <Globe
-            className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted"
-            aria-hidden
-          />
-          <select
-            id="voice-language"
-            value={language}
-            onChange={(e) => onLanguageChange(e.target.value)}
-            className="w-full rounded-xl border border-border-default bg-surface-raised pl-10 pr-4 py-3 text-text-primary transition-colors focus:border-accent-cyan focus:outline-none focus:ring-2 focus:ring-accent-cyan/20 disabled:opacity-50"
-            disabled={isSaving}
-          >
-            {RECORDING_LANGUAGES.map((lang) => (
-              <option key={lang.code} value={lang.code}>
-                {t(`voices.languages.${lang.code}`)}
-              </option>
-            ))}
-          </select>
-        </div>
+          <Sparkles className="h-4 w-4" aria-hidden />
+          {t("voices.recording.generateRandom")}
+        </button>
       </div>
+
+      <Select
+        label={t("voices.recording.language")}
+        value={language}
+        onChange={onLanguageChange}
+        disabled={isSaving}
+        icon={<Globe className="h-4 w-4" aria-hidden />}
+        options={RECORDING_LANGUAGES.map((lang) => ({
+          value: lang.code,
+          label: t(`voices.languages.${lang.code}`),
+        }))}
+      />
 
       <div className="flex items-center gap-2">
         <Button

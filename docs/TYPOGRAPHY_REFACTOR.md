@@ -35,14 +35,14 @@ The app uses a **role-based typography system**: sizes live in `@theme` tokens (
 
 **Fix approach**:
 
-| Layer | Action |
-|-------|--------|
-| `@theme` tokens | Shrank `page`, `section`, `subsection`, `metric`; aligned with sidebar density |
-| `body` | Set `font-size: var(--text-body)` (14px) |
-| Escape hatches | Replaced hardcoded utilities in pages/components that bypassed tokens |
-| Bulk migration | ~250 files: `text-xs/sm/base/lg/xl` → token utilities |
-| Micro token | `--text-micro` (10px) for badges / overlays; migrated `text-[10px]` / `text-[11px]` |
-| ESLint | Error on legacy sizes + arbitrary `text-[Npx]` (allowlisted exceptions) |
+| Layer           | Action                                                                              |
+| --------------- | ----------------------------------------------------------------------------------- |
+| `@theme` tokens | Shrank `page`, `section`, `subsection`, `metric`; aligned with sidebar density      |
+| `body`          | Set `font-size: var(--text-body)` (14px)                                            |
+| Escape hatches  | Replaced hardcoded utilities in pages/components that bypassed tokens               |
+| Bulk migration  | ~250 files: `text-xs/sm/base/lg/xl` → token utilities                               |
+| Micro token     | `--text-micro` (10px) for badges / overlays; migrated `text-[10px]` / `text-[11px]` |
+| ESLint          | Error on legacy sizes + arbitrary `text-[Npx]` (allowlisted exceptions)             |
 
 ---
 
@@ -70,20 +70,20 @@ The app uses a **role-based typography system**: sizes live in `@theme` tokens (
 
 Defined in `src/app/globals.css` `@theme inline`:
 
-| Token | Size | Role |
-|-------|------|------|
-| `--text-display` | 30px | Auth / onboarding heroes |
-| `--text-display-sm` | 36px | Hero responsive step |
-| `--text-page` | 20px | Page title (matches sidebar logo) |
-| `--text-page-sm` | 22px | Page title responsive step |
-| `--text-section` | 16px | Card / modal / section titles |
-| `--text-subsection` | 14px | Item titles (hierarchy via weight) |
-| `--text-label` | 14px | Compact section labels |
-| `--text-body` | 14px | Default body (sidebar nav size) |
-| `--text-body-lg` | 14px | Emphasized body (size same; use weight/color) |
-| `--text-caption` | 12px | Meta, timestamps, hints (min readable copy) |
-| `--text-micro` | 10px | Badges, counts, card overlays only |
-| `--text-metric` | 18px | Dashboard / stat numbers |
+| Token               | Size | Role                                          |
+| ------------------- | ---- | --------------------------------------------- |
+| `--text-display`    | 30px | Auth / onboarding heroes                      |
+| `--text-display-sm` | 36px | Hero responsive step                          |
+| `--text-page`       | 20px | Page title (matches sidebar logo)             |
+| `--text-page-sm`    | 22px | Page title responsive step                    |
+| `--text-section`    | 16px | Card / modal / section titles                 |
+| `--text-subsection` | 14px | Item titles (hierarchy via weight)            |
+| `--text-label`      | 14px | Compact section labels                        |
+| `--text-body`       | 14px | Default body (sidebar nav size)               |
+| `--text-body-lg`    | 14px | Emphasized body (size same; use weight/color) |
+| `--text-caption`    | 12px | Meta, timestamps, hints (min readable copy)   |
+| `--text-micro`      | 10px | Badges, counts, card overlays only            |
+| `--text-metric`     | 18px | Dashboard / stat numbers                      |
 
 **Body default**: `body { font-size: var(--text-body); line-height: var(--leading-body); }`
 
@@ -93,25 +93,25 @@ Defined in `src/app/globals.css` `@theme inline`:
 
 **Do not use the left column in new code.**
 
-| Legacy Tailwind | Token utility | px | Notes |
-|-----------------|---------------|-----|-------|
-| `text-xs` | `text-caption` | 12 | Minimum readable UI size |
-| `text-sm` | `text-body` | 14 | Sidebar nav, tables, forms |
-| `text-base` | `text-body` | 14 | Was 16px in default Tailwind; now matches app scale |
-| `text-lg` | `text-metric` | 18 | Inline stat emphasis only; prefer `<Heading variant="metric">` |
-| `text-xl` | `text-page` | 20 | Rare on non-page elements; prefer `Heading variant="page"` |
-| `text-[10px]` / `text-[11px]` | `text-micro` | 10 | Badges / overlays only |
-| `text-2xl`+ | `Heading` variant | — | Use `page`, `section`, `display` — never raw utilities on headings |
+| Legacy Tailwind               | Token utility     | px  | Notes                                                              |
+| ----------------------------- | ----------------- | --- | ------------------------------------------------------------------ |
+| `text-xs`                     | `text-caption`    | 12  | Minimum readable UI size                                           |
+| `text-sm`                     | `text-body`       | 14  | Sidebar nav, tables, forms                                         |
+| `text-base`                   | `text-body`       | 14  | Was 16px in default Tailwind; now matches app scale                |
+| `text-lg`                     | `text-metric`     | 18  | Inline stat emphasis only; prefer `<Heading variant="metric">`     |
+| `text-xl`                     | `text-page`       | 20  | Rare on non-page elements; prefer `Heading variant="page"`         |
+| `text-[10px]` / `text-[11px]` | `text-micro`      | 10  | Badges / overlays only                                             |
+| `text-2xl`+                   | `Heading` variant | —   | Use `page`, `section`, `display` — never raw utilities on headings |
 
 ### Responsive legacy patterns (removed)
 
-| Old | New |
-|-----|-----|
-| `text-sm sm:text-base` | `text-body` |
-| `text-xs sm:text-sm` | `text-caption` |
-| `text-base sm:text-lg` | `text-body sm:text-metric` (onboarding CTAs only) |
-| `sm:text-base` alone | removed (stay at `text-body`) |
-| `text-[10px] sm:text-caption` | `text-micro sm:text-caption` |
+| Old                           | New                                               |
+| ----------------------------- | ------------------------------------------------- |
+| `text-sm sm:text-base`        | `text-body`                                       |
+| `text-xs sm:text-sm`          | `text-caption`                                    |
+| `text-base sm:text-lg`        | `text-body sm:text-metric` (onboarding CTAs only) |
+| `sm:text-base` alone          | removed (stay at `text-body`)                     |
+| `text-[10px] sm:text-caption` | `text-micro sm:text-caption`                      |
 
 ### Prefer components over utilities
 
@@ -174,12 +174,12 @@ Automated replacement across `src/**/*.{tsx,ts}`:
 
 These **remain deliberately outside** the standard scale:
 
-| Pattern | Location | Reason |
-|---------|----------|--------|
-| `Heading variant="display"` | `(auth)/layout.tsx`, onboarding heroes | Marketing / first-run surfaces |
-| `text-3xl` | `CompletionStep.tsx` emoji glyphs | Decorative, not readable copy |
-| `text-4xl` | `profile/page.tsx` avatar initial | Decorative glyph in avatar circle |
-| `text-[8px]` / `text-[14px]` | `HealthIndicator.tsx` SVG labels | Chart library inline labels (also set via `style`) |
+| Pattern                      | Location                               | Reason                                             |
+| ---------------------------- | -------------------------------------- | -------------------------------------------------- |
+| `Heading variant="display"`  | `(auth)/layout.tsx`, onboarding heroes | Marketing / first-run surfaces                     |
+| `text-3xl`                   | `CompletionStep.tsx` emoji glyphs      | Decorative, not readable copy                      |
+| `text-4xl`                   | `profile/page.tsx` avatar initial      | Decorative glyph in avatar circle                  |
+| `text-[8px]` / `text-[14px]` | `HealthIndicator.tsx` SVG labels       | Chart library inline labels (also set via `style`) |
 
 Do **not** migrate allowlisted items without design review. ESLint overrides live in `eslint.config.mjs` (`typographyAllowlist`).
 
@@ -210,11 +210,11 @@ All former `text-[10px]` / `text-[11px]` use `text-micro`.
 
 ### 7.3 Semantic gaps
 
-| Gap | Detail | Status |
-|-----|--------|--------|
-| `bodyLg` == `body` | Both 14px; `Text variant="bodyLg"` adds no size | **Resolved as intentional alias** — keep for auth/onboarding blurbs; emphasize via weight/color |
-| `subsection` == `label` | Both 14px semibold | **Kept** — dense UI; hierarchy via weight vs body, not size |
-| `<Text>` underuse | Many places use `text-body` string instead of `<Text variant="body">` | Gradual migration for RSC-safe consistency |
+| Gap                     | Detail                                                                | Status                                                                                          |
+| ----------------------- | --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `bodyLg` == `body`      | Both 14px; `Text variant="bodyLg"` adds no size                       | **Resolved as intentional alias** — keep for auth/onboarding blurbs; emphasize via weight/color |
+| `subsection` == `label` | Both 14px semibold                                                    | **Kept** — dense UI; hierarchy via weight vs body, not size                                     |
+| `<Text>` underuse       | Many places use `text-body` string instead of `<Text variant="body">` | Gradual migration for RSC-safe consistency                                                      |
 
 ---
 
@@ -224,7 +224,8 @@ All former `text-[10px]` / `text-[11px]` use `text-micro`.
 
 1. `text-xl`+ on `<h1>`–`<h6>` → use `Heading` / roles
 2. `text-xs`–`text-xl` in any static `className` → use token utilities
-3. `text-[Npx]` arbitrary sizes → use `text-caption` / `text-micro` or allowlist
+3. `text-2xl`–`text-5xl` in any static `className` → use `Heading` roles (`page` / `display` / `metric`); decorative glyphs stay on the allowlist
+4. `text-[Npx]` arbitrary sizes → use `text-caption` / `text-micro` or allowlist
 
 Allowlisted files (`CompletionStep`, `profile/page`, `HealthIndicator`) still ban large sizes on real heading tags.
 
@@ -246,8 +247,8 @@ Run: `pnpm lint`
 - [x] Resolve `bodyLg` redundancy (keep as same-size semantic alias; documented)
 - [x] Decide `subsection` size — **keep 14px** (dense UI; hierarchy via weight vs body)
 - [x] Replace inline `text-body` / `text-caption` with `<Text>` in high-traffic shared UI:
-  `PageHeader`, `CardTitle`/`CardDescription`, `Input`/`TextArea`, `LoadingSpinner`,
-  `toast`, `modal`, `select` labels/helpers, `WorkflowStep` info
+      `PageHeader`, `CardTitle`/`CardDescription`, `Input`/`TextArea`, `LoadingSpinner`,
+      `toast`, `modal`, `select` labels/helpers, `WorkflowStep` info
 - [x] `Heading` / `Text` now `forwardRef` (safe for Card primitives)
 - [x] Audit `Heading` / page titles (Aug 24, 2026):
 
