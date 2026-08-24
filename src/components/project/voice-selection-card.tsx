@@ -107,9 +107,7 @@ export function VoiceSelectionCard({
               )}
 
               {description && (
-                <p className="mt-1 text-caption text-text-secondary line-clamp-1">
-                  {description}
-                </p>
+                <p className="mt-1 text-caption text-text-secondary line-clamp-1">{description}</p>
               )}
             </div>
 

@@ -245,7 +245,9 @@ export default function VoicePage() {
               <span className="relative inline-flex rounded-full h-2 w-2 bg-accent-primary"></span>
             </span>
             <Sparkles className="h-3.5 w-3.5 text-accent-primary" />
-            <span>Agnes AI is preparing title suggestions &amp; thumbnail concepts in the background</span>
+            <span>
+              Agnes AI is preparing title suggestions &amp; thumbnail concepts in the background
+            </span>
           </div>
 
           {state?.scriptSummary && (

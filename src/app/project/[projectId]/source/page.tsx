@@ -98,9 +98,7 @@ export default function SourcePage() {
           <PageHeader
             title={t("project.source.title")}
             description={
-              isChanging
-                ? t("project.source.selectDifferent")
-                : t("project.source.viewSelected")
+              isChanging ? t("project.source.selectDifferent") : t("project.source.viewSelected")
             }
             actions={
               !isChanging && state?.movieId ? (

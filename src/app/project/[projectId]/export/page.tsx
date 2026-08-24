@@ -100,17 +100,20 @@ export default function ExportPage() {
     [toast, router, t]
   );
 
-  const applyVideosResponse = React.useCallback((response: { videos: VideoGenerationResponse[] }) => {
-    setVideos(response.videos);
-    setSelectedVideoId((current) => {
-      if (current) return current;
-      const firstCompleted = response.videos.find((v) => v.status === "completed");
-      if (firstCompleted) {
-        return firstCompleted.id;
-      }
-      return null;
-    });
-  }, []);
+  const applyVideosResponse = React.useCallback(
+    (response: { videos: VideoGenerationResponse[] }) => {
+      setVideos(response.videos);
+      setSelectedVideoId((current) => {
+        if (current) return current;
+        const firstCompleted = response.videos.find((v) => v.status === "completed");
+        if (firstCompleted) {
+          return firstCompleted.id;
+        }
+        return null;
+      });
+    },
+    []
+  );
 
   // ── Video data loaders ─────────────────────────────────────────────────────
   const loadVideos = React.useCallback(async () => {
@@ -186,13 +189,11 @@ export default function ExportPage() {
 
   React.useEffect(() => {
     const latestNotification = notifications[0];
-    if (
-      !(
-        latestNotification &&
-        latestNotification.notification_type === "video_job_completed" &&
-        latestNotification.project_id?.toString() === projectId
-      )
-    ) {
+    if (!(
+      latestNotification &&
+      latestNotification.notification_type === "video_job_completed" &&
+      latestNotification.project_id?.toString() === projectId
+    )) {
       return;
     }
 
@@ -422,7 +423,11 @@ export default function ExportPage() {
           />
 
           {/* ── Pre-flight Readiness Checklist Row ── */}
-          <Card variant="elevated" padding="md" className="border-accent-primary/20 bg-surface-panel">
+          <Card
+            variant="elevated"
+            padding="md"
+            className="border-accent-primary/20 bg-surface-panel"
+          >
             <p className="text-micro font-bold uppercase tracking-wider text-text-muted mb-3">
               Pre-Flight Readiness Checklist
             </p>
@@ -441,7 +446,9 @@ export default function ExportPage() {
               </div>
               <div className="flex items-center gap-2 p-2 rounded-lg bg-surface-raised border border-border-default truncate">
                 <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
-                <span className="truncate">Cover: {state?.thumbnailConfirmed ? "Verified" : "Ready"}</span>
+                <span className="truncate">
+                  Cover: {state?.thumbnailConfirmed ? "Verified" : "Ready"}
+                </span>
               </div>
             </div>
           </Card>
@@ -495,7 +502,11 @@ export default function ExportPage() {
           {displayVideo ? (
             <Card variant="elevated" padding="md" className="border-accent-primary/30">
               <div className="flex items-center justify-between mb-4">
-                <Heading variant="label" as="h3" className="text-text-primary flex items-center gap-2">
+                <Heading
+                  variant="label"
+                  as="h3"
+                  className="text-text-primary flex items-center gap-2"
+                >
                   <Video className="h-4 w-4 text-accent-primary" />
                   Master Video Showcase
                 </Heading>
@@ -592,7 +603,9 @@ export default function ExportPage() {
                 </div>
                 <div>
                   <span className="font-medium text-text-muted">Status:</span>{" "}
-                  <span className="text-green-500 font-semibold">{getStatusLabel(displayVideo.status)}</span>
+                  <span className="text-green-500 font-semibold">
+                    {getStatusLabel(displayVideo.status)}
+                  </span>
                 </div>
               </div>
 
@@ -644,7 +657,8 @@ export default function ExportPage() {
                   {t("project.export.readyTitle")}
                 </Heading>
                 <p className="text-body text-text-muted mb-6 leading-relaxed">
-                  Stitches scene clips, overlays studio narration and subtitles, and encodes high-res MP4.
+                  Stitches scene clips, overlays studio narration and subtitles, and encodes
+                  high-res MP4.
                 </p>
 
                 {creditStatus && (
@@ -687,7 +701,11 @@ export default function ExportPage() {
           {/* ── Granular Live Render Telemetry ── */}
           {processingVideos.length > 0 && (
             <Card variant="elevated" padding="md" className="border-accent-primary/30">
-              <Heading variant="label" as="h3" className="text-text-primary mb-4 flex items-center gap-2">
+              <Heading
+                variant="label"
+                as="h3"
+                className="text-text-primary mb-4 flex items-center gap-2"
+              >
                 <Clock className="h-4 w-4 text-accent-primary" />
                 Live Video Pipeline Telemetry
               </Heading>
@@ -722,7 +740,9 @@ export default function ExportPage() {
                       <div className="p-1.5 rounded bg-accent-primary/10 text-accent-primary">
                         1. Queue Verified
                       </div>
-                      <div className={`p-1.5 rounded ${video.status === "processing" ? "bg-accent-primary/20 text-accent-primary animate-pulse" : "bg-surface-panel text-text-muted"}`}>
+                      <div
+                        className={`p-1.5 rounded ${video.status === "processing" ? "bg-accent-primary/20 text-accent-primary animate-pulse" : "bg-surface-panel text-text-muted"}`}
+                      >
                         2. Stitch & Audio Sync
                       </div>
                       <div className="p-1.5 rounded bg-surface-panel text-text-muted">
@@ -811,7 +831,10 @@ export default function ExportPage() {
                 size="md"
                 leftIcon={<XIcon className="h-4 w-4" />}
                 onClick={() => {
-                  window.open(`https://twitter.com/intent/tweet?text=Check out my new video on Huavoi Studio!`, "_blank");
+                  window.open(
+                    `https://twitter.com/intent/tweet?text=Check out my new video on Huavoi Studio!`,
+                    "_blank"
+                  );
                 }}
                 className="w-full"
               >

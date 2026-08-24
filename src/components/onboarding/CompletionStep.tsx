@@ -236,9 +236,7 @@ export default function CompletionStep() {
       {/* Countdown */}
       <div className="mt-6 flex items-center justify-center gap-2 text-body text-gray-500 dark:text-gray-400">
         <Spinner size="sm" className="text-gray-400 dark:text-gray-500" />
-        <span>
-          {t("onboarding.completion.redirect", { seconds: countdown })}
-        </span>
+        <span>{t("onboarding.completion.redirect", { seconds: countdown })}</span>
       </div>
     </div>
   );

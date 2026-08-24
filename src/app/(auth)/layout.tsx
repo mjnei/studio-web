@@ -104,9 +104,10 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
                 onClick={() => void handleNextBackground()}
                 isLoading={isSwitchingBackground}
                 className="border border-white/20 bg-black/35 text-white backdrop-blur-md hover:bg-black/45"
-                leftIcon={!isSwitchingBackground ? <RefreshCw className="h-4 w-4" aria-hidden /> : undefined}
-              >
-              </Button>
+                leftIcon={
+                  !isSwitchingBackground ? <RefreshCw className="h-4 w-4" aria-hidden /> : undefined
+                }
+              ></Button>
             </div>
 
             {/* Mobile Branding */}

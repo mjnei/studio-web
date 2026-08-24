@@ -151,7 +151,11 @@ export default function AuditLogsTable({
                 >
                   <div className="flex items-center gap-1">
                     Timestamp
-                    <SortIcon field="created_at" sortField={sortField} sortDirection={sortDirection} />
+                    <SortIcon
+                      field="created_at"
+                      sortField={sortField}
+                      sortDirection={sortDirection}
+                    />
                   </div>
                 </th>
                 <th

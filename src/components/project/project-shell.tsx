@@ -64,7 +64,8 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
     if (isRendering) {
       return {
         label: t("project.shell.statusRendering"),
-        className: "bg-status-processing/20 text-status-processing border-status-processing/30 animate-pulse",
+        className:
+          "bg-status-processing/20 text-status-processing border-status-processing/30 animate-pulse",
       };
     }
     if (currentStep === "source" || currentStep === "script") {
@@ -129,7 +130,11 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
             >
               <ArrowLeft className="h-5 w-5" aria-hidden />
             </Link>
-            <Heading variant="label" as="h1" className="text-text-primary truncate max-w-xs sm:max-w-md">
+            <Heading
+              variant="label"
+              as="h1"
+              className="text-text-primary truncate max-w-xs sm:max-w-md"
+            >
               {projectTitle}
             </Heading>
             <span

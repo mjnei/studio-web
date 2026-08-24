@@ -234,7 +234,12 @@ export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps)
                   </div>
                   <div className="flex flex-wrap gap-1 pt-0.5">
                     {movie.genre.slice(0, 1).map((genre) => (
-                      <Badge key={genre} variant="default" size="sm" className="text-micro px-1.5 py-0">
+                      <Badge
+                        key={genre}
+                        variant="default"
+                        size="sm"
+                        className="text-micro px-1.5 py-0"
+                      >
                         {genre}
                       </Badge>
                     ))}
@@ -248,7 +253,9 @@ export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps)
         <Card variant="elevated" padding="lg">
           <EmptyState
             icon={<Film aria-hidden />}
-            title={t("project.movieSelection.noMoviesFound", { query: searchQuery || selectedGenre })}
+            title={t("project.movieSelection.noMoviesFound", {
+              query: searchQuery || selectedGenre,
+            })}
             action={
               selectedGenre !== "All" ? (
                 <Button variant="secondary" size="sm" onClick={() => setSelectedGenre("All")}>

@@ -207,9 +207,7 @@ export default function ComposePage() {
     : "";
 
   const currentDisplayImage =
-    state?.finalThumbnailUrl ||
-    state?.customThumbnailUrl ||
-    state?.thumbnailUrl;
+    state?.finalThumbnailUrl || state?.customThumbnailUrl || state?.thumbnailUrl;
 
   return (
     <>
@@ -237,7 +235,11 @@ export default function ComposePage() {
               {/* Left Column: Live 16:9 Canvas Preview */}
               <div className="lg:col-span-7 space-y-3">
                 <div className="flex items-center justify-between">
-                  <Heading variant="label" as="h3" className="text-text-primary flex items-center gap-2">
+                  <Heading
+                    variant="label"
+                    as="h3"
+                    className="text-text-primary flex items-center gap-2"
+                  >
                     <Sparkles className="h-4 w-4 text-accent-cyan" />
                     Live 16:9 Cover Canvas
                   </Heading>
@@ -252,7 +254,9 @@ export default function ComposePage() {
                     <div className="w-full h-full flex flex-col items-center justify-center gap-3 p-6 text-center bg-surface-panel/80">
                       <Spinner size="lg" className="text-accent-cyan" />
                       <p className="text-body font-medium text-text-primary">
-                        {isRegenerating ? t("project.compose.toastRegenerating") : t("project.compose.generating")}
+                        {isRegenerating
+                          ? t("project.compose.toastRegenerating")
+                          : t("project.compose.generating")}
                       </p>
                       <p className="text-caption text-text-muted max-w-xs">
                         {t("project.compose.generatingDesc")}
@@ -279,7 +283,9 @@ export default function ComposePage() {
                   ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center gap-3 p-6 text-center bg-surface-panel">
                       <Sparkles className="h-10 w-10 text-text-muted" />
-                      <p className="text-body text-text-muted">{t("project.compose.availableShortly")}</p>
+                      <p className="text-body text-text-muted">
+                        {t("project.compose.availableShortly")}
+                      </p>
                     </div>
                   )}
                 </div>
@@ -326,10 +332,22 @@ export default function ComposePage() {
                     </p>
                     <div className="grid grid-cols-2 gap-2">
                       {[
-                        { name: "Cinematic Gold", style: "border-yellow-500/40 text-yellow-400 bg-yellow-500/10" },
-                        { name: "Neon Cyan", style: "border-cyan-500/40 text-cyan-400 bg-cyan-500/10" },
-                        { name: "Minimalist Clean", style: "border-white/40 text-white bg-white/10" },
-                        { name: "Breaking Red", style: "border-red-500/40 text-red-400 bg-red-500/10" },
+                        {
+                          name: "Cinematic Gold",
+                          style: "border-yellow-500/40 text-yellow-400 bg-yellow-500/10",
+                        },
+                        {
+                          name: "Neon Cyan",
+                          style: "border-cyan-500/40 text-cyan-400 bg-cyan-500/10",
+                        },
+                        {
+                          name: "Minimalist Clean",
+                          style: "border-white/40 text-white bg-white/10",
+                        },
+                        {
+                          name: "Breaking Red",
+                          style: "border-red-500/40 text-red-400 bg-red-500/10",
+                        },
                       ].map((preset) => (
                         <button
                           key={preset.name}

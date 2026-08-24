@@ -51,8 +51,7 @@ export function VoiceSelectionPanel({
       v.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       v.creator_username?.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesFilter =
-      selectedFilter === "All" ||
-      v.name.toLowerCase().includes(selectedFilter.toLowerCase());
+      selectedFilter === "All" || v.name.toLowerCase().includes(selectedFilter.toLowerCase());
     return matchesSearch && matchesFilter;
   });
 
@@ -60,8 +59,7 @@ export function VoiceSelectionPanel({
     const matchesSearch =
       !searchQuery.trim() || v.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesFilter =
-      selectedFilter === "All" ||
-      v.name.toLowerCase().includes(selectedFilter.toLowerCase());
+      selectedFilter === "All" || v.name.toLowerCase().includes(selectedFilter.toLowerCase());
     return matchesSearch && matchesFilter;
   });
 
@@ -82,7 +80,9 @@ export function VoiceSelectionPanel({
             {communityVoices.length > 0 && (
               <span
                 className={`ml-1 rounded-full px-2 py-0.5 text-micro font-bold ${
-                  tab === "community" ? "bg-white/20 text-white" : "bg-surface-raised text-text-muted"
+                  tab === "community"
+                    ? "bg-white/20 text-white"
+                    : "bg-surface-raised text-text-muted"
                 }`}
               >
                 {communityVoices.length}
@@ -145,7 +145,11 @@ export function VoiceSelectionPanel({
 
       {/* Error Message */}
       {voicesError && (
-        <Card variant="elevated" padding="md" className="border-status-failed/30 bg-status-failed/10">
+        <Card
+          variant="elevated"
+          padding="md"
+          className="border-status-failed/30 bg-status-failed/10"
+        >
           <p className="text-body text-status-failed">{voicesError}</p>
         </Card>
       )}

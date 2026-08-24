@@ -132,9 +132,7 @@ export function LibraryMovieCard({
                 labelTone="meta"
                 type="text"
                 value={editingData.douban_id || ""}
-                onChange={(e) =>
-                  onEditingDataChange({ ...editingData, douban_id: e.target.value })
-                }
+                onChange={(e) => onEditingDataChange({ ...editingData, douban_id: e.target.value })}
                 placeholder="Optional"
               />
             </div>

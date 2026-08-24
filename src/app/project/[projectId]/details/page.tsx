@@ -52,7 +52,23 @@ export default function ProjectDetailsPage() {
 
       const articles = new Set(["a", "an", "the", "el", "la", "le"]);
       const stopWords = new Set([
-        "a", "an", "the", "el", "la", "le", "of", "and", "or", "but", "in", "on", "at", "to", "for", "with", "by",
+        "a",
+        "an",
+        "the",
+        "el",
+        "la",
+        "le",
+        "of",
+        "and",
+        "or",
+        "but",
+        "in",
+        "on",
+        "at",
+        "to",
+        "for",
+        "with",
+        "by",
       ]);
 
       const startsWithArticle = words.length > 1 && articles.has(words[0].toLowerCase());
@@ -451,9 +467,7 @@ export default function ProjectDetailsPage() {
                         {t("common.required")}
                       </span>
                     </label>
-                    <p className="text-caption text-text-muted">
-                      {t("project.details.nameHint")}
-                    </p>
+                    <p className="text-caption text-text-muted">{t("project.details.nameHint")}</p>
                   </div>
                 </div>
 
@@ -545,13 +559,17 @@ export default function ProjectDetailsPage() {
                         <div className="flex items-start gap-3">
                           <Sparkles
                             className={`h-4 w-4 shrink-0 mt-0.5 ${
-                              isSelected ? "text-accent-primary animate-pulse" : "text-accent-primary"
+                              isSelected
+                                ? "text-accent-primary animate-pulse"
+                                : "text-accent-primary"
                             }`}
                           />
                           <div className="flex-1 min-w-0">
                             <p
                               className={`font-semibold text-body transition-colors break-words ${
-                                isSelected ? "text-accent-primary" : "text-text-primary group-hover:text-accent-primary"
+                                isSelected
+                                  ? "text-accent-primary"
+                                  : "text-text-primary group-hover:text-accent-primary"
                               }`}
                             >
                               {suggestion.name}
@@ -589,7 +607,9 @@ export default function ProjectDetailsPage() {
                           <div className="flex-1 min-w-0">
                             <p
                               className={`font-medium text-body transition-colors break-words ${
-                                isSelected ? "text-accent-primary" : "text-text-secondary group-hover:text-text-primary"
+                                isSelected
+                                  ? "text-accent-primary"
+                                  : "text-text-secondary group-hover:text-text-primary"
                               }`}
                             >
                               {suggestion.name}

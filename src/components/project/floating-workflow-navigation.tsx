@@ -180,9 +180,7 @@ export function FloatingWorkflowNavigation({
                     disabled={!isClickable}
                     title={`${step.label}${isCurrent ? ` (${t("project.nav.stepCurrent")})` : isCompleted ? ` (${t("project.nav.stepCompleted")})` : ""}`}
                     className={`flex items-center gap-1.5 p-1 rounded-lg transition-all ${
-                      isClickable
-                        ? "cursor-pointer hover:bg-surface-hover/80"
-                        : "cursor-default"
+                      isClickable ? "cursor-pointer hover:bg-surface-hover/80" : "cursor-default"
                     }`}
                     aria-label={`${t("project.nav.stepAria", { number: index + 1, label: step.label })}${
                       isCurrent ? t("project.nav.stepCurrent") : ""
@@ -198,11 +196,7 @@ export function FloatingWorkflowNavigation({
                             : "bg-surface-raised border border-border-default text-text-muted"
                       }`}
                     >
-                      {isCompleted ? (
-                        <Check className="h-3.5 w-3.5" strokeWidth={3} />
-                      ) : (
-                        index + 1
-                      )}
+                      {isCompleted ? <Check className="h-3.5 w-3.5" strokeWidth={3} /> : index + 1}
                     </div>
 
                     {/* Label - visible on desktop lg+ */}
@@ -274,9 +268,7 @@ export function FloatingWorkflowNavigation({
               <Button
                 variant="primary"
                 size="sm"
-                rightIcon={
-                  !isLastStep ? <ArrowRight className="h-4 w-4" /> : undefined
-                }
+                rightIcon={!isLastStep ? <ArrowRight className="h-4 w-4" /> : undefined}
                 onClick={handleNext}
                 disabled={isProcessing}
                 loading={isProcessing}

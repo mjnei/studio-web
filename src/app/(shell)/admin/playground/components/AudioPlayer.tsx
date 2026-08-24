@@ -20,9 +20,7 @@ export function AudioPlayer({ audioUrl, jobId, jobName, onDismiss }: AudioPlayer
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
-  const [waveformHeights] = useState(() =>
-    Array.from({ length: 40 }, () => Math.random() * 100)
-  );
+  const [waveformHeights] = useState(() => Array.from({ length: 40 }, () => Math.random() * 100));
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Reset player state when the audio source changes (render-time adjustment).

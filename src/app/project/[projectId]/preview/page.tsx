@@ -175,7 +175,11 @@ export default function PreviewPage() {
 
     let cancelled = false;
 
-    if (shouldCreateBecauseVoiceChanged || shouldCreateBecauseScriptChanged || !state.activeTtsJobId) {
+    if (
+      shouldCreateBecauseVoiceChanged ||
+      shouldCreateBecauseScriptChanged ||
+      !state.activeTtsJobId
+    ) {
       if (!isCreatingJobRef.current) {
         isCreatingJobRef.current = true;
         createTTSJob({
@@ -323,11 +327,9 @@ export default function PreviewPage() {
   const canProceed = ttsJob?.status === "completed" && !!ttsJob.audio_url;
   const isProcessing = ttsJob?.status === "queued" || ttsJob?.status === "processing";
   const isIdle = !ttsJob && !isProcessing && !ttsError;
-  const projectName =
-    state?.projectName || state?.movieTitle || t("project.preview.yourProject");
+  const projectName = state?.projectName || state?.movieTitle || t("project.preview.yourProject");
 
-  const voiceName =
-    ttsJob?.voice_name || state?.voiceName || t("project.preview.selectedVoice");
+  const voiceName = ttsJob?.voice_name || state?.voiceName || t("project.preview.selectedVoice");
 
   const previewText = (() => {
     if (!activeScript?.content) return t("project.preview.defaultPreviewText");
@@ -454,7 +456,11 @@ export default function PreviewPage() {
 
           {/* ── State 3: READY / STUDIO AUDIO DECK ── */}
           {ttsJob?.status === "completed" && ttsJob.audio_url && (
-            <Card variant="elevated" padding="none" className="overflow-hidden border-accent-primary/30">
+            <Card
+              variant="elevated"
+              padding="none"
+              className="overflow-hidden border-accent-primary/30"
+            >
               <div className="bg-gradient-to-br from-accent-primary/15 via-surface-panel to-accent-cyan/10 p-6 sm:p-8">
                 {/* Visualizer header */}
                 <div className="flex items-center justify-between gap-4 mb-6">
@@ -467,7 +473,8 @@ export default function PreviewPage() {
                         Studio Audio Narration
                       </Heading>
                       <p className="text-caption text-text-muted">
-                        Narrated by <span className="text-text-primary font-medium">{voiceName}</span>
+                        Narrated by{" "}
+                        <span className="text-text-primary font-medium">{voiceName}</span>
                       </p>
                     </div>
                   </div>
@@ -508,7 +515,9 @@ export default function PreviewPage() {
                         onClick={resetAudio}
                         title={t("project.preview.resetToStart")}
                       >
-                        <span className="hidden md:inline">{t("project.preview.resetToStart")}</span>
+                        <span className="hidden md:inline">
+                          {t("project.preview.resetToStart")}
+                        </span>
                       </Button>
                       <Button
                         variant="secondary"
@@ -576,7 +585,11 @@ export default function PreviewPage() {
 
           {/* Failed State Retry Card */}
           {ttsJob?.status === "failed" && (
-            <Card variant="elevated" padding="lg" className="border-error-border/30 bg-surface-panel text-center">
+            <Card
+              variant="elevated"
+              padding="lg"
+              className="border-error-border/30 bg-surface-panel text-center"
+            >
               <div className="max-w-md mx-auto space-y-4">
                 <div className="flex justify-center">
                   <div className="flex h-12 w-12 items-center justify-center rounded-full bg-error-bg text-error-text">
@@ -587,7 +600,9 @@ export default function PreviewPage() {
                   <Heading variant="subsection" as="h3" className="text-error-text">
                     {t("project.preview.generationFailed")}
                   </Heading>
-                  <p className="mt-1 text-caption text-text-muted">{ttsJob.error_message || ttsError}</p>
+                  <p className="mt-1 text-caption text-text-muted">
+                    {ttsJob.error_message || ttsError}
+                  </p>
                 </div>
                 <Button
                   variant="primary"
