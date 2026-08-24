@@ -107,12 +107,12 @@ export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps)
   }, [searchQuery, t, unknownLabel, uncategorizedLabel]);
 
   // Filter movies by genre if a specific genre chip is active
-  const filteredMovies = useMemo(() => {
-    if (selectedGenre === "All") return movies;
-    return movies.filter((m) =>
-      m.genre.some((g) => g.toLowerCase().includes(selectedGenre.toLowerCase()))
-    );
-  }, [movies, selectedGenre]);
+  const filteredMovies =
+    selectedGenre === "All"
+      ? movies
+      : movies.filter((m) =>
+          m.genre.some((g) => g.toLowerCase().includes(selectedGenre.toLowerCase()))
+        );
 
   return (
     <div className="space-y-6 fade-in">

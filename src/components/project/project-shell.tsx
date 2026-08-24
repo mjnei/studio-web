@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { ArrowLeft, PanelLeft } from "lucide-react";
+import { ArrowLeft, PanelLeft, Sparkles } from "lucide-react";
 import { DrawerContent } from "@/components/shell/drawer-content";
 import { useSidebar } from "@/components/shell/sidebar-context";
 import { useProjectState } from "@/lib/hooks/use-project-state";
@@ -13,36 +13,14 @@ import { useToast } from "@/components/ui/toast";
 import { Heading } from "@/components/ui/heading";
 import { useI18n } from "@/i18n";
 
-type Status = "Voice Ready" | "Composing" | "Rendering" | "Completed";
-
-const statusColors: Record<Status, string> = {
-  "Voice Ready": "bg-accent-cyan",
-  Composing: "bg-status-processing",
-  Rendering: "bg-status-processing animate-pulse",
-  Completed: "bg-status-completed",
-};
-
-const statusI18nKeys: Record<Status, string> = {
-  "Voice Ready": "project.shell.statusVoiceReady",
-  Composing: "project.shell.statusComposing",
-  Rendering: "project.shell.statusRendering",
-  Completed: "project.shell.statusCompleted",
-};
-
-// Determine project status based on completed steps
-function getProjectStatus(hasVoice: boolean, hasVideo: boolean, isRendering: boolean): Status {
-  if (hasVideo) return "Completed";
-  if (isRendering) return "Rendering";
-  if (hasVoice) return "Voice Ready";
-  return "Voice Ready"; // New projects start at voice step
-}
-
 export function ProjectShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const toast = useToast();
   const { t } = useI18n();
-  const projectId = pathname.split("/")[2];
+  const segments = pathname.split("/");
+  const projectId = segments[2];
+  const currentStep = segments[3] || "source";
   const { collapsed, mobileOpen, setMobileOpen, toggle, isNarrow } = useSidebar();
 
   // Get project state from persistent storage
@@ -51,7 +29,6 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
   // Redirect to projects list if project not found (404 error)
   useEffect(() => {
     if (!isLoading && error) {
-      // Check if it's an ApiError with status 404
       const apiError = error as any;
       const is404 =
         apiError.status === 404 ||
@@ -67,23 +44,46 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
     }
   }, [isLoading, error, router, toast, t]);
 
-  // Determine which steps are completed based on project state
-  const completedSteps = {
-    voice: !!projectState?.audioUrl,
-    compose: !!projectState?.videoUrl,
-  };
-
-  const projectStatus = getProjectStatus(
-    completedSteps.voice,
-    completedSteps.compose,
-    projectState?.isRendering || false
-  );
-
   const projectTitle =
     projectState?.projectName ||
     projectState?.title ||
     projectState?.movieTitle ||
     t("project.common.untitledProject");
+
+  // Determine current phase / status for top header badge
+  const isRendering = projectState?.isRendering || false;
+  const isCompleted = !!projectState?.videoUrl;
+
+  const phaseBadge = (() => {
+    if (isCompleted) {
+      return {
+        label: t("project.shell.statusCompleted"),
+        className: "bg-status-success/20 text-status-success border-status-success/30",
+      };
+    }
+    if (isRendering) {
+      return {
+        label: t("project.shell.statusRendering"),
+        className: "bg-status-processing/20 text-status-processing border-status-processing/30 animate-pulse",
+      };
+    }
+    if (currentStep === "source" || currentStep === "script") {
+      return {
+        label: t("project.nav.phaseConcept"),
+        className: "bg-accent-secondary/15 text-accent-secondary border-accent-secondary/30",
+      };
+    }
+    if (currentStep === "voice" || currentStep === "details" || currentStep === "preview") {
+      return {
+        label: t("project.nav.phaseProduction"),
+        className: "bg-accent-primary/15 text-accent-primary border-accent-primary/30",
+      };
+    }
+    return {
+      label: t("project.nav.phaseMastering"),
+      className: "bg-accent-cyan/15 text-accent-cyan border-accent-cyan/30",
+    };
+  })();
 
   useEffect(() => {
     setMobileOpen(false);
@@ -129,17 +129,15 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
             >
               <ArrowLeft className="h-5 w-5" aria-hidden />
             </Link>
-            <Heading variant="label" as="h1" className="text-text-primary">
+            <Heading variant="label" as="h1" className="text-text-primary truncate max-w-xs sm:max-w-md">
               {projectTitle}
             </Heading>
             <span
-              className={`inline-flex items-center rounded-full px-2 py-0.5 text-caption leading-caption font-medium text-white ${statusColors[projectStatus]}`}
+              className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-micro font-medium uppercase tracking-wider ${phaseBadge.className}`}
             >
-              {t(statusI18nKeys[projectStatus])}
+              <Sparkles className="h-2.5 w-2.5" />
+              {phaseBadge.label}
             </span>
-            <div className="ml-auto flex items-center gap-2 md:hidden">
-              {/* Export button removed */}
-            </div>
             <div className="ml-auto flex items-center gap-3 md:gap-4">
               <CreditStatus />
               <NotificationBell />

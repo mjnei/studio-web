@@ -45,29 +45,25 @@ export function VoiceSelectionPanel({
   const [selectedFilter, setSelectedFilter] = useState<string>("All");
 
   // Filter voices by search query & filter chip
-  const filteredCommunityVoices = useMemo(() => {
-    return communityVoices.filter((v) => {
-      const matchesSearch =
-        !searchQuery.trim() ||
-        v.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        v.creator_username?.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesFilter =
-        selectedFilter === "All" ||
-        v.name.toLowerCase().includes(selectedFilter.toLowerCase());
-      return matchesSearch && matchesFilter;
-    });
-  }, [communityVoices, searchQuery, selectedFilter]);
+  const filteredCommunityVoices = communityVoices.filter((v) => {
+    const matchesSearch =
+      !searchQuery.trim() ||
+      v.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      v.creator_username?.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesFilter =
+      selectedFilter === "All" ||
+      v.name.toLowerCase().includes(selectedFilter.toLowerCase());
+    return matchesSearch && matchesFilter;
+  });
 
-  const filteredOwnVoices = useMemo(() => {
-    return ownVoices.filter((v) => {
-      const matchesSearch =
-        !searchQuery.trim() || v.name.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesFilter =
-        selectedFilter === "All" ||
-        v.name.toLowerCase().includes(selectedFilter.toLowerCase());
-      return matchesSearch && matchesFilter;
-    });
-  }, [ownVoices, searchQuery, selectedFilter]);
+  const filteredOwnVoices = ownVoices.filter((v) => {
+    const matchesSearch =
+      !searchQuery.trim() || v.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesFilter =
+      selectedFilter === "All" ||
+      v.name.toLowerCase().includes(selectedFilter.toLowerCase());
+    return matchesSearch && matchesFilter;
+  });
 
   return (
     <div className="space-y-4">

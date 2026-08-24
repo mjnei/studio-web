@@ -323,23 +323,20 @@ export default function PreviewPage() {
   const canProceed = ttsJob?.status === "completed" && !!ttsJob.audio_url;
   const isProcessing = ttsJob?.status === "queued" || ttsJob?.status === "processing";
   const isIdle = !ttsJob && !isProcessing && !ttsError;
+  const projectName =
+    state?.projectName || state?.movieTitle || t("project.preview.yourProject");
 
-  const projectName = useMemo(() => {
-    return state?.projectName || state?.movieTitle || t("project.preview.yourProject");
-  }, [state?.projectName, state?.movieTitle, t]);
+  const voiceName =
+    ttsJob?.voice_name || state?.voiceName || t("project.preview.selectedVoice");
 
-  const voiceName = useMemo(() => {
-    return ttsJob?.voice_name || state?.voiceName || t("project.preview.selectedVoice");
-  }, [ttsJob?.voice_name, state?.voiceName, t]);
-
-  const previewText = useMemo(() => {
+  const previewText = (() => {
     if (!activeScript?.content) return t("project.preview.defaultPreviewText");
     const sentences = activeScript.content.match(/[^.!?]+[.!?]+/g);
     if (!sentences || sentences.length === 0) {
       return activeScript.content.substring(0, 200);
     }
     return sentences[0].trim();
-  }, [activeScript?.content, t]);
+  })();
 
   const scriptDuration = activeScript
     ? `${Math.floor(activeScript.duration / 60)}:${(activeScript.duration % 60).toString().padStart(2, "0")}`
