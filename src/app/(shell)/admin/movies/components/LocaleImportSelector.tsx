@@ -1,5 +1,4 @@
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { Heading } from "@/components/ui/heading";
 import { SUPPORTED_LOCALES } from "../constants";
 
 type LocaleImportSelectorProps = {
@@ -18,32 +17,34 @@ export function LocaleImportSelector({
   onToggleAll,
 }: LocaleImportSelectorProps) {
   return (
-    <div className="mb-6 rounded-2xl border border-border-default bg-surface-panel">
+    <>
       <button
+        type="button"
         onClick={() => onExpandedChange(!expanded)}
-        className="flex w-full items-center justify-between p-6 text-left transition-colors hover:bg-surface-hover"
+        className="flex h-full min-h-[48px] shrink-0 items-center gap-2 rounded-lg border border-border-default bg-surface-base px-3 py-2 text-left transition-colors hover:bg-surface-hover sm:px-4"
+        aria-expanded={expanded}
+        aria-label="Translation locales to import"
       >
-        <div>
-          <Heading variant="label" as="h2" className="text-text-primary">
-            Translation Locales to Import
-          </Heading>
-          <p className="mt-1 text-caption text-text-muted">
-            {selectedLocales.length} of {SUPPORTED_LOCALES.length} locales selected
+        <div className="min-w-0">
+          <p className="truncate text-caption font-medium text-text-primary sm:text-body">
+            Locales
           </p>
         </div>
         {expanded ? (
-          <ChevronUp className="h-5 w-5 text-text-muted" />
+          <ChevronUp className="h-4 w-4 shrink-0 text-text-muted" />
         ) : (
-          <ChevronDown className="h-5 w-5 text-text-muted" />
+          <ChevronDown className="h-4 w-4 shrink-0 text-text-muted" />
         )}
       </button>
 
       {expanded && (
-        <div className="border-t border-border-default p-6 pt-4">
-          <div className="mb-3 flex items-center justify-between">
+        <div className="basis-full rounded-xl border border-border-default bg-surface-base p-4">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <p className="text-caption text-text-secondary">Locales to import with each movie</p>
             <button
+              type="button"
               onClick={onToggleAll}
-              className="text-caption font-medium text-accent-primary hover:text-accent-primary/80"
+              className="shrink-0 text-caption font-medium text-accent-primary hover:text-accent-primary/80"
             >
               {selectedLocales.length === SUPPORTED_LOCALES.length ? "Deselect All" : "Select All"}
             </button>
@@ -52,11 +53,12 @@ export function LocaleImportSelector({
             {SUPPORTED_LOCALES.map((locale) => (
               <button
                 key={locale}
+                type="button"
                 onClick={() => onToggleLocale(locale)}
                 className={`rounded-lg px-3 py-1.5 text-body font-medium transition-all ${
                   selectedLocales.includes(locale)
                     ? "bg-accent-primary text-white"
-                    : "border border-border-default bg-surface-base text-text-secondary hover:bg-surface-hover"
+                    : "border border-border-default bg-surface-panel text-text-secondary hover:bg-surface-hover"
                 }`}
               >
                 {locale}
@@ -69,6 +71,6 @@ export function LocaleImportSelector({
           </p>
         </div>
       )}
-    </div>
+    </>
   );
 }
