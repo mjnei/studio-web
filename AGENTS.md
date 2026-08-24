@@ -82,4 +82,4 @@ function Component() {
 
 ## Icons
 
-Lucide React for UI icons; brand SVGs in `@/components/icons`. Use the shared `Icon` wrapper (`@/components/ui/icon`) for nav and repeated patterns; use `EmptyState` for page/list empty blocks (hero-tier sizing). Conventions (size tokens, semantic glossary, accessibility): **`docs/ICONS.md`**. Loading primitives: `Spinner` / `LoadingSpinner` in `@/components/ui`; critical pending work: **`docs/LOADING_TODO.md`**.
+Lucide React for UI icons; brand SVGs in `@/components/icons`. Use the shared `Icon` wrapper (`@/components/ui/icon`) for nav and repeated dense-UI patterns; use `EmptyState` for page/list empty blocks (hero-tier sizing). Conventions (size tokens, semantic glossary, accessibility): **`docs/guides/DESIGN_SYSTEM.md`** § Icons. Loading primitives: `Spinner` / `LoadingSpinner` in `@/components/ui`; critical pending work: **`docs/LOADING_TODO.md`**.

@@ -1,42 +1,52 @@
 # Frontend UI Design System
 
-**Version**: 2.3  
+**Version**: 2.4  
 **Last Updated**: August 24, 2026  
-**Repository**: `/Users/aa/git/github_uncgra/huavoi/studio-web/`
+**Status**: Living document — reflects the current frontend, including known adoption gaps  
+**Repository**: `studio-web/`
 
 ---
 
-## 📚 Table of Contents
+## Table of Contents
 
-1. [Overview](#overview)
-2. [Design Principles](#design-principles)
+1. [Scope & current implementation](#scope--purpose)
+2. [Design Principles](#design-principles--global-guidelines)
 3. [Typography](#typography)
-4. [Color System](#color-system)
-5. [Component Library](#component-library)
-6. [Responsive Design](#responsive-design-breakpoints)
+4. [Icons](#icons)
+5. [Color System](#color-system)
+6. [Component Library](#component-library)
 7. [Layout Patterns](#layout-patterns)
-8. [Animation & Transitions](#animation--transitions)
-9. [Accessibility](#accessibility)
-10. [Best Practices](#best-practices)
+8. [Responsive Design](#responsive-design--breakpoints)
+9. [Animation & Transitions](#animation--transitions)
+10. [Accessibility](#accessibility)
 11. [Quick Reference](#quick-reference)
 
 ---
 
 ## Scope & Purpose
 
-This is the **single source of truth** for Huavoi Studio's frontend design system. Huavoi Studio is a **modern TTS and AI-driven video generation online tool**. This document outlines the unified design system for the frontend, featuring a premium dark theme that's responsive, intuitive, and visually cohesive.
+This is the **canonical frontend design system** for Huavoi Studio (TTS and AI-driven video generation). Tokens live in `src/app/globals.css`. Shared primitives live in `src/components/ui/`. Role-based type scale details are in [TYPOGRAPHY.md](../TYPOGRAPHY.md). Loading primitives and remaining loading TODOs are in [LOADING_TODO.md](../LOADING_TODO.md). Agent summary: [AGENTS.md](../../AGENTS.md).
 
 > [!IMPORTANT]
-> **Scope Rule**: These guidelines apply to **all frontend user-facing pages**. The `src/app/(shell)/admin` directory is explicitly excluded from strict adherence to these aesthetics, as the admin panel prioritizes data density and internal utility over premium consumer design.
+> **Scope Rule**: These guidelines apply to **all frontend user-facing pages**. `src/app/(shell)/admin` is not held to the same premium consumer aesthetic — density and internal utility win there — but it **should still use the same tokens, type roles, Button/Input/Select/Spinner primitives, and icon size scale**.
 
-This document combines:
-- Complete color system and CSS variables
-- Production-ready component library
-- Responsive breakpoints and grid patterns
-- Animation timing and easing functions
-- Accessibility standards and best practices
-- Quick reference for developers
-- Real-world implementation patterns
+> [!NOTE]
+> **This document describes both the standard and the current codebase.** Shared primitives exist and are the required path for new work. Several routes still use raw `<input>`, `<select>`, `<textarea>`, `<label>`, and direct Lucide imports. Those are **migration targets**, not a second approved system.
+
+### Related docs
+
+| Topic | Source of truth |
+|-------|-----------------|
+| Type roles, tokens, Heading/Text API | [TYPOGRAPHY.md](../TYPOGRAPHY.md) |
+| Typography migration status / allowlists | [TYPOGRAPHY_REFACTOR.md](../TYPOGRAPHY_REFACTOR.md) |
+| Spinners, skeletons, stuck-loading TODOs | [LOADING_TODO.md](../LOADING_TODO.md) |
+| Agent conventions (port, i18n, icons pointer) | [AGENTS.md](../../AGENTS.md) |
+
+This document covers:
+- Color tokens as implemented in `globals.css`
+- The current `src/components/ui/` inventory and APIs
+- Responsive breakpoints and grid patterns in use
+- Known adoption gaps (forms, labels, `Icon` wrapper)
 
 ## Design Principles & Global Guidelines
 
@@ -73,14 +83,41 @@ Huavoi Studio's frontend embodies a premium, state-of-the-art aesthetic that is 
 
 ## Typography
 
-**Full guide**: [TYPOGRAPHY.md](../TYPOGRAPHY.md) (roles, tokens, component API, and step-by-step refactor checklist).
+**Full guide**: [TYPOGRAPHY.md](../TYPOGRAPHY.md). **Migration log**: [TYPOGRAPHY_REFACTOR.md](../TYPOGRAPHY_REFACTOR.md).
 
-Summary:
+The app uses a **role-based type scale**. Sizes live in `@theme` tokens in `src/app/globals.css`. Class strings live in `src/components/ui/typography.ts`. `Heading`, `Text`, `PageHeader`, and `CardTitle` consume those roles.
 
-- Drive visual size from **type roles** (`page`, `section`, `label`, `metric`, …), not from bare `h1`–`h4` CSS alone.
-- Prefer `PageHeader`, `Heading`, and `CardTitle` over one-off `text-2xl` / `text-3xl` on headings.
-- Tune the scale in shared tokens / `typography.ts` — do not mass-edit pages to change global font sizes.
-- `@layer base` heading rules in `globals.css` are a fallback only; Tailwind utilities always win when present.
+Do **not** use legacy Tailwind steps (`text-xs`, `text-sm`, `text-base`, `text-lg`, `text-xl`, `text-2xl+`) in new `className`s. ESLint errors on those and on `text-[Npx]` outside the allowlist.
+
+### Current scale (Aug 2026, sidebar-aligned density)
+
+| Role | Token | Size | Component |
+|------|-------|------|-----------|
+| `display` | `--text-display` / `--text-display-sm` | 30px / 36px | `<Heading variant="display">` — auth/onboarding heroes only |
+| `page` | `--text-page` / `--text-page-sm` | 20px / 22px | `PageHeader` title or `<Heading variant="page">` |
+| `section` | `--text-section` | 16px | `CardTitle` / `<Heading variant="section">` |
+| `subsection` | `--text-subsection` | 14px | `<Heading variant="subsection">` |
+| `label` | `--text-label` | 14px | `<Heading variant="label">` (defaults to `<p>`; pass `as="h2"` for outline) |
+| `body` / `body-lg` | `--text-body` | 14px | `<Text variant="body">` or `text-body` |
+| `caption` | `--text-caption` | 12px | `<Text variant="caption">` or `text-caption` — minimum readable copy |
+| `micro` | `--text-micro` | 10px | badges / overlays only (`text-micro`) |
+| `metric` | `--text-metric` | 18px | `<Heading variant="metric">` — includes `tabular-nums` |
+
+`body { font-size: var(--text-body) }` is 14px. `bodyLg` is the same pixel size as `body`; emphasize with weight/color, not a larger size.
+
+### Allowlisted non-role sizes (do not copy elsewhere)
+
+| Pattern | Location | Reason |
+|---------|----------|--------|
+| `text-3xl` | `CompletionStep.tsx` emoji | Decorative glyph |
+| `text-4xl` | `profile/page.tsx` avatar initial | Decorative glyph |
+| `text-[8px]` / `text-[14px]` | `HealthIndicator.tsx` | Chart SVG labels |
+| `text-2xl` on `<p>` | `referral/page.tsx` stats | **Drift** — should be `<Heading variant="metric">` |
+
+### Implemented vs still-migrating
+
+- **Implemented**: tokens, `typography.ts`, `Heading`, `Text`, `PageHeader`, `CardTitle`/`CardDescription`, ESLint enforcement, bulk `text-xs`–`text-xl` → token utilities.
+- **Still migrating**: some dense UI uses `text-body` / `text-caption` strings instead of `<Text>`; referral stats still use `text-2xl`; there is **no shared `Label` primitive** (labels are `Text as="label"` on `Input`/`Select`, or raw `<label>` on many pages).
 
 ---
 
@@ -94,7 +131,7 @@ Product UI icons use **Lucide React** (`lucide-react`). Brand logos that Lucide 
 |--------|------|-------------|
 | Lucide | `import { … } from "lucide-react"` | All standard UI icons |
 | Brand SVGs | `GoogleIcon`, `XIcon`, `WeChatIcon` from `@/components/icons` | OAuth and platform share only |
-| `Icon` wrapper | `@/components/ui/icon` | Nav and repeated dense-UI patterns; size tokens + `aria-hidden` |
+| `Icon` wrapper | `@/components/ui/icon` | **Required for sidebar/nav.** Recommended for repeated dense-UI. Direct Lucide + `h-N w-N` is still the dominant pattern elsewhere — that is a migration target, not a second standard. |
 | `EmptyState` | `@/components/ui/EmptyState` | Page/tab/list “nothing here” blocks; owns hero-tier icon sizing |
 
 Do not add `react-icons`, Heroicons, or inline duplicate SVGs for icons Lucide already ships.
@@ -178,9 +215,9 @@ Defaults include `aria-hidden={true}`. Parent buttons must expose accessible nam
 <Icon icon={Search} size="md" className="text-text-muted" />
 ```
 
-- **`size`** — standard tier only (`xs`–`xl`).
+- **`size`** — standard tier only (`xs`–`xl`). Default is `sm` (`h-4 w-4`).
 - Explicit `h-N` / `w-N` in `className` skips the size token automatically.
-- Sidebar href → icon mappings live in `src/components/shell/drawer-content.tsx` (`iconMap` + `Icon`) only.
+- **Current adoption**: used in `src/components/shell/drawer-content.tsx` (`iconMap` + nav links). Most other surfaces import Lucide directly with `className="h-4 w-4"` (or `h-5 w-5`). New nav/repeated dense UI should use `Icon`; do not treat sparse adoption as permission to invent a new size scale.
 
 ### Accessibility
 
@@ -194,7 +231,9 @@ Defaults include `aria-hidden={true}`. Parent buttons must expose accessible nam
 
 ### CSS Variables Reference
 
-All colors are defined as CSS variables in `tailwind.config.ts` and `globals.css`.
+Colors are defined as CSS custom properties in `:root` in `src/app/globals.css` and mapped into Tailwind v4 via `@theme inline` (`--color-surface-base`, `--color-text-primary`, …). There is **no** `tailwind.config.ts` color map. Use utilities like `bg-surface-raised`, `text-text-primary`, `border-border-default`, `text-accent-primary`.
+
+Values below match `globals.css` as of August 24, 2026.
 
 ### Surface Colors
 - `--surface-base`: #0a0e17 (Page background)
@@ -202,28 +241,35 @@ All colors are defined as CSS variables in `tailwind.config.ts` and `globals.css
 - `--surface-raised`: #161b22 (Card background)
 - `--surface-hover`: #1c2128 (Hover state)
 - `--surface-elevated`: #21262d (Elevated elements)
+- `--surface-overlay`: rgba(10, 14, 23, 0.8)
+
+### Borders
+- `--border-default`: rgba(255, 255, 255, 0.08)
+- `--border-subtle`: rgba(255, 255, 255, 0.04)
+- `--border-strong`: rgba(255, 255, 255, 0.15)
+- `--border-focus`: rgba(99, 102, 241, 0.5)
 
 ### Accent Colors
-- `--accent-primary`: #6366f1 (Indigo - Primary actions)
-- `--accent-secondary`: #8b5cf6 (Purple - Secondary accents)
-- `--accent-tertiary`: #06b6d4 (Cyan - Highlights)
-- `--accent-muted`: rgba(99, 102, 241, 0.15) (Muted accent)
+- `--accent-primary`: #6366f1 (Indigo — primary actions)
+- `--accent-secondary`: #8b5cf6 (Purple)
+- `--accent-tertiary` / `--accent-cyan`: #06b6d4
+- `--accent-muted`: rgba(99, 102, 241, 0.15)
+- `--accent-cyan-muted`: rgba(6, 182, 212, 0.15)
+- `--accent-strong`: rgba(99, 102, 241, 0.25)
 
 ### Text Colors
-- `--text-primary`: #f1f5f9 (Primary text)
-- `--text-secondary`: #94a3b8 (Secondary text)
-- `--text-muted`: #64748b (Muted text)
-- `--text-disabled`: #475569 (Disabled state)
+- `--text-primary`: #f1f5f9
+- `--text-secondary`: #cbd5e1
+- `--text-muted`: #94a3b8
+- `--text-disabled`: #475569
 
 ### Status Colors
-- `--status-success`: #22c55e (Green)
-- `--status-error`: #ef4444 (Red)
-- `--status-warning`: #f59e0b (Amber)
-- `--status-info`: #3b82f6 (Blue)
-- `--status-processing`: #3b82f6 (Blue)
-- `--status-completed`: #22c55e (Green)
-- `--status-queued`: #6b7280 (Gray)
-- `--status-failed`: #ef4444 (Red)
+- `--status-success`: #10b981
+- `--status-completed`: #22c55e
+- `--status-error` / `--status-failed`: #ef4444
+- `--status-warning`: #f59e0b
+- `--status-info` / `--status-processing`: #3b82f6
+- `--status-queued`: #6b7280
 
 ### Shadow Variables
 - `--shadow-sm`: Small shadow effect
