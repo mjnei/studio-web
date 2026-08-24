@@ -44,6 +44,33 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
     }
   }, [isLoading, error, router, toast, t]);
 
+  // Auto-toast when resuming a session from another screen / direct link
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const isResumed = urlParams.get("resumed");
+      const timeAgo = urlParams.get("timeAgo");
+
+      if (isResumed === "true" || isResumed === "1") {
+        const timeString = timeAgo ? decodeURIComponent(timeAgo) : "recently";
+        toast.info(
+          "Session Restored",
+          `Restored your session from ${timeString} ago`
+        );
+
+        // Clean up URL query parameters without reloading
+        urlParams.delete("resumed");
+        urlParams.delete("timeAgo");
+        const newSearch = urlParams.toString();
+        const newUrl = window.location.pathname + (newSearch ? `?${newSearch}` : "");
+        window.history.replaceState({}, "", newUrl);
+      }
+    } catch {
+      // Ignore URL parsing errors
+    }
+  }, [pathname, toast]);
+
   const projectTitle =
     projectState?.projectName ||
     projectState?.title ||

@@ -12,3 +12,4 @@ export { typography, type TypographyRole } from "./typography";
 export { Heading, type HeadingProps, type HeadingVariant, type HeadingTag } from "./heading";
 export { Text, type TextProps, type TextVariant, type TextTag } from "./text";
 export { Label, type LabelProps, type LabelTone } from "./label";
+export { ContextDrawer, type ContextDrawerProps } from "./context-drawer";
