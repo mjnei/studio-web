@@ -243,9 +243,9 @@ export async function getResourceAuditLogs(
   const apl = `['studio-back'] | where detail.resource_type == "${resourceType}" and detail.resource_id == "${resourceId}" | limit ${limit}`;
   const data = await executeAuditQuery(apl, source, limit);
 
-  const logs: AuditLog[] = data.filter(isAuditEventPayload).map((item, index) =>
-    toAuditLog(item, index, source)
-  );
+  const logs: AuditLog[] = data
+    .filter(isAuditEventPayload)
+    .map((item, index) => toAuditLog(item, index, source));
 
   return {
     items: logs,
@@ -289,9 +289,9 @@ export async function getAuditLogsByDateRange(
   const apl = `['studio-back'] | where timestamp >= datetime("${dateFrom}") and timestamp <= datetime("${dateTo}") | limit ${limit}`;
   const data = await executeAuditQuery(apl, source, limit);
 
-  const logs: AuditLog[] = data.filter(isAuditEventPayload).map((item, index) =>
-    toAuditLog(item, index, source)
-  );
+  const logs: AuditLog[] = data
+    .filter(isAuditEventPayload)
+    .map((item, index) => toAuditLog(item, index, source));
 
   return {
     items: logs,

@@ -182,10 +182,8 @@ export default function PlaygroundTTSJobsPage() {
   };
 
   const handleExportCSV = () => {
-    const voiceLabel = (job: {
-      voice_id?: number;
-      anonymous_voice_id?: number;
-    }) => (job.voice_id ? `Voice ${job.voice_id}` : `Anon ${job.anonymous_voice_id}`);
+    const voiceLabel = (job: { voice_id?: number; anonymous_voice_id?: number }) =>
+      job.voice_id ? `Voice ${job.voice_id}` : `Anon ${job.anonymous_voice_id}`;
 
     let headers: string[] = [];
     let rows: (string | number)[][] = [];
