@@ -46,7 +46,7 @@ export function LeftRail() {
           />
           {/* Drawer */}
           <div
-            className="fixed inset-y-0 left-0 z-50 w-[61.8%] border-r border-border-default bg-surface-panel shadow-2xl animate-in slide-in-from-left duration-300"
+            className="fixed inset-y-0 left-0 z-50 w-[min(16rem,61.8%)] border-r border-border-default bg-surface-panel shadow-2xl animate-in slide-in-from-left duration-300"
             role="dialog"
             aria-modal="true"
           >
