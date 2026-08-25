@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { Film, FileText, Info, Mic, Video } from "lucide-react";
 import { useI18n } from "@/i18n";
 import { Heading } from "@/components/ui/heading";
@@ -38,9 +39,27 @@ const createWorkflowSteps = (t: (key: string) => string) => [
 
 export default function WorkflowStep({ onNext, onBack }: WorkflowStepProps) {
   const { t } = useI18n();
+  const containerRef = useRef<HTMLDivElement>(null);
   const workflowSteps = createWorkflowSteps(t);
+
+  useEffect(() => {
+    containerRef.current?.focus();
+  }, []);
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      onNext();
+    }
+  };
+
   return (
-    <div className="max-w-4xl mx-auto h-full flex flex-col justify-between">
+    <div
+      ref={containerRef}
+      tabIndex={-1}
+      className="max-w-4xl mx-auto h-full flex flex-col justify-between outline-none"
+      onKeyDown={handleKeyDown}
+    >
       {/* Headline - Compact */}
       <div className="mb-6 text-center sm:mb-8">
         <Heading variant="page" as="h2" className="mb-2 text-gray-900 dark:text-white">
@@ -117,6 +136,7 @@ export default function WorkflowStep({ onNext, onBack }: WorkflowStepProps) {
       {/* Navigation Buttons - Compact */}
       <div className="flex flex-col-reverse sm:flex-row justify-between gap-2 sm:gap-3">
         <Button
+          type="button"
           variant="secondary"
           size="lg"
           onClick={onBack}
@@ -126,6 +146,7 @@ export default function WorkflowStep({ onNext, onBack }: WorkflowStepProps) {
           {t("onboarding.workflow.back")}
         </Button>
         <Button
+          type="button"
           variant="primary"
           size="lg"
           onClick={onNext}

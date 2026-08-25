@@ -144,6 +144,7 @@ export default function LoginPage() {
       </div>
 
       <Button
+        type="button"
         onClick={handleGoogleLogin}
         variant="secondary"
         fullWidth

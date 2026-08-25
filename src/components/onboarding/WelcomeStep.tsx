@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { ArrowRight, Film, Sparkles, Video, Wand2 } from "lucide-react";
 import { useI18n } from "@/i18n";
 import { Heading } from "@/components/ui/heading";
@@ -9,9 +10,15 @@ interface WelcomeStepProps {
 
 export default function WelcomeStep({ onNext }: WelcomeStepProps) {
   const { t } = useI18n();
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    containerRef.current?.focus();
+  }, []);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
+      e.preventDefault();
       onNext();
     }
   };
@@ -23,7 +30,12 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
   ];
 
   return (
-    <div className="text-center" onKeyDown={handleKeyDown}>
+    <div
+      ref={containerRef}
+      tabIndex={-1}
+      className="text-center outline-none"
+      onKeyDown={handleKeyDown}
+    >
       {/* Logo/Icon with Animation */}
       <div className="mb-8 sm:mb-10 flex justify-center">
         <div className="relative">

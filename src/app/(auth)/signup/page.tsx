@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, Suspense } from "react";
+import { useEffect, useState, Suspense, useCallback, useRef } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { AlertCircle, Gift } from "lucide-react";
@@ -29,6 +29,13 @@ function SignupContent() {
   const [validatingCode, setValidatingCode] = useState(false);
   const [manualCode, setManualCode] = useState("");
   const [codeError, setCodeError] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (referralCode && referrerName && !validatingCode) {
+      formRef.current?.focus();
+    }
+  }, [referralCode, referrerName, validatingCode]);
 
   const handleCodeValidation = useCallback(
     async (code: string): Promise<boolean> => {
@@ -181,48 +188,64 @@ function SignupContent() {
         </div>
       )}
 
-      {/* Referral Code Input - Hidden when "Invited by" is displayed */}
-      {!referralCode && !referrerName && (
-        <div className="mb-6 flex flex-col items-center">
-          <label className="text-body font-medium text-text-primary mb-2 self-start">
-            {t("auth.invite.yourCode")} <span className="text-status-failed">*</span>
-          </label>
-          <InputOTP
-            maxLength={6}
-            value={manualCode}
-            onChange={handleManualCodeChange}
-            disabled={validatingCode || loading}
-          >
-            <InputOTPGroup>
-              <InputOTPSlot index={0} />
-              <InputOTPSlot index={1} />
-              <InputOTPSlot index={2} />
-            </InputOTPGroup>
-            <InputOTPGroup>
-              <InputOTPSlot index={3} />
-              <InputOTPSlot index={4} />
-              <InputOTPSlot index={5} />
-            </InputOTPGroup>
-          </InputOTP>
-          {codeError && (
-            <p className="mt-2 text-caption text-status-failed self-start">{codeError}</p>
-          )}
-          <div className="mt-2 text-caption text-text-muted self-start">
-            {t("auth.signup.referralBonusRequired")}
-          </div>
-        </div>
-      )}
-
-      <Button
-        onClick={handleGoogleSignup}
-        variant="primary"
-        fullWidth
-        loading={loading}
-        size="lg"
-        leftIcon={<GoogleIcon />}
+      <form
+        ref={formRef}
+        tabIndex={-1}
+        className="space-y-6 outline-none"
+        onSubmit={(e) => {
+          e.preventDefault();
+          void handleGoogleSignup();
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && referralCode && referrerName) {
+            e.preventDefault();
+            void handleGoogleSignup();
+          }
+        }}
       >
-        {t("auth.signup.google")}
-      </Button>
+        {/* Referral Code Input - Hidden when "Invited by" is displayed */}
+        {!referralCode && !referrerName && (
+          <div className="flex flex-col items-center">
+            <label className="text-body font-medium text-text-primary mb-2 self-start">
+              {t("auth.invite.yourCode")} <span className="text-status-failed">*</span>
+            </label>
+            <InputOTP
+              maxLength={6}
+              value={manualCode}
+              onChange={handleManualCodeChange}
+              disabled={validatingCode || loading}
+            >
+              <InputOTPGroup>
+                <InputOTPSlot index={0} />
+                <InputOTPSlot index={1} />
+                <InputOTPSlot index={2} />
+              </InputOTPGroup>
+              <InputOTPGroup>
+                <InputOTPSlot index={3} />
+                <InputOTPSlot index={4} />
+                <InputOTPSlot index={5} />
+              </InputOTPGroup>
+            </InputOTP>
+            {codeError && (
+              <p className="mt-2 text-caption text-status-failed self-start">{codeError}</p>
+            )}
+            <div className="mt-2 text-caption text-text-muted self-start">
+              {t("auth.signup.referralBonusRequired")}
+            </div>
+          </div>
+        )}
+
+        <Button
+          type="submit"
+          variant="primary"
+          fullWidth
+          loading={loading}
+          size="lg"
+          leftIcon={<GoogleIcon />}
+        >
+          {t("auth.signup.google")}
+        </Button>
+      </form>
 
       <div className="mt-6 text-center">
         <p className="text-body text-text-secondary">

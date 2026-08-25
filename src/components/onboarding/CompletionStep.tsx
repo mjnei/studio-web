@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CheckCircle2, Sparkles, Rocket, AlertCircle } from "lucide-react";
 import { completeOnboarding } from "@/lib/api-client";
@@ -92,9 +92,43 @@ export default function CompletionStep() {
       });
   };
 
+  const errorContainerRef = useRef<HTMLDivElement>(null);
+  const successContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (error) {
+      errorContainerRef.current?.focus();
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (!error && !isCompleting) {
+      successContainerRef.current?.focus();
+    }
+  }, [error, isCompleting]);
+
+  const handleErrorKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleRetry();
+    }
+  };
+
+  const handleSuccessKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleManualRedirect();
+    }
+  };
+
   if (error) {
     return (
-      <div className="text-center max-w-lg mx-auto">
+      <div
+        ref={errorContainerRef}
+        tabIndex={-1}
+        className="text-center max-w-lg mx-auto outline-none"
+        onKeyDown={handleErrorKeyDown}
+      >
         {/* Error Icon */}
         <div className="mb-6 sm:mb-8 flex justify-center">
           <div className="relative">
@@ -165,7 +199,12 @@ export default function CompletionStep() {
   }
 
   return (
-    <div className="text-center max-w-lg mx-auto">
+    <div
+      ref={successContainerRef}
+      tabIndex={-1}
+      className="text-center max-w-lg mx-auto outline-none"
+      onKeyDown={handleSuccessKeyDown}
+    >
       {/* Success Icon with Confetti Effect */}
       <div className="mb-6 sm:mb-8 flex justify-center relative">
         <div className="relative">

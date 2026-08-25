@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ExternalLink, Lock } from "lucide-react";
@@ -14,6 +15,11 @@ const PLAYGROUND_URL = process.env.NEXT_PUBLIC_PLAYGROUND_URL;
 export default function ReferralRequiredPage() {
   const { t } = useI18n();
   const router = useRouter();
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    formRef.current?.focus();
+  }, []);
 
   return (
     <Card variant="elevated" padding="lg" className="w-full">
@@ -29,13 +35,28 @@ export default function ReferralRequiredPage() {
         </Text>
       </div>
 
-      <div className="space-y-3">
-        <Button variant="primary" fullWidth size="lg" onClick={() => router.push("/signup")}>
+      <form
+        ref={formRef}
+        tabIndex={-1}
+        className="space-y-3 outline-none"
+        onSubmit={(e) => {
+          e.preventDefault();
+          router.push("/signup");
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            router.push("/signup");
+          }
+        }}
+      >
+        <Button type="submit" variant="primary" fullWidth size="lg">
           {t("auth.referralRequired.haveCode")}
         </Button>
 
         {PLAYGROUND_URL && (
           <Button
+            type="button"
             variant="secondary"
             fullWidth
             size="lg"
@@ -52,7 +73,7 @@ export default function ReferralRequiredPage() {
         >
           {t("auth.referralRequired.backToLogin")}
         </Link>
-      </div>
+      </form>
     </Card>
   );
 }

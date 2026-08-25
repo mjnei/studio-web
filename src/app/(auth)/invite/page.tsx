@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, Suspense, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { validateReferralCode } from "@/lib/api/referral-client";
@@ -21,6 +21,7 @@ function InviteContent() {
   const [isValid, setIsValid] = useState(false);
   const [referrerName, setReferrerName] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const code = searchParams.get("code");
 
@@ -60,6 +61,12 @@ function InviteContent() {
     validateCode();
   }, [code, isAuthenticated, authLoading, router, t]);
 
+  useEffect(() => {
+    if (!authLoading && !validating) {
+      formRef.current?.focus();
+    }
+  }, [authLoading, validating, isValid, errorMessage]);
+
   const handleContinueSignup = () => {
     // Redirect to signup with referral code in query params
     router.push(`/signup?code=${code}`);
@@ -81,7 +88,21 @@ function InviteContent() {
     <Card variant="elevated" padding="lg" className="w-full">
       {/* Valid Code */}
       {isValid && referrerName && (
-        <div className="text-center">
+        <form
+          ref={formRef}
+          tabIndex={-1}
+          className="text-center outline-none"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleContinueSignup();
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              handleContinueSignup();
+            }
+          }}
+        >
           {/* Success Icon */}
           <div className="w-16 h-16 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center mx-auto mb-4">
             <CheckCircle2 className="h-8 w-8 text-white" />
@@ -118,15 +139,29 @@ function InviteContent() {
           </div>
 
           {/* Action Button */}
-          <Button onClick={handleContinueSignup} variant="primary" fullWidth size="lg">
+          <Button type="submit" variant="primary" fullWidth size="lg">
             {t("auth.invite.continueSignup")}
           </Button>
-        </div>
+        </form>
       )}
 
       {/* Invalid Code */}
       {!isValid && errorMessage && (
-        <div className="text-center">
+        <form
+          ref={formRef}
+          tabIndex={-1}
+          className="text-center outline-none"
+          onSubmit={(e) => {
+            e.preventDefault();
+            router.push("/signup");
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              router.push("/signup");
+            }
+          }}
+        >
           {/* Error Icon */}
           <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center mx-auto mb-4">
             <AlertCircle className="h-8 w-8 text-white" />
@@ -146,10 +181,10 @@ function InviteContent() {
             {t("auth.invite.codeRequiredHint")}
           </Text>
 
-          <Button onClick={() => router.push("/signup")} variant="secondary" fullWidth size="lg">
+          <Button type="submit" variant="secondary" fullWidth size="lg">
             {t("auth.invite.enterDifferentCode")}
           </Button>
-        </div>
+        </form>
       )}
     </Card>
   );

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Mail, Lock } from "lucide-react";
 import { useI18n } from "@/i18n";
 import { Button } from "@/components/ui/button";
@@ -12,12 +13,32 @@ import { Text } from "@/components/ui/text";
 
 export default function ForgotPasswordPage() {
   const { t } = useI18n();
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const successContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (submitted) {
+      successContainerRef.current?.focus();
+    }
+  }, [submitted]);
 
   if (submitted) {
     return (
-      <Card variant="elevated" padding="lg" className="text-center">
+      <Card
+        ref={successContainerRef}
+        tabIndex={-1}
+        variant="elevated"
+        padding="lg"
+        className="text-center outline-none"
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            router.push("/login");
+          }
+        }}
+      >
         <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-green-500/20 to-emerald-500/20">
           <Mail className="h-8 w-8 text-status-completed" />
         </div>
@@ -27,11 +48,16 @@ export default function ForgotPasswordPage() {
         <Text variant="body" className="mb-6 text-text-secondary">
           {t("auth.forgotPassword.successMessage", { email })}
         </Text>
-        <Link href="/login">
-          <Button variant="primary" size="lg" fullWidth>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            router.push("/login");
+          }}
+        >
+          <Button type="submit" variant="primary" size="lg" fullWidth>
             {t("auth.forgotPassword.backToLogin")}
           </Button>
-        </Link>
+        </form>
       </Card>
     );
   }
