@@ -1,0 +1,94 @@
+{
+  "profile": {
+    "title": "Paramètres du profil",
+    "description": "Gère les paramètres et préférences de ton compte",
+    "upgradeBanner": {
+      "title": "Débloque plus avec Pro ou Premium",
+      "description": "Obtiens plus de crédits, un support prioritaire et des fonctionnalités avancées pour créer plus de vidéos.",
+      "viewPlans": "Voir les forfaits",
+      "billing": "Facturation"
+    },
+    "accountOverview": {
+      "title": "Aperçu du compte",
+      "description": "Tes informations personnelles et le statut du compte",
+      "displayName": "Nom d'affichage",
+      "autoCapitalizeWords": "Mettre en majuscule la première lettre de chaque mot",
+      "edit": "Modifier",
+      "cancel": "Annuler",
+      "save": "Enregistrer",
+      "copyEmail": "Copier l'adresse e-mail",
+      "emailCopied": "E-mail copié",
+      "profileUpdatedSuccess": "Profil mis à jour avec succès.",
+      "profileUpdatedError": "Échec de la mise à jour du profil"
+    },
+    "membershipBilling": {
+      "title": "Abonnement et facturation",
+      "description": "Gère ton abonnement et ta facturation",
+      "currentPlan": "Forfait actuel",
+      "upgradePlan": "Changer de forfait",
+      "viewAllPlans": "Voir tous les forfaits",
+      "manageBilling": "Gérer la facturation",
+      "activeSince": "Actif depuis :",
+      "expiresOn": "Expire le :",
+      "renewsOn": "Se renouvelle le :",
+      "subscriptionStatus": {
+        "active": "Actif",
+        "canceled": "Annulé",
+        "inactive": "Inactif",
+        "expired": "Expiré"
+      },
+      "tiers": {
+        "free": "Free",
+        "pro": "Pro",
+        "premium": "Premium"
+      }
+    },
+    "passwordSecurity": {
+      "title": "Mot de passe et sécurité",
+      "description": "Gère ton mot de passe et tes paramètres de sécurité",
+      "changePassword": "Changer le mot de passe",
+      "setPassword": "Définir le mot de passe",
+      "currentPassword": "Mot de passe actuel",
+      "newPassword": "Nouveau mot de passe",
+      "confirmNewPassword": "Confirmer le nouveau mot de passe",
+      "updatePassword": "Mettre à jour le mot de passe",
+      "passwordError": {
+        "mismatch": "Les mots de passe ne correspondent pas",
+        "tooShort": "Le mot de passe doit contenir au moins 8 caractères",
+        "tooLong": "Le mot de passe ne doit pas dépasser 128 caractères"
+      },
+      "passwordUpdatedSuccess": "Mot de passe mis à jour avec succès.",
+      "passwordUpdatedError": "Échec du changement de mot de passe"
+    },
+    "connectedAccounts": {
+      "title": "Comptes connectés",
+      "description": "Gère tes comptes liés",
+      "google": "Google",
+      "connected": "Connecté",
+      "notConnected": "Non connecté",
+      "primaryAccount": "Compte principal"
+    },
+    "onboarding": {
+      "title": "Premiers pas",
+      "description": "Gère ta session et le statut des premiers pas",
+      "signOut": "Se déconnecter",
+      "signOutDescription": "Termine ta session actuelle sur cet appareil",
+      "resetOnboarding": "Réinitialiser les premiers pas",
+      "resetOnboardingDescription": "Mot de passe :",
+      "passwordAlreadySet": "Déjà défini",
+      "passwordNotSet": "Non défini",
+      "reset": "Réinitialiser",
+      "resetting": "Réinitialisation..."
+    },
+    "dangerZone": {
+      "title": "Zone de danger",
+      "description": "Suppression définitive du compte",
+      "deleteAccountWarning": "Supprime définitivement ton compte et toutes les données associées — projets, voix, rendus et historique de parrainage. Cette action est irréversible.",
+      "deleteAccount": "Supprimer le compte",
+      "confirmDelete": "Tape delete my account pour confirmer :",
+      "deleteAccountPlaceholder": "delete my account",
+      "permanentlyDeleteAccount": "Supprimer définitivement le compte",
+      "deleteAccountConfirmCancel": "Annuler"
+    }
+  }
+}

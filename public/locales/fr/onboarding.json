@@ -1,0 +1,104 @@
+{
+  "onboarding": {
+    "welcome": {
+      "title": "Bienvenue sur Huavoi Studio",
+      "subtitle": "Transforme tes idées en vidéos spectaculaires grâce à l'IA. Des résultats pro en quelques minutes, pas des heures.",
+      "features": {
+        "templates": "Modèles professionnels",
+        "aiTools": "Outils propulsés par l'IA",
+        "publishing": "Publication en un clic"
+      },
+      "getStarted": "Commencer",
+      "subtext": "Moins de 2 minutes pour terminer",
+      "getStartedAria": "Commencer les premiers pas"
+    },
+    "progress": {
+      "stepOf": "Étape {current} sur {total}",
+      "ariaLabel": "Étape {current} sur {total}"
+    },
+    "workflow": {
+      "title": "Ton parcours de création vidéo",
+      "subtitle": "4 étapes simples pour créer des vidéos géniales",
+      "steps": {
+        "source": {
+          "title": "Source",
+          "description": "Choisir dans le catalogue de films"
+        },
+        "script": {
+          "title": "Script",
+          "description": "L'IA génère des scripts vidéo"
+        },
+        "voice": {
+          "title": "Voix off",
+          "description": "Synthèse vocale avec l'IA"
+        },
+        "compose": {
+          "title": "Composition",
+          "description": "Créer la vidéo finale"
+        }
+      },
+      "info": "Passe d'une étape à l'autre à tout moment. Avance à ton rythme — ta progression est enregistrée automatiquement.",
+      "back": "Retour",
+      "continue": "Continuer",
+      "step": "Étape {number}",
+      "goBack": "Retour à l'étape précédente",
+      "continueTakeStep": "Passer à l'étape suivante"
+    },
+    "password": {
+      "title": "Configurer une connexion alternative",
+      "titleUpdate": "Mettre à jour ton mot de passe",
+      "subtitle": "Tu t'es connecté avec Google. Tu veux aussi ajouter un mot de passe pour la connexion par e-mail ?",
+      "subtitleUpdate": "Tu as déjà un mot de passe. Tu peux le mettre à jour ici si tu veux.",
+      "securityHint": "Accède à ton compte même si Google est indisponible",
+      "alreadyConfigured": "Mot de passe déjà configuré",
+      "password": "Mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "passwordLabel": "Mot de passe",
+      "confirmPasswordLabel": "Confirmer le mot de passe",
+      "passwordPlaceholder": "Saisir le mot de passe (min. 8 caractères)",
+      "confirmPasswordPlaceholder": "Confirmer le mot de passe",
+      "showPassword": "Afficher le mot de passe",
+      "hidePassword": "Masquer le mot de passe",
+      "showConfirmPassword": "Afficher la confirmation",
+      "hideConfirmPassword": "Masquer la confirmation",
+      "strength": "Force du mot de passe",
+      "strengthWeak": "Faible",
+      "strengthFair": "Correct",
+      "strengthGood": "Bon",
+      "strengthStrong": "Fort",
+      "match": "Les mots de passe correspondent",
+      "noMatch": "Les mots de passe ne correspondent pas",
+      "validation": {
+        "tooShort": "Le mot de passe doit contenir au moins 8 caractères",
+        "mismatch": "Les mots de passe ne correspondent pas"
+      },
+      "setPassword": "Définir le mot de passe",
+      "updating": "Mise à jour...",
+      "settingPassword": "Définition du mot de passe...",
+      "alreadySet": "Mot de passe déjà défini",
+      "skipForNow": "Passer pour l'instant",
+      "back": "Retour",
+      "goBack": "Retour à l'étape précédente",
+      "skipPassword": "Passer la configuration du mot de passe",
+      "error": "Échec de la définition du mot de passe. Réessaie.",
+      "errorUpdate": "Échec de la mise à jour du mot de passe. Réessaie."
+    },
+    "completion": {
+      "loading": "Configuration de ton compte",
+      "loadingSubtext": "Cela ne prendra qu'un instant...",
+      "loadingAriaLabel": "Finalisation des premiers pas",
+      "success": "Tout est prêt !",
+      "successSubtext": "Ton compte est prêt. Créons ensemble des vidéos géniales.",
+      "features": {
+        "create": "Créer",
+        "design": "Concevoir",
+        "publish": "Publier"
+      },
+      "goToDashboard": "Aller à l'espace de travail",
+      "redirect": "Redirection dans {seconds} secondes...",
+      "error": "Une erreur s'est produite",
+      "tryAgain": "Réessayer",
+      "completionAriaLabel": "Statut d'achèvement"
+    }
+  }
+}

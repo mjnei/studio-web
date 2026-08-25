@@ -1,0 +1,218 @@
+{
+  "voices": {
+    "title": "Stimmen",
+    "voiceLibrary": "Stimmbibliothek",
+    "myVoices": "Meine Stimmen",
+    "selectVoice": "Stimme auswählen",
+    "previewVoice": "Stimme anhören",
+    "male": "Männlich",
+    "female": "Weiblich",
+    "language": "Sprache",
+    "accent": "Akzent",
+    "age": "Alter",
+    "style": "Stil",
+    "voiceCloning": "Stimmklonung",
+    "uploadSample": "Probe hochladen",
+    "voiceSettings": "Stimmeinstellungen",
+    "pitch": "Tonhöhe",
+    "speed": "Geschwindigkeit",
+    "volume": "Lautstärke",
+    "noVoices": "Keine Stimmen verfügbar",
+    "library": {
+      "title": "Stimmbibliothek",
+      "description": "Erstelle eigene Stimmen und entdecke von der Community geteilte Stimmen für deine Projekte"
+    },
+    "tabs": {
+      "private": "Privat",
+      "community": "Community"
+    },
+    "voiceCount": "{count} / {limit} Stimmen",
+    "sharedVoices": "{count} geteilte Stimmen",
+    "addVoice": "Stimme hinzufügen",
+    "status": {
+      "pendingReview": "Prüfung ausstehend",
+      "private": "Privat",
+      "approved": "Freigegeben"
+    },
+    "metadata": {
+      "createdBy": "@{username}",
+      "you": "(du)",
+      "justNow": "gerade eben",
+      "minutesAgo": "vor {count} Minuten",
+      "hoursAgo": "vor {count} Stunden",
+      "daysAgo": "vor {count} Tagen",
+      "weeksAgo": "vor {count} Wochen",
+      "monthsAgo": "vor {count} Monaten",
+      "yearsAgo": "vor {count} Jahren"
+    },
+    "playback": {
+      "play": "Abspielen",
+      "pause": "Pause",
+      "loading": "Wird geladen...",
+      "audioUnavailable": "Audio nicht verfügbar",
+      "audioUrlNotAvailable": "Audio-URL nicht verfügbar",
+      "playbackFailed": "Wiedergabe fehlgeschlagen",
+      "failedToPlayAudio": "Audio konnte nicht abgespielt werden",
+      "failedToLoadAudio": "Audio konnte nicht geladen werden"
+    },
+    "actions": {
+      "shareWithCommunity": "Mit der Community teilen",
+      "makePrivate": "Privat machen",
+      "deleteVoice": "Stimme löschen",
+      "delete": "Löschen"
+    },
+    "modals": {
+      "delete": {
+        "title": "Stimme löschen",
+        "description": "Möchtest du diese Stimme wirklich löschen? Das kann nicht rückgängig gemacht werden und die Stimme wird aus allen deinen Projekten entfernt.",
+        "confirmText": "Löschen",
+        "cancelText": "Abbrechen"
+      },
+      "share": {
+        "title": "Stimme mit der Community teilen",
+        "description": "Deine Stimme wird zur Admin-Prüfung eingereicht. Nach Freigabe ist sie für alle Nutzer verfügbar und zählt nicht mehr zu deinem Stimmenlimit. So wächst unsere Community-Bibliothek!",
+        "confirmText": "Zur Prüfung teilen",
+        "cancelText": "Abbrechen"
+      },
+      "unshare": {
+        "title": "Stimme privat machen",
+        "description": "Deine Stimme wird aus der Prüfung zurückgezogen und wieder privat. Nur du kannst sie nutzen, und sie zählt wieder zu deinem Stimmenlimit.",
+        "confirmText": "Privat machen",
+        "cancelText": "Abbrechen"
+      }
+    },
+    "banners": {
+      "privateInfo": {
+        "title": "Private Stimmen",
+        "description": "Deine privaten Stimmaufnahmen. Teile sie mit der Community zur Admin-Prüfung. Nach Freigabe erscheinen sie im Tab Community und zählen nicht mehr zu deinem Limit."
+      },
+      "communityInfo": {
+        "title": "Community-Stimmen",
+        "description": "Freigegebene Stimmen der Community. Alle Stimmen hier sind kostenlos in deinen Projekten nutzbar. Deine freigegebenen Stimmen erscheinen hier und zählen nicht zu deinem Limit."
+      }
+    },
+    "emptyStates": {
+      "private": {
+        "title": "Keine privaten Stimmen",
+        "description": "Starte mit einer Stimmprobe. Deine Stimme wird geklont und ist bereit für deine Projekte. Teile sie mit der Community und verdiene zusätzliche Stimmen-Slots!",
+        "cta": "Erste Stimme aufnehmen"
+      },
+      "community": {
+        "title": "Noch keine Community-Stimmen",
+        "description": "Community-Stimmen erscheinen hier, sobald Nutzer ihre Stimmen teilen und unser Team sie freigibt. Sei der Erste!"
+      }
+    },
+    "addVoiceCard": {
+      "title": "Neue Stimme hinzufügen",
+      "slotsRemaining": "{count} Slots übrig",
+      "limitReached": "Stimmenlimit erreicht"
+    },
+    "toasts": {
+      "voiceShared": "Stimme geteilt",
+      "voiceShareedDescription": "Deine Stimme wurde zur Prüfung eingereicht",
+      "voiceSharedError": "Stimme konnte nicht geteilt werden",
+      "voiceMadePrivate": "Stimme privat gemacht",
+      "voiceMadePrivateDescription": "Deine Stimme wird nicht mehr geteilt",
+      "voiceMadePrivateError": "Stimme konnte nicht privat gemacht werden",
+      "voiceDeleted": "Stimme gelöscht",
+      "voiceDeletedDescription": "Deine Stimme wurde erfolgreich gelöscht",
+      "voiceDeletedError": "Stimme konnte nicht gelöscht werden",
+      "anErrorOccurred": "Ein Fehler ist aufgetreten"
+    },
+    "languages": {
+      "en": "Englisch",
+      "es": "Spanisch",
+      "fr": "Französisch",
+      "de": "Deutsch",
+      "it": "Italienisch",
+      "pt": "Portugiesisch",
+      "ru": "Russisch",
+      "ja": "Japanisch",
+      "zh": "Chinesisch",
+      "zhCN": "Vereinfachtes Chinesisch",
+      "zhTW": "Traditionelles Chinesisch",
+      "ko": "Koreanisch",
+      "ar": "Arabisch",
+      "hi": "Hindi"
+    },
+    "errors": {
+      "loadingVoices": "Deine Stimmen werden geladen...",
+      "loadingCommunityVoices": "Community-Stimmen werden geladen..."
+    },
+    "limitDialog": {
+      "limitReachedTitle": "Stimmenlimit erreicht",
+      "upgradeTitle": "Upgrade für mehr Stimmen",
+      "message": "Du hast {current} von {limit} Stimmen im {tier}-Plan erstellt.",
+      "closeButton": "Schließen",
+      "upgradeButton": "Jetzt upgraden",
+      "freePlanTitle": "Free",
+      "proPlanTitle": "Pro",
+      "premiumPlanTitle": "Premium",
+      "proUpgradeTitle": "Pro-Plan",
+      "proUpgradeDescription": "Erstelle bis zu 5 eigene Stimmen",
+      "premiumUpgradeTitle": "Premium-Plan",
+      "premiumUpgradeDescription": "Erstelle bis zu 10 eigene Stimmen",
+      "premiumTip": "Tipp: Du kannst ungenutzte Stimmen löschen, um Platz für neue Aufnahmen zu schaffen."
+    },
+    "recording": {
+      "title": "Stimme aufnehmen",
+      "requestingAccess": "Mikrofonzugriff wird angefordert…",
+      "readyTitle": "Bereit zur Aufnahme",
+      "readyHint": "Nimm bis zu 10 s klare Sprache auf",
+      "startRecording": "Aufnahme starten",
+      "stopRecording": "Aufnahme stoppen",
+      "maxDuration": "Maximum {time}",
+      "ofMax": "von {time}",
+      "recordingTap": "Aufnahme… tippen zum Stoppen",
+      "maxReached": "Maximale Dauer erreicht. Aufnahme automatisch gestoppt.",
+      "completeTitle": "Aufnahme fertig!",
+      "completeHint": "{time} • Tippe auf Abspielen zum Anhören",
+      "play": "Abspielen",
+      "pause": "Pause",
+      "seek": "Springen",
+      "reRecord": "Neu aufnehmen",
+      "continue": "Weiter",
+      "nameTitle": "Stimme benennen",
+      "nameSubtitle": "Wähle einen einprägsamen Namen und eine Sprache",
+      "voiceName": "Stimmname *",
+      "namePlaceholder": "z. B. Professioneller Sprecher",
+      "nameRequired": "Stimmname ist erforderlich",
+      "generateRandom": "Zufälligen Namen generieren",
+      "language": "Sprache *",
+      "languageRequired": "Sprache ist erforderlich",
+      "back": "Zurück",
+      "saving": "Wird gespeichert...",
+      "saveVoice": "Stimme speichern",
+      "httpsTip": "Tipp: Öffne die App über localhost:3020 statt über eine IP-Adresse.",
+      "errors": {
+        "playbackFailed": "Wiedergabe fehlgeschlagen. Bitte nimm deine Probe erneut auf.",
+        "browserUnsupported": "Dein Browser unterstützt keine Audioaufnahme.",
+        "recordingFailed": "Aufnahme fehlgeschlagen. Bitte versuche es erneut.",
+        "startFailed": "Aufnahme konnte nicht gestartet werden. Prüfe dein Mikrofon und versuche es erneut.",
+        "permissionDenied": "Mikrofonzugriff verweigert. Erlaube den Mikrofonzugriff in den Browser-Einstellungen und versuche es erneut.",
+        "notFound": "Kein Mikrofon gefunden. Schließe ein Mikrofon an und versuche es erneut.",
+        "inUse": "Das Mikrofon wird von einer anderen App verwendet. Schließe andere Apps und versuche es erneut.",
+        "securityBlocked": "Mikrofonzugriff durch Browser-Sicherheitseinstellungen blockiert. Bitte HTTPS oder localhost verwenden.",
+        "saveFailed": "Aufnahme konnte nicht gespeichert werden"
+      }
+    },
+    "recordingCard": {
+      "unknown": "Unbekannt",
+      "private": "Privat",
+      "pendingApproval": "Freigabe ausstehend",
+      "community": "Community",
+      "approvedOn": "Freigegeben {date}",
+      "deleteRecording": "Aufnahme löschen",
+      "deleteTitle": "Aufnahme löschen",
+      "deleteDescription": "Möchtest du „{name}“ wirklich löschen? Das kann nicht rückgängig gemacht werden.",
+      "stopSharing": "Teilen beenden (privat machen)",
+      "shareCommunity": "Mit der Community teilen",
+      "errorTitle": "Fehler",
+      "deleteFailed": "Aufnahme konnte nicht gelöscht werden",
+      "updateSharingFailed": "Freigabestatus konnte nicht aktualisiert werden",
+      "audioUrlUnavailable": "Audio-URL nicht verfügbar",
+      "playFailed": "Audio konnte nicht abgespielt werden. Die Datei ist möglicherweise nicht verfügbar.",
+      "loadFailed": "Audio konnte nicht geladen werden"
+    }
+  }
+}

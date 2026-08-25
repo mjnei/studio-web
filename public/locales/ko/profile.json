@@ -1,0 +1,94 @@
+{
+  "profile": {
+    "title": "Profile Settings",
+    "description": "Manage your account settings and preferences",
+    "upgradeBanner": {
+      "title": "Unlock More with Pro or Premium",
+      "description": "Get more credits, priority support, and advanced features to create more videos.",
+      "viewPlans": "View Plans",
+      "billing": "Billing"
+    },
+    "accountOverview": {
+      "title": "Account Overview",
+      "description": "Your personal information and account status",
+      "displayName": "Display Name",
+      "autoCapitalizeWords": "Capitalize the first letter of each word",
+      "edit": "Edit",
+      "cancel": "Cancel",
+      "save": "Save",
+      "copyEmail": "Copy email address",
+      "emailCopied": "Email copied",
+      "profileUpdatedSuccess": "Profile updated successfully.",
+      "profileUpdatedError": "Failed to update profile"
+    },
+    "membershipBilling": {
+      "title": "Membership & Billing",
+      "description": "Manage your subscription and billing",
+      "currentPlan": "Current Plan",
+      "upgradePlan": "Upgrade Plan",
+      "viewAllPlans": "View All Plans",
+      "manageBilling": "Manage Billing",
+      "activeSince": "Active since:",
+      "expiresOn": "Expires on:",
+      "renewsOn": "Renews on:",
+      "subscriptionStatus": {
+        "active": "Active",
+        "canceled": "Canceled",
+        "inactive": "Inactive",
+        "expired": "Expired"
+      },
+      "tiers": {
+        "free": "Free",
+        "pro": "Pro",
+        "premium": "Premium"
+      }
+    },
+    "passwordSecurity": {
+      "title": "Password & Security",
+      "description": "Manage your password and security settings",
+      "changePassword": "Change password",
+      "setPassword": "Set password",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "confirmNewPassword": "Confirm new password",
+      "updatePassword": "Update password",
+      "passwordError": {
+        "mismatch": "Passwords do not match",
+        "tooShort": "Password must be at least 8 characters",
+        "tooLong": "Password must be no more than 128 characters"
+      },
+      "passwordUpdatedSuccess": "Password updated successfully.",
+      "passwordUpdatedError": "Failed to change password"
+    },
+    "connectedAccounts": {
+      "title": "Connected Accounts",
+      "description": "Manage your linked accounts",
+      "google": "Google",
+      "connected": "Connected",
+      "notConnected": "Not connected",
+      "primaryAccount": "Primary account"
+    },
+    "onboarding": {
+      "title": "Onboarding",
+      "description": "Manage your session and onboarding status",
+      "signOut": "Sign out",
+      "signOutDescription": "End your current session on this device",
+      "resetOnboarding": "Reset onboarding",
+      "resetOnboardingDescription": "Password:",
+      "passwordAlreadySet": "Already Set",
+      "passwordNotSet": "Not set",
+      "reset": "Reset",
+      "resetting": "Resetting..."
+    },
+    "dangerZone": {
+      "title": "Danger Zone",
+      "description": "Permanent account deletion",
+      "deleteAccountWarning": "Permanently delete your account and all associated data — projects, voices, renders, and referral history. This cannot be undone.",
+      "deleteAccount": "Delete account",
+      "confirmDelete": "Type delete my account to confirm:",
+      "deleteAccountPlaceholder": "delete my account",
+      "permanentlyDeleteAccount": "Permanently delete account",
+      "deleteAccountConfirmCancel": "Cancel"
+    }
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "movies": {
+    "title": "Bibliothèque de films",
+    "description": "Découvre et explore des films pour ton prochain projet",
+    "count": "{count} films",
+    "countSingular": "{count} film",
+    "searchPlaceholder": "Rechercher des films par titre...",
+    "loading": "Chargement des films...",
+    "loadingDescription": "Patiente pendant que nous récupérons le catalogue",
+    "loadingDetails": "Chargement des détails... {progress}%",
+    "error": {
+      "title": "Impossible de charger les films",
+      "unableToLoad": "Impossible de charger les films"
+    },
+    "empty": {
+      "title": "Aucun film trouvé",
+      "searchHint": "Essaie d'ajuster tes termes de recherche",
+      "catalogEmpty": "Aucun film disponible dans le catalogue"
+    },
+    "director": "Réalisateur",
+    "cast": "Distribution",
+    "runtimeUnit": "min",
+    "detail": {
+      "back": "Retour aux films",
+      "return": "Retour aux films",
+      "loading": "Chargement des détails du film...",
+      "errorTitle": "Impossible de charger le film",
+      "loadFailed": "Échec du chargement des détails du film",
+      "createProject": "Créer un projet",
+      "buttonLoading": "Chargement...",
+      "statistics": "Statistiques",
+      "rating": "Note",
+      "popularity": "Popularité",
+      "externalIds": "IDs externes",
+      "imdb": "IMDb",
+      "douban": "Douban",
+      "runtimeMinutes": "{runtime} minutes",
+      "overview": "Synopsis",
+      "crew": "Équipe",
+      "expandCrew": "Développer l'équipe",
+      "collapseCrew": "Réduire l'équipe",
+      "director": "Réalisateur",
+      "directors": "Réalisateurs",
+      "producer": "Producteur",
+      "producers": "Producteurs",
+      "writer": "Scénariste",
+      "writers": "Scénaristes",
+      "topCast": "Distribution principale",
+      "expandCast": "Développer la distribution",
+      "collapseCast": "Réduire la distribution"
+    }
+  }
+}

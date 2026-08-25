@@ -1,0 +1,40 @@
+{
+  "notifications": {
+    "title": "Notifications",
+    "unreadCount": "unread notification",
+    "unreadCountPlural": "unread notifications",
+    "filters": {
+      "all": "All",
+      "unread": "Unread",
+      "completedJobs": "Completed Jobs",
+      "failedJobs": "Failed Jobs",
+      "creditWarnings": "Credit Warnings"
+    },
+    "markAllAsRead": "Mark All as Read",
+    "preferences": "Preferences",
+    "noNotifications": "No notifications yet",
+    "noNotificationsDescription": "You'll see updates here when something happens with your projects.",
+    "noFilteredNotifications": "No notifications",
+    "noFilteredNotificationsDescription": "Try selecting a different filter to see other notifications.",
+    "loading": "Loading notifications...",
+    "loadMore": "Load More",
+    "confirmMarkAsRead": "Mark",
+    "confirmMarkAsReadPlural": "notifications as read?",
+    "unreadWithCount": "Notifications ({count} unread)",
+    "newCount": "({count} new)",
+    "markAsRead": "Mark as read",
+    "markAllConfirm": "Mark {count} notification(s) as read?",
+    "filterBy": "Filter by {label}",
+    "notificationSettings": "Notification settings",
+    "deleteNotification": "Delete notification",
+    "viewAll": "View all notifications",
+    "noNotificationsYet": "No notifications yet",
+    "noNotificationsHint": "You'll see updates here when something happens",
+    "preferencesTitle": "Notification Preferences",
+    "preferencesSubtitle": "Manage how you receive notifications",
+    "notificationTypes": "Notification Types",
+    "inApp": "In-App",
+    "saving": "Saving...",
+    "savePreferences": "Save Preferences"
+  }
+}

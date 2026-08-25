@@ -1,0 +1,218 @@
+{
+  "voices": {
+    "title": "Voces",
+    "voiceLibrary": "Biblioteca de voces",
+    "myVoices": "Mis voces",
+    "selectVoice": "Seleccionar voz",
+    "previewVoice": "Previsualizar voz",
+    "male": "Masculina",
+    "female": "Femenina",
+    "language": "Idioma",
+    "accent": "Acento",
+    "age": "Edad",
+    "style": "Estilo",
+    "voiceCloning": "Clonación de voz",
+    "uploadSample": "Subir muestra",
+    "voiceSettings": "Ajustes de voz",
+    "pitch": "Tono",
+    "speed": "Velocidad",
+    "volume": "Volumen",
+    "noVoices": "No hay voces disponibles",
+    "library": {
+      "title": "Biblioteca de voces",
+      "description": "Crea voces personalizadas y descubre voces compartidas por la comunidad para tus proyectos"
+    },
+    "tabs": {
+      "private": "Privadas",
+      "community": "Comunidad"
+    },
+    "voiceCount": "{count} / {limit} voces",
+    "sharedVoices": "{count} voces compartidas",
+    "addVoice": "Añadir voz",
+    "status": {
+      "pendingReview": "Pendiente de revisión",
+      "private": "Privada",
+      "approved": "Aprobada"
+    },
+    "metadata": {
+      "createdBy": "@{username}",
+      "you": "(tú)",
+      "justNow": "ahora mismo",
+      "minutesAgo": "hace {count} minutos",
+      "hoursAgo": "hace {count} horas",
+      "daysAgo": "hace {count} días",
+      "weeksAgo": "hace {count} semanas",
+      "monthsAgo": "hace {count} meses",
+      "yearsAgo": "hace {count} años"
+    },
+    "playback": {
+      "play": "Reproducir",
+      "pause": "Pausa",
+      "loading": "Cargando...",
+      "audioUnavailable": "Audio no disponible",
+      "audioUrlNotAvailable": "URL de audio no disponible",
+      "playbackFailed": "Error de reproducción",
+      "failedToPlayAudio": "No se pudo reproducir el audio",
+      "failedToLoadAudio": "No se pudo cargar el audio"
+    },
+    "actions": {
+      "shareWithCommunity": "Compartir con la comunidad",
+      "makePrivate": "Hacer privada",
+      "deleteVoice": "Eliminar voz",
+      "delete": "Eliminar"
+    },
+    "modals": {
+      "delete": {
+        "title": "Eliminar voz",
+        "description": "¿Seguro que quieres eliminar esta voz? Esta acción no se puede deshacer y la voz se quitará de todos tus proyectos.",
+        "confirmText": "Eliminar",
+        "cancelText": "Cancelar"
+      },
+      "share": {
+        "title": "Compartir voz con la comunidad",
+        "description": "Tu voz se enviará a revisión de admin. Una vez aprobada, estará disponible para todos los usuarios y no contará en tu límite de voces. ¡Así crece nuestra biblioteca comunitaria!",
+        "confirmText": "Compartir para revisión",
+        "cancelText": "Cancelar"
+      },
+      "unshare": {
+        "title": "Hacer la voz privada",
+        "description": "Tu voz se retirará de la revisión y volverá a ser privada. Solo tú podrás usarla y volverá a contar en tu límite de voces.",
+        "confirmText": "Hacer privada",
+        "cancelText": "Cancelar"
+      }
+    },
+    "banners": {
+      "privateInfo": {
+        "title": "Voces privadas",
+        "description": "Tus grabaciones de voz privadas. Compártelas con la comunidad para revisión de admin. Una vez aprobadas, aparecen en la pestaña Comunidad y no cuentan en tu límite."
+      },
+      "communityInfo": {
+        "title": "Voces de la comunidad",
+        "description": "Voces aprobadas compartidas por la comunidad. Todas son gratis en tus proyectos. Tus voces aprobadas aparecen aquí y no cuentan en tu límite."
+      }
+    },
+    "emptyStates": {
+      "private": {
+        "title": "No hay voces privadas",
+        "description": "Empieza grabando una muestra de voz. Tu voz se clonará y estará lista para tus proyectos. ¡Compártelas con la comunidad para ganar huecos extra!",
+        "cta": "Grabar tu primera voz"
+      },
+      "community": {
+        "title": "Aún no hay voces de la comunidad",
+        "description": "Las voces de la comunidad aparecerán aquí cuando los usuarios compartan sus voces y el equipo las apruebe. ¡Sé el primero en contribuir!"
+      }
+    },
+    "addVoiceCard": {
+      "title": "Añadir nueva voz",
+      "slotsRemaining": "{count} huecos restantes",
+      "limitReached": "Límite de voces alcanzado"
+    },
+    "toasts": {
+      "voiceShared": "Voz compartida",
+      "voiceShareedDescription": "Tu voz se ha enviado a revisión",
+      "voiceSharedError": "Error al compartir la voz",
+      "voiceMadePrivate": "Voz hecha privada",
+      "voiceMadePrivateDescription": "Tu voz ya no está compartida",
+      "voiceMadePrivateError": "Error al hacer la voz privada",
+      "voiceDeleted": "Voz eliminada",
+      "voiceDeletedDescription": "Tu voz se ha eliminado correctamente",
+      "voiceDeletedError": "Error al eliminar la voz",
+      "anErrorOccurred": "Se produjo un error"
+    },
+    "languages": {
+      "en": "Inglés",
+      "es": "Español",
+      "fr": "Francés",
+      "de": "Alemán",
+      "it": "Italiano",
+      "pt": "Portugués",
+      "ru": "Ruso",
+      "ja": "Japonés",
+      "zh": "Chino",
+      "zhCN": "Chino simplificado",
+      "zhTW": "Chino tradicional",
+      "ko": "Coreano",
+      "ar": "Árabe",
+      "hi": "Hindi"
+    },
+    "errors": {
+      "loadingVoices": "Cargando tus voces...",
+      "loadingCommunityVoices": "Cargando voces de la comunidad..."
+    },
+    "limitDialog": {
+      "limitReachedTitle": "Límite de voces alcanzado",
+      "upgradeTitle": "Mejora para añadir más voces",
+      "message": "Has creado {current} de {limit} voces disponibles en el plan {tier}.",
+      "closeButton": "Cerrar",
+      "upgradeButton": "Mejorar ahora",
+      "freePlanTitle": "Free",
+      "proPlanTitle": "Pro",
+      "premiumPlanTitle": "Premium",
+      "proUpgradeTitle": "Plan Pro",
+      "proUpgradeDescription": "Crea hasta 5 voces personalizadas",
+      "premiumUpgradeTitle": "Plan Premium",
+      "premiumUpgradeDescription": "Crea hasta 10 voces personalizadas",
+      "premiumTip": "Consejo: puedes eliminar voces no usadas para liberar espacio para nuevas grabaciones."
+    },
+    "recording": {
+      "title": "Grabar voz",
+      "requestingAccess": "Solicitando acceso al micrófono…",
+      "readyTitle": "Listo para grabar",
+      "readyHint": "Graba hasta 10 s de habla clara",
+      "startRecording": "Empezar grabación",
+      "stopRecording": "Detener grabación",
+      "maxDuration": "Máximo {time}",
+      "ofMax": "de {time}",
+      "recordingTap": "Grabando… toca para detener",
+      "maxReached": "Duración máxima alcanzada. Grabación detenida automáticamente.",
+      "completeTitle": "¡Grabación completa!",
+      "completeHint": "{time} • Toca reproducir para escuchar",
+      "play": "Reproducir",
+      "pause": "Pausa",
+      "seek": "Buscar",
+      "reRecord": "Volver a grabar",
+      "continue": "Continuar",
+      "nameTitle": "Nombra tu voz",
+      "nameSubtitle": "Elige un nombre memorable y un idioma",
+      "voiceName": "Nombre de la voz *",
+      "namePlaceholder": "p. ej., Narrador profesional",
+      "nameRequired": "El nombre de la voz es obligatorio",
+      "generateRandom": "Generar nombre aleatorio",
+      "language": "Idioma *",
+      "languageRequired": "El idioma es obligatorio",
+      "back": "Atrás",
+      "saving": "Guardando...",
+      "saveVoice": "Guardar voz",
+      "httpsTip": "Consejo: prueba a acceder a la app vía localhost:3020 en lugar de una dirección IP.",
+      "errors": {
+        "playbackFailed": "Error de reproducción. Vuelve a grabar tu muestra.",
+        "browserUnsupported": "Tu navegador no admite grabación de audio.",
+        "recordingFailed": "Error de grabación. Inténtalo de nuevo.",
+        "startFailed": "No se pudo iniciar la grabación. Comprueba tu micrófono e inténtalo de nuevo.",
+        "permissionDenied": "Acceso al micrófono denegado. Permite el micrófono en los ajustes del navegador e inténtalo de nuevo.",
+        "notFound": "No se encontró micrófono. Conecta un micrófono e inténtalo de nuevo.",
+        "inUse": "El micrófono está en uso por otra aplicación. Cierra otras apps e inténtalo de nuevo.",
+        "securityBlocked": "Acceso al micrófono bloqueado por la seguridad del navegador. Usa HTTPS o localhost.",
+        "saveFailed": "Error al guardar la grabación"
+      }
+    },
+    "recordingCard": {
+      "unknown": "Desconocido",
+      "private": "Privada",
+      "pendingApproval": "Pendiente de aprobación",
+      "community": "Comunidad",
+      "approvedOn": "Aprobada el {date}",
+      "deleteRecording": "Eliminar grabación",
+      "deleteTitle": "Eliminar grabación",
+      "deleteDescription": "¿Seguro que quieres eliminar «{name}»? Esta acción no se puede deshacer.",
+      "stopSharing": "Dejar de compartir (hacer privada)",
+      "shareCommunity": "Compartir con la comunidad",
+      "errorTitle": "Error",
+      "deleteFailed": "Error al eliminar la grabación",
+      "updateSharingFailed": "Error al actualizar el estado de compartición",
+      "audioUrlUnavailable": "URL de audio no disponible",
+      "playFailed": "No se pudo reproducir el audio. Es posible que el archivo no esté disponible.",
+      "loadFailed": "No se pudo cargar el audio"
+    }
+  }
+}

@@ -1,0 +1,642 @@
+project.title	Project
+project.projects	Projects
+project.newProject	New Project
+project.createProject	Create Project
+project.projectName	Project Name
+project.projectDescription	Project Description
+project.myProjects	My Projects
+project.recentProjects	Recent Projects
+project.allProjects	All Projects
+project.deleteProject	Delete Project
+project.editProject	Edit Project
+project.duplicateProject	Duplicate Project
+project.shareProject	Share Project
+project.projectSettings	Project Settings
+project.noProjects	No projects yet
+project.createFirstProject	Create your first project to get started
+project.common.loadingProject	Loading project...
+project.common.untitledProject	Untitled Project
+project.common.untitledProjectLower	Untitled project
+project.common.poster	Poster
+project.common.genre	Genre
+project.common.rating	Rating
+project.common.ratingValue	Rating {value}
+project.common.duration	Duration
+project.common.durationMin	{minutes} min
+project.common.words	{count} words
+project.common.wordsLabel	Words
+project.common.status	Status
+project.common.version	Version {number}
+project.common.active	Active
+project.common.yourScript	Your Script
+project.common.clickToExpand	Click to expand
+project.common.scriptMeta	{count} words • Estimated duration: {duration}
+project.common.scriptMetaShort	{count} words • {duration}
+project.common.scriptTagline	Script Tagline
+project.common.movie	Movie
+project.common.voice	Voice
+project.common.script	Script
+project.common.notSelected	Not selected
+project.common.unknown	Unknown
+project.common.notAvailable	N/A
+project.common.projectNotFound	Project not found
+project.common.projectNotFoundDesc	This project may have been deleted. Redirecting to projects list...
+project.common.openNavigation	Open navigation
+project.common.saveAndContinue	Save & Continue
+project.common.continueToScript	Continue to Script
+project.common.continueToExport	Continue to Export
+project.status.completed	Completed
+project.status.inProgress	In progress
+project.status.draft	Draft
+project.status.processing	Processing
+project.status.queued	Queued
+project.status.failed	Failed
+project.status.generating	Generating
+project.shell.createNewProject	Create New Project
+project.shell.stepSelectMovie	Step 1: Select Movie
+project.shell.stepWriteScript	Step 2: Write Script
+project.shell.statusVoiceReady	Voice Ready
+project.shell.statusComposing	Composing
+project.shell.statusRendering	Rendering
+project.shell.statusCompleted	Completed
+project.shell.sessionRestoredTitle	Session Restored
+project.shell.sessionRestoredJustNow	Restored your session just now
+project.shell.sessionRestoredYesterday	Restored your session from yesterday
+project.shell.sessionRestored	Restored your session
+project.shell.sessionRestoredFromAgo	Restored your session from {time} ago
+project.shell.sessionRecently	recently
+project.nav.phaseConcept	Phase A: Concept
+project.nav.phaseProduction	Phase B: Production
+project.nav.phaseMastering	Phase C: Mastering
+project.nav.source	Source
+project.nav.script	Script
+project.nav.voice	Voice
+project.nav.details	Details
+project.nav.preview	Preview
+project.nav.compose	Compose
+project.nav.export	Export
+project.nav.continueToScript	Continue to Script
+project.nav.continueToVoice	Continue to Voice
+project.nav.continueToDetails	Continue to Details
+project.nav.continueToPreview	Continue to Preview
+project.nav.continueToCompose	Continue to Compose
+project.nav.continueToExport	Continue to Export
+project.nav.completeProject	Complete Project
+project.nav.goBack	Go back
+project.nav.goToProjects	Go to Projects
+project.nav.goToProjectsHome	Go to Projects home
+project.nav.continueToNextStep	Continue to next step
+project.nav.stepAria	Step {number}: {label}
+project.nav.stepCurrent	 (current)
+project.nav.stepCompleted	 (completed)
+project.card.basedOn	Based on:
+project.card.created	Created {date}
+project.card.updated	Updated {date}
+project.card.deleteProject	Delete project
+project.card.projectThumbnail	Project thumbnail
+project.card.projectMovie	Project movie
+project.card.generatingThumbnail	Generating thumbnail...
+project.card.stepStatus	Step: {step} • {status}
+project.source.title	Source Movie
+project.source.selectTitle	Select Source Movie
+project.source.selectDescription	Choose a movie clip to create your dubbed video project
+project.source.viewSelected	View your selected movie
+project.source.selectDifferent	Select a different movie
+project.source.changeMovie	Change Movie
+project.source.changeWarning	This is the source movie for your project. You can change it, but this may require updating your script to match the new content.
+project.source.updateFailed	Failed to update movie. Please try again.
+project.source.techSpecsButton	Tech Specs & Metadata
+project.source.masterLinked	1080p Master Linked
+project.source.viewMetadataCta	View Source Metadata & Specs
+project.source.drawerTitle	Source Footage & Specs
+project.source.drawerDescription	Technical verification and catalog metadata
+project.source.drawerBadge	1080p FHD
+project.source.footageIntegrity	Footage Stream Integrity
+project.source.resolution	Resolution:
+project.source.audioChannels	Audio Channels:
+project.source.codec	Codec:
+project.source.tmdbId	TMDB ID:
+project.source.synopsisHeading	Movie Synopsis & Catalog Details
+project.source.synopsisBody	{title} has been verified and registered into the project pipeline. Script generation will automatically extract key narrative beats and plot arcs from this catalog entry.
+project.script.title	Script
+project.script.createTitle	Create Script
+project.script.createDescription	Write the voice-over script for {title}
+project.script.description	Review and edit your voiceover script
+project.script.writeTitle	Write Your Script
+project.script.writeDescription	Write or paste the voice-over script. This will create your project and save the script.
+project.script.placeholder	Enter your script here...
+project.script.editTitle	Edit Script
+project.script.currentTitle	Current Script
+project.script.showLess	Show Less
+project.script.showFull	Show Full Script
+project.script.autoSaveHint	Your changes will be saved automatically when you continue to the next step.
+project.script.versions	Script Versions
+project.script.createFailed	Failed to create script. Please try again.
+project.voice.title	Select Voice
+project.voice.description	Choose a voice and listen to its preview. Audio will be generated in the next step.
+project.voice.selected	Selected:
+project.voice.taglineHint	This hook will be used in your video's thumbnail. Now choose a voice that matches this tone.
+project.voice.myVoices	My Voices
+project.voice.community	Community
+project.voice.noPersonalVoices	No personal voices yet
+project.voice.recordFirst	Record your first voice to get started
+project.voice.recordVoice	Record Voice
+project.voice.yourVoice	Your voice
+project.voice.addVoice	Add Voice
+project.voice.remainingLeft	{count} left
+project.voice.limitReached	Limit reached
+project.voice.noCommunityVoices	No community voices available
+project.voice.communityHint	Approved community voices will appear here
+project.voice.approved	Approved
+project.voice.speechRate	Speech Rate
+project.voice.speechRateHint	Select the speed of the generated voice
+project.voice.verySlow	Very Slow
+project.voice.slow	Slow
+project.voice.normal	Normal
+project.voice.fast	Fast
+project.voice.veryFast	Very Fast
+project.voice.currentSpeed	Current speed:
+project.voice.unableToLoad	Unable to load voices
+project.voice.voiceNotFound	Voice not found
+project.voice.voiceNotFoundDesc	Unable to find the selected voice.
+project.voice.previewUnavailable	Preview unavailable
+project.voice.previewUnavailableDesc	Audio preview is not available for this voice.
+project.voice.playbackFailed	Playback failed
+project.voice.playbackFailedPlay	Failed to play the audio preview.
+project.voice.playbackFailedLoad	Failed to load the audio preview.
+project.voice.recordedVoice	Recorded Voice
+project.voice.voiceRecorded	Voice recorded
+project.voice.voiceRecordedDesc	Your new voice has been added
+project.voice.recordingSaved	Recording saved
+project.voice.recordingSavedDesc	Voice recorded but audio URL retrieval failed. You can still use it.
+project.voice.voiceSelected	Voice selected
+project.voice.voiceSelectedDesc	Proceeding to project details
+project.voice.scheduleFailed	Failed to schedule audio generation
+project.voice.speedScriptButton	Speed & Script Reference ({ratio}x)
+project.voice.rateMeta	{ratio}x Rate
+project.voice.drawerTitle	Voice Tuning & Script
+project.voice.drawerDescription	Speech pacing, narrative text, and voice limits
+project.voice.drawerBadge	{ratio}x Pacing
+project.voice.narrationSpeed	Narration Speed
+project.voice.agnesPreparing	Agnes AI is preparing title suggestions & thumbnail concepts in the background
+project.voice.scriptReference	Script Reference
+project.voice.wordCountMeta	{count} words (~{duration})
+project.voice.customVoiceSlot	Custom Voice Slot
+project.voice.slotsUsed	{current} / {limit} Used
+project.voice.recordNewVoice	Record New Custom Voice
+project.details.title	Project Details
+project.details.description	Name your project before selecting a voice
+project.details.aiThumbnail	AI-Generated Thumbnail
+project.details.thumbnailAlt	Project thumbnail
+project.details.aboutThumbnail	About Your Thumbnail
+project.details.aboutThumbnailDesc	This AI-generated thumbnail is created based on your movie selection and script. It will be used as the visual preview for your final video project.
+project.details.aboutBullet1	Created using movie theme and script content
+project.details.aboutBullet2	No text overlay - purely visual design
+project.details.aboutBullet3	Can be customized in later steps
+project.details.aboutBullet4	Optimized for video thumbnails
+project.details.generatingThumbnail	Generating AI Thumbnail...
+project.details.generatingThumbnailDesc	Your custom thumbnail is being created
+project.details.nameYourProject	Name Your Project
+project.details.nameHint	Choose a name that represents your video project
+project.details.namePlaceholder	e.g., Inception Trailer Project
+project.details.nameTip	Tip:
+project.details.nameTipDesc	Click any AI suggestion below or write your own creative name
+project.details.suggestions	Suggestions
+project.details.aiGeneratedOnce	AI suggestions are only generated once when you advance to this step
+project.details.aiGenerated	AI Generated
+project.details.generatingSuggestions	Generating AI suggestions...
+project.details.nameSuffixProject	{title} Project
+project.details.nameSuffixProduction	{title} Production
+project.details.nameSuffixFilm	{title} Film
+project.details.nameSuffixChronicles	{title} Chronicles
+project.details.nameSuffixStory	{title} Story
+project.details.nameSuffixVenture	{title} Venture
+project.details.nameSuffixStudio	{title} Studio
+project.details.nameSuffixProjectWord	Project {title}
+project.details.reasonDirect	Simple and direct name based on the title
+project.details.reasonAcronym	Classic production name using title initials
+project.details.reasonProduction	Classic production designation
+project.details.reasonFilm	Classic film designation
+project.details.reasonChronicles	Epic chronicle adaptation
+project.details.reasonStory	Focused on key theme
+project.details.reasonMemorable	Epic and memorable
+project.details.reasonVenture	Creative venture
+project.details.reasonStudio	Studio production name
+project.details.reasonClassic	Classic project naming
+project.details.assetsContextButton	Project Assets & Context
+project.details.agnesTitleGenerator	Agnes AI Title Generator
+project.details.drawerTitle	Project Context & Assets
+project.details.drawerDescription	Movie source, script details, and cover preview
+project.details.sourceFilm	Source Film
+project.details.scriptText	Script Text
+project.details.wordCountMeta	{count} words (~{duration})
+project.details.coverArtHeading	Cover Art Background Concept
+project.details.thumbnailPreviewAlt	AI Thumbnail preview
+project.compose.title	Thumbnail Customization
+project.compose.description	Customize and finalize your project thumbnail before video generation
+project.compose.projectThumbnail	Project Thumbnail
+project.compose.regenerateTitle	Regenerate base thumbnail
+project.compose.customizeTitle	Customize thumbnail
+project.compose.generating	Generating...
+project.compose.retryHint	Generation taking too long? Click to retry
+project.compose.processing	Processing...
+project.compose.confirmed	Confirmed
+project.compose.regeneratingDesc	Regenerating your thumbnail with fresh AI-generated content...
+project.compose.generatingDesc	AI is generating your thumbnail based on the movie and script content...
+project.compose.waitBullet1	This usually takes 10-30 seconds
+project.compose.waitBullet2	Once ready, you can customize it before finalizing
+project.compose.waitBullet3	The page will update automatically when complete
+project.compose.readyForVideo	Your thumbnail is ready for video generation
+project.compose.confirmedAlt	Confirmed thumbnail
+project.compose.textOverlay	Text overlay: {text}
+project.compose.baseImage	Base image: {type}
+project.compose.customUpload	Custom upload
+project.compose.aiGenerated	AI-generated
+project.compose.recustomize	Re-customize thumbnail
+project.compose.customizeBefore	Customize your thumbnail before generating video
+project.compose.availableShortly	Thumbnail will be available shortly
+project.compose.thumbnailAlt	Project thumbnail
+project.compose.customizationOptions	Customization Options
+project.compose.clickToOpen	Click to open the thumbnail editor where you can:
+project.compose.optionUpload	Upload a custom image
+project.compose.optionRegenerate	Regenerate with different AI prompts
+project.compose.optionOverlay	Add/edit text overlay
+project.compose.optionAdjust	Adjust font, color, and position
+project.compose.optionPreview	Preview and finalize
+project.compose.taglineHint	This tagline is used as the default text overlay on your thumbnail
+project.compose.modalRegenerateTitle	Regenerate Thumbnail?
+project.compose.modalRetryTitle	Retry Thumbnail Generation?
+project.compose.modalCustomizeTitle	Customize Thumbnail?
+project.compose.regenerate	Regenerate
+project.compose.retryNow	Retry Now
+project.compose.openEditor	Open Editor
+project.compose.generateNewImage	Generate New AI Image
+project.compose.generateNewImageDesc	This will create a completely new thumbnail image using AI based on your movie and script content. The current thumbnail will be replaced.
+project.compose.takesSeconds	Takes 10-30 seconds to generate
+project.compose.customizeAfter	You can customize or add text overlays after generation
+project.compose.customizationsReset	Your current customizations will be reset
+project.compose.retryStuck	Retry Stuck Generation
+project.compose.retryStuckDesc	The thumbnail generation appears to be taking longer than usual. This will restart the generation process with the same settings.
+project.compose.retryBullet1	This may happen if the background worker was restarted
+project.compose.retryBullet2	The retry will use your existing movie and script content
+project.compose.retryBullet3	Takes 10-30 seconds to complete
+project.compose.customizeCurrent	Customize Current Thumbnail
+project.compose.customizeCurrentDesc	Open the thumbnail editor to customize your existing thumbnail. You can upload your own image, adjust text overlays, or regenerate with custom AI prompts.
+project.compose.editBullet1	Upload custom image or keep current one
+project.compose.editBullet2	Add/edit text overlay with multiple styles
+project.compose.editBullet3	Adjust font, color, position, and size
+project.compose.editBullet4	Preview before finalizing
+project.compose.toastReady	Thumbnail ready!
+project.compose.toastReadyDesc	Your thumbnail has been finalized and is ready for video generation
+project.compose.toastCompositionFailed	Composition failed
+project.compose.toastCompositionFailedDesc	Failed to composite thumbnail
+project.compose.toastProcessing	Processing thumbnail
+project.compose.toastProcessingDesc	Your thumbnail is being composed. This will take a few moments...
+project.compose.toastRegenerating	Regenerating thumbnail
+project.compose.toastRegeneratingDesc	AI is generating a new thumbnail. This will take a few moments...
+project.compose.toastRegenFailed	Regeneration failed
+project.compose.toastRegenFailedDesc	Failed to regenerate thumbnail
+project.compose.toastRetrying	Retrying generation
+project.compose.toastRetryingDesc	Cancelled previous job and queued a new one. This will take a few moments...
+project.compose.toastRetryFailed	Retry failed
+project.compose.toastRetryFailedDesc	Failed to retry thumbnail generation
+project.compose.toastAdvanceFailed	Failed to advance
+project.compose.toastAdvanceFailedDesc	Failed to advance to next step
+project.compose.typographyButton	Typography & Layout Presets
+project.compose.revisitLabel	Thumbnail Cover
+project.compose.coverConfirmed	Cover Image Confirmed
+project.compose.landscapeMeta	16:9 Landscape
+project.compose.canvasHeading	Live 16:9 Master Cover Canvas
+project.compose.coverVerified	Cover Verified
+project.compose.typographyPresetsCta	Typography Presets
+project.compose.drawerTitle	Canvas Styling Studio
+project.compose.drawerDescription	Typography styles, cover layout, and script context
+project.compose.drawerBadge	16:9 Canvas
+project.compose.curatedStyles	Curated Title Styles
+project.compose.styleCinematicGold	Cinematic Gold
+project.compose.styleNeonCyan	Neon Cyan
+project.compose.styleMinimalist	Minimalist Clean
+project.compose.styleBreakingRed	Breaking Red
+project.compose.fullEditorHeading	Full Studio Editor
+project.compose.fullEditorDesc	Adjust overlay font family, title positioning, drop shadows, and opacity in the visual canvas editor.
+project.compose.openInteractiveEditor	Open Interactive Editor
+project.compose.scriptText	Script Text
+project.compose.wordCount	{count} words
+project.preview.title	Voice Preview
+project.preview.description	Listen to your narration and make sure everything sounds perfect
+project.preview.yourProject	Your Project
+project.preview.selectedVoice	Selected Voice
+project.preview.defaultPreviewText	Preview your script with the selected voice.
+project.preview.initializing	Initializing Preview...
+project.preview.queued	Queued for Generation
+project.preview.generatingAudio	Generating Audio...
+project.preview.generatingAudioProgress	Generating Audio ({progress}%)
+project.preview.audioReady	Audio Ready
+project.preview.generationFailed	Generation Failed
+project.preview.settingUp	Setting up your audio preview...
+project.preview.inQueue	Your request is in the queue
+project.preview.usingVoice	Using {name}
+project.preview.narratedBy	Narrated by {name}
+project.preview.resetToStart	Reset to start
+project.preview.pause	Pause
+project.preview.play	Play
+project.preview.unmute	Unmute
+project.preview.mute	Mute
+project.preview.volume	Volume
+project.preview.retryGeneration	Retry Generation
+project.preview.jobId	Job ID:
+project.preview.cachedOptimized	Cached & optimized
+project.preview.projectDetails	Project Details
+project.preview.projectName	Project Name
+project.preview.scriptPreview	Script Preview
+project.preview.clickFullScript	Click to view full script
+project.preview.voiceIncomplete	Voice information is incomplete.
+project.preview.createJobFailed	Failed to create TTS job
+project.preview.loadJobFailed	Failed to load TTS job
+project.preview.telemetryButton	Telemetry & Script Reference
+project.preview.readyHeading	Ready to Synthesize Narration
+project.preview.readyMeta	Voice: {name} • {count} words (~{duration})
+project.preview.generateCta	Generate Full Audio Preview (0 Video Credits Charged)
+project.preview.queuedHeading	Queued via RabbitMQ
+project.preview.synthesizingHeading	Synthesizing Narration Audio...
+project.preview.generatingVoiceover	Generating studio voiceover samples using {name}...
+project.preview.deckHeading	Studio Audio Narration Deck
+project.preview.skipBackTitle	Skip back 5s
+project.preview.skipForwardTitle	Skip forward 5s
+project.preview.drawerTitle	Mastering Telemetry & Script
+project.preview.drawerDescription	Queue logs, cache diagnostics, and narration text
+project.preview.badgeVerified	Audio Verified
+project.preview.badgeStandby	Standby
+project.preview.pipelineTelemetry	RabbitMQ Pipeline Telemetry
+project.preview.narrationScript	Narration Script
+project.preview.wordCount	{count} words
+project.preview.resynthesizeHeading	Re-synthesize Audio
+project.preview.resynthesizeDesc	Trigger a fresh TTS render to re-sample narration with modified voice parameters.
+project.preview.regenerateSample	Re-generate Audio Sample
+project.movieSelection.title	Select a Movie
+project.movieSelection.description	Choose a movie to create a voice-over project. You can search by title or genre.
+project.movieSelection.searchPlaceholder	Search movies by title or genre...
+project.movieSelection.unableToLoad	Unable to load movies
+project.movieSelection.noMoviesFound	No movies found matching "{query}"
+project.movieSelection.movieSelected	Movie Selected
+project.movieSelection.uncategorized	Uncategorized
+project.scriptGen.title	Generate Script
+project.scriptGen.description	Let AI create a script for {title}, then review and modify as needed
+project.scriptGen.readyTitle	Ready to Generate Script
+project.scriptGen.readyDescription	Our AI will analyze {title} and create a professional voice-over script tailored for your project.
+project.scriptGen.generating	Generating Script...
+project.scriptGen.generateButton	Generate Script with AI
+project.scriptGen.estDuration	Est. Duration
+project.scriptGen.paragraphs	Paragraphs
+project.scriptGen.ready	Ready
+project.scriptGen.scriptContent	Script Content
+project.scriptGen.copied	Copied
+project.scriptGen.copiedDesc	Script copied to clipboard
+project.scriptGen.copy	Copy
+project.scriptGen.preview	Preview
+project.scriptGen.edit	Edit
+project.scriptGen.regenerate	Regenerate
+project.scriptGen.proTips	💡 Pro Tips
+project.scriptGen.tip1	Keep sentences short and clear for better voice generation
+project.scriptGen.tip2	Add pauses with commas and periods for natural pacing
+project.scriptGen.tip3	Review pronunciation of unique names or technical terms
+project.voiceGen.title	Generate Voice
+project.voiceGen.description	Select a voice and generate TTS audio from your script
+project.voiceGen.selectHint	Choose from your voices or discover community-approved voices
+project.voiceGen.recordInLibrary	Record a voice in your Voice Library to use it here
+project.voiceGen.generateAudio	Generate Audio
+project.voiceGen.readyWithVoice	Ready to generate with {name}
+project.voiceGen.selectToContinue	Select a voice to continue
+project.voiceGen.estimatedDuration	Estimated duration: ~{minutes} minutes ({words} words)
+project.voiceGen.generatingAudio	Generating audio... {progress}%
+project.voiceGen.generateButton	Generate Voice Audio
+project.voiceGen.audioGenerated	Audio Generated Successfully
+project.voiceGen.voiceLabel	Voice: {name}
+project.voiceGen.download	Download
+project.voiceGen.downloaded	Downloaded
+project.voiceGen.downloadedDesc	Audio file saved to your device
+project.voiceGen.notSatisfied	Not satisfied with the result?
+project.voiceGen.tryDifferent	Try a different voice or regenerate
+project.voiceGen.changeVoice	Change Voice
+project.voiceGen.selectVoiceTitle	Select Voice
+project.voiceGen.selectVoiceDesc	Please select a voice before generating
+project.voiceGen.approved	✓ Approved {date}
+project.videoGen.title	Generate Video
+project.videoGen.description	Create your final video with synchronized audio and visuals
+project.videoGen.projectSummary	Project Summary
+project.videoGen.paragraphs	Paragraphs
+project.videoGen.quality	Quality
+project.videoGen.ready	Ready
+project.videoGen.readyTitle	Ready to Generate Video
+project.videoGen.readyDesc	All components are ready. Click below to start video generation.
+project.videoGen.durationApprox	~{minutes} minutes
+project.videoGen.processTimeHint	This process may take 3-5 minutes depending on video length
+project.videoGen.startButton	Start Video Generation
+project.videoGen.generatingTitle	Generating Video
+project.videoGen.processingHint	Processing... This may take a few minutes
+project.videoGen.successTitle	Video Generated Successfully!
+project.videoGen.successDesc	Your video is ready to preview and download
+project.videoGen.downloadVideo	Download Video
+project.videoGen.previewVideo	Preview Video
+project.videoGen.downloaded	Downloaded
+project.videoGen.downloadedDesc	Video file saved to your device
+project.videoGen.whatsNext	🎉 What's Next?
+project.videoGen.nextTip1	Download your video and share it on social media
+project.videoGen.nextTip2	Create another project with a different movie
+project.videoGen.nextTip3	Explore advanced editing options in your project dashboard
+project.fullScript.title	Full Script
+project.fullScript.words	words
+project.fullScript.duration	duration
+project.fullScript.closeHint	Press {key} or click outside to close
+project.thumbnailEditor.title	Thumbnail Editor
+project.thumbnailEditor.finalizing	Finalizing...
+project.thumbnailEditor.saveAndFinalize	Save & Finalize
+project.thumbnailEditor.overlayPlaceholder	Enter overlay text (optional, max 200 chars)
+project.thumbnailEditor.alignLeft	Align Left
+project.thumbnailEditor.alignRight	Align Right
+project.thumbnailEditor.decreaseFontSize	Decrease Font Size
+project.thumbnailEditor.increaseFontSize	Increase Font Size
+project.thumbnailEditor.fontStyle	Font Style
+project.thumbnailEditor.textColor	Text Color
+project.thumbnailEditor.fontBold	Bold
+project.thumbnailEditor.fontElegant	Elegant
+project.thumbnailEditor.fontModern	Modern
+project.thumbnailEditor.colorWhite	White
+project.thumbnailEditor.colorBlack	Black
+project.thumbnailEditor.colorRed	Red
+project.thumbnailEditor.colorGreen	Green
+project.thumbnailEditor.colorBlue	Blue
+project.thumbnailEditor.colorYellow	Yellow
+project.thumbnailEditor.colorMagenta	Magenta
+project.thumbnailEditor.colorCyan	Cyan
+project.thumbnailEditor.blurEnabled	Blur Enabled
+project.thumbnailEditor.blurDisabled	Blur Disabled
+project.thumbnailEditor.regenerateAi	Regenerate with AI
+project.thumbnailEditor.uploadCustom	Upload Custom Image
+project.thumbnailEditor.customPromptPlaceholder	Enter custom prompt (optional, leave empty for default)
+project.thumbnailEditor.generate	Generate
+project.thumbnailEditor.livePreview	Live Preview
+project.thumbnailEditor.generatingNew	Generating new thumbnail...
+project.thumbnailEditor.aiGenerating	AI is generating your thumbnail...
+project.thumbnailEditor.generating	Generating...
+project.thumbnailEditor.projectThumbnail	Project thumbnail
+project.thumbnailEditor.noThumbnail	No thumbnail available
+project.thumbnailEditor.noThumbnailHint	Generate AI thumbnail or upload custom image
+project.thumbnailEditor.regenFailed	Failed to regenerate thumbnail. Please try again.
+project.thumbnailEditor.uploadImageOnly	Please upload an image file (JPG, PNG, or WEBP)
+project.thumbnailEditor.imageTooLarge	Image size must be less than 5MB
+project.thumbnailEditor.uploadFailed	Failed to upload thumbnail. Please try again.
+project.thumbnailEditor.composeFailed	Failed to start thumbnail composition. Please try again.
+project.exportModal.title	Export Video
+project.exportModal.exportDownload	Export & Download
+project.exportModal.format	Format
+project.exportModal.formatHelper	MP4 is currently the only supported format
+project.exportModal.note	Note:
+project.exportModal.formatMp4	MP4 (H.264)
+project.exportModal.formatWebm	WebM (VP9)
+project.exportModal.formatMov	MOV (ProRes)
+project.exportModal.resolution	Resolution
+project.exportModal.resolutionHelper	Higher resolutions produce larger file sizes
+project.exportModal.resolution4k	4K (3840×2160)
+project.exportModal.resolution1080	Full HD (1920×1080)
+project.exportModal.resolution720	HD (1280×720)
+project.exportModal.resolution480	SD (854×480)
+project.exportModal.fps	Frame Rate (FPS)
+project.exportModal.fpsHelper	Higher frame rates create smoother motion
+project.exportModal.fps60	60 FPS
+project.exportModal.fps30	30 FPS
+project.exportModal.fps24	24 FPS (Cinematic)
+project.exportModal.quality	Quality
+project.exportModal.qualityHelper	Higher quality means better visual fidelity but larger files
+project.exportModal.qualityHigh	High Quality
+project.exportModal.qualityMedium	Medium Quality
+project.exportModal.qualityLow	Low Quality (Smaller file)
+project.exportModal.summary	Export Summary
+project.exportModal.summaryFormat	Format:
+project.exportModal.summaryResolution	Resolution:
+project.exportModal.summaryFps	Frame Rate:
+project.exportModal.summaryQuality	Quality:
+project.exportModal.comingSoonNote	Advanced export options (resolution, FPS, quality) are coming soon. Currently, all exports use the original video settings.
+project.aiActions.regenerate	Regenerate
+project.aiActions.makeShorter	Make it shorter
+project.aiActions.changeTone	Change tone
+project.export.title	Export Project
+project.export.description	Generate, manage, and export your video
+project.export.projectInfo	Project Info
+project.export.quickInfo	Quick Info:
+project.export.infoBullet1	Each video generation costs 1 credit
+project.export.infoCreditsRemaining	Credits remaining: {credits}
+project.export.infoBullet3	Export in different formats (coming soon)
+project.export.completed	Completed
+project.export.processing	Processing
+project.export.failed	Failed
+project.export.yourVideo	Your Video
+project.export.credits	{count} credit
+project.export.creditsPlural	{count} credits
+project.export.newVersionTitle	Generate a new video variation (1 credit)
+project.export.generating	Generating...
+project.export.newVersion	New Version
+project.export.versionLabel	Version:
+project.export.browserNoVideo	Your browser does not support the video tag.
+project.export.videoUnavailable	Video stream unavailable
+project.export.videoUnavailableDesc	This version completed but the video file is not ready yet. Try refreshing or generate a new version.
+project.export.voiceLabel	Voice:
+project.export.costLabel	Cost:
+project.export.generatedLabel	Generated:
+project.export.statusLabel	Status:
+project.export.exportFormat	Export Format
+project.export.readyTitle	Ready to Generate Your Video
+project.export.readyDesc	Your project is ready. Click below to start video generation.
+project.export.generateVideo	Generate Video
+project.export.insufficientCredits	Insufficient credits. Click Generate to view upgrade options.
+project.export.processingVideos	Processing Videos
+project.export.queuedProcessing	Queued for processing...
+project.export.generatingVideo	Generating video...
+project.export.failedGenerations	Failed Generations
+project.export.generationFailed	Generation failed
+project.export.deleteVideo	Delete video
+project.export.viewAllVersions	View all versions ({count})
+project.export.returnToProjects	Return to Projects
+project.export.shareVideo	Share Video
+project.export.choosePlatform	Choose a platform to share your video
+project.export.urlCopied	Video URL copied
+project.export.shareXDesc	Open X.com and paste the link to share your video
+project.export.shareXTitle	X (Twitter)
+project.export.shareXSubtitle	Share to your X timeline
+project.export.shareWeChatDesc	Open WeChat and paste the link to share your video
+project.export.shareWeChatTitle	WeChat
+project.export.shareWeChatSubtitle	Share to WeChat moments
+project.export.morePlatforms	More platforms coming soon
+project.export.confirmGenerateTitle	Generate Video?
+project.export.confirmGenerateMessage	This will generate a new video using your selected voice and script. You can generate multiple versions to compare.
+project.export.loadVideosFailed	Failed to load videos
+project.export.loadVideosFailedDesc	Could not retrieve video history
+project.export.checkCreditsFailed	Failed to check credits
+project.export.checkCreditsFailedDesc	Could not verify your credit balance
+project.export.generationStarted	Video generation started
+project.export.generationStartedDesc	Your video is being generated
+project.export.serverError	Server error
+project.export.serverErrorDesc	An internal error occurred. Please try again or contact support if the issue persists.
+project.export.generationFailedTitle	Generation failed
+project.export.generationFailedDesc	Failed to start video generation. Please check your connection.
+project.export.deleteConfirm	Are you sure you want to delete this video? This action cannot be undone.
+project.export.videoDeleted	Video deleted
+project.export.videoDeletedDesc	The video has been removed from your history
+project.export.deleteFailed	Delete failed
+project.export.deleteFailedDesc	Failed to delete the video
+project.export.loadTimedOut	Loading is taking longer than expected
+project.export.loadTimedOutDesc	We couldn't load your export data in time. Check your connection and try again.
+project.export.processingTimedOut	Video generation is taking longer than expected
+project.export.processingTimedOutDesc	The job may still be running in the background. Refresh status or try again.
+project.export.refreshStatus	Refresh status
+project.export.diagnosticsButton	Pipeline Diagnostics & Logs
+project.export.balanceLabel	Balance:
+project.export.masterShowcase	Master Video Showcase
+project.export.download1080	{label} (1080p MP4)
+project.export.preflightHeading	Pre-Flight Render Studio
+project.export.preflightIntro	All components are assembled. Verify the pre-flight sanity checklist before initiating final 1080p video composition.
+project.export.checklistTitle	Pre-Flight Sanity Checklist
+project.export.checklistVerifiedCount	{passed} / {total} Verified
+project.export.check1Title	1. Source Footage Linked
+project.export.check1DescWithTitle	{title} (1080p source verified)
+project.export.check1Desc	1080p source verified
+project.export.statusVerified	Verified
+project.export.check2Title	2. Narrator Audio Ready
+project.export.check2Desc	Voice: {name} (0 missing segments)
+project.export.selectedVoiceFallback	Selected Voice
+project.export.statusReady	Ready
+project.export.check3Title	3. Captions Formatted
+project.export.check3Desc	Subtitles generated and timed (No text overflow)
+project.export.statusFormatted	Formatted
+project.export.check4Title	4. Available User Credits
+project.export.check4Desc	1 Credit required | {count} available
+project.export.statusSufficient	Sufficient
+project.export.statusLowBalance	Low Balance
+project.export.startGenerationCta	Start Video Generation (1 Credit)
+project.export.liveTelemetry	Live Video Pipeline Telemetry
+project.export.versionOption	Version {n}
+project.export.queuedStatus	Queued in RabbitMQ render pool...
+project.export.stitchingStatus	Stitching scenes & encoding MP4 master...
+project.export.stepQueue	1. Queue Verified
+project.export.stepStitch	2. Stitch & Audio Sync
+project.export.stepEncode	3. 1080p MP4 Encode
+project.export.drawerTitle	Pipeline Diagnostics & Logs
+project.export.drawerDescription	Render history, attempt logs, and format settings
+project.export.completedBadge	{count} Completed
+project.export.failedGenerationsCount	Failed Generations ({count})
+project.export.attemptLabel	Attempt {n}
+project.export.renderFailed	Render failed
+project.export.pipelineSpecs	Pipeline Specifications
+project.export.targetResolution	Target Resolution:
+project.export.aspectRatio	Aspect Ratio:
+project.export.videoCodec	Video Codec:
+project.export.audioCodec	Audio Codec:
+project.export.metaMastered	Mastered:
+project.export.sharePrompt	Share your master video with your audience:
+tts.queue.title	In Queue
+tts.queue.nextInLine	Next in line — starting soon!
+tts.queue.inProgress	Your request is in the queue
+tts.queue.position	Position
+tts.queue.jobsAhead	Jobs ahead
+tts.queue.estimatedWait	Estimated wait
+tts.queue.updatesAutomatically	Updates automatically

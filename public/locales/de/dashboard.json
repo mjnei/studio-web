@@ -1,0 +1,48 @@
+{
+  "dashboard": {
+    "title": "Arbeitsbereich",
+    "description": "Willkommen zurück! Hier ist dein Überblick.",
+    "stats": {
+      "recentProjects": {
+        "title": "Aktuelle Projekte",
+        "description": "Aktive Projekte"
+      },
+      "movieLibrary": {
+        "title": "Filmbibliothek",
+        "description": "Verfügbare Filme"
+      },
+      "myVoices": {
+        "title": "Meine Stimmen",
+        "description": "Stimmprofile"
+      }
+    },
+    "welcomeBanner": {
+      "title": "Willkommen bei Huavoi Studio!",
+      "message": "Bereit für dein erstes Projekt? Klicke auf „Neues Projekt“, um loszulegen und deine Ideen zum Leben zu erwecken.",
+      "cta": "Erstes Projekt erstellen",
+      "dismissAriaLabel": "Willkommensbanner schließen"
+    },
+    "quickActions": {
+      "title": "Schnellaktionen",
+      "description": "Starte mit diesen häufigen Aufgaben",
+      "newProject": "Neues Projekt",
+      "browseMovies": "Filme durchsuchen",
+      "recordVoice": "Stimme aufnehmen"
+    },
+    "recentProjects": {
+      "title": "Aktuelle Projekte",
+      "description": "Deine neuesten Arbeiten",
+      "viewAll": "Alle"
+    },
+    "popularMovies": {
+      "title": "Beliebte Filme",
+      "description": "Trendige Filme für dein nächstes Projekt",
+      "exploreAll": "Alle entdecken"
+    },
+    "empty": {
+      "title": "Willkommen bei Huavoi Studio",
+      "message": "Erstelle ein neues Projekt, um hier deine Aktivität zu sehen.",
+      "cta": "Erstes Projekt erstellen"
+    }
+  }
+}

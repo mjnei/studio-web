@@ -1,0 +1,61 @@
+{
+  "referral": {
+    "title": "Programme de parrainage",
+    "description": "Invite des amis et gagnez des crédits ensemble",
+    "viewLeaderboard": "Voir le classement",
+    "errorTitle": "Erreur",
+    "errorLoadingData": "Échec du chargement des données de parrainage",
+    "inviteCard": {
+      "title": "Invite des amis, gagne des crédits",
+      "description": "Partage ton lien de parrainage. Quand quelqu'un s'inscrit avec ton lien, vous gagnez tous les deux des crédits de rendu gratuits.",
+      "yourReferralLink": "Ton lien de parrainage",
+      "yourCode": "Ton code :",
+      "copyLink": "Copier le lien",
+      "copied": "Copié !"
+    },
+    "stats": {
+      "directReferrals": "Parrainages directs",
+      "totalReferrals": "Parrainages totaux (tous niveaux)",
+      "rewardsEarned": "Crédits gagnés",
+      "creditsEarned": "Crédits gagnés",
+      "pending": "En attente"
+    },
+    "achievements": {
+      "title": "Succès",
+      "description": "Débloque des badges en parrainant plus d'utilisateurs"
+    },
+    "history": {
+      "title": "Historique de parrainage",
+      "description": "Suis tes parrainages et récompenses",
+      "total": "au total",
+      "noReferrals": "Pas encore de parrainages. Partage ton lien pour commencer !",
+      "referee": "Filleul",
+      "referred": "Parrainé",
+      "date": "Date",
+      "level": "Niveau",
+      "downstream": "Aval",
+      "rewards": "Récompenses",
+      "status": "Statut",
+      "credits": "Crédits",
+      "signedUp": "Inscrit",
+      "pending": "En attente",
+      "levelBadge": "N{level}"
+    },
+    "leaderboard": {
+      "title": "Classement",
+      "description": "Meilleurs parrains de la communauté",
+      "errorTitle": "Erreur",
+      "errorMessage": "Échec du chargement du classement",
+      "referrals": "Parrainages",
+      "rewards": "Récompenses",
+      "fullList": "Classement complet",
+      "topReferrers": "Top {count} parrains",
+      "lastUpdated": "Dernière mise à jour",
+      "noData": "Pas encore de données de classement",
+      "rank": "Rang",
+      "user": "Utilisateur",
+      "direct": "Direct",
+      "total": "Total"
+    }
+  }
+}

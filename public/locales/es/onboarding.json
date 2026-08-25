@@ -1,0 +1,104 @@
+{
+  "onboarding": {
+    "welcome": {
+      "title": "Bienvenido a Huavoi Studio",
+      "subtitle": "Transforma tus ideas en vídeos impresionantes con IA. Resultados profesionales en minutos, no en horas.",
+      "features": {
+        "templates": "Plantillas profesionales",
+        "aiTools": "Herramientas con IA",
+        "publishing": "Publicación en un clic"
+      },
+      "getStarted": "Empezar",
+      "subtext": "Menos de 2 minutos para completar",
+      "getStartedAria": "Empezar los primeros pasos"
+    },
+    "progress": {
+      "stepOf": "Paso {current} de {total}",
+      "ariaLabel": "Paso {current} de {total}"
+    },
+    "workflow": {
+      "title": "Tu recorrido de creación de vídeo",
+      "subtitle": "4 pasos sencillos para crear vídeos geniales",
+      "steps": {
+        "source": {
+          "title": "Fuente",
+          "description": "Elige del catálogo de películas"
+        },
+        "script": {
+          "title": "Guion",
+          "description": "La IA genera guiones de vídeo"
+        },
+        "voice": {
+          "title": "Doblaje",
+          "description": "Síntesis de voz con IA"
+        },
+        "compose": {
+          "title": "Componer",
+          "description": "Crear el vídeo final"
+        }
+      },
+      "info": "Cambia de paso cuando quieras. Trabaja a tu ritmo: tu progreso se guarda automáticamente.",
+      "back": "Atrás",
+      "continue": "Continuar",
+      "step": "Paso {number}",
+      "goBack": "Volver al paso anterior",
+      "continueTakeStep": "Continuar al siguiente paso"
+    },
+    "password": {
+      "title": "Configurar inicio de sesión alternativo",
+      "titleUpdate": "Actualizar tu contraseña",
+      "subtitle": "Iniciaste sesión con Google. ¿Quieres añadir también una contraseña para el acceso por correo?",
+      "subtitleUpdate": "Ya tienes una contraseña. Puedes actualizarla aquí si quieres.",
+      "securityHint": "Accede a tu cuenta aunque Google no esté disponible",
+      "alreadyConfigured": "Contraseña ya configurada",
+      "password": "Contraseña",
+      "confirmPassword": "Confirmar contraseña",
+      "passwordLabel": "Contraseña",
+      "confirmPasswordLabel": "Confirmar contraseña",
+      "passwordPlaceholder": "Introduce la contraseña (mín. 8 caracteres)",
+      "confirmPasswordPlaceholder": "Confirma la contraseña",
+      "showPassword": "Mostrar contraseña",
+      "hidePassword": "Ocultar contraseña",
+      "showConfirmPassword": "Mostrar confirmación",
+      "hideConfirmPassword": "Ocultar confirmación",
+      "strength": "Seguridad de la contraseña",
+      "strengthWeak": "Débil",
+      "strengthFair": "Aceptable",
+      "strengthGood": "Buena",
+      "strengthStrong": "Fuerte",
+      "match": "Las contraseñas coinciden",
+      "noMatch": "Las contraseñas no coinciden",
+      "validation": {
+        "tooShort": "La contraseña debe tener al menos 8 caracteres",
+        "mismatch": "Las contraseñas no coinciden"
+      },
+      "setPassword": "Establecer contraseña",
+      "updating": "Actualizando...",
+      "settingPassword": "Estableciendo contraseña...",
+      "alreadySet": "Contraseña ya establecida",
+      "skipForNow": "Omitir por ahora",
+      "back": "Atrás",
+      "goBack": "Volver al paso anterior",
+      "skipPassword": "Omitir configuración de contraseña",
+      "error": "No se pudo establecer la contraseña. Inténtalo de nuevo.",
+      "errorUpdate": "No se pudo actualizar la contraseña. Inténtalo de nuevo."
+    },
+    "completion": {
+      "loading": "Configurando tu cuenta",
+      "loadingSubtext": "Solo tomará un momento...",
+      "loadingAriaLabel": "Completando los primeros pasos",
+      "success": "¡Todo listo!",
+      "successSubtext": "Tu cuenta está lista. Creemos juntos vídeos increíbles.",
+      "features": {
+        "create": "Crear",
+        "design": "Diseñar",
+        "publish": "Publicar"
+      },
+      "goToDashboard": "Ir al espacio de trabajo",
+      "redirect": "Redirigiendo en {seconds} segundos...",
+      "error": "Algo salió mal",
+      "tryAgain": "Reintentar",
+      "completionAriaLabel": "Estado de finalización"
+    }
+  }
+}

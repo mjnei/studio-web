@@ -1,0 +1,53 @@
+{
+  "movies": {
+    "title": "Biblioteca de películas",
+    "description": "Descubre y explora películas para tu próximo proyecto",
+    "count": "{count} películas",
+    "countSingular": "{count} película",
+    "searchPlaceholder": "Buscar películas por título...",
+    "loading": "Cargando películas...",
+    "loadingDescription": "Espera mientras obtenemos el catálogo",
+    "loadingDetails": "Cargando detalles... {progress}%",
+    "error": {
+      "title": "No se pudieron cargar las películas",
+      "unableToLoad": "No se pudieron cargar las películas"
+    },
+    "empty": {
+      "title": "No se encontraron películas",
+      "searchHint": "Prueba a ajustar tus términos de búsqueda",
+      "catalogEmpty": "No hay películas disponibles en el catálogo"
+    },
+    "director": "Director",
+    "cast": "Reparto",
+    "runtimeUnit": "min",
+    "detail": {
+      "back": "Volver a películas",
+      "return": "Volver a películas",
+      "loading": "Cargando detalles de la película...",
+      "errorTitle": "No se pudo cargar la película",
+      "loadFailed": "Error al cargar los detalles de la película",
+      "createProject": "Crear proyecto",
+      "buttonLoading": "Cargando...",
+      "statistics": "Estadísticas",
+      "rating": "Valoración",
+      "popularity": "Popularidad",
+      "externalIds": "IDs externos",
+      "imdb": "IMDb",
+      "douban": "Douban",
+      "runtimeMinutes": "{runtime} minutos",
+      "overview": "Sinopsis",
+      "crew": "Equipo",
+      "expandCrew": "Expandir equipo",
+      "collapseCrew": "Contraer equipo",
+      "director": "Director",
+      "directors": "Directores",
+      "producer": "Productor",
+      "producers": "Productores",
+      "writer": "Guionista",
+      "writers": "Guionistas",
+      "topCast": "Reparto principal",
+      "expandCast": "Expandir reparto",
+      "collapseCast": "Contraer reparto"
+    }
+  }
+}

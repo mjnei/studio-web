@@ -1,0 +1,88 @@
+{
+  "pricing": {
+    "title": "Tarifs simples et transparents",
+    "description": "1 crédit = 1 génération vidéo. Choisis le forfait adapté à tes besoins.",
+    "badge": "Tarifs de lancement spéciaux",
+    "billingToggle": {
+      "monthly": "Mensuel",
+      "annual": "Annuel",
+      "savings": "Économise 20 %"
+    },
+    "whatsIncluded": "Ce qui est inclus",
+    "creditsPerMonth": "crédits/mois",
+    "rolloverLabel": "Report :",
+    "free": {
+      "name": "Free",
+      "description": "Commence avec la génération vidéo de base",
+      "price": {
+        "monthly": "$0",
+        "annual": "$0",
+        "billedAnnually": "facturé annuellement",
+        "billedMonthly": "en facturation mensuelle"
+      },
+      "rolloverAmount": "10 crédits",
+      "features": {
+        "credits": "5 crédits par mois",
+        "rollover": "Report jusqu'à 10 crédits",
+        "voices": "2 voix personnalisées",
+        "video": "Génération vidéo de base",
+        "quality": "Qualité vidéo 720p",
+        "storage": "Stockage de projets standard"
+      },
+      "button": "Forfait actuel"
+    },
+    "pro": {
+      "name": "Pro",
+      "description": "Pour les créateurs qui ont besoin de plus de capacité",
+      "price": {
+        "monthly": "49 $/mois",
+        "annual": "39 $/mois"
+      },
+      "rolloverAmount": "50 crédits",
+      "badge": "Le plus populaire",
+      "features": {
+        "credits": "25 crédits par mois",
+        "rollover": "Report jusqu'à 50 crédits",
+        "voices": "5 voix personnalisées",
+        "video": "Génération vidéo HD (1080p)",
+        "priority": "Traitement prioritaire",
+        "analytics": "Analyses avancées",
+        "export": "Personnalisation de l'export"
+      },
+      "button": "Passer à Pro"
+    },
+    "premium": {
+      "name": "Premium",
+      "description": "Capacité illimitée pour les professionnels",
+      "price": {
+        "monthly": "199 $/mois",
+        "annual": "159 $/mois"
+      },
+      "rolloverAmount": "Illimité",
+      "features": {
+        "credits": "100 crédits par mois",
+        "rollover": "Report illimité",
+        "voices": "10 voix personnalisées",
+        "quality": "Qualité vidéo 4K",
+        "support": "Support prioritaire",
+        "ai": "Fonctionnalités IA avancées",
+        "team": "Collaboration d'équipe",
+        "whiteLabel": "Exports en marque blanche",
+        "api": "Accès API"
+      },
+      "button": "Passer à Premium"
+    },
+    "faq": {
+      "title": "Questions fréquentes",
+      "creditQuestion": "Qu'est-ce qu'un crédit et comment est-il utilisé ?",
+      "creditAnswer": "Un crédit sert à générer une vidéo. Chaque génération consomme 1 crédit, quelle que soit la durée ou la complexité. Les générations échouées sont automatiquement remboursées.",
+      "rolloverQuestion": "Comment fonctionne le report de crédits ?",
+      "rolloverAnswer": "Les crédits non utilisés sont reportés au mois suivant, jusqu'à la limite de ton niveau (Free : 10, Pro : 50, Premium : illimité). Les crédits expirent après 6 mois d'inactivité.",
+      "changeQuestion": "Puis-je changer ou annuler mon forfait ?",
+      "changeAnswer": "Oui, tu peux upgrader, downgrader ou annuler à tout moment. En cas de downgrade, tu gardes les fonctionnalités de ton forfait actuel jusqu'à la fin du cycle de facturation.",
+      "teamQuestion": "Proposez-vous des forfaits équipe ?",
+      "teamAnswer": "Les forfaits équipe avec crédits partagés et collaboration sont disponibles pour les abonnés Premium. Contacte-nous pour un tarif personnalisé."
+    },
+    "subscribeComingSoon": "Abonnement au niveau {tier}... (Intégration des paiements bientôt disponible)"
+  }
+}

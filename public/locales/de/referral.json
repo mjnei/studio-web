@@ -1,0 +1,61 @@
+{
+  "referral": {
+    "title": "Empfehlungsprogramm",
+    "description": "Lade Freunde ein und verdient gemeinsam Credits",
+    "viewLeaderboard": "Rangliste anzeigen",
+    "errorTitle": "Fehler",
+    "errorLoadingData": "Empfehlungsdaten konnten nicht geladen werden",
+    "inviteCard": {
+      "title": "Freunde einladen, Credits verdienen",
+      "description": "Teile deinen Empfehlungslink. Wenn sich jemand damit registriert, erhaltet ihr beide kostenlose Render-Credits.",
+      "yourReferralLink": "Dein Empfehlungslink",
+      "yourCode": "Dein Code:",
+      "copyLink": "Link kopieren",
+      "copied": "Kopiert!"
+    },
+    "stats": {
+      "directReferrals": "Direkte Empfehlungen",
+      "totalReferrals": "Empfehlungen gesamt (alle Ebenen)",
+      "rewardsEarned": "Verdiente Credits",
+      "creditsEarned": "Verdiente Credits",
+      "pending": "Ausstehend"
+    },
+    "achievements": {
+      "title": "Erfolge",
+      "description": "Schalte Abzeichen frei, indem du mehr Nutzer einlädst"
+    },
+    "history": {
+      "title": "Empfehlungsverlauf",
+      "description": "Verfolge deine Empfehlungen und Belohnungen",
+      "total": "gesamt",
+      "noReferrals": "Noch keine Empfehlungen. Teile deinen Link, um zu starten!",
+      "referee": "Eingeladener",
+      "referred": "Empfohlen",
+      "date": "Datum",
+      "level": "Ebene",
+      "downstream": "Nachgelagert",
+      "rewards": "Belohnungen",
+      "status": "Status",
+      "credits": "Credits",
+      "signedUp": "Registriert",
+      "pending": "Ausstehend",
+      "levelBadge": "E{level}"
+    },
+    "leaderboard": {
+      "title": "Rangliste",
+      "description": "Top-Empfehler in der Community",
+      "errorTitle": "Fehler",
+      "errorMessage": "Rangliste konnte nicht geladen werden",
+      "referrals": "Empfehlungen",
+      "rewards": "Belohnungen",
+      "fullList": "Vollständige Rangliste",
+      "topReferrers": "Top {count} Empfehler",
+      "lastUpdated": "Zuletzt aktualisiert",
+      "noData": "Noch keine Ranglistendaten verfügbar",
+      "rank": "Rang",
+      "user": "Nutzer",
+      "direct": "Direkt",
+      "total": "Gesamt"
+    }
+  }
+}

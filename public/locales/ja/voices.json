@@ -1,0 +1,218 @@
+{
+  "voices": {
+    "title": "Voices",
+    "voiceLibrary": "Voice Library",
+    "myVoices": "My Voices",
+    "selectVoice": "Select Voice",
+    "previewVoice": "Preview Voice",
+    "male": "Male",
+    "female": "Female",
+    "language": "Language",
+    "accent": "Accent",
+    "age": "Age",
+    "style": "Style",
+    "voiceCloning": "Voice Cloning",
+    "uploadSample": "Upload Sample",
+    "voiceSettings": "Voice Settings",
+    "pitch": "Pitch",
+    "speed": "Speed",
+    "volume": "Volume",
+    "noVoices": "No voices available",
+    "library": {
+      "title": "Voice Library",
+      "description": "Create custom voices and discover community-shared voices for your projects"
+    },
+    "tabs": {
+      "private": "Private",
+      "community": "Community"
+    },
+    "voiceCount": "{count} / {limit} voices",
+    "sharedVoices": "{count} shared voices",
+    "addVoice": "Add Voice",
+    "status": {
+      "pendingReview": "Pending Review",
+      "private": "Private",
+      "approved": "Approved"
+    },
+    "metadata": {
+      "createdBy": "@{username}",
+      "you": "(you)",
+      "justNow": "just now",
+      "minutesAgo": "{count} minutes ago",
+      "hoursAgo": "{count} hours ago",
+      "daysAgo": "{count} days ago",
+      "weeksAgo": "{count} weeks ago",
+      "monthsAgo": "{count} months ago",
+      "yearsAgo": "{count} years ago"
+    },
+    "playback": {
+      "play": "Play",
+      "pause": "Pause",
+      "loading": "Loading...",
+      "audioUnavailable": "Audio unavailable",
+      "audioUrlNotAvailable": "Audio URL not available",
+      "playbackFailed": "Playback failed",
+      "failedToPlayAudio": "Failed to play audio",
+      "failedToLoadAudio": "Failed to load audio"
+    },
+    "actions": {
+      "shareWithCommunity": "Share with community",
+      "makePrivate": "Make private",
+      "deleteVoice": "Delete voice",
+      "delete": "Delete"
+    },
+    "modals": {
+      "delete": {
+        "title": "Delete Voice",
+        "description": "Are you sure you want to delete this voice? This action cannot be undone and the voice will be removed from all your projects.",
+        "confirmText": "Delete",
+        "cancelText": "Cancel"
+      },
+      "share": {
+        "title": "Share Voice with Community",
+        "description": "Your voice will be submitted for admin review. Once approved, it will be available to all users and won't count toward your voice limit. This helps build our community library!",
+        "confirmText": "Share for Review",
+        "cancelText": "Cancel"
+      },
+      "unshare": {
+        "title": "Make Voice Private",
+        "description": "Your voice will be withdrawn from review and made private again. It will only be accessible to you and will count toward your voice limit.",
+        "confirmText": "Make Private",
+        "cancelText": "Cancel"
+      }
+    },
+    "banners": {
+      "privateInfo": {
+        "title": "Private Voices",
+        "description": "Your private voice recordings. Share them with the community for admin review. Once approved, they'll appear in the Community tab and won't count toward your voice limit."
+      },
+      "communityInfo": {
+        "title": "Community Voices",
+        "description": "Approved voices shared by our community. All voices here are free to use in your projects. Your approved voices appear here and don't count toward your voice limit."
+      }
+    },
+    "emptyStates": {
+      "private": {
+        "title": "No private voices",
+        "description": "Start by recording a voice sample. Your voice will be cloned and ready to use in your projects. Share them with the community to earn extra voice slots!",
+        "cta": "Record Your First Voice"
+      },
+      "community": {
+        "title": "No community voices yet",
+        "description": "Community voices will appear here once users share their voices and they're approved by our team. Be the first to contribute!"
+      }
+    },
+    "addVoiceCard": {
+      "title": "Add New Voice",
+      "slotsRemaining": "{count} slots remaining",
+      "limitReached": "Voice limit reached"
+    },
+    "toasts": {
+      "voiceShared": "Voice shared",
+      "voiceShareedDescription": "Your voice has been submitted for review",
+      "voiceSharedError": "Failed to share voice",
+      "voiceMadePrivate": "Voice made private",
+      "voiceMadePrivateDescription": "Your voice is no longer shared",
+      "voiceMadePrivateError": "Failed to make voice private",
+      "voiceDeleted": "Voice deleted",
+      "voiceDeletedDescription": "Your voice has been deleted successfully",
+      "voiceDeletedError": "Failed to delete voice",
+      "anErrorOccurred": "An error occurred"
+    },
+    "languages": {
+      "en": "English",
+      "es": "Spanish",
+      "fr": "French",
+      "de": "German",
+      "it": "Italian",
+      "pt": "Portuguese",
+      "ru": "Russian",
+      "ja": "Japanese",
+      "zh": "Chinese",
+      "zhCN": "Simplified Chinese",
+      "zhTW": "Traditional Chinese",
+      "ko": "Korean",
+      "ar": "Arabic",
+      "hi": "Hindi"
+    },
+    "errors": {
+      "loadingVoices": "Loading your voices...",
+      "loadingCommunityVoices": "Loading community voices..."
+    },
+    "limitDialog": {
+      "limitReachedTitle": "Voice Limit Reached",
+      "upgradeTitle": "Upgrade to Add More Voices",
+      "message": "You've created {current} of {limit} voices available on the {tier} plan.",
+      "closeButton": "Close",
+      "upgradeButton": "Upgrade Now",
+      "freePlanTitle": "Free",
+      "proPlanTitle": "Pro",
+      "premiumPlanTitle": "Premium",
+      "proUpgradeTitle": "Pro Plan",
+      "proUpgradeDescription": "Create up to 5 custom voices",
+      "premiumUpgradeTitle": "Premium Plan",
+      "premiumUpgradeDescription": "Create up to 10 custom voices",
+      "premiumTip": "Tip: You can delete unused voices to free up space for new recordings."
+    },
+    "recording": {
+      "title": "Record Voice",
+      "requestingAccess": "Requesting microphone access…",
+      "readyTitle": "Ready to Record",
+      "readyHint": "Record up to 10s of clear speech",
+      "startRecording": "Start recording",
+      "stopRecording": "Stop recording",
+      "maxDuration": "Maximum {time}",
+      "ofMax": "of {time}",
+      "recordingTap": "Recording… tap to stop",
+      "maxReached": "Maximum duration reached. Recording stopped automatically.",
+      "completeTitle": "Recording Complete!",
+      "completeHint": "{time} • Tap play to listen",
+      "play": "Play",
+      "pause": "Pause",
+      "seek": "Seek",
+      "reRecord": "Re-record",
+      "continue": "Continue",
+      "nameTitle": "Name Your Voice",
+      "nameSubtitle": "Choose a memorable name and language",
+      "voiceName": "Voice Name *",
+      "namePlaceholder": "e.g., Professional Narrator",
+      "nameRequired": "Voice name is required",
+      "generateRandom": "Generate random name",
+      "language": "Language *",
+      "languageRequired": "Language is required",
+      "back": "Back",
+      "saving": "Saving...",
+      "saveVoice": "Save Voice",
+      "httpsTip": "Tip: Try accessing the app via localhost:3020 instead of an IP address.",
+      "errors": {
+        "playbackFailed": "Playback failed. Please re-record your sample.",
+        "browserUnsupported": "Your browser does not support audio recording.",
+        "recordingFailed": "Recording failed. Please try again.",
+        "startFailed": "Could not start recording. Please check your microphone and try again.",
+        "permissionDenied": "Microphone access denied. Please allow microphone permissions in your browser settings and try again.",
+        "notFound": "No microphone found. Please connect a microphone and try again.",
+        "inUse": "Microphone is in use by another application. Please close other apps using the microphone and try again.",
+        "securityBlocked": "Microphone access blocked by browser security settings. Please use HTTPS or localhost.",
+        "saveFailed": "Failed to save recording"
+      }
+    },
+    "recordingCard": {
+      "unknown": "Unknown",
+      "private": "Private",
+      "pendingApproval": "Pending Approval",
+      "community": "Community",
+      "approvedOn": "Approved {date}",
+      "deleteRecording": "Delete recording",
+      "deleteTitle": "Delete Recording",
+      "deleteDescription": "Are you sure you want to delete \"{name}\"? This action cannot be undone.",
+      "stopSharing": "Stop sharing (make private)",
+      "shareCommunity": "Share with community",
+      "errorTitle": "Error",
+      "deleteFailed": "Failed to delete recording",
+      "updateSharingFailed": "Failed to update sharing status",
+      "audioUrlUnavailable": "Audio URL not available",
+      "playFailed": "Failed to play audio. The file may be unavailable.",
+      "loadFailed": "Failed to load audio"
+    }
+  }
+}

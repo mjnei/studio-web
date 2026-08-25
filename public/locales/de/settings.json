@@ -1,0 +1,97 @@
+{
+  "settings": {
+    "title": "Einstellungen",
+    "description": "Passe deine Erfahrung an und verwalte Präferenzen",
+    "saveChanges": "Änderungen speichern",
+    "saved": "Gespeichert",
+    "notifications": {
+      "title": "Benachrichtigungen",
+      "description": "Benachrichtigungseinstellungen verwalten"
+    },
+    "projectDefaults": {
+      "title": "Projekt-Standards",
+      "description": "Diese Werte für neue Projekte vorausfüllen",
+      "defaultVoice": "Standardstimme",
+      "voiceNone": "Keine",
+      "voiceA": "Stimme A",
+      "voiceB": "Stimme B",
+      "resolution": "Auflösung",
+      "resolution720p": "720p",
+      "resolution1080p": "1080p (Empfohlen)",
+      "resolution4k": "4K",
+      "frameRate": "Bildrate",
+      "fps24": "24 fps (Filmisch)",
+      "fps30": "30 fps (Standard)",
+      "fps60": "60 fps (Flüssig)",
+      "exportFormat": "Exportformat",
+      "exportMp4": "MP4 (Empfohlen)",
+      "exportWebm": "WebM",
+      "exportMov": "MOV"
+    },
+    "appearance": {
+      "title": "Darstellung",
+      "description": "Passe die Oberfläche nach deinen Vorlieben an",
+      "compactMode": "Kompaktmodus",
+      "compactModeDesc": "Abstände reduzieren und kleinere Vorschaubilder nutzen",
+      "autoPlayPreviews": "Vorschauen automatisch abspielen",
+      "autoPlayPreviewsDesc": "Clip- und Stimmvorschauen automatisch abspielen",
+      "waveformAnimations": "Wellenform-Animationen",
+      "waveformAnimationsDesc": "Audiowellenformen beim Abspielen animieren"
+    },
+    "dataPrivacy": {
+      "title": "Daten & Datenschutz",
+      "description": "Verwalte deine Daten- und Datenschutzeinstellungen",
+      "usageAnalytics": "Nutzungsanalysen",
+      "usageAnalyticsDesc": "Hilf uns zu verbessern, indem du anonymisierte Daten teilst",
+      "exportMyData": "Meine Daten exportieren",
+      "exportMyDataDesc": "Lade alle Projekte und Kontoinformationen herunter",
+      "requestExport": "Export anfordern"
+    }
+  },
+  "notificationSettings": {
+    "title": "Benachrichtigungseinstellungen",
+    "description": "Lege fest, wie du Benachrichtigungen erhältst",
+    "backToSettings": "Zurück zu Einstellungen",
+    "inApp": "In der App",
+    "preferencesHeader": "Benachrichtigungseinstellungen",
+    "savePreferences": "Einstellungen speichern",
+    "saving": "Wird gespeichert...",
+    "loadingPreferences": "Benachrichtigungseinstellungen werden geladen...",
+    "preferencesSaved": "Einstellungen gespeichert!",
+    "categories": {
+      "videoJobs": "Video-Aufträge",
+      "account": "Konto",
+      "projects": "Projekte"
+    },
+    "types": {
+      "videoJobQueued": {
+        "title": "Video-Auftrag in Warteschlange",
+        "description": "Wenn dein Videogenerierungsauftrag zur Verarbeitung eingereiht wird"
+      },
+      "videoJobCompleted": {
+        "title": "Video-Auftrag abgeschlossen",
+        "description": "Wenn deine Videogenerierung erfolgreich abgeschlossen wurde"
+      },
+      "videoJobFailed": {
+        "title": "Video-Auftrag fehlgeschlagen",
+        "description": "Wenn bei der Videogenerierung ein Fehler auftritt"
+      },
+      "lowCredits": {
+        "title": "Warnung bei wenig Credits",
+        "description": "Wenn dein Credit-Guthaben niedrig ist (unter 100 Credits)"
+      },
+      "creditTransaction": {
+        "title": "Credit-Transaktion",
+        "description": "Wenn Credits deinem Konto gutgeschrieben oder abgezogen werden"
+      },
+      "projectDeleted": {
+        "title": "Projekt gelöscht",
+        "description": "Wenn eines deiner Projekte gelöscht wird"
+      },
+      "projectPublished": {
+        "title": "Projekt veröffentlicht",
+        "description": "Wenn dein Projekt erfolgreich veröffentlicht wurde"
+      }
+    }
+  }
+}

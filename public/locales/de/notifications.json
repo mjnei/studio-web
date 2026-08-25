@@ -1,0 +1,40 @@
+{
+  "notifications": {
+    "title": "Benachrichtigungen",
+    "unreadCount": "ungelesene Benachrichtigung",
+    "unreadCountPlural": "ungelesene Benachrichtigungen",
+    "filters": {
+      "all": "Alle",
+      "unread": "Ungelesen",
+      "completedJobs": "Abgeschlossene Aufträge",
+      "failedJobs": "Fehlgeschlagene Aufträge",
+      "creditWarnings": "Credit-Warnungen"
+    },
+    "markAllAsRead": "Alle als gelesen markieren",
+    "preferences": "Einstellungen",
+    "noNotifications": "Noch keine Benachrichtigungen",
+    "noNotificationsDescription": "Hier siehst du Updates, wenn etwas mit deinen Projekten passiert.",
+    "noFilteredNotifications": "Keine Benachrichtigungen",
+    "noFilteredNotificationsDescription": "Wähle einen anderen Filter, um weitere Benachrichtigungen zu sehen.",
+    "loading": "Benachrichtigungen werden geladen...",
+    "loadMore": "Mehr laden",
+    "confirmMarkAsRead": "Markieren",
+    "confirmMarkAsReadPlural": "Benachrichtigungen als gelesen?",
+    "unreadWithCount": "Benachrichtigungen ({count} ungelesen)",
+    "newCount": "({count} neu)",
+    "markAsRead": "Als gelesen markieren",
+    "markAllConfirm": "{count} Benachrichtigung(en) als gelesen markieren?",
+    "filterBy": "Filtern nach {label}",
+    "notificationSettings": "Benachrichtigungseinstellungen",
+    "deleteNotification": "Benachrichtigung löschen",
+    "viewAll": "Alle Benachrichtigungen anzeigen",
+    "noNotificationsYet": "Noch keine Benachrichtigungen",
+    "noNotificationsHint": "Hier siehst du Updates, wenn etwas passiert",
+    "preferencesTitle": "Benachrichtigungseinstellungen",
+    "preferencesSubtitle": "Lege fest, wie du Benachrichtigungen erhältst",
+    "notificationTypes": "Benachrichtigungstypen",
+    "inApp": "In der App",
+    "saving": "Wird gespeichert...",
+    "savePreferences": "Einstellungen speichern"
+  }
+}

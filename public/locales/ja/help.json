@@ -1,0 +1,93 @@
+{
+  "help": {
+    "title": "Help & Documentation",
+    "description": "Learn how to use Huavoi Studio from start to finish",
+    "documentation": {
+      "title": "Documentation",
+      "subtitle": "Browse all guides"
+    },
+    "community": {
+      "title": "Community",
+      "subtitle": "Join discussions"
+    },
+    "apiDocs": {
+      "title": "API Docs",
+      "subtitle": "Developer resources"
+    },
+    "gettingStarted": {
+      "title": "Getting Started",
+      "articles": {
+        "creatingFirstProject": {
+          "title": "Creating your first project",
+          "description": "Learn how to set up a new video project and select a source clip."
+        },
+        "understandingPipeline": {
+          "title": "Understanding the pipeline",
+          "description": "A walkthrough of the Source → Script → Voice → Compose workflow."
+        },
+        "choosingMovieClip": {
+          "title": "Choosing a movie clip",
+          "description": "How to browse, filter, and preview clips from the movie library."
+        }
+      },
+      "readMore": "Read more"
+    },
+    "scriptAI": {
+      "title": "Script & AI",
+      "articles": {
+        "generatingScripts": {
+          "title": "Generating AI scripts",
+          "description": "How Huavoi creates candidate scripts and how to pick the best one."
+        },
+        "editingScripts": {
+          "title": "Editing scripts by segment",
+          "description": "Timestamped editing, AI-assisted rewrites, and version history."
+        },
+        "toneAndLength": {
+          "title": "Tone and length options",
+          "description": "Customizing the AI output: narrative, promotional, short, or detailed."
+        }
+      }
+    },
+    "voiceAudio": {
+      "title": "Voice & Audio",
+      "articles": {
+        "selectingVoice": {
+          "title": "Selecting a preset voice",
+          "description": "Browsing and previewing stock voices for your voiceover."
+        },
+        "cloningVoice": {
+          "title": "Cloning your own voice",
+          "description": "Recording a sample from your microphone to create a custom voice clone."
+        },
+        "voicePreview": {
+          "title": "Voice preview before render",
+          "description": "How to test a short preview clip before committing to a full TTS render."
+        }
+      }
+    },
+    "composeExport": {
+      "title": "Compose & Export",
+      "articles": {
+        "multiTrackTimeline": {
+          "title": "Using the multi-track timeline",
+          "description": "Arranging video, voiceover, music, and SFX on the timeline."
+        },
+        "renderQueue": {
+          "title": "Render queue and wait times",
+          "description": "How rendering works, expected wait times, and safe-to-close behavior."
+        },
+        "exportFormats": {
+          "title": "Export formats and resolution",
+          "description": "Choosing resolution, FPS, and format for your final export."
+        }
+      }
+    },
+    "contactSupport": {
+      "title": "Still need help?",
+      "description": "Can't find what you're looking for? Our support team is here to help you succeed.",
+      "contact": "Contact Support",
+      "liveChat": "Live Chat"
+    }
+  }
+}

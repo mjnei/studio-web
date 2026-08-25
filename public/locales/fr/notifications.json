@@ -1,0 +1,40 @@
+{
+  "notifications": {
+    "title": "Notifications",
+    "unreadCount": "notification non lue",
+    "unreadCountPlural": "notifications non lues",
+    "filters": {
+      "all": "Toutes",
+      "unread": "Non lues",
+      "completedJobs": "Tâches terminées",
+      "failedJobs": "Tâches échouées",
+      "creditWarnings": "Alertes crédits"
+    },
+    "markAllAsRead": "Tout marquer comme lu",
+    "preferences": "Préférences",
+    "noNotifications": "Pas encore de notifications",
+    "noNotificationsDescription": "Tu verras ici les mises à jour liées à tes projets.",
+    "noFilteredNotifications": "Aucune notification",
+    "noFilteredNotificationsDescription": "Essaie un autre filtre pour voir d'autres notifications.",
+    "loading": "Chargement des notifications...",
+    "loadMore": "Charger plus",
+    "confirmMarkAsRead": "Marquer",
+    "confirmMarkAsReadPlural": "notifications comme lues ?",
+    "unreadWithCount": "Notifications ({count} non lues)",
+    "newCount": "({count} nouvelles)",
+    "markAsRead": "Marquer comme lu",
+    "markAllConfirm": "Marquer {count} notification(s) comme lues ?",
+    "filterBy": "Filtrer par {label}",
+    "notificationSettings": "Paramètres de notification",
+    "deleteNotification": "Supprimer la notification",
+    "viewAll": "Voir toutes les notifications",
+    "noNotificationsYet": "Pas encore de notifications",
+    "noNotificationsHint": "Tu verras ici les mises à jour quand quelque chose se passe",
+    "preferencesTitle": "Préférences de notification",
+    "preferencesSubtitle": "Gère la façon dont tu reçois les notifications",
+    "notificationTypes": "Types de notifications",
+    "inApp": "Dans l'app",
+    "saving": "Enregistrement...",
+    "savePreferences": "Enregistrer les préférences"
+  }
+}

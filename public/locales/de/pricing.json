@@ -1,0 +1,88 @@
+{
+  "pricing": {
+    "title": "Einfache, transparente Preise",
+    "description": "1 Credit = 1 Videogenerierung. Wähle den Plan, der zu dir passt.",
+    "badge": "Sonderpreise zum Launch",
+    "billingToggle": {
+      "monthly": "Monatlich",
+      "annual": "Jährlich",
+      "savings": "20 % sparen"
+    },
+    "whatsIncluded": "Was enthalten ist",
+    "creditsPerMonth": "Credits/Monat",
+    "rolloverLabel": "Übertrag:",
+    "free": {
+      "name": "Free",
+      "description": "Starte mit grundlegender Videogenerierung",
+      "price": {
+        "monthly": "$0",
+        "annual": "$0",
+        "billedAnnually": "jährlich abgerechnet",
+        "billedMonthly": "bei monatlicher Abrechnung"
+      },
+      "rolloverAmount": "10 Credits",
+      "features": {
+        "credits": "5 Credits pro Monat",
+        "rollover": "Übertrag bis zu 10 Credits",
+        "voices": "2 eigene Stimmen",
+        "video": "Grundlegende Videogenerierung",
+        "quality": "720p-Videoqualität",
+        "storage": "Standard-Projektspeicher"
+      },
+      "button": "Aktueller Plan"
+    },
+    "pro": {
+      "name": "Pro",
+      "description": "Für Creator, die mehr Kapazität brauchen",
+      "price": {
+        "monthly": "$49/Mo.",
+        "annual": "$39/Mo."
+      },
+      "rolloverAmount": "50 Credits",
+      "badge": "Am beliebtesten",
+      "features": {
+        "credits": "25 Credits pro Monat",
+        "rollover": "Übertrag bis zu 50 Credits",
+        "voices": "5 eigene Stimmen",
+        "video": "HD-Videogenerierung (1080p)",
+        "priority": "Priorisierte Verarbeitung",
+        "analytics": "Erweiterte Analysen",
+        "export": "Export-Anpassung"
+      },
+      "button": "Auf Pro upgraden"
+    },
+    "premium": {
+      "name": "Premium",
+      "description": "Unbegrenzte Kapazität für Profis",
+      "price": {
+        "monthly": "$199/Mo.",
+        "annual": "$159/Mo."
+      },
+      "rolloverAmount": "Unbegrenzt",
+      "features": {
+        "credits": "100 Credits pro Monat",
+        "rollover": "Unbegrenzter Übertrag",
+        "voices": "10 eigene Stimmen",
+        "quality": "4K-Videoqualität",
+        "support": "Prioritäts-Support",
+        "ai": "Erweiterte KI-Funktionen",
+        "team": "Team-Zusammenarbeit",
+        "whiteLabel": "White-Label-Exporte",
+        "api": "API-Zugang"
+      },
+      "button": "Auf Premium upgraden"
+    },
+    "faq": {
+      "title": "Häufig gestellte Fragen",
+      "creditQuestion": "Was ist ein Credit und wofür wird er verwendet?",
+      "creditAnswer": "Ein Credit wird für die Generierung eines Videos verwendet. Jede Videogenerierung verbraucht 1 Credit — unabhängig von Länge oder Komplexität. Fehlgeschlagene Generierungen werden automatisch erstattet.",
+      "rolloverQuestion": "Wie funktioniert der Credit-Übertrag?",
+      "rolloverAnswer": "Ungenutzte Credits werden in den nächsten Monat übertragen, bis zum Maximalübertrag deiner Stufe (Free: 10, Pro: 50, Premium: unbegrenzt). Credits verfallen nach 6 Monaten Inaktivität.",
+      "changeQuestion": "Kann ich meinen Plan ändern oder kündigen?",
+      "changeAnswer": "Ja, du kannst jederzeit upgraden, downgraden oder kündigen. Beim Downgrade behältst du die Funktionen deines aktuellen Plans bis zum Ende des Abrechnungszyklus.",
+      "teamQuestion": "Gibt es Team-Pläne?",
+      "teamAnswer": "Team-Pläne mit geteilten Credits und Kollaborationsfunktionen sind für Premium-Abonnenten verfügbar. Kontaktiere uns für individuelle Preise."
+    },
+    "subscribeComingSoon": "Abonnement der Stufe {tier}... (Zahlungsintegration kommt bald)"
+  }
+}

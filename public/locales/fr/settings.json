@@ -1,0 +1,97 @@
+{
+  "settings": {
+    "title": "Paramètres",
+    "description": "Personnalise ton expérience et gère tes préférences",
+    "saveChanges": "Enregistrer les modifications",
+    "saved": "Enregistré",
+    "notifications": {
+      "title": "Notifications",
+      "description": "Gérer les préférences de notification"
+    },
+    "projectDefaults": {
+      "title": "Paramètres par défaut des projets",
+      "description": "Préremplir ces valeurs pour les nouveaux projets",
+      "defaultVoice": "Voix par défaut",
+      "voiceNone": "Aucune",
+      "voiceA": "Voix A",
+      "voiceB": "Voix B",
+      "resolution": "Résolution",
+      "resolution720p": "720p",
+      "resolution1080p": "1080p (Recommandé)",
+      "resolution4k": "4K",
+      "frameRate": "Fréquence d'images",
+      "fps24": "24 fps (Cinématique)",
+      "fps30": "30 fps (Standard)",
+      "fps60": "60 fps (Fluide)",
+      "exportFormat": "Format d'export",
+      "exportMp4": "MP4 (Recommandé)",
+      "exportWebm": "WebM",
+      "exportMov": "MOV"
+    },
+    "appearance": {
+      "title": "Apparence",
+      "description": "Personnalise l'interface selon tes préférences",
+      "compactMode": "Mode compact",
+      "compactModeDesc": "Réduire l'espacement et utiliser de plus petites miniatures",
+      "autoPlayPreviews": "Lecture auto des aperçus",
+      "autoPlayPreviewsDesc": "Lire automatiquement les aperçus de clips et de voix",
+      "waveformAnimations": "Animations de forme d'onde",
+      "waveformAnimationsDesc": "Animer les formes d'onde audio pendant la lecture"
+    },
+    "dataPrivacy": {
+      "title": "Données et confidentialité",
+      "description": "Gère tes préférences de données et de confidentialité",
+      "usageAnalytics": "Analyses d'utilisation",
+      "usageAnalyticsDesc": "Aide-nous à nous améliorer en partageant des données anonymisées",
+      "exportMyData": "Exporter mes données",
+      "exportMyDataDesc": "Télécharge tous tes projets et infos de compte",
+      "requestExport": "Demander l'export"
+    }
+  },
+  "notificationSettings": {
+    "title": "Paramètres de notification",
+    "description": "Gère la façon dont tu reçois les notifications",
+    "backToSettings": "Retour aux paramètres",
+    "inApp": "Dans l'app",
+    "preferencesHeader": "Préférences de notification",
+    "savePreferences": "Enregistrer les préférences",
+    "saving": "Enregistrement...",
+    "loadingPreferences": "Chargement des préférences de notification...",
+    "preferencesSaved": "Préférences enregistrées !",
+    "categories": {
+      "videoJobs": "Tâches vidéo",
+      "account": "Compte",
+      "projects": "Projets"
+    },
+    "types": {
+      "videoJobQueued": {
+        "title": "Tâche vidéo en file",
+        "description": "Quand ta tâche de génération vidéo est mise en file d'attente"
+      },
+      "videoJobCompleted": {
+        "title": "Tâche vidéo terminée",
+        "description": "Quand ta génération vidéo est terminée avec succès"
+      },
+      "videoJobFailed": {
+        "title": "Tâche vidéo échouée",
+        "description": "Quand ta génération vidéo rencontre une erreur"
+      },
+      "lowCredits": {
+        "title": "Alerte crédits bas",
+        "description": "Quand ton solde de crédits est bas (moins de 100 crédits)"
+      },
+      "creditTransaction": {
+        "title": "Transaction de crédits",
+        "description": "Quand des crédits sont ajoutés ou déduits de ton compte"
+      },
+      "projectDeleted": {
+        "title": "Projet supprimé",
+        "description": "Quand un de tes projets est supprimé"
+      },
+      "projectPublished": {
+        "title": "Projet publié",
+        "description": "Quand ton projet est publié avec succès"
+      }
+    }
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "profile": {
+    "title": "Ajustes del perfil",
+    "description": "Gestiona la configuración y preferencias de tu cuenta",
+    "upgradeBanner": {
+      "title": "Desbloquea más con Pro o Premium",
+      "description": "Obtén más créditos, soporte prioritario y funciones avanzadas para crear más vídeos.",
+      "viewPlans": "Ver planes",
+      "billing": "Facturación"
+    },
+    "accountOverview": {
+      "title": "Resumen de la cuenta",
+      "description": "Tu información personal y el estado de la cuenta",
+      "displayName": "Nombre para mostrar",
+      "autoCapitalizeWords": "Capitalizar la primera letra de cada palabra",
+      "edit": "Editar",
+      "cancel": "Cancelar",
+      "save": "Guardar",
+      "copyEmail": "Copiar dirección de correo",
+      "emailCopied": "Correo copiado",
+      "profileUpdatedSuccess": "Perfil actualizado correctamente.",
+      "profileUpdatedError": "Error al actualizar el perfil"
+    },
+    "membershipBilling": {
+      "title": "Membresía y facturación",
+      "description": "Gestiona tu suscripción y facturación",
+      "currentPlan": "Plan actual",
+      "upgradePlan": "Mejorar plan",
+      "viewAllPlans": "Ver todos los planes",
+      "manageBilling": "Gestionar facturación",
+      "activeSince": "Activo desde:",
+      "expiresOn": "Caduca el:",
+      "renewsOn": "Se renueva el:",
+      "subscriptionStatus": {
+        "active": "Activo",
+        "canceled": "Cancelado",
+        "inactive": "Inactivo",
+        "expired": "Caducado"
+      },
+      "tiers": {
+        "free": "Free",
+        "pro": "Pro",
+        "premium": "Premium"
+      }
+    },
+    "passwordSecurity": {
+      "title": "Contraseña y seguridad",
+      "description": "Gestiona tu contraseña y ajustes de seguridad",
+      "changePassword": "Cambiar contraseña",
+      "setPassword": "Establecer contraseña",
+      "currentPassword": "Contraseña actual",
+      "newPassword": "Nueva contraseña",
+      "confirmNewPassword": "Confirmar nueva contraseña",
+      "updatePassword": "Actualizar contraseña",
+      "passwordError": {
+        "mismatch": "Las contraseñas no coinciden",
+        "tooShort": "La contraseña debe tener al menos 8 caracteres",
+        "tooLong": "La contraseña no debe superar los 128 caracteres"
+      },
+      "passwordUpdatedSuccess": "Contraseña actualizada correctamente.",
+      "passwordUpdatedError": "Error al cambiar la contraseña"
+    },
+    "connectedAccounts": {
+      "title": "Cuentas conectadas",
+      "description": "Gestiona tus cuentas vinculadas",
+      "google": "Google",
+      "connected": "Conectada",
+      "notConnected": "No conectada",
+      "primaryAccount": "Cuenta principal"
+    },
+    "onboarding": {
+      "title": "Primeros pasos",
+      "description": "Gestiona tu sesión y el estado de los primeros pasos",
+      "signOut": "Cerrar sesión",
+      "signOutDescription": "Termina tu sesión actual en este dispositivo",
+      "resetOnboarding": "Restablecer primeros pasos",
+      "resetOnboardingDescription": "Contraseña:",
+      "passwordAlreadySet": "Ya establecida",
+      "passwordNotSet": "No establecida",
+      "reset": "Restablecer",
+      "resetting": "Restableciendo..."
+    },
+    "dangerZone": {
+      "title": "Zona de peligro",
+      "description": "Eliminación permanente de la cuenta",
+      "deleteAccountWarning": "Elimina permanentemente tu cuenta y todos los datos asociados: proyectos, voces, renders e historial de referidos. Esta acción no se puede deshacer.",
+      "deleteAccount": "Eliminar cuenta",
+      "confirmDelete": "Escribe delete my account para confirmar:",
+      "deleteAccountPlaceholder": "delete my account",
+      "permanentlyDeleteAccount": "Eliminar cuenta permanentemente",
+      "deleteAccountConfirmCancel": "Cancelar"
+    }
+  }
+}

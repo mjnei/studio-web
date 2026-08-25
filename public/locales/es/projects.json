@@ -1,0 +1,33 @@
+{
+  "projects": {
+    "title": "Proyectos",
+    "description": "Crea y gestiona tus proyectos de vídeo",
+    "badge": {
+      "singular": "proyecto",
+      "plural": "proyectos"
+    },
+    "new": "Nuevo proyecto",
+    "layout": {
+      "small": "Cuadrícula pequeña (hasta 4 columnas)",
+      "medium": "Cuadrícula mediana (2–3 columnas)",
+      "list": "Vista de lista"
+    },
+    "empty": {
+      "title": "Aún no hay proyectos",
+      "message": "Empieza creando tu primer proyecto",
+      "cta": "Crear tu primer proyecto"
+    },
+    "delete": {
+      "title": "¿Eliminar proyecto?",
+      "confirm": "Estás a punto de eliminar el proyecto:",
+      "restoreInfo": "Este proyecto se puede restaurar en los próximos 7 días.",
+      "success": "Proyecto eliminado correctamente",
+      "error": "No se pudo eliminar el proyecto"
+    },
+    "loading": "Cargando proyectos...",
+    "loadingDescription": "Espera mientras obtenemos tus proyectos",
+    "untitled": "Proyecto sin título",
+    "loadError": "Error al cargar los proyectos",
+    "loadErrorDescription": "No se pudieron cargar los proyectos"
+  }
+}

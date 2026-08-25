@@ -1,0 +1,88 @@
+{
+  "pricing": {
+    "title": "Precios simples y transparentes",
+    "description": "1 crédito = 1 generación de vídeo. Elige el plan que se adapte a ti.",
+    "badge": "Precios especiales de lanzamiento",
+    "billingToggle": {
+      "monthly": "Mensual",
+      "annual": "Anual",
+      "savings": "Ahorra un 20 %"
+    },
+    "whatsIncluded": "Qué incluye",
+    "creditsPerMonth": "créditos/mes",
+    "rolloverLabel": "Acumulación:",
+    "free": {
+      "name": "Free",
+      "description": "Empieza con generación de vídeo básica",
+      "price": {
+        "monthly": "$0",
+        "annual": "$0",
+        "billedAnnually": "facturado anualmente",
+        "billedMonthly": "con facturación mensual"
+      },
+      "rolloverAmount": "10 créditos",
+      "features": {
+        "credits": "5 créditos al mes",
+        "rollover": "Acumulación hasta 10 créditos",
+        "voices": "2 voces personalizadas",
+        "video": "Generación de vídeo básica",
+        "quality": "Calidad de vídeo 720p",
+        "storage": "Almacenamiento de proyectos estándar"
+      },
+      "button": "Plan actual"
+    },
+    "pro": {
+      "name": "Pro",
+      "description": "Para creadores que necesitan más capacidad",
+      "price": {
+        "monthly": "$49/mes",
+        "annual": "$39/mes"
+      },
+      "rolloverAmount": "50 créditos",
+      "badge": "Más popular",
+      "features": {
+        "credits": "25 créditos al mes",
+        "rollover": "Acumulación hasta 50 créditos",
+        "voices": "5 voces personalizadas",
+        "video": "Generación de vídeo HD (1080p)",
+        "priority": "Procesamiento prioritario",
+        "analytics": "Analíticas avanzadas",
+        "export": "Personalización de exportación"
+      },
+      "button": "Mejorar a Pro"
+    },
+    "premium": {
+      "name": "Premium",
+      "description": "Capacidad ilimitada para profesionales",
+      "price": {
+        "monthly": "$199/mes",
+        "annual": "$159/mes"
+      },
+      "rolloverAmount": "Ilimitado",
+      "features": {
+        "credits": "100 créditos al mes",
+        "rollover": "Acumulación ilimitada",
+        "voices": "10 voces personalizadas",
+        "quality": "Calidad de vídeo 4K",
+        "support": "Soporte prioritario",
+        "ai": "Funciones de IA avanzadas",
+        "team": "Colaboración en equipo",
+        "whiteLabel": "Exportaciones de marca blanca",
+        "api": "Acceso a la API"
+      },
+      "button": "Mejorar a Premium"
+    },
+    "faq": {
+      "title": "Preguntas frecuentes",
+      "creditQuestion": "¿Qué es un crédito y cómo se usa?",
+      "creditAnswer": "Un crédito se usa para generar un vídeo. Cada generación consume 1 crédito, sin importar la duración o la complejidad. Las generaciones fallidas se reembolsan automáticamente.",
+      "rolloverQuestion": "¿Cómo funciona la acumulación de créditos?",
+      "rolloverAnswer": "Los créditos no usados se acumulan al mes siguiente, hasta el máximo de tu nivel (Free: 10, Pro: 50, Premium: ilimitado). Los créditos caducan tras 6 meses de inactividad.",
+      "changeQuestion": "¿Puedo cambiar o cancelar mi plan?",
+      "changeAnswer": "Sí, puedes mejorar, reducir o cancelar tu plan en cualquier momento. Al reducir, mantienes las funciones de tu plan actual hasta el final del ciclo de facturación.",
+      "teamQuestion": "¿Ofrecéis planes de equipo?",
+      "teamAnswer": "Los planes de equipo con créditos compartidos y colaboración están disponibles para suscriptores Premium. Contáctanos para precios personalizados."
+    },
+    "subscribeComingSoon": "Suscribiéndote al nivel {tier}... (Integración de pagos próximamente)"
+  }
+}

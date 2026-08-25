@@ -1,0 +1,33 @@
+{
+  "projects": {
+    "title": "Projekte",
+    "description": "Erstelle und verwalte deine Videoprojekte",
+    "badge": {
+      "singular": "Projekt",
+      "plural": "Projekte"
+    },
+    "new": "Neues Projekt",
+    "layout": {
+      "small": "Kleines Raster (bis zu 4 Spalten)",
+      "medium": "Mittleres Raster (2–3 Spalten)",
+      "list": "Listenansicht"
+    },
+    "empty": {
+      "title": "Noch keine Projekte",
+      "message": "Starte, indem du dein erstes Projekt erstellst",
+      "cta": "Erstes Projekt erstellen"
+    },
+    "delete": {
+      "title": "Projekt löschen?",
+      "confirm": "Du bist dabei, dieses Projekt zu löschen:",
+      "restoreInfo": "Dieses Projekt kann innerhalb der nächsten 7 Tage wiederhergestellt werden.",
+      "success": "Projekt erfolgreich gelöscht",
+      "error": "Projekt konnte nicht gelöscht werden"
+    },
+    "loading": "Projekte werden geladen...",
+    "loadingDescription": "Bitte warte, während wir deine Projekte abrufen",
+    "untitled": "Unbenanntes Projekt",
+    "loadError": "Projekte konnten nicht geladen werden",
+    "loadErrorDescription": "Projekte konnten nicht geladen werden"
+  }
+}

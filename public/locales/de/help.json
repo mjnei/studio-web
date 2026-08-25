@@ -1,0 +1,93 @@
+{
+  "help": {
+    "title": "Hilfe & Dokumentation",
+    "description": "Lerne, Huavoi Studio von Anfang bis Ende zu nutzen",
+    "documentation": {
+      "title": "Dokumentation",
+      "subtitle": "Alle Anleitungen durchsuchen"
+    },
+    "community": {
+      "title": "Community",
+      "subtitle": "An Diskussionen teilnehmen"
+    },
+    "apiDocs": {
+      "title": "API-Docs",
+      "subtitle": "Ressourcen für Entwickler"
+    },
+    "gettingStarted": {
+      "title": "Erste Schritte",
+      "articles": {
+        "creatingFirstProject": {
+          "title": "Dein erstes Projekt erstellen",
+          "description": "So richtest du ein neues Videoprojekt ein und wählst einen Quellclip."
+        },
+        "understandingPipeline": {
+          "title": "Die Pipeline verstehen",
+          "description": "Ein Rundgang durch den Workflow Quelle → Skript → Vertonung → Zusammensetzen."
+        },
+        "choosingMovieClip": {
+          "title": "Einen Filmclip wählen",
+          "description": "So durchsuchst, filterst und previewst du Clips aus der Filmbibliothek."
+        }
+      },
+      "readMore": "Weiterlesen"
+    },
+    "scriptAI": {
+      "title": "Skript & KI",
+      "articles": {
+        "generatingScripts": {
+          "title": "KI-Skripte generieren",
+          "description": "Wie Huavoi Skript-Kandidaten erstellt und wie du das beste auswählst."
+        },
+        "editingScripts": {
+          "title": "Skripte segmentweise bearbeiten",
+          "description": "Zeitstempel-Bearbeitung, KI-gestützte Umschreibungen und Versionsverlauf."
+        },
+        "toneAndLength": {
+          "title": "Ton und Länge",
+          "description": "KI-Ausgabe anpassen: narrativ, werblich, kurz oder ausführlich."
+        }
+      }
+    },
+    "voiceAudio": {
+      "title": "Stimme & Audio",
+      "articles": {
+        "selectingVoice": {
+          "title": "Eine vorgefertigte Stimme wählen",
+          "description": "Stock-Stimmen durchsuchen und für deine Vertonung anhören."
+        },
+        "cloningVoice": {
+          "title": "Deine eigene Stimme klonen",
+          "description": "Eine Probe mit dem Mikrofon aufnehmen, um einen eigenen Stimmklon zu erstellen."
+        },
+        "voicePreview": {
+          "title": "Stimmvorschau vor dem Render",
+          "description": "So testest du einen kurzen Preview-Clip, bevor du ein vollständiges TTS-Rendering startest."
+        }
+      }
+    },
+    "composeExport": {
+      "title": "Zusammensetzen & Export",
+      "articles": {
+        "multiTrackTimeline": {
+          "title": "Die Mehrspur-Timeline nutzen",
+          "description": "Video, Vertonung, Musik und SFX auf der Timeline anordnen."
+        },
+        "renderQueue": {
+          "title": "Render-Warteschlange und Wartezeiten",
+          "description": "So funktioniert das Rendering, erwartete Wartezeiten und sicheres Schließen."
+        },
+        "exportFormats": {
+          "title": "Exportformate und Auflösung",
+          "description": "Auflösung, FPS und Format für den finalen Export wählen."
+        }
+      }
+    },
+    "contactSupport": {
+      "title": "Brauchst du noch Hilfe?",
+      "description": "Nicht gefunden, was du suchst? Unser Support-Team hilft dir gerne weiter.",
+      "contact": "Support kontaktieren",
+      "liveChat": "Live-Chat"
+    }
+  }
+}

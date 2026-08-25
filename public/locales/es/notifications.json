@@ -1,0 +1,40 @@
+{
+  "notifications": {
+    "title": "Notificaciones",
+    "unreadCount": "notificación no leída",
+    "unreadCountPlural": "notificaciones no leídas",
+    "filters": {
+      "all": "Todas",
+      "unread": "No leídas",
+      "completedJobs": "Trabajos completados",
+      "failedJobs": "Trabajos fallidos",
+      "creditWarnings": "Avisos de créditos"
+    },
+    "markAllAsRead": "Marcar todas como leídas",
+    "preferences": "Preferencias",
+    "noNotifications": "Aún no hay notificaciones",
+    "noNotificationsDescription": "Verás actualizaciones aquí cuando ocurra algo con tus proyectos.",
+    "noFilteredNotifications": "Sin notificaciones",
+    "noFilteredNotificationsDescription": "Prueba otro filtro para ver otras notificaciones.",
+    "loading": "Cargando notificaciones...",
+    "loadMore": "Cargar más",
+    "confirmMarkAsRead": "Marcar",
+    "confirmMarkAsReadPlural": "¿notificaciones como leídas?",
+    "unreadWithCount": "Notificaciones ({count} no leídas)",
+    "newCount": "({count} nuevas)",
+    "markAsRead": "Marcar como leída",
+    "markAllConfirm": "¿Marcar {count} notificación(es) como leídas?",
+    "filterBy": "Filtrar por {label}",
+    "notificationSettings": "Ajustes de notificaciones",
+    "deleteNotification": "Eliminar notificación",
+    "viewAll": "Ver todas las notificaciones",
+    "noNotificationsYet": "Aún no hay notificaciones",
+    "noNotificationsHint": "Verás actualizaciones aquí cuando ocurra algo",
+    "preferencesTitle": "Preferencias de notificaciones",
+    "preferencesSubtitle": "Gestiona cómo recibes las notificaciones",
+    "notificationTypes": "Tipos de notificación",
+    "inApp": "En la app",
+    "saving": "Guardando...",
+    "savePreferences": "Guardar preferencias"
+  }
+}

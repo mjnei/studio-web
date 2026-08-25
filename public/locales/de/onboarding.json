@@ -1,0 +1,104 @@
+{
+  "onboarding": {
+    "welcome": {
+      "title": "Willkommen bei Huavoi Studio",
+      "subtitle": "Verwandle deine Ideen mit KI in beeindruckende Videos. Professionelle Ergebnisse in Minuten, nicht Stunden.",
+      "features": {
+        "templates": "Professionelle Vorlagen",
+        "aiTools": "KI-gestützte Tools",
+        "publishing": "Mit einem Klick veröffentlichen"
+      },
+      "getStarted": "Loslegen",
+      "subtext": "Dauert weniger als 2 Minuten",
+      "getStartedAria": "Mit dem Einstieg starten"
+    },
+    "progress": {
+      "stepOf": "Schritt {current} von {total}",
+      "ariaLabel": "Schritt {current} von {total}"
+    },
+    "workflow": {
+      "title": "Dein Weg zur Videoproduktion",
+      "subtitle": "4 einfache Schritte zu großartigen Videos",
+      "steps": {
+        "source": {
+          "title": "Quelle",
+          "description": "Aus dem Filmkatalog wählen"
+        },
+        "script": {
+          "title": "Skript",
+          "description": "KI erstellt Videoskripte"
+        },
+        "voice": {
+          "title": "Vertonung",
+          "description": "Text-to-Speech mit KI"
+        },
+        "compose": {
+          "title": "Zusammensetzen",
+          "description": "Finales Video erstellen"
+        }
+      },
+      "info": "Wechsle jederzeit zwischen den Schritten. Arbeite in deinem Tempo — dein Fortschritt wird automatisch gespeichert.",
+      "back": "Zurück",
+      "continue": "Weiter",
+      "step": "Schritt {number}",
+      "goBack": "Zum vorherigen Schritt zurück",
+      "continueTakeStep": "Zum nächsten Schritt"
+    },
+    "password": {
+      "title": "Alternative Anmeldung einrichten",
+      "titleUpdate": "Passwort aktualisieren",
+      "subtitle": "Du hast dich mit Google angemeldet. Möchtest du auch ein Passwort für die E-Mail-Anmeldung hinzufügen?",
+      "subtitleUpdate": "Du hast bereits ein Passwort. Hier kannst du es aktualisieren.",
+      "securityHint": "Greife auf dein Konto zu, auch wenn Google nicht verfügbar ist",
+      "alreadyConfigured": "Passwort bereits eingerichtet",
+      "password": "Passwort",
+      "confirmPassword": "Passwort bestätigen",
+      "passwordLabel": "Passwort",
+      "confirmPasswordLabel": "Passwort bestätigen",
+      "passwordPlaceholder": "Passwort eingeben (min. 8 Zeichen)",
+      "confirmPasswordPlaceholder": "Passwort bestätigen",
+      "showPassword": "Passwort anzeigen",
+      "hidePassword": "Passwort verbergen",
+      "showConfirmPassword": "Bestätigungspasswort anzeigen",
+      "hideConfirmPassword": "Bestätigungspasswort verbergen",
+      "strength": "Passwortstärke",
+      "strengthWeak": "Schwach",
+      "strengthFair": "Mittel",
+      "strengthGood": "Gut",
+      "strengthStrong": "Stark",
+      "match": "Passwörter stimmen überein",
+      "noMatch": "Passwörter stimmen nicht überein",
+      "validation": {
+        "tooShort": "Passwort muss mindestens 8 Zeichen haben",
+        "mismatch": "Passwörter stimmen nicht überein"
+      },
+      "setPassword": "Passwort festlegen",
+      "updating": "Wird aktualisiert...",
+      "settingPassword": "Passwort wird gesetzt...",
+      "alreadySet": "Passwort bereits gesetzt",
+      "skipForNow": "Vorerst überspringen",
+      "back": "Zurück",
+      "goBack": "Zum vorherigen Schritt zurück",
+      "skipPassword": "Passwort-Einrichtung überspringen",
+      "error": "Passwort konnte nicht gesetzt werden. Bitte versuche es erneut.",
+      "errorUpdate": "Passwort konnte nicht aktualisiert werden. Bitte versuche es erneut."
+    },
+    "completion": {
+      "loading": "Dein Konto wird eingerichtet",
+      "loadingSubtext": "Das dauert nur einen Moment...",
+      "loadingAriaLabel": "Einstieg wird abgeschlossen",
+      "success": "Alles bereit!",
+      "successSubtext": "Dein Konto ist startklar. Lass uns gemeinsam großartige Videos erstellen.",
+      "features": {
+        "create": "Erstellen",
+        "design": "Gestalten",
+        "publish": "Veröffentlichen"
+      },
+      "goToDashboard": "Zum Arbeitsbereich",
+      "redirect": "Weiterleitung in {seconds} Sekunden...",
+      "error": "Etwas ist schiefgelaufen",
+      "tryAgain": "Erneut versuchen",
+      "completionAriaLabel": "Abschlussstatus"
+    }
+  }
+}

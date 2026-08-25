@@ -1,0 +1,104 @@
+{
+  "onboarding": {
+    "welcome": {
+      "title": "Welcome to Huavoi Studio",
+      "subtitle": "Transform your ideas into stunning videos with AI-powered creativity. Professional results in minutes, not hours.",
+      "features": {
+        "templates": "Professional Templates",
+        "aiTools": "AI-Powered Tools",
+        "publishing": "One-Click Publishing"
+      },
+      "getStarted": "Get Started",
+      "subtext": "Takes less than 2 minutes to complete",
+      "getStartedAria": "Get started with onboarding"
+    },
+    "progress": {
+      "stepOf": "Step {current} of {total}",
+      "ariaLabel": "Step {current} of {total}"
+    },
+    "workflow": {
+      "title": "Your Video Creation Journey",
+      "subtitle": "4 simple steps to create amazing videos",
+      "steps": {
+        "source": {
+          "title": "Source",
+          "description": "Select from movie catalog"
+        },
+        "script": {
+          "title": "Script",
+          "description": "AI generates video scripts"
+        },
+        "voice": {
+          "title": "Voice",
+          "description": "Text-to-speech with AI"
+        },
+        "compose": {
+          "title": "Compose",
+          "description": "Create final video"
+        }
+      },
+      "info": "Switch between steps anytime. Work at your own pace—your progress is auto-saved.",
+      "back": "Back",
+      "continue": "Continue",
+      "step": "Step {number}",
+      "goBack": "Go back to previous step",
+      "continueTakeStep": "Continue to next step"
+    },
+    "password": {
+      "title": "Set Up Alternative Login",
+      "titleUpdate": "Update Your Password",
+      "subtitle": "You signed in with Google. Want to add a password for email login too?",
+      "subtitleUpdate": "You already have a password set. You can update it here if you'd like.",
+      "securityHint": "Access your account even if Google is unavailable",
+      "alreadyConfigured": "Password already configured",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "passwordLabel": "Password",
+      "confirmPasswordLabel": "Confirm Password",
+      "passwordPlaceholder": "Enter password (min 8 characters)",
+      "confirmPasswordPlaceholder": "Confirm password",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password",
+      "showConfirmPassword": "Show confirm password",
+      "hideConfirmPassword": "Hide confirm password",
+      "strength": "Password Strength",
+      "strengthWeak": "Weak",
+      "strengthFair": "Fair",
+      "strengthGood": "Good",
+      "strengthStrong": "Strong",
+      "match": "Passwords match",
+      "noMatch": "Passwords do not match",
+      "validation": {
+        "tooShort": "Password must be at least 8 characters",
+        "mismatch": "Passwords do not match"
+      },
+      "setPassword": "Set Password",
+      "updating": "Updating...",
+      "settingPassword": "Setting Password...",
+      "alreadySet": "Password Already Set",
+      "skipForNow": "Skip for Now",
+      "back": "Back",
+      "goBack": "Go back to previous step",
+      "skipPassword": "Skip password setup",
+      "error": "Failed to set password. Please try again.",
+      "errorUpdate": "Failed to update password. Please try again."
+    },
+    "completion": {
+      "loading": "Setting Up Your Account",
+      "loadingSubtext": "This will only take a moment...",
+      "loadingAriaLabel": "Completing onboarding",
+      "success": "You're All Set!",
+      "successSubtext": "Your account is ready. Let's start creating amazing videos together.",
+      "features": {
+        "create": "Create",
+        "design": "Design",
+        "publish": "Publish"
+      },
+      "goToDashboard": "Go to Dashboard",
+      "redirect": "Redirecting in {seconds} seconds...",
+      "error": "Something Went Wrong",
+      "tryAgain": "Try Again",
+      "completionAriaLabel": "Completion status"
+    }
+  }
+}

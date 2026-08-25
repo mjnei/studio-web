@@ -1,0 +1,53 @@
+{
+  "movies": {
+    "title": "Filmbibliothek",
+    "description": "Entdecke Filme für dein nächstes Projekt",
+    "count": "{count} Filme",
+    "countSingular": "{count} Film",
+    "searchPlaceholder": "Filme nach Titel suchen...",
+    "loading": "Filme werden geladen...",
+    "loadingDescription": "Bitte warte, während wir den Katalog abrufen",
+    "loadingDetails": "Details werden geladen... {progress}%",
+    "error": {
+      "title": "Filme konnten nicht geladen werden",
+      "unableToLoad": "Filme konnten nicht geladen werden"
+    },
+    "empty": {
+      "title": "Keine Filme gefunden",
+      "searchHint": "Passe deine Suchbegriffe an",
+      "catalogEmpty": "Keine Filme im Katalog verfügbar"
+    },
+    "director": "Regie",
+    "cast": "Besetzung",
+    "runtimeUnit": "Min.",
+    "detail": {
+      "back": "Zurück zu Filme",
+      "return": "Zurück zu Filme",
+      "loading": "Filmdetails werden geladen...",
+      "errorTitle": "Film konnte nicht geladen werden",
+      "loadFailed": "Filmdetails konnten nicht geladen werden",
+      "createProject": "Projekt erstellen",
+      "buttonLoading": "Wird geladen...",
+      "statistics": "Statistiken",
+      "rating": "Bewertung",
+      "popularity": "Popularität",
+      "externalIds": "Externe IDs",
+      "imdb": "IMDb",
+      "douban": "Douban",
+      "runtimeMinutes": "{runtime} Minuten",
+      "overview": "Übersicht",
+      "crew": "Crew",
+      "expandCrew": "Crew erweitern",
+      "collapseCrew": "Crew einklappen",
+      "director": "Regisseur",
+      "directors": "Regisseure",
+      "producer": "Produzent",
+      "producers": "Produzenten",
+      "writer": "Drehbuch",
+      "writers": "Drehbuchautoren",
+      "topCast": "Hauptbesetzung",
+      "expandCast": "Besetzung erweitern",
+      "collapseCast": "Besetzung einklappen"
+    }
+  }
+}

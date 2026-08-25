@@ -1,0 +1,61 @@
+{
+  "referral": {
+    "title": "Programa de referidos",
+    "description": "Invita amigos y ganad créditos juntos",
+    "viewLeaderboard": "Ver clasificación",
+    "errorTitle": "Error",
+    "errorLoadingData": "Error al cargar los datos de referidos",
+    "inviteCard": {
+      "title": "Invita amigos, gana créditos",
+      "description": "Comparte tu enlace de referido. Cuando alguien se registre con tu enlace, ambos ganáis créditos de render gratis.",
+      "yourReferralLink": "Tu enlace de referido",
+      "yourCode": "Tu código:",
+      "copyLink": "Copiar enlace",
+      "copied": "¡Copiado!"
+    },
+    "stats": {
+      "directReferrals": "Referidos directos",
+      "totalReferrals": "Referidos totales (todos los niveles)",
+      "rewardsEarned": "Créditos ganados",
+      "creditsEarned": "Créditos ganados",
+      "pending": "Pendiente"
+    },
+    "achievements": {
+      "title": "Logros",
+      "description": "Desbloquea insignias al referir más usuarios"
+    },
+    "history": {
+      "title": "Historial de referidos",
+      "description": "Sigue tus referidos y recompensas",
+      "total": "en total",
+      "noReferrals": "Aún no hay referidos. ¡Comparte tu enlace para empezar!",
+      "referee": "Referido",
+      "referred": "Invitado",
+      "date": "Fecha",
+      "level": "Nivel",
+      "downstream": "Descendiente",
+      "rewards": "Recompensas",
+      "status": "Estado",
+      "credits": "Créditos",
+      "signedUp": "Registrado",
+      "pending": "Pendiente",
+      "levelBadge": "N{level}"
+    },
+    "leaderboard": {
+      "title": "Clasificación",
+      "description": "Mejores referentes de la comunidad",
+      "errorTitle": "Error",
+      "errorMessage": "Error al cargar la clasificación",
+      "referrals": "Referidos",
+      "rewards": "Recompensas",
+      "fullList": "Clasificación completa",
+      "topReferrers": "Top {count} referentes",
+      "lastUpdated": "Última actualización",
+      "noData": "Aún no hay datos de clasificación",
+      "rank": "Puesto",
+      "user": "Usuario",
+      "direct": "Directo",
+      "total": "Total"
+    }
+  }
+}
