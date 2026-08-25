@@ -51,16 +51,12 @@ export function useJobs() {
 
   const [projectsWithVideos, setProjectsWithVideos] = useState<ProjectWithVideos[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isRefreshing, setIsRefreshing] = useState(false);
   const [filters, setFilters] = useState<JobFilters>(INITIAL_FILTERS);
   const [selectedJobIds, setSelectedJobIds] = useState<Set<string>>(new Set());
   const [layoutMode, setLayoutMode] = useState<LayoutMode>("grid-md");
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
 
-  const loadJobsData = useCallback(async (opts?: { silent?: boolean }) => {
-    if (!opts?.silent) {
-      setIsRefreshing(true);
-    }
+  const loadJobsData = useCallback(async () => {
     try {
       // 2 requests total — not 1 + N per project
       const [projects, videos] = await Promise.all([listProjects(true), getMyVideoJobs()]);
@@ -70,7 +66,6 @@ export function useJobs() {
       toastRef.current.error("Failed to load jobs", "Could not fetch video generation data");
     } finally {
       setIsLoading(false);
-      setIsRefreshing(false);
     }
   }, []);
 
@@ -88,7 +83,6 @@ export function useJobs() {
       } finally {
         if (isMounted) {
           setIsLoading(false);
-          setIsRefreshing(false);
         }
       }
     }
@@ -109,7 +103,7 @@ export function useJobs() {
     if (!hasActiveJobs) return;
 
     const interval = setInterval(() => {
-      loadJobsData({ silent: true });
+      void loadJobsData();
     }, 5000);
 
     return () => clearInterval(interval);
@@ -313,7 +307,6 @@ export function useJobs() {
   const bulkDelete = useCallback(async () => {
     if (selectedJobIds.size === 0) return;
     const selectedList = allJobs.filter((j) => selectedJobIds.has(j.id));
-    setIsRefreshing(true);
     let successCount = 0;
 
     for (const job of selectedList) {
@@ -334,7 +327,6 @@ export function useJobs() {
     const selectedList = allJobs.filter((j) => selectedJobIds.has(j.id) && j.status === "failed");
     if (selectedList.length === 0) return;
 
-    setIsRefreshing(true);
     let successCount = 0;
 
     for (const job of selectedList) {
@@ -355,7 +347,6 @@ export function useJobs() {
     const failedList = allJobs.filter((j) => j.status === "failed");
     if (failedList.length === 0) return;
 
-    setIsRefreshing(true);
     let successCount = 0;
 
     for (const job of failedList) {
@@ -376,7 +367,6 @@ export function useJobs() {
     filteredJobs,
     summary,
     isLoading,
-    isRefreshing,
     filters,
     setFilters,
     selectedJobIds,
@@ -393,6 +383,5 @@ export function useJobs() {
     bulkDelete,
     bulkRetry,
     retryAllFailed,
-    refetch: () => loadJobsData(),
   };
 }

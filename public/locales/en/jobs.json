@@ -3,8 +3,7 @@
     "dashboard": {
       "title": "Video Jobs Dashboard",
       "description": "Monitor, preview, download, and manage your AI video generation tasks across all projects",
-      "newProject": "New Project",
-      "refresh": "Refresh"
+      "newProject": "New Project"
     },
     "status": {
       "active": "Active Jobs",

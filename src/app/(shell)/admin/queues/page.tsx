@@ -352,7 +352,6 @@ export default function QueueManagementPage() {
                 stats={queue}
                 isRefreshing={refreshing}
                 onViewDetails={() => router.push(`/admin/queues/${queue.queue_name}`)}
-                onRefresh={() => fetchQueues(true)}
               />
             ))}
           </div>

@@ -28,7 +28,6 @@ export default function JobsPage() {
     filteredJobs,
     summary,
     isLoading,
-    isRefreshing,
     filters,
     setFilters,
     selectedJobIds,
@@ -45,7 +44,6 @@ export default function JobsPage() {
     bulkDelete,
     bulkRetry,
     retryAllFailed,
-    refetch,
   } = useJobs();
 
   const [activeVideoModalJob, setActiveVideoModalJob] = useState<VideoJob | null>(null);
@@ -93,18 +91,6 @@ export default function JobsPage() {
         title={t("jobs.dashboard.title")}
         description={t("jobs.dashboard.description")}
         meta={totalJobsMeta}
-        action={
-          <Button
-            variant="secondary"
-            size="icon"
-            onClick={() => refetch()}
-            disabled={isRefreshing}
-            title={t("jobs.dashboard.refresh")}
-            aria-label={t("jobs.dashboard.refresh")}
-          >
-            <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
-          </Button>
-        }
       />
 
       <StatusCards

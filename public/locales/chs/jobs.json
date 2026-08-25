@@ -3,8 +3,7 @@
     "dashboard": {
       "title": "视频生成任务",
       "description": "监控、预览、下载并管理所有项目中的 AI 视频生成任务",
-      "newProject": "新建项目",
-      "refresh": "刷新"
+      "newProject": "新建项目"
     },
     "status": {
       "active": "进行中",

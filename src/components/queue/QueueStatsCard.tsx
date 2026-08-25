@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircle, CheckCircle2, Clock, Users, RefreshCw } from "lucide-react";
+import { AlertCircle, CheckCircle2, Clock, Users } from "lucide-react";
 import type { QueueStats } from "@/lib/types/queue";
 import { getQueueHealth, getHealthColor } from "@/lib/types/queue";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,16 +12,10 @@ import { Text } from "@/components/ui/text";
 interface QueueStatsCardProps {
   stats: QueueStats;
   onViewDetails?: () => void;
-  onRefresh?: () => void;
   isRefreshing?: boolean;
 }
 
-export function QueueStatsCard({
-  stats,
-  onViewDetails,
-  onRefresh,
-  isRefreshing,
-}: QueueStatsCardProps) {
+export function QueueStatsCard({ stats, onViewDetails, isRefreshing }: QueueStatsCardProps) {
   const health = getQueueHealth(stats);
   const colors = getHealthColor(health.status);
 
@@ -108,9 +102,8 @@ export function QueueStatsCard({
           )}
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex gap-2 mt-4">
-          {onViewDetails && (
+        {onViewDetails && (
+          <div className="flex gap-2 mt-4">
             <button
               onClick={onViewDetails}
               disabled={isRefreshing}
@@ -118,18 +111,8 @@ export function QueueStatsCard({
             >
               View Details
             </button>
-          )}
-          {onRefresh && (
-            <button
-              onClick={onRefresh}
-              disabled={isRefreshing}
-              className="px-3 py-1.5 text-caption font-medium rounded border border-muted-foreground/30 hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-1.5"
-            >
-              <RefreshCw className={`h-3 w-3 ${isRefreshing ? "animate-spin" : ""}`} />
-              Refresh
-            </button>
-          )}
-        </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
