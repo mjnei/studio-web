@@ -229,7 +229,7 @@ export default function DashboardPage() {
       {/* Recent Projects */}
       {(loadingProjects || projects.length > 0) && (
         <Card variant="elevated" padding="lg" className="mb-6 fade-in">
-          <CardHeader className="mb-6">
+          <CardHeader>
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle>{t("dashboard.recentProjects.title")}</CardTitle>
@@ -262,7 +262,7 @@ export default function DashboardPage() {
       {/* Popular Movies */}
       {(loadingMovies || popularMovies.length > 0) && (
         <Card variant="elevated" padding="lg" className="fade-in">
-          <CardHeader className="mb-6">
+          <CardHeader>
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle className="flex items-center gap-2">
