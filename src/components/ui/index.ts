@@ -2,6 +2,7 @@ export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 export { Button } from "./button";
 export { Badge } from "./badge";
 export { Input, TextArea } from "./input";
+export { PasswordInput } from "./password-input";
 export { EmptyState } from "./EmptyState";
 export { PageHeader } from "./PageHeader";
 export { LoadingSpinner } from "./LoadingSpinner";

@@ -8,6 +8,7 @@ import { ApiError, isReferralRequiredError } from "@/lib/api-client";
 import { useI18n } from "@/i18n";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PasswordInput } from "@/components/ui/password-input";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/toast";
 import { Heading } from "@/components/ui/heading";
@@ -110,9 +111,8 @@ export default function LoginPage() {
           icon={<Mail className="h-5 w-5" />}
         />
 
-        <Input
+        <PasswordInput
           id="password"
-          type="password"
           label={t("auth.login.password")}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
