@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { Tooltip } from "@/components/ui/tooltip";
 import { ArrowLeft, ArrowRight, Home, Check, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSidebar } from "@/components/shell/sidebar-context";
@@ -171,49 +172,53 @@ export function FloatingWorkflowNavigation({
               const isCurrent = index === currentStepIndex;
               const isClickable = isCompleted && !isProcessing;
 
+              const statusSuffix = isCurrent
+                ? t("project.nav.stepCurrent")
+                : isCompleted
+                  ? t("project.nav.stepCompleted")
+                  : "";
+              const tooltipContent = `${step.label}${statusSuffix}`;
+              const stepAria = `${t("project.nav.stepAria", { number: index + 1, label: step.label })}${statusSuffix}`;
+
               return (
                 <div key={step.key} className="flex items-center flex-shrink-0 group">
-                  {/* Step Hit Target */}
-                  <button
-                    type="button"
-                    onClick={() => handleStepClick(index, step.key)}
-                    disabled={!isClickable}
-                    title={`${step.label}${isCurrent ? ` (${t("project.nav.stepCurrent")})` : isCompleted ? ` (${t("project.nav.stepCompleted")})` : ""}`}
-                    className={`flex items-center gap-1.5 p-1 rounded-lg transition-all ${
-                      isClickable ? "cursor-pointer hover:bg-surface-hover/80" : "cursor-default"
-                    }`}
-                    aria-label={`${t("project.nav.stepAria", { number: index + 1, label: step.label })}${
-                      isCurrent ? t("project.nav.stepCurrent") : ""
-                    }${isCompleted ? t("project.nav.stepCompleted") : ""}`}
-                  >
-                    {/* Circle */}
-                    <div
-                      className={`flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded-full text-caption font-semibold transition-all duration-300 ${
-                        isCompleted
-                          ? "bg-accent-cyan text-surface-base font-bold shadow-sm group-hover:scale-110"
-                          : isCurrent
-                            ? "bg-accent-primary text-white ring-4 ring-accent-primary/25 shadow-glow scale-105"
-                            : "bg-surface-raised border border-border-default text-text-muted"
+                  <Tooltip content={tooltipContent} position="top" delay={150}>
+                    <button
+                      type="button"
+                      onClick={() => handleStepClick(index, step.key)}
+                      disabled={!isClickable}
+                      className={`flex items-center gap-1.5 p-1 rounded-lg transition-all ${
+                        isClickable ? "cursor-pointer hover:bg-surface-hover/80" : "cursor-default"
                       }`}
+                      aria-label={stepAria}
+                      aria-current={isCurrent ? "step" : undefined}
                     >
-                      {isCompleted ? <Check className="h-3.5 w-3.5" strokeWidth={3} /> : index + 1}
-                    </div>
+                      <div
+                        className={`flex h-6 w-6 sm:h-7 sm:w-7 items-center justify-center rounded-full text-caption font-semibold transition-all duration-300 ${
+                          isCompleted
+                            ? "bg-accent-cyan text-surface-base font-bold shadow-sm group-hover:scale-110"
+                            : isCurrent
+                              ? "bg-accent-primary text-white ring-4 ring-accent-primary/25 shadow-glow scale-105"
+                              : "bg-surface-raised border border-border-default text-text-muted"
+                        }`}
+                      >
+                        {isCompleted ? <Check className="h-3.5 w-3.5" strokeWidth={3} /> : index + 1}
+                      </div>
 
-                    {/* Label - visible on desktop lg+ */}
-                    <span
-                      className={`hidden lg:inline text-caption transition-colors duration-200 ${
-                        isCurrent
-                          ? "font-semibold text-text-primary"
-                          : isCompleted
-                            ? "text-accent-cyan font-medium group-hover:underline"
-                            : "text-text-muted"
-                      }`}
-                    >
-                      {step.label}
-                    </span>
-                  </button>
+                      <span
+                        className={`hidden lg:inline text-caption transition-colors duration-200 ${
+                          isCurrent
+                            ? "font-semibold text-text-primary"
+                            : isCompleted
+                              ? "text-accent-cyan font-medium group-hover:underline"
+                              : "text-text-muted"
+                        }`}
+                      >
+                        {step.label}
+                      </span>
+                    </button>
+                  </Tooltip>
 
-                  {/* Connector Bar */}
                   {index < steps.length - 1 && (
                     <div
                       className={`mx-0.5 sm:mx-1 h-0.5 w-2 sm:w-3 md:w-5 rounded-full transition-colors duration-300 ${

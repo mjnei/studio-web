@@ -73,15 +73,18 @@ export function formatRelativeTimeAgo(
 }
 
 /** Toast body for session resume — avoids awkward "from just now ago" phrasing. */
-export function formatSessionResumeMessage(relativeTime: string): string {
+export function formatSessionResumeMessage(
+  relativeTime: string,
+  t: (key: string, options?: Record<string, string | number>) => string
+): string {
   if (relativeTime === "just now") {
-    return "Restored your session just now";
+    return t("project.shell.sessionRestoredJustNow");
   }
   if (relativeTime === "yesterday") {
-    return "Restored your session from yesterday";
+    return t("project.shell.sessionRestoredYesterday");
   }
   if (relativeTime === "recently") {
-    return "Restored your session";
+    return t("project.shell.sessionRestored");
   }
-  return `Restored your session from ${relativeTime} ago`;
+  return t("project.shell.sessionRestoredFromAgo", { time: relativeTime });
 }

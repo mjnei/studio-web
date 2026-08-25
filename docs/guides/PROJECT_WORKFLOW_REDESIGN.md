@@ -1,9 +1,9 @@
 # Project Workflow UX & UI Redesign Specification
 
-**Version:** 2.0  
+**Version:** 2.1  
 **Target Design System:** [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md) v2.4  
 **Scope:** `studio-web/src/app/project/[projectId]/*` and `@/components/project/*`  
-**Status:** Canonical Workflow & UI Specification  
+**Status:** Canonical Workflow & UI Specification (implemented)
 
 ---
 
@@ -22,7 +22,8 @@
 11. [Cross-Step Micro-Animations & Ambient Visuals](#11-cross-step-micro-animations--ambient-visuals)
 12. [State Matrix Appendix](#12-state-matrix-appendix)
 13. [Design System Primitives & Token Audit](#13-design-system-primitives--token-audit)
-14. [Implementation Roadmap & Migration Checklist](#14-implementation-roadmap--migration-checklist)
+14. [Implementation Status & Checklist](#14-implementation-status--checklist)
+15. [Single-Purpose Focus Delivery Notes](#15-single-purpose-focus-delivery-notes)
 
 ---
 
@@ -416,27 +417,72 @@ Render the final video, monitor job queue status, download production assets, an
 │ EmptyState              │ @/components/ui/EmptyState       │ Empty Search / Voices  │
 │ ConfirmModal            │ @/components/ui/modal            │ Action Confirmations   │
 │ ExternalImage           │ @/components/ui/ExternalImage    │ Movie Posters & Covers │
+│ ContextDrawer           │ @/components/ui/context-drawer   │ Secondary step context │
+│ Tooltip                 │ @/components/ui/tooltip          │ Stepper hover tooltips │
+│ StepRevisitBanner       │ @/components/project/step-revisit-banner │ Completed-step resume │
 └─────────────────────────┴──────────────────────────────────┴────────────────────────┘
 ```
 
 ---
 
-## 14. Implementation Roadmap & Migration Checklist
+## 14. Implementation Status & Checklist
 
 ### Phase 1: Global Shell & Floating Stepper
-- [ ] Update `ProjectShell` to integrate persistent ambient poster glow backdrop.
-- [ ] Refine `FloatingWorkflowNavigation` to support mobile touch density, phase indicators, and tooltips.
-- [ ] Add revisit summary pill for completed steps.
+- [x] Update `ProjectShell` to integrate persistent ambient poster glow backdrop.
+- [x] Refine `FloatingWorkflowNavigation` to support mobile touch density, phase indicators, and tooltips.
+- [x] Add revisit summary pill for completed steps (`StepRevisitBanner`).
 
 ### Phase 2: Step 1 (Source) & Step 3 (Voice)
-- [ ] Modernize `SourcePage` with Pattern 1 poster grid (2-3-4-5-6 cols) and horizontal scrollable genre chips.
-- [ ] Upgrade `VoicePage` with responsive 1-2-3 col grid, animated waveform audition visualizers, and persona filter chips.
+- [x] Modernize `SourcePage` with Pattern 1 poster grid (2-3-4-5-6 cols) and horizontal scrollable genre chips.
+- [x] Upgrade `VoicePage` with responsive 1-2-3 col grid, animated waveform audition visualizers, and persona filter chips.
 
 ### Phase 3: Step 4 (Details) & Step 5 (Preview)
-- [ ] Upgrade `ProjectDetailsPage` with hero title field and stacked mobile AI suggestion cards.
-- [ ] Implement 3-state architecture in `PreviewPage` (Idle CTA → Processing Queue Telemetry → Studio Audio Deck).
+- [x] Upgrade `ProjectDetailsPage` with hero title field and stacked mobile AI suggestion cards.
+- [x] Implement 3-state architecture in `PreviewPage` (Idle CTA → Processing Queue Telemetry → Studio Audio Deck).
 
 ### Phase 4: Step 6 (Compose) & Step 7 (Export)
-- [ ] Rebuild `ComposePage` with responsive split / stacked 16:9 thumbnail canvas and typography presets.
-- [ ] Upgrade `ExportPage` with pre-flight checklist, inline credit badge, live render telemetry, and responsive download buttons.
-- [ ] Validate with `pnpm lint` and `pnpm format:check`.
+- [x] Rebuild `ComposePage` with responsive split / stacked 16:9 thumbnail canvas and typography presets.
+- [x] Upgrade `ExportPage` with pre-flight checklist, inline credit badge, live render telemetry, and responsive download buttons.
+- [x] Validate with `pnpm format:check` and `pnpm build` (lint cleanup remains repo-wide).
+
+### Known follow-ups
+- Pre-flight checklist items 1–3 are informational UI today; only credits (#4) gates rendering.
+- Session resume redirects via `last_step` (not a computed “furthest completed” walk).
+- Step 2 Script remains intentionally unchanged.
+- Voice persona filter chips match against voice name substrings (not structured persona metadata).
+
+---
+
+## 15. Single-Purpose Focus Delivery Notes
+
+Second-pass redesign delivered **single-purpose focus per screen**, **session resumption with auto-toast**, and the **Export pre-flight checklist**. Canonical paths use relative repo links.
+
+### Shared building blocks
+
+| Piece | Path | Notes |
+| :--- | :--- | :--- |
+| Context drawer | `src/components/ui/context-drawer.tsx` | Slide-over sheet with backdrop blur, Escape close, body scroll lock, CSS enter animation. Exported from `src/components/ui/index.ts`. |
+| Relative time | `src/lib/utils/time-format.ts` | `formatRelativeTimeAgo`, `formatSessionResumeMessage` (i18n-aware toast body). |
+| Session resume landing | `src/app/project/[projectId]/page.tsx` | Loads project, uses `last_step` (validated against step order), redirects with `?resumed=true&timeAgo=…`. |
+| Session toast | `src/components/project/project-shell.tsx` | Fires restored-session toast, then `history.replaceState` to clear query params. |
+
+### Per-step hero + contextual drawer
+
+| Step | Hero (dominant decision) | Contextual drawer |
+| :--- | :--- | :--- |
+| **1. Source** | Confirmed movie showcase (1080p badge, rating, genres, continue). | Source Footage & Specs — stream integrity, TMDB ID, resolution, audio, synopsis. |
+| **2. Script** | Unchanged (explicitly retained). | — |
+| **3. Voice** | Voice talent selection with audition + selection highlight. | Voice Tuning & Script — pacing (0.5x–2.0x), script reference, Agnes status, custom voice limits. |
+| **4. Details** | Hero title deck with counter + Agnes suggestion chips. | Project Context & Assets — film info, script, thumbnail concept. |
+| **5. Preview** | Studio audio deck (waveform, play/pause, scrubber, mute, synthesize). | Mastering Telemetry & Script — queue telemetry, script, re-synthesis. |
+| **6. Compose** | Live 16:9 cover canvas with overlay + regenerate/regenerate. | Canvas Styling Studio — typography presets (Cinematic Gold, Neon Cyan, Minimalist Clean, Breaking Red), layout, script. |
+| **7. Export** | Master video delivery / render engine + **Pre-Flight Sanity Checklist**. | Pipeline Diagnostics & Logs — failed attempts, delete, target specs (1080p FHD, 16:9, H.264, AAC 48kHz). |
+
+### Export pre-flight checklist (UI)
+
+1. Source Footage Linked (`1080p source verified`)
+2. Narrator Audio Ready (`0 missing segments`)
+3. Captions Formatted (`No text overflow`)
+4. Available User Credits (`1 Credit required | {count} available`) — **real gate** when balance is insufficient
+
+Copy for drawers, heroes, session toast, and pre-flight labels lives under `public/locales/{en,chs}/project.json`.

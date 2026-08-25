@@ -54,8 +54,13 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
       const timeAgo = urlParams.get("timeAgo");
 
       if (isResumed === "true" || isResumed === "1") {
-        const timeString = timeAgo ? decodeURIComponent(timeAgo) : "recently";
-        toast.info("Session Restored", formatSessionResumeMessage(timeString));
+        const timeString = timeAgo
+          ? decodeURIComponent(timeAgo)
+          : t("project.shell.sessionRecently");
+        toast.info(
+          t("project.shell.sessionRestoredTitle"),
+          formatSessionResumeMessage(timeString, t)
+        );
 
         // Clean up URL query parameters without reloading
         urlParams.delete("resumed");
@@ -67,7 +72,7 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
     } catch {
       // Ignore URL parsing errors
     }
-  }, [pathname, toast]);
+  }, [pathname, toast, t]);
 
   const projectTitle =
     projectState?.projectName ||
