@@ -62,11 +62,10 @@ function SettingRow({ title, description, children }: SettingRowProps) {
   );
 }
 
-const BACKGROUND_PREVIEW_CLASS: Record<AmbientBackgroundStyle, string> = {
-  aurora:
-    "bg-[radial-gradient(ellipse_80%_60%_at_30%_20%,rgba(99,102,241,0.45),transparent_55%),radial-gradient(ellipse_60%_50%_at_85%_10%,rgba(6,182,212,0.3),transparent_50%),radial-gradient(ellipse_50%_40%_at_10%_70%,rgba(139,92,246,0.28),transparent_55%)]",
-  mesh: "bg-[radial-gradient(circle_at_50%_0%,rgba(99,102,241,0.28),transparent_55%),radial-gradient(rgba(255,255,255,0.12)_1px,transparent_1px)] [background-size:100%_100%,12px_12px]",
-  grid: "bg-[linear-gradient(to_bottom,transparent,rgba(10,14,23,0.85)_85%),linear-gradient(to_right,rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.08)_1px,transparent_1px),radial-gradient(circle_at_50%_-20%,rgba(139,92,246,0.35),transparent_55%)] [background-size:100%_100%,14px_14px,14px_14px,100%_100%]",
+const THEME_PREVIEW_CLASS: Record<AmbientBackgroundStyle, string> = {
+  aurora: "theme-preview-aurora",
+  mesh: "theme-preview-mesh",
+  grid: "theme-preview-grid",
 };
 
 function BackgroundStylePicker() {
@@ -119,7 +118,7 @@ function BackgroundStylePicker() {
               }`}
             >
               <div
-                className={`mb-3 h-16 w-full rounded-lg border border-border-subtle overflow-hidden bg-surface-base ${BACKGROUND_PREVIEW_CLASS[option]}`}
+                className={`mb-3 h-16 w-full rounded-lg border border-border-subtle overflow-hidden bg-surface-base ${THEME_PREVIEW_CLASS[option]}`}
               />
               <div className="flex items-start justify-between gap-2">
                 <div>

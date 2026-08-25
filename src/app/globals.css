@@ -13,18 +13,17 @@
   --border-default: rgba(255, 255, 255, 0.08);
   --border-subtle: rgba(255, 255, 255, 0.04);
   --border-strong: rgba(255, 255, 255, 0.15);
-  --border-focus: rgba(99, 102, 241, 0.5);
-
-  /* Accents */
-  --accent-primary: #6366f1;
-  --accent-secondary: #8b5cf6;
-  --accent-tertiary: #06b6d4;
-  --accent-cyan: #06b6d4;
-  --accent-cyan-muted: rgba(6, 182, 212, 0.15);
-  --accent-muted: rgba(99, 102, 241, 0.15);
-  --accent-strong: rgba(99, 102, 241, 0.25);
-  --accent-gradient: linear-gradient(135deg, #8b5cf6, #06b6d4);
-  --accent-gradient-solid: #7c3aed;
+  --border-focus: rgba(20, 184, 166, 0.5);
+  /* Accents — default theme (Aurora / teal studio); overridden by html[data-ambient-bg] */
+  --accent-primary: #14b8a6;
+  --accent-secondary: #0ea5e9;
+  --accent-tertiary: #5eead4;
+  --accent-cyan: #5eead4;
+  --accent-cyan-muted: rgba(94, 234, 212, 0.15);
+  --accent-muted: rgba(20, 184, 166, 0.15);
+  --accent-strong: rgba(20, 184, 166, 0.25);
+  --accent-gradient: linear-gradient(135deg, #0ea5e9, #14b8a6);
+  --accent-gradient-solid: #0f766e;
 
   /* Text */
   --text-primary: #f1f5f9;
@@ -46,11 +45,11 @@
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 24px rgba(99, 102, 241, 0.2);
-  --shadow-glow-hover: 0 0 32px rgba(99, 102, 241, 0.3);
+  --shadow-glow: 0 0 24px rgba(20, 184, 166, 0.2);
+  --shadow-glow-hover: 0 0 32px rgba(20, 184, 166, 0.3);
 
   /* Gradients */
-  --gradient-primary: linear-gradient(135deg, #8b5cf6, #06b6d4);
+  --gradient-primary: linear-gradient(135deg, #0ea5e9, #14b8a6);
   --gradient-success: linear-gradient(135deg, #10b981, #34d399);
   --gradient-warning: linear-gradient(135deg, #f59e0b, #fcd34d);
   --gradient-error: linear-gradient(135deg, #ef4444, #fc5c65);
@@ -140,6 +139,55 @@ html {
   background-color: var(--surface-base);
 }
 
+/* Site color themes — selected in Settings → Appearance (data-ambient-bg on <html>) */
+html[data-ambient-bg="aurora"] {
+  --accent-primary: #14b8a6;
+  --accent-secondary: #0ea5e9;
+  --accent-tertiary: #5eead4;
+  --accent-cyan: #5eead4;
+  --accent-cyan-muted: rgba(94, 234, 212, 0.15);
+  --accent-muted: rgba(20, 184, 166, 0.15);
+  --accent-strong: rgba(20, 184, 166, 0.25);
+  --accent-gradient: linear-gradient(135deg, #0ea5e9, #14b8a6);
+  --accent-gradient-solid: #0f766e;
+  --border-focus: rgba(20, 184, 166, 0.5);
+  --shadow-glow: 0 0 24px rgba(20, 184, 166, 0.2);
+  --shadow-glow-hover: 0 0 32px rgba(20, 184, 166, 0.3);
+  --gradient-primary: linear-gradient(135deg, #0ea5e9, #14b8a6);
+}
+
+html[data-ambient-bg="mesh"] {
+  --accent-primary: #d97706;
+  --accent-secondary: #ea580c;
+  --accent-tertiary: #fbbf24;
+  --accent-cyan: #fbbf24;
+  --accent-cyan-muted: rgba(251, 191, 36, 0.15);
+  --accent-muted: rgba(217, 119, 6, 0.15);
+  --accent-strong: rgba(217, 119, 6, 0.25);
+  --accent-gradient: linear-gradient(135deg, #ea580c, #fbbf24);
+  --accent-gradient-solid: #b45309;
+  --border-focus: rgba(217, 119, 6, 0.5);
+  --shadow-glow: 0 0 24px rgba(217, 119, 6, 0.2);
+  --shadow-glow-hover: 0 0 32px rgba(217, 119, 6, 0.3);
+  --gradient-primary: linear-gradient(135deg, #ea580c, #fbbf24);
+}
+
+html[data-ambient-bg="grid"] {
+  --accent-primary: #2563eb;
+  --accent-secondary: #64748b;
+  --accent-tertiary: #60a5fa;
+  --accent-cyan: #60a5fa;
+  --accent-cyan-muted: rgba(96, 165, 250, 0.15);
+  --accent-muted: rgba(37, 99, 235, 0.15);
+  --accent-strong: rgba(37, 99, 235, 0.25);
+  --accent-gradient: linear-gradient(135deg, #64748b, #2563eb);
+  --accent-gradient-solid: #1e40af;
+  --border-focus: rgba(37, 99, 235, 0.5);
+  --shadow-glow: 0 0 24px rgba(37, 99, 235, 0.2);
+  --shadow-glow-hover: 0 0 32px rgba(37, 99, 235, 0.3);
+  --gradient-primary: linear-gradient(135deg, #64748b, #2563eb);
+}
+
 body {
   background-color: transparent;
   color: var(--text-primary);
@@ -170,7 +218,6 @@ body {
 }
 
 .ambient-orb--primary {
-  /* --accent-primary #6366f1 — dominant CTA / glow */
   width: min(54vw, 580px);
   height: min(54vw, 580px);
   top: -14%;
@@ -181,7 +228,6 @@ body {
 }
 
 .ambient-orb--secondary {
-  /* --accent-secondary #8b5cf6 — brand gradient start */
   width: min(40vw, 420px);
   height: min(40vw, 420px);
   top: 22%;
@@ -193,19 +239,17 @@ body {
 }
 
 .ambient-orb--cyan {
-  /* --accent-cyan / tertiary #06b6d4 — brand gradient end */
   width: min(44vw, 460px);
   height: min(44vw, 460px);
   top: -6%;
   right: -10%;
-  background: color-mix(in srgb, var(--accent-cyan) 42%, transparent);
+  background: color-mix(in srgb, var(--accent-tertiary) 42%, transparent);
   animation-name: ambientDriftB;
   animation-duration: 16s;
   animation-delay: -4s;
 }
 
 .ambient-orb--gradient {
-  /* --accent-gradient-solid #7c3aed — soft floor accent */
   width: min(36vw, 380px);
   height: min(36vw, 380px);
   bottom: 6%;
@@ -240,24 +284,27 @@ body {
 .ambient-glow--mesh {
   background: radial-gradient(
     circle at 50% 0%,
-    color-mix(in srgb, var(--accent-primary) 18%, transparent) 0%,
+    color-mix(in srgb, var(--accent-primary) 22%, transparent) 0%,
     transparent 60%
   );
 }
 
 .ambient-mesh--circuit {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--accent-primary) 28%, rgba(255, 255, 255, 0.45)) 1px,
+    transparent 1px
+  );
   background-size: 24px 24px;
-  mask-image: radial-gradient(ellipse 90% 75% at 50% 20%, black 10%, transparent 80%);
-  -webkit-mask-image: radial-gradient(ellipse 90% 75% at 50% 20%, black 10%, transparent 80%);
-  opacity: 0.9;
+  mask-image: radial-gradient(ellipse 92% 78% at 50% 18%, black 12%, transparent 82%);
+  -webkit-mask-image: radial-gradient(ellipse 92% 78% at 50% 18%, black 12%, transparent 82%);
+  opacity: 0.38;
 }
 
 /* Option 3 — Cybernetic grid + top beam */
 .ambient-glow--grid {
   background: radial-gradient(
     circle 800px at 50% -100px,
-    color-mix(in srgb, var(--accent-secondary) 22%, transparent),
+    color-mix(in srgb, var(--accent-secondary) 38%, transparent),
     transparent 70%
   );
 }
@@ -266,9 +313,18 @@ body {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--accent-primary) 24%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--accent-tertiary) 18%, transparent) 1px,
+      transparent 1px
+    );
   background-size: 40px 40px;
+  opacity: 0.72;
 }
 
 .ambient-grid-fade {
@@ -277,8 +333,8 @@ body {
   background: linear-gradient(
     to bottom,
     transparent 0%,
-    color-mix(in srgb, var(--surface-base) 35%, transparent) 45%,
-    var(--surface-base) 92%
+    color-mix(in srgb, var(--surface-base) 20%, transparent) 55%,
+    var(--surface-base) 95%
   );
 }
 
@@ -350,8 +406,8 @@ body {
       box-shadow var(--transition-fast);
   }
   .card-glow-hover:hover {
-    border-color: rgba(99, 102, 241, 0.35);
-    box-shadow: 0 0 20px -4px rgba(99, 102, 241, 0.2);
+    border-color: color-mix(in srgb, var(--accent-primary) 35%, transparent);
+    box-shadow: 0 0 20px -4px color-mix(in srgb, var(--accent-primary) 20%, transparent);
   }
 
   .app-shell-height {
@@ -616,11 +672,35 @@ body {
 
   /* Gradient text */
   .text-gradient {
-    background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+    background: var(--accent-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
+}
+
+/* Theme preview swatches (Settings → Appearance) */
+.theme-preview-aurora {
+  background-image:
+    radial-gradient(ellipse 80% 60% at 30% 20%, rgba(20, 184, 166, 0.45), transparent 55%),
+    radial-gradient(ellipse 60% 50% at 85% 10%, rgba(14, 165, 233, 0.32), transparent 50%),
+    radial-gradient(ellipse 50% 40% at 10% 70%, rgba(94, 234, 212, 0.24), transparent 55%);
+}
+
+.theme-preview-mesh {
+  background-image:
+    radial-gradient(circle at 50% 0%, rgba(217, 119, 6, 0.28), transparent 55%),
+    radial-gradient(rgba(251, 191, 36, 0.22) 1px, transparent 1px);
+  background-size: 100% 100%, 12px 12px;
+}
+
+.theme-preview-grid {
+  background-image:
+    linear-gradient(to bottom, transparent, rgba(10, 14, 23, 0.75) 90%),
+    linear-gradient(to right, rgba(37, 99, 235, 0.28) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(96, 165, 250, 0.2) 1px, transparent 1px),
+    radial-gradient(circle at 50% -20%, rgba(100, 116, 139, 0.38), transparent 55%);
+  background-size: 100% 100%, 12px 12px, 12px 12px, 100% 100%;
 }
 
 /* Fallback typography for bare headings (CMS/markdown/forgotten tags).
