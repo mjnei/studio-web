@@ -149,7 +149,7 @@ body {
   min-height: 100dvh;
 }
 
-/* Floating ambient aurora (see AmbientBackground) */
+/* Floating ambient backgrounds (see AmbientBackground + Settings → Appearance) */
 .ambient-bg {
   position: fixed;
   inset: 0;
@@ -221,11 +221,65 @@ body {
 .ambient-mesh {
   position: absolute;
   inset: 0;
+}
+
+.ambient-mesh--soft {
   background-image: radial-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px);
   background-size: 28px 28px;
   mask-image: radial-gradient(ellipse 85% 70% at 50% 15%, black 0%, transparent 75%);
   -webkit-mask-image: radial-gradient(ellipse 85% 70% at 50% 15%, black 0%, transparent 75%);
   opacity: 0.7;
+}
+
+/* Option 2 — Circuit mesh / radial dot matrix */
+.ambient-glow {
+  position: absolute;
+  inset: 0;
+}
+
+.ambient-glow--mesh {
+  background: radial-gradient(
+    circle at 50% 0%,
+    color-mix(in srgb, var(--accent-primary) 18%, transparent) 0%,
+    transparent 60%
+  );
+}
+
+.ambient-mesh--circuit {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: radial-gradient(ellipse 90% 75% at 50% 20%, black 10%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse 90% 75% at 50% 20%, black 10%, transparent 80%);
+  opacity: 0.9;
+}
+
+/* Option 3 — Cybernetic grid + top beam */
+.ambient-glow--grid {
+  background: radial-gradient(
+    circle 800px at 50% -100px,
+    color-mix(in srgb, var(--accent-secondary) 22%, transparent),
+    transparent 70%
+  );
+}
+
+.ambient-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.ambient-grid-fade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    color-mix(in srgb, var(--surface-base) 35%, transparent) 45%,
+    var(--surface-base) 92%
+  );
 }
 
 /* % translate is relative to the orb size — use large values so motion is visible */

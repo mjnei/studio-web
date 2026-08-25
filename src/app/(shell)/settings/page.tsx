@@ -17,6 +17,11 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { useI18n } from "@/i18n";
+import {
+  AMBIENT_BACKGROUND_STYLES,
+  useAmbientBackground,
+  type AmbientBackgroundStyle,
+} from "@/lib/ambient-background";
 
 function Toggle({ checked, onChange }: { checked: boolean; onChange: () => void }) {
   return (
@@ -53,6 +58,84 @@ function SettingRow({ title, description, children }: SettingRowProps) {
         {description && <p className="text-caption text-text-muted mt-1">{description}</p>}
       </div>
       <div className="flex-shrink-0">{children}</div>
+    </div>
+  );
+}
+
+const BACKGROUND_PREVIEW_CLASS: Record<AmbientBackgroundStyle, string> = {
+  aurora:
+    "bg-[radial-gradient(ellipse_80%_60%_at_30%_20%,rgba(99,102,241,0.45),transparent_55%),radial-gradient(ellipse_60%_50%_at_85%_10%,rgba(6,182,212,0.3),transparent_50%),radial-gradient(ellipse_50%_40%_at_10%_70%,rgba(139,92,246,0.28),transparent_55%)]",
+  mesh: "bg-[radial-gradient(circle_at_50%_0%,rgba(99,102,241,0.28),transparent_55%),radial-gradient(rgba(255,255,255,0.12)_1px,transparent_1px)] [background-size:100%_100%,12px_12px]",
+  grid: "bg-[linear-gradient(to_bottom,transparent,rgba(10,14,23,0.85)_85%),linear-gradient(to_right,rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.08)_1px,transparent_1px),radial-gradient(circle_at_50%_-20%,rgba(139,92,246,0.35),transparent_55%)] [background-size:100%_100%,14px_14px,14px_14px,100%_100%]",
+};
+
+function BackgroundStylePicker() {
+  const { t } = useI18n();
+  const { style, setStyle } = useAmbientBackground();
+
+  const labels: Record<AmbientBackgroundStyle, { title: string; description: string }> = {
+    aurora: {
+      title: t("settings.appearance.backgroundAurora"),
+      description: t("settings.appearance.backgroundAuroraDesc"),
+    },
+    mesh: {
+      title: t("settings.appearance.backgroundMesh"),
+      description: t("settings.appearance.backgroundMeshDesc"),
+    },
+    grid: {
+      title: t("settings.appearance.backgroundGrid"),
+      description: t("settings.appearance.backgroundGridDesc"),
+    },
+  };
+
+  return (
+    <div className="space-y-3 pt-1 pb-3 border-b border-border-subtle">
+      <div>
+        <p className="text-body font-medium text-text-primary">
+          {t("settings.appearance.backgroundStyle")}
+        </p>
+        <p className="text-caption text-text-muted mt-1">
+          {t("settings.appearance.backgroundStyleDesc")}
+        </p>
+      </div>
+      <div
+        className="grid grid-cols-1 sm:grid-cols-3 gap-3"
+        role="radiogroup"
+        aria-label={t("settings.appearance.backgroundStyle")}
+      >
+        {AMBIENT_BACKGROUND_STYLES.map((option) => {
+          const selected = style === option;
+          return (
+            <button
+              key={option}
+              type="button"
+              role="radio"
+              aria-checked={selected}
+              onClick={() => setStyle(option)}
+              className={`group text-left rounded-xl border p-3 transition-all ${
+                selected
+                  ? "border-accent-primary bg-accent-primary/10 shadow-glow"
+                  : "border-border-default bg-surface-raised/60 hover:border-accent-primary/40 hover:bg-surface-hover"
+              }`}
+            >
+              <div
+                className={`mb-3 h-16 w-full rounded-lg border border-border-subtle overflow-hidden bg-surface-base ${BACKGROUND_PREVIEW_CLASS[option]}`}
+              />
+              <div className="flex items-start justify-between gap-2">
+                <div>
+                  <p className="text-body font-medium text-text-primary">{labels[option].title}</p>
+                  <p className="text-caption text-text-muted mt-0.5">
+                    {labels[option].description}
+                  </p>
+                </div>
+                {selected && (
+                  <Check className="h-4 w-4 shrink-0 text-accent-primary mt-0.5" aria-hidden />
+                )}
+              </div>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -99,7 +182,6 @@ export default function SettingsPage() {
       />
 
       <div className="space-y-4">
-        {/* Notifications Card - Link to dedicated page */}
         <Link href="/settings/notifications" className="block group">
           <Card
             variant="elevated"
@@ -126,7 +208,6 @@ export default function SettingsPage() {
           </Card>
         </Link>
 
-        {/* Project Defaults Card */}
         <Card variant="elevated" padding="lg">
           <CardHeader>
             <div className="flex items-center gap-3">
@@ -185,7 +266,6 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
 
-        {/* Appearance Card */}
         <Card variant="elevated" padding="lg">
           <CardHeader>
             <div className="flex items-center gap-3">
@@ -199,6 +279,7 @@ export default function SettingsPage() {
             </div>
           </CardHeader>
           <CardContent className="space-y-1">
+            <BackgroundStylePicker />
             <SettingRow
               title={t("settings.appearance.compactMode")}
               description={t("settings.appearance.compactModeDesc")}
@@ -233,7 +314,6 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
 
-        {/* Data & Privacy Card */}
         <Card variant="elevated" padding="lg">
           <CardHeader>
             <div className="flex items-center gap-3">
