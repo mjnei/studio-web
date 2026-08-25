@@ -305,7 +305,7 @@ Values below match `globals.css` as of August 24, 2026.
 
 ### Overview
 
-Primitives live in `src/components/ui/` (React 19, TypeScript, Tailwind CSS 4). **Barrel exports** (`src/components/ui/index.ts`) currently re-export: `Button`, `Badge`, `Input`/`TextArea`, `Card` family, `EmptyState`, `PageHeader`, `LoadingSpinner`, `Spinner`, `Icon`, `Grid`, `Heading`, `Text`, `typography`. Other modules are imported from their file path.
+Primitives live in `src/components/ui/` (React 19, TypeScript, Tailwind CSS 4). **Barrel exports** (`src/components/ui/index.ts`) currently re-export: `Button`, `Badge`, `Input`/`TextArea`, `Card` family, `EmptyState`, `PageHeader`, `LoadingSpinner`, `Spinner`, `Icon`, `Grid`, `Heading`, `Text`, `typography`, `Label`, `ContextDrawer`, `ContextDrawerTrigger`. Other modules are imported from their file path.
 
 **New UI must use these primitives.** Several pages still use raw HTML controls with copied classes — treat that as incomplete migration, not a pattern to extend.
 
@@ -319,6 +319,7 @@ Primitives live in `src/components/ui/` (React 19, TypeScript, Tailwind CSS 4). 
 | `Badge`                                                              | `badge.tsx`                | yes        | Includes `destructive` (same look as `error`) |
 | `Heading` / `Text`                                                   | `heading.tsx` / `text.tsx` | yes        | RSC-safe                                      |
 | `PageHeader`                                                         | `PageHeader.tsx`           | yes        | Page `h1` via `variant="page"`                |
+| `ContextDrawer` / `ContextDrawerTrigger`                             | `context-drawer.tsx` / `context-drawer-trigger.tsx` | yes | Step-page secondary context; icon-only trigger on mobile |
 | `EmptyState`                                                         | `EmptyState.tsx`           | yes        | Owns hero icon rings                          |
 | `Icon`                                                               | `icon.tsx`                 | yes        | Nav + dense repeated UI                       |
 | `Spinner`                                                            | `spinner.tsx`              | yes        | Animated `Loader2`                            |
@@ -667,7 +668,9 @@ Count meta is status, not a control. Put counts in `meta` (cyan pill, inline wit
 />
 ```
 
-Header buttons use `size="md"`; toolbar controls use `sm` / `icon`. On mobile, `PageHeader` stacks title above actions (`flex-col sm:flex-row`); the action cluster may wrap as one group, not as a separate toolbar row.
+Header buttons use `size="md"`; toolbar controls use `sm` / `icon`. `PageHeader` is always one horizontal band (`flex-row`): title + description on the left, actions on the right. Description may clamp to two lines on small viewports. The action cluster may wrap as one group, not as a separate toolbar row.
+
+**Project step drawers:** use `ContextDrawerTrigger` in `PageHeader.action`. Below `sm` it is a 32px icon-only control (`aria-label` + `title`); from `sm` up it shows the full label. Do not put a full-width labeled drawer button under the title on mobile.
 
 ### Card Grid Pattern
 

@@ -14,3 +14,4 @@ export { Heading, type HeadingProps, type HeadingVariant, type HeadingTag } from
 export { Text, type TextProps, type TextVariant, type TextTag } from "./text";
 export { Label, type LabelProps, type LabelTone } from "./label";
 export { ContextDrawer, type ContextDrawerProps } from "./context-drawer";
+export { ContextDrawerTrigger, type ContextDrawerTriggerProps } from "./context-drawer-trigger";

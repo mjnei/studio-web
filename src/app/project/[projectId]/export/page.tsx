@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
 import { Badge } from "@/components/ui/badge";
 import { ContextDrawer } from "@/components/ui/context-drawer";
+import { ContextDrawerTrigger } from "@/components/ui/context-drawer-trigger";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
@@ -403,27 +404,22 @@ export default function ExportPage() {
             title={t("project.export.title")}
             description={t("project.export.description")}
             action={
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  leftIcon={<Sliders className="h-4 w-4" />}
+              <>
+                <ContextDrawerTrigger
+                  icon={Sliders}
+                  label={t("project.export.diagnosticsButton")}
                   onClick={() => setShowDiagnosticsDrawer(true)}
-                >
-                  {t("project.export.diagnosticsButton")}
-                </Button>
+                />
                 {creditStatus && (
-                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-surface-raised border border-border-default text-caption font-medium">
-                    <Sparkles className="h-3.5 w-3.5 text-accent-primary" />
-                    <span>
-                      {t("project.export.balanceLabel")}{" "}
-                      <strong className="text-text-primary">
-                        {formatCredits(creditStatus.credits_remaining)}
-                      </strong>
-                    </span>
+                  <div className="flex h-8 items-center gap-1 rounded-lg border border-border-default bg-surface-raised px-2 text-caption font-medium sm:gap-2 sm:px-3">
+                    <Sparkles className="h-3.5 w-3.5 shrink-0 text-accent-primary" />
+                    <span className="hidden sm:inline">{t("project.export.balanceLabel")} </span>
+                    <strong className="text-text-primary">
+                      {formatCredits(creditStatus.credits_remaining)}
+                    </strong>
                   </div>
                 )}
-              </div>
+              </>
             }
           />
 

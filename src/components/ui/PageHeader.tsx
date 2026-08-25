@@ -25,9 +25,9 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
   const isStringMeta = typeof meta === "string";
 
   return (
-    <div className={cn("mb-6 sm:mb-8", className)}>
+    <div className={cn("mb-4 sm:mb-8", className)}>
       {breadcrumbs && <div className="mb-4">{breadcrumbs}</div>}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-row items-start sm:items-center justify-between gap-2 sm:gap-4">
         <div className="min-w-0 flex-1">
           {isStringTitle ? (
             <>
@@ -35,9 +35,13 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
                 {title}
               </Heading>
               {(description || meta) && (
-                <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
+                <div className="mt-1 sm:mt-2 flex flex-wrap items-center gap-x-3 gap-y-1">
                   {description && (
-                    <Text variant="body" as="span" className="text-[var(--text-secondary)]">
+                    <Text
+                      variant="body"
+                      as="span"
+                      className="text-[var(--text-secondary)] line-clamp-2 sm:line-clamp-none"
+                    >
                       {description}
                     </Text>
                   )}
@@ -56,7 +60,11 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
             <div>{title}</div>
           )}
         </div>
-        {action && <div className="flex-shrink-0">{action}</div>}
+        {action && (
+          <div className="flex shrink-0 flex-wrap items-center justify-end gap-1.5 sm:gap-2 pt-0.5">
+            {action}
+          </div>
+        )}
       </div>
     </div>
   );

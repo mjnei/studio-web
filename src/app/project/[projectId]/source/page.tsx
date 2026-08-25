@@ -14,6 +14,7 @@ import { MovieSelection } from "@/components/project/movie-selection";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ContextDrawer } from "@/components/ui/context-drawer";
+import { ContextDrawerTrigger } from "@/components/ui/context-drawer-trigger";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { useI18n } from "@/i18n";
 
@@ -104,24 +105,19 @@ export default function SourcePage() {
             }
             action={
               !isChanging && state?.movieId ? (
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    leftIcon={<Layers className="h-4 w-4" />}
+                <>
+                  <ContextDrawerTrigger
+                    icon={Layers}
+                    label={t("project.source.techSpecsButton")}
                     onClick={() => setShowMetadataDrawer(true)}
-                  >
-                    {t("project.source.techSpecsButton")}
-                  </Button>
-                  <Button
+                  />
+                  <ContextDrawerTrigger
+                    icon={RefreshCw}
                     variant="secondary"
-                    size="sm"
-                    leftIcon={<RefreshCw className="h-4 w-4" />}
+                    label={t("project.source.changeMovie")}
                     onClick={() => setIsChanging(true)}
-                  >
-                    {t("project.source.changeMovie")}
-                  </Button>
-                </div>
+                  />
+                </>
               ) : undefined
             }
           />

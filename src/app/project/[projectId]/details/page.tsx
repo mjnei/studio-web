@@ -11,6 +11,7 @@ import { Heading } from "@/components/ui/heading";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Badge } from "@/components/ui/badge";
 import { ContextDrawer } from "@/components/ui/context-drawer";
+import { ContextDrawerTrigger } from "@/components/ui/context-drawer-trigger";
 import { typography } from "@/components/ui/typography";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
@@ -312,14 +313,11 @@ export default function ProjectDetailsPage() {
             title={t("project.details.title")}
             description={t("project.details.description")}
             action={
-              <Button
-                variant="outline"
-                size="sm"
-                leftIcon={<Layers className="h-4 w-4" />}
+              <ContextDrawerTrigger
+                icon={Layers}
+                label={t("project.details.assetsContextButton")}
                 onClick={() => setShowContextDrawer(true)}
-              >
-                {t("project.details.assetsContextButton")}
-              </Button>
+              />
             }
           />
 

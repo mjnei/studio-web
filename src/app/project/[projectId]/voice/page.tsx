@@ -8,6 +8,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ContextDrawer } from "@/components/ui/context-drawer";
+import { ContextDrawerTrigger } from "@/components/ui/context-drawer-trigger";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { useVoiceLimits } from "@/lib/hooks/use-voice-limits";
 import { useVoicePreview } from "@/lib/hooks/use-voice-preview";
@@ -226,14 +227,11 @@ export default function VoicePage() {
             title={t("project.voice.title")}
             description={t("project.voice.description")}
             action={
-              <Button
-                variant="outline"
-                size="sm"
-                leftIcon={<Sliders className="h-4 w-4" />}
+              <ContextDrawerTrigger
+                icon={Sliders}
+                label={t("project.voice.speedScriptButton", { ratio: ratio.toFixed(1) })}
                 onClick={() => setShowParametersDrawer(true)}
-              >
-                {t("project.voice.speedScriptButton", { ratio: ratio.toFixed(1) })}
-              </Button>
+              />
             }
           />
 

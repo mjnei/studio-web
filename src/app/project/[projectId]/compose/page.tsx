@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Modal } from "@/components/ui/modal";
 import { ContextDrawer } from "@/components/ui/context-drawer";
+import { ContextDrawerTrigger } from "@/components/ui/context-drawer-trigger";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { StepRevisitBanner } from "@/components/project/step-revisit-banner";
@@ -215,14 +216,11 @@ export default function ComposePage() {
             title={t("project.compose.title")}
             description={t("project.compose.description")}
             action={
-              <Button
-                variant="outline"
-                size="sm"
-                leftIcon={<Sliders className="h-4 w-4" />}
+              <ContextDrawerTrigger
+                icon={Sliders}
+                label={t("project.compose.typographyButton")}
                 onClick={() => setShowCanvasDrawer(true)}
-              >
-                {t("project.compose.typographyButton")}
-              </Button>
+              />
             }
           />
 

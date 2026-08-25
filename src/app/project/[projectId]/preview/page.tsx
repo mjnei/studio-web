@@ -23,6 +23,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ContextDrawer } from "@/components/ui/context-drawer";
+import { ContextDrawerTrigger } from "@/components/ui/context-drawer-trigger";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
@@ -330,14 +331,11 @@ export default function PreviewPage() {
             title={t("project.preview.title")}
             description={t("project.preview.description")}
             action={
-              <Button
-                variant="outline"
-                size="sm"
-                leftIcon={<Sliders className="h-4 w-4" />}
+              <ContextDrawerTrigger
+                icon={Sliders}
+                label={t("project.preview.telemetryButton")}
                 onClick={() => setShowTelemetryDrawer(true)}
-              >
-                {t("project.preview.telemetryButton")}
-              </Button>
+              />
             }
           />
 
