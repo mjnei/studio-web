@@ -62,23 +62,23 @@ Keep existing solid tokens for inputs, modals, and areas that need full contrast
 --color-surface-elevated-glass: var(--surface-elevated-glass);
 ```
 
-### 3. Add utility classes (extend existing `.glass-panel`)
+### 3. Add utility classes (Tailwind CSS v4 `@utility`)
+
+In Tailwind CSS v4 (`src/app/globals.css`), declare glass utilities using the `@utility` directive:
 
 ```css
-@layer utilities {
-  .glass-chrome {
-    background: var(--surface-panel-glass);
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-  }
+@utility glass-chrome {
+  background: var(--surface-panel-glass);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+}
 
-  .glass-card {
-    background: var(--surface-raised-glass);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--border-default);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  }
+@utility glass-card {
+  background: var(--surface-raised-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-default);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 ```
 
@@ -86,8 +86,8 @@ Keep existing solid tokens for inputs, modals, and areas that need full contrast
 
 | Tier | Utility | Opacity | Use |
 |------|---------|---------|-----|
-| Chrome | `.glass-chrome` | ~55% | Nav, sidebar |
-| Content | `.glass-card` | ~65–72% | Cards, section panels |
+| Chrome | `.glass-chrome` | ~50–55% | TopNav, desktop sidebar |
+| Content | `.glass-card` | ~68–72% | Cards, section panels |
 
 ### 4. Reduced-transparency fallback
 
@@ -104,85 +104,46 @@ Keep existing solid tokens for inputs, modals, and areas that need full contrast
 
 ---
 
-## Opacity Reference
+## Opacity & Contrast Guidelines
 
-| Surface role | Opacity | Blur | Notes |
-|--------------|---------|------|-------|
-| Nav / sidebar | 50–60% | `blur-xl` (16–24px) | Ambient visible at edges and scroll gaps |
-| Cards / sections | 65–75% | `blur-md` (12px) | Balance theme visibility vs text contrast |
-| Sticky bars / dropdowns | 85–90% | `blur-lg` | See `BulkActionsBar` pattern |
-| Modals / inputs | 100% (solid) | none | Legibility and focus |
+| Surface role | Opacity | Blur | Text & Contrast Safety |
+|--------------|---------|------|------------------------|
+| **Nav / Sidebar** | 50–55% | `blur-xl` (16–24px) | High-contrast icon/nav items; ambient visible at edges and scroll gaps. |
+| **Content Cards** | 68–72% | `blur-md` (12–16px) | Keeps body copy readable over geometric lines in **Grid** (`opacity: 0.72`) and **Mesh** themes. |
+| **Sticky Bars / Dropdowns** | 85–90% | `blur-lg` | High opacity to maintain focus on overlay actions. |
+| **Modals / Inputs / Tables** | 100% (solid) | none | Maximum contrast and crisp rendering. |
 
-Start at the lower end; increase if text feels muddy over busy patterns (especially Mesh / Grid).
-
----
-
-## Rollout Plan (Priority Order)
-
-### Phase 1 — Shell chrome (biggest win, smallest diff)
-
-**Files:**
-
-- `src/components/shell/top-nav.tsx`
-- `src/components/shell/left-rail.tsx` (desktop sidebar only)
-
-**Change:** Replace `bg-surface-panel/80 backdrop-blur-xl` with `glass-chrome` (or quick test: `bg-surface-panel/50 backdrop-blur-xl`).
-
-**Keep solid:** Mobile drawer overlay (`bg-surface-panel` without glass) — full-opacity overlays read better on small screens.
-
-### Phase 2 — `Card` component
-
-**File:** `src/components/ui/card.tsx`
-
-Add a `glass` variant:
-
-```tsx
-glass: "glass-card",
-```
-
-**First consumers:**
-
-- `src/app/(shell)/settings/page.tsx` — appearance / settings sections
-- Other high-traffic shell pages as needed
-
-Keep `default`, `elevated`, and `interactive` solid for modals and dense data UI until Phase 3.
-
-### Phase 3 — Page-level panels
-
-Replace bare `bg-surface-panel` wrappers with `glass-card` or `bg-surface-panel-glass backdrop-blur-md`.
-
-**Examples to update:**
-
-- Notifications list containers
-- Admin table wrappers
-- List page section backgrounds
-
-**Reference pattern** (already partially glass):
-
-```tsx
-// src/components/jobs/BulkActionsBar.tsx
-bg-surface-panel/95 backdrop-blur-md
-```
-
-Target `/60–75` + `backdrop-blur` for similar sticky/overlay bars.
-
-### Phase 4 — Audit and tune
-
-- Walk shell routes (jobs, movies, voices, settings, admin) and verify theme switch is visible
-- Tune token opacity per theme if Mesh/Grid need different values
-- Confirm no regressions on project workflow pages (may keep more solid surfaces for creative viewport focus)
+> [!IMPORTANT]
+> Because **Mesh** and **Grid** have high-contrast background patterns (circuit dots and grid lines), keep `.glass-card` opacity at or above **68%** with at least `12px` blur to prevent background grid lines from cluttering 14px body text.
 
 ---
 
-## Proof of Concept (before broad refactor)
+## Action Plan & Task List
 
-Minimal changes to validate the approach:
+### Phase 1: Tokens & Utilities (`globals.css`)
+- [ ] Add glass custom properties (`--surface-panel-glass`, `--surface-raised-glass`, `--surface-elevated-glass`, `--glass-blur`) to `:root` in `src/app/globals.css`.
+- [ ] Map glass color tokens in `@theme inline`.
+- [ ] Add `@utility glass-chrome` and `@utility glass-card` classes with specular highlight border.
+- [ ] Add `@media (prefers-reduced-transparency: reduce)` fallback to restore solid surfaces.
 
-1. `TopNav` → `bg-surface-panel/50 backdrop-blur-xl`
-2. Desktop `LeftRail` → same
-3. Settings page `Card` sections → `variant="glass"` (after Phase 2)
+### Phase 2: Shell Chrome (Proof of Concept)
+- [ ] Update `src/components/shell/top-nav.tsx`: replace `bg-surface-panel/80 backdrop-blur-xl` with `glass-chrome`.
+- [ ] Update `src/components/shell/left-rail.tsx`: apply `glass-chrome` to desktop navigation sidebar.
+- [ ] **Verify:** Mobile drawer in `left-rail.tsx` remains solid (`bg-surface-panel`) for small screen readability.
+- [ ] **Verify:** Shell `main` container in `src/app/(shell)/layout.tsx` has no solid `bg-surface-*` blocking the ambient layer.
 
-If background reads clearly on Settings, proceed with tokens and wider rollout.
+### Phase 3: Card Component Variant
+- [ ] Update `src/components/ui/card.tsx`: add `glass` variant mapped to `"glass-card"`.
+- [ ] Update `src/app/(shell)/settings/page.tsx` section cards to use `variant="glass"`.
+- [ ] Test theme switching (Aurora / Mesh / Grid) on Settings page to confirm immediate visual feedback.
+
+### Phase 4: Page-Level Audits & Stacking Fixes
+- [ ] Audit shell pages (`/jobs`, `/movies`, `/voices`, `/settings`, `/admin`) for redundant opaque background wrappers.
+- [ ] Migrate secondary panels (notifications list, bulk actions bars, table wrappers) to `glass-card` or `bg-surface-panel-glass backdrop-blur-md`.
+- [ ] Confirm no nested opaque backgrounds block `backdrop-filter` on child cards.
+
+### Phase 5: Theme Persistence Alignment (SSR Cookie)
+- [ ] Follow [AMBIENT_THEME.md](./AMBIENT_THEME.md) to implement cookie + SSR persistence so theme changes do not flash during page reloads.
 
 ---
 
@@ -202,42 +163,17 @@ If background reads clearly on Settings, proceed with tokens and wider rollout.
 ## Constraints and Gotchas
 
 1. **`backdrop-filter` requires visible content behind the element.** Do not add `bg-surface-base` to the shell wrapper or `main`. Parent opaque layers block the effect even if the child is transparent.
-
 2. **Stacked opaque layers.** A glass card on an opaque section still blocks ambient. Either glass both layers or leave the page background transparent and glass only cards.
-
-3. **Theme accents.** Ambient orbs already follow `html[data-ambient-bg]`. Lower panel opacity makes accent colors (teal / amber / blue) consistent with settings preview swatches.
-
+3. **High-contrast themes.** When testing, always test against the **Grid** and **Mesh** themes in addition to **Aurora** to catch text legibility issues.
 4. **Performance.** Glass on nav + cards is fine; avoid `backdrop-blur` on high-frequency elements (table rows, list items in long virtualized lists).
 
-5. **Tailwind-only alternative.** Before adding tokens, a quick test is `bg-surface-panel/50 backdrop-blur-xl` on nav/rail. Tokens are preferred for consistency and reduced-transparency fallback.
-
 ---
 
-## Files Summary
+## Verification Checklist
 
-| File | Action |
-|------|--------|
-| `src/app/globals.css` | Add glass tokens, `@theme` entries, `.glass-chrome` / `.glass-card`, reduced-transparency media query |
-| `src/components/shell/top-nav.tsx` | Apply `.glass-chrome` |
-| `src/components/shell/left-rail.tsx` | Apply `.glass-chrome` (desktop); keep mobile drawer solid |
-| `src/components/ui/card.tsx` | Add `glass` variant |
-| `src/app/(shell)/settings/page.tsx` | Use `variant="glass"` on section cards (PoC) |
-| Page-level `bg-surface-panel` wrappers | Phase 3 — migrate incrementally |
-
----
-
-## Success Criteria
-
-- [ ] Switching Aurora / Mesh / Grid in Settings is visibly reflected in nav and main content areas within ~1s
-- [ ] Body text and form labels remain WCAG-friendly on all three themes
-- [ ] `prefers-reduced-transparency: reduce` restores solid surfaces
-- [ ] No measurable scroll jank on jobs/movies list pages
-- [ ] Mobile drawer remains solid and readable
-
----
-
-## Out of Scope (for this plan)
-
-- Changing ambient orb/mesh/grid CSS (already theme-aware)
-- Project workflow shell (`ProjectShell`) — separate design per [PROJECT_WORKFLOW_REDESIGN.md](./PROJECT_WORKFLOW_REDESIGN.md)
-- Light mode / alternate color schemes
+- [ ] **Visual Theme Feedback:** Switching between Aurora, Mesh, and Grid in Settings is instantly noticeable through the top nav, rail, and cards.
+- [ ] **Legibility on All Themes:** 14px body text, captions, and badges remain clearly readable over Grid and Mesh patterns.
+- [ ] **Accessibility (Reduced Transparency):** Enabling `prefers-reduced-transparency: reduce` in browser/OS settings reverts all glass surfaces to solid opaque panels.
+- [ ] **Mobile Experience:** Mobile navigation drawer remains 100% opaque.
+- [ ] **Performance:** Smooth 60fps scrolling on long lists (Movies catalog, Jobs list) with no frame drops from excessive backdrop filters.
+- [ ] **No Stacking Traps:** Main page backgrounds remain transparent so cards blur the ambient background directly.

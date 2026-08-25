@@ -121,9 +121,17 @@ function persistTheme(style: AmbientBackgroundStyle) {
 }
 ```
 
-**3. Hydration** — on mount, prefer cookie (or reconcile cookie vs localStorage once if migrating).
+**3. Dual-write for multi-tab sync** — write to both `document.cookie` (for SSR) and `localStorage` (for instant cross-tab sync and backward compatibility):
 
-**4. No inline script** — SSR `data-ambient-bg` replaces the removed blocking script.
+```tsx
+function persistTheme(style: AmbientBackgroundStyle) {
+  document.cookie = `ambient-bg=${style}; path=/; max-age=31536000; SameSite=Lax`;
+  localStorage.setItem(AMBIENT_BACKGROUND_STORAGE_KEY, style);
+  document.documentElement.dataset.ambientBg = style;
+}
+```
+
+**4. No inline script** — SSR `data-ambient-bg` replaces the removed blocking `<head>` script cleanly.
 
 ### Optional: user profile sync
 
@@ -142,43 +150,51 @@ That is a separate feature; cookie-only persistence is enough for same-browser, 
 | Concern | Current (localStorage) | Cookie + SSR |
 |---------|------------------------|--------------|
 | Theme flash on reload | Possible (~1 frame) | None |
-| Implementation effort | Done | ~1–2 hours |
+| Implementation effort | Done | ~1 hour |
 | Files touched for migration | — | `layout.tsx`, `ambient-background.tsx`, shared parse helper |
 | `dangerouslySetInnerHTML` in layout | No | No |
+| Cross-tab synchronization | Yes | Yes (via dual-write) |
 | Per-browser preference | Yes | Yes |
 | Account-wide preference | No | Possible with API follow-up |
 
 ---
 
-## Recommendation
+## Recommendation & Synergy with Glass Surfaces
 
-**Keep localStorage for now** if:
-
-- Theme is a casual UI preference (like layout mode on Projects/Movies).
-- A brief default-theme flash on hard refresh is acceptable.
-- You want minimal server/layout complexity.
-
-**Migrate to cookie + SSR when** any of these matter:
-
-- Zero flash on first paint (marketing pages, demos, screenshots).
-- Server-rendered HTML must reflect the user’s theme (emails, OG previews, future SSR dashboards).
-- You plan to sync theme with a backend user profile.
-
-**Do not re-add the inline `<head>` script** unless you explicitly reject both SSR cookies and accepting the flash — the script was a third option with worse maintainability than cookies for the same UX goal.
+- **Pair with Glass Surfaces:** As [AMBIENT_GLASS_SURFACES.md](./AMBIENT_GLASS_SURFACES.md) introduces translucent glass chrome and cards, the background color becomes much more prominent. Eliminating the 1-frame theme flash during SSR is strongly recommended before rolling out glass surfaces.
+- **Do not re-add the inline `<head>` script:** SSR cookies provide a cleaner, zero-flash first paint without layout hackiness.
 
 ---
 
-## Migration checklist (cookie path)
+## Action Plan & Task List
 
-When implementing cookie persistence:
+### Phase 1: Shared Helper & Constants
+- [ ] Export `parseAmbientBackgroundStyle(value: string | undefined): AmbientBackgroundStyle` from a server-safe shared file (e.g., `src/lib/ambient-background-shared.ts` or split from provider).
+- [ ] Ensure valid fallback to `DEFAULT_AMBIENT_BACKGROUND` (`"aurora"`) for undefined or unrecognized values.
 
-- [ ] Add `parseAmbientBackgroundStyle(value: string | undefined)` in `src/lib/ambient-background.ts` (or `.tsx` with `"use server"`-safe exports split).
-- [ ] Make root `layout.tsx` async; read `cookies()`; set `data-ambient-bg` on `<html>`.
-- [ ] Update `setStyle()` to write `document.cookie` alongside or instead of `localStorage`.
-- [ ] On first visit after deploy, optionally migrate: if `localStorage` has a value and cookie is missing, write cookie once.
-- [ ] Remove duplicate `applyDocumentStyle` on mount if SSR already set the attribute (still sync React state from cookie/localStorage for Settings UI).
-- [ ] Manual test: hard refresh on each theme; verify no flash and Settings picker shows correct selection.
-- [ ] Update this doc status to **Implemented (cookie + SSR)**.
+### Phase 2: Root Layout SSR Integration
+- [ ] Make `RootLayout` in `src/app/layout.tsx` an async server component.
+- [ ] Read the `ambient-bg` cookie via `await cookies()`.
+- [ ] Pass the resolved style into `<html data-ambient-bg={theme} ...>`.
+
+### Phase 3: Client Provider Dual-Write & Hydration
+- [ ] Update `setStyle()` in `src/lib/ambient-background.tsx` to perform dual-write: `document.cookie` + `localStorage`.
+- [ ] In `useEffect` on initial mount, if cookie is missing but `localStorage` has a saved theme, sync it into `document.cookie`.
+- [ ] Keep React context in sync so Settings picker and live preview update instantaneously.
+
+### Phase 4: Multi-Tab & Edge Case Handling
+- [ ] Ensure standard `window.addEventListener("storage", ...)` listener handles cross-tab changes smoothly.
+- [ ] Test cookie lifespan (`Max-Age=31536000`, `SameSite=Lax`, `Path=/`).
+
+---
+
+## Verification Checklist
+
+- [ ] **Zero Flash on Hard Reload:** Select **Mesh** (amber) or **Grid** (blue), perform a hard refresh (`Ctrl+F5`), and verify the page renders directly in the selected theme without any teal flash.
+- [ ] **Instant Client Switching:** Changing the theme in Settings immediately updates colors without page reload.
+- [ ] **Multi-Tab Sync:** Changing theme in Tab A immediately updates Tab B.
+- [ ] **Fallback Handling:** Clearing cookies/storage correctly defaults to `aurora` without crashing or console warnings.
+- [ ] **Server Render Validity:** Inspect HTML response (`view-source:`) to ensure `data-ambient-bg="<theme>"` is present in the initial server HTML.
 
 ---
 
