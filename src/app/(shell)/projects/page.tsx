@@ -175,13 +175,15 @@ export default function ProjectsPage() {
         />
       ) : (
         <div className={getGridClass()}>
-          {projects.map((project) => (
+          {projects.map((project, index) => (
             <ProjectCard
               key={project.id}
               project={project}
               showDelete={true}
               onDelete={handleDeleteClick}
               layoutMode={layoutMode}
+              // First row is typically LCP; eager-load those covers.
+              priority={layoutMode !== "list" && index < (layoutMode === "grid-sm" ? 4 : 3)}
             />
           ))}
         </div>

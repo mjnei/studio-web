@@ -17,6 +17,8 @@ interface ProjectCardProps {
   showDelete?: boolean;
   onDelete?: (project: ProjectResponse) => void;
   layoutMode?: "grid-sm" | "grid-md" | "list";
+  /** Eager-load cover image when above the fold (LCP). */
+  priority?: boolean;
 }
 
 function formatProjectStatus(status: string, t: ReturnType<typeof useI18n>["t"]) {
@@ -37,6 +39,7 @@ export function ProjectCard({
   showDelete = false,
   onDelete,
   layoutMode = "grid-md",
+  priority = false,
 }: ProjectCardProps) {
   const { t } = useI18n();
 
@@ -161,6 +164,7 @@ export function ProjectCard({
                 className="h-full w-full object-cover"
                 fill
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
+                priority={priority}
                 onError={() => {
                   // Fallback to TMDB image if thumbnail fails to load
                   // The ExternalImage component handles this, but onError is called
@@ -170,13 +174,14 @@ export function ProjectCard({
             ) : project.movie?.backdrop_path || project.movie?.poster_path ? (
               <ExternalImage
                 src={
-                  tmdbImageUrl(project.movie.backdrop_path ?? project.movie.poster_path, "w780") ||
+                  tmdbImageUrl(project.movie.backdrop_path ?? project.movie.poster_path, "w500") ||
                   ""
                 }
                 alt={project.movie?.title ?? t("project.card.projectMovie")}
                 className="h-full w-full object-cover"
                 fill
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
+                priority={priority}
               />
             ) : (
               <div className="flex h-full items-center justify-center">

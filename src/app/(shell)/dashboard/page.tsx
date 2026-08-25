@@ -250,8 +250,8 @@ export default function DashboardPage() {
               <LoadingSkeleton variant="grid" count={3} />
             ) : (
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {projects.map((project) => (
-                  <ProjectCard key={project.id} project={project} />
+                {projects.map((project, index) => (
+                  <ProjectCard key={project.id} project={project} priority={index < 3} />
                 ))}
               </div>
             )}
