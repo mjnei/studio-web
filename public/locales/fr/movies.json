@@ -34,7 +34,7 @@
       "externalIds": "IDs externes",
       "imdb": "IMDb",
       "douban": "Douban",
-      "runtimeMinutes": "{runtime} minutes",
+      "runtimeMinutes": "{runtime} min",
       "overview": "Synopsis",
       "crew": "Équipe",
       "expandCrew": "Développer l'équipe",
