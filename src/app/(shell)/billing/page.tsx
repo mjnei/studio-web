@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { useI18n } from "@/i18n";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -255,267 +255,265 @@ export default function BillingPage() {
 
           {/* Credit Status Details */}
           <Card variant="elevated" padding="lg">
-            <div className="flex items-start justify-between mb-6">
-              <div>
-                <Heading variant="subsection" as="h2" className="text-text-primary mb-1">
-                  {t("billing.overview.creditDetails")}
-                </Heading>
-                <Text variant="body" className="text-text-muted">
-                  {t("billing.overview.creditDetailsDescription")}
-                </Text>
-              </div>
-              <Button
-                variant="primary"
-                size="md"
-                onClick={() => setShowCreditsConfirm(true)}
-                disabled={addingCredits}
-                leftIcon={<Sparkles className="h-4 w-4" />}
-              >
-                {addingCredits ? t("billing.overview.adding") : t("billing.overview.gimmeCredits")}
-              </Button>
-            </div>
-
-            <div className="grid gap-6 md:grid-cols-3 mb-6">
-              <div className="p-4 rounded-lg bg-surface-raised border border-border-default">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="p-2 rounded-lg bg-accent-cyan/10">
-                    <TrendingUp className="h-5 w-5 text-accent-cyan" />
-                  </div>
-                  <div>
-                    <p className="text-caption text-text-muted">
-                      {t("billing.overview.monthlyAllocation")}
-                    </p>
-                    <Heading variant="metric" className="text-text-primary">
-                      {creditStatus.monthly_allocation}
-                    </Heading>
-                  </div>
-                </div>
-                <p className="text-caption text-text-muted">
-                  {t("billing.overview.monthlyAllocationDescription")}
-                </p>
-              </div>
-
-              <div className="p-4 rounded-lg bg-surface-raised border border-border-default">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="p-2 rounded-lg bg-accent-cyan/10">
-                    <Coins className="h-5 w-5 text-accent-cyan" />
-                  </div>
-                  <div>
-                    <p className="text-caption text-text-muted">
-                      {t("billing.overview.creditsUsed")}
-                    </p>
-                    <Heading variant="metric" className="text-text-primary">
-                      {creditStatus.credits_used}
-                    </Heading>
-                  </div>
-                </div>
-                <p className="text-caption text-text-muted">
-                  {t("billing.overview.creditsUsedDescription")}
-                </p>
-              </div>
-
-              <div className="p-4 rounded-lg bg-surface-raised border border-border-default">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="p-2 rounded-lg bg-accent-cyan/10">
-                    <Clock className="h-5 w-5 text-accent-cyan" />
-                  </div>
-                  <div>
-                    <p className="text-caption text-text-muted">
-                      {t("billing.overview.cycleReset")}
-                    </p>
-                    <p className="text-body font-semibold text-text-primary">
-                      {formatDate(creditStatus.cycle_end_date)}
-                    </p>
-                  </div>
-                </div>
-                <p className="text-caption text-text-muted">
-                  {t("billing.overview.cycleResetDescription")}
-                </p>
-              </div>
-            </div>
-
-            <div className="p-4 rounded-lg bg-warning-bg/10 border border-warning-border">
-              <div className="flex items-start gap-3">
-                <Clock className="h-5 w-5 text-warning-text flex-shrink-0 mt-0.5" />
+            <CardHeader>
+              <div className="flex items-start justify-between">
                 <div>
-                  <Heading variant="label" as="h4" className="text-warning-text mb-1">
-                    {t("billing.overview.nextAllocationReset")}
-                  </Heading>
-                  <p className="text-body text-text-muted">
-                    {t("billing.overview.nextAllocationResetDescription")}{" "}
-                    <span className="font-medium text-text-secondary">
-                      {formatDate(creditStatus.cycle_end_date)}
-                    </span>
-                    . {t("billing.overview.rolloverUp")}{" "}
-                    {creditStatus.max_rollover || t("billing.overview.unlimited")}{" "}
-                    {t("billing.overview.credits")}.
+                  <CardTitle>{t("billing.overview.creditDetails")}</CardTitle>
+                  <CardDescription>
+                    {t("billing.overview.creditDetailsDescription")}
+                  </CardDescription>
+                </div>
+                <Button
+                  variant="primary"
+                  size="md"
+                  onClick={() => setShowCreditsConfirm(true)}
+                  disabled={addingCredits}
+                  leftIcon={<Sparkles className="h-4 w-4" />}
+                >
+                  {addingCredits
+                    ? t("billing.overview.adding")
+                    : t("billing.overview.gimmeCredits")}
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-6 md:grid-cols-3 mb-6">
+                <div className="p-4 rounded-lg bg-surface-raised border border-border-default">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="p-2 rounded-lg bg-accent-cyan/10">
+                      <TrendingUp className="h-5 w-5 text-accent-cyan" />
+                    </div>
+                    <div>
+                      <p className="text-caption text-text-muted">
+                        {t("billing.overview.monthlyAllocation")}
+                      </p>
+                      <Heading variant="metric" className="text-text-primary">
+                        {creditStatus.monthly_allocation}
+                      </Heading>
+                    </div>
+                  </div>
+                  <p className="text-caption text-text-muted">
+                    {t("billing.overview.monthlyAllocationDescription")}
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-lg bg-surface-raised border border-border-default">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="p-2 rounded-lg bg-accent-cyan/10">
+                      <Coins className="h-5 w-5 text-accent-cyan" />
+                    </div>
+                    <div>
+                      <p className="text-caption text-text-muted">
+                        {t("billing.overview.creditsUsed")}
+                      </p>
+                      <Heading variant="metric" className="text-text-primary">
+                        {creditStatus.credits_used}
+                      </Heading>
+                    </div>
+                  </div>
+                  <p className="text-caption text-text-muted">
+                    {t("billing.overview.creditsUsedDescription")}
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-lg bg-surface-raised border border-border-default">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="p-2 rounded-lg bg-accent-cyan/10">
+                      <Clock className="h-5 w-5 text-accent-cyan" />
+                    </div>
+                    <div>
+                      <p className="text-caption text-text-muted">
+                        {t("billing.overview.cycleReset")}
+                      </p>
+                      <p className="text-body font-semibold text-text-primary">
+                        {formatDate(creditStatus.cycle_end_date)}
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-caption text-text-muted">
+                    {t("billing.overview.cycleResetDescription")}
                   </p>
                 </div>
               </div>
-            </div>
+
+              <div className="p-4 rounded-lg bg-warning-bg/10 border border-warning-border">
+                <div className="flex items-start gap-3">
+                  <Clock className="h-5 w-5 text-warning-text flex-shrink-0 mt-0.5" />
+                  <div>
+                    <Heading variant="label" as="h4" className="text-warning-text mb-1">
+                      {t("billing.overview.nextAllocationReset")}
+                    </Heading>
+                    <p className="text-body text-text-muted">
+                      {t("billing.overview.nextAllocationResetDescription")}{" "}
+                      <span className="font-medium text-text-secondary">
+                        {formatDate(creditStatus.cycle_end_date)}
+                      </span>
+                      . {t("billing.overview.rolloverUp")}{" "}
+                      {creditStatus.max_rollover || t("billing.overview.unlimited")}{" "}
+                      {t("billing.overview.credits")}.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
           </Card>
 
           {/* Billing Information */}
           <Card variant="elevated" padding="lg">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <Heading variant="subsection" as="h2" className="text-text-primary mb-1">
-                  {t("billing.overview.billing")}
-                </Heading>
-                <Text variant="body" className="text-text-muted">
-                  {t("billing.overview.billingDescription")}
-                </Text>
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  leftIcon={<Settings className="h-4 w-4" />}
-                  onClick={handleUpdatePayment}
-                >
-                  {t("billing.overview.update")}
-                </Button>
-                <Button variant="primary" size="sm" leftIcon={<CreditCard className="h-4 w-4" />}>
-                  {t("billing.overview.billingPortal")}
-                </Button>
-              </div>
-            </div>
-
-            <div className="p-4 rounded-lg bg-surface-raised border border-border-default">
-              <div className="flex items-center justify-between mb-4">
+            <CardHeader>
+              <div className="flex items-center justify-between">
                 <div>
-                  <Heading variant="label" as="h3" className="text-text-primary">
-                    {t("billing.overview.currentPlan")}
-                  </Heading>
-                  <p className="text-body text-text-secondary capitalize">
-                    {creditStatus.membership_tier}
-                  </p>
+                  <CardTitle>{t("billing.overview.billing")}</CardTitle>
+                  <CardDescription>{t("billing.overview.billingDescription")}</CardDescription>
                 </div>
-                <Button variant="ghost" size="sm" onClick={() => router.push("/pricing")}>
-                  {t("billing.overview.changePlan")}
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    leftIcon={<Settings className="h-4 w-4" />}
+                    onClick={handleUpdatePayment}
+                  >
+                    {t("billing.overview.update")}
+                  </Button>
+                  <Button variant="primary" size="sm" leftIcon={<CreditCard className="h-4 w-4" />}>
+                    {t("billing.overview.billingPortal")}
+                  </Button>
+                </div>
               </div>
+            </CardHeader>
+            <CardContent>
+              <div className="p-4 rounded-lg bg-surface-raised border border-border-default">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <Heading variant="label" as="h3" className="text-text-primary">
+                      {t("billing.overview.currentPlan")}
+                    </Heading>
+                    <p className="text-body text-text-secondary capitalize">
+                      {creditStatus.membership_tier}
+                    </p>
+                  </div>
+                  <Button variant="ghost" size="sm" onClick={() => router.push("/pricing")}>
+                    {t("billing.overview.changePlan")}
+                  </Button>
+                </div>
 
-              <div className="grid gap-4 text-body">
-                <div className="flex justify-between">
-                  <span className="text-text-muted">
-                    {t("billing.overview.subscriptionStatus")}
-                  </span>
-                  <span className="font-medium text-status-success">
-                    {t("billing.overview.active")}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-text-muted">{t("billing.overview.monthlyCost")}</span>
-                  <span className="font-medium text-text-primary">
-                    {creditStatus.membership_tier === "free" && "$0"}
-                    {creditStatus.membership_tier === "pro" && "$49"}
-                    {creditStatus.membership_tier === "premium" && "$199"}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-text-muted">{t("billing.overview.nextBillingDate")}</span>
-                  <span className="font-medium text-text-primary">
-                    {formatDate(creditStatus.cycle_end_date)}
-                  </span>
+                <div className="grid gap-4 text-body">
+                  <div className="flex justify-between">
+                    <span className="text-text-muted">
+                      {t("billing.overview.subscriptionStatus")}
+                    </span>
+                    <span className="font-medium text-status-success">
+                      {t("billing.overview.active")}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-text-muted">{t("billing.overview.monthlyCost")}</span>
+                    <span className="font-medium text-text-primary">
+                      {creditStatus.membership_tier === "free" && "$0"}
+                      {creditStatus.membership_tier === "pro" && "$49"}
+                      {creditStatus.membership_tier === "premium" && "$199"}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-text-muted">{t("billing.overview.nextBillingDate")}</span>
+                    <span className="font-medium text-text-primary">
+                      {formatDate(creditStatus.cycle_end_date)}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
+            </CardContent>
           </Card>
         </div>
       )}
 
       {activeTab === "history" && (
         <Card variant="elevated" padding="lg">
-          <div className="mb-6">
-            <Heading variant="subsection" as="h2" className="text-text-primary mb-1">
-              {t("billing.history.creditTransactionHistory")}
-            </Heading>
-            <Text variant="body" className="text-text-muted">
-              {t("billing.history.trackUsage")}
-            </Text>
-          </div>
-
-          {transactions.length === 0 ? (
-            <div className="py-12 text-center">
-              <History className="h-12 w-12 text-text-muted mx-auto mb-4 opacity-50" />
-              <p className="text-text-muted">{t("billing.history.noTransactions")}</p>
-              <p className="text-caption text-text-muted mt-2">
-                {t("billing.history.noTransactionsDescription")}
-              </p>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {transactions.map((transaction) => (
-                <div
-                  key={transaction.id}
-                  className="flex items-center justify-between p-4 rounded-lg bg-surface-raised border border-border-default hover:bg-surface-hover transition-colors"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className={`p-2 rounded-lg ${getTransactionColor(transaction.amount)}/10`}>
-                      {transaction.transaction_type === "usage" ? (
-                        <Coins className="h-5 w-5 text-status-failed" />
-                      ) : (
-                        <TrendingUp className="h-5 w-5 text-status-success" />
-                      )}
+          <CardHeader>
+            <CardTitle>{t("billing.history.creditTransactionHistory")}</CardTitle>
+            <CardDescription>{t("billing.history.trackUsage")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {transactions.length === 0 ? (
+              <div className="py-12 text-center">
+                <History className="h-12 w-12 text-text-muted mx-auto mb-4 opacity-50" />
+                <p className="text-text-muted">{t("billing.history.noTransactions")}</p>
+                <p className="text-caption text-text-muted mt-2">
+                  {t("billing.history.noTransactionsDescription")}
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {transactions.map((transaction) => (
+                  <div
+                    key={transaction.id}
+                    className="flex items-center justify-between p-4 rounded-lg bg-surface-raised border border-border-default hover:bg-surface-hover transition-colors"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div
+                        className={`p-2 rounded-lg ${getTransactionColor(transaction.amount)}/10`}
+                      >
+                        {transaction.transaction_type === "usage" ? (
+                          <Coins className="h-5 w-5 text-status-failed" />
+                        ) : (
+                          <TrendingUp className="h-5 w-5 text-status-success" />
+                        )}
+                      </div>
+                      <div>
+                        <Heading variant="label" as="h4" className="text-text-primary capitalize">
+                          {transaction.transaction_type}
+                        </Heading>
+                        <p className="text-caption text-text-muted">
+                          {transaction.description || t("billing.history.creditTransaction")}
+                        </p>
+                        <p className="text-caption text-text-muted mt-0.5">
+                          {formatDate(transaction.created_at)}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <Heading variant="label" as="h4" className="text-text-primary capitalize">
-                        {transaction.transaction_type}
-                      </Heading>
+                    <div className="text-right">
+                      <p
+                        className={`text-body font-semibold ${getTransactionColor(transaction.amount)}`}
+                      >
+                        {formatAmount(transaction.amount)} {t("billing.overview.credits")}
+                      </p>
                       <p className="text-caption text-text-muted">
-                        {transaction.description || t("billing.history.creditTransaction")}
-                      </p>
-                      <p className="text-caption text-text-muted mt-0.5">
-                        {formatDate(transaction.created_at)}
+                        {t("billing.history.balance")} {transaction.balance_after}
                       </p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p
-                      className={`text-body font-semibold ${getTransactionColor(transaction.amount)}`}
-                    >
-                      {formatAmount(transaction.amount)} {t("billing.overview.credits")}
-                    </p>
-                    <p className="text-caption text-text-muted">
-                      {t("billing.history.balance")} {transaction.balance_after}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+                ))}
+              </div>
+            )}
+          </CardContent>
         </Card>
       )}
 
       {activeTab === "invoices" && (
         <Card variant="elevated" padding="lg">
-          <div className="mb-6">
-            <Heading variant="subsection" as="h2" className="text-text-primary mb-1">
-              {t("billing.invoices.invoices")}
-            </Heading>
-            <Text variant="body" className="text-text-muted">
-              {t("billing.invoices.viewDownload")}
-            </Text>
-          </div>
-
-          <div className="py-12 text-center">
-            <Receipt className="h-16 w-16 text-text-muted mx-auto mb-4 opacity-30" />
-            <Heading variant="subsection" as="h3" className="text-text-primary mb-2">
-              {t("billing.invoices.stripeComingSoon")}
-            </Heading>
-            <p className="text-text-muted max-w-md mx-auto mb-6">
-              {t("billing.invoices.invoiceManagement")}
-            </p>
-            <div className="flex gap-3 justify-center">
-              <Button variant="ghost" size="md" leftIcon={<Download className="h-4 w-4" />}>
-                {t("billing.invoices.downloadSample")}
-              </Button>
-              <Button variant="primary" size="md" leftIcon={<CreditCard className="h-4 w-4" />}>
-                {t("billing.invoices.viewStripePortal")}
-              </Button>
+          <CardHeader>
+            <CardTitle>{t("billing.invoices.invoices")}</CardTitle>
+            <CardDescription>{t("billing.invoices.viewDownload")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="py-12 text-center">
+              <Receipt className="h-16 w-16 text-text-muted mx-auto mb-4 opacity-30" />
+              <Heading variant="subsection" as="h3" className="text-text-primary mb-2">
+                {t("billing.invoices.stripeComingSoon")}
+              </Heading>
+              <p className="text-text-muted max-w-md mx-auto mb-6">
+                {t("billing.invoices.invoiceManagement")}
+              </p>
+              <div className="flex gap-3 justify-center">
+                <Button variant="ghost" size="md" leftIcon={<Download className="h-4 w-4" />}>
+                  {t("billing.invoices.downloadSample")}
+                </Button>
+                <Button variant="primary" size="md" leftIcon={<CreditCard className="h-4 w-4" />}>
+                  {t("billing.invoices.viewStripePortal")}
+                </Button>
+              </div>
             </div>
-          </div>
+          </CardContent>
         </Card>
       )}
 

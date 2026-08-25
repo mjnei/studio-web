@@ -386,7 +386,7 @@ export default function ProfilePage() {
 
           {/* Account Overview / Personal Details */}
           <Card variant="elevated" padding="lg">
-            <CardHeader className="pb-4">
+            <CardHeader>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-accent-primary flex items-center justify-center shadow-sm shrink-0">
                   <User className="h-5 w-5 text-white" />
@@ -397,7 +397,7 @@ export default function ProfilePage() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-4">
               {editing ? (
                 <div className="space-y-4 pt-2">
                   <Input
@@ -467,7 +467,7 @@ export default function ProfilePage() {
 
           {/* Membership & Billing */}
           <Card variant="elevated" padding="lg">
-            <CardHeader className="pb-4">
+            <CardHeader>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-cyan to-blue-500 flex items-center justify-center shadow-sm shrink-0">
                   <Crown className="h-5 w-5 text-white" />
@@ -478,7 +478,7 @@ export default function ProfilePage() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-4">
               <div className="space-y-4 pt-2">
                 <div className="rounded-xl border border-border-default bg-surface-raised p-4 space-y-3">
                   <div className="flex items-center justify-between">
@@ -554,7 +554,7 @@ export default function ProfilePage() {
 
           {/* Password & Security */}
           <Card variant="elevated" padding="lg">
-            <CardHeader className="pb-4">
+            <CardHeader>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-sm shrink-0">
                   <KeyRound className="h-5 w-5 text-white" />
@@ -565,7 +565,7 @@ export default function ProfilePage() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-4">
               <div className="space-y-4 pt-2">
                 {passwordError && (
                   <div className="rounded-lg border border-status-failed/30 bg-status-failed/10 px-4 py-3 text-body text-status-failed flex items-start gap-2">
@@ -639,7 +639,7 @@ export default function ProfilePage() {
 
           {/* Connected Accounts */}
           <Card variant="elevated" padding="lg">
-            <CardHeader className="pb-4">
+            <CardHeader>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-sm shrink-0">
                   <Link2 className="h-5 w-5 text-white" />
@@ -650,7 +650,7 @@ export default function ProfilePage() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-4">
               <div className="pt-2">
                 <div className="flex items-center justify-between p-4 rounded-xl border border-border-default bg-surface-raised hover:border-border-strong transition-colors">
                   <div className="flex items-center gap-3">
@@ -681,7 +681,7 @@ export default function ProfilePage() {
 
           {/* Preferences & Onboarding */}
           <Card variant="elevated" padding="lg">
-            <CardHeader className="pb-4">
+            <CardHeader>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-sm shrink-0">
                   <RefreshCw className="h-5 w-5 text-white" />
@@ -692,7 +692,7 @@ export default function ProfilePage() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-4">
               <div className="pt-2">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 rounded-xl border border-border-default bg-surface-raised">
                   <div className="min-w-0">
@@ -733,7 +733,7 @@ export default function ProfilePage() {
             padding="lg"
             className="border-status-failed/30 bg-status-failed/5"
           >
-            <CardHeader className="pb-4">
+            <CardHeader>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center shadow-sm shrink-0">
                   <AlertTriangle className="h-5 w-5 text-white" />
@@ -746,7 +746,7 @@ export default function ProfilePage() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-4">
               <div className="pt-2 space-y-4">
                 <p className="text-body text-text-muted">
                   {t("profile.dangerZone.deleteAccountWarning")}

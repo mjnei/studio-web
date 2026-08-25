@@ -163,7 +163,7 @@ export default function HelpPage() {
           return (
             <Card key={section.title} variant="elevated" padding="lg">
               <CardHeader>
-                <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center gap-3">
                   <div
                     className={`w-10 h-10 rounded-xl bg-gradient-to-br ${section.color} flex items-center justify-center`}
                   >
@@ -208,18 +208,22 @@ export default function HelpPage() {
           <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center">
             <HelpCircle className="h-8 w-8 text-white" />
           </div>
-          <CardTitle className="mb-2">{t("help.contactSupport.title")}</CardTitle>
-          <CardDescription className="mb-6">{t("help.contactSupport.description")}</CardDescription>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button variant="primary" size="md">
-              <Mail className="h-4 w-4" />
-              {t("help.contactSupport.contact")}
-            </Button>
-            <Button variant="secondary" size="md">
-              <MessageCircle className="h-4 w-4" />
-              {t("help.contactSupport.liveChat")}
-            </Button>
-          </div>
+          <CardHeader>
+            <CardTitle>{t("help.contactSupport.title")}</CardTitle>
+            <CardDescription>{t("help.contactSupport.description")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Button variant="primary" size="md">
+                <Mail className="h-4 w-4" />
+                {t("help.contactSupport.contact")}
+              </Button>
+              <Button variant="secondary" size="md">
+                <MessageCircle className="h-4 w-4" />
+                {t("help.contactSupport.liveChat")}
+              </Button>
+            </div>
+          </CardContent>
         </div>
       </Card>
     </div>

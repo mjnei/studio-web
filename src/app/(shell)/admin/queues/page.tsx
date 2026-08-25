@@ -179,7 +179,7 @@ export default function QueueManagementPage() {
       {!loading && !error && (
         <Card>
           <CardHeader
-            className="pb-4 cursor-pointer hover:bg-muted/50 transition-colors"
+            className="cursor-pointer hover:bg-muted/50 transition-colors"
             onClick={() => setStatsExpanded(!statsExpanded)}
           >
             <div className="flex items-center justify-between">
@@ -258,7 +258,7 @@ export default function QueueManagementPage() {
               <div className="grid md:grid-cols-2 gap-4">
                 {/* Health Indicator Chart */}
                 <Card>
-                  <CardHeader className="pb-3">
+                  <CardHeader>
                     <Heading variant="label" as="h3">
                       Queue Health Status
                     </Heading>
@@ -270,7 +270,7 @@ export default function QueueManagementPage() {
 
                 {/* Queue Distribution Chart */}
                 <Card>
-                  <CardHeader className="pb-3">
+                  <CardHeader>
                     <Heading variant="label" as="h3">
                       Messages by Category
                     </Heading>

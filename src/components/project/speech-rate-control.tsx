@@ -1,8 +1,7 @@
 "use client";
 
 import { Check } from "lucide-react";
-import { Card } from "@/components/ui/card";
-import { Heading } from "@/components/ui/heading";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { typography } from "@/components/ui/typography";
 import { useI18n } from "@/i18n";
 
@@ -24,14 +23,11 @@ export function SpeechRateControl({ ratio, onRatioChange }: SpeechRateControlPro
 
   return (
     <Card variant="elevated" padding="lg">
-      <div className="space-y-4">
-        <div>
-          <Heading variant="label" as="h3" className="text-text-primary">
-            {t("project.voice.speechRate")}
-          </Heading>
-          <p className="text-caption text-text-muted mt-1">{t("project.voice.speechRateHint")}</p>
-        </div>
-
+      <CardHeader>
+        <CardTitle>{t("project.voice.speechRate")}</CardTitle>
+        <CardDescription>{t("project.voice.speechRateHint")}</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           {SPEECH_RATE_OPTIONS.map(({ value, labelKey }) => (
             <button
@@ -62,7 +58,7 @@ export function SpeechRateControl({ ratio, onRatioChange }: SpeechRateControlPro
             {ratio.toFixed(2)}x
           </span>
         </div>
-      </div>
+      </CardContent>
     </Card>
   );
 }

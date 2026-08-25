@@ -88,7 +88,7 @@ export function QueueMessagePeeker({ queueName, stats }: QueueMessagePeekerProps
                 <Eye className="h-5 w-5" />
                 Peek Message
               </CardTitle>
-              <CardDescription className="mt-1">
+              <CardDescription>
                 View a sample message from the queue without removing it
               </CardDescription>
             </div>

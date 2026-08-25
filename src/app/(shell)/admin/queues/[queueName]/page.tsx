@@ -235,7 +235,7 @@ export default function QueueDetailPage() {
       {/* Summary Statistics - Expandable (matching hub page design) */}
       <Card>
         <CardHeader
-          className="pb-4 cursor-pointer hover:bg-muted/50 transition-colors"
+          className="cursor-pointer hover:bg-muted/50 transition-colors"
           onClick={() => setStatsExpanded(!statsExpanded)}
         >
           <div className="flex items-center justify-between">
