@@ -45,7 +45,7 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
     }
   }, [isLoading, error, router, toast, t]);
 
-  // Auto-toast when resuming a session from another screen / direct link
+  // Fallback: resume toast if a deep link still uses ?resumed=true
   useEffect(() => {
     if (typeof window === "undefined") return;
     try {
@@ -62,7 +62,6 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
           formatSessionResumeMessage(timeString, t)
         );
 
-        // Clean up URL query parameters without reloading
         urlParams.delete("resumed");
         urlParams.delete("timeAgo");
         const newSearch = urlParams.toString();

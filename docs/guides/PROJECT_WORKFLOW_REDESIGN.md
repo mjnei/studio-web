@@ -463,8 +463,8 @@ Second-pass redesign delivered **single-purpose focus per screen**, **session re
 | :--- | :--- | :--- |
 | Context drawer | `src/components/ui/context-drawer.tsx` | Slide-over sheet with backdrop blur, Escape close, body scroll lock, CSS enter animation. Exported from `src/components/ui/index.ts`. |
 | Relative time | `src/lib/utils/time-format.ts` | `formatRelativeTimeAgo`, `formatSessionResumeMessage` (i18n-aware toast body). |
-| Session resume landing | `src/app/project/[projectId]/page.tsx` | Loads project, uses `last_step` (validated against step order), redirects with `?resumed=true&timeAgo=…`. |
-| Session toast | `src/components/project/project-shell.tsx` | Fires restored-session toast, then `history.replaceState` to clear query params. |
+| Session resume landing | `src/app/project/[projectId]/page.tsx` | Loads project, shows session-restored toast, then `router.replace` to `last_step`. Project cards link here (`/project/{id}`), not directly to a step. |
+| Session toast | `src/app/project/[projectId]/page.tsx` (+ shell fallback) | Toast fires on resume landing before redirect. Shell still honours `?resumed=true` deep links. |
 
 ### Per-step hero + contextual drawer
 

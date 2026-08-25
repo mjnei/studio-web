@@ -70,7 +70,7 @@ export function ProjectCard({
   if (layoutMode === "list") {
     return (
       <Link
-        href={`/project/${project.id}/${project.last_step}`}
+        href={`/project/${project.id}`}
         className="group flex gap-4 overflow-hidden rounded-xl border border-border-default bg-surface-panel p-4 transition-all hover:border-accent-cyan/50 hover:bg-surface-raised hover:shadow-lg hover:shadow-accent-cyan/5"
       >
         {/* Project Info */}
@@ -143,7 +143,7 @@ export function ProjectCard({
   // Render grid view (grid-sm or grid-md)
   return (
     <div className="group relative overflow-hidden rounded-xl">
-      <Link href={`/project/${project.id}/${project.last_step}`}>
+      <Link href={`/project/${project.id}`}>
         <Card variant="elevated" padding="none" interactive className="overflow-hidden">
           <div className="aspect-video bg-surface-raised relative">
             {/* Priority: 1. Final composed thumbnail, 2. Custom, 3. AI base, 4. TMDB backdrop, 5. TMDB poster, 6. Placeholder */}

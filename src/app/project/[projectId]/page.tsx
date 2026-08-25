@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useProjectState } from "@/lib/hooks/use-project-state";
-import { formatRelativeTimeAgo } from "@/lib/utils/time-format";
+import { formatRelativeTimeAgo, formatSessionResumeMessage } from "@/lib/utils/time-format";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { useI18n } from "@/i18n";
+import { useToast } from "@/components/ui/toast";
 
 const STEP_ORDER = ["source", "script", "voice", "details", "preview", "compose", "export"];
 
@@ -15,21 +16,22 @@ export default function ProjectResumePage() {
   const projectId = params.projectId as string;
   const { state, isLoading } = useProjectState(projectId);
   const { t } = useI18n();
+  const toast = useToast();
+  const didRedirect = useRef(false);
 
   useEffect(() => {
-    if (isLoading || !state) return;
+    if (isLoading || !state || didRedirect.current) return;
+    didRedirect.current = true;
 
-    // Determine target step: use last_step if valid or calculate furthest completed
     let targetStep = state.lastStep || "source";
     if (!STEP_ORDER.includes(targetStep)) {
       targetStep = "source";
     }
 
     const timeAgo = formatRelativeTimeAgo(state.updatedAt || state.createdAt);
-    const targetUrl = `/project/${projectId}/${targetStep}?resumed=true&timeAgo=${encodeURIComponent(timeAgo)}`;
-
-    router.replace(targetUrl);
-  }, [isLoading, state, projectId, router]);
+    toast.info(t("project.shell.sessionRestoredTitle"), formatSessionResumeMessage(timeAgo, t));
+    router.replace(`/project/${projectId}/${targetStep}`);
+  }, [isLoading, state, projectId, router, toast, t]);
 
   return <PageLoadingSkeleton message={t("project.common.loadingProject")} />;
 }
