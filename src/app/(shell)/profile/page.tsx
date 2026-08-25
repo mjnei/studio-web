@@ -397,9 +397,9 @@ export default function ProfilePage() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="pt-4">
+            <CardContent>
               {editing ? (
-                <div className="space-y-4 pt-2">
+                <div className="space-y-4">
                   <Input
                     type="text"
                     value={name}
@@ -428,7 +428,7 @@ export default function ProfilePage() {
                   </div>
                 </div>
               ) : (
-                <div className="space-y-4 pt-2">
+                <div className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-xl border border-border-default bg-surface-raised/50">
                     <div>
                       <Text variant="caption" className="text-text-muted">
@@ -478,8 +478,8 @@ export default function ProfilePage() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="pt-4">
-              <div className="space-y-4 pt-2">
+            <CardContent>
+              <div className="space-y-4">
                 <div className="rounded-xl border border-border-default bg-surface-raised p-4 space-y-3">
                   <div className="flex items-center justify-between">
                     <div>
@@ -565,8 +565,8 @@ export default function ProfilePage() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="pt-4">
-              <div className="space-y-4 pt-2">
+            <CardContent>
+              <div className="space-y-4">
                 {passwordError && (
                   <div className="rounded-lg border border-status-failed/30 bg-status-failed/10 px-4 py-3 text-body text-status-failed flex items-start gap-2">
                     <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" />
@@ -650,9 +650,8 @@ export default function ProfilePage() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="pt-4">
-              <div className="pt-2">
-                <div className="flex items-center justify-between p-4 rounded-xl border border-border-default bg-surface-raised hover:border-border-strong transition-colors">
+            <CardContent>
+              <div className="flex items-center justify-between p-4 rounded-xl border border-border-default bg-surface-raised hover:border-border-strong transition-colors">
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-lg bg-white flex items-center justify-center shadow-sm shrink-0">
                       <Mail className="h-4 w-4 text-gray-700" />
@@ -675,7 +674,6 @@ export default function ProfilePage() {
                       : t("profile.connectedAccounts.notConnected")}
                   </Badge>
                 </div>
-              </div>
             </CardContent>
           </Card>
 
@@ -692,9 +690,8 @@ export default function ProfilePage() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="pt-4">
-              <div className="pt-2">
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 rounded-xl border border-border-default bg-surface-raised">
+            <CardContent>
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 rounded-xl border border-border-default bg-surface-raised">
                   <div className="min-w-0">
                     <p className="text-body font-semibold text-text-primary">
                       {t("profile.onboarding.resetOnboarding")}
@@ -723,7 +720,6 @@ export default function ProfilePage() {
                       : t("profile.onboarding.reset")}
                   </Button>
                 </div>
-              </div>
             </CardContent>
           </Card>
 
@@ -746,8 +742,8 @@ export default function ProfilePage() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="pt-4">
-              <div className="pt-2 space-y-4">
+            <CardContent>
+              <div className="space-y-4">
                 <p className="text-body text-text-muted">
                   {t("profile.dangerZone.deleteAccountWarning")}
                 </p>

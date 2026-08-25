@@ -272,7 +272,7 @@ export default function QueueDetailPage() {
             {/* Key Metrics Grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <Card className="border-muted">
-                <CardHeader className="pb-3">
+                <CardHeader>
                   <CardDescription className="flex items-center gap-2 text-caption">
                     <Activity className="h-4 w-4" />
                     Messages
@@ -288,7 +288,7 @@ export default function QueueDetailPage() {
               </Card>
 
               <Card className="border-muted">
-                <CardHeader className="pb-3">
+                <CardHeader>
                   <CardDescription className="flex items-center gap-2 text-caption">
                     <TrendingUp className="h-4 w-4" />
                     Consumers
@@ -301,7 +301,7 @@ export default function QueueDetailPage() {
               </Card>
 
               <Card className="border-muted">
-                <CardHeader className="pb-3">
+                <CardHeader>
                   <CardDescription className="text-caption">Queue Type</CardDescription>
                   <Heading variant="subsection" as="h3">
                     {stats.metadata?.is_job_queue ? "Job Queue" : "Result Queue"}
@@ -320,7 +320,7 @@ export default function QueueDetailPage() {
                       : "border-muted"
                   }
                 >
-                  <CardHeader className="pb-3">
+                  <CardHeader>
                     <CardDescription className="text-caption">Dead-Letter Queue</CardDescription>
                     <Heading variant="metric" className="flex items-center gap-2">
                       {dlqStats.message_count}

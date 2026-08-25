@@ -168,7 +168,7 @@ export function ScriptGeneration({
                 </Button>
               </div>
             </CardHeader>
-            <CardContent className="p-0">
+            <CardContent className="p-0 [.card-header+&]:pt-0">
               {editing ? (
                 <textarea
                   value={script}

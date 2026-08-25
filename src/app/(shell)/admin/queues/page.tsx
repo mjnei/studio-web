@@ -215,13 +215,13 @@ export default function QueueManagementPage() {
               {/* Key Metrics Grid */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <Card className="border-muted">
-                  <CardHeader className="pb-3">
+                  <CardHeader>
                     <CardDescription className="text-caption">Total Messages</CardDescription>
                     <Heading variant="metric">{totalMessages.toLocaleString()}</Heading>
                   </CardHeader>
                 </Card>
                 <Card className="border-muted">
-                  <CardHeader className="pb-3">
+                  <CardHeader>
                     <CardDescription className="text-caption">Active Consumers</CardDescription>
                     <Heading variant="metric">{totalConsumers}</Heading>
                   </CardHeader>
@@ -231,7 +231,7 @@ export default function QueueManagementPage() {
                     criticalQueues > 0 ? "border-destructive bg-destructive/5" : "border-muted"
                   }
                 >
-                  <CardHeader className="pb-3">
+                  <CardHeader>
                     <CardDescription className="text-caption">Critical Queues</CardDescription>
                     <Heading variant="metric" className="flex items-center gap-2">
                       {criticalQueues}
@@ -244,7 +244,7 @@ export default function QueueManagementPage() {
                     warningQueues > 0 ? "border-yellow-500/50 bg-yellow-500/5" : "border-muted"
                   }
                 >
-                  <CardHeader className="pb-3">
+                  <CardHeader>
                     <CardDescription className="text-caption">High Load Queues</CardDescription>
                     <Heading variant="metric" className="flex items-center gap-2">
                       {warningQueues}
