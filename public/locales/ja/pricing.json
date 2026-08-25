@@ -1,88 +1,88 @@
 {
   "pricing": {
-    "title": "Simple, Transparent Pricing",
-    "description": "1 credit = 1 video generation. Choose the plan that fits your needs.",
-    "badge": "Special Launch Pricing",
+    "title": "シンプルでわかりやすい料金",
+    "description": "1クレジット = 動画生成1回。ニーズに合うプランをお選びください。",
+    "badge": "ローンチ特別価格",
     "billingToggle": {
-      "monthly": "Monthly",
-      "annual": "Annual",
-      "savings": "Save 20%"
+      "monthly": "月額",
+      "annual": "年額",
+      "savings": "20%お得"
     },
-    "whatsIncluded": "What's included",
-    "creditsPerMonth": "credits/month",
-    "rolloverLabel": "Rollover:",
+    "whatsIncluded": "含まれる内容",
+    "creditsPerMonth": "クレジット/月",
+    "rolloverLabel": "繰り越し：",
     "free": {
       "name": "Free",
-      "description": "Get started with basic video generation",
+      "description": "基本的な動画生成から始めましょう",
       "price": {
         "monthly": "$0",
         "annual": "$0",
-        "billedAnnually": "billed annually",
-        "billedMonthly": "when billed monthly"
+        "billedAnnually": "年額請求",
+        "billedMonthly": "月額請求の場合"
       },
-      "rolloverAmount": "10 credits",
+      "rolloverAmount": "10クレジット",
       "features": {
-        "credits": "5 credits per month",
-        "rollover": "Rollover up to 10 credits",
-        "voices": "2 custom voices",
-        "video": "Basic video generation",
-        "quality": "720p video quality",
-        "storage": "Standard project storage"
+        "credits": "月5クレジット",
+        "rollover": "最大10クレジットまで繰り越し",
+        "voices": "カスタムボイス2個",
+        "video": "基本的な動画生成",
+        "quality": "720p画質",
+        "storage": "標準のプロジェクト保存"
       },
-      "button": "Current Plan"
+      "button": "現在のプラン"
     },
     "pro": {
       "name": "Pro",
-      "description": "For creators who need more capacity",
+      "description": "より多くの容量が必要なクリエイター向け",
       "price": {
         "monthly": "$49/mo",
         "annual": "$39/mo"
       },
-      "rolloverAmount": "50 credits",
-      "badge": "Most Popular",
+      "rolloverAmount": "50クレジット",
+      "badge": "一番人気",
       "features": {
-        "credits": "25 credits per month",
-        "rollover": "Rollover up to 50 credits",
-        "voices": "5 custom voices",
-        "video": "HD video generation (1080p)",
-        "priority": "Priority processing",
-        "analytics": "Advanced analytics",
-        "export": "Export customization"
+        "credits": "月25クレジット",
+        "rollover": "最大50クレジットまで繰り越し",
+        "voices": "カスタムボイス5個",
+        "video": "HD動画生成（1080p）",
+        "priority": "優先処理",
+        "analytics": "高度な分析",
+        "export": "書き出しのカスタマイズ"
       },
-      "button": "Upgrade to Pro"
+      "button": "Proにアップグレード"
     },
     "premium": {
       "name": "Premium",
-      "description": "Unlimited capacity for professionals",
+      "description": "プロ向けの無制限キャパシティ",
       "price": {
         "monthly": "$199/mo",
         "annual": "$159/mo"
       },
-      "rolloverAmount": "Unlimited",
+      "rolloverAmount": "無制限",
       "features": {
-        "credits": "100 credits per month",
-        "rollover": "Unlimited rollover",
-        "voices": "10 custom voices",
-        "quality": "4K video quality",
-        "support": "Priority support",
-        "ai": "Advanced AI features",
-        "team": "Team collaboration",
-        "whiteLabel": "White-label exports",
-        "api": "API access"
+        "credits": "月100クレジット",
+        "rollover": "繰り越し無制限",
+        "voices": "カスタムボイス10個",
+        "quality": "4K画質",
+        "support": "優先サポート",
+        "ai": "高度なAI機能",
+        "team": "チームコラボレーション",
+        "whiteLabel": "ホワイトラベル書き出し",
+        "api": "APIアクセス"
       },
-      "button": "Upgrade to Premium"
+      "button": "Premiumにアップグレード"
     },
     "faq": {
-      "title": "Frequently Asked Questions",
-      "creditQuestion": "What is a credit and how is it used?",
-      "creditAnswer": "A credit is used to generate one video. Each video generation consumes 1 credit, regardless of video length or complexity. Failed generations are automatically refunded.",
-      "rolloverQuestion": "How does credit rollover work?",
-      "rolloverAnswer": "Unused credits roll over to the next month, up to the maximum rollover limit for your tier (Free: 10, Pro: 50, Premium: unlimited). Credits expire after 6 months of inactivity.",
-      "changeQuestion": "Can I change or cancel my plan?",
-      "changeAnswer": "Yes, you can upgrade, downgrade, or cancel your plan at any time. When downgrading, you keep access to your current plan features until the end of your billing cycle.",
-      "teamQuestion": "Do you offer team plans?",
-      "teamAnswer": "Team plans with shared credits and collaborative features are available for Premium tier subscribers. Contact us for custom pricing."
+      "title": "よくある質問",
+      "creditQuestion": "クレジットとは何で、どう使われますか？",
+      "creditAnswer": "クレジットは動画を1本生成するために使います。長さや複雑さに関係なく、生成1回で1クレジット消費されます。失敗した生成は自動的に返金されます。",
+      "rolloverQuestion": "クレジットの繰り越しはどうなりますか？",
+      "rolloverAnswer": "未使用クレジットは翌月に繰り越され、プランの上限まで保持されます（Free：10、Pro：50、Premium：無制限）。6か月間利用がないとクレジットは失効します。",
+      "changeQuestion": "プランの変更や解約はできますか？",
+      "changeAnswer": "はい。いつでもアップグレード、ダウングレード、解約できます。ダウングレードの場合、請求サイクル終了までは現在のプラン機能を利用できます。",
+      "teamQuestion": "チームプランはありますか？",
+      "teamAnswer": "共有クレジットと共同機能付きのチームプランは、Premium向けに提供しています。カスタム料金についてはお問い合わせください。"
     },
-    "subscribeComingSoon": "Subscribing to {tier} tier... (Payment integration coming soon)"
+    "subscribeComingSoon": "{tier} プランに登録中…（決済連携は近日公開）"
   }
 }

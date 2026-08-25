@@ -1,88 +1,88 @@
 {
   "pricing": {
-    "title": "Simple, Transparent Pricing",
-    "description": "1 credit = 1 video generation. Choose the plan that fits your needs.",
-    "badge": "Special Launch Pricing",
+    "title": "簡單透明的價格",
+    "description": "1 點數 = 1 次影片產生。選擇適合你的方案。",
+    "badge": "特別上市優惠",
     "billingToggle": {
-      "monthly": "Monthly",
-      "annual": "Annual",
-      "savings": "Save 20%"
+      "monthly": "月繳",
+      "annual": "年繳",
+      "savings": "省 20%"
     },
-    "whatsIncluded": "What's included",
-    "creditsPerMonth": "credits/month",
-    "rolloverLabel": "Rollover:",
+    "whatsIncluded": "包含內容",
+    "creditsPerMonth": "點數／月",
+    "rolloverLabel": "結轉：",
     "free": {
       "name": "Free",
-      "description": "Get started with basic video generation",
+      "description": "從基礎影片產生開始",
       "price": {
         "monthly": "$0",
         "annual": "$0",
-        "billedAnnually": "billed annually",
-        "billedMonthly": "when billed monthly"
+        "billedAnnually": "年繳計費",
+        "billedMonthly": "月繳計費時"
       },
-      "rolloverAmount": "10 credits",
+      "rolloverAmount": "10 點數",
       "features": {
-        "credits": "5 credits per month",
-        "rollover": "Rollover up to 10 credits",
-        "voices": "2 custom voices",
-        "video": "Basic video generation",
-        "quality": "720p video quality",
-        "storage": "Standard project storage"
+        "credits": "每月 5 點數",
+        "rollover": "最多結轉 10 點數",
+        "voices": "2 個自訂音色",
+        "video": "基礎影片產生",
+        "quality": "720p 影片畫質",
+        "storage": "標準專案儲存空間"
       },
-      "button": "Current Plan"
+      "button": "目前方案"
     },
     "pro": {
       "name": "Pro",
-      "description": "For creators who need more capacity",
+      "description": "適合需要更大產能的創作者",
       "price": {
         "monthly": "$49/mo",
         "annual": "$39/mo"
       },
-      "rolloverAmount": "50 credits",
-      "badge": "Most Popular",
+      "rolloverAmount": "50 點數",
+      "badge": "最受歡迎",
       "features": {
-        "credits": "25 credits per month",
-        "rollover": "Rollover up to 50 credits",
-        "voices": "5 custom voices",
-        "video": "HD video generation (1080p)",
-        "priority": "Priority processing",
-        "analytics": "Advanced analytics",
-        "export": "Export customization"
+        "credits": "每月 25 點數",
+        "rollover": "最多結轉 50 點數",
+        "voices": "5 個自訂音色",
+        "video": "HD 影片產生（1080p）",
+        "priority": "優先處理",
+        "analytics": "進階分析",
+        "export": "匯出客製化"
       },
-      "button": "Upgrade to Pro"
+      "button": "升級至 Pro"
     },
     "premium": {
       "name": "Premium",
-      "description": "Unlimited capacity for professionals",
+      "description": "專業使用者的無限產能",
       "price": {
         "monthly": "$199/mo",
         "annual": "$159/mo"
       },
-      "rolloverAmount": "Unlimited",
+      "rolloverAmount": "無限制",
       "features": {
-        "credits": "100 credits per month",
-        "rollover": "Unlimited rollover",
-        "voices": "10 custom voices",
-        "quality": "4K video quality",
-        "support": "Priority support",
-        "ai": "Advanced AI features",
-        "team": "Team collaboration",
-        "whiteLabel": "White-label exports",
-        "api": "API access"
+        "credits": "每月 100 點數",
+        "rollover": "無限結轉",
+        "voices": "10 個自訂音色",
+        "quality": "4K 影片畫質",
+        "support": "優先支援",
+        "ai": "進階 AI 功能",
+        "team": "團隊協作",
+        "whiteLabel": "白標匯出",
+        "api": "API 存取"
       },
-      "button": "Upgrade to Premium"
+      "button": "升級至 Premium"
     },
     "faq": {
-      "title": "Frequently Asked Questions",
-      "creditQuestion": "What is a credit and how is it used?",
-      "creditAnswer": "A credit is used to generate one video. Each video generation consumes 1 credit, regardless of video length or complexity. Failed generations are automatically refunded.",
-      "rolloverQuestion": "How does credit rollover work?",
-      "rolloverAnswer": "Unused credits roll over to the next month, up to the maximum rollover limit for your tier (Free: 10, Pro: 50, Premium: unlimited). Credits expire after 6 months of inactivity.",
-      "changeQuestion": "Can I change or cancel my plan?",
-      "changeAnswer": "Yes, you can upgrade, downgrade, or cancel your plan at any time. When downgrading, you keep access to your current plan features until the end of your billing cycle.",
-      "teamQuestion": "Do you offer team plans?",
-      "teamAnswer": "Team plans with shared credits and collaborative features are available for Premium tier subscribers. Contact us for custom pricing."
+      "title": "常見問題",
+      "creditQuestion": "什麼是點數？如何使用？",
+      "creditAnswer": "點數用於產生一支影片。每次影片產生消耗 1 點數，與影片長度或複雜度無關。失敗的產生會自動退還點數。",
+      "rolloverQuestion": "點數結轉如何運作？",
+      "rolloverAnswer": "未使用的點數會結轉到下個月，上限依方案而定（Free：10、Pro：50、Premium：無限制）。連續 6 個月未使用後點數會過期。",
+      "changeQuestion": "我可以變更或取消方案嗎？",
+      "changeAnswer": "可以，你隨時可以升級、降級或取消方案。降級時，在目前計費週期結束前仍可使用原方案功能。",
+      "teamQuestion": "有提供團隊方案嗎？",
+      "teamAnswer": "共享點數與協作功能的團隊方案，適用於 Premium 方案訂閱者。請聯絡我們洽詢客製報價。"
     },
-    "subscribeComingSoon": "Subscribing to {tier} tier... (Payment integration coming soon)"
+    "subscribeComingSoon": "正在訂閱 {tier} 方案…（付款整合即將推出）"
   }
 }

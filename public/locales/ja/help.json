@@ -1,93 +1,93 @@
 {
   "help": {
-    "title": "Help & Documentation",
-    "description": "Learn how to use Huavoi Studio from start to finish",
+    "title": "ヘルプとドキュメント",
+    "description": "Huavoi Studioの使い方を最初から最後まで学べます",
     "documentation": {
-      "title": "Documentation",
-      "subtitle": "Browse all guides"
+      "title": "ドキュメント",
+      "subtitle": "すべてのガイドを見る"
     },
     "community": {
-      "title": "Community",
-      "subtitle": "Join discussions"
+      "title": "コミュニティ",
+      "subtitle": "ディスカッションに参加"
     },
     "apiDocs": {
-      "title": "API Docs",
-      "subtitle": "Developer resources"
+      "title": "APIドキュメント",
+      "subtitle": "開発者向けリソース"
     },
     "gettingStarted": {
-      "title": "Getting Started",
+      "title": "はじめに",
       "articles": {
         "creatingFirstProject": {
-          "title": "Creating your first project",
-          "description": "Learn how to set up a new video project and select a source clip."
+          "title": "最初のプロジェクトを作成する",
+          "description": "新しい動画プロジェクトの設定とソースクリップの選び方を学びます。"
         },
         "understandingPipeline": {
-          "title": "Understanding the pipeline",
-          "description": "A walkthrough of the Source → Script → Voice → Compose workflow."
+          "title": "パイプラインを理解する",
+          "description": "素材 → 脚本 → ナレーション → 合成のワークフロー解説。"
         },
         "choosingMovieClip": {
-          "title": "Choosing a movie clip",
-          "description": "How to browse, filter, and preview clips from the movie library."
+          "title": "映画クリップの選び方",
+          "description": "映画ライブラリでの閲覧、フィルター、プレビューの方法。"
         }
       },
-      "readMore": "Read more"
+      "readMore": "続きを読む"
     },
     "scriptAI": {
-      "title": "Script & AI",
+      "title": "脚本とAI",
       "articles": {
         "generatingScripts": {
-          "title": "Generating AI scripts",
-          "description": "How Huavoi creates candidate scripts and how to pick the best one."
+          "title": "AI脚本の生成",
+          "description": "Huavoiが候補脚本を作り、最適なものを選ぶ方法。"
         },
         "editingScripts": {
-          "title": "Editing scripts by segment",
-          "description": "Timestamped editing, AI-assisted rewrites, and version history."
+          "title": "セグメント単位の脚本編集",
+          "description": "タイムスタンプ編集、AIによる書き換え、バージョン履歴。"
         },
         "toneAndLength": {
-          "title": "Tone and length options",
-          "description": "Customizing the AI output: narrative, promotional, short, or detailed."
+          "title": "トーンと長さのオプション",
+          "description": "ナラティブ、プロモ、短め、詳細など、AI出力のカスタマイズ。"
         }
       }
     },
     "voiceAudio": {
-      "title": "Voice & Audio",
+      "title": "ボイスと音声",
       "articles": {
         "selectingVoice": {
-          "title": "Selecting a preset voice",
-          "description": "Browsing and previewing stock voices for your voiceover."
+          "title": "プリセットボイスの選択",
+          "description": "ナレーション用ストックボイスの閲覧とプレビュー。"
         },
         "cloningVoice": {
-          "title": "Cloning your own voice",
-          "description": "Recording a sample from your microphone to create a custom voice clone."
+          "title": "自分のボイスをクローンする",
+          "description": "マイクでサンプルを録音し、カスタムボイスクローンを作成します。"
         },
         "voicePreview": {
-          "title": "Voice preview before render",
-          "description": "How to test a short preview clip before committing to a full TTS render."
+          "title": "レンダー前のボイスプレビュー",
+          "description": "本格的なTTSレンダーの前に、短いプレビューで確認する方法。"
         }
       }
     },
     "composeExport": {
-      "title": "Compose & Export",
+      "title": "合成と書き出し",
       "articles": {
         "multiTrackTimeline": {
-          "title": "Using the multi-track timeline",
-          "description": "Arranging video, voiceover, music, and SFX on the timeline."
+          "title": "マルチトラックタイムラインの使い方",
+          "description": "タイムライン上で動画、ナレーション、音楽、効果音を配置します。"
         },
         "renderQueue": {
-          "title": "Render queue and wait times",
-          "description": "How rendering works, expected wait times, and safe-to-close behavior."
+          "title": "レンダーキューと待ち時間",
+          "description": "レンダリングの仕組み、目安の待ち時間、閉じても安全な動作。"
         },
         "exportFormats": {
-          "title": "Export formats and resolution",
-          "description": "Choosing resolution, FPS, and format for your final export."
+          "title": "書き出し形式と解像度",
+          "description": "最終書き出しの解像度、FPS、形式の選び方。"
         }
       }
     },
     "contactSupport": {
-      "title": "Still need help?",
-      "description": "Can't find what you're looking for? Our support team is here to help you succeed.",
-      "contact": "Contact Support",
-      "liveChat": "Live Chat"
+      "title": "まだお困りですか？",
+      "description": "お探しの情報が見つかりませんか？サポートチームが成功までお手伝いします。",
+      "contact": "サポートに連絡",
+      "liveChat": "ライブチャット"
     }
   }
 }

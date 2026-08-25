@@ -1,96 +1,96 @@
 {
   "settings": {
-    "title": "Settings",
-    "description": "Customize your experience and manage preferences",
-    "saveChanges": "Save Changes",
-    "saved": "Saved",
+    "title": "設定",
+    "description": "自訂體驗並管理偏好",
+    "saveChanges": "儲存變更",
+    "saved": "已儲存",
     "notifications": {
-      "title": "Notifications",
-      "description": "Manage notification preferences"
+      "title": "通知",
+      "description": "管理通知偏好"
     },
     "projectDefaults": {
-      "title": "Project Defaults",
-      "description": "Pre-fill these values for new projects",
-      "defaultVoice": "Default Voice",
-      "voiceNone": "None",
-      "voiceA": "Voice A",
-      "voiceB": "Voice B",
-      "resolution": "Resolution",
+      "title": "專案預設值",
+      "description": "為新專案預先填入這些值",
+      "defaultVoice": "預設音色",
+      "voiceNone": "無",
+      "voiceA": "音色 A",
+      "voiceB": "音色 B",
+      "resolution": "解析度",
       "resolution720p": "720p",
-      "resolution1080p": "1080p (Recommended)",
+      "resolution1080p": "1080p（建議）",
       "resolution4k": "4K",
-      "frameRate": "Frame Rate",
-      "fps24": "24 fps (Cinematic)",
-      "fps30": "30 fps (Standard)",
-      "fps60": "60 fps (Smooth)",
-      "exportFormat": "Export Format",
-      "exportMp4": "MP4 (Recommended)",
+      "frameRate": "影格率",
+      "fps24": "24 fps（電影感）",
+      "fps30": "30 fps（標準）",
+      "fps60": "60 fps（流暢）",
+      "exportFormat": "匯出格式",
+      "exportMp4": "MP4（建議）",
       "exportWebm": "WebM",
       "exportMov": "MOV"
     },
     "appearance": {
-      "title": "Appearance",
-      "description": "Customize the interface to your preference",
-      "compactMode": "Compact mode",
-      "compactModeDesc": "Reduce spacing and use smaller thumbnails",
-      "autoPlayPreviews": "Auto-play previews",
-      "autoPlayPreviewsDesc": "Automatically play clip and voice previews",
-      "waveformAnimations": "Waveform animations",
-      "waveformAnimationsDesc": "Animate audio waveforms when playing"
+      "title": "外觀",
+      "description": "依偏好自訂介面",
+      "compactMode": "精簡模式",
+      "compactModeDesc": "縮減間距並使用較小縮圖",
+      "autoPlayPreviews": "自動播放預覽",
+      "autoPlayPreviewsDesc": "自動播放片段與音色預覽",
+      "waveformAnimations": "波形動畫",
+      "waveformAnimationsDesc": "播放時為音訊波形加上動畫"
     },
     "dataPrivacy": {
-      "title": "Data & Privacy",
-      "description": "Manage your data and privacy preferences",
-      "usageAnalytics": "Usage analytics",
-      "usageAnalyticsDesc": "Help us improve by sharing anonymized data",
-      "exportMyData": "Export my data",
-      "exportMyDataDesc": "Download all your projects and account info",
-      "requestExport": "Request Export"
+      "title": "資料與隱私",
+      "description": "管理資料與隱私偏好",
+      "usageAnalytics": "使用分析",
+      "usageAnalyticsDesc": "分享匿名資料協助我們改善產品",
+      "exportMyData": "匯出我的資料",
+      "exportMyDataDesc": "下載所有專案與帳號資訊",
+      "requestExport": "申請匯出"
     }
   },
   "notificationSettings": {
-    "title": "Notification Settings",
-    "description": "Manage how you receive notifications",
-    "backToSettings": "Back to Settings",
-    "inApp": "In-App",
-    "preferencesHeader": "Notification Preferences",
-    "savePreferences": "Save Preferences",
-    "saving": "Saving...",
-    "loadingPreferences": "Loading notification preferences...",
-    "preferencesSaved": "Preferences saved!",
+    "title": "通知設定",
+    "description": "管理你接收通知的方式",
+    "backToSettings": "返回設定",
+    "inApp": "應用內",
+    "preferencesHeader": "通知偏好",
+    "savePreferences": "儲存偏好",
+    "saving": "儲存中…",
+    "loadingPreferences": "正在載入通知偏好…",
+    "preferencesSaved": "偏好已儲存！",
     "categories": {
-      "videoJobs": "Video Jobs",
-      "account": "Account",
-      "projects": "Projects"
+      "videoJobs": "影片工作",
+      "account": "帳號",
+      "projects": "專案"
     },
     "types": {
       "videoJobQueued": {
-        "title": "Video Job Queued",
-        "description": "When your video generation job is queued for processing"
+        "title": "影片工作已排入佇列",
+        "description": "當你的影片產生工作進入處理佇列時"
       },
       "videoJobCompleted": {
-        "title": "Video Job Completed",
-        "description": "When your video generation is successfully completed"
+        "title": "影片工作已完成",
+        "description": "當影片成功產生完成時"
       },
       "videoJobFailed": {
-        "title": "Video Job Failed",
-        "description": "When your video generation encounters an error"
+        "title": "影片工作失敗",
+        "description": "當影片產生發生錯誤時"
       },
       "lowCredits": {
-        "title": "Low Credits Warning",
-        "description": "When your credit balance is running low (below 100 credits)"
+        "title": "點數不足警告",
+        "description": "當點數餘額偏低時（低於 100 點數）"
       },
       "creditTransaction": {
-        "title": "Credit Transaction",
-        "description": "When credits are added to or deducted from your account"
+        "title": "點數交易",
+        "description": "當點數新增至或從帳號扣除時"
       },
       "projectDeleted": {
-        "title": "Project Deleted",
-        "description": "When one of your projects is deleted"
+        "title": "專案已刪除",
+        "description": "當你的某個專案被刪除時"
       },
       "projectPublished": {
-        "title": "Project Published",
-        "description": "When your project is successfully published"
+        "title": "專案已發布",
+        "description": "當專案成功發布時"
       }
     }
   }

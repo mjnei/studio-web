@@ -1,96 +1,96 @@
 {
   "settings": {
-    "title": "Settings",
-    "description": "Customize your experience and manage preferences",
-    "saveChanges": "Save Changes",
-    "saved": "Saved",
+    "title": "設定",
+    "description": "体験をカスタマイズし、設定を管理します",
+    "saveChanges": "変更を保存",
+    "saved": "保存しました",
     "notifications": {
-      "title": "Notifications",
-      "description": "Manage notification preferences"
+      "title": "通知",
+      "description": "通知の設定を管理"
     },
     "projectDefaults": {
-      "title": "Project Defaults",
-      "description": "Pre-fill these values for new projects",
-      "defaultVoice": "Default Voice",
-      "voiceNone": "None",
-      "voiceA": "Voice A",
-      "voiceB": "Voice B",
-      "resolution": "Resolution",
+      "title": "プロジェクトのデフォルト",
+      "description": "新規プロジェクトにこれらの値を事前入力します",
+      "defaultVoice": "デフォルトボイス",
+      "voiceNone": "なし",
+      "voiceA": "ボイス A",
+      "voiceB": "ボイス B",
+      "resolution": "解像度",
       "resolution720p": "720p",
-      "resolution1080p": "1080p (Recommended)",
+      "resolution1080p": "1080p（推奨）",
       "resolution4k": "4K",
-      "frameRate": "Frame Rate",
-      "fps24": "24 fps (Cinematic)",
-      "fps30": "30 fps (Standard)",
-      "fps60": "60 fps (Smooth)",
-      "exportFormat": "Export Format",
-      "exportMp4": "MP4 (Recommended)",
+      "frameRate": "フレームレート",
+      "fps24": "24 fps（シネマティック）",
+      "fps30": "30 fps（標準）",
+      "fps60": "60 fps（スムーズ）",
+      "exportFormat": "書き出し形式",
+      "exportMp4": "MP4（推奨）",
       "exportWebm": "WebM",
       "exportMov": "MOV"
     },
     "appearance": {
-      "title": "Appearance",
-      "description": "Customize the interface to your preference",
-      "compactMode": "Compact mode",
-      "compactModeDesc": "Reduce spacing and use smaller thumbnails",
-      "autoPlayPreviews": "Auto-play previews",
-      "autoPlayPreviewsDesc": "Automatically play clip and voice previews",
-      "waveformAnimations": "Waveform animations",
-      "waveformAnimationsDesc": "Animate audio waveforms when playing"
+      "title": "外観",
+      "description": "インターフェースをお好みに合わせて調整",
+      "compactMode": "コンパクトモード",
+      "compactModeDesc": "余白を減らし、サムネイルを小さくします",
+      "autoPlayPreviews": "プレビューを自動再生",
+      "autoPlayPreviewsDesc": "クリップとボイスのプレビューを自動再生します",
+      "waveformAnimations": "波形アニメーション",
+      "waveformAnimationsDesc": "再生中にオーディオ波形をアニメーションします"
     },
     "dataPrivacy": {
-      "title": "Data & Privacy",
-      "description": "Manage your data and privacy preferences",
-      "usageAnalytics": "Usage analytics",
-      "usageAnalyticsDesc": "Help us improve by sharing anonymized data",
-      "exportMyData": "Export my data",
-      "exportMyDataDesc": "Download all your projects and account info",
-      "requestExport": "Request Export"
+      "title": "データとプライバシー",
+      "description": "データとプライバシーの設定を管理",
+      "usageAnalytics": "利用分析",
+      "usageAnalyticsDesc": "匿名化されたデータを共有して改善に協力します",
+      "exportMyData": "自分のデータを書き出す",
+      "exportMyDataDesc": "すべてのプロジェクトとアカウント情報をダウンロード",
+      "requestExport": "書き出しをリクエスト"
     }
   },
   "notificationSettings": {
-    "title": "Notification Settings",
-    "description": "Manage how you receive notifications",
-    "backToSettings": "Back to Settings",
-    "inApp": "In-App",
-    "preferencesHeader": "Notification Preferences",
-    "savePreferences": "Save Preferences",
-    "saving": "Saving...",
-    "loadingPreferences": "Loading notification preferences...",
-    "preferencesSaved": "Preferences saved!",
+    "title": "通知設定",
+    "description": "通知の受け取り方を管理します",
+    "backToSettings": "設定に戻る",
+    "inApp": "アプリ内",
+    "preferencesHeader": "通知の設定",
+    "savePreferences": "設定を保存",
+    "saving": "保存中…",
+    "loadingPreferences": "通知設定を読み込み中…",
+    "preferencesSaved": "設定を保存しました！",
     "categories": {
-      "videoJobs": "Video Jobs",
-      "account": "Account",
-      "projects": "Projects"
+      "videoJobs": "動画ジョブ",
+      "account": "アカウント",
+      "projects": "プロジェクト"
     },
     "types": {
       "videoJobQueued": {
-        "title": "Video Job Queued",
-        "description": "When your video generation job is queued for processing"
+        "title": "動画ジョブがキューに入りました",
+        "description": "動画生成ジョブが処理待ちになったとき"
       },
       "videoJobCompleted": {
-        "title": "Video Job Completed",
-        "description": "When your video generation is successfully completed"
+        "title": "動画ジョブが完了しました",
+        "description": "動画生成が正常に完了したとき"
       },
       "videoJobFailed": {
-        "title": "Video Job Failed",
-        "description": "When your video generation encounters an error"
+        "title": "動画ジョブが失敗しました",
+        "description": "動画生成でエラーが発生したとき"
       },
       "lowCredits": {
-        "title": "Low Credits Warning",
-        "description": "When your credit balance is running low (below 100 credits)"
+        "title": "クレジット残量の警告",
+        "description": "クレジット残高が少なくなったとき（100クレジット未満）"
       },
       "creditTransaction": {
-        "title": "Credit Transaction",
-        "description": "When credits are added to or deducted from your account"
+        "title": "クレジット取引",
+        "description": "クレジットが追加または差し引かれたとき"
       },
       "projectDeleted": {
-        "title": "Project Deleted",
-        "description": "When one of your projects is deleted"
+        "title": "プロジェクトが削除されました",
+        "description": "いずれかのプロジェクトが削除されたとき"
       },
       "projectPublished": {
-        "title": "Project Published",
-        "description": "When your project is successfully published"
+        "title": "プロジェクトが公開されました",
+        "description": "プロジェクトの公開が成功したとき"
       }
     }
   }

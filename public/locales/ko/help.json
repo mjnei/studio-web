@@ -1,93 +1,93 @@
 {
   "help": {
-    "title": "Help & Documentation",
-    "description": "Learn how to use Huavoi Studio from start to finish",
+    "title": "도움말 및 문서",
+    "description": "처음부터 끝까지 Huavoi Studio 사용법을 알아보세요",
     "documentation": {
-      "title": "Documentation",
-      "subtitle": "Browse all guides"
+      "title": "문서",
+      "subtitle": "모든 가이드 살펴보기"
     },
     "community": {
-      "title": "Community",
-      "subtitle": "Join discussions"
+      "title": "커뮤니티",
+      "subtitle": "토론에 참여하기"
     },
     "apiDocs": {
-      "title": "API Docs",
-      "subtitle": "Developer resources"
+      "title": "API 문서",
+      "subtitle": "개발자 자료"
     },
     "gettingStarted": {
-      "title": "Getting Started",
+      "title": "시작하기",
       "articles": {
         "creatingFirstProject": {
-          "title": "Creating your first project",
-          "description": "Learn how to set up a new video project and select a source clip."
+          "title": "첫 프로젝트 만들기",
+          "description": "새 영상 프로젝트를 설정하고 소스 클립을 선택하는 방법을 알아보세요."
         },
         "understandingPipeline": {
-          "title": "Understanding the pipeline",
-          "description": "A walkthrough of the Source → Script → Voice → Compose workflow."
+          "title": "파이프라인 이해하기",
+          "description": "소스 → 스크립트 → 더빙 → 합성 워크플로 안내예요."
         },
         "choosingMovieClip": {
-          "title": "Choosing a movie clip",
-          "description": "How to browse, filter, and preview clips from the movie library."
+          "title": "영화 클립 고르기",
+          "description": "영화 라이브러리에서 클립을 검색·필터·미리보기하는 방법이에요."
         }
       },
-      "readMore": "Read more"
+      "readMore": "더 읽기"
     },
     "scriptAI": {
-      "title": "Script & AI",
+      "title": "스크립트 & AI",
       "articles": {
         "generatingScripts": {
-          "title": "Generating AI scripts",
-          "description": "How Huavoi creates candidate scripts and how to pick the best one."
+          "title": "AI 스크립트 생성",
+          "description": "Huavoi가 후보 스크립트를 만들고 그중 최선의 것을 고르는 방법이에요."
         },
         "editingScripts": {
-          "title": "Editing scripts by segment",
-          "description": "Timestamped editing, AI-assisted rewrites, and version history."
+          "title": "세그먼트별 스크립트 편집",
+          "description": "타임스탬프 편집, AI 지원 재작성, 버전 기록이에요."
         },
         "toneAndLength": {
-          "title": "Tone and length options",
-          "description": "Customizing the AI output: narrative, promotional, short, or detailed."
+          "title": "톤과 길이 옵션",
+          "description": "내러티브, 홍보, 짧은 버전, 상세 버전 등 AI 출력을 맞춤 설정해요."
         }
       }
     },
     "voiceAudio": {
-      "title": "Voice & Audio",
+      "title": "보이스 & 오디오",
       "articles": {
         "selectingVoice": {
-          "title": "Selecting a preset voice",
-          "description": "Browsing and previewing stock voices for your voiceover."
+          "title": "프리셋 보이스 선택",
+          "description": "내레이션용 스톡 보이스를 둘러보고 미리듣기해요."
         },
         "cloningVoice": {
-          "title": "Cloning your own voice",
-          "description": "Recording a sample from your microphone to create a custom voice clone."
+          "title": "내 보이스 클로닝",
+          "description": "마이크로 샘플을 녹음해 커스텀 보이스 클론을 만들어요."
         },
         "voicePreview": {
-          "title": "Voice preview before render",
-          "description": "How to test a short preview clip before committing to a full TTS render."
+          "title": "렌더 전 보이스 미리듣기",
+          "description": "전체 TTS 렌더 전에 짧은 미리보기 클립을 테스트하는 방법이에요."
         }
       }
     },
     "composeExport": {
-      "title": "Compose & Export",
+      "title": "합성 & 내보내기",
       "articles": {
         "multiTrackTimeline": {
-          "title": "Using the multi-track timeline",
-          "description": "Arranging video, voiceover, music, and SFX on the timeline."
+          "title": "멀티트랙 타임라인 사용",
+          "description": "타임라인에서 영상, 내레이션, 음악, SFX를 배치해요."
         },
         "renderQueue": {
-          "title": "Render queue and wait times",
-          "description": "How rendering works, expected wait times, and safe-to-close behavior."
+          "title": "렌더 큐와 대기 시간",
+          "description": "렌더 방식, 예상 대기 시간, 안전하게 닫아도 되는 동작이에요."
         },
         "exportFormats": {
-          "title": "Export formats and resolution",
-          "description": "Choosing resolution, FPS, and format for your final export."
+          "title": "내보내기 형식과 해상도",
+          "description": "최종 내보내기의 해상도, FPS, 형식을 선택해요."
         }
       }
     },
     "contactSupport": {
-      "title": "Still need help?",
-      "description": "Can't find what you're looking for? Our support team is here to help you succeed.",
-      "contact": "Contact Support",
-      "liveChat": "Live Chat"
+      "title": "아직 도움이 필요하신가요?",
+      "description": "찾는 내용이 없나요? 지원팀이 성공을 도와드릴게요.",
+      "contact": "지원팀 문의",
+      "liveChat": "실시간 채팅"
     }
   }
 }

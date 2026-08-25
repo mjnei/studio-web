@@ -1,48 +1,48 @@
 {
   "dashboard": {
-    "title": "Dashboard",
-    "description": "Welcome back! Here's your overview.",
+    "title": "ワークスペース",
+    "description": "おかえりなさい。概要をご確認ください。",
     "stats": {
       "recentProjects": {
-        "title": "Recent Projects",
-        "description": "Active projects"
+        "title": "最近のプロジェクト",
+        "description": "進行中のプロジェクト"
       },
       "movieLibrary": {
-        "title": "Movie Library",
-        "description": "Available movies"
+        "title": "映画ライブラリ",
+        "description": "利用可能な映画"
       },
       "myVoices": {
-        "title": "My Voices",
-        "description": "Voice profiles"
+        "title": "マイボイス",
+        "description": "ボイスプロフィール"
       }
     },
     "welcomeBanner": {
-      "title": "Welcome to Huavoi Studio!",
-      "message": "Ready to create your first project? Click \"New Project\" to get started and bring your ideas to life.",
-      "cta": "Create Your First Project",
-      "dismissAriaLabel": "Dismiss welcome banner"
+      "title": "Huavoi Studioへようこそ！",
+      "message": "最初のプロジェクトを作成する準備はできましたか？「新規プロジェクト」をクリックしてアイデアを形にしましょう。",
+      "cta": "最初のプロジェクトを作成",
+      "dismissAriaLabel": "ウェルカムバナーを閉じる"
     },
     "quickActions": {
-      "title": "Quick Actions",
-      "description": "Get started with these common tasks",
-      "newProject": "New Project",
-      "browseMovies": "Browse Movies",
-      "recordVoice": "Record Voice"
+      "title": "クイックアクション",
+      "description": "よく使う操作から始めましょう",
+      "newProject": "新規プロジェクト",
+      "browseMovies": "映画を見る",
+      "recordVoice": "ボイスを録音"
     },
     "recentProjects": {
-      "title": "Recent Projects",
-      "description": "Your latest work",
-      "viewAll": "All"
+      "title": "最近のプロジェクト",
+      "description": "最新の作品",
+      "viewAll": "すべて"
     },
     "popularMovies": {
-      "title": "Popular Movies",
-      "description": "Trending movies to start your next project",
-      "exploreAll": "Explore All"
+      "title": "人気の映画",
+      "description": "次のプロジェクトに使える注目作",
+      "exploreAll": "すべて見る"
     },
     "empty": {
-      "title": "Welcome to Huavoi Studio",
-      "message": "Start by creating a new project to see your activity here.",
-      "cta": "Create Your First Project"
+      "title": "Huavoi Studioへようこそ",
+      "message": "新しいプロジェクトを作成すると、ここにアクティビティが表示されます。",
+      "cta": "最初のプロジェクトを作成"
     }
   }
 }

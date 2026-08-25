@@ -1,96 +1,96 @@
 {
   "settings": {
-    "title": "Settings",
-    "description": "Customize your experience and manage preferences",
-    "saveChanges": "Save Changes",
-    "saved": "Saved",
+    "title": "설정",
+    "description": "경험을 맞춤 설정하고 선호도를 관리하세요",
+    "saveChanges": "변경 사항 저장",
+    "saved": "저장됨",
     "notifications": {
-      "title": "Notifications",
-      "description": "Manage notification preferences"
+      "title": "알림",
+      "description": "알림 환경설정을 관리하세요"
     },
     "projectDefaults": {
-      "title": "Project Defaults",
-      "description": "Pre-fill these values for new projects",
-      "defaultVoice": "Default Voice",
-      "voiceNone": "None",
-      "voiceA": "Voice A",
-      "voiceB": "Voice B",
-      "resolution": "Resolution",
+      "title": "프로젝트 기본값",
+      "description": "새 프로젝트에 미리 채워질 값이에요",
+      "defaultVoice": "기본 보이스",
+      "voiceNone": "없음",
+      "voiceA": "보이스 A",
+      "voiceB": "보이스 B",
+      "resolution": "해상도",
       "resolution720p": "720p",
-      "resolution1080p": "1080p (Recommended)",
+      "resolution1080p": "1080p (권장)",
       "resolution4k": "4K",
-      "frameRate": "Frame Rate",
-      "fps24": "24 fps (Cinematic)",
-      "fps30": "30 fps (Standard)",
-      "fps60": "60 fps (Smooth)",
-      "exportFormat": "Export Format",
-      "exportMp4": "MP4 (Recommended)",
+      "frameRate": "프레임 레이트",
+      "fps24": "24 fps (시네마틱)",
+      "fps30": "30 fps (표준)",
+      "fps60": "60 fps (부드러움)",
+      "exportFormat": "내보내기 형식",
+      "exportMp4": "MP4 (권장)",
       "exportWebm": "WebM",
       "exportMov": "MOV"
     },
     "appearance": {
-      "title": "Appearance",
-      "description": "Customize the interface to your preference",
-      "compactMode": "Compact mode",
-      "compactModeDesc": "Reduce spacing and use smaller thumbnails",
-      "autoPlayPreviews": "Auto-play previews",
-      "autoPlayPreviewsDesc": "Automatically play clip and voice previews",
-      "waveformAnimations": "Waveform animations",
-      "waveformAnimationsDesc": "Animate audio waveforms when playing"
+      "title": "모양",
+      "description": "인터페이스를 취향에 맞게 설정하세요",
+      "compactMode": "컴팩트 모드",
+      "compactModeDesc": "간격을 줄이고 더 작은 썸네일을 사용해요",
+      "autoPlayPreviews": "미리보기 자동 재생",
+      "autoPlayPreviewsDesc": "클립과 보이스 미리보기를 자동 재생해요",
+      "waveformAnimations": "웨이브폼 애니메이션",
+      "waveformAnimationsDesc": "재생 시 오디오 웨이브폼을 애니메이션해요"
     },
     "dataPrivacy": {
-      "title": "Data & Privacy",
-      "description": "Manage your data and privacy preferences",
-      "usageAnalytics": "Usage analytics",
-      "usageAnalyticsDesc": "Help us improve by sharing anonymized data",
-      "exportMyData": "Export my data",
-      "exportMyDataDesc": "Download all your projects and account info",
-      "requestExport": "Request Export"
+      "title": "데이터 및 개인정보",
+      "description": "데이터와 개인정보 설정을 관리하세요",
+      "usageAnalytics": "사용 분석",
+      "usageAnalyticsDesc": "익명화된 데이터를 공유해 개선에 도움을 주세요",
+      "exportMyData": "내 데이터 내보내기",
+      "exportMyDataDesc": "모든 프로젝트와 계정 정보를 다운로드해요",
+      "requestExport": "내보내기 요청"
     }
   },
   "notificationSettings": {
-    "title": "Notification Settings",
-    "description": "Manage how you receive notifications",
-    "backToSettings": "Back to Settings",
-    "inApp": "In-App",
-    "preferencesHeader": "Notification Preferences",
-    "savePreferences": "Save Preferences",
-    "saving": "Saving...",
-    "loadingPreferences": "Loading notification preferences...",
-    "preferencesSaved": "Preferences saved!",
+    "title": "알림 설정",
+    "description": "알림 수신 방식을 관리하세요",
+    "backToSettings": "설정으로 돌아가기",
+    "inApp": "앱 내",
+    "preferencesHeader": "알림 환경설정",
+    "savePreferences": "환경설정 저장",
+    "saving": "저장 중…",
+    "loadingPreferences": "알림 환경설정 로딩 중…",
+    "preferencesSaved": "환경설정이 저장되었어요!",
     "categories": {
-      "videoJobs": "Video Jobs",
-      "account": "Account",
-      "projects": "Projects"
+      "videoJobs": "영상 작업",
+      "account": "계정",
+      "projects": "프로젝트"
     },
     "types": {
       "videoJobQueued": {
-        "title": "Video Job Queued",
-        "description": "When your video generation job is queued for processing"
+        "title": "영상 작업 대기열 등록",
+        "description": "영상 생성 작업이 처리 대기열에 등록되었을 때"
       },
       "videoJobCompleted": {
-        "title": "Video Job Completed",
-        "description": "When your video generation is successfully completed"
+        "title": "영상 작업 완료",
+        "description": "영상 생성이 성공적으로 완료되었을 때"
       },
       "videoJobFailed": {
-        "title": "Video Job Failed",
-        "description": "When your video generation encounters an error"
+        "title": "영상 작업 실패",
+        "description": "영상 생성 중 오류가 발생했을 때"
       },
       "lowCredits": {
-        "title": "Low Credits Warning",
-        "description": "When your credit balance is running low (below 100 credits)"
+        "title": "크레딧 부족 경고",
+        "description": "크레딧 잔액이 100개 미만으로 낮아졌을 때"
       },
       "creditTransaction": {
-        "title": "Credit Transaction",
-        "description": "When credits are added to or deducted from your account"
+        "title": "크레딧 거래",
+        "description": "계정에 크레딧이 추가되거나 차감되었을 때"
       },
       "projectDeleted": {
-        "title": "Project Deleted",
-        "description": "When one of your projects is deleted"
+        "title": "프로젝트 삭제됨",
+        "description": "프로젝트 중 하나가 삭제되었을 때"
       },
       "projectPublished": {
-        "title": "Project Published",
-        "description": "When your project is successfully published"
+        "title": "프로젝트 게시됨",
+        "description": "프로젝트가 성공적으로 게시되었을 때"
       }
     }
   }

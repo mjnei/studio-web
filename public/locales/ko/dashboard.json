@@ -1,48 +1,48 @@
 {
   "dashboard": {
-    "title": "Dashboard",
-    "description": "Welcome back! Here's your overview.",
+    "title": "작업실",
+    "description": "다시 오신 걸 환영해요! 여기서 현황을 확인하세요.",
     "stats": {
       "recentProjects": {
-        "title": "Recent Projects",
-        "description": "Active projects"
+        "title": "최근 프로젝트",
+        "description": "진행 중인 프로젝트"
       },
       "movieLibrary": {
-        "title": "Movie Library",
-        "description": "Available movies"
+        "title": "영화 라이브러리",
+        "description": "사용 가능한 영화"
       },
       "myVoices": {
-        "title": "My Voices",
-        "description": "Voice profiles"
+        "title": "내 보이스",
+        "description": "보이스 프로필"
       }
     },
     "welcomeBanner": {
-      "title": "Welcome to Huavoi Studio!",
-      "message": "Ready to create your first project? Click \"New Project\" to get started and bring your ideas to life.",
-      "cta": "Create Your First Project",
-      "dismissAriaLabel": "Dismiss welcome banner"
+      "title": "Huavoi Studio에 오신 걸 환영해요!",
+      "message": "첫 프로젝트를 만들 준비가 되셨나요? 「새 프로젝트」를 눌러 아이디어를 영상으로 바꿔 보세요.",
+      "cta": "첫 프로젝트 만들기",
+      "dismissAriaLabel": "환영 배너 닫기"
     },
     "quickActions": {
-      "title": "Quick Actions",
-      "description": "Get started with these common tasks",
-      "newProject": "New Project",
-      "browseMovies": "Browse Movies",
-      "recordVoice": "Record Voice"
+      "title": "빠른 작업",
+      "description": "자주 쓰는 작업부터 시작해 보세요",
+      "newProject": "새 프로젝트",
+      "browseMovies": "영화 둘러보기",
+      "recordVoice": "보이스 녹음"
     },
     "recentProjects": {
-      "title": "Recent Projects",
-      "description": "Your latest work",
-      "viewAll": "All"
+      "title": "최근 프로젝트",
+      "description": "최근 작업",
+      "viewAll": "전체"
     },
     "popularMovies": {
-      "title": "Popular Movies",
-      "description": "Trending movies to start your next project",
-      "exploreAll": "Explore All"
+      "title": "인기 영화",
+      "description": "다음 프로젝트에 어울리는 인기 영화",
+      "exploreAll": "전체 보기"
     },
     "empty": {
-      "title": "Welcome to Huavoi Studio",
-      "message": "Start by creating a new project to see your activity here.",
-      "cta": "Create Your First Project"
+      "title": "Huavoi Studio에 오신 걸 환영해요",
+      "message": "새 프로젝트를 만들면 여기에 활동이 표시돼요.",
+      "cta": "첫 프로젝트 만들기"
     }
   }
 }

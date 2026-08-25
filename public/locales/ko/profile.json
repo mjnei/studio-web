@@ -1,41 +1,41 @@
 {
   "profile": {
-    "title": "Profile Settings",
-    "description": "Manage your account settings and preferences",
+    "title": "마이페이지 설정",
+    "description": "계정 설정과 선호도를 관리하세요",
     "upgradeBanner": {
-      "title": "Unlock More with Pro or Premium",
-      "description": "Get more credits, priority support, and advanced features to create more videos.",
-      "viewPlans": "View Plans",
-      "billing": "Billing"
+      "title": "Pro 또는 Premium으로 더 많은 기능을 잠금 해제하세요",
+      "description": "더 많은 크레딧, 우선 지원, 고급 기능으로 더 많은 영상을 만드세요.",
+      "viewPlans": "요금제 보기",
+      "billing": "결제"
     },
     "accountOverview": {
-      "title": "Account Overview",
-      "description": "Your personal information and account status",
-      "displayName": "Display Name",
-      "autoCapitalizeWords": "Capitalize the first letter of each word",
-      "edit": "Edit",
-      "cancel": "Cancel",
-      "save": "Save",
-      "copyEmail": "Copy email address",
-      "emailCopied": "Email copied",
-      "profileUpdatedSuccess": "Profile updated successfully.",
-      "profileUpdatedError": "Failed to update profile"
+      "title": "계정 개요",
+      "description": "개인 정보와 계정 상태",
+      "displayName": "표시 이름",
+      "autoCapitalizeWords": "각 단어의 첫 글자를 대문자로",
+      "edit": "편집",
+      "cancel": "취소",
+      "save": "저장",
+      "copyEmail": "이메일 주소 복사",
+      "emailCopied": "이메일이 복사되었어요",
+      "profileUpdatedSuccess": "프로필이 업데이트되었어요.",
+      "profileUpdatedError": "프로필을 업데이트하지 못했어요"
     },
     "membershipBilling": {
-      "title": "Membership & Billing",
-      "description": "Manage your subscription and billing",
-      "currentPlan": "Current Plan",
-      "upgradePlan": "Upgrade Plan",
-      "viewAllPlans": "View All Plans",
-      "manageBilling": "Manage Billing",
-      "activeSince": "Active since:",
-      "expiresOn": "Expires on:",
-      "renewsOn": "Renews on:",
+      "title": "멤버십 및 결제",
+      "description": "구독과 결제를 관리하세요",
+      "currentPlan": "현재 요금제",
+      "upgradePlan": "요금제 업그레이드",
+      "viewAllPlans": "모든 요금제 보기",
+      "manageBilling": "결제 관리",
+      "activeSince": "활성 시작:",
+      "expiresOn": "만료일:",
+      "renewsOn": "갱신일:",
       "subscriptionStatus": {
-        "active": "Active",
-        "canceled": "Canceled",
-        "inactive": "Inactive",
-        "expired": "Expired"
+        "active": "활성",
+        "canceled": "취소됨",
+        "inactive": "비활성",
+        "expired": "만료됨"
       },
       "tiers": {
         "free": "Free",
@@ -44,51 +44,51 @@
       }
     },
     "passwordSecurity": {
-      "title": "Password & Security",
-      "description": "Manage your password and security settings",
-      "changePassword": "Change password",
-      "setPassword": "Set password",
-      "currentPassword": "Current password",
-      "newPassword": "New password",
-      "confirmNewPassword": "Confirm new password",
-      "updatePassword": "Update password",
+      "title": "비밀번호 및 보안",
+      "description": "비밀번호와 보안 설정을 관리하세요",
+      "changePassword": "비밀번호 변경",
+      "setPassword": "비밀번호 설정",
+      "currentPassword": "현재 비밀번호",
+      "newPassword": "새 비밀번호",
+      "confirmNewPassword": "새 비밀번호 확인",
+      "updatePassword": "비밀번호 업데이트",
       "passwordError": {
-        "mismatch": "Passwords do not match",
-        "tooShort": "Password must be at least 8 characters",
-        "tooLong": "Password must be no more than 128 characters"
+        "mismatch": "비밀번호가 일치하지 않아요",
+        "tooShort": "비밀번호는 8자 이상이어야 해요",
+        "tooLong": "비밀번호는 128자 이하여야 해요"
       },
-      "passwordUpdatedSuccess": "Password updated successfully.",
-      "passwordUpdatedError": "Failed to change password"
+      "passwordUpdatedSuccess": "비밀번호가 업데이트되었어요.",
+      "passwordUpdatedError": "비밀번호를 변경하지 못했어요"
     },
     "connectedAccounts": {
-      "title": "Connected Accounts",
-      "description": "Manage your linked accounts",
+      "title": "연결된 계정",
+      "description": "연동된 계정을 관리하세요",
       "google": "Google",
-      "connected": "Connected",
-      "notConnected": "Not connected",
-      "primaryAccount": "Primary account"
+      "connected": "연결됨",
+      "notConnected": "연결되지 않음",
+      "primaryAccount": "기본 계정"
     },
     "onboarding": {
-      "title": "Onboarding",
-      "description": "Manage your session and onboarding status",
-      "signOut": "Sign out",
-      "signOutDescription": "End your current session on this device",
-      "resetOnboarding": "Reset onboarding",
-      "resetOnboardingDescription": "Password:",
-      "passwordAlreadySet": "Already Set",
-      "passwordNotSet": "Not set",
-      "reset": "Reset",
-      "resetting": "Resetting..."
+      "title": "시작 가이드",
+      "description": "세션과 시작 가이드 상태를 관리하세요",
+      "signOut": "로그아웃",
+      "signOutDescription": "이 기기에서 현재 세션을 종료해요",
+      "resetOnboarding": "시작 가이드 초기화",
+      "resetOnboardingDescription": "비밀번호:",
+      "passwordAlreadySet": "이미 설정됨",
+      "passwordNotSet": "설정되지 않음",
+      "reset": "초기화",
+      "resetting": "초기화 중…"
     },
     "dangerZone": {
-      "title": "Danger Zone",
-      "description": "Permanent account deletion",
-      "deleteAccountWarning": "Permanently delete your account and all associated data — projects, voices, renders, and referral history. This cannot be undone.",
-      "deleteAccount": "Delete account",
-      "confirmDelete": "Type delete my account to confirm:",
+      "title": "위험 구역",
+      "description": "계정 영구 삭제",
+      "deleteAccountWarning": "계정과 관련된 모든 데이터—프로젝트, 보이스, 렌더, 추천 내역—를 영구 삭제해요. 되돌릴 수 없어요.",
+      "deleteAccount": "계정 삭제",
+      "confirmDelete": "확인하려면 delete my account를 입력하세요:",
       "deleteAccountPlaceholder": "delete my account",
-      "permanentlyDeleteAccount": "Permanently delete account",
-      "deleteAccountConfirmCancel": "Cancel"
+      "permanentlyDeleteAccount": "계정 영구 삭제",
+      "deleteAccountConfirmCancel": "취소"
     }
   }
 }

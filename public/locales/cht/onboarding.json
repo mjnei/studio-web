@@ -1,104 +1,104 @@
 {
   "onboarding": {
     "welcome": {
-      "title": "Welcome to Huavoi Studio",
-      "subtitle": "Transform your ideas into stunning videos with AI-powered creativity. Professional results in minutes, not hours.",
+      "title": "歡迎使用 Huavoi Studio",
+      "subtitle": "用 AI 創意把想法變成精彩影片。幾分鐘就能達到專業級成果，不用等上好幾小時。",
       "features": {
-        "templates": "Professional Templates",
-        "aiTools": "AI-Powered Tools",
-        "publishing": "One-Click Publishing"
+        "templates": "專業範本",
+        "aiTools": "AI 工具",
+        "publishing": "一鍵發布"
       },
-      "getStarted": "Get Started",
-      "subtext": "Takes less than 2 minutes to complete",
-      "getStartedAria": "Get started with onboarding"
+      "getStarted": "開始使用",
+      "subtext": "不到 2 分鐘就能完成",
+      "getStartedAria": "開始新手導覽"
     },
     "progress": {
-      "stepOf": "Step {current} of {total}",
-      "ariaLabel": "Step {current} of {total}"
+      "stepOf": "第 {current} 步，共 {total} 步",
+      "ariaLabel": "第 {current} 步，共 {total} 步"
     },
     "workflow": {
-      "title": "Your Video Creation Journey",
-      "subtitle": "4 simple steps to create amazing videos",
+      "title": "你的影片製作旅程",
+      "subtitle": "四個簡單步驟，做出精彩影片",
       "steps": {
         "source": {
-          "title": "Source",
-          "description": "Select from movie catalog"
+          "title": "素材",
+          "description": "從電影目錄中選擇"
         },
         "script": {
-          "title": "Script",
-          "description": "AI generates video scripts"
+          "title": "腳本",
+          "description": "AI 產生影片腳本"
         },
         "voice": {
-          "title": "Voice",
-          "description": "Text-to-speech with AI"
+          "title": "配音",
+          "description": "AI 文字轉語音"
         },
         "compose": {
-          "title": "Compose",
-          "description": "Create final video"
+          "title": "合成",
+          "description": "產出最終影片"
         }
       },
-      "info": "Switch between steps anytime. Work at your own pace—your progress is auto-saved.",
-      "back": "Back",
-      "continue": "Continue",
-      "step": "Step {number}",
-      "goBack": "Go back to previous step",
-      "continueTakeStep": "Continue to next step"
+      "info": "可隨時切換步驟。照自己的節奏進行——進度會自動儲存。",
+      "back": "返回",
+      "continue": "繼續",
+      "step": "步驟 {number}",
+      "goBack": "回到上一步",
+      "continueTakeStep": "繼續下一步"
     },
     "password": {
-      "title": "Set Up Alternative Login",
-      "titleUpdate": "Update Your Password",
-      "subtitle": "You signed in with Google. Want to add a password for email login too?",
-      "subtitleUpdate": "You already have a password set. You can update it here if you'd like.",
-      "securityHint": "Access your account even if Google is unavailable",
-      "alreadyConfigured": "Password already configured",
-      "password": "Password",
-      "confirmPassword": "Confirm Password",
-      "passwordLabel": "Password",
-      "confirmPasswordLabel": "Confirm Password",
-      "passwordPlaceholder": "Enter password (min 8 characters)",
-      "confirmPasswordPlaceholder": "Confirm password",
-      "showPassword": "Show password",
-      "hidePassword": "Hide password",
-      "showConfirmPassword": "Show confirm password",
-      "hideConfirmPassword": "Hide confirm password",
-      "strength": "Password Strength",
-      "strengthWeak": "Weak",
-      "strengthFair": "Fair",
-      "strengthGood": "Good",
-      "strengthStrong": "Strong",
-      "match": "Passwords match",
-      "noMatch": "Passwords do not match",
+      "title": "設定備用登入方式",
+      "titleUpdate": "更新密碼",
+      "subtitle": "你是用 Google 登入的。要不要再加一組密碼，方便用電子郵件登入？",
+      "subtitleUpdate": "你已經設定過密碼。如果需要，可以在這裡更新。",
+      "securityHint": "即使 Google 無法使用，也能登入帳戶",
+      "alreadyConfigured": "已設定密碼",
+      "password": "密碼",
+      "confirmPassword": "確認密碼",
+      "passwordLabel": "密碼",
+      "confirmPasswordLabel": "確認密碼",
+      "passwordPlaceholder": "輸入密碼（至少 8 個字元）",
+      "confirmPasswordPlaceholder": "再次輸入密碼",
+      "showPassword": "顯示密碼",
+      "hidePassword": "隱藏密碼",
+      "showConfirmPassword": "顯示確認密碼",
+      "hideConfirmPassword": "隱藏確認密碼",
+      "strength": "密碼強度",
+      "strengthWeak": "弱",
+      "strengthFair": "尚可",
+      "strengthGood": "良好",
+      "strengthStrong": "強",
+      "match": "密碼相符",
+      "noMatch": "密碼不相符",
       "validation": {
-        "tooShort": "Password must be at least 8 characters",
-        "mismatch": "Passwords do not match"
+        "tooShort": "密碼至少需要 8 個字元",
+        "mismatch": "密碼不相符"
       },
-      "setPassword": "Set Password",
-      "updating": "Updating...",
-      "settingPassword": "Setting Password...",
-      "alreadySet": "Password Already Set",
-      "skipForNow": "Skip for Now",
-      "back": "Back",
-      "goBack": "Go back to previous step",
-      "skipPassword": "Skip password setup",
-      "error": "Failed to set password. Please try again.",
-      "errorUpdate": "Failed to update password. Please try again."
+      "setPassword": "設定密碼",
+      "updating": "更新中…",
+      "settingPassword": "正在設定密碼…",
+      "alreadySet": "密碼已設定",
+      "skipForNow": "暫時略過",
+      "back": "返回",
+      "goBack": "回到上一步",
+      "skipPassword": "略過密碼設定",
+      "error": "無法設定密碼，請再試一次。",
+      "errorUpdate": "無法更新密碼，請再試一次。"
     },
     "completion": {
-      "loading": "Setting Up Your Account",
-      "loadingSubtext": "This will only take a moment...",
-      "loadingAriaLabel": "Completing onboarding",
-      "success": "You're All Set!",
-      "successSubtext": "Your account is ready. Let's start creating amazing videos together.",
+      "loading": "正在設定你的帳戶",
+      "loadingSubtext": "只要一下子…",
+      "loadingAriaLabel": "正在完成新手導覽",
+      "success": "一切就緒！",
+      "successSubtext": "帳戶已準備好。一起開始製作精彩影片吧。",
       "features": {
-        "create": "Create",
-        "design": "Design",
-        "publish": "Publish"
+        "create": "創作",
+        "design": "設計",
+        "publish": "發布"
       },
-      "goToDashboard": "Go to Dashboard",
-      "redirect": "Redirecting in {seconds} seconds...",
-      "error": "Something Went Wrong",
-      "tryAgain": "Try Again",
-      "completionAriaLabel": "Completion status"
+      "goToDashboard": "前往工作台",
+      "redirect": "{seconds} 秒後跳轉…",
+      "error": "出了點問題",
+      "tryAgain": "再試一次",
+      "completionAriaLabel": "完成狀態"
     }
   }
 }

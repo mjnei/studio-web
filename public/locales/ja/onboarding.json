@@ -1,104 +1,104 @@
 {
   "onboarding": {
     "welcome": {
-      "title": "Welcome to Huavoi Studio",
-      "subtitle": "Transform your ideas into stunning videos with AI-powered creativity. Professional results in minutes, not hours.",
+      "title": "Huavoi Studioへようこそ",
+      "subtitle": "AIの力でアイデアを美しい動画に変えましょう。何時間もかけず、数分でプロ品質の結果を。",
       "features": {
-        "templates": "Professional Templates",
-        "aiTools": "AI-Powered Tools",
-        "publishing": "One-Click Publishing"
+        "templates": "プロ向けテンプレート",
+        "aiTools": "AIツール",
+        "publishing": "ワンクリック公開"
       },
-      "getStarted": "Get Started",
-      "subtext": "Takes less than 2 minutes to complete",
-      "getStartedAria": "Get started with onboarding"
+      "getStarted": "はじめる",
+      "subtext": "完了まで2分未満です",
+      "getStartedAria": "初期設定を開始する"
     },
     "progress": {
-      "stepOf": "Step {current} of {total}",
-      "ariaLabel": "Step {current} of {total}"
+      "stepOf": "ステップ {current} / {total}",
+      "ariaLabel": "ステップ {current} / {total}"
     },
     "workflow": {
-      "title": "Your Video Creation Journey",
-      "subtitle": "4 simple steps to create amazing videos",
+      "title": "動画制作の流れ",
+      "subtitle": "4つの簡単なステップで素敵な動画を作成",
       "steps": {
         "source": {
-          "title": "Source",
-          "description": "Select from movie catalog"
+          "title": "素材",
+          "description": "映画カタログから選択"
         },
         "script": {
-          "title": "Script",
-          "description": "AI generates video scripts"
+          "title": "脚本",
+          "description": "AIが動画脚本を生成"
         },
         "voice": {
-          "title": "Voice",
-          "description": "Text-to-speech with AI"
+          "title": "ナレーション",
+          "description": "AIによる音声合成"
         },
         "compose": {
-          "title": "Compose",
-          "description": "Create final video"
+          "title": "合成",
+          "description": "最終動画を作成"
         }
       },
-      "info": "Switch between steps anytime. Work at your own pace—your progress is auto-saved.",
-      "back": "Back",
-      "continue": "Continue",
-      "step": "Step {number}",
-      "goBack": "Go back to previous step",
-      "continueTakeStep": "Continue to next step"
+      "info": "いつでもステップを切り替えられます。自分のペースで進めてください。進捗は自動保存されます。",
+      "back": "戻る",
+      "continue": "続ける",
+      "step": "ステップ {number}",
+      "goBack": "前のステップに戻る",
+      "continueTakeStep": "次のステップへ進む"
     },
     "password": {
-      "title": "Set Up Alternative Login",
-      "titleUpdate": "Update Your Password",
-      "subtitle": "You signed in with Google. Want to add a password for email login too?",
-      "subtitleUpdate": "You already have a password set. You can update it here if you'd like.",
-      "securityHint": "Access your account even if Google is unavailable",
-      "alreadyConfigured": "Password already configured",
-      "password": "Password",
-      "confirmPassword": "Confirm Password",
-      "passwordLabel": "Password",
-      "confirmPasswordLabel": "Confirm Password",
-      "passwordPlaceholder": "Enter password (min 8 characters)",
-      "confirmPasswordPlaceholder": "Confirm password",
-      "showPassword": "Show password",
-      "hidePassword": "Hide password",
-      "showConfirmPassword": "Show confirm password",
-      "hideConfirmPassword": "Hide confirm password",
-      "strength": "Password Strength",
-      "strengthWeak": "Weak",
-      "strengthFair": "Fair",
-      "strengthGood": "Good",
-      "strengthStrong": "Strong",
-      "match": "Passwords match",
-      "noMatch": "Passwords do not match",
+      "title": "別のログイン方法を設定",
+      "titleUpdate": "パスワードを更新",
+      "subtitle": "Googleでログインしています。メールログイン用のパスワードも追加しますか？",
+      "subtitleUpdate": "すでにパスワードが設定されています。必要であればここで更新できます。",
+      "securityHint": "Googleが使えないときでもアカウントにアクセスできます",
+      "alreadyConfigured": "パスワードは設定済みです",
+      "password": "パスワード",
+      "confirmPassword": "パスワード（確認）",
+      "passwordLabel": "パスワード",
+      "confirmPasswordLabel": "パスワード（確認）",
+      "passwordPlaceholder": "パスワードを入力（8文字以上）",
+      "confirmPasswordPlaceholder": "パスワードを確認",
+      "showPassword": "パスワードを表示",
+      "hidePassword": "パスワードを隠す",
+      "showConfirmPassword": "確認用パスワードを表示",
+      "hideConfirmPassword": "確認用パスワードを隠す",
+      "strength": "パスワード強度",
+      "strengthWeak": "弱い",
+      "strengthFair": "普通",
+      "strengthGood": "良い",
+      "strengthStrong": "強い",
+      "match": "パスワードが一致しています",
+      "noMatch": "パスワードが一致しません",
       "validation": {
-        "tooShort": "Password must be at least 8 characters",
-        "mismatch": "Passwords do not match"
+        "tooShort": "パスワードは8文字以上にしてください",
+        "mismatch": "パスワードが一致しません"
       },
-      "setPassword": "Set Password",
-      "updating": "Updating...",
-      "settingPassword": "Setting Password...",
-      "alreadySet": "Password Already Set",
-      "skipForNow": "Skip for Now",
-      "back": "Back",
-      "goBack": "Go back to previous step",
-      "skipPassword": "Skip password setup",
-      "error": "Failed to set password. Please try again.",
-      "errorUpdate": "Failed to update password. Please try again."
+      "setPassword": "パスワードを設定",
+      "updating": "更新中…",
+      "settingPassword": "パスワードを設定中…",
+      "alreadySet": "パスワードは設定済み",
+      "skipForNow": "今はスキップ",
+      "back": "戻る",
+      "goBack": "前のステップに戻る",
+      "skipPassword": "パスワード設定をスキップ",
+      "error": "パスワードの設定に失敗しました。もう一度お試しください。",
+      "errorUpdate": "パスワードの更新に失敗しました。もう一度お試しください。"
     },
     "completion": {
-      "loading": "Setting Up Your Account",
-      "loadingSubtext": "This will only take a moment...",
-      "loadingAriaLabel": "Completing onboarding",
-      "success": "You're All Set!",
-      "successSubtext": "Your account is ready. Let's start creating amazing videos together.",
+      "loading": "アカウントを設定中",
+      "loadingSubtext": "少々お待ちください…",
+      "loadingAriaLabel": "初期設定を完了しています",
+      "success": "準備完了です！",
+      "successSubtext": "アカウントの準備ができました。一緒に素敵な動画を作りましょう。",
       "features": {
-        "create": "Create",
-        "design": "Design",
-        "publish": "Publish"
+        "create": "作成",
+        "design": "デザイン",
+        "publish": "公開"
       },
-      "goToDashboard": "Go to Dashboard",
-      "redirect": "Redirecting in {seconds} seconds...",
-      "error": "Something Went Wrong",
-      "tryAgain": "Try Again",
-      "completionAriaLabel": "Completion status"
+      "goToDashboard": "ワークスペースへ",
+      "redirect": "{seconds} 秒後に移動します…",
+      "error": "問題が発生しました",
+      "tryAgain": "再試行",
+      "completionAriaLabel": "完了ステータス"
     }
   }
 }

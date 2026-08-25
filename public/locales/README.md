@@ -6,6 +6,14 @@ This directory contains translation files for the Huavoi Studio application.
 
 - **English (en)**: Default language
 - **Simplified Chinese (chs)**: 简体中文
+- **Traditional Chinese (cht)**: 繁體中文 (Taiwan UI phrasing; maps to TMDB `zh-TW`)
+- **Japanese (ja)**: 日本語
+- **Korean (ko)**: 한국어
+- **German (de)**: Deutsch
+- **French (fr)**: Français
+- **Spanish (es)**: Español
+
+UI locale → movie API locale helpers live in `src/i18n/config.ts` (`getApiLocale` / `getDateLocale`).
 
 ## Structure
 

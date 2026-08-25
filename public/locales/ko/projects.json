@@ -1,33 +1,33 @@
 {
   "projects": {
-    "title": "Projects",
-    "description": "Create and manage your video projects",
+    "title": "프로젝트",
+    "description": "영상 프로젝트를 만들고 관리하세요",
     "badge": {
-      "singular": "project",
-      "plural": "projects"
+      "singular": "개",
+      "plural": "개"
     },
-    "new": "New Project",
+    "new": "새 프로젝트",
     "layout": {
-      "small": "Small grid (up to 4 columns)",
-      "medium": "Medium grid (2-3 columns)",
-      "list": "List view"
+      "small": "작은 그리드 (최대 4열)",
+      "medium": "중간 그리드 (2–3열)",
+      "list": "목록 보기"
     },
     "empty": {
-      "title": "No projects yet",
-      "message": "Get started by creating your first project",
-      "cta": "Create Your First Project"
+      "title": "아직 프로젝트가 없어요",
+      "message": "첫 프로젝트를 만들어 시작해 보세요",
+      "cta": "첫 프로젝트 만들기"
     },
     "delete": {
-      "title": "Delete Project?",
-      "confirm": "You are about to delete the project:",
-      "restoreInfo": "This project can be restored within the next 7 days.",
-      "success": "Project deleted successfully",
-      "error": "Failed to delete project"
+      "title": "프로젝트를 삭제할까요?",
+      "confirm": "다음 프로젝트를 삭제합니다:",
+      "restoreInfo": "이 프로젝트는 7일 이내에 복원할 수 있어요.",
+      "success": "프로젝트가 삭제되었어요",
+      "error": "프로젝트를 삭제하지 못했어요"
     },
-    "loading": "Loading projects...",
-    "loadingDescription": "Please wait while we fetch your projects",
-    "untitled": "Untitled project",
-    "loadError": "Failed to load projects",
-    "loadErrorDescription": "Unable to load projects"
+    "loading": "프로젝트 로딩 중…",
+    "loadingDescription": "프로젝트를 불러오는 중이에요. 잠시만 기다려 주세요",
+    "untitled": "제목 없는 프로젝트",
+    "loadError": "프로젝트를 불러오지 못했어요",
+    "loadErrorDescription": "프로젝트를 불러올 수 없어요"
   }
 }

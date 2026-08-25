@@ -1,33 +1,33 @@
 {
   "projects": {
-    "title": "Projects",
-    "description": "Create and manage your video projects",
+    "title": "專案",
+    "description": "建立並管理你的影片專案",
     "badge": {
-      "singular": "project",
-      "plural": "projects"
+      "singular": "個專案",
+      "plural": "個專案"
     },
-    "new": "New Project",
+    "new": "新增專案",
     "layout": {
-      "small": "Small grid (up to 4 columns)",
-      "medium": "Medium grid (2-3 columns)",
-      "list": "List view"
+      "small": "小網格（最多 4 欄）",
+      "medium": "中網格（2–3 欄）",
+      "list": "列表檢視"
     },
     "empty": {
-      "title": "No projects yet",
-      "message": "Get started by creating your first project",
-      "cta": "Create Your First Project"
+      "title": "尚無專案",
+      "message": "建立你的第一個專案開始創作",
+      "cta": "建立你的第一個專案"
     },
     "delete": {
-      "title": "Delete Project?",
-      "confirm": "You are about to delete the project:",
-      "restoreInfo": "This project can be restored within the next 7 days.",
-      "success": "Project deleted successfully",
-      "error": "Failed to delete project"
+      "title": "刪除專案？",
+      "confirm": "你即將刪除專案：",
+      "restoreInfo": "此專案可在接下來 7 天內還原。",
+      "success": "專案已成功刪除",
+      "error": "刪除專案失敗"
     },
-    "loading": "Loading projects...",
-    "loadingDescription": "Please wait while we fetch your projects",
-    "untitled": "Untitled project",
-    "loadError": "Failed to load projects",
-    "loadErrorDescription": "Unable to load projects"
+    "loading": "正在載入專案…",
+    "loadingDescription": "請稍候，正在取得你的專案",
+    "untitled": "未命名專案",
+    "loadError": "載入專案失敗",
+    "loadErrorDescription": "無法載入專案"
   }
 }

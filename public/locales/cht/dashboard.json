@@ -1,48 +1,48 @@
 {
   "dashboard": {
-    "title": "Dashboard",
-    "description": "Welcome back! Here's your overview.",
+    "title": "工作台",
+    "description": "歡迎回來！以下是你的總覽。",
     "stats": {
       "recentProjects": {
-        "title": "Recent Projects",
-        "description": "Active projects"
+        "title": "近期專案",
+        "description": "進行中的專案"
       },
       "movieLibrary": {
-        "title": "Movie Library",
-        "description": "Available movies"
+        "title": "電影資料庫",
+        "description": "可用電影"
       },
       "myVoices": {
-        "title": "My Voices",
-        "description": "Voice profiles"
+        "title": "我的音色",
+        "description": "音色檔案"
       }
     },
     "welcomeBanner": {
-      "title": "Welcome to Huavoi Studio!",
-      "message": "Ready to create your first project? Click \"New Project\" to get started and bring your ideas to life.",
-      "cta": "Create Your First Project",
-      "dismissAriaLabel": "Dismiss welcome banner"
+      "title": "歡迎使用 Huavoi Studio！",
+      "message": "準備好建立第一個專案了嗎？點「新增專案」開始，把想法變成作品。",
+      "cta": "建立你的第一個專案",
+      "dismissAriaLabel": "關閉歡迎橫幅"
     },
     "quickActions": {
-      "title": "Quick Actions",
-      "description": "Get started with these common tasks",
-      "newProject": "New Project",
-      "browseMovies": "Browse Movies",
-      "recordVoice": "Record Voice"
+      "title": "快速操作",
+      "description": "從這些常用操作開始",
+      "newProject": "新增專案",
+      "browseMovies": "瀏覽電影",
+      "recordVoice": "錄製音色"
     },
     "recentProjects": {
-      "title": "Recent Projects",
-      "description": "Your latest work",
-      "viewAll": "All"
+      "title": "近期專案",
+      "description": "你最近的作品",
+      "viewAll": "全部"
     },
     "popularMovies": {
-      "title": "Popular Movies",
-      "description": "Trending movies to start your next project",
-      "exploreAll": "Explore All"
+      "title": "熱門電影",
+      "description": "熱門趨勢電影，適合開啟下一個專案",
+      "exploreAll": "探索全部"
     },
     "empty": {
-      "title": "Welcome to Huavoi Studio",
-      "message": "Start by creating a new project to see your activity here.",
-      "cta": "Create Your First Project"
+      "title": "歡迎使用 Huavoi Studio",
+      "message": "先建立一個新專案，活動紀錄就會顯示在這裡。",
+      "cta": "建立你的第一個專案"
     }
   }
 }

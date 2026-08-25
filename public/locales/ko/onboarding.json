@@ -1,104 +1,104 @@
 {
   "onboarding": {
     "welcome": {
-      "title": "Welcome to Huavoi Studio",
-      "subtitle": "Transform your ideas into stunning videos with AI-powered creativity. Professional results in minutes, not hours.",
+      "title": "Huavoi Studio에 오신 걸 환영해요",
+      "subtitle": "AI 창작으로 아이디어를 멋진 영상으로 바꿔 보세요. 몇 시간이 아닌 몇 분이면 전문적인 결과를 얻을 수 있어요.",
       "features": {
-        "templates": "Professional Templates",
-        "aiTools": "AI-Powered Tools",
-        "publishing": "One-Click Publishing"
+        "templates": "프로페셔널 템플릿",
+        "aiTools": "AI 기반 도구",
+        "publishing": "원클릭 게시"
       },
-      "getStarted": "Get Started",
-      "subtext": "Takes less than 2 minutes to complete",
-      "getStartedAria": "Get started with onboarding"
+      "getStarted": "시작하기",
+      "subtext": "2분 이내에 완료돼요",
+      "getStartedAria": "시작 가이드 시작하기"
     },
     "progress": {
-      "stepOf": "Step {current} of {total}",
-      "ariaLabel": "Step {current} of {total}"
+      "stepOf": "{current} / {total} 단계",
+      "ariaLabel": "{current} / {total} 단계"
     },
     "workflow": {
-      "title": "Your Video Creation Journey",
-      "subtitle": "4 simple steps to create amazing videos",
+      "title": "영상 제작 여정",
+      "subtitle": "놀라운 영상을 만드는 4가지 간단한 단계",
       "steps": {
         "source": {
-          "title": "Source",
-          "description": "Select from movie catalog"
+          "title": "소스",
+          "description": "영화 카탈로그에서 선택"
         },
         "script": {
-          "title": "Script",
-          "description": "AI generates video scripts"
+          "title": "스크립트",
+          "description": "AI가 영상 스크립트 생성"
         },
         "voice": {
-          "title": "Voice",
-          "description": "Text-to-speech with AI"
+          "title": "더빙",
+          "description": "AI 음성 합성"
         },
         "compose": {
-          "title": "Compose",
-          "description": "Create final video"
+          "title": "합성",
+          "description": "최종 영상 만들기"
         }
       },
-      "info": "Switch between steps anytime. Work at your own pace—your progress is auto-saved.",
-      "back": "Back",
-      "continue": "Continue",
-      "step": "Step {number}",
-      "goBack": "Go back to previous step",
-      "continueTakeStep": "Continue to next step"
+      "info": "언제든 단계 사이를 이동할 수 있어요. 원하는 속도로 작업하세요—진행 상황은 자동 저장돼요.",
+      "back": "뒤로",
+      "continue": "계속",
+      "step": "{number}단계",
+      "goBack": "이전 단계로 돌아가기",
+      "continueTakeStep": "다음 단계로 계속"
     },
     "password": {
-      "title": "Set Up Alternative Login",
-      "titleUpdate": "Update Your Password",
-      "subtitle": "You signed in with Google. Want to add a password for email login too?",
-      "subtitleUpdate": "You already have a password set. You can update it here if you'd like.",
-      "securityHint": "Access your account even if Google is unavailable",
-      "alreadyConfigured": "Password already configured",
-      "password": "Password",
-      "confirmPassword": "Confirm Password",
-      "passwordLabel": "Password",
-      "confirmPasswordLabel": "Confirm Password",
-      "passwordPlaceholder": "Enter password (min 8 characters)",
-      "confirmPasswordPlaceholder": "Confirm password",
-      "showPassword": "Show password",
-      "hidePassword": "Hide password",
-      "showConfirmPassword": "Show confirm password",
-      "hideConfirmPassword": "Hide confirm password",
-      "strength": "Password Strength",
-      "strengthWeak": "Weak",
-      "strengthFair": "Fair",
-      "strengthGood": "Good",
-      "strengthStrong": "Strong",
-      "match": "Passwords match",
-      "noMatch": "Passwords do not match",
+      "title": "대체 로그인 설정",
+      "titleUpdate": "비밀번호 업데이트",
+      "subtitle": "Google로 로그인했어요. 이메일 로그인을 위해 비밀번호도 추가할까요?",
+      "subtitleUpdate": "이미 비밀번호가 설정되어 있어요. 원하시면 여기서 변경할 수 있어요.",
+      "securityHint": "Google을 사용할 수 없어도 계정에 접속할 수 있어요",
+      "alreadyConfigured": "비밀번호가 이미 설정되어 있어요",
+      "password": "비밀번호",
+      "confirmPassword": "비밀번호 확인",
+      "passwordLabel": "비밀번호",
+      "confirmPasswordLabel": "비밀번호 확인",
+      "passwordPlaceholder": "비밀번호 입력 (최소 8자)",
+      "confirmPasswordPlaceholder": "비밀번호 확인",
+      "showPassword": "비밀번호 보기",
+      "hidePassword": "비밀번호 숨기기",
+      "showConfirmPassword": "확인 비밀번호 보기",
+      "hideConfirmPassword": "확인 비밀번호 숨기기",
+      "strength": "비밀번호 강도",
+      "strengthWeak": "약함",
+      "strengthFair": "보통",
+      "strengthGood": "좋음",
+      "strengthStrong": "강함",
+      "match": "비밀번호가 일치해요",
+      "noMatch": "비밀번호가 일치하지 않아요",
       "validation": {
-        "tooShort": "Password must be at least 8 characters",
-        "mismatch": "Passwords do not match"
+        "tooShort": "비밀번호는 8자 이상이어야 해요",
+        "mismatch": "비밀번호가 일치하지 않아요"
       },
-      "setPassword": "Set Password",
-      "updating": "Updating...",
-      "settingPassword": "Setting Password...",
-      "alreadySet": "Password Already Set",
-      "skipForNow": "Skip for Now",
-      "back": "Back",
-      "goBack": "Go back to previous step",
-      "skipPassword": "Skip password setup",
-      "error": "Failed to set password. Please try again.",
-      "errorUpdate": "Failed to update password. Please try again."
+      "setPassword": "비밀번호 설정",
+      "updating": "업데이트 중…",
+      "settingPassword": "비밀번호 설정 중…",
+      "alreadySet": "비밀번호가 이미 설정됨",
+      "skipForNow": "지금은 건너뛰기",
+      "back": "뒤로",
+      "goBack": "이전 단계로 돌아가기",
+      "skipPassword": "비밀번호 설정 건너뛰기",
+      "error": "비밀번호를 설정하지 못했어요. 다시 시도해 주세요.",
+      "errorUpdate": "비밀번호를 업데이트하지 못했어요. 다시 시도해 주세요."
     },
     "completion": {
-      "loading": "Setting Up Your Account",
-      "loadingSubtext": "This will only take a moment...",
-      "loadingAriaLabel": "Completing onboarding",
-      "success": "You're All Set!",
-      "successSubtext": "Your account is ready. Let's start creating amazing videos together.",
+      "loading": "계정 설정 중",
+      "loadingSubtext": "잠시만 기다려 주세요…",
+      "loadingAriaLabel": "시작 가이드 완료 중",
+      "success": "준비 완료!",
+      "successSubtext": "계정이 준비됐어요. 함께 멋진 영상을 만들어 봐요.",
       "features": {
-        "create": "Create",
-        "design": "Design",
-        "publish": "Publish"
+        "create": "만들기",
+        "design": "디자인",
+        "publish": "게시"
       },
-      "goToDashboard": "Go to Dashboard",
-      "redirect": "Redirecting in {seconds} seconds...",
-      "error": "Something Went Wrong",
-      "tryAgain": "Try Again",
-      "completionAriaLabel": "Completion status"
+      "goToDashboard": "작업실로 이동",
+      "redirect": "{seconds}초 후 이동합니다…",
+      "error": "문제가 발생했어요",
+      "tryAgain": "다시 시도",
+      "completionAriaLabel": "완료 상태"
     }
   }
 }

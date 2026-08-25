@@ -151,8 +151,8 @@ public/locales/
 ### Locale codes
 
 - Use the codes registered in `src/i18n/config.ts` (`locales`, `localeNames`).
-- Current: `en`, `chs`.
-- When adding locales, prefer short product codes consistent with existing style (`chs` not `zh-CN` unless engineering migrates codes deliberately). Document the code ↔ language mapping in `config.ts` and this guide.
+- Current: `en`, `chs`, `cht`, `ja`, `ko`, `de`, `fr`, `es`.
+- Prefer short product codes consistent with existing style (`chs` / `cht`, not `zh-CN` / `zh-TW`). API/TMDB mapping is in `src/i18n/config.ts` (`localeToApiLocale`).
 
 ### Adding a new locale (checklist)
 
@@ -216,16 +216,16 @@ For each locale PR, reviewers should confirm:
 - TTS clones: **音色**; process: **语音合成**; workflow step: **配音** is acceptable.
 - Credits: **额度** only.
 
-### Future locales
+### Traditional Chinese (`cht`)
 
-Before translating, research how major **short-video / TTS / creator** apps in that market name:
+- Translate **from English**, not by converting `chs`. Taiwan product wording differs (e.g. 登入 / 影片 / 設定 / 專案 / 點數).
+- Credits: **點數** (not Mainland 额度).
+- Voices library: **音色**; workflow step: **配音**; TTS process: **語音合成**.
 
-- Home / workspace
-- Voice / timbre / voiceover
-- Credits / coins / points (pick one and lock it)
-- First-run setup
+### Japanese (`ja`) / Korean (`ko`) / German (`de`) / French (`fr`) / Spanish (`es`)
 
-Document the chosen glossary in the PR that introduces the locale.
+- Lock glossary terms in the PR (see tables in prior locale PRs / `config.ts` display names).
+- Research how major **short-video / TTS / creator** apps in that market name: home/workspace, voice/timbre/voiceover, credits, first-run setup.
 
 ---
 

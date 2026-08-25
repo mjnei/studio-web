@@ -1,93 +1,93 @@
 {
   "help": {
-    "title": "Help & Documentation",
-    "description": "Learn how to use Huavoi Studio from start to finish",
+    "title": "說明與文件",
+    "description": "從頭到尾了解如何使用 Huavoi Studio",
     "documentation": {
-      "title": "Documentation",
-      "subtitle": "Browse all guides"
+      "title": "文件",
+      "subtitle": "瀏覽所有指南"
     },
     "community": {
-      "title": "Community",
-      "subtitle": "Join discussions"
+      "title": "社群",
+      "subtitle": "加入討論"
     },
     "apiDocs": {
-      "title": "API Docs",
-      "subtitle": "Developer resources"
+      "title": "API 文件",
+      "subtitle": "開發者資源"
     },
     "gettingStarted": {
-      "title": "Getting Started",
+      "title": "快速上手",
       "articles": {
         "creatingFirstProject": {
-          "title": "Creating your first project",
-          "description": "Learn how to set up a new video project and select a source clip."
+          "title": "建立你的第一個專案",
+          "description": "了解如何設定新影片專案並選擇來源片段。"
         },
         "understandingPipeline": {
-          "title": "Understanding the pipeline",
-          "description": "A walkthrough of the Source → Script → Voice → Compose workflow."
+          "title": "了解製作流程",
+          "description": "導覽「來源 → 腳本 → 配音 → 合成」工作流程。"
         },
         "choosingMovieClip": {
-          "title": "Choosing a movie clip",
-          "description": "How to browse, filter, and preview clips from the movie library."
+          "title": "選擇電影片段",
+          "description": "如何從電影資料庫瀏覽、篩選並預覽片段。"
         }
       },
-      "readMore": "Read more"
+      "readMore": "閱讀更多"
     },
     "scriptAI": {
-      "title": "Script & AI",
+      "title": "腳本與 AI",
       "articles": {
         "generatingScripts": {
-          "title": "Generating AI scripts",
-          "description": "How Huavoi creates candidate scripts and how to pick the best one."
+          "title": "產生 AI 腳本",
+          "description": "Huavoi 如何產生候選腳本，以及如何挑選最佳版本。"
         },
         "editingScripts": {
-          "title": "Editing scripts by segment",
-          "description": "Timestamped editing, AI-assisted rewrites, and version history."
+          "title": "依段落編輯腳本",
+          "description": "時間戳編輯、AI 輔助改寫與版本紀錄。"
         },
         "toneAndLength": {
-          "title": "Tone and length options",
-          "description": "Customizing the AI output: narrative, promotional, short, or detailed."
+          "title": "語氣與長度選項",
+          "description": "自訂 AI 輸出：敘事、宣傳、精簡或詳盡。"
         }
       }
     },
     "voiceAudio": {
-      "title": "Voice & Audio",
+      "title": "音色與音訊",
       "articles": {
         "selectingVoice": {
-          "title": "Selecting a preset voice",
-          "description": "Browsing and previewing stock voices for your voiceover."
+          "title": "選擇預設音色",
+          "description": "瀏覽並預覽庫存音色，用於旁白配音。"
         },
         "cloningVoice": {
-          "title": "Cloning your own voice",
-          "description": "Recording a sample from your microphone to create a custom voice clone."
+          "title": "複製你自己的音色",
+          "description": "用麥克風錄製樣本，建立自訂音色。"
         },
         "voicePreview": {
-          "title": "Voice preview before render",
-          "description": "How to test a short preview clip before committing to a full TTS render."
+          "title": "渲染前預覽音色",
+          "description": "如何在完整 TTS 渲染前，先測試短預覽片段。"
         }
       }
     },
     "composeExport": {
-      "title": "Compose & Export",
+      "title": "合成與匯出",
       "articles": {
         "multiTrackTimeline": {
-          "title": "Using the multi-track timeline",
-          "description": "Arranging video, voiceover, music, and SFX on the timeline."
+          "title": "使用多軌時間軸",
+          "description": "在時間軸上安排影片、旁白、音樂與音效。"
         },
         "renderQueue": {
-          "title": "Render queue and wait times",
-          "description": "How rendering works, expected wait times, and safe-to-close behavior."
+          "title": "渲染佇列與等待時間",
+          "description": "渲染如何運作、預期等待時間，以及可安全關閉的行為。"
         },
         "exportFormats": {
-          "title": "Export formats and resolution",
-          "description": "Choosing resolution, FPS, and format for your final export."
+          "title": "匯出格式與解析度",
+          "description": "為最終匯出選擇解析度、FPS 與格式。"
         }
       }
     },
     "contactSupport": {
-      "title": "Still need help?",
-      "description": "Can't find what you're looking for? Our support team is here to help you succeed.",
-      "contact": "Contact Support",
-      "liveChat": "Live Chat"
+      "title": "還需要協助？",
+      "description": "找不到你要的內容？我們的支援團隊隨時協助你順利完成創作。",
+      "contact": "聯絡支援",
+      "liveChat": "即時聊天"
     }
   }
 }

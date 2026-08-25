@@ -1,41 +1,41 @@
 {
   "profile": {
-    "title": "Profile Settings",
-    "description": "Manage your account settings and preferences",
+    "title": "マイページ設定",
+    "description": "アカウント設定と好みを管理します",
     "upgradeBanner": {
-      "title": "Unlock More with Pro or Premium",
-      "description": "Get more credits, priority support, and advanced features to create more videos.",
-      "viewPlans": "View Plans",
-      "billing": "Billing"
+      "title": "ProまたはPremiumでもっと解放",
+      "description": "より多くのクレジット、優先サポート、高度な機能で、さらに動画を作成できます。",
+      "viewPlans": "プランを見る",
+      "billing": "請求"
     },
     "accountOverview": {
-      "title": "Account Overview",
-      "description": "Your personal information and account status",
-      "displayName": "Display Name",
-      "autoCapitalizeWords": "Capitalize the first letter of each word",
-      "edit": "Edit",
-      "cancel": "Cancel",
-      "save": "Save",
-      "copyEmail": "Copy email address",
-      "emailCopied": "Email copied",
-      "profileUpdatedSuccess": "Profile updated successfully.",
-      "profileUpdatedError": "Failed to update profile"
+      "title": "アカウント概要",
+      "description": "個人情報とアカウントの状態",
+      "displayName": "表示名",
+      "autoCapitalizeWords": "各単語の先頭を大文字にします",
+      "edit": "編集",
+      "cancel": "キャンセル",
+      "save": "保存",
+      "copyEmail": "メールアドレスをコピー",
+      "emailCopied": "メールをコピーしました",
+      "profileUpdatedSuccess": "プロフィールを更新しました。",
+      "profileUpdatedError": "プロフィールを更新できませんでした"
     },
     "membershipBilling": {
-      "title": "Membership & Billing",
-      "description": "Manage your subscription and billing",
-      "currentPlan": "Current Plan",
-      "upgradePlan": "Upgrade Plan",
-      "viewAllPlans": "View All Plans",
-      "manageBilling": "Manage Billing",
-      "activeSince": "Active since:",
-      "expiresOn": "Expires on:",
-      "renewsOn": "Renews on:",
+      "title": "メンバーシップと請求",
+      "description": "サブスクリプションと請求を管理",
+      "currentPlan": "現在のプラン",
+      "upgradePlan": "プランをアップグレード",
+      "viewAllPlans": "すべてのプランを見る",
+      "manageBilling": "請求を管理",
+      "activeSince": "開始日：",
+      "expiresOn": "有効期限：",
+      "renewsOn": "更新日：",
       "subscriptionStatus": {
-        "active": "Active",
-        "canceled": "Canceled",
-        "inactive": "Inactive",
-        "expired": "Expired"
+        "active": "有効",
+        "canceled": "解約済み",
+        "inactive": "無効",
+        "expired": "期限切れ"
       },
       "tiers": {
         "free": "Free",
@@ -44,51 +44,51 @@
       }
     },
     "passwordSecurity": {
-      "title": "Password & Security",
-      "description": "Manage your password and security settings",
-      "changePassword": "Change password",
-      "setPassword": "Set password",
-      "currentPassword": "Current password",
-      "newPassword": "New password",
-      "confirmNewPassword": "Confirm new password",
-      "updatePassword": "Update password",
+      "title": "パスワードとセキュリティ",
+      "description": "パスワードとセキュリティ設定を管理",
+      "changePassword": "パスワードを変更",
+      "setPassword": "パスワードを設定",
+      "currentPassword": "現在のパスワード",
+      "newPassword": "新しいパスワード",
+      "confirmNewPassword": "新しいパスワード（確認）",
+      "updatePassword": "パスワードを更新",
       "passwordError": {
-        "mismatch": "Passwords do not match",
-        "tooShort": "Password must be at least 8 characters",
-        "tooLong": "Password must be no more than 128 characters"
+        "mismatch": "パスワードが一致しません",
+        "tooShort": "パスワードは8文字以上にしてください",
+        "tooLong": "パスワードは128文字以下にしてください"
       },
-      "passwordUpdatedSuccess": "Password updated successfully.",
-      "passwordUpdatedError": "Failed to change password"
+      "passwordUpdatedSuccess": "パスワードを更新しました。",
+      "passwordUpdatedError": "パスワードを変更できませんでした"
     },
     "connectedAccounts": {
-      "title": "Connected Accounts",
-      "description": "Manage your linked accounts",
+      "title": "連携アカウント",
+      "description": "連携済みアカウントを管理",
       "google": "Google",
-      "connected": "Connected",
-      "notConnected": "Not connected",
-      "primaryAccount": "Primary account"
+      "connected": "連携済み",
+      "notConnected": "未連携",
+      "primaryAccount": "メインアカウント"
     },
     "onboarding": {
-      "title": "Onboarding",
-      "description": "Manage your session and onboarding status",
-      "signOut": "Sign out",
-      "signOutDescription": "End your current session on this device",
-      "resetOnboarding": "Reset onboarding",
-      "resetOnboardingDescription": "Password:",
-      "passwordAlreadySet": "Already Set",
-      "passwordNotSet": "Not set",
-      "reset": "Reset",
-      "resetting": "Resetting..."
+      "title": "初期設定",
+      "description": "セッションと初期設定の状態を管理",
+      "signOut": "ログアウト",
+      "signOutDescription": "このデバイスでの現在のセッションを終了します",
+      "resetOnboarding": "初期設定をリセット",
+      "resetOnboardingDescription": "パスワード：",
+      "passwordAlreadySet": "設定済み",
+      "passwordNotSet": "未設定",
+      "reset": "リセット",
+      "resetting": "リセット中…"
     },
     "dangerZone": {
-      "title": "Danger Zone",
-      "description": "Permanent account deletion",
-      "deleteAccountWarning": "Permanently delete your account and all associated data — projects, voices, renders, and referral history. This cannot be undone.",
-      "deleteAccount": "Delete account",
-      "confirmDelete": "Type delete my account to confirm:",
+      "title": "危険ゾーン",
+      "description": "アカウントの完全削除",
+      "deleteAccountWarning": "アカウントと関連データ（プロジェクト、ボイス、レンダー、紹介履歴）を完全に削除します。この操作は取り消せません。",
+      "deleteAccount": "アカウントを削除",
+      "confirmDelete": "確認のため delete my account と入力：",
       "deleteAccountPlaceholder": "delete my account",
-      "permanentlyDeleteAccount": "Permanently delete account",
-      "deleteAccountConfirmCancel": "Cancel"
+      "permanentlyDeleteAccount": "アカウントを完全に削除",
+      "deleteAccountConfirmCancel": "キャンセル"
     }
   }
 }
