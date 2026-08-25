@@ -8,7 +8,7 @@
       "invoices": "Rechnungen"
     },
     "overview": {
-      "currentBalance": "Aktuelles Guthaben",
+      "currentBalance": "Aktuelle Credits",
       "credits": "Credits",
       "used": "diesen Monat genutzt",
       "usedOfAllocation": "{used} von {allocation} diesen Monat genutzt",
@@ -49,7 +49,7 @@
       "noTransactions": "Noch keine Credit-Transaktionen",
       "noTransactionsDescription": "Deine Credit-Nutzung erscheint hier",
       "creditTransaction": "Credit-Transaktion",
-      "balance": "Guthaben:"
+      "balance": "Credits:"
     },
     "invoices": {
       "invoices": "Rechnungen",
@@ -80,10 +80,10 @@
       "generateVideoTitle": "Video generieren?",
       "generateVideoMessage": "Diese Aktion verbraucht Credits von deinem Konto.",
       "creditCost": "Credit-Kosten:",
-      "currentBalance": "Aktuelles Guthaben:",
+      "currentBalance": "Aktuelle Credits:",
       "afterGeneration": "Nach der Generierung:",
       "insufficientCredits": "Nicht genug Credits",
-      "lowCreditBalance": "Niedriges Credit-Guthaben",
+      "lowCreditBalance": "Niedriges Credits",
       "lowCreditMessage": "Nach dieser Generierung bleiben dir {count} Credit(s). Erwäge ein Upgrade deines Plans.",
       "needCreditsMessage": "Du brauchst {needed} Credit(s), hast aber nur {have}. Upgrade deinen Plan, um fortzufahren.",
       "creditSingular": "{count} Credit",

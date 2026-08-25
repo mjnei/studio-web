@@ -34,7 +34,7 @@
     "pleaseTryAgain": "다시 시도해 주세요",
     "closeNotification": "알림 닫기",
     "closeModal": "모달 닫기",
-    "noOptionsFound": "옵션을 찾을 수 없습니다",
+    "noOptionsFound": "옵션을 찾을 수 없어요",
     "searchEllipsis": "검색…",
     "previousPage": "이전 페이지",
     "nextPage": "다음 페이지",
@@ -43,6 +43,6 @@
     "pageOf": "{current} / {total} 페이지",
     "totalItems": "총 {count}개",
     "ok": "확인",
-    "anErrorOccurred": "오류가 발생했습니다"
+    "anErrorOccurred": "오류가 발생했어요"
   }
 }

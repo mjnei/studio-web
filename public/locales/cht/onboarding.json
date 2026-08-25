@@ -49,7 +49,7 @@
       "titleUpdate": "更新密碼",
       "subtitle": "你是用 Google 登入的。要不要再加一組密碼，方便用電子郵件登入？",
       "subtitleUpdate": "你已經設定過密碼。如果需要，可以在這裡更新。",
-      "securityHint": "即使 Google 無法使用，也能登入帳戶",
+      "securityHint": "即使 Google 無法使用，也能登入帳號",
       "alreadyConfigured": "已設定密碼",
       "password": "密碼",
       "confirmPassword": "確認密碼",
@@ -84,11 +84,11 @@
       "errorUpdate": "無法更新密碼，請再試一次。"
     },
     "completion": {
-      "loading": "正在設定你的帳戶",
+      "loading": "正在設定你的帳號",
       "loadingSubtext": "只要一下子…",
       "loadingAriaLabel": "正在完成新手導覽",
       "success": "一切就緒！",
-      "successSubtext": "帳戶已準備好。一起開始製作精彩影片吧。",
+      "successSubtext": "帳號已準備好。一起開始製作精彩影片吧。",
       "features": {
         "create": "創作",
         "design": "設計",

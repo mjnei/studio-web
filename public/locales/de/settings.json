@@ -78,7 +78,7 @@
       },
       "lowCredits": {
         "title": "Warnung bei wenig Credits",
-        "description": "Wenn dein Credit-Guthaben niedrig ist (unter 100 Credits)"
+        "description": "Wenn dein Credits niedrig ist (unter 100 Credits)"
       },
       "creditTransaction": {
         "title": "Credit-Transaktion",

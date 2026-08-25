@@ -68,7 +68,7 @@
     "creditsModal": {
       "title": "新增獎勵點數？",
       "subtitle": "立即獲得 5 點獎勵點數",
-      "description": "你即將為帳戶新增 5 點獎勵點數。此為測試與開發用途的一次性優惠。",
+      "description": "你即將為帳號新增 5 點獎勵點數。此為測試與開發用途的一次性優惠。",
       "cancel": "取消",
       "addCredits": "新增點數",
       "failed": "新增點數失敗"
@@ -78,7 +78,7 @@
     "updatePaymentAlert": "正在更新付款方式…（Stripe 整合將於第 5 階段實作）",
     "credits": {
       "generateVideoTitle": "產生影片？",
-      "generateVideoMessage": "此操作會使用帳戶中的點數。",
+      "generateVideoMessage": "此操作會使用帳號中的點數。",
       "creditCost": "點數費用：",
       "currentBalance": "目前餘額：",
       "afterGeneration": "產生後：",
@@ -101,7 +101,7 @@
       "creditsOf": "{remaining}／{allocation} 點",
       "resetsOn": "重設於 {date}",
       "upgradePlan": "升級方案",
-      "usageDeduct": "此操作將從帳戶扣除 {cost}。",
+      "usageDeduct": "此操作將從帳號扣除 {cost}。",
       "usageRemaining": "你還剩 {remaining}。"
     }
   }
