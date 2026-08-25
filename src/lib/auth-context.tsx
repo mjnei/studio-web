@@ -56,6 +56,11 @@ const PROTECTED_ROUTE_PREFIXES = [
   "/admin",
 ];
 
+/** True when pathname is exactly `prefix` or a nested path under it (not `/referral` matching `/referral-required`). */
+function matchesPathPrefix(pathname: string, prefix: string): boolean {
+  return pathname === prefix || pathname.startsWith(`${prefix}/`);
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -86,9 +91,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (isLoading) return;
-    const isAuthRoute = AUTH_ROUTES.some((r) => pathname.startsWith(r));
+    const isAuthRoute = AUTH_ROUTES.some((r) => matchesPathPrefix(pathname, r));
     const isOnboardingRoute = pathname === ONBOARDING_ROUTE;
-    const isProtectedRoute = PROTECTED_ROUTE_PREFIXES.some((p) => pathname.startsWith(p));
+    const isProtectedRoute = PROTECTED_ROUTE_PREFIXES.some((p) => matchesPathPrefix(pathname, p));
 
     // User not authenticated and trying to access protected route → redirect to login
     if (isProtectedRoute && !isAuthenticated) {
@@ -230,7 +235,7 @@ export function AuthGuard({ children }: { children: ReactNode }) {
   const { t } = useI18n();
   const pathname = usePathname();
   const router = useRouter();
-  const isProtectedRoute = PROTECTED_ROUTE_PREFIXES.some((p) => pathname.startsWith(p));
+  const isProtectedRoute = PROTECTED_ROUTE_PREFIXES.some((p) => matchesPathPrefix(pathname, p));
 
   useEffect(() => {
     if (!isLoading && isProtectedRoute && !isAuthenticated) {
