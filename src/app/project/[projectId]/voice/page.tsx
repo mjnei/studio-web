@@ -232,7 +232,7 @@ export default function VoicePage() {
                 leftIcon={<Sliders className="h-4 w-4" />}
                 onClick={() => setShowParametersDrawer(true)}
               >
-                Speed &amp; Script Reference ({ratio.toFixed(1)}x)
+                {t("project.voice.speedScriptButton", { ratio: ratio.toFixed(1) })}
               </Button>
             }
           />
@@ -242,7 +242,7 @@ export default function VoicePage() {
             <StepRevisitBanner
               label={t("project.common.voice")}
               value={selectedVoiceName}
-              meta={`${ratio.toFixed(1)}x Rate`}
+              meta={t("project.voice.rateMeta", { ratio: ratio.toFixed(1) })}
               onContinue={handleContinue}
               continueLabel={t("project.nav.continueToDetails")}
             />
@@ -269,12 +269,12 @@ export default function VoicePage() {
       <ContextDrawer
         open={showParametersDrawer}
         onClose={() => setShowParametersDrawer(false)}
-        title="Voice Tuning & Script"
-        description="Speech pacing, narrative text, and voice limits"
+        title={t("project.voice.drawerTitle")}
+        description={t("project.voice.drawerDescription")}
         icon={<Sliders className="h-5 w-5" />}
         badge={
           <Badge variant="primary" size="sm">
-            {ratio.toFixed(1)}x Pacing
+            {t("project.voice.drawerBadge", { ratio: ratio.toFixed(1) })}
           </Badge>
         }
       >
@@ -282,7 +282,7 @@ export default function VoicePage() {
           {/* Speech Rate Control */}
           <div className="space-y-3 rounded-xl bg-surface-panel p-4 border border-border-default">
             <Heading variant="label" as="h4" className="text-text-primary">
-              Narration Speed
+              {t("project.voice.narrationSpeed")}
             </Heading>
             <SpeechRateControl ratio={ratio} onRatioChange={setRatio} />
           </div>
@@ -290,9 +290,7 @@ export default function VoicePage() {
           {/* Agnes AI Background Status */}
           <div className="flex items-center gap-2.5 p-3 rounded-xl bg-accent-primary/10 border border-accent-primary/20 text-caption text-text-secondary">
             <Sparkles className="h-4 w-4 text-accent-primary shrink-0" />
-            <span>
-              Agnes AI is preparing title suggestions &amp; thumbnail concepts in the background
-            </span>
+            <span>{t("project.voice.agnesPreparing")}</span>
           </div>
 
           {/* Script Tagline & Full Script */}
@@ -305,10 +303,13 @@ export default function VoicePage() {
                   className="text-text-primary flex items-center gap-1.5"
                 >
                   <FileText className="h-4 w-4 text-accent-cyan" />
-                  Script Reference
+                  {t("project.voice.scriptReference")}
                 </Heading>
                 <span className="text-caption text-text-muted">
-                  {activeScript.wordCount} words (~{formatDuration(activeScript.duration)})
+                  {t("project.voice.wordCountMeta", {
+                    count: activeScript.wordCount,
+                    duration: formatDuration(activeScript.duration),
+                  })}
                 </span>
               </div>
               <div className="rounded-xl bg-surface-panel p-4 border border-border-default max-h-60 overflow-y-auto">
@@ -328,10 +329,13 @@ export default function VoicePage() {
                 className="text-text-primary flex items-center gap-1.5"
               >
                 <Mic className="h-4 w-4 text-accent-primary" />
-                Custom Voice Slot
+                {t("project.voice.customVoiceSlot")}
               </Heading>
               <Badge variant="default" size="sm">
-                {voiceLimits.currentCount} / {voiceLimits.limit} Used
+                {t("project.voice.slotsUsed", {
+                  current: voiceLimits.currentCount,
+                  limit: voiceLimits.limit,
+                })}
               </Badge>
             </div>
             <Button
@@ -341,7 +345,7 @@ export default function VoicePage() {
               onClick={handleAddVoiceClick}
               className="w-full"
             >
-              Record New Custom Voice
+              {t("project.voice.recordNewVoice")}
             </Button>
           </div>
         </div>

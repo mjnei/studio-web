@@ -336,7 +336,7 @@ export default function PreviewPage() {
                 leftIcon={<Sliders className="h-4 w-4" />}
                 onClick={() => setShowTelemetryDrawer(true)}
               >
-                Telemetry &amp; Script Reference
+                {t("project.preview.telemetryButton")}
               </Button>
             }
           />
@@ -364,11 +364,14 @@ export default function PreviewPage() {
                 </div>
                 <div>
                   <Heading variant="section" as="h3" className="text-text-primary">
-                    Ready to Synthesize Narration
+                    {t("project.preview.readyHeading")}
                   </Heading>
                   <p className="mt-1 text-body text-text-muted">
-                    Voice: <span className="font-semibold text-text-primary">{voiceName}</span> •{" "}
-                    {activeScript?.wordCount ?? 0} words (~{scriptDuration || "1m"})
+                    {t("project.preview.readyMeta", {
+                      name: voiceName,
+                      count: activeScript?.wordCount ?? 0,
+                      duration: scriptDuration || "1m",
+                    })}
                   </p>
                 </div>
                 <Button
@@ -382,7 +385,7 @@ export default function PreviewPage() {
                   }}
                   className="shadow-glow-hover font-semibold"
                 >
-                  🎙️ Generate Full Audio Preview (0 Video Credits Charged)
+                  🎙️ {t("project.preview.generateCta")}
                 </Button>
               </div>
             </Card>
@@ -405,11 +408,11 @@ export default function PreviewPage() {
                 <div>
                   <Heading variant="subsection" as="h3" className="text-text-primary">
                     {ttsJob?.status === "queued"
-                      ? "Queued via RabbitMQ"
-                      : "Synthesizing Narration Audio..."}
+                      ? t("project.preview.queuedHeading")
+                      : t("project.preview.synthesizingHeading")}
                   </Heading>
                   <p className="mt-1 text-body text-text-muted">
-                    Generating studio voiceover samples using {voiceName}...
+                    {t("project.preview.generatingVoiceover", { name: voiceName })}
                   </p>
                 </div>
 
@@ -447,11 +450,12 @@ export default function PreviewPage() {
                     </div>
                     <div>
                       <Heading variant="subsection" as="h3" className="text-text-primary">
-                        Studio Audio Narration Deck
+                        {t("project.preview.deckHeading")}
                       </Heading>
                       <p className="text-caption text-text-muted">
-                        Narrated by{" "}
-                        <span className="text-text-primary font-semibold">{voiceName}</span>
+                        <span className="text-text-primary font-semibold">
+                          {t("project.preview.narratedBy", { name: voiceName })}
+                        </span>
                       </p>
                     </div>
                   </div>
@@ -499,7 +503,7 @@ export default function PreviewPage() {
                         variant="secondary"
                         size="sm"
                         onClick={() => skipTime(-5)}
-                        title="Skip back 5s"
+                        title={t("project.preview.skipBackTitle")}
                       >
                         -5s
                       </Button>
@@ -527,7 +531,7 @@ export default function PreviewPage() {
                         variant="secondary"
                         size="sm"
                         onClick={() => skipTime(5)}
-                        title="Skip forward 5s"
+                        title={t("project.preview.skipForwardTitle")}
                       >
                         +5s
                       </Button>
@@ -602,12 +606,12 @@ export default function PreviewPage() {
       <ContextDrawer
         open={showTelemetryDrawer}
         onClose={() => setShowTelemetryDrawer(false)}
-        title="Mastering Telemetry & Script"
-        description="Queue logs, cache diagnostics, and narration text"
+        title={t("project.preview.drawerTitle")}
+        description={t("project.preview.drawerDescription")}
         icon={<Radio className="h-5 w-5" />}
         badge={
           <Badge variant={canProceed ? "success" : "default"} size="sm">
-            {canProceed ? "Audio Verified" : "Standby"}
+            {canProceed ? t("project.preview.badgeVerified") : t("project.preview.badgeStandby")}
           </Badge>
         }
       >
@@ -616,7 +620,7 @@ export default function PreviewPage() {
           {ttsJob && (
             <div className="space-y-2">
               <Heading variant="label" as="h4" className="text-text-primary">
-                RabbitMQ Pipeline Telemetry
+                {t("project.preview.pipelineTelemetry")}
               </Heading>
               <TTSQueueStatus job={ttsJob} />
             </div>
@@ -632,9 +636,11 @@ export default function PreviewPage() {
                   className="text-text-primary flex items-center gap-1.5"
                 >
                   <FileText className="h-4 w-4 text-accent-cyan" />
-                  Narration Script
+                  {t("project.preview.narrationScript")}
                 </Heading>
-                <span className="text-caption text-text-muted">{activeScript.wordCount} words</span>
+                <span className="text-caption text-text-muted">
+                  {t("project.preview.wordCount", { count: activeScript.wordCount })}
+                </span>
               </div>
               <div className="rounded-xl bg-surface-panel p-4 border border-border-default max-h-60 overflow-y-auto">
                 <p className="text-body text-text-secondary leading-relaxed whitespace-pre-wrap">
@@ -647,11 +653,9 @@ export default function PreviewPage() {
           {/* Re-synthesize Trigger */}
           <div className="rounded-xl bg-surface-panel p-4 border border-border-default space-y-2">
             <Heading variant="label" as="h4" className="text-text-primary">
-              Re-synthesize Audio
+              {t("project.preview.resynthesizeHeading")}
             </Heading>
-            <p className="text-caption text-text-muted">
-              Trigger a fresh TTS render to re-sample narration with modified voice parameters.
-            </p>
+            <p className="text-caption text-text-muted">{t("project.preview.resynthesizeDesc")}</p>
             <Button
               variant="secondary"
               size="sm"
@@ -663,7 +667,7 @@ export default function PreviewPage() {
               }}
               className="w-full"
             >
-              Re-generate Audio Sample
+              {t("project.preview.regenerateSample")}
             </Button>
           </div>
         </div>

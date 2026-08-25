@@ -202,7 +202,11 @@ export function FloatingWorkflowNavigation({
                               : "bg-surface-raised border border-border-default text-text-muted"
                         }`}
                       >
-                        {isCompleted ? <Check className="h-3.5 w-3.5" strokeWidth={3} /> : index + 1}
+                        {isCompleted ? (
+                          <Check className="h-3.5 w-3.5" strokeWidth={3} />
+                        ) : (
+                          index + 1
+                        )}
                       </div>
 
                       <span
@@ -254,17 +258,18 @@ export function FloatingWorkflowNavigation({
               </Button>
             )}
 
-            <Button
-              variant="ghost"
-              size="sm"
-              leftIcon={<Home className="h-4 w-4" />}
-              onClick={handleGoHome}
-              className="touch-manipulation"
-              title={t("project.nav.goToProjects")}
-              aria-label={t("project.nav.goToProjectsHome")}
-            >
-              <span className="hidden md:inline">{t("project.projects")}</span>
-            </Button>
+            <Tooltip content={t("project.nav.goToProjects")} position="top" delay={150}>
+              <Button
+                variant="ghost"
+                size="sm"
+                leftIcon={<Home className="h-4 w-4" />}
+                onClick={handleGoHome}
+                className="touch-manipulation"
+                aria-label={t("project.nav.goToProjectsHome")}
+              >
+                <span className="hidden md:inline">{t("project.projects")}</span>
+              </Button>
+            </Tooltip>
           </div>
 
           {/* Right Action: Next Button */}

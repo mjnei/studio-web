@@ -111,7 +111,7 @@ export default function SourcePage() {
                     leftIcon={<Layers className="h-4 w-4" />}
                     onClick={() => setShowMetadataDrawer(true)}
                   >
-                    Tech Specs &amp; Metadata
+                    {t("project.source.techSpecsButton")}
                   </Button>
                   <Button
                     variant="secondary"
@@ -200,7 +200,7 @@ export default function SourcePage() {
                       )}
                       <span className="inline-flex items-center gap-1 text-micro font-medium text-green-400 bg-green-500/10 px-2 py-0.5 rounded border border-green-500/20">
                         <CheckCircle2 className="h-3 w-3" />
-                        1080p Master Linked
+                        {t("project.source.masterLinked")}
                       </span>
                     </div>
                   </div>
@@ -221,7 +221,7 @@ export default function SourcePage() {
                       onClick={() => setShowMetadataDrawer(true)}
                       className="w-full sm:w-auto"
                     >
-                      View Source Metadata &amp; Specs
+                      {t("project.source.viewMetadataCta")}
                     </Button>
                   </div>
                 </div>
@@ -270,12 +270,12 @@ export default function SourcePage() {
       <ContextDrawer
         open={showMetadataDrawer}
         onClose={() => setShowMetadataDrawer(false)}
-        title="Source Footage & Specs"
-        description="Technical verification and catalog metadata"
+        title={t("project.source.drawerTitle")}
+        description={t("project.source.drawerDescription")}
         icon={<Film className="h-5 w-5" />}
         badge={
           <Badge variant="primary" size="sm">
-            1080p FHD
+            {t("project.source.drawerBadge")}
           </Badge>
         }
       >
@@ -283,23 +283,23 @@ export default function SourcePage() {
           {/* Source Technical Verification */}
           <div className="rounded-xl bg-surface-panel p-4 border border-border-default space-y-3">
             <p className="text-caption font-semibold uppercase tracking-wider text-text-muted">
-              Footage Stream Integrity
+              {t("project.source.footageIntegrity")}
             </p>
             <div className="grid grid-cols-2 gap-3 text-caption">
               <div>
-                <span className="text-text-muted">Resolution:</span>{" "}
+                <span className="text-text-muted">{t("project.source.resolution")}</span>{" "}
                 <strong className="text-text-primary">1920 × 1080 (16:9)</strong>
               </div>
               <div>
-                <span className="text-text-muted">Audio Channels:</span>{" "}
+                <span className="text-text-muted">{t("project.source.audioChannels")}</span>{" "}
                 <strong className="text-text-primary">Stereo 48kHz</strong>
               </div>
               <div>
-                <span className="text-text-muted">Codec:</span>{" "}
+                <span className="text-text-muted">{t("project.source.codec")}</span>{" "}
                 <strong className="text-text-primary">H.264 / AAC</strong>
               </div>
               <div>
-                <span className="text-text-muted">TMDB ID:</span>{" "}
+                <span className="text-text-muted">{t("project.source.tmdbId")}</span>{" "}
                 <strong className="text-text-primary font-mono">{state?.movieId || "N/A"}</strong>
               </div>
             </div>
@@ -308,12 +308,12 @@ export default function SourcePage() {
           {/* Synopsis & Overview */}
           <div className="space-y-2">
             <Heading variant="label" as="h4" className="text-text-primary">
-              Movie Synopsis &amp; Catalog Details
+              {t("project.source.synopsisHeading")}
             </Heading>
             <p className="text-body text-text-secondary leading-relaxed">
-              {state?.movieTitle} has been verified and registered into the project pipeline. Script
-              generation will automatically extract key narrative beats and plot arcs from this
-              catalog entry.
+              {t("project.source.synopsisBody", {
+                title: state?.movieTitle || t("project.common.untitledProject"),
+              })}
             </p>
           </div>
 

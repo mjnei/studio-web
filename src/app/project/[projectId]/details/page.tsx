@@ -318,7 +318,7 @@ export default function ProjectDetailsPage() {
                 leftIcon={<Layers className="h-4 w-4" />}
                 onClick={() => setShowContextDrawer(true)}
               >
-                Project Assets &amp; Context
+                {t("project.details.assetsContextButton")}
               </Button>
             }
           />
@@ -409,7 +409,7 @@ export default function ProjectDetailsPage() {
                   {activeScript?.content && (
                     <span className="inline-flex items-center gap-1 text-micro text-accent-primary font-medium">
                       <Sparkles className="h-3 w-3" />
-                      Agnes AI Title Generator
+                      {t("project.details.agnesTitleGenerator")}
                     </span>
                   )}
                 </div>
@@ -520,8 +520,8 @@ export default function ProjectDetailsPage() {
       <ContextDrawer
         open={showContextDrawer}
         onClose={() => setShowContextDrawer(false)}
-        title="Project Context & Assets"
-        description="Movie source, script details, and cover preview"
+        title={t("project.details.drawerTitle")}
+        description={t("project.details.drawerDescription")}
         icon={<Layers className="h-5 w-5" />}
         badge={
           <Badge variant="default" size="sm">
@@ -545,7 +545,9 @@ export default function ProjectDetailsPage() {
                 </div>
               )}
               <div className="flex-1 min-w-0">
-                <p className="text-micro uppercase tracking-wider text-text-muted">Source Film</p>
+                <p className="text-micro uppercase tracking-wider text-text-muted">
+                  {t("project.details.sourceFilm")}
+                </p>
                 <Heading variant="label" as="h4" className="text-text-primary truncate">
                   {state.movieTitle}
                 </Heading>
@@ -567,10 +569,13 @@ export default function ProjectDetailsPage() {
                   className="text-text-primary flex items-center gap-1.5"
                 >
                   <FileText className="h-4 w-4 text-accent-cyan" />
-                  Script Text
+                  {t("project.details.scriptText")}
                 </Heading>
                 <span className="text-caption text-text-muted">
-                  {activeScript.wordCount} words (~{formatDuration(activeScript.duration)})
+                  {t("project.details.wordCountMeta", {
+                    count: activeScript.wordCount,
+                    duration: formatDuration(activeScript.duration),
+                  })}
                 </span>
               </div>
               <div className="rounded-xl bg-surface-panel p-4 border border-border-default max-h-56 overflow-y-auto">
@@ -587,13 +592,13 @@ export default function ProjectDetailsPage() {
               <div className="flex items-center gap-2">
                 <Sparkles className="h-4 w-4 text-accent-cyan" />
                 <Heading variant="label" as="h4" className="text-text-primary">
-                  Cover Art Background Concept
+                  {t("project.details.coverArtHeading")}
                 </Heading>
               </div>
               <div className="aspect-video rounded-xl overflow-hidden bg-surface-raised border border-border-default">
                 <Image
                   src={state.thumbnailUrl}
-                  alt="AI Thumbnail preview"
+                  alt={t("project.details.thumbnailPreviewAlt")}
                   className="w-full h-full object-cover"
                   width={400}
                   height={225}

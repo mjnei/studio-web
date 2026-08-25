@@ -221,7 +221,7 @@ export default function ComposePage() {
                 leftIcon={<Sliders className="h-4 w-4" />}
                 onClick={() => setShowCanvasDrawer(true)}
               >
-                Typography &amp; Layout Presets
+                {t("project.compose.typographyButton")}
               </Button>
             }
           />
@@ -229,9 +229,9 @@ export default function ComposePage() {
           {/* Revisit Banner if thumbnail is confirmed */}
           {state?.thumbnailConfirmed && (
             <StepRevisitBanner
-              label="Thumbnail Cover"
-              value={state.thumbnailText || "Cover Image Confirmed"}
-              meta="16:9 Landscape"
+              label={t("project.compose.revisitLabel")}
+              value={state.thumbnailText || t("project.compose.coverConfirmed")}
+              meta={t("project.compose.landscapeMeta")}
               onContinue={handleContinue}
               continueLabel={t("project.nav.continueToExport")}
             />
@@ -251,7 +251,7 @@ export default function ComposePage() {
                   className="text-text-primary flex items-center gap-2"
                 >
                   <Sparkles className="h-4 w-4 text-accent-cyan" />
-                  Live 16:9 Master Cover Canvas
+                  {t("project.compose.canvasHeading")}
                 </Heading>
                 <div className="flex items-center gap-2">
                   <span className="text-micro font-mono text-text-muted px-2.5 py-1 rounded bg-surface-raised border border-border-default">
@@ -260,7 +260,7 @@ export default function ComposePage() {
                   {state?.thumbnailConfirmed && (
                     <Badge variant="success" size="sm">
                       <Check className="h-3 w-3 mr-1" />
-                      Cover Verified
+                      {t("project.compose.coverVerified")}
                     </Badge>
                   )}
                 </div>
@@ -330,7 +330,7 @@ export default function ComposePage() {
                     onClick={() => setShowCanvasDrawer(true)}
                     className="w-full sm:w-auto"
                   >
-                    Typography Presets
+                    {t("project.compose.typographyPresetsCta")}
                   </Button>
                   <Button
                     variant="primary"
@@ -352,12 +352,12 @@ export default function ComposePage() {
       <ContextDrawer
         open={showCanvasDrawer}
         onClose={() => setShowCanvasDrawer(false)}
-        title="Canvas Styling Studio"
-        description="Typography styles, cover layout, and script context"
+        title={t("project.compose.drawerTitle")}
+        description={t("project.compose.drawerDescription")}
         icon={<Palette className="h-5 w-5" />}
         badge={
           <Badge variant="primary" size="sm">
-            16:9 Canvas
+            {t("project.compose.drawerBadge")}
           </Badge>
         }
       >
@@ -365,24 +365,24 @@ export default function ComposePage() {
           {/* Typography Presets */}
           <div className="space-y-3">
             <p className="text-caption font-semibold text-text-secondary uppercase tracking-wider">
-              Curated Title Styles
+              {t("project.compose.curatedStyles")}
             </p>
             <div className="grid grid-cols-2 gap-2.5">
               {[
                 {
-                  name: "Cinematic Gold",
+                  name: t("project.compose.styleCinematicGold"),
                   style: "border-yellow-500/40 text-yellow-400 bg-yellow-500/10",
                 },
                 {
-                  name: "Neon Cyan",
+                  name: t("project.compose.styleNeonCyan"),
                   style: "border-cyan-500/40 text-cyan-400 bg-cyan-500/10",
                 },
                 {
-                  name: "Minimalist Clean",
+                  name: t("project.compose.styleMinimalist"),
                   style: "border-white/40 text-white bg-white/10",
                 },
                 {
-                  name: "Breaking Red",
+                  name: t("project.compose.styleBreakingRed"),
                   style: "border-red-500/40 text-red-400 bg-red-500/10",
                 },
               ].map((preset) => (
@@ -404,12 +404,9 @@ export default function ComposePage() {
           {/* Full Customizer Link */}
           <div className="p-4 rounded-xl bg-surface-panel border border-border-default space-y-2">
             <Heading variant="label" as="h4" className="text-text-primary">
-              Full Studio Editor
+              {t("project.compose.fullEditorHeading")}
             </Heading>
-            <p className="text-caption text-text-muted">
-              Adjust overlay font family, title positioning, drop shadows, and opacity in the visual
-              canvas editor.
-            </p>
+            <p className="text-caption text-text-muted">{t("project.compose.fullEditorDesc")}</p>
             <Button
               variant="secondary"
               size="sm"
@@ -419,7 +416,7 @@ export default function ComposePage() {
               }}
               className="w-full mt-2"
             >
-              Open Interactive Editor
+              {t("project.compose.openInteractiveEditor")}
             </Button>
           </div>
 
@@ -433,9 +430,11 @@ export default function ComposePage() {
                   className="text-text-primary flex items-center gap-1.5"
                 >
                   <FileText className="h-4 w-4 text-accent-cyan" />
-                  Script Text
+                  {t("project.compose.scriptText")}
                 </Heading>
-                <span className="text-caption text-text-muted">{wordCount} words</span>
+                <span className="text-caption text-text-muted">
+                  {t("project.compose.wordCount", { count: wordCount })}
+                </span>
               </div>
               <div className="rounded-xl bg-surface-panel p-3.5 border border-border-default max-h-48 overflow-y-auto">
                 <p className="text-caption text-text-secondary leading-relaxed line-clamp-4">

@@ -410,13 +410,13 @@ export default function ExportPage() {
                   leftIcon={<Sliders className="h-4 w-4" />}
                   onClick={() => setShowDiagnosticsDrawer(true)}
                 >
-                  Pipeline Diagnostics &amp; Logs
+                  {t("project.export.diagnosticsButton")}
                 </Button>
                 {creditStatus && (
                   <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-surface-raised border border-border-default text-caption font-medium">
                     <Sparkles className="h-3.5 w-3.5 text-accent-primary" />
                     <span>
-                      Balance:{" "}
+                      {t("project.export.balanceLabel")}{" "}
                       <strong className="text-text-primary">
                         {formatCredits(creditStatus.credits_remaining)}
                       </strong>
@@ -438,7 +438,7 @@ export default function ExportPage() {
                   className="text-text-primary flex items-center gap-2.5"
                 >
                   <Video className="h-5 w-5 text-accent-primary" />
-                  Master Video Showcase
+                  {t("project.export.masterShowcase")}
                 </Heading>
                 <div className="flex items-center gap-2">
                   <Button
@@ -479,7 +479,7 @@ export default function ExportPage() {
                             : "bg-surface-raised text-text-secondary hover:bg-surface-raised-hover border border-border-default"
                         }`}
                       >
-                        Version {video.generation_attempt}
+                        {t("project.export.versionOption", { n: video.generation_attempt })}
                       </button>
                     ))}
                   </div>
@@ -510,19 +510,25 @@ export default function ExportPage() {
               {/* Video Metadata Bar */}
               <div className="grid gap-3 grid-cols-2 lg:grid-cols-4 text-caption p-4 rounded-xl bg-surface-base border border-border-default mb-6">
                 <div>
-                  <span className="font-medium text-text-muted">Voice:</span>{" "}
+                  <span className="font-medium text-text-muted">
+                    {t("project.export.voiceLabel")}{" "}
+                  </span>
                   <span className="text-text-primary font-semibold">
                     {displayVideo.voice_name || t("project.common.notAvailable")}
                   </span>
                 </div>
                 <div>
-                  <span className="font-medium text-text-muted">Cost:</span>{" "}
+                  <span className="font-medium text-text-muted">
+                    {t("project.export.costLabel")}{" "}
+                  </span>
                   <span className="text-text-primary font-semibold">
                     {formatCredits(displayVideo.credit_cost)}
                   </span>
                 </div>
                 <div>
-                  <span className="font-medium text-text-muted">Mastered:</span>{" "}
+                  <span className="font-medium text-text-muted">
+                    {t("project.export.metaMastered")}{" "}
+                  </span>
                   <span className="text-text-primary">
                     {new Date(displayVideo.created_at).toLocaleDateString(dateLocale, {
                       month: "short",
@@ -532,7 +538,9 @@ export default function ExportPage() {
                   </span>
                 </div>
                 <div>
-                  <span className="font-medium text-text-muted">Status:</span>{" "}
+                  <span className="font-medium text-text-muted">
+                    {t("project.export.statusLabel")}{" "}
+                  </span>
                   <span className="text-green-500 font-semibold">
                     {getStatusLabel(displayVideo.status)}
                   </span>
@@ -548,7 +556,7 @@ export default function ExportPage() {
                   onClick={() => displayVideo.video_url && handleDownload(displayVideo.video_url)}
                   className="w-full touch-manipulation font-semibold"
                 >
-                  {t("common.download")} (1080p MP4)
+                  {t("project.export.download1080", { label: t("common.download") })}
                 </Button>
                 <Button
                   variant="secondary"
@@ -586,11 +594,10 @@ export default function ExportPage() {
                     </div>
                   </div>
                   <Heading variant="section" as="h2" className="text-text-primary">
-                    Pre-Flight Render Studio
+                    {t("project.export.preflightHeading")}
                   </Heading>
                   <p className="text-body text-text-secondary max-w-lg mx-auto">
-                    All components are assembled. Verify the pre-flight sanity checklist before
-                    initiating final 1080p video composition.
+                    {t("project.export.preflightIntro")}
                   </p>
                 </div>
 
@@ -598,10 +605,11 @@ export default function ExportPage() {
                 <div className="rounded-2xl bg-surface-elevated/90 backdrop-blur-md p-6 border border-border-default shadow-lg space-y-4">
                   <div className="flex items-center justify-between border-b border-border-default pb-3">
                     <span className="text-caption font-bold uppercase tracking-wider text-text-muted">
-                      Pre-Flight Sanity Checklist
+                      {t("project.export.checklistTitle")}
                     </span>
                     <Badge variant="success" size="sm">
-                      <Check className="h-3 w-3 mr-1" />4 / 4 Verified
+                      <Check className="h-3 w-3 mr-1" />
+                      {t("project.export.checklistVerifiedCount", { passed: 4, total: 4 })}
                     </Badge>
                   </div>
 
@@ -614,17 +622,17 @@ export default function ExportPage() {
                         </div>
                         <div>
                           <p className="text-body font-semibold text-text-primary">
-                            1. Source Footage Linked
+                            {t("project.export.check1Title")}
                           </p>
                           <p className="text-caption text-text-muted">
                             {state?.movieTitle
-                              ? `${state.movieTitle} (1080p source verified)`
-                              : "1080p source verified"}
+                              ? t("project.export.check1DescWithTitle", { title: state.movieTitle })
+                              : t("project.export.check1Desc")}
                           </p>
                         </div>
                       </div>
                       <Badge variant="success" size="sm">
-                        Verified
+                        {t("project.export.statusVerified")}
                       </Badge>
                     </div>
 
@@ -636,15 +644,17 @@ export default function ExportPage() {
                         </div>
                         <div>
                           <p className="text-body font-semibold text-text-primary">
-                            2. Narrator Audio Ready
+                            {t("project.export.check2Title")}
                           </p>
                           <p className="text-caption text-text-muted">
-                            Voice: {state?.voiceName || "Selected Voice"} (0 missing segments)
+                            {t("project.export.check2Desc", {
+                              name: state?.voiceName || t("project.export.selectedVoiceFallback"),
+                            })}
                           </p>
                         </div>
                       </div>
                       <Badge variant="success" size="sm">
-                        Ready
+                        {t("project.export.statusReady")}
                       </Badge>
                     </div>
 
@@ -656,15 +666,15 @@ export default function ExportPage() {
                         </div>
                         <div>
                           <p className="text-body font-semibold text-text-primary">
-                            3. Captions Formatted
+                            {t("project.export.check3Title")}
                           </p>
                           <p className="text-caption text-text-muted">
-                            Subtitles generated and timed (No text overflow)
+                            {t("project.export.check3Desc")}
                           </p>
                         </div>
                       </div>
                       <Badge variant="success" size="sm">
-                        Formatted
+                        {t("project.export.statusFormatted")}
                       </Badge>
                     </div>
 
@@ -682,15 +692,17 @@ export default function ExportPage() {
                         </div>
                         <div>
                           <p className="text-body font-semibold text-text-primary">
-                            4. Available User Credits
+                            {t("project.export.check4Title")}
                           </p>
                           <p className="text-caption text-text-muted">
-                            1 Credit required | {creditsAvailable} available
+                            {t("project.export.check4Desc", { count: creditsAvailable })}
                           </p>
                         </div>
                       </div>
                       <Badge variant={hasCredits ? "success" : "error"} size="sm">
-                        {hasCredits ? "Sufficient" : "Low Balance"}
+                        {hasCredits
+                          ? t("project.export.statusSufficient")
+                          : t("project.export.statusLowBalance")}
                       </Badge>
                     </div>
                   </div>
@@ -723,7 +735,7 @@ export default function ExportPage() {
                   >
                     {isGeneratingVideo
                       ? t("project.export.generating")
-                      : "🎬 Start Video Generation (1 Credit)"}
+                      : `🎬 ${t("project.export.startGenerationCta")}`}
                   </Button>
 
                   {!hasCredits && (
@@ -745,7 +757,7 @@ export default function ExportPage() {
                 className="text-text-primary mb-4 flex items-center gap-2"
               >
                 <Clock className="h-4 w-4 text-accent-primary" />
-                Live Video Pipeline Telemetry
+                {t("project.export.liveTelemetry")}
               </Heading>
 
               <div className="space-y-4">
@@ -759,12 +771,12 @@ export default function ExportPage() {
                         <Spinner className="h-5 w-5 text-accent-primary shrink-0" />
                         <div>
                           <p className="text-body font-semibold text-text-primary">
-                            Version {video.generation_attempt}
+                            {t("project.export.versionOption", { n: video.generation_attempt })}
                           </p>
                           <p className="text-caption text-text-muted">
                             {video.status === "queued"
-                              ? "Queued in RabbitMQ render pool..."
-                              : "Stitching scenes & encoding MP4 master..."}
+                              ? t("project.export.queuedStatus")
+                              : t("project.export.stitchingStatus")}
                           </p>
                         </div>
                       </div>
@@ -775,15 +787,15 @@ export default function ExportPage() {
 
                     <div className="grid grid-cols-3 gap-2 text-micro font-medium text-center pt-2 border-t border-border-default">
                       <div className="p-1.5 rounded bg-accent-primary/10 text-accent-primary">
-                        1. Queue Verified
+                        {t("project.export.stepQueue")}
                       </div>
                       <div
                         className={`p-1.5 rounded ${video.status === "processing" ? "bg-accent-primary/20 text-accent-primary animate-pulse" : "bg-surface-panel text-text-muted"}`}
                       >
-                        2. Stitch &amp; Audio Sync
+                        {t("project.export.stepStitch")}
                       </div>
                       <div className="p-1.5 rounded bg-surface-panel text-text-muted">
-                        3. 1080p MP4 Encode
+                        {t("project.export.stepEncode")}
                       </div>
                     </div>
                   </div>
@@ -798,12 +810,12 @@ export default function ExportPage() {
       <ContextDrawer
         open={showDiagnosticsDrawer}
         onClose={() => setShowDiagnosticsDrawer(false)}
-        title="Pipeline Diagnostics & Logs"
-        description="Render history, attempt logs, and format settings"
+        title={t("project.export.drawerTitle")}
+        description={t("project.export.drawerDescription")}
         icon={<Sliders className="h-5 w-5" />}
         badge={
           <Badge variant="default" size="sm">
-            {completedVideos.length} Completed
+            {t("project.export.completedBadge", { count: completedVideos.length })}
           </Badge>
         }
       >
@@ -812,7 +824,7 @@ export default function ExportPage() {
           {failedVideos.length > 0 && (
             <div className="space-y-3">
               <Heading variant="label" as="h4" className="text-error-text">
-                Failed Generations ({failedVideos.length})
+                {t("project.export.failedGenerationsCount", { count: failedVideos.length })}
               </Heading>
               <div className="space-y-2">
                 {failedVideos.map((video) => (
@@ -822,10 +834,10 @@ export default function ExportPage() {
                   >
                     <div className="flex-1 min-w-0 pr-2">
                       <p className="text-caption font-semibold text-text-primary">
-                        Attempt {video.generation_attempt}
+                        {t("project.export.attemptLabel", { n: video.generation_attempt })}
                       </p>
                       <p className="text-micro text-error-text truncate">
-                        {video.error_message || "Render failed"}
+                        {video.error_message || t("project.export.renderFailed")}
                       </p>
                     </div>
                     <button
@@ -845,23 +857,23 @@ export default function ExportPage() {
           {/* Render Queue Metrics */}
           <div className="rounded-xl bg-surface-panel p-4 border border-border-default space-y-3">
             <Heading variant="label" as="h4" className="text-text-primary">
-              Pipeline Specifications
+              {t("project.export.pipelineSpecs")}
             </Heading>
             <div className="grid grid-cols-2 gap-2 text-caption">
               <div>
-                <span className="text-text-muted">Target Resolution:</span>{" "}
+                <span className="text-text-muted">{t("project.export.targetResolution")}</span>{" "}
                 <strong className="text-text-primary">1080p FHD</strong>
               </div>
               <div>
-                <span className="text-text-muted">Aspect Ratio:</span>{" "}
+                <span className="text-text-muted">{t("project.export.aspectRatio")}</span>{" "}
                 <strong className="text-text-primary">16:9 Landscape</strong>
               </div>
               <div>
-                <span className="text-text-muted">Video Codec:</span>{" "}
+                <span className="text-text-muted">{t("project.export.videoCodec")}</span>{" "}
                 <strong className="text-text-primary">H.264 High Profile</strong>
               </div>
               <div>
-                <span className="text-text-muted">Audio Codec:</span>{" "}
+                <span className="text-text-muted">{t("project.export.audioCodec")}</span>{" "}
                 <strong className="text-text-primary">AAC 48kHz Stereo</strong>
               </div>
             </div>
@@ -896,9 +908,7 @@ export default function ExportPage() {
           size="md"
         >
           <div className="space-y-4">
-            <p className="text-body text-text-secondary">
-              Share your master video with your audience:
-            </p>
+            <p className="text-body text-text-secondary">{t("project.export.sharePrompt")}</p>
             <div className="flex gap-3">
               <Button
                 variant="secondary"
@@ -919,7 +929,7 @@ export default function ExportPage() {
                 size="md"
                 leftIcon={<WeChatIcon className="h-4 w-4" />}
                 onClick={() => {
-                  toast.success("Link copied to clipboard!");
+                  toast.success(t("project.export.urlCopied"));
                 }}
                 className="w-full"
               >
