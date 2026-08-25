@@ -10,6 +10,7 @@ import { useI18n } from "@/i18n";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/toast";
+import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { validateReferralCode } from "@/lib/api/referral-client";
 import { Heading } from "@/components/ui/heading";
@@ -211,19 +212,22 @@ function SignupContent() {
             </label>
             <InputOTP
               maxLength={6}
+              pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
+              inputMode="text"
+              autoCapitalize="characters"
               value={manualCode}
               onChange={handleManualCodeChange}
               disabled={validatingCode || loading}
             >
               <InputOTPGroup>
-                <InputOTPSlot index={0} />
-                <InputOTPSlot index={1} />
-                <InputOTPSlot index={2} />
+                <InputOTPSlot index={0} className="uppercase" />
+                <InputOTPSlot index={1} className="uppercase" />
+                <InputOTPSlot index={2} className="uppercase" />
               </InputOTPGroup>
               <InputOTPGroup>
-                <InputOTPSlot index={3} />
-                <InputOTPSlot index={4} />
-                <InputOTPSlot index={5} />
+                <InputOTPSlot index={3} className="uppercase" />
+                <InputOTPSlot index={4} className="uppercase" />
+                <InputOTPSlot index={5} className="uppercase" />
               </InputOTPGroup>
             </InputOTP>
             {codeError && (
