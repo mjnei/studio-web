@@ -1,10 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Layers, RefreshCw } from "lucide-react";
+import { Layers } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
-import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { useI18n } from "@/i18n";
@@ -82,9 +81,15 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       <div className="relative z-10 flex w-full min-h-screen">
         {/* Left Side Branding (Desktop only) */}
         <div className="hidden lg:flex flex-col justify-end w-1/2 p-12 text-white">
-          <div className="inline-flex items-center justify-center w-16 h-16 mb-6 rounded-2xl bg-gradient-to-br from-accent-secondary via-accent-primary to-accent-tertiary shadow-lg">
+          <button
+            type="button"
+            onClick={() => void handleNextBackground()}
+            disabled={isSwitchingBackground}
+            className="inline-flex items-center justify-center w-16 h-16 mb-6 rounded-2xl bg-gradient-to-br from-accent-secondary via-accent-primary to-accent-tertiary shadow-lg transition-transform hover:scale-105 disabled:opacity-70 disabled:cursor-wait disabled:hover:scale-100"
+            aria-label={t("auth.changeBackground")}
+          >
             <Layers className="h-8 w-8 text-white" aria-hidden />
-          </div>
+          </button>
           <Heading variant="display" className="mb-4 text-white drop-shadow-md">
             Huavoi Studio
           </Heading>
@@ -96,20 +101,6 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         {/* Right Side Form */}
         <div className="flex flex-col w-full lg:w-1/2 items-center justify-center p-4">
           <div className="w-full max-w-md relative">
-            <div className="mb-4 flex justify-end">
-              <Button
-                type="button"
-                variant="secondary"
-                size="sm"
-                onClick={() => void handleNextBackground()}
-                isLoading={isSwitchingBackground}
-                className="border border-white/20 bg-black/35 text-white backdrop-blur-md hover:bg-black/45"
-                leftIcon={
-                  !isSwitchingBackground ? <RefreshCw className="h-4 w-4" aria-hidden /> : undefined
-                }
-              ></Button>
-            </div>
-
             {/* Mobile Branding */}
             <div className="mb-8 text-center lg:hidden">
               <div className="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-2xl bg-gradient-to-br from-accent-secondary via-accent-primary to-accent-tertiary shadow-lg">
