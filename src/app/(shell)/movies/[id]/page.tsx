@@ -43,13 +43,17 @@ function genreKey(
 }
 
 export default function MovieDetailsPage({ params }: { params: Promise<{ id: string }> }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const router = useRouter();
   const [movieId, setMovieId] = useState<number | null>(null);
 
   const [movie, setMovie] = useState<MovieResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // UI locale (`chs`) maps to TMDB/API locale (`zh-CN`)
+  const movieLocale = locale === "chs" ? "zh-CN" : "en";
+  const dateLocale = locale === "chs" ? "zh-CN" : "en-US";
 
   useEffect(() => {
     (async () => {
@@ -67,7 +71,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
       setLoading(true);
       setError(null);
       try {
-        const data = await getMovie(movieId, "en");
+        const data = await getMovie(movieId, movieLocale);
         if (isMounted) {
           setMovie(data);
         }
@@ -88,7 +92,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
       isMounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- t is stable enough for error fallback
-  }, [movieId]);
+  }, [movieId, movieLocale]);
 
   const handleCreateProject = () => {
     if (!movie) return;
@@ -300,7 +304,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                       <div className="flex items-center gap-1.5">
                         <Calendar className="h-4 w-4 text-accent-cyan" />
                         <span className="font-medium">
-                          {new Date(movie.release_date).toLocaleDateString("en-US", {
+                          {new Date(movie.release_date).toLocaleDateString(dateLocale, {
                             year: "numeric",
                             month: "long",
                             day: "numeric",
