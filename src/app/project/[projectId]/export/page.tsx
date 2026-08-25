@@ -402,7 +402,7 @@ export default function ExportPage() {
           <PageHeader
             title={t("project.export.title")}
             description={t("project.export.description")}
-            actions={
+            action={
               <div className="flex items-center gap-2">
                 <Button
                   variant="outline"
@@ -689,7 +689,7 @@ export default function ExportPage() {
                           </p>
                         </div>
                       </div>
-                      <Badge variant={hasCredits ? "success" : "danger"} size="sm">
+                      <Badge variant={hasCredits ? "success" : "error"} size="sm">
                         {hasCredits ? "Sufficient" : "Low Balance"}
                       </Badge>
                     </div>
@@ -768,7 +768,7 @@ export default function ExportPage() {
                           </p>
                         </div>
                       </div>
-                      <Badge variant="accent" size="sm">
+                      <Badge variant="primary" size="sm">
                         {getStatusLabel(video.status)}
                       </Badge>
                     </div>
@@ -871,20 +871,20 @@ export default function ExportPage() {
 
       {/* Credit Confirmation Modal */}
       <CreditConfirmationModal
-        open={showCreditConfirmationModal}
+        isOpen={showCreditConfirmationModal}
         onClose={() => setShowCreditConfirmationModal(false)}
         onConfirm={handleConfirmGenerate}
-        cost={1}
-        remainingCredits={creditStatus?.credits_remaining || 0}
-        loading={isGeneratingVideo}
+        creditCost={1}
+        creditsRemaining={creditStatus?.credits_remaining || 0}
+        isProcessing={isGeneratingVideo}
       />
 
       {/* Insufficient Credits Modal */}
       <InsufficientCreditsModal
-        open={showInsufficientCreditsModal}
+        isOpen={showInsufficientCreditsModal}
         onClose={() => setShowInsufficientCreditsModal(false)}
+        creditStatus={creditStatus}
         requiredCredits={1}
-        availableCredits={creditStatus?.credits_remaining || 0}
       />
 
       {/* Share Modal */}
@@ -933,9 +933,10 @@ export default function ExportPage() {
       {/* Export Format Modal */}
       {selectedVideoId && (
         <ExportFormatModal
-          open={showExportFormatModal}
+          isOpen={showExportFormatModal}
           onClose={() => setShowExportFormatModal(false)}
-          video={videos.find((v) => v.id === selectedVideoId)!}
+          videoUrl={videos.find((v) => v.id === selectedVideoId)?.video_url || ""}
+          onExport={handleDownload}
         />
       )}
 

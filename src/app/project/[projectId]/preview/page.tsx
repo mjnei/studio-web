@@ -329,7 +329,7 @@ export default function PreviewPage() {
           <PageHeader
             title={t("project.preview.title")}
             description={t("project.preview.description")}
-            actions={
+            action={
               <Button
                 variant="outline"
                 size="sm"

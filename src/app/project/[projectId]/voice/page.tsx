@@ -225,7 +225,7 @@ export default function VoicePage() {
           <PageHeader
             title={t("project.voice.title")}
             description={t("project.voice.description")}
-            actions={
+            action={
               <Button
                 variant="outline"
                 size="sm"
@@ -273,7 +273,7 @@ export default function VoicePage() {
         description="Speech pacing, narrative text, and voice limits"
         icon={<Sliders className="h-5 w-5" />}
         badge={
-          <Badge variant="accent" size="sm">
+          <Badge variant="primary" size="sm">
             {ratio.toFixed(1)}x Pacing
           </Badge>
         }

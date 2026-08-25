@@ -214,7 +214,7 @@ export default function ComposePage() {
           <PageHeader
             title={t("project.compose.title")}
             description={t("project.compose.description")}
-            actions={
+            action={
               <Button
                 variant="outline"
                 size="sm"
@@ -356,7 +356,7 @@ export default function ComposePage() {
         description="Typography styles, cover layout, and script context"
         icon={<Palette className="h-5 w-5" />}
         badge={
-          <Badge variant="accent" size="sm">
+          <Badge variant="primary" size="sm">
             16:9 Canvas
           </Badge>
         }

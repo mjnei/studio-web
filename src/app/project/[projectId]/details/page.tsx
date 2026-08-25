@@ -311,7 +311,7 @@ export default function ProjectDetailsPage() {
           <PageHeader
             title={t("project.details.title")}
             description={t("project.details.description")}
-            actions={
+            action={
               <Button
                 variant="outline"
                 size="sm"

@@ -102,7 +102,7 @@ export default function SourcePage() {
             description={
               isChanging ? t("project.source.selectDifferent") : t("project.source.viewSelected")
             }
-            actions={
+            action={
               !isChanging && state?.movieId ? (
                 <div className="flex items-center gap-2">
                   <Button
@@ -189,7 +189,7 @@ export default function SourcePage() {
                         </div>
                       )}
                       {state.movieRating && (
-                        <Badge variant="accent" size="sm">
+                        <Badge variant="primary" size="sm">
                           ★ {state.movieRating.toFixed(1)} / 10
                         </Badge>
                       )}
@@ -274,7 +274,7 @@ export default function SourcePage() {
         description="Technical verification and catalog metadata"
         icon={<Film className="h-5 w-5" />}
         badge={
-          <Badge variant="accent" size="sm">
+          <Badge variant="primary" size="sm">
             1080p FHD
           </Badge>
         }
