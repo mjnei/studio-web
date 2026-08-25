@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { AlertCircle, Mail, Lock } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
-import { isReferralRequiredError } from "@/lib/api-client";
+import { ApiError, isReferralRequiredError } from "@/lib/api-client";
 import { useI18n } from "@/i18n";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,7 +36,12 @@ export default function LoginPage() {
         setLoading(false);
         return;
       }
-      const msg = err instanceof Error ? err.message : t("auth.login.errorDefault");
+      const msg =
+        err instanceof ApiError && err.status === 401
+          ? t("auth.login.errorDefault")
+          : err instanceof Error
+            ? err.message
+            : t("auth.login.errorDefault");
       setError(msg);
       toast.error(t("auth.login.errorTitle"), msg);
       setLoading(false);

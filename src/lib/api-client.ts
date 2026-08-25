@@ -64,6 +64,18 @@ if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
   (window as any).getAccessToken = getAccessToken;
 }
 
+function shouldAttemptSessionRefreshOn401(path: string): boolean {
+  // Credential endpoints return 401 for bad login — not an expired session.
+  if (path.includes("/users/login/password")) {
+    return false;
+  }
+  // Other /auth/* routes (register, firebase-login, etc.) handle their own 401s.
+  if (path.includes("/auth/")) {
+    return false;
+  }
+  return true;
+}
+
 export async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -78,8 +90,8 @@ export async function request<T>(path: string, options: RequestInit = {}): Promi
     credentials: "include",
   });
 
-  // Handle 401 Unauthorized - attempt token refresh
-  if (res.status === 401 && !path.includes("/auth/")) {
+  // Handle 401 Unauthorized - attempt token refresh for authenticated API calls
+  if (res.status === 401 && shouldAttemptSessionRefreshOn401(path)) {
     const refreshed = await refreshSession();
     if (refreshed) {
       // Update headers with new token
