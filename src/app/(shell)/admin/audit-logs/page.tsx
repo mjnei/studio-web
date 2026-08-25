@@ -119,7 +119,7 @@ export default function AuditLogsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-6 lg:p-8">
+    <div className="min-h-screen p-4 md:p-6 lg:p-8">
       <div className="mx-auto max-w-[1400px]">
         {/* Header */}
         <div className="mb-6 flex flex-col gap-4">

@@ -171,7 +171,7 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
   const writers = movie?.cast.filter((c) => c.role === "writer") || [];
 
   return (
-    <div className="min-h-screen bg-surface-base">
+    <div className="min-h-screen">
       {/* Toasts */}
       <div className="fixed bottom-4 right-4 z-50 space-y-2">
         {toasts.map((toast) => (

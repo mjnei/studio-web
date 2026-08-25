@@ -123,7 +123,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
     : null;
 
   return (
-    <div className="min-h-screen bg-surface-base">
+    <div className="min-h-screen">
       {/* Back Button */}
       <div className="sticky top-0 z-40">
         <div className="mx-auto max-w-4xl px-4 py-3 sm:px-6">

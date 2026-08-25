@@ -72,7 +72,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="min-h-dvh bg-surface-base text-text-primary">
+      <body className="min-h-dvh text-text-primary">
         <I18nProvider>
           <ToastProvider position="top-right" maxToasts={5}>
             <AuthProvider>

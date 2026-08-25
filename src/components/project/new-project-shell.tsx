@@ -90,7 +90,7 @@ export function NewProjectShell({ children }: { children: React.ReactNode }) {
         </header>
 
         {/* Main content */}
-        <main className="safe-area-bottom flex-1 overflow-y-auto bg-surface-base p-4 md:p-6">
+        <main className="safe-area-bottom flex-1 overflow-y-auto p-4 md:p-6">
           {children}
         </main>
       </div>
