@@ -1,5 +1,7 @@
 // API Response Types for Backend Integration
 
+import type { WorkflowStep } from "@/lib/project-client/types";
+
 // ============================================================================
 // User Types
 // ============================================================================
@@ -27,7 +29,7 @@ export interface UserResponse {
 export interface ProjectResponse {
   id: string;
   status: "draft" | "in-progress" | "completed";
-  last_step: "source" | "script" | "voice" | "compose";
+  last_step: WorkflowStep;
   movie_id: string | null;
   active_script_id: string | null;
   active_tts_job_id: string | null;
