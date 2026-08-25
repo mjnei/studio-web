@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { AlertCircle, Gift, KeyRound } from "lucide-react";
+import { AlertCircle, Gift } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { isReferralInvalidError, isReferralRequiredError } from "@/lib/api-client";
 import { useI18n } from "@/i18n";
@@ -29,7 +29,6 @@ function SignupContent() {
   const [validatingCode, setValidatingCode] = useState(false);
   const [manualCode, setManualCode] = useState("");
   const [codeError, setCodeError] = useState<string | null>(null);
-  const needsReferralNotice = searchParams.get("reason") === "referral_required";
 
   const handleCodeValidation = useCallback(
     async (code: string): Promise<boolean> => {
@@ -157,13 +156,6 @@ function SignupContent() {
           {t("auth.signup.subtitle")}
         </Text>
       </div>
-
-      {needsReferralNotice && !referralCode && (
-        <div className="mb-6 rounded-lg border border-accent-primary/30 bg-accent-primary/10 px-4 py-3 text-body text-text-primary flex items-start gap-2">
-          <KeyRound className="h-5 w-5 shrink-0 mt-0.5 text-accent-primary" />
-          <span>{t("auth.signup.referralRequiredFromLogin")}</span>
-        </div>
-      )}
 
       {/* Referral Code Notice */}
       {referralCode && referrerName && !validatingCode && (

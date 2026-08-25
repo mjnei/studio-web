@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { AlertCircle, Mail, Lock } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { isReferralRequiredError } from "@/lib/api-client";
@@ -20,7 +19,6 @@ export default function LoginPage() {
   const { loginWithGoogle, loginWithPassword, isAuthenticated, isLoading: authLoading } = useAuth();
   const { t } = useI18n();
   const toast = useToast();
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -34,6 +32,10 @@ export default function LoginPage() {
       await loginWithPassword(email, password);
       toast.success(t("auth.login.successTitle"), t("auth.login.successMessage"));
     } catch (err: unknown) {
+      if (isReferralRequiredError(err)) {
+        setLoading(false);
+        return;
+      }
       const msg = err instanceof Error ? err.message : t("auth.login.errorDefault");
       setError(msg);
       toast.error(t("auth.login.errorTitle"), msg);
@@ -49,8 +51,7 @@ export default function LoginPage() {
       toast.success(t("auth.login.successTitle"), t("auth.login.successMessageGoogle"));
     } catch (err: unknown) {
       if (isReferralRequiredError(err)) {
-        toast.info(t("auth.login.referralRequiredTitle"), t("auth.login.referralRequiredMessage"));
-        router.push("/signup?reason=referral_required");
+        setLoading(false);
         return;
       }
       const msg = err instanceof Error ? err.message : t("auth.login.errorGoogle");

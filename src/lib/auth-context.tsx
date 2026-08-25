@@ -13,6 +13,7 @@ import {
   logout as apiLogout,
   getMe,
   deleteUser as apiDeleteUser,
+  isReferralRequiredError,
   type UserResponse,
   setAccessToken,
 } from "@/lib/api-client";
@@ -39,7 +40,7 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-const AUTH_ROUTES = ["/login", "/signup", "/forgot-password"];
+const AUTH_ROUTES = ["/login", "/signup", "/forgot-password", "/referral-required"];
 const ONBOARDING_ROUTE = "/onboarding";
 const PROTECTED_ROUTE_PREFIXES = [
   "/dashboard",
@@ -137,6 +138,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           await firebaseSignOut(auth);
         } catch {
           /* ignore */
+        }
+        if (!referralCode && isReferralRequiredError(err)) {
+          router.replace("/referral-required");
         }
         throw err;
       }

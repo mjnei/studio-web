@@ -145,8 +145,24 @@ export const REFERRAL_CODE_REQUIRED = "Referral code is required to create an ac
 /** Backend rejects new-account creation with an unknown referral code. */
 export const REFERRAL_CODE_INVALID = "Invalid referral code";
 
+function referralRequiredMessage(error: unknown): string | null {
+  if (!(error instanceof Error)) {
+    return null;
+  }
+  return error.message;
+}
+
 export function isReferralRequiredError(error: unknown): boolean {
-  return error instanceof Error && error.message.includes(REFERRAL_CODE_REQUIRED);
+  const message = referralRequiredMessage(error);
+  if (!message) {
+    return false;
+  }
+  return (
+    message.includes(REFERRAL_CODE_REQUIRED) ||
+    (error instanceof ApiError &&
+      error.status === 400 &&
+      message.includes("Referral code is required"))
+  );
 }
 
 export function isReferralInvalidError(error: unknown): boolean {
