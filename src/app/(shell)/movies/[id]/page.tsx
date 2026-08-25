@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/button";
 import { ExternalImage } from "@/components/ui/ExternalImage";
 import { Heading } from "@/components/ui/heading";
 import { getMovie, type MovieResponse } from "@/lib/project-client";
-import { useI18n } from "@/i18n";
+import { useI18n, getApiLocale, getDateLocale } from "@/i18n";
 
 type MovieGenre = { id?: number; name?: string };
 
@@ -51,9 +51,8 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // UI locale (`chs`) maps to TMDB/API locale (`zh-CN`)
-  const movieLocale = locale === "chs" ? "zh-CN" : "en";
-  const dateLocale = locale === "chs" ? "zh-CN" : "en-US";
+  const movieLocale = getApiLocale(locale);
+  const dateLocale = getDateLocale(locale);
 
   useEffect(() => {
     (async () => {

@@ -44,7 +44,7 @@ import { InsufficientCreditsModal } from "@/components/credits/InsufficientCredi
 import { CreditConfirmationModal } from "@/components/credits/CreditConfirmationModal";
 import { useNotifications } from "@/lib/notification-context";
 import { ExportFormatModal } from "@/components/project/ExportFormatModal";
-import { useI18n } from "@/i18n";
+import { useI18n, getDateLocale } from "@/i18n";
 import { useStuckAsync } from "@/lib/hooks/use-stuck-async";
 import { XIcon, WeChatIcon } from "@/components/icons";
 
@@ -56,7 +56,7 @@ export default function ExportPage() {
   const toast = useToast();
   const { refreshNotifications } = useNotifications();
   const { t, locale } = useI18n();
-  const dateLocale = locale === "chs" ? "zh-CN" : "en-US";
+  const dateLocale = getDateLocale(locale);
 
   const getStatusLabel = (status: string) => {
     const statusKeys: Record<string, string> = {

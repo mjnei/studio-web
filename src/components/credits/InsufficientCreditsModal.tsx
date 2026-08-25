@@ -7,7 +7,7 @@ import { Heading } from "@/components/ui/heading";
 import { AlertCircle, Coins } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type { CreditStatus } from "@/lib/credit-client";
-import { useI18n } from "@/i18n";
+import { useI18n, getDateLocale } from "@/i18n";
 
 interface InsufficientCreditsModalProps {
   isOpen: boolean;
@@ -74,7 +74,7 @@ export function InsufficientCreditsModal({
               <div className="text-caption text-text-muted">
                 {t("billing.credits.resetsOn", {
                   date: new Date(creditStatus.cycle_end_date).toLocaleDateString(
-                    locale === "chs" ? "zh-CN" : "en-US",
+                    getDateLocale(locale),
                     {
                       month: "short",
                       day: "numeric",
