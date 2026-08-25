@@ -5,6 +5,7 @@ import { NotificationProvider } from "@/lib/notification-context";
 import { PwaRegistration } from "@/components/pwa/pwa-registration";
 import { ToastProvider } from "@/components/ui/toast";
 import { I18nProvider } from "@/i18n";
+import { AmbientBackground } from "@/components/shell/ambient-background";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -73,6 +74,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
       <body className="min-h-dvh text-text-primary">
+        <AmbientBackground />
         <I18nProvider>
           <ToastProvider position="top-right" maxToasts={5}>
             <AuthProvider>
