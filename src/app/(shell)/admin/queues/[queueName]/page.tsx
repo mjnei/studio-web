@@ -136,21 +136,21 @@ export default function QueueDetailPage() {
 
   // Determine queue health status
   const getHealthStatus = () => {
-    if (!stats) return { status: "unknown", color: "default", icon: Activity };
+    if (!stats) return { status: "unknown", color: "default" as const, icon: Activity };
 
     const isJobQueue = stats.metadata?.is_job_queue;
     const hasMessages = stats.message_count > 0;
     const hasConsumers = stats.consumer_count > 0;
 
     if (isJobQueue && hasMessages && !hasConsumers) {
-      return { status: "critical", color: "destructive", icon: AlertCircle };
+      return { status: "critical", color: "destructive" as const, icon: AlertCircle };
     }
 
     if (stats.message_count > 1000) {
-      return { status: "warning", color: "default", icon: AlertTriangle };
+      return { status: "warning", color: "default" as const, icon: AlertTriangle };
     }
 
-    return { status: "healthy", color: "default", icon: Activity };
+    return { status: "healthy", color: "default" as const, icon: Activity };
   };
 
   const health = getHealthStatus();
@@ -241,7 +241,7 @@ export default function QueueDetailPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <CardTitle>Queue Statistics</CardTitle>
-              <Badge variant={health.color as any}>{health.status.toUpperCase()}</Badge>
+              <Badge variant={health.color}>{health.status.toUpperCase()}</Badge>
               <ChevronDown
                 className={`h-5 w-5 text-muted-foreground transition-transform ${
                   statsExpanded ? "rotate-0" : "-rotate-90"

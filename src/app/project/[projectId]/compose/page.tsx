@@ -27,7 +27,6 @@ import {
 } from "@/lib/project-client";
 import { useToast } from "@/components/ui/toast";
 import { useI18n } from "@/i18n";
-import { formatDuration } from "@/lib/utils/time-format";
 
 export default function ComposePage() {
   const params = useParams();
@@ -203,7 +202,6 @@ export default function ComposePage() {
 
   const activeScript = state?.scripts?.find((script) => script.id === state.activeScriptId);
   const wordCount = activeScript?.wordCount ?? 0;
-  const scriptDuration = activeScript ? formatDuration(activeScript.duration) : "";
 
   const currentDisplayImage =
     state?.finalThumbnailUrl || state?.customThumbnailUrl || state?.thumbnailUrl;

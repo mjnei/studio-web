@@ -19,10 +19,7 @@ interface ProjectCardProps {
   layoutMode?: "grid-sm" | "grid-md" | "list";
 }
 
-function formatProjectStatus(
-  status: string,
-  t: (key: string, options?: Record<string, any>) => string
-) {
+function formatProjectStatus(status: string, t: ReturnType<typeof useI18n>["t"]) {
   const statusMap: Record<string, string> = {
     completed: "project.status.completed",
     "in-progress": "project.status.inProgress",

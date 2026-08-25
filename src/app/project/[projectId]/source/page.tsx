@@ -3,7 +3,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import Image from "next/image";
-import { Film, Info, RefreshCw, Layers, CheckCircle2, Clapperboard, Sparkles } from "lucide-react";
+import { Film, Info, RefreshCw, Layers, CheckCircle2, Clapperboard } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 import { PageHeader } from "@/components/ui/PageHeader";

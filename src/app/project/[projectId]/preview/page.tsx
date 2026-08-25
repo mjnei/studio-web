@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useEffect, useState, useRef, useCallback } from "react";
 import {
   FileText,
@@ -34,7 +34,6 @@ import { formatDuration } from "@/lib/utils/time-format";
 
 export default function PreviewPage() {
   const params = useParams();
-  const router = useRouter();
   const projectId = params.projectId as string;
   const { state, activeScript, isLoading } = useProjectState(projectId);
   const { t } = useI18n();

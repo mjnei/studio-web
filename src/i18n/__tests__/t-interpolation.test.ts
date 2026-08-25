@@ -30,10 +30,13 @@ function createMockTranslations() {
   };
 }
 
+type TranslationValue = string | { [key: string]: TranslationValue };
+type InterpolationValues = Record<string, string | number | boolean>;
+
 /**
  * Helper function to replace placeholders
  */
-function replacePlaceholders(template: string, options?: Record<string, any>): string {
+function replacePlaceholders(template: string, options?: InterpolationValues): string {
   if (!options) {
     return template;
   }
@@ -52,15 +55,15 @@ function replacePlaceholders(template: string, options?: Record<string, any>): s
 /**
  * Implementation of t() function with placeholder support
  */
-function getNestedValue(obj: any, path: string): string | undefined {
+function getNestedValue(obj: unknown, path: string): string | undefined {
   const keys = path.split(".");
-  let current: any = obj;
+  let current: unknown = obj;
 
   for (const key of keys) {
-    if (typeof current === "string") {
+    if (typeof current !== "object" || current === null || typeof current === "string") {
       return undefined;
     }
-    current = current[key];
+    current = (current as Record<string, TranslationValue>)[key];
     if (current === undefined) {
       return undefined;
     }
@@ -69,7 +72,7 @@ function getNestedValue(obj: any, path: string): string | undefined {
   return typeof current === "string" ? current : undefined;
 }
 
-function t(key: string, options?: Record<string, any>): string {
+function t(key: string, options?: InterpolationValues): string {
   const translations = createMockTranslations();
   const value = getNestedValue(translations, key);
   const translationString = value ?? key;

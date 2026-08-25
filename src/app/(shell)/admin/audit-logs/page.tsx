@@ -3,10 +3,10 @@
 import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ArrowLeft, Cloud, Database, Download, Info } from "lucide-react";
 import Link from "next/link";
-import { getAuditLogs, getAuditStats, exportAuditLogsCSV } from "@/lib/api/audit-client";
+import { getAuditLogs, getAuditStats } from "@/lib/api/audit-client";
 import type { AuditLog, AuditStats, AuditFilter } from "@/types/admin";
 import { useToast } from "@/lib/hooks/use-toast";
 import AuditStatsCard from "./components/AuditStatsCard";
@@ -26,11 +26,7 @@ export default function AuditLogsPage() {
   });
   const [filters, setFilters] = useState<AuditFilter>({});
 
-  useEffect(() => {
-    loadData();
-  }, [pagination.page, filters, dataSource]);
-
-  async function loadData() {
+  const loadData = useCallback(async () => {
     setIsLoading(true);
     try {
       const [logsResponse, statsData] = await Promise.all([
@@ -56,7 +52,11 @@ export default function AuditLogsPage() {
     } finally {
       setIsLoading(false);
     }
-  }
+  }, [dataSource, filters, pagination.page, pagination.pageSize, toast]);
+
+  useEffect(() => {
+    void Promise.resolve().then(() => loadData());
+  }, [loadData]);
 
   function handleFilterChange(newFilters: AuditFilter) {
     setFilters(newFilters);

@@ -2,7 +2,7 @@
 
 import { Heading } from "@/components/ui/heading";
 
-import { CheckCircle2, XCircle, Clock, Zap, Users, ShieldAlert, Timer } from "lucide-react";
+import { CheckCircle2, Clock, Zap, Users } from "lucide-react";
 import type { PlaygroundTTSJobStats } from "@/types/admin";
 
 interface PlaygroundStatsWidgetProps {
@@ -10,13 +10,6 @@ interface PlaygroundStatsWidgetProps {
 }
 
 export function PlaygroundStatsWidget({ stats }: PlaygroundStatsWidgetProps) {
-  const formatDuration = (seconds: number) => {
-    if (seconds < 60) return `${seconds.toFixed(1)}s`;
-    const minutes = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${minutes}m ${secs}s`;
-  };
-
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {/* Total Jobs */}

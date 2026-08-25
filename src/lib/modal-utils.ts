@@ -182,7 +182,7 @@ export async function handleDeleteWithConfirmation<T>(
 /**
  * Helper type for managing modal state
  */
-export type ModalStateManager<T extends Record<string, any>> = {
+export type ModalStateManager<T extends Record<string, unknown>> = {
   state: T;
   openModal: (key: keyof T) => void;
   closeModal: (key: keyof T) => void;

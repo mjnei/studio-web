@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { Mic, Plus, Globe, Search, Sparkles } from "lucide-react";
+import { useState } from "react";
+import { Mic, Plus, Globe, Search } from "lucide-react";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";

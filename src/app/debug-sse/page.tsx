@@ -10,17 +10,15 @@ import { Button } from "@/components/ui/button";
 export default function DebugSSEPage() {
   const { isAuthenticated, user } = useAuth();
   const { isSSEConnected } = useNotifications();
-  const [token, setToken] = useState<string | null>(null);
+  const token = getAccessToken();
   const [logs, setLogs] = useState<string[]>([]);
 
   useEffect(() => {
-    const currentToken = getAccessToken();
-    setToken(currentToken);
-
     const addLogLocal = (message: string) => {
       setLogs((prev) => [...prev, `${new Date().toLocaleTimeString()}: ${message}`]);
     };
 
+    const currentToken = getAccessToken();
     addLogLocal(`Token check: ${currentToken ? "present" : "missing"}`);
     if (currentToken) {
       addLogLocal(`Token length: ${currentToken.length} characters`);
@@ -157,10 +155,10 @@ export default function DebugSSEPage() {
             Instructions
           </Heading>
           <ol className="list-decimal list-inside space-y-2 text-body text-text-secondary">
-            <li>Check if you're authenticated (should show email above)</li>
+            <li>Check if you&apos;re authenticated (should show email above)</li>
             <li>Check if token is present</li>
-            <li>Click "📋 Copy Full Token" to copy your access token</li>
-            <li>Click "Test SSE Connection" button</li>
+            <li>Click &quot;📋 Copy Full Token&quot; to copy your access token</li>
+            <li>Click &quot;Test SSE Connection&quot; button</li>
             <li>Watch the logs for connection events</li>
             <li>
               Run backend test:{" "}

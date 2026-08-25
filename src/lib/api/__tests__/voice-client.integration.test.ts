@@ -10,7 +10,7 @@
  * Requirements: 9.1, 12.1
  */
 
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach, type MockedFunction } from "vitest";
 import {
   uploadVoice,
   listVoices,
@@ -30,13 +30,13 @@ vi.mock("../api-client", () => ({
 }));
 
 describe("Voice Client Integration Tests", () => {
-  let mockFetch: any;
+  let mockFetch: MockedFunction<typeof fetch>;
   const API_BASE = "http://localhost:8020/api/v1";
   const TEST_TOKEN = "test-bearer-token";
 
   beforeEach(() => {
     // Setup mock fetch
-    mockFetch = vi.fn();
+    mockFetch = vi.fn() as MockedFunction<typeof fetch>;
     global.fetch = mockFetch;
 
     // Setup default mocks

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Zap, RefreshCw, Download, Filter } from "lucide-react";
+import { Zap, RefreshCw, Download } from "lucide-react";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useToast } from "@/components/ui/toast";
 import { Heading } from "@/components/ui/heading";

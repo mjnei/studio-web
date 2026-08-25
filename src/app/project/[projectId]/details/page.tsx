@@ -3,9 +3,8 @@
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { Check, Edit2, Sparkles, X, Layers, Film, FileText } from "lucide-react";
+import { Check, Edit2, Sparkles, X, Layers, FileText } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 import { PageHeader } from "@/components/ui/PageHeader";

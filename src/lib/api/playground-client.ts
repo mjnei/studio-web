@@ -92,6 +92,7 @@ export async function getPlaygroundAudio(jobId: string): Promise<Blob> {
  * Delete a playground job (if backend supports it).
  */
 export async function deletePlaygroundJob(jobId: string): Promise<void> {
+  void jobId;
   // Note: Delete endpoints not supported in backend yet
   // Would need to add soft-delete field to PlaygroundTTSJob model
   throw new Error("Delete playground job not yet implemented");

@@ -29,7 +29,6 @@ import {
   RotateCcw,
   Sparkles,
   Sliders,
-  Layers,
 } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
 import {
@@ -343,16 +342,7 @@ export default function ExportPage() {
     videos?.filter((v) => v.status === "processing" || v.status === "queued") || [];
   const failedVideos = videos?.filter((v) => v.status === "failed") || [];
 
-  const processingActivityKey = processingVideos
-    .map((v) => `${v.id}:${v.status}:${v.progress}:${v.updated_at}`)
-    .join("|");
-
   const { isStuck: isLoadStuck, reset: resetLoadStuck } = useStuckAsync(isPageLoading);
-  const { isStuck: isProcessingStuck, reset: resetProcessingStuck } = useStuckAsync(
-    processingVideos.length > 0,
-    30_000,
-    processingActivityKey
-  );
 
   const handleRetryLoad = () => {
     resetLoadStuck();

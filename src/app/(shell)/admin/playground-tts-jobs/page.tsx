@@ -182,11 +182,15 @@ export default function PlaygroundTTSJobsPage() {
   };
 
   const handleExportCSV = () => {
-    let jobsToExport: any[] = [];
+    const voiceLabel = (job: {
+      voice_id?: number;
+      anonymous_voice_id?: number;
+    }) => (job.voice_id ? `Voice ${job.voice_id}` : `Anon ${job.anonymous_voice_id}`);
+
     let headers: string[] = [];
+    let rows: (string | number)[][] = [];
 
     if (activeTab === "failed") {
-      jobsToExport = failedJobs;
       headers = [
         "Job ID",
         "Status",
@@ -197,11 +201,26 @@ export default function PlaygroundTTSJobsPage() {
         "Created At",
         "Failed At",
       ];
+      rows = failedJobs.map((job) => [
+        job.job_id,
+        job.status,
+        voiceLabel(job),
+        job.error_message || "N/A",
+        job.client_ip_address,
+        job.retry_count,
+        job.created_at,
+        job.completed_at || "N/A",
+      ]);
     } else if (activeTab === "rate_limited") {
-      jobsToExport = rateLimitedJobs;
       headers = ["Job ID", "Status", "Voice", "Client IP", "Created At"];
+      rows = rateLimitedJobs.map((job) => [
+        job.job_id,
+        job.status,
+        voiceLabel(job),
+        job.client_ip_address,
+        job.created_at,
+      ]);
     } else {
-      jobsToExport = completedJobs;
       headers = [
         "Job ID",
         "Status",
@@ -212,42 +231,22 @@ export default function PlaygroundTTSJobsPage() {
         "Created At",
         "Completed At",
       ];
+      rows = completedJobs.map((job) => [
+        job.job_id,
+        job.status,
+        voiceLabel(job),
+        job.audio_duration || "N/A",
+        job.synthesis_duration_seconds || "N/A",
+        job.client_ip_address,
+        job.created_at,
+        job.completed_at || "N/A",
+      ]);
     }
 
-    if (!jobsToExport.length) {
+    if (!rows.length) {
       toast.info("No data to export", `There are no ${activeTab} jobs to export`);
       return;
     }
-
-    const rows = jobsToExport.map((job) => {
-      const voice = job.voice_id ? `Voice ${job.voice_id}` : `Anon ${job.anonymous_voice_id}`;
-
-      if (activeTab === "failed") {
-        return [
-          job.job_id,
-          job.status,
-          voice,
-          job.error_message || "N/A",
-          job.client_ip_address,
-          job.retry_count,
-          job.created_at,
-          job.completed_at || "N/A",
-        ];
-      } else if (activeTab === "rate_limited") {
-        return [job.job_id, job.status, voice, job.client_ip_address, job.created_at];
-      } else {
-        return [
-          job.job_id,
-          job.status,
-          voice,
-          job.audio_duration || "N/A",
-          job.synthesis_duration_seconds || "N/A",
-          job.client_ip_address,
-          job.created_at,
-          job.completed_at || "N/A",
-        ];
-      }
-    });
 
     const csvContent = [
       headers.join(","),

@@ -13,6 +13,7 @@ import { useToast } from "@/components/ui/toast";
 import { Heading } from "@/components/ui/heading";
 import { useI18n } from "@/i18n";
 import { formatSessionResumeMessage } from "@/lib/utils/time-format";
+import { ApiError } from "@/lib/api-client";
 
 export function ProjectShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -30,9 +31,8 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
   // Redirect to projects list if project not found (404 error)
   useEffect(() => {
     if (!isLoading && error) {
-      const apiError = error as any;
       const is404 =
-        apiError.status === 404 ||
+        (error instanceof ApiError && error.status === 404) ||
         error.message.includes("not found") ||
         error.message.includes("Project not found");
 

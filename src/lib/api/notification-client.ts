@@ -130,7 +130,7 @@ export async function resetNotificationPreferences(): Promise<PreferencesListRes
 export async function getNotificationTypes(): Promise<string[]> {
   try {
     return request<string[]>("/notifications/types");
-  } catch (error) {
+  } catch {
     // Fallback to common notification types
     return [
       "tts_complete",

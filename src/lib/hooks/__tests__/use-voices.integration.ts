@@ -35,10 +35,12 @@ function pass(message: string) {
   log(`✓ PASS: ${message}`, colors.green);
 }
 
-function fail(message: string, error?: any) {
+function fail(message: string, error?: unknown) {
   log(`✗ FAIL: ${message}`, colors.red);
-  if (error) {
+  if (error instanceof Error) {
     log(` Error: ${error.message}`, colors.red);
+  } else if (error !== undefined) {
+    log(` Error: ${String(error)}`, colors.red);
   }
 }
 
@@ -60,7 +62,20 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020/api/v
  * Simulates the behavior of the actual voice-client
  */
 class MockVoiceClient {
-  voices: any[] = [];
+  voices: Array<{
+    id: number;
+    user_id: number;
+    name: string;
+    audio_path: string;
+    mime_type: string;
+    language: string;
+    duration_seconds: number;
+    is_shared: boolean;
+    is_approved: boolean;
+    is_deleted: boolean;
+    created_at: string;
+    updated_at: string;
+  }> = [];
 
   async listVoices(skip = 0, limit = 100) {
     log(` [Mock] listVoices(skip=${skip}, limit=${limit})`, colors.yellow);
@@ -368,12 +383,13 @@ async function runTests() {
       await mockClient.toggleVoiceSharing(999, true); // Non-existent voice
       fail("Should have thrown error for non-existent voice");
       testResults.failed++;
-    } catch (err: any) {
-      if (err.message.includes("not found")) {
+    } catch (err: unknown) {
+      if (err instanceof Error && err.message.includes("not found")) {
         pass("404 error caught and message exposed");
         testResults.passed++;
       } else {
-        fail(`Unexpected error message: ${err.message}`);
+        const message = err instanceof Error ? err.message : String(err);
+        fail(`Unexpected error message: ${message}`);
         testResults.failed++;
       }
     }

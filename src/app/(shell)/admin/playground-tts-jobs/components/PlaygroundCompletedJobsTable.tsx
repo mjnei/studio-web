@@ -2,7 +2,6 @@
 
 import { EmptyState } from "@/components/ui/EmptyState";
 
-import { useState } from "react";
 import { CheckCircle2, Eye, Clock, Play } from "lucide-react";
 import type { PlaygroundCompletedJob } from "@/types/admin";
 
@@ -15,10 +14,7 @@ interface PlaygroundCompletedJobsTableProps {
 export function PlaygroundCompletedJobsTable({
   completedJobs,
   onViewDetails,
-  onPlay,
 }: PlaygroundCompletedJobsTableProps) {
-  const [expandedJobId, setExpandedJobId] = useState<number | null>(null);
-
   const formatRelativeTime = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -41,10 +37,6 @@ export function PlaygroundCompletedJobsTable({
 
   const formatIPHash = (hash: string) => {
     return hash.substring(0, 12) + "...";
-  };
-
-  const toggleExpand = (jobId: number) => {
-    setExpandedJobId(expandedJobId === jobId ? null : jobId);
   };
 
   if (completedJobs.length === 0) {
@@ -156,16 +148,6 @@ export function PlaygroundCompletedJobsTable({
               )}
             </div>
           </div>
-
-          {/* Expanded Text */}
-          {expandedJobId === job.id && (
-            <div className="px-6 pb-4">
-              <div className="rounded-lg border border-border-default bg-surface-base p-3">
-                <p className="text-caption font-medium text-text-muted mb-2">Input Text:</p>
-                <p className="text-body text-text-secondary">{job.text}</p>
-              </div>
-            </div>
-          )}
         </div>
       ))}
     </div>

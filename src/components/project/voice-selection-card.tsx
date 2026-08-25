@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Mic, Volume2, Play, Pause } from "lucide-react";
+import { Check, Play, Pause } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import { WaveformEqualizer } from "@/components/ui/waveform-equalizer";

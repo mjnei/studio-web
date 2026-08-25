@@ -203,12 +203,23 @@ export interface AuditLog {
   user_name?: string;
   resource_type: string | null;
   resource_id: string | null;
-  changes?: Record<string, any>;
-  metadata?: Record<string, any>;
+  changes?: Record<string, unknown>;
+  metadata?: Record<string, unknown>;
   ip_address?: string | null;
   user_agent?: string;
   created_at: string;
   source?: "postgres" | "axiom"; // Track data source
+}
+
+/** Raw audit event shape returned by backend Axiom/Postgres audit endpoints. */
+export interface AuditEventPayload {
+  timestamp: string;
+  user_id: number | null;
+  action: string;
+  detail: Record<string, unknown> | null;
+  ip_address: string | null;
+  environment?: string;
+  service?: string;
 }
 
 export interface AuditStats {

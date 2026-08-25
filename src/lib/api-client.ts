@@ -59,9 +59,15 @@ export function getAccessToken(): string | null {
   return accessToken;
 }
 
+declare global {
+  interface Window {
+    getAccessToken?: typeof getAccessToken;
+  }
+}
+
 // Debug helper - expose token to window in development
 if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
-  (window as any).getAccessToken = getAccessToken;
+  window.getAccessToken = getAccessToken;
 }
 
 function shouldAttemptSessionRefreshOn401(path: string): boolean {

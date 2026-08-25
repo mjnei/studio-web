@@ -34,10 +34,12 @@ function pass(message: string) {
   log(`✓ PASS: ${message}`, colors.green);
 }
 
-function fail(message: string, error?: any) {
+function fail(message: string, error?: unknown) {
   log(`✗ FAIL: ${message}`, colors.red);
-  if (error) {
+  if (error instanceof Error) {
     log(` Error: ${error.message}`, colors.red);
+  } else if (error !== undefined) {
+    log(` Error: ${String(error)}`, colors.red);
   }
 }
 
@@ -74,8 +76,7 @@ async function testFormDataSerialization() {
 
   try {
     // Create test audio file
-    const audioData = new Uint8Array([1, 2, 3, 4, 5]);
-    // const file = new Blob([audioData], { type: "audio/webm" });
+    // const file = new Blob([new Uint8Array([1, 2, 3, 4, 5])], { type: "audio/webm" });
 
     log("Test case: Upload with file, name, and duration_seconds");
     log(" - File: Blob with audio/webm MIME type");

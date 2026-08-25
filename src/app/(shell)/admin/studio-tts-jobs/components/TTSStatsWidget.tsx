@@ -2,7 +2,7 @@
 
 import { Heading } from "@/components/ui/heading";
 
-import { CheckCircle2, XCircle, Clock, Zap, TrendingUp, Timer } from "lucide-react";
+import { CheckCircle2, Clock, Zap, Timer } from "lucide-react";
 import type { TTSJobStats } from "@/types/admin";
 
 interface TTSStatsWidgetProps {

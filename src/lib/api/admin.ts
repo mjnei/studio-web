@@ -88,8 +88,8 @@ export async function importTMDBMovie(data: TMDBImportRequest): Promise<TMDBImpo
 /**
  * Get detailed information about a movie from TMDB (preview without importing).
  */
-export async function getTMDBMoviePreview(movieId: number): Promise<any> {
-  return request<any>(`/admin/movies/tmdb/preview/${movieId}`);
+export async function getTMDBMoviePreview(movieId: number): Promise<TMDBMovieSearchResult> {
+  return request<TMDBMovieSearchResult>(`/admin/movies/tmdb/preview/${movieId}`);
 }
 
 /**
@@ -223,9 +223,9 @@ export async function adminDeleteMovie(movieId: number): Promise<void> {
 // Voice approval/unapproval endpoints are in the "Admin Voice Approval" section below.
 // ============================================================================
 
-export async function adminGetVoiceRecordings(): Promise<any[]> {
+export async function adminGetVoiceRecordings(): Promise<Record<string, unknown>[]> {
   // Get all voice recordings from all users
-  return request<any[]>("/admin/voice-recordings");
+  return request<Record<string, unknown>[]>("/admin/voice-recordings");
 }
 
 export async function adminDeleteVoiceRecording(recordingId: string): Promise<void> {

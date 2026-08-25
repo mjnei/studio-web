@@ -125,7 +125,7 @@ export default function NotificationSettingsPage() {
                       "notificationSettings.categories.videoJobs",
                       "notificationSettings.categories.account",
                       "notificationSettings.categories.projects",
-                    ][categoryIndex] as any
+                    ][categoryIndex]
                   )}
                 </Heading>
 

@@ -54,7 +54,7 @@ export default function ProjectsPage() {
       .finally(() => {
         setLoading(false);
       });
-  }, [toast]);
+  }, [t, toast]);
 
   useEffect(() => {
     let isMounted = true;

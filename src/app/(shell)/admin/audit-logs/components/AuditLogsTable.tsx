@@ -100,19 +100,17 @@ export default function AuditLogsTable({
   }
 
   const sortedLogs = [...logs].sort((a, b) => {
-    let aVal: any = a[sortField];
-    let bVal: any = b[sortField];
+    const aRaw = a[sortField];
+    const bRaw = b[sortField];
+    const aVal = sortField === "created_at" ? new Date(String(aRaw)).getTime() : aRaw;
+    const bVal = sortField === "created_at" ? new Date(String(bRaw)).getTime() : bRaw;
 
-    if (sortField === "created_at") {
-      aVal = new Date(aVal).getTime();
-      bVal = new Date(bVal).getTime();
-    }
-
-    if (sortDirection === "asc") {
-      return aVal > bVal ? 1 : -1;
-    } else {
-      return aVal < bVal ? 1 : -1;
-    }
+    if (aVal == null && bVal == null) return 0;
+    if (aVal == null) return sortDirection === "asc" ? -1 : 1;
+    if (bVal == null) return sortDirection === "asc" ? 1 : -1;
+    if (aVal > bVal) return sortDirection === "asc" ? 1 : -1;
+    if (aVal < bVal) return sortDirection === "asc" ? -1 : 1;
+    return 0;
   });
 
   if (isLoading) {

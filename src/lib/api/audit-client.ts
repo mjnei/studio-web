@@ -1,11 +1,47 @@
 import { request } from "@/lib/api-client";
-import type { AuditLog, AuditStats, AuditLogsResponse, AuditFilter } from "@/types/admin";
+import type {
+  AuditLog,
+  AuditStats,
+  AuditLogsResponse,
+  AuditFilter,
+  AuditEventPayload,
+} from "@/types/admin";
 
 /**
  * Audit Analytics Client
  * Provides functions for viewing audit logs via Axiom.co integration.
  * Backend uses Axiom for audit storage, not database.
  */
+
+function stringField(value: unknown): string | null {
+  if (typeof value === "string" && value.length > 0) return value;
+  if (typeof value === "number") return String(value);
+  return null;
+}
+
+function toAuditLog(
+  event: AuditEventPayload,
+  index: number,
+  source: "postgres" | "axiom"
+): AuditLog {
+  return {
+    id: index,
+    user_id: event.user_id,
+    action: event.action,
+    resource_type: stringField(event.detail?.resource_type),
+    resource_id: stringField(event.detail?.resource_id),
+    changes: event.detail || {},
+    created_at: event.timestamp,
+    ip_address: event.ip_address,
+    source,
+  };
+}
+
+function isAuditEventPayload(item: unknown): item is AuditEventPayload {
+  if (typeof item !== "object" || item === null) return false;
+  const rec = item as Record<string, unknown>;
+  return typeof rec.action === "string" && typeof rec.timestamp === "string";
+}
 
 /**
  * Get action summary statistics from a specified data source.
@@ -52,29 +88,11 @@ export async function getUserAuditTrail(
   const response = await request<{
     user_id: number;
     event_count: number;
-    events: Array<{
-      timestamp: string;
-      user_id: number | null;
-      action: string;
-      detail: Record<string, any> | null;
-      ip_address: string | null;
-      environment: string;
-      service: string;
-    }>;
+    events: AuditEventPayload[];
   }>(`/audit/user/${userId}/trail?source=${source}&days=${days}`);
 
   // Transform backend events to frontend format
-  return response.events.map((event, index) => ({
-    id: index, // Events don't have IDs, use index
-    user_id: event.user_id,
-    action: event.action,
-    resource_type: event.detail?.resource_type || null,
-    resource_id: event.detail?.resource_id || null,
-    changes: event.detail || {},
-    created_at: event.timestamp,
-    ip_address: event.ip_address,
-    source: source as "postgres" | "axiom", // Mark source
-  }));
+  return response.events.map((event, index) => toAuditLog(event, index, source));
 }
 
 /**
@@ -90,29 +108,11 @@ export async function getErrorLogs(
   const response = await request<{
     period_hours: number;
     total_errors: number;
-    errors: Array<{
-      timestamp: string;
-      user_id: number | null;
-      action: string;
-      detail: Record<string, any> | null;
-      ip_address: string | null;
-      environment: string;
-      service: string;
-    }>;
+    errors: AuditEventPayload[];
   }>(`/audit/errors?source=${source}&hours=${hours}`);
 
   // Transform backend errors to frontend format
-  return response.errors.map((event, index) => ({
-    id: index,
-    user_id: event.user_id,
-    action: event.action,
-    resource_type: event.detail?.resource_type || null,
-    resource_id: event.detail?.resource_id || null,
-    changes: event.detail || {},
-    created_at: event.timestamp,
-    ip_address: event.ip_address,
-    source: source as "postgres" | "axiom", // Mark source
-  }));
+  return response.errors.map((event, index) => toAuditLog(event, index, source));
 }
 
 /**
@@ -127,11 +127,11 @@ export async function executeAuditQuery(
   apl: string,
   source: "postgres" | "axiom" = "axiom",
   limit: number = 1000
-): Promise<any[]> {
+): Promise<unknown[]> {
   const response = await request<{
     query: string;
     result_count: number;
-    data: any[];
+    data: unknown[];
   }>(`/audit/query?apl=${encodeURIComponent(apl)}&source=${source}&limit=${limit}`);
 
   return response.data;
@@ -177,15 +177,7 @@ export async function getAuditLogs(
   }
 
   const response = await request<{
-    items: Array<{
-      timestamp: string;
-      user_id: number | null;
-      action: string;
-      detail: Record<string, any> | null;
-      ip_address: string | null;
-      environment: string;
-      service: string;
-    }>;
+    items: AuditEventPayload[];
     total: number;
     limit: number;
     offset: number;
@@ -193,17 +185,7 @@ export async function getAuditLogs(
   }>(`/audit/logs?${params.toString()}`);
 
   return {
-    items: response.items.map((event, index) => ({
-      id: offset + index,
-      user_id: event.user_id,
-      action: event.action,
-      resource_type: event.detail?.resource_type || null,
-      resource_id: event.detail?.resource_id || null,
-      changes: event.detail || {},
-      created_at: event.timestamp,
-      ip_address: event.ip_address,
-      source: source as "postgres" | "axiom", // Mark source
-    })),
+    items: response.items.map((event, index) => toAuditLog(event, offset + index, source)),
     total: response.total,
     limit: response.limit,
     offset: response.offset,
@@ -252,6 +234,7 @@ export async function getResourceAuditLogs(
   limit: number = 50,
   offset: number = 0
 ): Promise<AuditLogsResponse> {
+  void offset;
   if (source === "postgres") {
     throw new Error("Resource filtering requires Axiom. Use source='axiom'.");
   }
@@ -260,17 +243,9 @@ export async function getResourceAuditLogs(
   const apl = `['studio-back'] | where detail.resource_type == "${resourceType}" and detail.resource_id == "${resourceId}" | limit ${limit}`;
   const data = await executeAuditQuery(apl, source, limit);
 
-  const logs: AuditLog[] = data.map((item: any, index: number) => ({
-    id: index,
-    user_id: item.user_id,
-    action: item.action,
-    resource_type: item.detail?.resource_type || null,
-    resource_id: item.detail?.resource_id || null,
-    changes: item.detail || {},
-    created_at: item.timestamp,
-    ip_address: item.ip_address,
-    source: source as "postgres" | "axiom",
-  }));
+  const logs: AuditLog[] = data.filter(isAuditEventPayload).map((item, index) =>
+    toAuditLog(item, index, source)
+  );
 
   return {
     items: logs,
@@ -306,6 +281,7 @@ export async function getAuditLogsByDateRange(
   limit: number = 50,
   offset: number = 0
 ): Promise<AuditLogsResponse> {
+  void offset;
   if (source === "postgres") {
     throw new Error("Date range queries require Axiom. Use source='axiom'.");
   }
@@ -313,17 +289,9 @@ export async function getAuditLogsByDateRange(
   const apl = `['studio-back'] | where timestamp >= datetime("${dateFrom}") and timestamp <= datetime("${dateTo}") | limit ${limit}`;
   const data = await executeAuditQuery(apl, source, limit);
 
-  const logs: AuditLog[] = data.map((item: any, index: number) => ({
-    id: index,
-    user_id: item.user_id,
-    action: item.action,
-    resource_type: item.detail?.resource_type || null,
-    resource_id: item.detail?.resource_id || null,
-    changes: item.detail || {},
-    created_at: item.timestamp,
-    ip_address: item.ip_address,
-    source: source as "postgres" | "axiom",
-  }));
+  const logs: AuditLog[] = data.filter(isAuditEventPayload).map((item, index) =>
+    toAuditLog(item, index, source)
+  );
 
   return {
     items: logs,

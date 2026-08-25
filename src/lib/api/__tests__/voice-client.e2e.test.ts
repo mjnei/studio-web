@@ -19,14 +19,21 @@
  * Mock interceptor to capture and verify fetch requests
  * This allows us to verify the exact structure of requests being made
  */
+interface CapturedRequest {
+  url: RequestInfo | URL;
+  method: string;
+  headers: HeadersInit;
+  body?: BodyInit | null;
+}
+
 class FetchInterceptor {
-  private originalFetch: any;
-  private lastRequest: any = null;
+  private originalFetch: typeof fetch;
+  private lastRequest: CapturedRequest | null = null;
   private requestLog: Array<{
     method: string;
     url: string;
-    headers: Record<string, string>;
-    body?: any;
+    headers: HeadersInit;
+    body?: BodyInit | null;
   }> = [];
 
   constructor() {
@@ -34,8 +41,8 @@ class FetchInterceptor {
   }
 
   install() {
-    const self = this;
-    global.fetch = async (...args: any[]) => {
+    const originalFetch = this.originalFetch;
+    global.fetch = async (...args: Parameters<typeof fetch>) => {
       const [url, init = {}] = args;
       const method = init.method || "GET";
 
@@ -49,13 +56,13 @@ class FetchInterceptor {
 
       this.requestLog.push({
         method,
-        url: typeof url === "string" ? url : url.toString(),
+        url: typeof url === "string" ? url : url instanceof URL ? url.toString() : url.url,
         headers: init.headers || {},
         body: init.body,
       });
 
       // Call the original fetch
-      return self.originalFetch(...args);
+      return originalFetch(...args);
     };
   }
 

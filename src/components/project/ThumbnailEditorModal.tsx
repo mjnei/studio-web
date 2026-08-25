@@ -133,9 +133,9 @@ export function ThumbnailEditorModal({
       setUseCustom(true);
 
       onThumbnailFinalized();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to upload thumbnail:", error);
-      alert(error.message || t("project.thumbnailEditor.uploadFailed"));
+      alert(error instanceof Error ? error.message : t("project.thumbnailEditor.uploadFailed"));
     } finally {
       setIsUploading(false);
     }

@@ -5,11 +5,12 @@ import { Locale, defaultLocale, locales } from "./config";
 
 type TranslationValue = string | { [key: string]: TranslationValue };
 type Translations = { [key: string]: TranslationValue };
+export type InterpolationValues = Record<string, string | number | boolean>;
 
 interface I18nContextType {
   locale: Locale;
   setLocale: (locale: Locale) => void;
-  t: (key: string, options?: Record<string, any>) => string;
+  t: (key: string, options?: InterpolationValues) => string;
 }
 
 const I18nContext = createContext<I18nContextType | undefined>(undefined);
@@ -99,7 +100,7 @@ function getNestedValue(obj: Translations, path: string): string | undefined {
   return typeof current === "string" ? current : undefined;
 }
 
-function replacePlaceholders(template: string, options?: Record<string, any>): string {
+function replacePlaceholders(template: string, options?: InterpolationValues): string {
   if (!options) {
     return template;
   }
@@ -137,7 +138,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("locale", newLocale);
   };
 
-  const t = (key: string, options?: Record<string, any>): string => {
+  const t = (key: string, options?: InterpolationValues): string => {
     const value = getNestedValue(translations, key);
     let translationString = value;
 
