@@ -13,9 +13,7 @@ export default function ShellLayout({ children }: { children: React.ReactNode })
           <LeftRail />
           <div className="flex flex-1 flex-col overflow-hidden">
             <TopNav />
-            <main className="safe-area-bottom flex-1 overflow-y-auto p-4 md:p-6">
-              {children}
-            </main>
+            <main className="safe-area-bottom flex-1 overflow-y-auto p-4 md:p-6">{children}</main>
           </div>
         </div>
       </SidebarProvider>
