@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { useToast } from "@/components/ui/toast";
-import { useI18n } from "@/i18n";
+import { useI18n, type InterpolationValues } from "@/i18n";
 import { Spinner } from "@/components/ui/spinner";
 import type { VoiceWithCreator, VoiceResponse } from "@/lib/types/api";
 
@@ -24,7 +24,7 @@ interface VoiceCardProps {
  */
 function formatRelativeTime(
   dateString: string,
-  t: (key: string, options?: Record<string, unknown>) => string
+  t: (key: string, options?: InterpolationValues) => string
 ): string {
   const date = new Date(dateString);
   const now = new Date();
