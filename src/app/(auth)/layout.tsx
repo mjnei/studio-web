@@ -59,7 +59,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
 
   // For other auth pages (login, signup, invite), show the split layout with full-screen video
   return (
-    <div className="relative flex min-h-screen bg-surface-base overflow-hidden">
+    <div className="safe-area-x safe-area-y relative flex min-h-dvh bg-surface-base overflow-hidden">
       {/* Full-screen Video Background */}
       <div className="absolute inset-0 pointer-events-none">
         <video
@@ -78,7 +78,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       </div>
 
       {/* Main Content Area - Split on desktop, full on mobile */}
-      <div className="relative z-10 flex w-full min-h-screen">
+      <div className="relative z-10 flex w-full min-h-dvh">
         {/* Left Side Branding (Desktop only) */}
         <div className="hidden lg:flex flex-col justify-end w-1/2 p-12 text-white">
           <button

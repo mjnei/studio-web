@@ -125,7 +125,7 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
   }, [mobileOpen, setMobileOpen]);
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="app-shell-height safe-area-x safe-area-top flex overflow-hidden">
       {!isNarrow && (
         <aside
           className={`flex shrink-0 flex-col border-r border-border-default bg-surface-panel/80 backdrop-blur-xl transition-[width] duration-300 ease-in-out ${
@@ -174,7 +174,7 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
             </div>
           </div>
         </header>
-        <main className="relative flex-1 overflow-y-auto bg-surface-base p-4 md:p-6">
+        <main className="safe-area-bottom relative flex-1 overflow-y-auto bg-surface-base p-4 md:p-6">
           {projectState?.moviePoster && (
             <div
               className="pointer-events-none fixed inset-0 z-0 bg-cover bg-center filter blur-3xl opacity-5 dark:opacity-10 transition-opacity duration-700"

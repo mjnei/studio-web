@@ -42,7 +42,7 @@ export function NewProjectShell({ children }: { children: React.ReactNode }) {
   }, [mobileOpen, setMobileOpen]);
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="app-shell-height safe-area-x safe-area-top flex overflow-hidden">
       {/* Desktop sidebar */}
       {!isNarrow && (
         <aside
@@ -90,7 +90,9 @@ export function NewProjectShell({ children }: { children: React.ReactNode }) {
         </header>
 
         {/* Main content */}
-        <main className="flex-1 overflow-y-auto bg-surface-base p-4 md:p-6">{children}</main>
+        <main className="safe-area-bottom flex-1 overflow-y-auto bg-surface-base p-4 md:p-6">
+          {children}
+        </main>
       </div>
 
       {/* Mobile drawer */}

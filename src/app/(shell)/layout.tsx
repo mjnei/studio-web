@@ -9,11 +9,13 @@ export default function ShellLayout({ children }: { children: React.ReactNode })
   return (
     <AuthGuard>
       <SidebarProvider>
-        <div className="flex h-screen overflow-hidden">
+        <div className="app-shell-height safe-area-x safe-area-top flex overflow-hidden">
           <LeftRail />
           <div className="flex flex-1 flex-col overflow-hidden">
             <TopNav />
-            <main className="flex-1 overflow-y-auto bg-surface-base p-4 md:p-6">{children}</main>
+            <main className="safe-area-bottom flex-1 overflow-y-auto bg-surface-base p-4 md:p-6">
+              {children}
+            </main>
           </div>
         </div>
       </SidebarProvider>
