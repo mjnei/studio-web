@@ -269,7 +269,7 @@ export default function VoicePage() {
       <ContextDrawer
         open={showParametersDrawer}
         onClose={() => setShowParametersDrawer(false)}
-        title="Voice Tuning &amp; Script"
+        title="Voice Tuning & Script"
         description="Speech pacing, narrative text, and voice limits"
         icon={<Sliders className="h-5 w-5" />}
         badge={

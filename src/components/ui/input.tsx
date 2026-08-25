@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils/cn";
 import { Text } from "./text";
 import { Label, type LabelTone } from "./label";
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   labelTone?: LabelTone;
   error?: string;

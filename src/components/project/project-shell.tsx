@@ -12,6 +12,7 @@ import { CreditStatus } from "@/components/credits/CreditStatus";
 import { useToast } from "@/components/ui/toast";
 import { Heading } from "@/components/ui/heading";
 import { useI18n } from "@/i18n";
+import { formatSessionResumeMessage } from "@/lib/utils/time-format";
 
 export function ProjectShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -54,7 +55,7 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
 
       if (isResumed === "true" || isResumed === "1") {
         const timeString = timeAgo ? decodeURIComponent(timeAgo) : "recently";
-        toast.info("Session Restored", `Restored your session from ${timeString} ago`);
+        toast.info("Session Restored", formatSessionResumeMessage(timeString));
 
         // Clean up URL query parameters without reloading
         urlParams.delete("resumed");

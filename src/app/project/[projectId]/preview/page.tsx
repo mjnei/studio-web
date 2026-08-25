@@ -602,7 +602,7 @@ export default function PreviewPage() {
       <ContextDrawer
         open={showTelemetryDrawer}
         onClose={() => setShowTelemetryDrawer(false)}
-        title="Mastering Telemetry &amp; Script"
+        title="Mastering Telemetry & Script"
         description="Queue logs, cache diagnostics, and narration text"
         icon={<Radio className="h-5 w-5" />}
         badge={

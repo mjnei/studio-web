@@ -520,7 +520,7 @@ export default function ProjectDetailsPage() {
       <ContextDrawer
         open={showContextDrawer}
         onClose={() => setShowContextDrawer(false)}
-        title="Project Context &amp; Assets"
+        title="Project Context & Assets"
         description="Movie source, script details, and cover preview"
         icon={<Layers className="h-5 w-5" />}
         badge={

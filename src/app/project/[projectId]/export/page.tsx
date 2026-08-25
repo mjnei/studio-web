@@ -798,7 +798,7 @@ export default function ExportPage() {
       <ContextDrawer
         open={showDiagnosticsDrawer}
         onClose={() => setShowDiagnosticsDrawer(false)}
-        title="Pipeline Diagnostics &amp; Logs"
+        title="Pipeline Diagnostics & Logs"
         description="Render history, attempt logs, and format settings"
         icon={<Sliders className="h-5 w-5" />}
         badge={

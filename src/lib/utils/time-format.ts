@@ -71,3 +71,17 @@ export function formatRelativeTimeAgo(
   const diffYears = Math.floor(diffMonths / 12);
   return diffYears === 1 ? "1 year" : `${diffYears} years`;
 }
+
+/** Toast body for session resume — avoids awkward "from just now ago" phrasing. */
+export function formatSessionResumeMessage(relativeTime: string): string {
+  if (relativeTime === "just now") {
+    return "Restored your session just now";
+  }
+  if (relativeTime === "yesterday") {
+    return "Restored your session from yesterday";
+  }
+  if (relativeTime === "recently") {
+    return "Restored your session";
+  }
+  return `Restored your session from ${relativeTime} ago`;
+}
