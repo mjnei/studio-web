@@ -18,8 +18,12 @@ interface ChartPoint {
   consumerCount: number;
 }
 
+/** Matches backend QUEUE_HISTORY_RETENTION_SECONDS (5h @ 30s samples → 600 pts max). */
 const HISTORY_RANGE_SECONDS = 18000;
 const HISTORY_POLL_MS = 30_000;
+
+const MSG_VIEW = { w: 600, h: 180, padX: 4, padY: 12 } as const;
+const CON_VIEW = { w: 600, h: 120, padX: 4, padY: 10 } as const;
 
 function formatClock(ts: number): string {
   const d = new Date(ts * 1000);
@@ -55,6 +59,20 @@ function mergeLivePoint(points: ChartPoint[], stats: QueueStats): ChartPoint[] {
   }
 
   return [...points, live];
+}
+
+/** Map sample time onto [earliest, latest] so the series fills the plot width. */
+function xForTs(ts: number, rangeStart: number, rangeEnd: number, width: number, padX: number): number {
+  if (rangeEnd <= rangeStart) {
+    return width / 2;
+  }
+  const t = Math.min(1, Math.max(0, (ts - rangeStart) / (rangeEnd - rangeStart)));
+  return padX + t * (width - padX * 2);
+}
+
+function yForValue(value: number, maxValue: number, height: number, padY: number): number {
+  const usable = height - padY * 2;
+  return height - padY - (value / Math.max(1, maxValue)) * usable;
 }
 
 export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps) {
@@ -100,6 +118,10 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
   const displayHistory = mergeLivePoint(history, stats);
   const hasSeries = displayHistory.length > 0;
 
+  const rangeStart = hasSeries ? displayHistory[0].ts : 0;
+  const rangeEnd = hasSeries ? displayHistory[displayHistory.length - 1].ts : 0;
+  const midTs = hasSeries ? rangeStart + Math.floor((rangeEnd - rangeStart) / 2) : 0;
+
   const firstValue = displayHistory[0]?.messageCount || 0;
   const lastValue = displayHistory[displayHistory.length - 1]?.messageCount || 0;
   const trend = lastValue - firstValue;
@@ -115,12 +137,20 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
       ? "Loading history…"
       : "Collecting samples…";
 
+  const timeLabels = hasSeries ? (
+    <div className="mt-2 flex justify-between text-caption text-text-muted">
+      <span>{formatClock(rangeStart)}</span>
+      <span>{formatClock(midTs)}</span>
+      <span>{formatClock(rangeEnd)}</span>
+    </div>
+  ) : null;
+
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
-            <span>Activity Trend (Last 5 Hours)</span>
+            <span>Activity Trend</span>
             {hasSeries && (
               <div className="flex items-center gap-2 text-body font-normal">
                 {trend > 0 ? (
@@ -156,23 +186,24 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
             <p className="text-body text-text-muted py-12 text-center">{emptyMessage}</p>
           ) : (
             <div className="space-y-2">
-              <div className="flex justify-between text-caption text-text-muted mb-2">
+              <div className="mb-2 flex justify-between text-caption text-text-muted">
                 <span>0</span>
                 <span>{Math.floor(maxMessages / 2)}</span>
                 <span>{maxMessages}</span>
               </div>
 
-              <div className="relative h-48 rounded-lg border border-border-default bg-surface-raised p-4">
+              <div className="relative h-48 w-full rounded-lg border border-border-default bg-surface-raised p-2">
                 <svg
-                  className="h-full w-full text-accent-primary"
-                  viewBox="0 0 600 180"
+                  className="block h-full w-full text-accent-primary"
+                  viewBox={`0 0 ${MSG_VIEW.w} ${MSG_VIEW.h}`}
+                  preserveAspectRatio="none"
                   aria-hidden
                 >
                   <line
                     x1="0"
-                    y1="90"
-                    x2="600"
-                    y2="90"
+                    y1={MSG_VIEW.h / 2}
+                    x2={MSG_VIEW.w}
+                    y2={MSG_VIEW.h / 2}
                     className="text-text-muted"
                     stroke="currentColor"
                     strokeOpacity="0.2"
@@ -180,9 +211,9 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
                   />
                   <line
                     x1="0"
-                    y1="45"
-                    x2="600"
-                    y2="45"
+                    y1={MSG_VIEW.h / 4}
+                    x2={MSG_VIEW.w}
+                    y2={MSG_VIEW.h / 4}
                     className="text-text-muted"
                     stroke="currentColor"
                     strokeOpacity="0.2"
@@ -190,9 +221,9 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
                   />
                   <line
                     x1="0"
-                    y1="135"
-                    x2="600"
-                    y2="135"
+                    y1={(MSG_VIEW.h * 3) / 4}
+                    x2={MSG_VIEW.w}
+                    y2={(MSG_VIEW.h * 3) / 4}
                     className="text-text-muted"
                     stroke="currentColor"
                     strokeOpacity="0.2"
@@ -204,12 +235,13 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="2"
+                      vectorEffect="non-scaling-stroke"
                       strokeLinejoin="round"
                       strokeLinecap="round"
                       points={displayHistory
-                        .map((point, i) => {
-                          const x = (i / (displayHistory.length - 1)) * 580 + 10;
-                          const y = 160 - (point.messageCount / maxMessages) * 140;
+                        .map((point) => {
+                          const x = xForTs(point.ts, rangeStart, rangeEnd, MSG_VIEW.w, MSG_VIEW.padX);
+                          const y = yForValue(point.messageCount, maxMessages, MSG_VIEW.h, MSG_VIEW.padY);
                           return `${x},${y}`;
                         })
                         .join(" ")}
@@ -217,11 +249,8 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
                   )}
 
                   {displayHistory.map((point, i) => {
-                    const x =
-                      displayHistory.length === 1
-                        ? 300
-                        : (i / (displayHistory.length - 1)) * 580 + 10;
-                    const y = 160 - (point.messageCount / maxMessages) * 140;
+                    const x = xForTs(point.ts, rangeStart, rangeEnd, MSG_VIEW.w, MSG_VIEW.padX);
+                    const y = yForValue(point.messageCount, maxMessages, MSG_VIEW.h, MSG_VIEW.padY);
                     return (
                       <circle
                         key={`${point.ts}-${i}`}
@@ -231,6 +260,7 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
                         fill="currentColor"
                         stroke="var(--surface-raised)"
                         strokeWidth="1.5"
+                        vectorEffect="non-scaling-stroke"
                       >
                         <title>
                           {point.label}: {point.messageCount} messages
@@ -241,11 +271,7 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
                 </svg>
               </div>
 
-              <div className="mt-2 flex justify-between text-caption text-text-muted">
-                <span>{displayHistory[0]?.label || ""}</span>
-                <span>{displayHistory[Math.floor(displayHistory.length / 2)]?.label || ""}</span>
-                <span>{displayHistory[displayHistory.length - 1]?.label || ""}</span>
-              </div>
+              {timeLabels}
             </div>
           )}
         </CardContent>
@@ -267,17 +293,18 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
                 <span>{Math.max(1, maxConsumers)}</span>
               </div>
 
-              <div className="relative h-32 rounded-lg border border-border-default bg-surface-raised p-4">
+              <div className="relative h-32 w-full rounded-lg border border-border-default bg-surface-raised p-2">
                 <svg
-                  className="h-full w-full text-accent-secondary"
-                  viewBox="0 0 600 120"
+                  className="block h-full w-full text-accent-secondary"
+                  viewBox={`0 0 ${CON_VIEW.w} ${CON_VIEW.h}`}
+                  preserveAspectRatio="none"
                   aria-hidden
                 >
                   <line
                     x1="0"
-                    y1="60"
-                    x2="600"
-                    y2="60"
+                    y1={CON_VIEW.h / 2}
+                    x2={CON_VIEW.w}
+                    y2={CON_VIEW.h / 2}
                     className="text-text-muted"
                     stroke="currentColor"
                     strokeOpacity="0.2"
@@ -286,11 +313,11 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
 
                   {displayHistory.map((point, i) => {
                     if (i === 0 || displayHistory.length < 2) return null;
-                    const x1 = ((i - 1) / (displayHistory.length - 1)) * 580 + 10;
-                    const x2 = (i / (displayHistory.length - 1)) * 580 + 10;
-                    const y1 =
-                      100 - (displayHistory[i - 1].consumerCount / Math.max(1, maxConsumers)) * 80;
-                    const y2 = 100 - (point.consumerCount / Math.max(1, maxConsumers)) * 80;
+                    const prev = displayHistory[i - 1];
+                    const x1 = xForTs(prev.ts, rangeStart, rangeEnd, CON_VIEW.w, CON_VIEW.padX);
+                    const x2 = xForTs(point.ts, rangeStart, rangeEnd, CON_VIEW.w, CON_VIEW.padX);
+                    const y1 = yForValue(prev.consumerCount, maxConsumers, CON_VIEW.h, CON_VIEW.padY);
+                    const y2 = yForValue(point.consumerCount, maxConsumers, CON_VIEW.h, CON_VIEW.padY);
 
                     return (
                       <g key={`step-${point.ts}-${i}`}>
@@ -302,6 +329,7 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
                           stroke="currentColor"
                           strokeWidth="2"
                           strokeLinecap="round"
+                          vectorEffect="non-scaling-stroke"
                         />
                         <line
                           x1={x2}
@@ -312,17 +340,15 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
                           strokeWidth="2"
                           strokeDasharray="2"
                           strokeLinecap="round"
+                          vectorEffect="non-scaling-stroke"
                         />
                       </g>
                     );
                   })}
 
                   {displayHistory.map((point, i) => {
-                    const x =
-                      displayHistory.length === 1
-                        ? 300
-                        : (i / (displayHistory.length - 1)) * 580 + 10;
-                    const y = 100 - (point.consumerCount / Math.max(1, maxConsumers)) * 80;
+                    const x = xForTs(point.ts, rangeStart, rangeEnd, CON_VIEW.w, CON_VIEW.padX);
+                    const y = yForValue(point.consumerCount, maxConsumers, CON_VIEW.h, CON_VIEW.padY);
                     return (
                       <circle
                         key={`c-${point.ts}-${i}`}
@@ -332,6 +358,7 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
                         fill="currentColor"
                         stroke="var(--surface-raised)"
                         strokeWidth="1.5"
+                        vectorEffect="non-scaling-stroke"
                       >
                         <title>
                           {point.label}: {point.consumerCount} consumers
@@ -342,11 +369,7 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
                 </svg>
               </div>
 
-              <div className="mt-2 flex justify-between text-caption text-text-muted">
-                <span>{displayHistory[0]?.label || ""}</span>
-                <span>{displayHistory[Math.floor(displayHistory.length / 2)]?.label || ""}</span>
-                <span>{displayHistory[displayHistory.length - 1]?.label || ""}</span>
-              </div>
+              {timeLabels}
             </div>
           )}
         </CardContent>
