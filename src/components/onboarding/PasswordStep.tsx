@@ -10,6 +10,10 @@ import { Text } from "@/components/ui/text";
 import { Button } from "@/components/ui/button";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Label } from "@/components/ui/label";
+import OnboardingStepFooter, {
+  ONBOARDING_PRIMARY_BTN_CLASS,
+  ONBOARDING_SECONDARY_BTN_CLASS,
+} from "@/components/onboarding/OnboardingStepFooter";
 
 interface PasswordStepProps {
   onNext: () => void;
@@ -91,8 +95,8 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
   };
 
   return (
-    <div className="h-full min-h-0 flex flex-col max-w-2xl mx-auto w-full">
-      <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain">
+    <div className="h-full min-h-0 flex flex-col w-full">
+      <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain max-w-2xl mx-auto w-full">
         <div className="text-center mb-4 sm:mb-5">
           <div className="mb-2.5 sm:mb-3 flex justify-center">
             <div className="relative">
@@ -250,47 +254,49 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
         </form>
       </div>
 
-      <div className="shrink-0 flex flex-col-reverse sm:flex-row items-center justify-between gap-2.5 sm:gap-3 pt-3 sm:pt-4 border-t border-border-subtle mt-3">
-        <Button
-          type="button"
-          variant="secondary"
-          size="lg"
-          onClick={onBack}
-          disabled={loading}
-          aria-label={t("onboarding.password.goBack")}
-          className="w-full sm:w-auto"
-        >
-          {t("onboarding.password.back")}
-        </Button>
-
-        <div className="flex flex-col-reverse sm:flex-row items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
+      <OnboardingStepFooter
+        left={
           <Button
             type="button"
-            variant="ghost"
+            variant="secondary"
             size="lg"
-            onClick={onSkip}
+            onClick={onBack}
             disabled={loading}
-            aria-label={t("onboarding.password.skipPassword")}
-            className="w-full sm:w-auto text-text-muted hover:text-text-primary"
+            aria-label={t("onboarding.password.goBack")}
+            className={ONBOARDING_SECONDARY_BTN_CLASS}
           >
-            {t("onboarding.password.skipForNow")}
+            {t("onboarding.password.back")}
           </Button>
-
-          <Button
-            type="submit"
-            form="password-form"
-            variant="primary"
-            size="lg"
-            isLoading={loading}
-            disabled={hasExistingPassword}
-            className="w-full sm:w-auto shadow-glow"
-          >
-            {hasExistingPassword
-              ? t("onboarding.password.alreadySet")
-              : t("onboarding.password.setPassword")}
-          </Button>
-        </div>
-      </div>
+        }
+        right={
+          <>
+            <Button
+              type="button"
+              variant="ghost"
+              size="lg"
+              onClick={onSkip}
+              disabled={loading}
+              aria-label={t("onboarding.password.skipPassword")}
+              className="w-full sm:w-auto text-text-muted hover:text-text-primary"
+            >
+              {t("onboarding.password.skipForNow")}
+            </Button>
+            <Button
+              type="submit"
+              form="password-form"
+              variant="primary"
+              size="lg"
+              isLoading={loading}
+              disabled={hasExistingPassword}
+              className={ONBOARDING_PRIMARY_BTN_CLASS}
+            >
+              {hasExistingPassword
+                ? t("onboarding.password.alreadySet")
+                : t("onboarding.password.setPassword")}
+            </Button>
+          </>
+        }
+      />
     </div>
   );
 }

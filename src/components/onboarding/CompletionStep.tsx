@@ -10,6 +10,9 @@ import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
+import OnboardingStepFooter, {
+  ONBOARDING_PRIMARY_BTN_CLASS,
+} from "@/components/onboarding/OnboardingStepFooter";
 
 export default function CompletionStep() {
   const router = useRouter();
@@ -125,10 +128,10 @@ export default function CompletionStep() {
       <div
         ref={errorContainerRef}
         tabIndex={-1}
-        className="h-full min-h-0 flex flex-col outline-none text-center max-w-lg mx-auto w-full"
+        className="h-full min-h-0 flex flex-col outline-none text-center w-full"
         onKeyDown={handleErrorKeyDown}
       >
-        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain flex flex-col justify-center">
+        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain flex flex-col justify-center max-w-lg mx-auto w-full">
           <div className="mb-5 flex justify-center">
             <div className="w-14 h-14 sm:w-16 sm:h-16 bg-red-500/10 rounded-3xl flex items-center justify-center shadow-xl border border-red-500/20">
               <AlertCircle className="h-7 w-7 sm:h-8 sm:w-8 text-red-400" aria-hidden="true" />
@@ -143,24 +146,26 @@ export default function CompletionStep() {
           </Text>
         </div>
 
-        <div className="shrink-0 flex justify-stretch sm:justify-end pt-3 sm:pt-4 border-t border-border-subtle mt-3">
-          <Button
-            size="lg"
-            variant="primary"
-            onClick={handleRetry}
-            className="w-full sm:w-auto px-8 sm:px-10 shadow-glow"
-          >
-            {t("onboarding.completion.tryAgain")}
-          </Button>
-        </div>
+        <OnboardingStepFooter
+          right={
+            <Button
+              size="lg"
+              variant="primary"
+              onClick={handleRetry}
+              className={ONBOARDING_PRIMARY_BTN_CLASS}
+            >
+              {t("onboarding.completion.tryAgain")}
+            </Button>
+          }
+        />
       </div>
     );
   }
 
   if (isCompleting) {
     return (
-      <div className="h-full min-h-0 flex flex-col text-center max-w-lg mx-auto w-full">
-        <div className="flex-1 min-h-0 flex flex-col justify-center">
+      <div className="h-full min-h-0 flex flex-col text-center w-full">
+        <div className="flex-1 min-h-0 flex flex-col justify-center max-w-lg mx-auto w-full">
           <div className="mb-5 flex justify-center">
             <div className="relative">
               <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-accent-secondary via-accent-primary to-accent-tertiary rounded-3xl flex items-center justify-center shadow-xl shadow-accent-primary/25 animate-pulse">
@@ -194,6 +199,8 @@ export default function CompletionStep() {
             ))}
           </div>
         </div>
+        {/* Keep footer slot reserved so layout height matches other steps */}
+        <OnboardingStepFooter right={<span className="sm:min-w-[11rem] h-10" aria-hidden="true" />} />
       </div>
     );
   }
@@ -202,10 +209,10 @@ export default function CompletionStep() {
     <div
       ref={successContainerRef}
       tabIndex={-1}
-      className="h-full min-h-0 flex flex-col outline-none text-center max-w-lg mx-auto w-full"
+      className="h-full min-h-0 flex flex-col outline-none text-center w-full"
       onKeyDown={handleSuccessKeyDown}
     >
-      <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain flex flex-col justify-center">
+      <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain flex flex-col justify-center max-w-lg mx-auto w-full">
         <div className="mb-5 flex justify-center relative">
           <div className="relative">
             <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-green-500/30 animate-scaleIn">
@@ -252,21 +259,25 @@ export default function CompletionStep() {
         </div>
       </div>
 
-      <div className="shrink-0 flex flex-col items-stretch sm:items-end gap-2 pt-3 sm:pt-4 border-t border-border-subtle mt-3">
-        <Button
-          size="lg"
-          variant="primary"
-          onClick={handleManualRedirect}
-          rightIcon={<Rocket className="h-5 w-5" aria-hidden="true" />}
-          className="w-full sm:w-auto px-8 sm:px-10 shadow-glow hover:shadow-glow-hover"
-        >
-          {t("onboarding.completion.goToDashboard")}
-        </Button>
-        <div className="flex items-center justify-center sm:justify-end gap-2 text-caption text-text-muted">
-          <Spinner size="sm" className="text-text-muted" />
-          <span>{t("onboarding.completion.redirect", { seconds: countdown })}</span>
-        </div>
-      </div>
+      <OnboardingStepFooter
+        right={
+          <Button
+            size="lg"
+            variant="primary"
+            onClick={handleManualRedirect}
+            rightIcon={<Rocket className="h-4 w-4" aria-hidden="true" />}
+            className={ONBOARDING_PRIMARY_BTN_CLASS}
+          >
+            {t("onboarding.completion.goToDashboard")}
+          </Button>
+        }
+        meta={
+          <div className="flex items-center justify-center sm:justify-end gap-2 text-caption text-text-muted">
+            <Spinner size="sm" className="text-text-muted" />
+            <span>{t("onboarding.completion.redirect", { seconds: countdown })}</span>
+          </div>
+        }
+      />
     </div>
   );
 }

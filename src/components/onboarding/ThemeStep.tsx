@@ -11,6 +11,10 @@ import {
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { Button } from "@/components/ui/button";
+import OnboardingStepFooter, {
+  ONBOARDING_PRIMARY_BTN_CLASS,
+  ONBOARDING_SECONDARY_BTN_CLASS,
+} from "@/components/onboarding/OnboardingStepFooter";
 
 interface ThemeStepProps {
   onNext: () => void;
@@ -125,28 +129,32 @@ export default function ThemeStep({ onNext, onBack }: ThemeStepProps) {
         </div>
       </div>
 
-      <div className="shrink-0 flex flex-col-reverse sm:flex-row justify-between gap-2.5 sm:gap-3 pt-3 sm:pt-4 border-t border-border-subtle mt-3">
-        <Button
-          type="button"
-          variant="secondary"
-          size="lg"
-          onClick={onBack}
-          aria-label={t("onboarding.theme.goBack")}
-          className="w-full sm:w-auto"
-        >
-          {t("onboarding.theme.back")}
-        </Button>
-        <Button
-          type="button"
-          variant="primary"
-          size="lg"
-          onClick={onNext}
-          aria-label={t("onboarding.theme.continueTakeStep")}
-          className="w-full sm:w-auto"
-        >
-          {t("onboarding.theme.continue")}
-        </Button>
-      </div>
+      <OnboardingStepFooter
+        left={
+          <Button
+            type="button"
+            variant="secondary"
+            size="lg"
+            onClick={onBack}
+            aria-label={t("onboarding.theme.goBack")}
+            className={ONBOARDING_SECONDARY_BTN_CLASS}
+          >
+            {t("onboarding.theme.back")}
+          </Button>
+        }
+        right={
+          <Button
+            type="button"
+            variant="primary"
+            size="lg"
+            onClick={onNext}
+            aria-label={t("onboarding.theme.continueTakeStep")}
+            className={ONBOARDING_PRIMARY_BTN_CLASS}
+          >
+            {t("onboarding.theme.continue")}
+          </Button>
+        }
+      />
     </div>
   );
 }

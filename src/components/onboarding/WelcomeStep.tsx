@@ -4,6 +4,9 @@ import { useI18n } from "@/i18n";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { Button } from "@/components/ui/button";
+import OnboardingStepFooter, {
+  ONBOARDING_PRIMARY_BTN_CLASS,
+} from "@/components/onboarding/OnboardingStepFooter";
 
 interface WelcomeStepProps {
   onNext: () => void;
@@ -84,21 +87,25 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
         </div>
       </div>
 
-      <div className="shrink-0 flex flex-col items-stretch sm:items-end gap-2 pt-3 sm:pt-4 border-t border-border-subtle mt-3">
-        <Button
-          size="lg"
-          variant="primary"
-          onClick={onNext}
-          aria-label={t("onboarding.welcome.getStartedAria")}
-          rightIcon={<ArrowRight className="h-5 w-5" aria-hidden />}
-          className="w-full sm:w-auto px-8 sm:px-10 shadow-glow hover:shadow-glow-hover"
-        >
-          {t("onboarding.welcome.getStarted")}
-        </Button>
-        <Text variant="caption" as="p" className="text-text-muted text-center sm:text-right">
-          {t("onboarding.welcome.subtext")}
-        </Text>
-      </div>
+      <OnboardingStepFooter
+        right={
+          <Button
+            size="lg"
+            variant="primary"
+            onClick={onNext}
+            aria-label={t("onboarding.welcome.getStartedAria")}
+            rightIcon={<ArrowRight className="h-4 w-4" aria-hidden />}
+            className={ONBOARDING_PRIMARY_BTN_CLASS}
+          >
+            {t("onboarding.welcome.getStarted")}
+          </Button>
+        }
+        meta={
+          <Text variant="caption" as="p" className="text-text-muted text-center sm:text-right">
+            {t("onboarding.welcome.subtext")}
+          </Text>
+        }
+      />
     </div>
   );
 }

@@ -6,6 +6,10 @@ import { useI18n, locales, localeNames } from "@/i18n";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { Button } from "@/components/ui/button";
+import OnboardingStepFooter, {
+  ONBOARDING_PRIMARY_BTN_CLASS,
+  ONBOARDING_SECONDARY_BTN_CLASS,
+} from "@/components/onboarding/OnboardingStepFooter";
 
 interface LanguageStepProps {
   onNext: () => void;
@@ -88,28 +92,32 @@ export default function LanguageStep({ onNext, onBack }: LanguageStepProps) {
         </div>
       </div>
 
-      <div className="shrink-0 flex flex-col-reverse sm:flex-row justify-between gap-2.5 sm:gap-3 pt-3 sm:pt-4 border-t border-border-subtle mt-3">
-        <Button
-          type="button"
-          variant="secondary"
-          size="lg"
-          onClick={onBack}
-          aria-label={t("onboarding.language.goBack")}
-          className="w-full sm:w-auto"
-        >
-          {t("onboarding.language.back")}
-        </Button>
-        <Button
-          type="button"
-          variant="primary"
-          size="lg"
-          onClick={onNext}
-          aria-label={t("onboarding.language.continueTakeStep")}
-          className="w-full sm:w-auto"
-        >
-          {t("onboarding.language.continue")}
-        </Button>
-      </div>
+      <OnboardingStepFooter
+        left={
+          <Button
+            type="button"
+            variant="secondary"
+            size="lg"
+            onClick={onBack}
+            aria-label={t("onboarding.language.goBack")}
+            className={ONBOARDING_SECONDARY_BTN_CLASS}
+          >
+            {t("onboarding.language.back")}
+          </Button>
+        }
+        right={
+          <Button
+            type="button"
+            variant="primary"
+            size="lg"
+            onClick={onNext}
+            aria-label={t("onboarding.language.continueTakeStep")}
+            className={ONBOARDING_PRIMARY_BTN_CLASS}
+          >
+            {t("onboarding.language.continue")}
+          </Button>
+        }
+      />
     </div>
   );
 }
