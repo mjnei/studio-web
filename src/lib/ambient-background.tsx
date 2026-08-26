@@ -48,9 +48,11 @@ export function AmbientBackgroundProvider({ children }: { children: ReactNode })
 
   useEffect(() => {
     const next = readStoredStyle();
-    setStyleState(next);
     applyDocumentStyle(next);
-    setHydrated(true);
+    setTimeout(() => {
+      setStyleState(next);
+      setHydrated(true);
+    }, 0);
   }, []);
 
   const setStyle = useCallback((next: AmbientBackgroundStyle) => {

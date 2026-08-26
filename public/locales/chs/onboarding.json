@@ -16,6 +16,18 @@
       "stepOf": "第 {current} 步，共 {total} 步",
       "ariaLabel": "第 {current} 步，共 {total} 步"
     },
+    "preferences": {
+      "title": "个性化偏好设置",
+      "subtitle": "选择你偏好的界面语言与主题色彩。稍后可随时在「设置」中更改。",
+      "languageSection": "界面语言",
+      "languageSectionDesc": "选择工作室显示语言",
+      "themeSection": "主题色彩",
+      "themeSectionDesc": "选择界面强调色与流光氛围",
+      "back": "上一步",
+      "continue": "继续",
+      "goBack": "返回上一步",
+      "continueTakeStep": "继续下一步"
+    },
     "workflow": {
       "title": "你的视频创作流程",
       "subtitle": "4 个简单步骤，做出精美视频",

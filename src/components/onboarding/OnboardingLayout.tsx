@@ -1,3 +1,8 @@
+"use client";
+
+import { useI18n } from "@/i18n";
+import { Check } from "lucide-react";
+
 interface OnboardingLayoutProps {
   currentStep: number;
   totalSteps: number;
@@ -9,57 +14,83 @@ export default function OnboardingLayout({
   totalSteps,
   children,
 }: OnboardingLayoutProps) {
+  const { t } = useI18n();
+
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-blue-950 flex items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
-      <div className="w-full max-w-4xl mx-auto">
+    <main className="safe-area-x safe-area-y min-h-dvh w-full flex flex-col justify-between py-6 sm:py-8 px-4 sm:px-6 relative overflow-x-hidden">
+      {/* Dynamic Theme-Responsive Ambient Glows */}
+      <div
+        className="absolute top-10 left-1/4 w-80 sm:w-96 h-80 sm:h-96 rounded-full bg-accent-primary/10 blur-3xl pointer-events-none transition-all duration-700"
+        aria-hidden="true"
+      />
+      <div
+        className="absolute bottom-10 right-1/4 w-80 sm:w-96 h-80 sm:h-96 rounded-full bg-accent-secondary/10 blur-3xl pointer-events-none transition-all duration-700"
+        aria-hidden="true"
+      />
+
+      <div className="w-full max-w-3xl mx-auto my-auto relative z-10 flex flex-col">
         {/* Progress Indicator */}
         <div
-          className="mb-6 sm:mb-8 lg:mb-10"
+          className="mb-5 sm:mb-7"
           role="status"
-          aria-label={`Step ${currentStep + 1} of ${totalSteps}`}
+          aria-label={t("onboarding.progress.ariaLabel", {
+            current: currentStep + 1,
+            total: totalSteps,
+          })}
         >
-          {/* Step Dots for Desktop */}
-          <div className="hidden sm:flex items-center justify-center mb-6">
-            {Array.from({ length: totalSteps }).map((_, idx) => (
-              <div key={idx} className="flex items-center">
-                <div
-                  className={`
- w-10 h-10 rounded-full flex items-center justify-center font-semibold text-body
- transition-all duration-300
- ${
-   idx <= currentStep
-     ? "bg-blue-600 dark:bg-blue-500 text-white shadow-lg shadow-blue-500/30"
-     : "bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400"
- }
- `}
-                >
-                  {idx + 1}
-                </div>
-                {idx < totalSteps - 1 && (
+          {/* Step Dots for Desktop & Tablet */}
+          <div className="hidden sm:flex items-center justify-center mb-4">
+            {Array.from({ length: totalSteps }).map((_, idx) => {
+              const isCompleted = idx < currentStep;
+              const isCurrent = idx === currentStep;
+
+              return (
+                <div key={idx} className="flex items-center">
                   <div
                     className={`
- h-1 w-16 mx-2 rounded-full transition-all duration-300
- ${idx < currentStep ? "bg-blue-600 dark:bg-blue-500" : "bg-gray-200 dark:bg-gray-700"}
- `}
-                  />
-                )}
-              </div>
-            ))}
+                      w-9 h-9 rounded-full flex items-center justify-center text-caption font-semibold
+                      transition-all duration-300
+                      ${
+                        isCurrent
+                          ? "bg-gradient-to-r from-accent-primary to-accent-secondary text-white shadow-glow border border-white/30 scale-110"
+                          : isCompleted
+                            ? "bg-accent-primary/20 text-accent-primary border border-accent-primary/40"
+                            : "bg-surface-elevated text-text-muted border border-border-default"
+                      }
+                    `}
+                  >
+                    {isCompleted ? (
+                      <Check className="h-4 w-4 text-accent-primary stroke-[2.5]" aria-hidden />
+                    ) : (
+                      idx + 1
+                    )}
+                  </div>
+                  {idx < totalSteps - 1 && (
+                    <div
+                      className={`
+                        h-0.5 w-10 sm:w-14 mx-1.5 sm:mx-2 rounded-full transition-all duration-500
+                        ${idx < currentStep ? "bg-accent-primary shadow-sm" : "bg-border-default"}
+                      `}
+                    />
+                  )}
+                </div>
+              );
+            })}
           </div>
 
           {/* Progress Bar for Mobile */}
-          <div className="sm:hidden">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-body font-semibold text-gray-700 dark:text-gray-300">
-                Step {currentStep + 1} of {totalSteps}
+          <div className="sm:hidden px-1">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-caption font-medium text-text-secondary">
+                {t("onboarding.progress.stepOf", { current: currentStep + 1, total: totalSteps })}
               </span>
-              <span className="text-body font-medium text-blue-600 dark:text-blue-400">
+              <span className="text-caption font-semibold text-accent-primary">
                 {Math.round(((currentStep + 1) / totalSteps) * 100)}%
               </span>
             </div>
-            <div className="h-2.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner">
+            <div className="h-2 bg-surface-elevated rounded-full overflow-hidden border border-border-subtle">
               <div
-                className="h-full bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-500 dark:to-purple-500 transition-all duration-500 ease-out rounded-full"
+                className="h-full bg-gradient-to-r from-accent-primary to-accent-secondary transition-all duration-500 ease-out rounded-full shadow-glow"
                 style={{ width: `${((currentStep + 1) / totalSteps) * 100}%` }}
                 role="progressbar"
                 aria-valuenow={((currentStep + 1) / totalSteps) * 100}
@@ -71,14 +102,9 @@ export default function OnboardingLayout({
         </div>
 
         {/* Content Container */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 sm:p-8 lg:p-12 border border-gray-100 dark:border-gray-700 backdrop-blur-sm">
+        <div className="bg-surface-panel/85 dark:bg-surface-panel/90 rounded-2xl shadow-2xl p-4 sm:p-7 md:p-9 border border-border-default backdrop-blur-xl transition-all duration-300">
           <div className="animate-fadeIn">{children}</div>
         </div>
-
-        {/* Decorative Elements */}
-        <div className="absolute top-20 left-10 w-72 h-72 bg-blue-300 dark:bg-blue-900 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-3xl opacity-20 animate-blob" />
-        <div className="absolute top-40 right-10 w-72 h-72 bg-purple-300 dark:bg-purple-900 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-3xl opacity-20 animate-blob animation-delay-2000" />
-        <div className="absolute -bottom-8 left-1/2 w-72 h-72 bg-pink-300 dark:bg-pink-900 rounded-full mix-blend-multiply dark:mix-blend-soft-light filter blur-3xl opacity-20 animate-blob animation-delay-4000" />
       </div>
     </main>
   );

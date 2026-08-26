@@ -62,10 +62,10 @@ export default function WorkflowStep({ onNext, onBack }: WorkflowStepProps) {
     >
       {/* Headline - Compact */}
       <div className="mb-6 text-center sm:mb-8">
-        <Heading variant="page" as="h2" className="mb-2 text-gray-900 dark:text-white">
+        <Heading variant="page" as="h2" className="mb-2 text-text-primary">
           {t("onboarding.workflow.title")}
         </Heading>
-        <Text variant="body" className="text-gray-600 dark:text-gray-300">
+        <Text variant="body" className="text-text-secondary">
           {t("onboarding.workflow.subtitle")}
         </Text>
       </div>
@@ -77,21 +77,21 @@ export default function WorkflowStep({ onNext, onBack }: WorkflowStepProps) {
           return (
             <div
               key={step.title}
-              className="group relative flex flex-col items-center p-3 sm:p-4 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-md transition-all duration-300"
+              className="group relative flex flex-col items-center p-3.5 sm:p-4 rounded-xl border border-border-default bg-surface-raised/60 hover:border-accent-primary/50 hover:bg-surface-hover hover:shadow-md transition-all duration-300 backdrop-blur-sm"
             >
               {/* Icon with Number Badge */}
               <div className="relative mb-3">
                 <div
                   className={`
- w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center
- bg-gradient-to-br ${step.color} shadow-md
- group-hover:scale-105 transition-transform duration-300
- `}
+                    w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center
+                    bg-gradient-to-br ${step.color} shadow-md
+                    group-hover:scale-105 transition-transform duration-300
+                  `}
                 >
                   <Icon className="h-6 w-6 sm:h-7 sm:w-7 text-white" aria-hidden="true" />
                 </div>
                 <span
-                  className="absolute -top-1.5 -right-1.5 w-5 h-5 sm:w-6 sm:h-6 bg-white dark:bg-gray-800 text-gray-900 dark:text-white text-caption font-bold rounded-full flex items-center justify-center border-2 border-gray-200 dark:border-gray-700 shadow-sm"
+                  className="absolute -top-1.5 -right-1.5 w-5 h-5 sm:w-6 sm:h-6 bg-surface-elevated text-text-primary text-caption font-bold rounded-full flex items-center justify-center border border-border-default shadow-sm"
                   aria-label={t("onboarding.workflow.step", { number: index + 1 })}
                 >
                   {index + 1}
@@ -103,14 +103,14 @@ export default function WorkflowStep({ onNext, onBack }: WorkflowStepProps) {
                 <Heading
                   variant="subsection"
                   as="h3"
-                  className="mb-1 text-gray-900 dark:text-white"
+                  className="mb-1 text-text-primary text-sm sm:text-base"
                 >
                   {step.title}
                 </Heading>
                 <Text
                   variant="caption"
                   as="p"
-                  className="leading-snug text-gray-600 dark:text-gray-400"
+                  className="leading-snug text-text-muted text-xs sm:text-caption"
                 >
                   {step.description}
                 </Text>
@@ -121,20 +121,20 @@ export default function WorkflowStep({ onNext, onBack }: WorkflowStepProps) {
       </div>
 
       {/* Info Box - Compact */}
-      <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 sm:p-4 mb-6 sm:mb-8">
-        <div className="flex items-start gap-2 sm:gap-3">
+      <div className="bg-accent-primary/10 border border-accent-primary/20 rounded-xl p-3.5 sm:p-4 mb-6 sm:mb-8">
+        <div className="flex items-start gap-2.5 sm:gap-3">
           <Info
-            className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5"
+            className="h-4 w-4 sm:h-5 sm:w-5 text-accent-primary flex-shrink-0 mt-0.5"
             aria-hidden
           />
-          <Text variant="caption" as="p" className="text-gray-700 dark:text-gray-300">
+          <Text variant="caption" as="p" className="text-text-secondary leading-relaxed">
             {t("onboarding.workflow.info")}
           </Text>
         </div>
       </div>
 
       {/* Navigation Buttons - Compact */}
-      <div className="flex flex-col-reverse sm:flex-row justify-between gap-2 sm:gap-3">
+      <div className="flex flex-col-reverse sm:flex-row justify-between gap-2.5 sm:gap-3 pt-2">
         <Button
           type="button"
           variant="secondary"

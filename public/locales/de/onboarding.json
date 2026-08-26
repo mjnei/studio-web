@@ -16,6 +16,18 @@
       "stepOf": "Schritt {current} von {total}",
       "ariaLabel": "Schritt {current} von {total}"
     },
+    "preferences": {
+      "title": "Erlebnis personalisieren",
+      "subtitle": "Wählen Sie Ihre bevorzugte Sprache und Ihr Farbthema. Sie können diese jederzeit in den Einstellungen anpassen.",
+      "languageSection": "Benutzeroberflächensprache",
+      "languageSectionDesc": "Wählen Sie die Sprache für das Studio",
+      "themeSection": "Farbthema",
+      "themeSectionDesc": "Wählen Sie Akzentfarben und Hintergrundeffekte",
+      "back": "Zurück",
+      "continue": "Weiter",
+      "goBack": "Zurück zum vorherigen Schritt",
+      "continueTakeStep": "Weiter zum nächsten Schritt"
+    },
     "workflow": {
       "title": "Dein Weg zur Videoproduktion",
       "subtitle": "4 einfache Schritte zu großartigen Videos",

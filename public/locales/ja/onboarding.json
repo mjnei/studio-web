@@ -16,6 +16,18 @@
       "stepOf": "ステップ {current} / {total}",
       "ariaLabel": "ステップ {current} / {total}"
     },
+    "preferences": {
+      "title": "環境設定のカスタマイズ",
+      "subtitle": "お好みの言語とカラーテーマを選択してください。後から「設定」でいつでも変更できます。",
+      "languageSection": "表示言語",
+      "languageSectionDesc": "スタジオのインターフェース言語を選択",
+      "themeSection": "カラーテーマ",
+      "themeSectionDesc": "アクセントカラーと背景エフェクトを選択",
+      "back": "戻る",
+      "continue": "続ける",
+      "goBack": "前のステップに戻る",
+      "continueTakeStep": "次のステップに進む"
+    },
     "workflow": {
       "title": "動画制作の流れ",
       "subtitle": "4つの簡単なステップで素敵な動画を作成",

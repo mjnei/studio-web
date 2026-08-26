@@ -16,6 +16,18 @@
       "stepOf": "Step {current} of {total}",
       "ariaLabel": "Step {current} of {total}"
     },
+    "preferences": {
+      "title": "Personalize Your Experience",
+      "subtitle": "Select your preferred language and color theme. You can always change these anytime in Settings.",
+      "languageSection": "Interface Language",
+      "languageSectionDesc": "Choose your preferred language for the studio",
+      "themeSection": "Color Theme",
+      "themeSectionDesc": "Select your accent color and ambient glow",
+      "back": "Back",
+      "continue": "Continue",
+      "goBack": "Go back to previous step",
+      "continueTakeStep": "Continue to next step"
+    },
     "workflow": {
       "title": "Your Video Creation Journey",
       "subtitle": "4 simple steps to create amazing videos",
