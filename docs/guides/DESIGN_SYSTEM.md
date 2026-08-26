@@ -1375,7 +1375,7 @@ className = "flex flex-col md:flex-row gap-4";
 - [ ] Include responsive design
 - [ ] Document in this file
 - [ ] Add example usage
-- [ ] Export from `src/components/ui/index.ts`
+- [ ] Deep-import from `@/components/ui/heading` / `text` / `typography` (no UI barrel)
 
 ---
 

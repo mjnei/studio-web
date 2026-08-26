@@ -161,7 +161,7 @@ Color is **not** part of the type role by default — keep using `text-text-prim
 ### 5.1 `Heading`
 
 **File**: `src/components/ui/heading.tsx`  
-**Export**: from `src/components/ui/index.ts`  
+**Export**: deep-import from `@/components/ui/heading` / `text` / `typography` (no UI barrel)  
 **Server Component safe** — no hooks or event handlers; works in RSC without `"use client"`.
 
 ```tsx
