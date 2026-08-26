@@ -71,7 +71,7 @@ Used on every step (including `/project/new/*`).
 | 3 Voice | Voice selection + audition | Pacing, script reference, Agnes status, voice limits |
 | 4 Details | Title input + AI suggestion chips | Film / script / thumbnail context |
 | 5 Preview | Studio audio deck (idle / processing / ready) | Telemetry, script, re-synthesize |
-| 6 Compose | Live 16:9 cover canvas | Typography presets, layout, script |
+| 6 Compose | Live 16:9 cover canvas | Style presets → editor, script reference |
 | 7 Export | Master video **or** pre-flight + render CTA | Pipeline diagnostics & failed attempts |
 
 Copy lives under `public/locales/{locale}/project.json`.
@@ -96,7 +96,10 @@ Select the TMDB movie foundation.
 
 **Routes:** `/project/new/script`, `/project/[projectId]/script`
 
-Generate/edit voiceover narration (`ScriptStudio`). Word count and duration estimate; save on Continue.
+Generate/edit voiceover narration in an inline editor (textarea + metrics). Word count and duration estimate (~150 wpm); save on Continue.
+
+- **New project** (`/project/new/script`): `createScript({ movieId })` creates the project + first script, then redirects to `/project/{id}/voice`.
+- **Existing project** (`/project/[projectId]/script`): edit/activate script versions via `useProjectState` (`addScript` / `setActiveScript`).
 
 **Note:** This step was intentionally left stable during the UX redesign; no ContextDrawer / revisit-banner pattern here.
 
@@ -110,11 +113,13 @@ Generate/edit voiceover narration (`ScriptStudio`). Word count and duration esti
 
 Choose narrator persona; audition samples (not full-script TTS).
 
-**UI:** Community / My Voices tabs; search + persona filter chips (match against voice **name** substrings); responsive audition cards with waveform while playing; record custom voice (limits via `useVoiceLimits`).
+**UI:** Community / My Voices tabs (`GET /voices/available`); search + persona filter chips (match against voice **name** substrings); responsive audition cards with waveform while playing; record custom voice (limits via `useVoiceLimits`).
 
-**Drawer:** Speech rate (`SpeechRateControl`, ~0.5x–2.0x), script reference, Agnes status.
+**Drawer:** Speech rate presets via `SpeechRateControl` (`0.5` / `1.0` / `1.25` / `1.6` / `2.0`), script reference, Agnes status.
 
-**On continue:** Schedules TTS job (`createTTSJob`) and advances; Agnes name + thumbnail jobs start in background (`scheduleAgnesJobs`) when a voice is selected / page loads as implemented.
+**Background:** On page load (when script content exists), `scheduleAgnesJobs` queues name suggestions + base thumbnail (non-blocking).
+
+**On continue:** `createTTSJob` (with selected voice + speech `ratio`) → `advanceProjectStep` → Details.
 
 **Completion:** `voice_id` set, TTS job scheduled → Details.
 
@@ -140,16 +145,18 @@ Brand the project with a title.
 
 Verify full-script TTS audio before spending video credits.
 
+On load, the page either resumes `active_tts_job_id` or auto-creates a TTS job when voice/script changed or no active job exists. Manual generate / re-synthesize CTAs remain available.
+
 **States:**
 
-1. **Idle** — Generate narration CTA (voice + word estimate)
+1. **Idle** — Brief / edge case before a job exists; generate CTA (voice + word estimate)
 2. **Processing** — Queue/progress (`TTSQueueStatus`), HTTP poll ~3s
 3. **Ready** — Studio deck: play/pause, scrub, mute, re-synthesize
 4. **Error** — Message + retry
 
-Smart cache: backend reuses audio when voice + preview text (first 2 sentences) match. Job progress is **HTTP polling**, not SSE — see `studio-backend/docs/SSE (Server-Sent Events).md`.
+Smart cache: backend reuses audio when voice + preview text (first 2 sentences) match. Job progress is **HTTP polling**, not SSE — see backend `docs/SSE (Server-Sent Events).md`.
 
-**Completion:** TTS job `completed` → Compose.
+**Completion:** TTS job `completed` with `audio_url` → Compose (`canGoNext`).
 
 ---
 
@@ -159,9 +166,9 @@ Smart cache: backend reuses audio when voice + preview text (first 2 sentences) 
 
 Thumbnail / cover studio only — **no video generation**.
 
-**UI:** Live 16:9 canvas; edit overlay via `ThumbnailEditorModal`; regenerate base image with confirm; drawer typography presets (e.g. Cinematic Gold, Neon Cyan, Minimalist Clean, Breaking Red).
+**UI:** Live 16:9 canvas; edit overlay via `ThumbnailEditorModal`; regenerate base image with confirm. Drawer “typography presets” (Cinematic Gold, Neon Cyan, Minimalist Clean, Breaking Red) open the editor modal (they are entry points, not one-click applied canvas styles). Compose also falls back to `scheduleAgnesJobs(..., thumbnail only)` if the base image is missing.
 
-**Backend:** Pillow composite → S3; sets `final_thumbnail_url` / `thumbnail_confirmed` on export/finalize APIs.
+**Backend:** Pillow composite → S3 via `POST /projects/{id}/thumbnail/export`; sets `final_thumbnail_url` / `thumbnail_confirmed`.
 
 **Navigation:** Next always enabled → Export.
 
@@ -173,22 +180,23 @@ Thumbnail / cover studio only — **no video generation**.
 
 Render final video, manage versions, download/share.
 
-**When no completed video:** Pre-flight checklist + Start Generation CTA (credit badge). Checklist items 1–3 are **informational UI**; item 4 (credits) is the real gate when balance &lt; 1.
+**When no completed video:** Pre-flight checklist + Start Generation CTA (credit badge). Checklist items 1–3 are **informational UI**; item 4 (credits) is the real gate when balance &lt; 1. Confirm modal, then `regenerateVideo(projectId)`.
 
 **When completed:** Master player, version switcher, download / export format / share (X, WeChat copy URL).
 
 **Processing:** Live telemetry card; poll videos ~10s; may refresh on `video_job_completed` notification.
 
-**Navigation:** No Next (final step). Home → projects list.
+**Navigation:** Back → Compose. **Next (“Complete project”)** enabled when ≥1 completed video (navigates to `/projects`). Home always available.
 
 ---
 
 ## AI background jobs (Agnes)
 
-Triggered around Voice (and Compose fallback):
+`POST /projects/{id}/schedule-agnes-jobs?schedule_names=&schedule_thumbnail=`
 
-1. **Name suggestions** — available on Details (with local fallbacks)
-2. **Base thumbnail** — customized on Compose
+1. **Voice page load** — schedules names + thumbnail when script content exists
+2. **Details** — may re-request names; shows AI chips or local fallbacks from movie title
+3. **Compose fallback** — thumbnail-only schedule if base image not ready
 
 Non-blocking; retries/fallbacks so the user is never stuck waiting on AI.
 
@@ -219,14 +227,16 @@ Advance via `POST /api/v1/projects/{id}/advance?step=...` (or client helpers tha
 
 Base: `/api/v1` with `Authorization: Bearer <token>`.
 
-| Area | Endpoints |
+| Area | Endpoints (client paths under `/api/v1`) |
 | :--- | :--- |
-| Movies | `GET /tmdb/movies/popular`, `GET /tmdb/movies/search`, `PATCH /projects/{id}` `{ movie_id }` |
-| Script | `POST /projects/{id}/script/generate`, script save/update via project/script APIs |
-| Voice | `GET /voices`, recordings APIs, `PATCH` project `voice_id` |
+| Movies | `GET /movies/popular`, `GET /movies/search`, `GET /movies/{id}`, `PATCH /projects/{id}` `{ movie_id, last_step }` |
+| Script | `createScript` / project script helpers (new-project create-on-save); existing project script add/activate via state hook |
+| Voice | `GET /voices/available`, voice upload/audio-url helpers, project voice update |
+| Agnes | `POST /projects/{id}/schedule-agnes-jobs`, `GET /projects/{id}/suggested-names` |
+| Advance | `POST /projects/{id}/advance?step=` |
 | TTS | `POST /tts`, `GET /tts/{job_id}` — statuses: queued → processing → completed \| failed |
-| Thumbnail | `POST /projects/{id}/thumbnail/export`, Agnes schedule/regenerate helpers |
-| Video | `POST /video?...` / regenerate, `GET /video/{id}`, `GET /video/project/{id}/list`, project videos list/delete |
+| Thumbnail | `POST /projects/{id}/thumbnail/export`, regenerate / retry-generation / upload |
+| Video | `GET /video/project/{id}/list`, regenerate helper, `DELETE /projects/{id}/videos/{videoId}` |
 | Credits | `GET /users/me/credits` |
 
 TTS pipeline: Frontend → `POST /tts` → RabbitMQ `tts_jobs` → TTS worker → `tts_results` → consumer → DB; frontend polls until terminal.
@@ -273,12 +283,12 @@ State: `useProjectState` (`src/lib/hooks/use-project-state.ts`) + `src/lib/proje
 | Step | Back | Next when | Notes |
 | :--- | :--- | :--- | :--- |
 | Source | Hidden | Movie selected | First step |
-| Script | → Source | Script exists | Auto-save on Continue |
-| Voice | → Script | Voice selected | Schedules TTS + Agnes |
+| Script | → Source | Script content / active script | New flow creates project on save |
+| Voice | → Script | Voice selected | Continue schedules TTS; Agnes on load |
 | Details | → Voice | Name entered | |
-| Preview | → Details | TTS completed | |
+| Preview | → Details | TTS completed + `audio_url` | |
 | Compose | → Preview | Always | Thumbnail only |
-| Export | → Compose | Hidden | Final |
+| Export | → Compose | ≥1 completed video | Next label: Complete → `/projects` |
 
 Access: completed steps revisitable via stepper; future steps not clickable from the dock. Resume uses stored `last_step`.
 
@@ -299,6 +309,7 @@ Access: completed steps revisitable via stepper; future steps not clickable from
 - Export pre-flight checks 1–3 are informational; only credits (#4) gates the CTA.
 - Session resume follows `last_step`, not a recomputed furthest-completed path.
 - Voice filter chips match name substrings, not structured persona metadata.
+- Compose drawer style presets open the thumbnail editor; they do not apply named styles by themselves.
 - Step 2 Script UI is retained intentionally without the hero/drawer redesign.
 
 ---
@@ -311,7 +322,7 @@ Access: completed steps revisitable via stepper; future steps not clickable from
 - [ ] Voice: play sample, select voice, Continue schedules TTS; Agnes eventually fills Details/Compose
 - [ ] Preview: idle → processing → ready player; re-synthesize works
 - [ ] Compose: edit/finalize thumbnail; regenerate confirms; Next → Export
-- [ ] Export: pre-flight + credit gate; generate; poll; download/share; Next hidden
+- [ ] Export: pre-flight + credit gate; generate; poll; download/share; Complete enabled after video exists
 - [ ] Mobile: dock density, genre chips scroll, voice grid, export download stack
 
 ---
