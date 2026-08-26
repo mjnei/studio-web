@@ -58,10 +58,7 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
       </Heading>
 
       {/* Body Text */}
-      <Text
-        variant="bodyLg"
-        className="mx-auto mb-6 sm:mb-8 max-w-lg px-4 text-text-secondary"
-      >
+      <Text variant="bodyLg" className="mx-auto mb-6 sm:mb-8 max-w-lg px-4 text-text-secondary">
         {t("onboarding.welcome.subtitle")}
       </Text>
 

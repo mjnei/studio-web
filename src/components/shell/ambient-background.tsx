@@ -42,7 +42,7 @@ const LAYERS: Record<AmbientBackgroundStyle, () => ReactNode> = {
 
 /**
  * Fixed decorative background. Style is chosen in Settings → Appearance
- * and persisted in localStorage (see AmbientBackgroundProvider).
+ * and persisted via cookie (SSR) + localStorage (see AmbientBackgroundProvider).
  */
 export function AmbientBackground() {
   const { style } = useAmbientBackground();

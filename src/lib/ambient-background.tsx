@@ -9,13 +9,26 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import {
+  AMBIENT_BACKGROUND_COOKIE,
+  AMBIENT_BACKGROUND_STORAGE_KEY,
+  AMBIENT_BACKGROUND_STYLES,
+  DEFAULT_AMBIENT_BACKGROUND,
+  parseAmbientBackgroundStyle,
+  serializeAmbientBackgroundCookie,
+  type AmbientBackgroundStyle,
+} from "@/lib/ambient-background-shared";
 
-export const AMBIENT_BACKGROUND_STYLES = ["aurora", "mesh", "grid"] as const;
-
-export type AmbientBackgroundStyle = (typeof AMBIENT_BACKGROUND_STYLES)[number];
-
-export const DEFAULT_AMBIENT_BACKGROUND: AmbientBackgroundStyle = "aurora";
-export const AMBIENT_BACKGROUND_STORAGE_KEY = "appearance:ambientBackground";
+export {
+  AMBIENT_BACKGROUND_STYLES,
+  AMBIENT_BACKGROUND_STORAGE_KEY,
+  AMBIENT_BACKGROUND_COOKIE,
+  AMBIENT_BACKGROUND_COOKIE_MAX_AGE,
+  DEFAULT_AMBIENT_BACKGROUND,
+  parseAmbientBackgroundStyle,
+  serializeAmbientBackgroundCookie,
+  type AmbientBackgroundStyle,
+} from "@/lib/ambient-background-shared";
 
 type AmbientBackgroundContextValue = {
   style: AmbientBackgroundStyle;
@@ -30,44 +43,79 @@ function isAmbientBackgroundStyle(value: string | null): value is AmbientBackgro
   return value !== null && (AMBIENT_BACKGROUND_STYLES as readonly string[]).includes(value);
 }
 
-function readStoredStyle(): AmbientBackgroundStyle {
-  if (typeof window === "undefined") {
-    return DEFAULT_AMBIENT_BACKGROUND;
-  }
-  const stored = localStorage.getItem(AMBIENT_BACKGROUND_STORAGE_KEY);
-  return isAmbientBackgroundStyle(stored) ? stored : DEFAULT_AMBIENT_BACKGROUND;
-}
-
 function applyDocumentStyle(style: AmbientBackgroundStyle) {
   document.documentElement.dataset.ambientBg = style;
 }
 
-export function AmbientBackgroundProvider({ children }: { children: ReactNode }) {
-  const [style, setStyleState] = useState<AmbientBackgroundStyle>(DEFAULT_AMBIENT_BACKGROUND);
-  const [hydrated, setHydrated] = useState(false);
+function readLocalStorageStyle(): AmbientBackgroundStyle | null {
+  const stored = localStorage.getItem(AMBIENT_BACKGROUND_STORAGE_KEY);
+  return isAmbientBackgroundStyle(stored) ? stored : null;
+}
+
+function readCookieStyle(): AmbientBackgroundStyle | null {
+  const match = document.cookie.match(
+    new RegExp(`(?:^|;\\s*)${AMBIENT_BACKGROUND_COOKIE}=([^;]*)`)
+  );
+  if (!match) return null;
+  const raw = decodeURIComponent(match[1]);
+  return isAmbientBackgroundStyle(raw) ? raw : null;
+}
+
+function persistTheme(style: AmbientBackgroundStyle) {
+  document.cookie = serializeAmbientBackgroundCookie(style);
+  localStorage.setItem(AMBIENT_BACKGROUND_STORAGE_KEY, style);
+  applyDocumentStyle(style);
+}
+
+export function AmbientBackgroundProvider({
+  children,
+  initialStyle = DEFAULT_AMBIENT_BACKGROUND,
+}: {
+  children: ReactNode;
+  /** From SSR cookie so first paint matches React state (no theme flash). */
+  initialStyle?: AmbientBackgroundStyle;
+}) {
+  const [style, setStyleState] = useState<AmbientBackgroundStyle>(initialStyle);
 
   useEffect(() => {
-    const next = readStoredStyle();
-    applyDocumentStyle(next);
-    setTimeout(() => {
-      setStyleState(next);
-      setHydrated(true);
-    }, 0);
-  }, []);
+    const fromCookie = readCookieStyle();
+    const fromStorage = readLocalStorageStyle();
+
+    let next = initialStyle;
+
+    if (!fromCookie && fromStorage) {
+      // Pre-cookie installs: promote localStorage → cookie for future SSR
+      next = fromStorage;
+      persistTheme(next);
+    } else if (fromCookie) {
+      next = fromCookie;
+      // Keep localStorage aligned for cross-tab `storage` events
+      localStorage.setItem(AMBIENT_BACKGROUND_STORAGE_KEY, next);
+      applyDocumentStyle(next);
+    } else {
+      applyDocumentStyle(next);
+    }
+
+    setStyleState(next);
+
+    const onStorage = (event: StorageEvent) => {
+      if (event.key !== AMBIENT_BACKGROUND_STORAGE_KEY) return;
+      const nextStyle = parseAmbientBackgroundStyle(event.newValue);
+      setStyleState(nextStyle);
+      document.cookie = serializeAmbientBackgroundCookie(nextStyle);
+      applyDocumentStyle(nextStyle);
+    };
+
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, [initialStyle]);
 
   const setStyle = useCallback((next: AmbientBackgroundStyle) => {
     setStyleState(next);
-    localStorage.setItem(AMBIENT_BACKGROUND_STORAGE_KEY, next);
-    applyDocumentStyle(next);
+    persistTheme(next);
   }, []);
 
-  const value = useMemo(
-    () => ({
-      style: hydrated ? style : DEFAULT_AMBIENT_BACKGROUND,
-      setStyle,
-    }),
-    [hydrated, style, setStyle]
-  );
+  const value = useMemo(() => ({ style, setStyle }), [style, setStyle]);
 
   return (
     <AmbientBackgroundContext.Provider value={value}>{children}</AmbientBackgroundContext.Provider>

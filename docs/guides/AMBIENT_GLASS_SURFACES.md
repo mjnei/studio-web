@@ -146,7 +146,7 @@ In Tailwind CSS v4 (`src/app/globals.css`), declare glass utilities using the `@
   - Also added `@utility glass-sticky` (~88%) for sticky bars and notification dropdown.
 
 ### Phase 5: Theme Persistence Alignment (SSR Cookie)
-- [ ] Follow [AMBIENT_THEME.md](./AMBIENT_THEME.md) to implement cookie + SSR persistence so theme changes do not flash during page reloads.
+- [x] Follow [AMBIENT_THEME.md](./AMBIENT_THEME.md) to implement cookie + SSR persistence so theme changes do not flash during page reloads.
 
 ---
 

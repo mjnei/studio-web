@@ -42,10 +42,7 @@ export const Pagination: React.FC<PaginationProps> = ({
 
   return (
     <div
-      className={cn(
-        "glass-card flex items-center justify-between rounded-lg px-4 py-3",
-        className
-      )}
+      className={cn("glass-card flex items-center justify-between rounded-lg px-4 py-3", className)}
     >
       <div className="flex items-center gap-2 text-body text-text-muted">
         <span>{t("common.pageOf", { current: currentPage, total: totalPages })}</span>

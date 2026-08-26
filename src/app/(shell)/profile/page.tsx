@@ -652,28 +652,28 @@ export default function ProfilePage() {
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between p-4 rounded-xl border border-border-default bg-surface-raised hover:border-border-strong transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-white flex items-center justify-center shadow-sm shrink-0">
-                      <Mail className="h-4 w-4 text-gray-700" />
-                    </div>
-                    <div>
-                      <p className="text-body font-semibold text-text-primary">
-                        {t("profile.connectedAccounts.google")}
-                      </p>
-                      {user.provider === "google" && (
-                        <p className="text-caption text-status-completed flex items-center gap-1 mt-0.5">
-                          <CheckCircle2 className="h-3 w-3" />
-                          {t("profile.connectedAccounts.connected")}
-                        </p>
-                      )}
-                    </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-white flex items-center justify-center shadow-sm shrink-0">
+                    <Mail className="h-4 w-4 text-gray-700" />
                   </div>
-                  <Badge variant={user.provider === "google" ? "success" : "default"}>
-                    {user.provider === "google"
-                      ? t("profile.connectedAccounts.primaryAccount")
-                      : t("profile.connectedAccounts.notConnected")}
-                  </Badge>
+                  <div>
+                    <p className="text-body font-semibold text-text-primary">
+                      {t("profile.connectedAccounts.google")}
+                    </p>
+                    {user.provider === "google" && (
+                      <p className="text-caption text-status-completed flex items-center gap-1 mt-0.5">
+                        <CheckCircle2 className="h-3 w-3" />
+                        {t("profile.connectedAccounts.connected")}
+                      </p>
+                    )}
+                  </div>
                 </div>
+                <Badge variant={user.provider === "google" ? "success" : "default"}>
+                  {user.provider === "google"
+                    ? t("profile.connectedAccounts.primaryAccount")
+                    : t("profile.connectedAccounts.notConnected")}
+                </Badge>
+              </div>
             </CardContent>
           </Card>
 
@@ -692,43 +692,39 @@ export default function ProfilePage() {
             </CardHeader>
             <CardContent>
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 rounded-xl border border-border-default bg-surface-raised">
-                  <div className="min-w-0">
-                    <p className="text-body font-semibold text-text-primary">
-                      {t("profile.onboarding.resetOnboarding")}
-                    </p>
-                    <p className="text-caption text-text-muted mt-1">
-                      {t("profile.onboarding.resetOnboardingDescription")}{" "}
-                      <span
-                        className={user.has_password ? "text-status-completed" : "text-text-muted"}
-                      >
-                        {user.has_password
-                          ? t("profile.onboarding.passwordAlreadySet")
-                          : t("profile.onboarding.passwordNotSet")}
-                      </span>
-                    </p>
-                  </div>
-                  <Button
-                    variant="secondary"
-                    size="md"
-                    onClick={handleResetOnboarding}
-                    disabled={resettingOnboarding}
-                    leftIcon={<RefreshCw className="h-4 w-4" />}
-                    className="w-full sm:w-auto shrink-0"
-                  >
-                    {resettingOnboarding
-                      ? t("profile.onboarding.resetting")
-                      : t("profile.onboarding.reset")}
-                  </Button>
+                <div className="min-w-0">
+                  <p className="text-body font-semibold text-text-primary">
+                    {t("profile.onboarding.resetOnboarding")}
+                  </p>
+                  <p className="text-caption text-text-muted mt-1">
+                    {t("profile.onboarding.resetOnboardingDescription")}{" "}
+                    <span
+                      className={user.has_password ? "text-status-completed" : "text-text-muted"}
+                    >
+                      {user.has_password
+                        ? t("profile.onboarding.passwordAlreadySet")
+                        : t("profile.onboarding.passwordNotSet")}
+                    </span>
+                  </p>
                 </div>
+                <Button
+                  variant="secondary"
+                  size="md"
+                  onClick={handleResetOnboarding}
+                  disabled={resettingOnboarding}
+                  leftIcon={<RefreshCw className="h-4 w-4" />}
+                  className="w-full sm:w-auto shrink-0"
+                >
+                  {resettingOnboarding
+                    ? t("profile.onboarding.resetting")
+                    : t("profile.onboarding.reset")}
+                </Button>
+              </div>
             </CardContent>
           </Card>
 
           {/* Danger Zone */}
-          <Card
-            variant="glass"
-            padding="lg"
-            className="border-status-failed/30 bg-status-failed/5"
-          >
+          <Card variant="glass" padding="lg" className="border-status-failed/30 bg-status-failed/5">
             <CardHeader>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center shadow-sm shrink-0">

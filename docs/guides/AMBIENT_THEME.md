@@ -1,7 +1,7 @@
 # Ambient theme — implementation & persistence plan
 
-**Status:** Implemented (localStorage) · Cookie migration optional  
-**Related:** [bg.md](./bg.md) (background patterns), [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md) (accent tokens)
+**Status:** Implemented (cookie + localStorage dual-write, SSR first paint)  
+**Related:** [bg.md](./bg.md) (background patterns), [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md) (accent tokens), [AMBIENT_GLASS_SURFACES.md](./AMBIENT_GLASS_SURFACES.md)
 
 ---
 
@@ -22,54 +22,50 @@ Themes are **decoupled from the logo gradient** so a future logo rebrand does no
 
 ---
 
-## Current implementation (localStorage)
+## Current implementation (cookie + localStorage)
 
 ### Key files
 
 | File | Role |
 |------|------|
-| `src/lib/ambient-background.tsx` | Context provider, `localStorage` read/write, sets `data-ambient-bg` on `<html>` |
+| `src/lib/ambient-background-shared.ts` | Server-safe constants + `parseAmbientBackgroundStyle` |
+| `src/lib/ambient-background.tsx` | Client provider: dual-write cookie + `localStorage`, cross-tab sync |
 | `src/components/shell/ambient-background.tsx` | Renders the fixed background layer for the active theme |
 | `src/app/globals.css` | `html[data-ambient-bg="…"]` token overrides + ambient CSS |
-| `src/app/layout.tsx` | Mounts `AmbientBackgroundProvider` + `AmbientBackground` |
+| `src/app/layout.tsx` | Async SSR: reads `ambient-bg` cookie → `<html data-ambient-bg>` |
 | `src/app/(shell)/settings/page.tsx` | Theme picker UI |
 
 ### Storage
 
-- **Key:** `appearance:ambientBackground`
-- **Values:** `aurora` | `mesh` | `grid`
+- **Cookie:** `ambient-bg` = `aurora` \| `mesh` \| `grid` (`Path=/`, `Max-Age=31536000`, `SameSite=Lax`) — used for SSR first paint
+- **localStorage key:** `appearance:ambientBackground` — cross-tab sync + migration for pre-cookie installs
 - **Default:** `aurora`
 
 ### Runtime flow
 
-1. User picks a theme in Settings → `setStyle()` runs.
-2. Provider writes to `localStorage` and sets `document.documentElement.dataset.ambientBg`.
+1. Server reads `ambient-bg` cookie and sets `data-ambient-bg` on `<html>` (no teal flash).
+2. User picks a theme in Settings → `setStyle()` dual-writes cookie + localStorage and updates `dataset.ambientBg`.
 3. CSS on `html[data-ambient-bg="…"]` swaps accent tokens site-wide.
 4. `AmbientBackground` re-renders the matching background layer.
+5. Other tabs receive `storage` events and stay in sync.
 
 ### First load / hard refresh
 
-1. Server sends HTML with **no** `data-ambient-bg` (default `:root` tokens = teal aurora).
-2. React hydrates; `AmbientBackgroundProvider` `useEffect` reads `localStorage`.
-3. Saved theme is applied (typically within one frame).
-
-**Trade-off:** A user who saved `mesh` or `grid` may see a **brief flash** of the default teal theme before the client applies their choice. This is acceptable for a lightweight UI preference.
+1. Server sends HTML with `data-ambient-bg` from the cookie (or `aurora` if missing).
+2. React hydrates with matching `initialStyle` from the layout.
+3. If cookie is missing but localStorage has a saved theme, the provider promotes it into the cookie for the next SSR.
 
 ### Removed: inline `<head>` script
 
-An earlier version ran a blocking script in `src/app/layout.tsx` to read `localStorage` before React hydrated and set `data-ambient-bg` early (FOUC prevention).
+An earlier version ran a blocking script in `src/app/layout.tsx` to read `localStorage` before React hydrated.
 
-**Removed because:**
-
-- Not required for correctness — the provider already applies the theme after mount.
-- Added `dangerouslySetInnerHTML` and `suppressHydrationWarning` to the root layout.
-- Benefit was marginal (one-frame polish) vs. simpler layout code.
-
-The provider-only path is the **current intentional design**.
+**Removed because:** SSR cookies provide zero-flash first paint without `dangerouslySetInnerHTML`.
 
 ---
 
 ## Alternative: persist theme in a cookie (SSR)
+
+> **Status:** Implemented — see “Current implementation” above. The sections below remain as design notes.
 
 ### Why consider it
 
@@ -169,21 +165,21 @@ That is a separate feature; cookie-only persistence is enough for same-browser, 
 ## Action Plan & Task List
 
 ### Phase 1: Shared Helper & Constants
-- [ ] Export `parseAmbientBackgroundStyle(value: string | undefined): AmbientBackgroundStyle` from a server-safe shared file (e.g., `src/lib/ambient-background-shared.ts` or split from provider).
-- [ ] Ensure valid fallback to `DEFAULT_AMBIENT_BACKGROUND` (`"aurora"`) for undefined or unrecognized values.
+- [x] Export `parseAmbientBackgroundStyle(value: string | undefined): AmbientBackgroundStyle` from a server-safe shared file (e.g., `src/lib/ambient-background-shared.ts` or split from provider).
+- [x] Ensure valid fallback to `DEFAULT_AMBIENT_BACKGROUND` (`"aurora"`) for undefined or unrecognized values.
 
 ### Phase 2: Root Layout SSR Integration
-- [ ] Make `RootLayout` in `src/app/layout.tsx` an async server component.
-- [ ] Read the `ambient-bg` cookie via `await cookies()`.
-- [ ] Pass the resolved style into `<html data-ambient-bg={theme} ...>`.
+- [x] Make `RootLayout` in `src/app/layout.tsx` an async server component.
+- [x] Read the `ambient-bg` cookie via `await cookies()`.
+- [x] Pass the resolved style into `<html data-ambient-bg={theme} ...>`.
 
 ### Phase 3: Client Provider Dual-Write & Hydration
-- [ ] Update `setStyle()` in `src/lib/ambient-background.tsx` to perform dual-write: `document.cookie` + `localStorage`.
-- [ ] In `useEffect` on initial mount, if cookie is missing but `localStorage` has a saved theme, sync it into `document.cookie`.
-- [ ] Keep React context in sync so Settings picker and live preview update instantaneously.
+- [x] Update `setStyle()` in `src/lib/ambient-background.tsx` to perform dual-write: `document.cookie` + `localStorage`.
+- [x] In `useEffect` on initial mount, if cookie is missing but `localStorage` has a saved theme, sync it into `document.cookie`.
+- [x] Keep React context in sync so Settings picker and live preview update instantaneously.
 
 ### Phase 4: Multi-Tab & Edge Case Handling
-- [ ] Ensure standard `window.addEventListener("storage", ...)` listener handles cross-tab changes smoothly.
+- [x] Ensure standard `window.addEventListener("storage", ...)` listener handles cross-tab changes smoothly.
 - [ ] Test cookie lifespan (`Max-Age=31536000`, `SameSite=Lax`, `Path=/`).
 
 ---

@@ -122,7 +122,10 @@ export default function PreferencesStep({ onNext, onBack }: PreferencesStepProps
                     <span className="truncate">{name}</span>
                   </span>
                   {isSelected && (
-                    <Check className="h-4 w-4 text-accent-primary shrink-0 ml-1" aria-hidden="true" />
+                    <Check
+                      className="h-4 w-4 text-accent-primary shrink-0 ml-1"
+                      aria-hidden="true"
+                    />
                   )}
                 </button>
               );
@@ -176,7 +179,10 @@ export default function PreferencesStep({ onNext, onBack }: PreferencesStepProps
                       </p>
                     </div>
                     {selected && (
-                      <Check className="h-4 w-4 shrink-0 text-accent-primary mt-0.5" aria-hidden="true" />
+                      <Check
+                        className="h-4 w-4 shrink-0 text-accent-primary mt-0.5"
+                        aria-hidden="true"
+                      />
                     )}
                   </div>
                 </button>

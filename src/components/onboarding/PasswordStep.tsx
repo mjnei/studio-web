@@ -200,7 +200,10 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
 
           {/* Confirm Password Input */}
           <div>
-            <Label htmlFor="confirm-password" className="text-text-primary font-medium mb-1.5 block">
+            <Label
+              htmlFor="confirm-password"
+              className="text-text-primary font-medium mb-1.5 block"
+            >
               {t("onboarding.password.confirmPasswordLabel")}
             </Label>
             <PasswordInput
@@ -242,7 +245,10 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
               role="alert"
               aria-live="polite"
             >
-              <AlertCircle className="h-5 w-5 flex-shrink-0 mt-0.5 text-red-400" aria-hidden="true" />
+              <AlertCircle
+                className="h-5 w-5 flex-shrink-0 mt-0.5 text-red-400"
+                aria-hidden="true"
+              />
               <span>{error}</span>
             </div>
           )}

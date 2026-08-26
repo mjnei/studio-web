@@ -134,10 +134,7 @@ export default function CompletionStep() {
         <div className="mb-6 sm:mb-8 flex justify-center">
           <div className="relative">
             <div className="w-16 h-16 sm:w-20 sm:h-20 bg-red-500/10 rounded-3xl flex items-center justify-center shadow-xl border border-red-500/20">
-              <AlertCircle
-                className="h-8 w-8 sm:h-10 sm:w-10 text-red-400"
-                aria-hidden="true"
-              />
+              <AlertCircle className="h-8 w-8 sm:h-10 sm:w-10 text-red-400" aria-hidden="true" />
             </div>
           </div>
         </div>
@@ -224,10 +221,7 @@ export default function CompletionStep() {
             <Sparkles className="h-7 w-7 sm:h-8 sm:w-8 text-yellow-400" aria-hidden="true" />
           </div>
           <div className="absolute -bottom-1 -left-1 animate-pulse">
-            <Rocket
-              className="h-7 w-7 sm:h-8 sm:w-8 text-accent-primary"
-              aria-hidden="true"
-            />
+            <Rocket className="h-7 w-7 sm:h-8 sm:w-8 text-accent-primary" aria-hidden="true" />
           </div>
         </div>
       </div>
@@ -256,9 +250,7 @@ export default function CompletionStep() {
             className="p-3.5 sm:p-4 bg-surface-elevated/70 rounded-xl border border-border-default backdrop-blur-sm transition-transform hover:scale-102"
           >
             <div className="text-2xl sm:text-3xl mb-1.5">{item.emoji}</div>
-            <div className="text-caption font-medium text-text-secondary">
-              {item.label}
-            </div>
+            <div className="text-caption font-medium text-text-secondary">{item.label}</div>
           </div>
         ))}
       </div>
