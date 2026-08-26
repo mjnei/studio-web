@@ -7,7 +7,7 @@ vi.mock("@/i18n", () => ({
   useI18n: () => ({
     t: (key: string, params?: Record<string, unknown>) => {
       const translations: Record<string, string> = {
-        "project.voice.myVoices": "My Voices",
+        "project.voice.myVoices": "Mine",
         "project.voice.community": "Community",
         "project.voice.yourVoice": "Your voice",
         "project.voice.noPersonalVoices": "No personal voices yet",
@@ -71,7 +71,7 @@ describe("VoiceSelectionPanel", () => {
   it("renders voice tabs and own voices by default", () => {
     render(<VoiceSelectionPanel {...defaultProps} />);
 
-    expect(screen.getByText("My Voices")).toBeInTheDocument();
+    expect(screen.getByText("Mine")).toBeInTheDocument();
     expect(screen.getByText("Community")).toBeInTheDocument();
     expect(screen.getByText("My Voice 1")).toBeInTheDocument();
     expect(screen.getByText("Your voice")).toBeInTheDocument();

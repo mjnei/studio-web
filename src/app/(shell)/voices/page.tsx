@@ -234,11 +234,11 @@ export default function VoicesPage() {
       />
 
       {/* Tab Navigation */}
-      <div className="mb-6">
-        <div className="inline-flex items-center gap-1 rounded-xl bg-surface-panel p-1 shadow-sm border border-border-default">
+      <div className="mb-6 overflow-x-auto scrollbar-hide">
+        <div className="inline-flex min-w-min items-center gap-1 rounded-xl bg-surface-panel p-1 shadow-sm border border-border-default">
           <button
             onClick={() => setTab("private")}
-            className={`relative flex items-center gap-2 rounded-lg px-5 py-2 text-body font-semibold transition-all duration-200 ${
+            className={`relative flex shrink-0 items-center gap-2 whitespace-nowrap rounded-lg px-5 py-2 text-body font-semibold transition-all duration-200 ${
               tab === "private"
                 ? "bg-accent-primary text-white shadow-md"
                 : "text-text-muted hover:text-text-primary hover:bg-surface-raised"
@@ -261,7 +261,7 @@ export default function VoicesPage() {
 
           <button
             onClick={() => setTab("community")}
-            className={`relative flex items-center gap-2 rounded-lg px-5 py-2 text-body font-semibold transition-all duration-200 ${
+            className={`relative flex shrink-0 items-center gap-2 whitespace-nowrap rounded-lg px-5 py-2 text-body font-semibold transition-all duration-200 ${
               tab === "community"
                 ? "bg-accent-primary text-white shadow-md"
                 : "text-text-muted hover:text-text-primary hover:bg-surface-raised"

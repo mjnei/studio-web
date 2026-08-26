@@ -4,7 +4,7 @@
     "description": "サブスクリプション、クレジット、請求履歴を管理します",
     "tabs": {
       "overview": "概要",
-      "history": "クレジット履歴",
+      "history": "履歴",
       "invoices": "請求書"
     },
     "overview": {

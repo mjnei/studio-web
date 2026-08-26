@@ -4,7 +4,7 @@
     "description": "Gère ton abonnement, tes crédits et ton historique de facturation",
     "tabs": {
       "overview": "Aperçu",
-      "history": "Historique des crédits",
+      "history": "Historique",
       "invoices": "Factures"
     },
     "overview": {

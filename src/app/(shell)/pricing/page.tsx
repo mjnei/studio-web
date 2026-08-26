@@ -30,30 +30,32 @@ interface BillingToggleProps {
 
 function BillingToggle({ billingCycle, onBillingCycleChange, t }: BillingToggleProps) {
   return (
-    <div className="inline-flex items-center gap-1 p-1 rounded-xl glass-card shadow-sm">
-      <button
-        type="button"
-        onClick={() => onBillingCycleChange("monthly")}
-        className={`h-9 px-3.5 sm:px-4 rounded-lg text-body font-medium transition-all ${
-          billingCycle === "monthly"
-            ? "bg-accent-primary text-white shadow-glow"
-            : "text-text-muted hover:text-text-primary"
-        }`}
-      >
-        {t("pricing.billingToggle.monthly")}
-      </button>
-      <button
-        type="button"
-        onClick={() => onBillingCycleChange("annual")}
-        className={`h-9 px-3.5 sm:px-4 rounded-lg text-body font-medium transition-all ${
-          billingCycle === "annual"
-            ? "bg-accent-primary text-white shadow-glow"
-            : "text-text-muted hover:text-text-primary"
-        }`}
-      >
-        <span>{t("pricing.billingToggle.annual")}</span>
-        <span className="ml-2 text-caption opacity-75">{t("pricing.billingToggle.savings")}</span>
-      </button>
+    <div className="overflow-x-auto scrollbar-hide">
+      <div className="inline-flex min-w-min items-center gap-1 p-1 rounded-xl glass-card shadow-sm">
+        <button
+          type="button"
+          onClick={() => onBillingCycleChange("monthly")}
+          className={`h-9 shrink-0 whitespace-nowrap px-3.5 sm:px-4 rounded-lg text-body font-medium transition-all ${
+            billingCycle === "monthly"
+              ? "bg-accent-primary text-white shadow-glow"
+              : "text-text-muted hover:text-text-primary"
+          }`}
+        >
+          {t("pricing.billingToggle.monthly")}
+        </button>
+        <button
+          type="button"
+          onClick={() => onBillingCycleChange("annual")}
+          className={`h-9 shrink-0 whitespace-nowrap px-3.5 sm:px-4 rounded-lg text-body font-medium transition-all ${
+            billingCycle === "annual"
+              ? "bg-accent-primary text-white shadow-glow"
+              : "text-text-muted hover:text-text-primary"
+          }`}
+        >
+          <span>{t("pricing.billingToggle.annual")}</span>
+          <span className="ml-2 text-caption opacity-75">{t("pricing.billingToggle.savings")}</span>
+        </button>
+      </div>
     </div>
   );
 }

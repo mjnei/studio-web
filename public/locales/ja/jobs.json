@@ -6,7 +6,7 @@
       "newProject": "新規プロジェクト"
     },
     "status": {
-      "active": "進行中のジョブ",
+      "active": "進行中",
       "completed": "完了",
       "failed": "失敗",
       "total": "ジョブ合計",

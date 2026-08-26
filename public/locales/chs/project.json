@@ -153,7 +153,7 @@
       "description": "选择一个音色并试听。下一步将生成音频。",
       "selected": "已选择：",
       "taglineHint": "这句钩子文案将用于视频缩略图。请选择与其气质匹配的音色。",
-      "myVoices": "我的音色",
+      "myVoices": "我的",
       "community": "社区",
       "noPersonalVoices": "还没有个人音色",
       "recordFirst": "录制你的第一个音色开始使用",

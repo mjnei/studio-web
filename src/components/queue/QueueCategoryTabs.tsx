@@ -22,7 +22,7 @@ export function QueueCategoryTabs({
       value={activeCategory}
       onValueChange={(v) => onCategoryChange(v as QueueCategory | "all")}
     >
-      <TabsList className="grid w-full grid-cols-4">
+      <TabsList>
         {CATEGORIES.map((category) => {
           const label =
             category === "all" ? "All Queues" : getCategoryLabel(category as QueueCategory);

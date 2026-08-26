@@ -6,7 +6,7 @@
       "newProject": "Nuevo proyecto"
     },
     "status": {
-      "active": "Trabajos activos",
+      "active": "Activos",
       "completed": "Completados",
       "failed": "Fallidos",
       "total": "Total de trabajos",

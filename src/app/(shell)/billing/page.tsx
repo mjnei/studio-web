@@ -124,11 +124,11 @@ export default function BillingPage() {
       <PageHeader title={t("billing.title")} description={t("billing.description")} />
 
       {/* Tabs */}
-      <div className="mb-8 overflow-x-auto">
-        <div className="inline-flex items-center gap-1 rounded-xl bg-surface-panel p-1 shadow-sm border border-border-default min-w-min">
+      <div className="mb-8 overflow-x-auto scrollbar-hide">
+        <div className="inline-flex min-w-min items-center gap-1 rounded-xl bg-surface-panel p-1 shadow-sm border border-border-default">
           <button
             onClick={() => setActiveTab("overview")}
-            className={`flex items-center gap-2 rounded-lg px-5 py-2 text-body font-semibold transition-all duration-200 ${
+            className={`flex shrink-0 items-center gap-2 whitespace-nowrap rounded-lg px-5 py-2 text-body font-semibold transition-all duration-200 ${
               activeTab === "overview"
                 ? "bg-accent-primary text-white shadow-md"
                 : "text-text-muted hover:text-text-primary hover:bg-surface-raised"
@@ -138,7 +138,7 @@ export default function BillingPage() {
           </button>
           <button
             onClick={() => setActiveTab("history")}
-            className={`flex items-center gap-2 rounded-lg px-5 py-2 text-body font-semibold transition-all duration-200 ${
+            className={`flex shrink-0 items-center gap-2 whitespace-nowrap rounded-lg px-5 py-2 text-body font-semibold transition-all duration-200 ${
               activeTab === "history"
                 ? "bg-accent-primary text-white shadow-md"
                 : "text-text-muted hover:text-text-primary hover:bg-surface-raised"
@@ -148,7 +148,7 @@ export default function BillingPage() {
           </button>
           <button
             onClick={() => setActiveTab("invoices")}
-            className={`flex items-center gap-2 rounded-lg px-5 py-2 text-body font-semibold transition-all duration-200 ${
+            className={`flex shrink-0 items-center gap-2 whitespace-nowrap rounded-lg px-5 py-2 text-body font-semibold transition-all duration-200 ${
               activeTab === "invoices"
                 ? "bg-accent-primary text-white shadow-md"
                 : "text-text-muted hover:text-text-primary hover:bg-surface-raised"

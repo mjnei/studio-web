@@ -4,7 +4,7 @@
     "description": "Manage your subscription, credits, and billing history",
     "tabs": {
       "overview": "Overview",
-      "history": "Credit History",
+      "history": "History",
       "invoices": "Invoices"
     },
     "overview": {

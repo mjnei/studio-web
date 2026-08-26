@@ -153,7 +153,7 @@
       "description": "Choose a voice and listen to its preview. Audio will be generated in the next step.",
       "selected": "Selected:",
       "taglineHint": "This hook will be used in your video's thumbnail. Now choose a voice that matches this tone.",
-      "myVoices": "My Voices",
+      "myVoices": "Mine",
       "community": "Community",
       "noPersonalVoices": "No personal voices yet",
       "recordFirst": "Record your first voice to get started",

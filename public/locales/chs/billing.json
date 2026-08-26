@@ -4,7 +4,7 @@
     "description": "管理订阅、额度和账单记录",
     "tabs": {
       "overview": "概览",
-      "history": "额度明细",
+      "history": "明细",
       "invoices": "发票"
     },
     "overview": {

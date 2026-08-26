@@ -325,10 +325,11 @@ export default function TTSJobsPage() {
           {/* Tabs Section */}
           <div>
             {/* Tab Navigation */}
-            <div className="flex items-center gap-2 mb-6">
+            <div className="mb-6 overflow-x-auto scrollbar-hide">
+              <div className="inline-flex min-w-min items-center gap-2">
               <button
                 onClick={() => setActiveTab("failed")}
-                className={`flex h-9 items-center gap-2 px-3.5 py-0 rounded-lg text-body font-semibold transition-all ${
+                className={`flex h-9 shrink-0 items-center gap-2 whitespace-nowrap px-3.5 py-0 rounded-lg text-body font-semibold transition-all ${
                   activeTab === "failed"
                     ? "bg-red-500/10 text-red-600 border-2 border-red-500/30"
                     : "border-2 border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:bg-accent-primary/5"
@@ -347,7 +348,7 @@ export default function TTSJobsPage() {
               </button>
               <button
                 onClick={() => setActiveTab("completed")}
-                className={`flex h-9 items-center gap-2 px-3.5 py-0 rounded-lg text-body font-semibold transition-all ${
+                className={`flex h-9 shrink-0 items-center gap-2 whitespace-nowrap px-3.5 py-0 rounded-lg text-body font-semibold transition-all ${
                   activeTab === "completed"
                     ? "bg-green-500/10 text-green-600 border-2 border-green-500/30"
                     : "border-2 border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:bg-accent-primary/5"
@@ -364,6 +365,7 @@ export default function TTSJobsPage() {
                   {completedJobs.length}
                 </span>
               </button>
+              </div>
             </div>
 
             {/* Tab Content */}

@@ -153,7 +153,7 @@
       "description": "Wähle eine Stimme und höre die Vorschau. Audio wird im nächsten Schritt generiert.",
       "selected": "Ausgewählt:",
       "taglineHint": "Dieser Hook erscheint im Thumbnail deines Videos. Wähle jetzt eine Stimme, die zu diesem Ton passt.",
-      "myVoices": "Meine Stimmen",
+      "myVoices": "Eigene",
       "community": "Community",
       "noPersonalVoices": "Noch keine eigenen Stimmen",
       "recordFirst": "Nimm deine erste Stimme auf, um zu starten",

@@ -4,7 +4,7 @@
     "description": "Gestiona tu suscripción, créditos e historial de facturación",
     "tabs": {
       "overview": "Resumen",
-      "history": "Historial de créditos",
+      "history": "Historial",
       "invoices": "Facturas"
     },
     "overview": {

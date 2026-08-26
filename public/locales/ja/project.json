@@ -153,7 +153,7 @@
       "description": "ボイスを選び、プレビューを聞いてください。音声は次のステップで生成されます。",
       "selected": "選択中：",
       "taglineHint": "このフックは動画のサムネイルに使われます。トーンに合うボイスを選びましょう。",
-      "myVoices": "マイボイス",
+      "myVoices": "自分",
       "community": "コミュニティ",
       "noPersonalVoices": "個人ボイスはまだありません",
       "recordFirst": "最初のボイスを録音して始めましょう",

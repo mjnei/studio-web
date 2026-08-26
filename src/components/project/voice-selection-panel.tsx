@@ -68,46 +68,48 @@ export function VoiceSelectionPanel({
       {/* Top Bar: Tabs & Search Filter */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         {/* Voice Category Tabs */}
-        <div className="inline-flex items-center gap-1.5 rounded-xl bg-surface-panel p-1 border border-border-default">
-          <Button
-            variant={tab === "community" ? "primary" : "ghost"}
-            size="sm"
-            onClick={() => setTab("community")}
-            leftIcon={<Globe className="h-4 w-4" aria-hidden />}
-            className="touch-manipulation"
-          >
-            <span>{t("project.voice.community")}</span>
-            {communityVoices.length > 0 && (
-              <span
-                className={`ml-1 rounded-full px-2 py-0.5 text-micro font-bold ${
-                  tab === "community"
-                    ? "bg-white/20 text-white"
-                    : "bg-surface-raised text-text-muted"
-                }`}
-              >
-                {communityVoices.length}
-              </span>
-            )}
-          </Button>
+        <div className="min-w-0 overflow-x-auto scrollbar-hide">
+          <div className="inline-flex min-w-min items-center gap-1.5 rounded-xl bg-surface-panel p-1 border border-border-default">
+            <Button
+              variant={tab === "community" ? "primary" : "ghost"}
+              size="sm"
+              onClick={() => setTab("community")}
+              leftIcon={<Globe className="h-4 w-4" aria-hidden />}
+              className="shrink-0 touch-manipulation whitespace-nowrap"
+            >
+              <span>{t("project.voice.community")}</span>
+              {communityVoices.length > 0 && (
+                <span
+                  className={`ml-1 rounded-full px-2 py-0.5 text-micro font-bold ${
+                    tab === "community"
+                      ? "bg-white/20 text-white"
+                      : "bg-surface-raised text-text-muted"
+                  }`}
+                >
+                  {communityVoices.length}
+                </span>
+              )}
+            </Button>
 
-          <Button
-            variant={tab === "my" ? "primary" : "ghost"}
-            size="sm"
-            onClick={() => setTab("my")}
-            leftIcon={<Mic className="h-4 w-4" aria-hidden />}
-            className="touch-manipulation"
-          >
-            <span>{t("project.voice.myVoices")}</span>
-            {ownVoices.length > 0 && (
-              <span
-                className={`ml-1 rounded-full px-2 py-0.5 text-micro font-bold ${
-                  tab === "my" ? "bg-white/20 text-white" : "bg-surface-raised text-text-muted"
-                }`}
-              >
-                {ownVoices.length}
-              </span>
-            )}
-          </Button>
+            <Button
+              variant={tab === "my" ? "primary" : "ghost"}
+              size="sm"
+              onClick={() => setTab("my")}
+              leftIcon={<Mic className="h-4 w-4" aria-hidden />}
+              className="shrink-0 touch-manipulation whitespace-nowrap"
+            >
+              <span>{t("project.voice.myVoices")}</span>
+              {ownVoices.length > 0 && (
+                <span
+                  className={`ml-1 rounded-full px-2 py-0.5 text-micro font-bold ${
+                    tab === "my" ? "bg-white/20 text-white" : "bg-surface-raised text-text-muted"
+                  }`}
+                >
+                  {ownVoices.length}
+                </span>
+              )}
+            </Button>
+          </div>
         </div>
 
         {/* Search Voice Input */}

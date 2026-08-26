@@ -6,7 +6,7 @@
     "billingToggle": {
       "monthly": "按月",
       "annual": "按年",
-      "savings": "省 20%"
+      "savings": "-20%"
     },
     "whatsIncluded": "套餐包含",
     "creditsPerMonth": "额度/月",

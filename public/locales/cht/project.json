@@ -153,7 +153,7 @@
       "description": "選擇音色並試聽預覽。音訊會在下一步產生。",
       "selected": "已選：",
       "taglineHint": "這句 hook 會用在影片縮圖。接著選一個符合語氣的音色。",
-      "myVoices": "我的音色",
+      "myVoices": "我的",
       "community": "社群",
       "noPersonalVoices": "還沒有個人音色",
       "recordFirst": "錄製第一個音色開始吧",

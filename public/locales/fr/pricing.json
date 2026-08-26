@@ -6,7 +6,7 @@
     "billingToggle": {
       "monthly": "Mensuel",
       "annual": "Annuel",
-      "savings": "Économise 20 %"
+      "savings": "-20%"
     },
     "whatsIncluded": "Ce qui est inclus",
     "creditsPerMonth": "crédits/mois",

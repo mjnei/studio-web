@@ -6,7 +6,7 @@
       "newProject": "Nouveau projet"
     },
     "status": {
-      "active": "Tâches actives",
+      "active": "Actives",
       "completed": "Terminées",
       "failed": "Échouées",
       "total": "Total des tâches",

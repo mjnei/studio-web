@@ -4,7 +4,7 @@
     "description": "管理訂閱、點數與帳單紀錄",
     "tabs": {
       "overview": "總覽",
-      "history": "點數紀錄",
+      "history": "紀錄",
       "invoices": "發票"
     },
     "overview": {

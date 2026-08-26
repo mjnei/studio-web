@@ -6,9 +6,9 @@
       "newProject": "Neues Projekt"
     },
     "status": {
-      "active": "Aktive Aufträge",
-      "completed": "Abgeschlossen",
-      "failed": "Fehlgeschlagen",
+      "active": "Aktiv",
+      "completed": "Fertig",
+      "failed": "Fehler",
       "total": "Aufträge gesamt",
       "live": "Live",
       "activeDescription": "Wird gerade gerendert",

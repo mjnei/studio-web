@@ -46,8 +46,8 @@ export const StatusCards: React.FC<StatusCardsProps> = ({
   const { t } = useI18n();
 
   return (
-    <div className="mb-6">
-      <div className="inline-flex items-center gap-1 rounded-xl bg-surface-panel p-1 shadow-sm border border-border-default">
+    <div className="mb-6 overflow-x-auto scrollbar-hide">
+      <div className="inline-flex min-w-min items-center gap-1 rounded-xl bg-surface-panel p-1 shadow-sm border border-border-default">
         {STATUS_ITEMS.map(({ value, icon: Icon, colorClass, getCount }) => {
           const isActive = activeFilter === value;
           const count = getCount(summary);
@@ -57,7 +57,7 @@ export const StatusCards: React.FC<StatusCardsProps> = ({
               type="button"
               onClick={() => onSelectFilter(value)}
               className={cn(
-                "relative flex items-center gap-2 rounded-lg px-5 py-2 text-body font-semibold transition-all duration-200",
+                "relative flex shrink-0 items-center gap-2 whitespace-nowrap rounded-lg px-5 py-2 text-body font-semibold transition-all duration-200",
                 isActive
                   ? "bg-accent-primary text-white shadow-md"
                   : "text-text-muted hover:text-text-primary hover:bg-surface-raised"
