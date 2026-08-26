@@ -103,14 +103,14 @@ export default function WorkflowStep({ onNext, onBack }: WorkflowStepProps) {
                 <Heading
                   variant="subsection"
                   as="h3"
-                  className="mb-1 text-text-primary text-sm sm:text-base"
+                  className="mb-1 text-text-primary text-body sm:text-section"
                 >
                   {step.title}
                 </Heading>
                 <Text
                   variant="caption"
                   as="p"
-                  className="leading-snug text-text-muted text-xs sm:text-caption"
+                  className="leading-snug text-text-muted text-caption"
                 >
                   {step.description}
                 </Text>

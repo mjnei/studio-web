@@ -96,7 +96,12 @@ export function AmbientBackgroundProvider({
       applyDocumentStyle(next);
     }
 
-    setStyleState(next);
+    // Defer React state when client storage differs from SSR (migration path).
+    // Avoids react-hooks/set-state-in-effect cascading-render lint.
+    let timer: number | undefined;
+    if (next !== initialStyle) {
+      timer = window.setTimeout(() => setStyleState(next), 0);
+    }
 
     const onStorage = (event: StorageEvent) => {
       if (event.key !== AMBIENT_BACKGROUND_STORAGE_KEY) return;
@@ -107,7 +112,10 @@ export function AmbientBackgroundProvider({
     };
 
     window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
+    return () => {
+      if (timer !== undefined) window.clearTimeout(timer);
+      window.removeEventListener("storage", onStorage);
+    };
   }, [initialStyle]);
 
   const setStyle = useCallback((next: AmbientBackgroundStyle) => {

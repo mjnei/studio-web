@@ -88,7 +88,7 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
           onClick={onNext}
           aria-label={t("onboarding.welcome.getStartedAria")}
           rightIcon={<ArrowRight className="h-5 w-5" aria-hidden />}
-          className="w-full sm:w-auto px-8 sm:px-10 py-3.5 text-base font-semibold shadow-glow hover:shadow-glow-hover"
+          className="w-full sm:w-auto px-8 sm:px-10 py-3.5 text-body font-semibold shadow-glow hover:shadow-glow-hover"
         >
           {t("onboarding.welcome.getStarted")}
         </Button>

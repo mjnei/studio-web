@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { Check, Globe, Palette } from "lucide-react";
-import { useI18n, locales, localeNames, type Locale } from "@/i18n";
+import { useI18n, locales, localeNames } from "@/i18n";
 import {
   AMBIENT_BACKGROUND_STYLES,
   useAmbientBackground,
@@ -118,7 +118,7 @@ export default function PreferencesStep({ onNext, onBack }: PreferencesStepProps
                   }`}
                 >
                   <span className="flex items-center gap-2 truncate text-body font-medium">
-                    <span className="text-base leading-none">{flag}</span>
+                    <span className="text-section leading-none">{flag}</span>
                     <span className="truncate">{name}</span>
                   </span>
                   {isSelected && (
