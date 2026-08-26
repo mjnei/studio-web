@@ -19,11 +19,7 @@ export default function OnboardingPage() {
       onNext={() => setCurrentStep(2)}
       onBack={() => setCurrentStep(0)}
     />,
-    <ThemeStep
-      key="theme"
-      onNext={() => setCurrentStep(3)}
-      onBack={() => setCurrentStep(1)}
-    />,
+    <ThemeStep key="theme" onNext={() => setCurrentStep(3)} onBack={() => setCurrentStep(1)} />,
     <WorkflowStep
       key="workflow"
       onNext={() => setCurrentStep(4)}

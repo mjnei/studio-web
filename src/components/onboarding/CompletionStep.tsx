@@ -169,7 +169,10 @@ export default function CompletionStep() {
                 </div>
               </div>
               <div className="absolute -top-2 -right-2">
-                <Sparkles className="h-6 w-6 text-accent-tertiary animate-pulse" aria-hidden="true" />
+                <Sparkles
+                  className="h-6 w-6 text-accent-tertiary animate-pulse"
+                  aria-hidden="true"
+                />
               </div>
             </div>
           </div>

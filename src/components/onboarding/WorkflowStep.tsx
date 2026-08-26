@@ -119,10 +119,7 @@ export default function WorkflowStep({ onNext, onBack }: WorkflowStepProps) {
 
         <div className="bg-accent-primary/10 border border-accent-primary/20 rounded-xl p-3 sm:p-3.5">
           <div className="flex items-start gap-2.5">
-            <Info
-              className="h-4 w-4 text-accent-primary flex-shrink-0 mt-0.5"
-              aria-hidden
-            />
+            <Info className="h-4 w-4 text-accent-primary flex-shrink-0 mt-0.5" aria-hidden />
             <Text variant="caption" as="p" className="text-text-secondary leading-relaxed">
               {t("onboarding.workflow.info")}
             </Text>

@@ -80,10 +80,7 @@ export default function LanguageStep({ onNext, onBack }: LanguageStepProps) {
                   <span className="truncate">{name}</span>
                 </span>
                 {isSelected && (
-                  <Check
-                    className="h-4 w-4 text-accent-primary shrink-0 ml-1"
-                    aria-hidden="true"
-                  />
+                  <Check className="h-4 w-4 text-accent-primary shrink-0 ml-1" aria-hidden="true" />
                 )}
               </button>
             );

@@ -108,7 +108,9 @@ export default function ThemeStep({ onNext, onBack }: ThemeStepProps) {
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
                     <p className="text-body font-semibold text-text-primary">{label.title}</p>
-                    <p className="text-caption text-text-muted mt-1 leading-snug">{label.description}</p>
+                    <p className="text-caption text-text-muted mt-1 leading-snug">
+                      {label.description}
+                    </p>
                   </div>
                   {selected && (
                     <Check

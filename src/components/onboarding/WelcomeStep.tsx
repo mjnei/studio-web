@@ -44,7 +44,10 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
               <Film className="h-8 w-8 sm:h-10 sm:w-10 text-white" aria-hidden="true" />
             </div>
             <div className="absolute -top-2 -right-2">
-              <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-accent-tertiary animate-pulse" aria-hidden="true" />
+              <Sparkles
+                className="h-5 w-5 sm:h-6 sm:w-6 text-accent-tertiary animate-pulse"
+                aria-hidden="true"
+              />
             </div>
           </div>
         </div>
@@ -56,7 +59,10 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
           {t("onboarding.welcome.title")}
         </Heading>
 
-        <Text variant="bodyLg" className="mx-auto mb-5 sm:mb-6 max-w-lg px-4 text-text-secondary text-body sm:text-bodyLg">
+        <Text
+          variant="bodyLg"
+          className="mx-auto mb-5 sm:mb-6 max-w-lg px-4 text-text-secondary text-body sm:text-bodyLg"
+        >
           {t("onboarding.welcome.subtitle")}
         </Text>
 
