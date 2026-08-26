@@ -26,7 +26,6 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
   const [loading, setLoading] = useState(false);
   const hasExistingPassword = user?.has_password ?? false;
 
-  // Password strength indicator
   const getPasswordStrength = () => {
     if (!password) return { strength: 0, label: "", color: "" };
     const length = password.length;
@@ -92,19 +91,18 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
   };
 
   return (
-    <div className="max-w-2xl mx-auto h-full flex flex-col justify-between">
-      <div>
-        {/* Header */}
-        <div className="text-center mb-6 sm:mb-8">
-          <div className="mb-3 sm:mb-4 flex justify-center">
+    <div className="h-full min-h-0 flex flex-col max-w-2xl mx-auto w-full">
+      <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain">
+        <div className="text-center mb-4 sm:mb-5">
+          <div className="mb-2.5 sm:mb-3 flex justify-center">
             <div className="relative">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-accent-primary to-accent-secondary rounded-2xl flex items-center justify-center shadow-lg shadow-accent-primary/25">
-                <Lock className="h-7 w-7 sm:h-8 sm:w-8 text-white" aria-hidden="true" />
+              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-accent-primary to-accent-secondary rounded-2xl flex items-center justify-center shadow-lg shadow-accent-primary/25">
+                <Lock className="h-6 w-6 sm:h-7 sm:w-7 text-white" aria-hidden="true" />
               </div>
               {hasExistingPassword && (
                 <div className="absolute -top-1 -right-1">
                   <CheckCircle2
-                    className="h-6 w-6 text-green-500 bg-surface-base rounded-full"
+                    className="h-5 w-5 text-green-500 bg-surface-base rounded-full"
                     aria-hidden="true"
                   />
                 </div>
@@ -112,36 +110,37 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
             </div>
           </div>
 
-          <Heading variant="page" as="h2" className="mb-2 text-text-primary">
+          <Heading variant="page" as="h2" className="mb-1.5 text-text-primary">
             {hasExistingPassword
               ? t("onboarding.password.titleUpdate")
               : t("onboarding.password.title")}
           </Heading>
 
-          <Text variant="body" className="mb-2 px-2 text-text-secondary">
+          <Text
+            variant="body"
+            className="mb-1.5 px-2 text-text-secondary text-caption sm:text-body"
+          >
             {hasExistingPassword
               ? t("onboarding.password.subtitleUpdate")
               : t("onboarding.password.subtitle")}
           </Text>
 
           {!hasExistingPassword && (
-            <div className="flex items-center justify-center gap-1.5 text-caption text-text-muted px-4 mt-2">
+            <div className="flex items-center justify-center gap-1.5 text-caption text-text-muted px-4 mt-1.5">
               <Shield className="h-3.5 w-3.5" aria-hidden="true" />
               <span>{t("onboarding.password.securityHint")}</span>
             </div>
           )}
 
           {hasExistingPassword && (
-            <div className="mt-3 inline-flex items-center gap-2 px-3.5 py-1.5 bg-green-500/10 text-green-400 rounded-lg text-caption font-medium border border-green-500/20">
+            <div className="mt-2.5 inline-flex items-center gap-2 px-3 py-1.5 bg-green-500/10 text-green-400 rounded-lg text-caption font-medium border border-green-500/20">
               <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
               <span>{t("onboarding.password.alreadyConfigured")}</span>
             </div>
           )}
         </div>
 
-        {/* Form */}
-        <form id="password-form" onSubmit={handleSubmit} className="space-y-4 sm:space-y-5 mb-6">
-          {/* Password Input */}
+        <form id="password-form" onSubmit={handleSubmit} className="space-y-3.5 sm:space-y-4">
           <div>
             <Label htmlFor="password" className="text-text-primary font-medium mb-1.5 block">
               {t("onboarding.password.passwordLabel")}
@@ -155,7 +154,6 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
               aria-describedby={error ? "password-error" : undefined}
             />
 
-            {/* Password Strength Indicator */}
             {password && !hasExistingPassword && (
               <div className="mt-2.5">
                 <div className="flex items-center justify-between mb-1.5">
@@ -198,7 +196,6 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
             )}
           </div>
 
-          {/* Confirm Password Input */}
           <div>
             <Label
               htmlFor="confirm-password"
@@ -215,7 +212,6 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
               aria-describedby={error ? "password-error" : undefined}
             />
 
-            {/* Match Indicator */}
             {confirmPassword && password && (
               <div className="mt-2 flex items-center gap-1.5">
                 {password === confirmPassword ? (
@@ -237,11 +233,10 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
             )}
           </div>
 
-          {/* Error Message */}
           {error && (
             <div
               id="password-error"
-              className="flex items-start gap-2.5 p-3.5 bg-red-500/10 border border-red-500/20 rounded-xl text-body text-red-300"
+              className="flex items-start gap-2.5 p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-body text-red-300"
               role="alert"
               aria-live="polite"
             >
@@ -255,8 +250,7 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
         </form>
       </div>
 
-      {/* Navigation Buttons */}
-      <div className="flex flex-col-reverse sm:flex-row items-center justify-between gap-2.5 sm:gap-3 pt-2">
+      <div className="shrink-0 flex flex-col-reverse sm:flex-row items-center justify-between gap-2.5 sm:gap-3 pt-3 sm:pt-4 border-t border-border-subtle mt-3">
         <Button
           type="button"
           variant="secondary"

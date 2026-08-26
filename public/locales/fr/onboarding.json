@@ -16,13 +16,17 @@
       "stepOf": "Étape {current} sur {total}",
       "ariaLabel": "Étape {current} sur {total}"
     },
-    "preferences": {
-      "title": "Personnalisez votre expérience",
-      "subtitle": "Choisissez votre langue préférée et votre thème de couleur. Vous pouvez les modifier à tout moment dans les Paramètres.",
-      "languageSection": "Langue de l'interface",
-      "languageSectionDesc": "Choisissez la langue pour le studio",
-      "themeSection": "Thème de couleur",
-      "themeSectionDesc": "Sélectionnez votre couleur d'accentuation et l'ambiance",
+    "language": {
+      "title": "Choisissez votre langue",
+      "subtitle": "Sélectionnez la langue de l'interface du studio. Vous pouvez la modifier à tout moment dans les Paramètres.",
+      "back": "Retour",
+      "continue": "Continuer",
+      "goBack": "Revenir à l'étape précédente",
+      "continueTakeStep": "Passer à l'étape suivante"
+    },
+    "theme": {
+      "title": "Choisissez votre thème",
+      "subtitle": "Sélectionnez votre couleur d'accentuation et l'ambiance. Vous pouvez les modifier à tout moment dans les Paramètres.",
       "back": "Retour",
       "continue": "Continuer",
       "goBack": "Revenir à l'étape précédente",

@@ -16,13 +16,17 @@
       "stepOf": "ステップ {current} / {total}",
       "ariaLabel": "ステップ {current} / {total}"
     },
-    "preferences": {
-      "title": "環境設定のカスタマイズ",
-      "subtitle": "お好みの言語とカラーテーマを選択してください。後から「設定」でいつでも変更できます。",
-      "languageSection": "表示言語",
-      "languageSectionDesc": "スタジオのインターフェース言語を選択",
-      "themeSection": "カラーテーマ",
-      "themeSectionDesc": "アクセントカラーと背景エフェクトを選択",
+    "language": {
+      "title": "表示言語を選択",
+      "subtitle": "スタジオのインターフェース言語を選んでください。後から「設定」でいつでも変更できます。",
+      "back": "戻る",
+      "continue": "続ける",
+      "goBack": "前のステップに戻る",
+      "continueTakeStep": "次のステップに進む"
+    },
+    "theme": {
+      "title": "カラーテーマを選択",
+      "subtitle": "アクセントカラーと背景エフェクトを選んでください。後から「設定」でいつでも変更できます。",
       "back": "戻る",
       "continue": "続ける",
       "goBack": "前のステップに戻る",

@@ -28,7 +28,6 @@ export default function CompletionStep() {
         await completeOnboarding();
         setIsCompleting(false);
 
-        // Start countdown
         countdownInterval = setInterval(() => {
           setCountdown((prev) => {
             if (prev <= 1) {
@@ -39,7 +38,6 @@ export default function CompletionStep() {
           });
         }, 1000);
 
-        // Auto-redirect after 5 seconds
         redirectTimer = setTimeout(() => {
           refreshUser().then(() => {
             router.push("/dashboard");
@@ -127,28 +125,25 @@ export default function CompletionStep() {
       <div
         ref={errorContainerRef}
         tabIndex={-1}
-        className="text-center max-w-lg mx-auto outline-none py-4"
+        className="h-full min-h-0 flex flex-col outline-none text-center max-w-lg mx-auto w-full"
         onKeyDown={handleErrorKeyDown}
       >
-        {/* Error Icon */}
-        <div className="mb-6 sm:mb-8 flex justify-center">
-          <div className="relative">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-red-500/10 rounded-3xl flex items-center justify-center shadow-xl border border-red-500/20">
-              <AlertCircle className="h-8 w-8 sm:h-10 sm:w-10 text-red-400" aria-hidden="true" />
+        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain flex flex-col justify-center">
+          <div className="mb-5 flex justify-center">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-red-500/10 rounded-3xl flex items-center justify-center shadow-xl border border-red-500/20">
+              <AlertCircle className="h-7 w-7 sm:h-8 sm:w-8 text-red-400" aria-hidden="true" />
             </div>
           </div>
+
+          <Heading variant="page" as="h2" className="mb-2 text-text-primary">
+            {t("onboarding.completion.error")}
+          </Heading>
+          <Text variant="body" className="px-4 text-text-muted" role="alert">
+            {error}
+          </Text>
         </div>
 
-        {/* Error Message */}
-        <Heading variant="page" as="h2" className="mb-3 text-text-primary">
-          {t("onboarding.completion.error")}
-        </Heading>
-        <Text variant="body" className="mb-6 px-4 text-text-muted" role="alert">
-          {error}
-        </Text>
-
-        {/* Retry Button */}
-        <div className="flex justify-center">
+        <div className="shrink-0 flex justify-stretch sm:justify-end pt-3 sm:pt-4 border-t border-border-subtle mt-3">
           <Button
             size="lg"
             variant="primary"
@@ -164,37 +159,37 @@ export default function CompletionStep() {
 
   if (isCompleting) {
     return (
-      <div className="text-center max-w-lg mx-auto py-6">
-        {/* Loading Spinner */}
-        <div className="mb-6 sm:mb-8 flex justify-center">
-          <div className="relative">
-            <div className="w-18 h-18 sm:w-22 sm:h-22 bg-gradient-to-br from-accent-secondary via-accent-primary to-accent-tertiary rounded-3xl flex items-center justify-center shadow-xl shadow-accent-primary/25 animate-pulse">
-              <div role="status" aria-label={t("onboarding.completion.loadingAriaLabel")}>
-                <Spinner className="h-9 w-9 sm:h-11 sm:w-11 text-white" />
+      <div className="h-full min-h-0 flex flex-col text-center max-w-lg mx-auto w-full">
+        <div className="flex-1 min-h-0 flex flex-col justify-center">
+          <div className="mb-5 flex justify-center">
+            <div className="relative">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-accent-secondary via-accent-primary to-accent-tertiary rounded-3xl flex items-center justify-center shadow-xl shadow-accent-primary/25 animate-pulse">
+                <div role="status" aria-label={t("onboarding.completion.loadingAriaLabel")}>
+                  <Spinner className="h-8 w-8 sm:h-10 sm:w-10 text-white" />
+                </div>
+              </div>
+              <div className="absolute -top-2 -right-2">
+                <Sparkles className="h-6 w-6 text-accent-tertiary animate-pulse" aria-hidden="true" />
               </div>
             </div>
-            <div className="absolute -top-2 -right-2">
-              <Sparkles className="h-7 w-7 text-accent-tertiary animate-pulse" aria-hidden="true" />
-            </div>
           </div>
-        </div>
 
-        <Heading variant="page" as="h2" className="mb-2 text-text-primary">
-          {t("onboarding.completion.loading")}
-        </Heading>
-        <Text variant="body" className="px-4 text-text-muted">
-          {t("onboarding.completion.loadingSubtext")}
-        </Text>
+          <Heading variant="page" as="h2" className="mb-2 text-text-primary">
+            {t("onboarding.completion.loading")}
+          </Heading>
+          <Text variant="body" className="px-4 text-text-muted">
+            {t("onboarding.completion.loadingSubtext")}
+          </Text>
 
-        {/* Loading dots */}
-        <div className="flex justify-center gap-2 mt-6">
-          {[...Array(3)].map((_, i) => (
-            <div
-              key={i}
-              className="w-2 h-2 bg-accent-primary rounded-full animate-bounce"
-              style={{ animationDelay: `${i * 0.15}s` }}
-            />
-          ))}
+          <div className="flex justify-center gap-2 mt-5">
+            {[...Array(3)].map((_, i) => (
+              <div
+                key={i}
+                className="w-2 h-2 bg-accent-primary rounded-full animate-bounce"
+                style={{ animationDelay: `${i * 0.15}s` }}
+              />
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -204,74 +199,70 @@ export default function CompletionStep() {
     <div
       ref={successContainerRef}
       tabIndex={-1}
-      className="text-center max-w-lg mx-auto outline-none py-2 sm:py-4"
+      className="h-full min-h-0 flex flex-col outline-none text-center max-w-lg mx-auto w-full"
       onKeyDown={handleSuccessKeyDown}
     >
-      {/* Success Icon with Animation */}
-      <div className="mb-6 sm:mb-8 flex justify-center relative">
-        <div className="relative">
-          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-green-500 to-emerald-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-green-500/30 animate-scaleIn">
-            <CheckCircle2
-              className="h-12 w-12 sm:h-14 sm:w-14 text-white"
-              aria-hidden="true"
-              strokeWidth={2.5}
-            />
+      <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain flex flex-col justify-center">
+        <div className="mb-5 flex justify-center relative">
+          <div className="relative">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-green-500/30 animate-scaleIn">
+              <CheckCircle2
+                className="h-9 w-9 sm:h-11 sm:w-11 text-white"
+                aria-hidden="true"
+                strokeWidth={2.5}
+              />
+            </div>
+            <div className="absolute -top-2 -right-2 animate-bounce">
+              <Sparkles className="h-6 w-6 sm:h-7 sm:w-7 text-yellow-400" aria-hidden="true" />
+            </div>
+            <div className="absolute -bottom-1 -left-1 animate-pulse">
+              <Rocket className="h-6 w-6 sm:h-7 sm:w-7 text-accent-primary" aria-hidden="true" />
+            </div>
           </div>
-          <div className="absolute -top-2 -right-2 animate-bounce">
-            <Sparkles className="h-7 w-7 sm:h-8 sm:w-8 text-yellow-400" aria-hidden="true" />
-          </div>
-          <div className="absolute -bottom-1 -left-1 animate-pulse">
-            <Rocket className="h-7 w-7 sm:h-8 sm:w-8 text-accent-primary" aria-hidden="true" />
-          </div>
+        </div>
+
+        <Heading
+          variant="display"
+          as="h2"
+          className="mb-2.5 bg-gradient-to-r from-text-primary via-text-primary to-text-secondary bg-clip-text text-transparent"
+        >
+          {t("onboarding.completion.success")}
+        </Heading>
+        <Text variant="bodyLg" className="mb-5 px-4 text-text-secondary text-body sm:text-bodyLg">
+          {t("onboarding.completion.successSubtext")}
+        </Text>
+
+        <div className="grid grid-cols-3 gap-2 sm:gap-3 px-2">
+          {[
+            { emoji: "🎬", label: t("onboarding.completion.features.create") },
+            { emoji: "🎨", label: t("onboarding.completion.features.design") },
+            { emoji: "🚀", label: t("onboarding.completion.features.publish") },
+          ].map((item, idx) => (
+            <div
+              key={idx}
+              className="p-3 bg-surface-elevated/70 rounded-xl border border-border-default backdrop-blur-sm"
+            >
+              <div className="text-xl sm:text-2xl mb-1">{item.emoji}</div>
+              <div className="text-caption font-medium text-text-secondary">{item.label}</div>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Success Message */}
-      <Heading
-        variant="display"
-        as="h2"
-        className="mb-3 sm:mb-4 bg-gradient-to-r from-text-primary via-text-primary to-text-secondary bg-clip-text text-transparent"
-      >
-        {t("onboarding.completion.success")}
-      </Heading>
-      <Text variant="bodyLg" className="mb-6 sm:mb-8 px-4 text-text-secondary">
-        {t("onboarding.completion.successSubtext")}
-      </Text>
-
-      {/* Features Preview */}
-      <div className="grid grid-cols-3 gap-2.5 sm:gap-3.5 mb-8 sm:mb-10 px-2">
-        {[
-          { emoji: "🎬", label: t("onboarding.completion.features.create") },
-          { emoji: "🎨", label: t("onboarding.completion.features.design") },
-          { emoji: "🚀", label: t("onboarding.completion.features.publish") },
-        ].map((item, idx) => (
-          <div
-            key={idx}
-            className="p-3.5 sm:p-4 bg-surface-elevated/70 rounded-xl border border-border-default backdrop-blur-sm transition-transform hover:scale-102"
-          >
-            <div className="text-2xl sm:text-3xl mb-1.5">{item.emoji}</div>
-            <div className="text-caption font-medium text-text-secondary">{item.label}</div>
-          </div>
-        ))}
-      </div>
-
-      {/* Manual Redirect Button */}
-      <div className="flex justify-center px-4">
+      <div className="shrink-0 flex flex-col items-stretch sm:items-end gap-2 pt-3 sm:pt-4 border-t border-border-subtle mt-3">
         <Button
           size="lg"
           variant="primary"
           onClick={handleManualRedirect}
           rightIcon={<Rocket className="h-5 w-5" aria-hidden="true" />}
-          className="w-full sm:w-auto px-8 sm:px-10 py-3.5 text-base font-semibold shadow-glow hover:shadow-glow-hover"
+          className="w-full sm:w-auto px-8 sm:px-10 shadow-glow hover:shadow-glow-hover"
         >
           {t("onboarding.completion.goToDashboard")}
         </Button>
-      </div>
-
-      {/* Countdown */}
-      <div className="mt-5 flex items-center justify-center gap-2 text-caption text-text-muted">
-        <Spinner size="sm" className="text-text-muted" />
-        <span>{t("onboarding.completion.redirect", { seconds: countdown })}</span>
+        <div className="flex items-center justify-center sm:justify-end gap-2 text-caption text-text-muted">
+          <Spinner size="sm" className="text-text-muted" />
+          <span>{t("onboarding.completion.redirect", { seconds: countdown })}</span>
+        </div>
       </div>
     </div>
   );

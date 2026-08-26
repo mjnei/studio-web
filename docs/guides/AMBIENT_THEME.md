@@ -34,8 +34,9 @@ Themes are **decoupled from the logo gradient** so a future logo rebrand does no
 | `src/app/globals.css` | `html[data-ambient-bg="…"]` token overrides + ambient CSS |
 | `src/app/layout.tsx` | Async SSR: imports shared helpers from `@/lib/ambient-background-shared`, reads `ambient-bg` cookie → `<html data-ambient-bg>`, passes `initialStyle` into the provider |
 | `src/app/(shell)/settings/page.tsx` | In-app theme picker (Settings → Appearance) |
-| `src/components/onboarding/PreferencesStep.tsx` | Onboarding theme + locale picker (same `setStyle()` path) |
-| `src/components/shared/ThemeSwitcher.tsx` | **Orphan** — uses the provider but has no imports/callers; not part of the live UI. Prefer Settings / PreferencesStep, or wire this up / delete in a follow-up |
+| `src/components/onboarding/ThemeStep.tsx` | Onboarding theme picker (same `setStyle()` path) |
+| `src/components/onboarding/LanguageStep.tsx` | Onboarding locale picker |
+| `src/components/shared/ThemeSwitcher.tsx` | **Orphan** — uses the provider but has no imports/callers; not part of the live UI. Prefer Settings / ThemeStep, or wire this up / delete in a follow-up |
 
 ### Storage
 

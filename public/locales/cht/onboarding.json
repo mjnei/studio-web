@@ -16,13 +16,17 @@
       "stepOf": "第 {current} 步，共 {total} 步",
       "ariaLabel": "第 {current} 步，共 {total} 步"
     },
-    "preferences": {
-      "title": "個人化偏好設定",
-      "subtitle": "選擇你偏好的介面語言與主題色彩。稍後可隨時在「設定」中變更。",
-      "languageSection": "介面語言",
-      "languageSectionDesc": "選擇工作室顯示語言",
-      "themeSection": "主題色彩",
-      "themeSectionDesc": "選擇介面強調色與流光氛圍",
+    "language": {
+      "title": "選擇介面語言",
+      "subtitle": "選擇工作室的顯示語言。稍後可隨時在「設定」中變更。",
+      "back": "上一步",
+      "continue": "繼續",
+      "goBack": "返回上一步",
+      "continueTakeStep": "繼續下一步"
+    },
+    "theme": {
+      "title": "選擇主題色彩",
+      "subtitle": "選擇介面強調色與流光氛圍。稍後可隨時在「設定」中變更。",
       "back": "上一步",
       "continue": "繼續",
       "goBack": "返回上一步",

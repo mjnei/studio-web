@@ -16,13 +16,17 @@
       "stepOf": "Paso {current} de {total}",
       "ariaLabel": "Paso {current} de {total}"
     },
-    "preferences": {
-      "title": "Personaliza tu experiencia",
-      "subtitle": "Selecciona tu idioma preferido y tema de color. Puedes cambiarlos en cualquier momento desde Configuración.",
-      "languageSection": "Idioma de la interfaz",
-      "languageSectionDesc": "Elige el idioma para el estudio",
-      "themeSection": "Tema de color",
-      "themeSectionDesc": "Elige tu color de acento y brillo ambiental",
+    "language": {
+      "title": "Elige tu idioma",
+      "subtitle": "Selecciona el idioma de la interfaz del estudio. Puedes cambiarlo en cualquier momento desde Configuración.",
+      "back": "Atrás",
+      "continue": "Continuar",
+      "goBack": "Volver al paso anterior",
+      "continueTakeStep": "Continuar al siguiente paso"
+    },
+    "theme": {
+      "title": "Elige tu tema",
+      "subtitle": "Selecciona el color de acento y el brillo ambiental. Puedes cambiarlos en cualquier momento desde Configuración.",
       "back": "Atrás",
       "continue": "Continuar",
       "goBack": "Volver al paso anterior",
