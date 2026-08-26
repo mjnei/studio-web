@@ -73,31 +73,20 @@ body {
 
 ### Recommended Utility Classes to Pair With This
 
-To make UI cards, panels, and sidebars pop against these dynamic backgrounds, leverage **glassmorphism** and **subtle top-edge highlights**:
+Shipped glass utilities live in `src/app/globals.css` (prefer these over ad-hoc opacity):
+
+| Class | Role |
+|-------|------|
+| `glass-chrome` | TopNav, desktop rails / project shell chrome |
+| `glass-card` / `Card variant="glass"` | Content cards and section panels |
+| `glass-sticky` | Sticky bars and notification dropdown |
+
+Keep inputs, modals, tables, and media solid. See [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md) § Visual Styling.
 
 ```css
-@layer utilities {
-  /* Subtle glass card with specular top border highlight */
-  .glass-panel {
-    background: rgba(15, 20, 25, 0.75);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--border-default);
-    box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-  }
-
-  /* Interactive glow hover for automation cards */
-  .card-glow-hover {
-    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
-  }
-  .card-glow-hover:hover {
-    border-color: rgba(99, 102, 241, 0.35);
-    box-shadow: 0 0 20px -4px rgba(99, 102, 241, 0.2);
-  }
-}
+/* Legacy alias only — prefer glass-card / glass-chrome */
+.glass-panel { /* same as glass-card */ }
 ```
 
 ### Recommendation
-If your SaaS has workflow canvases, forms, and data tables, **Option 1** or **Option 2** gives the most polished look without interfering with text contrast or rendering performance. 
-
-Would you like me to update [globals.css](file:///d:/runway/git/studio-web/src/app/globals.css) with **Option 1 (Soft Aurora Glow)** or **Option 2 (Dot Matrix Canvas)**?
+Ambient themes (`aurora` / `mesh` / `grid`) are selectable in Settings → Appearance. Pair them with glass surfaces so theme changes are visible through chrome and cards.
