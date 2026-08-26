@@ -9,6 +9,13 @@
   --surface-elevated: #21262d;
   --surface-overlay: rgba(10, 14, 23, 0.8);
 
+  /* Glass surfaces — translucent overlays for ambient theme visibility.
+   * Solid tokens above stay for inputs, modals, and full-contrast areas. */
+  --surface-panel-glass: rgba(15, 20, 25, 0.55);
+  --surface-raised-glass: rgba(22, 27, 34, 0.68);
+  --surface-elevated-glass: rgba(33, 38, 45, 0.72);
+  --glass-blur: 16px;
+
   /* Borders */
   --border-default: rgba(255, 255, 255, 0.08);
   --border-subtle: rgba(255, 255, 255, 0.04);
@@ -74,6 +81,9 @@
   --color-surface-hover: var(--surface-hover);
   --color-surface-elevated: var(--surface-elevated);
   --color-surface-overlay: var(--surface-overlay);
+  --color-surface-panel-glass: var(--surface-panel-glass);
+  --color-surface-raised-glass: var(--surface-raised-glass);
+  --color-surface-elevated-glass: var(--surface-elevated-glass);
   --color-border-default: var(--border-default);
   --color-border-subtle: var(--border-subtle);
   --color-border-strong: var(--border-strong);
@@ -388,11 +398,39 @@ body {
   min-height: 100dvh;
 }
 
+/* Glass surface utilities — see docs/guides/AMBIENT_GLASS_SURFACES.md */
+@utility glass-chrome {
+  background: var(--surface-panel-glass);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+}
+
+@utility glass-card {
+  background: var(--surface-raised-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-default);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass-chrome,
+  .glass-card {
+    background: var(--surface-panel);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .glass-card {
+    background: var(--surface-raised);
+  }
+}
+
 /* Utility Classes */
 @layer utilities {
-  /* Subtle glass card with specular top border highlight */
+  /* Legacy alias — prefer glass-card / glass-chrome for new work */
   .glass-panel {
-    background: rgba(15, 20, 25, 0.75);
+    background: var(--surface-raised-glass);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--border-default);

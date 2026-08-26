@@ -4,7 +4,7 @@ import { Heading } from "./heading";
 import { Text } from "./text";
 
 interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: "default" | "elevated" | "interactive" | "gradient";
+  variant?: "default" | "elevated" | "interactive" | "gradient" | "glass";
   padding?: "none" | "sm" | "md" | "lg";
   interactive?: boolean;
 }
@@ -22,6 +22,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
         "bg-[var(--surface-raised)] border border-[var(--border-default)] hover:bg-[var(--surface-hover)] hover:border-[var(--border-strong)] transition-all duration-200 cursor-pointer",
       gradient:
         "bg-gradient-to-br from-[var(--accent-primary)] to-[var(--accent-secondary)] border-0 text-white",
+      glass: "glass-card",
     };
 
     const paddings = {

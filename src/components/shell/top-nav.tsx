@@ -13,7 +13,7 @@ export function TopNav() {
   const { t } = useI18n();
 
   return (
-    <header className="flex h-14 shrink-0 items-center gap-2 border-b border-border-default bg-surface-panel/80 backdrop-blur-xl px-3 md:px-4 sticky top-0 z-40 transition-all duration-200">
+    <header className="glass-chrome flex h-14 shrink-0 items-center gap-2 border-b border-border-default px-3 md:px-4 sticky top-0 z-40 transition-all duration-200">
       {isNarrow && (
         <button
           onClick={toggle}

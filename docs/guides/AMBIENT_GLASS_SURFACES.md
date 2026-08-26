@@ -121,20 +121,20 @@ In Tailwind CSS v4 (`src/app/globals.css`), declare glass utilities using the `@
 ## Action Plan & Task List
 
 ### Phase 1: Tokens & Utilities (`globals.css`)
-- [ ] Add glass custom properties (`--surface-panel-glass`, `--surface-raised-glass`, `--surface-elevated-glass`, `--glass-blur`) to `:root` in `src/app/globals.css`.
-- [ ] Map glass color tokens in `@theme inline`.
-- [ ] Add `@utility glass-chrome` and `@utility glass-card` classes with specular highlight border.
-- [ ] Add `@media (prefers-reduced-transparency: reduce)` fallback to restore solid surfaces.
+- [x] Add glass custom properties (`--surface-panel-glass`, `--surface-raised-glass`, `--surface-elevated-glass`, `--glass-blur`) to `:root` in `src/app/globals.css`.
+- [x] Map glass color tokens in `@theme inline`.
+- [x] Add `@utility glass-chrome` and `@utility glass-card` classes with specular highlight border.
+- [x] Add `@media (prefers-reduced-transparency: reduce)` fallback to restore solid surfaces.
 
 ### Phase 2: Shell Chrome (Proof of Concept)
-- [ ] Update `src/components/shell/top-nav.tsx`: replace `bg-surface-panel/80 backdrop-blur-xl` with `glass-chrome`.
-- [ ] Update `src/components/shell/left-rail.tsx`: apply `glass-chrome` to desktop navigation sidebar.
-- [ ] **Verify:** Mobile drawer in `left-rail.tsx` remains solid (`bg-surface-panel`) for small screen readability.
-- [ ] **Verify:** Shell `main` container in `src/app/(shell)/layout.tsx` has no solid `bg-surface-*` blocking the ambient layer.
+- [x] Update `src/components/shell/top-nav.tsx`: replace `bg-surface-panel/80 backdrop-blur-xl` with `glass-chrome`.
+- [x] Update `src/components/shell/left-rail.tsx`: apply `glass-chrome` to desktop navigation sidebar.
+- [x] **Verify:** Mobile drawer in `left-rail.tsx` remains solid (`bg-surface-panel`) for small screen readability.
+- [x] **Verify:** Shell `main` container in `src/app/(shell)/layout.tsx` has no solid `bg-surface-*` blocking the ambient layer.
 
 ### Phase 3: Card Component Variant
-- [ ] Update `src/components/ui/card.tsx`: add `glass` variant mapped to `"glass-card"`.
-- [ ] Update `src/app/(shell)/settings/page.tsx` section cards to use `variant="glass"`.
+- [x] Update `src/components/ui/card.tsx`: add `glass` variant mapped to `"glass-card"`.
+- [x] Update `src/app/(shell)/settings/page.tsx` section cards to use `variant="glass"`.
 - [ ] Test theme switching (Aurora / Mesh / Grid) on Settings page to confirm immediate visual feedback.
 
 ### Phase 4: Page-Level Audits & Stacking Fixes

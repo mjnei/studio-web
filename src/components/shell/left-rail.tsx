@@ -27,7 +27,7 @@ export function LeftRail() {
       {/* Desktop Sidebar */}
       {!isNarrow && (
         <aside
-          className={`flex shrink-0 flex-col border-r border-border-default bg-surface-panel/80 backdrop-blur-xl transition-all duration-300 ease-in-out ${
+          className={`glass-chrome flex shrink-0 flex-col border-r border-border-default transition-all duration-300 ease-in-out ${
             collapsed ? "w-16" : "w-64"
           }`}
         >

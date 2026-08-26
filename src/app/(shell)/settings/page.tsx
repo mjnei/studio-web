@@ -183,7 +183,7 @@ export default function SettingsPage() {
       <div className="space-y-4">
         <Link href="/settings/notifications" className="block group">
           <Card
-            variant="elevated"
+            variant="glass"
             padding="lg"
             className="cursor-pointer transition-all group-hover:shadow-lg group-hover:border-accent-primary/50"
           >
@@ -207,7 +207,7 @@ export default function SettingsPage() {
           </Card>
         </Link>
 
-        <Card variant="elevated" padding="lg">
+        <Card variant="glass" padding="lg">
           <CardHeader>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
@@ -265,7 +265,7 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
 
-        <Card variant="elevated" padding="lg">
+        <Card variant="glass" padding="lg">
           <CardHeader>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
@@ -313,7 +313,7 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
 
-        <Card variant="elevated" padding="lg">
+        <Card variant="glass" padding="lg">
           <CardHeader>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
