@@ -327,44 +327,44 @@ export default function TTSJobsPage() {
             {/* Tab Navigation */}
             <div className="mb-6 overflow-x-auto scrollbar-hide">
               <div className="inline-flex min-w-min items-center gap-2">
-              <button
-                onClick={() => setActiveTab("failed")}
-                className={`flex h-9 shrink-0 items-center gap-2 whitespace-nowrap px-3.5 py-0 rounded-lg text-body font-semibold transition-all ${
-                  activeTab === "failed"
-                    ? "bg-red-500/10 text-red-600 border-2 border-red-500/30"
-                    : "border-2 border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:bg-accent-primary/5"
-                }`}
-              >
-                Failed Jobs
-                <span
-                  className={`px-2 py-0.5 rounded-full text-caption font-bold ${
+                <button
+                  onClick={() => setActiveTab("failed")}
+                  className={`flex h-9 shrink-0 items-center gap-2 whitespace-nowrap px-3.5 py-0 rounded-lg text-body font-semibold transition-all ${
                     activeTab === "failed"
-                      ? "bg-red-600 text-white"
-                      : "bg-text-muted/10 text-text-muted"
+                      ? "bg-red-500/10 text-red-600 border-2 border-red-500/30"
+                      : "border-2 border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:bg-accent-primary/5"
                   }`}
                 >
-                  {failedJobs.length}
-                </span>
-              </button>
-              <button
-                onClick={() => setActiveTab("completed")}
-                className={`flex h-9 shrink-0 items-center gap-2 whitespace-nowrap px-3.5 py-0 rounded-lg text-body font-semibold transition-all ${
-                  activeTab === "completed"
-                    ? "bg-green-500/10 text-green-600 border-2 border-green-500/30"
-                    : "border-2 border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:bg-accent-primary/5"
-                }`}
-              >
-                Completed Jobs
-                <span
-                  className={`px-2 py-0.5 rounded-full text-caption font-bold ${
+                  Failed Jobs
+                  <span
+                    className={`px-2 py-0.5 rounded-full text-caption font-bold ${
+                      activeTab === "failed"
+                        ? "bg-red-600 text-white"
+                        : "bg-text-muted/10 text-text-muted"
+                    }`}
+                  >
+                    {failedJobs.length}
+                  </span>
+                </button>
+                <button
+                  onClick={() => setActiveTab("completed")}
+                  className={`flex h-9 shrink-0 items-center gap-2 whitespace-nowrap px-3.5 py-0 rounded-lg text-body font-semibold transition-all ${
                     activeTab === "completed"
-                      ? "bg-green-600 text-white"
-                      : "bg-text-muted/10 text-text-muted"
+                      ? "bg-green-500/10 text-green-600 border-2 border-green-500/30"
+                      : "border-2 border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:bg-accent-primary/5"
                   }`}
                 >
-                  {completedJobs.length}
-                </span>
-              </button>
+                  Completed Jobs
+                  <span
+                    className={`px-2 py-0.5 rounded-full text-caption font-bold ${
+                      activeTab === "completed"
+                        ? "bg-green-600 text-white"
+                        : "bg-text-muted/10 text-text-muted"
+                    }`}
+                  >
+                    {completedJobs.length}
+                  </span>
+                </button>
               </div>
             </div>
 

@@ -36,12 +36,15 @@ export default function OnboardingStepFooter({
   return (
     <div className="shrink-0 mt-3 border-t border-border-subtle pt-3 sm:pt-4">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5">
-        {/* Back — omit empty wrapper on mobile so it doesn't add a phantom gap */}
-        {back ? (
-          <div className="w-full sm:w-auto sm:min-w-[11rem]">{back}</div>
-        ) : (
-          <span className="hidden sm:block sm:min-w-[11rem] shrink-0" aria-hidden="true" />
-        )}
+        {/* Back slot — same outer tag always for hydration parity; hide empty wrapper on mobile */}
+        <div
+          className={
+            back ? "w-full sm:w-auto sm:min-w-[11rem]" : "hidden sm:block sm:min-w-[11rem] shrink-0"
+          }
+          aria-hidden={back ? undefined : true}
+        >
+          {back}
+        </div>
 
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-2.5 w-full sm:w-auto">
           {secondary}
