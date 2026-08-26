@@ -132,7 +132,7 @@ export default function WorkflowStep({ onNext, onBack }: WorkflowStepProps) {
       </div>
 
       <OnboardingStepFooter
-        left={
+        back={
           <Button
             type="button"
             variant="secondary"
@@ -144,7 +144,7 @@ export default function WorkflowStep({ onNext, onBack }: WorkflowStepProps) {
             {t("onboarding.workflow.back")}
           </Button>
         }
-        right={
+        primary={
           <Button
             type="button"
             variant="primary"

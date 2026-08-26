@@ -130,7 +130,7 @@ export default function ThemeStep({ onNext, onBack }: ThemeStepProps) {
       </div>
 
       <OnboardingStepFooter
-        left={
+        back={
           <Button
             type="button"
             variant="secondary"
@@ -142,7 +142,7 @@ export default function ThemeStep({ onNext, onBack }: ThemeStepProps) {
             {t("onboarding.theme.back")}
           </Button>
         }
-        right={
+        primary={
           <Button
             type="button"
             variant="primary"

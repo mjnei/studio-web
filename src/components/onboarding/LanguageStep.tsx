@@ -93,7 +93,7 @@ export default function LanguageStep({ onNext, onBack }: LanguageStepProps) {
       </div>
 
       <OnboardingStepFooter
-        left={
+        back={
           <Button
             type="button"
             variant="secondary"
@@ -105,7 +105,7 @@ export default function LanguageStep({ onNext, onBack }: LanguageStepProps) {
             {t("onboarding.language.back")}
           </Button>
         }
-        right={
+        primary={
           <Button
             type="button"
             variant="primary"

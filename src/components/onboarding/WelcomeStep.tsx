@@ -88,7 +88,7 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
       </div>
 
       <OnboardingStepFooter
-        right={
+        primary={
           <Button
             size="lg"
             variant="primary"
@@ -101,7 +101,7 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
           </Button>
         }
         meta={
-          <Text variant="caption" as="p" className="text-text-muted text-center sm:text-right">
+          <Text variant="caption" as="p" className="text-text-muted text-center sm:text-right truncate">
             {t("onboarding.welcome.subtext")}
           </Text>
         }

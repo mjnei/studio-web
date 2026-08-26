@@ -147,7 +147,7 @@ export default function CompletionStep() {
         </div>
 
         <OnboardingStepFooter
-          right={
+          primary={
             <Button
               size="lg"
               variant="primary"
@@ -200,7 +200,9 @@ export default function CompletionStep() {
           </div>
         </div>
         {/* Keep footer slot reserved so layout height matches other steps */}
-        <OnboardingStepFooter right={<span className="sm:min-w-[11rem] h-10" aria-hidden="true" />} />
+        <OnboardingStepFooter
+          primary={<span className="block w-full sm:w-auto sm:min-w-[11rem] h-10" aria-hidden="true" />}
+        />
       </div>
     );
   }
@@ -260,7 +262,7 @@ export default function CompletionStep() {
       </div>
 
       <OnboardingStepFooter
-        right={
+        primary={
           <Button
             size="lg"
             variant="primary"
@@ -272,9 +274,11 @@ export default function CompletionStep() {
           </Button>
         }
         meta={
-          <div className="flex items-center justify-center sm:justify-end gap-2 text-caption text-text-muted">
-            <Spinner size="sm" className="text-text-muted" />
-            <span>{t("onboarding.completion.redirect", { seconds: countdown })}</span>
+          <div className="flex items-center justify-center sm:justify-end gap-2 text-caption text-text-muted truncate">
+            <Spinner size="sm" className="text-text-muted shrink-0" />
+            <span className="truncate">
+              {t("onboarding.completion.redirect", { seconds: countdown })}
+            </span>
           </div>
         }
       />

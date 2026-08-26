@@ -255,7 +255,7 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
       </div>
 
       <OnboardingStepFooter
-        left={
+        back={
           <Button
             type="button"
             variant="secondary"
@@ -268,33 +268,33 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
             {t("onboarding.password.back")}
           </Button>
         }
-        right={
-          <>
-            <Button
-              type="button"
-              variant="ghost"
-              size="lg"
-              onClick={onSkip}
-              disabled={loading}
-              aria-label={t("onboarding.password.skipPassword")}
-              className="w-full sm:w-auto text-text-muted hover:text-text-primary"
-            >
-              {t("onboarding.password.skipForNow")}
-            </Button>
-            <Button
-              type="submit"
-              form="password-form"
-              variant="primary"
-              size="lg"
-              isLoading={loading}
-              disabled={hasExistingPassword}
-              className={ONBOARDING_PRIMARY_BTN_CLASS}
-            >
-              {hasExistingPassword
-                ? t("onboarding.password.alreadySet")
-                : t("onboarding.password.setPassword")}
-            </Button>
-          </>
+        secondary={
+          <Button
+            type="button"
+            variant="ghost"
+            size="lg"
+            onClick={onSkip}
+            disabled={loading}
+            aria-label={t("onboarding.password.skipPassword")}
+            className="w-full sm:w-auto text-text-muted hover:text-text-primary"
+          >
+            {t("onboarding.password.skipForNow")}
+          </Button>
+        }
+        primary={
+          <Button
+            type="submit"
+            form="password-form"
+            variant="primary"
+            size="lg"
+            isLoading={loading}
+            disabled={hasExistingPassword}
+            className={ONBOARDING_PRIMARY_BTN_CLASS}
+          >
+            {hasExistingPassword
+              ? t("onboarding.password.alreadySet")
+              : t("onboarding.password.setPassword")}
+          </Button>
         }
       />
     </div>
