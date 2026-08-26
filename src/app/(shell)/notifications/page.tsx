@@ -126,7 +126,7 @@ export default function NotificationsPage() {
       </div>
 
       {/* Notifications List */}
-      <div className="bg-surface-panel rounded-xl border border-border-default overflow-hidden">
+      <div className="glass-card rounded-xl overflow-hidden">
         {isLoading ? (
           <div className="p-12 flex flex-col items-center justify-center">
             <Spinner size="lg" className="text-accent-primary mb-4" />

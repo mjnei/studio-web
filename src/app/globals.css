@@ -14,6 +14,7 @@
   --surface-panel-glass: rgba(15, 20, 25, 0.55);
   --surface-raised-glass: rgba(22, 27, 34, 0.68);
   --surface-elevated-glass: rgba(33, 38, 45, 0.72);
+  --surface-sticky-glass: rgba(15, 20, 25, 0.88);
   --glass-blur: 16px;
 
   /* Borders */
@@ -413,12 +414,23 @@ body {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
+@utility glass-sticky {
+  background: var(--surface-sticky-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
 @media (prefers-reduced-transparency: reduce) {
   .glass-chrome,
-  .glass-card {
-    background: var(--surface-panel);
+  .glass-card,
+  .glass-sticky {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
+  }
+
+  .glass-chrome,
+  .glass-sticky {
+    background: var(--surface-panel);
   }
 
   .glass-card {

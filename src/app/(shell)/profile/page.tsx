@@ -308,7 +308,7 @@ export default function ProfilePage() {
           </Card>
 
           {/* Quick Subscription Overview Card */}
-          <Card variant="elevated" padding="md" className="space-y-3">
+          <Card variant="glass" padding="md" className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Crown className="h-4 w-4 text-accent-cyan" />
@@ -385,7 +385,7 @@ export default function ProfilePage() {
           )}
 
           {/* Account Overview / Personal Details */}
-          <Card variant="elevated" padding="lg">
+          <Card variant="glass" padding="lg">
             <CardHeader>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-accent-primary flex items-center justify-center shadow-sm shrink-0">
@@ -466,7 +466,7 @@ export default function ProfilePage() {
           </Card>
 
           {/* Membership & Billing */}
-          <Card variant="elevated" padding="lg">
+          <Card variant="glass" padding="lg">
             <CardHeader>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-cyan to-blue-500 flex items-center justify-center shadow-sm shrink-0">
@@ -553,7 +553,7 @@ export default function ProfilePage() {
           </Card>
 
           {/* Password & Security */}
-          <Card variant="elevated" padding="lg">
+          <Card variant="glass" padding="lg">
             <CardHeader>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center shadow-sm shrink-0">
@@ -638,7 +638,7 @@ export default function ProfilePage() {
           </Card>
 
           {/* Connected Accounts */}
-          <Card variant="elevated" padding="lg">
+          <Card variant="glass" padding="lg">
             <CardHeader>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-sm shrink-0">
@@ -678,7 +678,7 @@ export default function ProfilePage() {
           </Card>
 
           {/* Preferences & Onboarding */}
-          <Card variant="elevated" padding="lg">
+          <Card variant="glass" padding="lg">
             <CardHeader>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-sm shrink-0">
@@ -725,7 +725,7 @@ export default function ProfilePage() {
 
           {/* Danger Zone */}
           <Card
-            variant="elevated"
+            variant="glass"
             padding="lg"
             className="border-status-failed/30 bg-status-failed/5"
           >

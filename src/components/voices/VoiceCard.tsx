@@ -190,7 +190,7 @@ export function VoiceCard({
 
   return (
     <Card
-      variant="elevated"
+      variant="glass"
       padding="none"
       className="overflow-hidden hover:border-accent-primary/40 hover:shadow-lg transition-all duration-200"
     >

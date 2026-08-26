@@ -29,7 +29,7 @@ export const BulkActionsBar: React.FC<BulkActionsBarProps> = ({
   if (selectedCount === 0) return null;
 
   return (
-    <div className="sticky top-4 z-20 mb-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-accent-primary/30 bg-surface-panel/95 p-3.5 shadow-lg backdrop-blur-md animate-in fade-in slide-in-from-top-2 duration-200">
+    <div className="glass-sticky sticky top-4 z-20 mb-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-accent-primary/30 p-3.5 shadow-lg animate-in fade-in slide-in-from-top-2 duration-200">
       <div className="flex items-center gap-3">
         <button
           onClick={onToggleSelectAll}

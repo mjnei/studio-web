@@ -307,7 +307,7 @@ export default function VoicesPage() {
           )}
 
           {/* Info Banner */}
-          <Card variant="elevated" padding="md" className="mb-6 border-blue-500/30 bg-blue-500/5">
+          <Card variant="glass" padding="md" className="mb-6 border-blue-500/30 bg-blue-500/5">
             <div className="flex items-start gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500/10 flex-shrink-0">
                 <Info className="h-5 w-5 text-blue-600" />
@@ -337,7 +337,7 @@ export default function VoicesPage() {
           {/* Error Message */}
           {error && (
             <Card
-              variant="elevated"
+              variant="glass"
               padding="md"
               className="mb-6 border-status-error/30 bg-status-error/10"
             >
@@ -416,7 +416,7 @@ export default function VoicesPage() {
         <div>
           {/* Info Banner */}
           <Card
-            variant="elevated"
+            variant="glass"
             padding="md"
             className="mb-6 border-accent-cyan/30 bg-accent-cyan/5"
           >
@@ -438,7 +438,7 @@ export default function VoicesPage() {
           {/* Error Message */}
           {communityError && (
             <Card
-              variant="elevated"
+              variant="glass"
               padding="md"
               className="mb-6 border-status-error/30 bg-status-error/10"
             >

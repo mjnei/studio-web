@@ -22,7 +22,7 @@ export function QueueStatsCard({ stats, onViewDetails, isRefreshing }: QueueStat
   const { metadata, message_count, consumer_count, queue_name } = stats;
 
   return (
-    <Card className="hover:shadow-md transition-shadow">
+    <Card variant="glass" className="hover:shadow-md transition-shadow">
       <CardHeader>
         <div className="flex items-start justify-between">
           <div className="flex-1">

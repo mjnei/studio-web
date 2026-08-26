@@ -45,7 +45,7 @@ export const ActiveJobCard: React.FC<ActiveJobCardProps> = ({ job, onDelete, isD
 
   return (
     <Card
-      variant="elevated"
+      variant="glass"
       padding="md"
       className="border-blue-500/30 bg-gradient-to-br from-surface-raised to-blue-950/20 shadow-glow relative overflow-hidden transition-all"
     >

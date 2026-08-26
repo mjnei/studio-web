@@ -129,7 +129,7 @@ export default function NotificationSettingsPage() {
                   )}
                 </Heading>
 
-                <div className="bg-surface-panel rounded-xl border border-border-default divide-y divide-border-default">
+                <div className="glass-card rounded-xl divide-y divide-border-default">
                   {categoryNotifications.map(({ type }) => {
                     const pref = localPreferences[type] || { in_app: true };
                     // Map notification type to i18n key
@@ -189,7 +189,7 @@ export default function NotificationSettingsPage() {
           {/* Save Button */}
           {hasChanges && (
             <div className="sticky bottom-6 flex justify-center">
-              <div className="bg-surface-panel rounded-xl border border-border-default shadow-2xl p-4 flex items-center gap-3">
+              <div className="glass-sticky rounded-xl border border-border-default shadow-2xl p-4 flex items-center gap-3">
                 {saveSuccess && (
                   <span className="text-body text-status-success font-medium flex items-center gap-2">
                     <Check className="h-4 w-4" aria-hidden />

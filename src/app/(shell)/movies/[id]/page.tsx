@@ -213,7 +213,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                 </Button>
 
                 {/* Stats Card */}
-                <div className="space-y-3 rounded-xl border border-border-default bg-surface-panel p-4">
+                <div className="space-y-3 rounded-xl glass-card p-4">
                   <Heading
                     variant="label"
                     as="h3"
@@ -258,7 +258,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
 
                 {/* External IDs */}
                 {(movie.imdb_id || movie.douban_id) && (
-                  <div className="space-y-3 rounded-xl border border-border-default bg-surface-panel p-4">
+                  <div className="space-y-3 rounded-xl glass-card p-4">
                     <Heading
                       variant="label"
                       as="h3"
@@ -363,7 +363,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
 
                 {/* Overview */}
                 {movie.overview && (
-                  <div className="rounded-xl border border-border-default bg-surface-panel p-6">
+                  <div className="rounded-xl glass-card p-6">
                     <Heading variant="subsection" as="h2" className="mb-3 text-text-primary">
                       {t("movies.detail.overview")}
                     </Heading>

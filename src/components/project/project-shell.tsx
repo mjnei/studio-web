@@ -132,7 +132,7 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
     <div className="app-shell-height safe-area-x safe-area-top flex overflow-hidden">
       {!isNarrow && (
         <aside
-          className={`flex shrink-0 flex-col border-r border-border-default bg-surface-panel/80 backdrop-blur-xl transition-[width] duration-300 ease-in-out ${
+          className={`glass-chrome flex shrink-0 flex-col border-r border-border-default transition-[width] duration-300 ease-in-out ${
             collapsed ? "w-16" : "w-64"
           }`}
         >
@@ -141,7 +141,7 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
       )}
 
       <div className="flex flex-1 flex-col overflow-hidden">
-        <header className="flex shrink-0 flex-col border-b border-border-default bg-surface-panel md:h-14 md:flex-row md:items-center md:gap-4 md:px-4">
+        <header className="glass-chrome flex shrink-0 flex-col border-b border-border-default md:h-14 md:flex-row md:items-center md:gap-4 md:px-4">
           <div className="mx-auto w-full max-w-7xl flex h-14 items-center gap-2 px-3 md:shrink-0 md:px-0 md:h-full md:gap-4">
             {isNarrow && (
               <button

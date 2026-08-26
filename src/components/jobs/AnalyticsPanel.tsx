@@ -17,7 +17,7 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({ summary }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <Card variant="elevated" padding="none" className="mb-6 border-border-default overflow-hidden">
+    <Card variant="glass" padding="none" className="mb-6 border-border-default overflow-hidden">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex items-center justify-between p-4 bg-surface-panel hover:bg-surface-hover transition-colors text-left"

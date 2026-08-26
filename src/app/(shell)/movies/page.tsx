@@ -114,7 +114,7 @@ export default function MoviesPage() {
           size="lg"
           message={t("movies.loading")}
           description={t("movies.loadingDescription")}
-          className="rounded-2xl border border-border-default bg-surface-panel"
+          className="rounded-2xl glass-card"
           fullHeight
         />
       ) : loading ? null : error ? (

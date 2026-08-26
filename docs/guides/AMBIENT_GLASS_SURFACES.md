@@ -88,6 +88,7 @@ In Tailwind CSS v4 (`src/app/globals.css`), declare glass utilities using the `@
 |------|---------|---------|-----|
 | Chrome | `.glass-chrome` | ~50–55% | TopNav, desktop sidebar |
 | Content | `.glass-card` | ~68–72% | Cards, section panels |
+| Sticky / overlays | `.glass-sticky` | ~85–90% | Bulk action bars, notification dropdown |
 
 ### 4. Reduced-transparency fallback
 
@@ -138,9 +139,11 @@ In Tailwind CSS v4 (`src/app/globals.css`), declare glass utilities using the `@
 - [ ] Test theme switching (Aurora / Mesh / Grid) on Settings page to confirm immediate visual feedback.
 
 ### Phase 4: Page-Level Audits & Stacking Fixes
-- [ ] Audit shell pages (`/jobs`, `/movies`, `/voices`, `/settings`, `/admin`) for redundant opaque background wrappers.
-- [ ] Migrate secondary panels (notifications list, bulk actions bars, table wrappers) to `glass-card` or `bg-surface-panel-glass backdrop-blur-md`.
-- [ ] Confirm no nested opaque backgrounds block `backdrop-filter` on child cards.
+- [x] Audit shell pages (`/jobs`, `/movies`, `/voices`, `/settings`, `/admin`) for redundant opaque background wrappers.
+- [x] Migrate secondary panels (notifications list, bulk actions bars, table wrappers) to `glass-card` or `bg-surface-panel-glass backdrop-blur-md`.
+- [x] Confirm no nested opaque backgrounds block `backdrop-filter` on child cards.
+  - Left opaque: modals, inputs, mobile drawers, media/poster areas, specialty gradient cards (profile hero / upgrade banner), segmented control strips.
+  - Also added `@utility glass-sticky` (~88%) for sticky bars and notification dropdown.
 
 ### Phase 5: Theme Persistence Alignment (SSR Cookie)
 - [ ] Follow [AMBIENT_THEME.md](./AMBIENT_THEME.md) to implement cookie + SSR persistence so theme changes do not flash during page reloads.

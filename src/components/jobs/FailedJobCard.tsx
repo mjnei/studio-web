@@ -33,7 +33,7 @@ export const FailedJobCard: React.FC<FailedJobCardProps> = ({
 
   return (
     <Card
-      variant="elevated"
+      variant="glass"
       padding="md"
       className={`border-status-failed/40 bg-status-failed/5 transition-all ${
         isSelected ? "ring-1 ring-status-failed" : ""

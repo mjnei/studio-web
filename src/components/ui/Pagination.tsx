@@ -43,7 +43,7 @@ export const Pagination: React.FC<PaginationProps> = ({
   return (
     <div
       className={cn(
-        "flex items-center justify-between rounded-lg border border-border-default bg-surface-panel px-4 py-3",
+        "glass-card flex items-center justify-between rounded-lg px-4 py-3",
         className
       )}
     >

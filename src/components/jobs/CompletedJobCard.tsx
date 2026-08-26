@@ -37,7 +37,7 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
   if (layoutMode === "list") {
     return (
       <Card
-        variant="elevated"
+        variant="glass"
         padding="sm"
         className={`hover:border-status-success/40 transition-all border ${
           isSelected ? "border-accent-primary bg-accent-primary/5" : "border-border-default"
@@ -174,7 +174,7 @@ export const CompletedJobCard: React.FC<CompletedJobCardProps> = ({
   // Grid Layout (sm / md)
   return (
     <Card
-      variant="elevated"
+      variant="glass"
       padding="none"
       className={`group overflow-hidden border transition-all hover:border-status-success/50 relative flex flex-col ${
         isSelected ? "border-accent-primary ring-1 ring-accent-primary" : "border-border-default"

@@ -199,7 +199,7 @@ export function VoiceRecordingCard({
   };
 
   return (
-    <div className="rounded-xl border border-border-default bg-surface-panel p-5 hover:border-border-hover hover:shadow-md transition-all">
+    <div className="rounded-xl glass-card p-5 hover:border-border-hover hover:shadow-md transition-all">
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">

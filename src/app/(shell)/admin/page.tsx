@@ -153,7 +153,7 @@ export default function AdminPage() {
           const Icon = stat.icon;
           const card = (
             <Card
-              variant="elevated"
+              variant="glass"
               padding="md"
               className={
                 stat.href
@@ -203,7 +203,7 @@ export default function AdminPage() {
       </div>
 
       {/* Admin Features */}
-      <Card variant="elevated" padding="lg">
+      <Card variant="glass" padding="lg">
         <CardHeader>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center">

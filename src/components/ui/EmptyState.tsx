@@ -47,7 +47,7 @@ const sizeClasses: Record<
 const variantClasses = {
   default: "",
   bordered: "rounded-2xl border border-dashed border-border-default bg-surface-panel/50",
-  elevated: "rounded-2xl border border-border-default bg-surface-panel shadow-sm",
+  elevated: "glass-card rounded-2xl shadow-sm",
 };
 
 export const EmptyState: React.FC<EmptyStateProps> = ({

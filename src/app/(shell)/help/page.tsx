@@ -161,7 +161,7 @@ export default function HelpPage() {
         {helpSections.map((section) => {
           const IconComponent = section.icon;
           return (
-            <Card key={section.title} variant="elevated" padding="lg">
+            <Card key={section.title} variant="glass" padding="lg">
               <CardHeader>
                 <div className="flex items-center gap-3">
                   <div
@@ -203,7 +203,7 @@ export default function HelpPage() {
       </div>
 
       {/* Contact Support */}
-      <Card variant="elevated" padding="lg" className="mt-8 text-center">
+      <Card variant="glass" padding="lg" className="mt-8 text-center">
         <div className="max-w-2xl mx-auto">
           <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center">
             <HelpCircle className="h-8 w-8 text-white" />

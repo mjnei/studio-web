@@ -28,7 +28,7 @@ export function NotificationDropdown({ onClose }: NotificationDropdownProps) {
   };
 
   return (
-    <div className="w-[calc(100vw-16px)] sm:w-96 md:w-[450px] max-h-[85vh] sm:max-h-[600px] bg-surface-panel rounded-t-xl sm:rounded-xl border border-border-default shadow-2xl overflow-hidden flex flex-col">
+    <div className="w-[calc(100vw-16px)] sm:w-96 md:w-[450px] max-h-[85vh] sm:max-h-[600px] glass-sticky rounded-t-xl sm:rounded-xl border border-border-default shadow-2xl overflow-hidden flex flex-col">
       {/* Header */}
       <div className="p-3 sm:p-4 border-b border-border-default bg-surface-raised flex items-center justify-between shrink-0">
         <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
