@@ -16,5 +16,4 @@ Reviewed and refactored the Onboarding flow into a unified 6-step journey that a
 ### 3. Flow
 `Welcome → Language → Theme → Workflow → Password → Completion`
 
-### 4. Shared Theme Switcher
-- [`ThemeSwitcher.tsx`](src/components/shared/ThemeSwitcher.tsx) remains unused; live pickers are Settings → Appearance and onboarding `ThemeStep`.
+Theme and language pickers live in onboarding (`ThemeStep` / `LanguageStep`) and Settings → Appearance.

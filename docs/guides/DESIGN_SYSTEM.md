@@ -64,7 +64,8 @@ Huavoi Studio's frontend embodies a premium, state-of-the-art aesthetic that is 
 #### Visual Styling
 
 - **Backgrounds**: Use layered surface colors (`var(--surface-base)` and `var(--surface-raised)`) with subtle ambient gradient glows (`bg-gradient-to-br from-accent/10 to-transparent blur-xl`) to establish depth.
-- **Cards & Containers**: Prefer `Card variant="glass"` (`glass-card`) where ambient themes should show through; use elevated/solid for modals and dense data. Typical solid pattern: `bg-surface-raised border border-border-default shadow-md`. On glass surfaces use `hover:bg-surface-raised-glass` (not opaque `hover:bg-surface-raised`). Add `hover:border-border-strong` for interactive elements. Chrome: `glass-chrome` on TopNav / desktop LeftRail. See [AMBIENT_GLASS_SURFACES.md](./AMBIENT_GLASS_SURFACES.md).
+- **Cards & Containers**: Prefer `Card variant="glass"` (`glass-card`) where ambient themes should show through; use elevated/solid for modals, inputs, tables, and media. Chrome: `glass-chrome` on TopNav, desktop LeftRail, and project shells; sticky overlays: `glass-sticky`. On glass surfaces use `hover:bg-surface-raised-glass` (not opaque `hover:bg-surface-raised`). Tokens live in `src/app/globals.css` (`--surface-*-glass`, `@utility glass-*`). Respect `prefers-reduced-transparency`.
+- **Ambient color themes**: Settings → Appearance (and onboarding Theme step) set `aurora` / `mesh` / `grid`. Persisted via `ambient-bg` cookie (SSR `data-ambient-bg` on `<html>`) + `appearance:ambientBackground` localStorage; see `src/lib/ambient-background-shared.ts` and `AmbientBackgroundProvider`.
 - **Typography**: Use the role-based type scale (`page`, `section`, `subsection`, `label`, `body`, `caption`, `metric`, `micro`). Do not use ad-hoc Tailwind sizes like `text-2xl`. Font is Geist (`--font-geist-sans` / `--font-geist-mono`).
 - **Colors**: Prefer `status-*` / `accent-*` tokens. Avoid new raw hex except in `globals.css`.
 

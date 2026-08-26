@@ -137,16 +137,16 @@ export default function PricingPage() {
     }
   };
 
-  const getBgColorClasses = (color: PricingTier["color"]) => {
+  const getIconBgClasses = (color: PricingTier["color"]) => {
     switch (color) {
       case "blue":
-        return "glass-card";
+        return "bg-surface-raised-glass";
       case "cyan":
-        return "glass-card bg-accent-cyan/5";
+        return "bg-accent-cyan/10";
       case "purple":
-        return "glass-card bg-accent-purple/5";
+        return "bg-accent-purple/10";
       default:
-        return "glass-card";
+        return "bg-surface-raised-glass";
     }
   };
 
@@ -205,7 +205,7 @@ export default function PricingPage() {
           return (
             <div
               key={tier.name}
-              className={`relative rounded-xl ${getBgColorClasses(tier.color)} ${getBorderColorClasses(
+              className={`relative rounded-xl glass-card ${getBorderColorClasses(
                 tier.color
               )} border-2 p-6 h-full flex flex-col transition-all duration-300 hover:scale-[1.02] ${
                 tier.highlight ? "shadow-lg" : "shadow-sm"
@@ -223,7 +223,7 @@ export default function PricingPage() {
               {/* Tier Header */}
               <div className="mb-6">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className={`p-2.5 rounded-lg ${getBgColorClasses(tier.color)}`}>
+                  <div className={`p-2.5 rounded-lg ${getIconBgClasses(tier.color)}`}>
                     <Icon className={`h-6 w-6 ${getColorClasses(tier.color)}`} />
                   </div>
                   <div>

@@ -397,7 +397,8 @@ body {
   min-height: 100dvh;
 }
 
-/* Glass surface utilities — see docs/guides/AMBIENT_GLASS_SURFACES.md */
+/* Glass surface utilities — translucent chrome/cards over ambient themes.
+ * Keep inputs, modals, tables, and media areas solid for contrast. */
 @utility glass-chrome {
   background: var(--surface-panel-glass);
   backdrop-filter: blur(var(--glass-blur));
