@@ -144,30 +144,11 @@ export function useJobs() {
     let activeCount = 0;
     let completedCount = 0;
     let failedCount = 0;
-    let creditsUsed = 0;
-    const voiceMap = new Map<string, number>();
 
     allJobs.forEach((job) => {
       if (job.status === "processing" || job.status === "queued") activeCount++;
       if (job.status === "completed") completedCount++;
       if (job.status === "failed") failedCount++;
-      creditsUsed += job.credit_cost || 0;
-
-      if (job.voice_name) {
-        voiceMap.set(job.voice_name, (voiceMap.get(job.voice_name) || 0) + 1);
-      }
-    });
-
-    const finished = completedCount + failedCount;
-    const successRate = finished > 0 ? Math.round((completedCount / finished) * 100) : 100;
-
-    let topVoice = "N/A";
-    let maxVoiceCount = 0;
-    voiceMap.forEach((count, voice) => {
-      if (count > maxVoiceCount) {
-        maxVoiceCount = count;
-        topVoice = voice;
-      }
     });
 
     return {
@@ -175,10 +156,6 @@ export function useJobs() {
       completedCount,
       failedCount,
       totalCount,
-      successRate,
-      creditsUsed,
-      topVoice,
-      avgProcessingTimeMinutes: 8.5,
     };
   }, [allJobs]);
 

@@ -29,10 +29,6 @@ export interface JobsSummary {
   completedCount: number;
   failedCount: number;
   totalCount: number;
-  successRate: number;
-  creditsUsed: number;
-  topVoice: string;
-  avgProcessingTimeMinutes: number;
 }
 
 export type JobActionType = "view" | "play" | "download" | "delete" | "retry" | "cancel";
