@@ -101,7 +101,11 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
           </Button>
         }
         meta={
-          <Text variant="caption" as="p" className="text-text-muted text-center sm:text-right truncate">
+          <Text
+            variant="caption"
+            as="p"
+            className="text-text-muted text-center sm:text-right truncate"
+          >
             {t("onboarding.welcome.subtext")}
           </Text>
         }

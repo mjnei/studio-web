@@ -201,7 +201,9 @@ export default function CompletionStep() {
         </div>
         {/* Keep footer slot reserved so layout height matches other steps */}
         <OnboardingStepFooter
-          primary={<span className="block w-full sm:w-auto sm:min-w-[11rem] h-10" aria-hidden="true" />}
+          primary={
+            <span className="block w-full sm:w-auto sm:min-w-[11rem] h-10" aria-hidden="true" />
+          }
         />
       </div>
     );
