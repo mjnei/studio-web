@@ -138,12 +138,30 @@ In Tailwind CSS v4 (`src/app/globals.css`), declare glass utilities using the `@
 - [x] Update `src/app/(shell)/settings/page.tsx` section cards to use `variant="glass"`.
 - [ ] Test theme switching (Aurora / Mesh / Grid) on Settings page to confirm immediate visual feedback.
 
-### Phase 4: Page-Level Audits & Stacking Fixes
-- [x] Audit shell pages (`/jobs`, `/movies`, `/voices`, `/settings`, `/admin`) for redundant opaque background wrappers.
-- [x] Migrate secondary panels (notifications list, bulk actions bars, table wrappers) to `glass-card` or `bg-surface-panel-glass backdrop-blur-md`.
-- [x] Confirm no nested opaque backgrounds block `backdrop-filter` on child cards.
-  - Left opaque: modals, inputs, mobile drawers, media/poster areas, specialty gradient cards (profile hero / upgrade banner), segmented control strips.
-  - Also added `@utility glass-sticky` (~88%) for sticky bars and notification dropdown.
+### Phase 4: Page-Level Audits & Stacking Fixes (partial)
+
+Phase 4 is **shell chrome + primary content cards**, not a full opaque-wrapper purge.
+
+- [x] Glassify high-visibility shell chrome and primary cards (see inventory below).
+- [x] Add `@utility glass-sticky` (~88%) for sticky bars and notification dropdown.
+- [x] Leave intentional solids alone (see **Do Not Glassify** + still-opaque list).
+- [ ] Follow-up: remaining opaque shells (dashboard tiles, billing, admin tables/filters, pricing, nested panels inside glass parents).
+
+**Glassified in Phase 4 (non-exhaustive):**
+
+| Area | What changed |
+|------|----------------|
+| Shell / project chrome | TopNav, LeftRail, `project-shell` aside + header → `glass-chrome` |
+| Settings / profile / help / admin hub | Section `Card`s → `variant="glass"` (profile hero + upgrade banner stay solid/gradient) |
+| Jobs | Job cards, AnalyticsPanel outer card, BulkActionsBar → `glass-sticky` |
+| Voices | VoiceCard, recording cards, page section cards |
+| Movies / projects | MovieCard, ProjectCard, movies loading panel, some `movies/[id]` section panels |
+| Notifications | List panel, settings preference groups, NotificationDropdown → `glass-sticky` |
+| Shared | Pagination, EmptyState `elevated`, QueueStatsCard |
+
+**Still largely opaque (theme less visible):** dashboard movie tiles, billing, admin tables/filters, pricing segments, parts of `movies/[id]`, nested solid panels inside glass cards (e.g. AnalyticsPanel inner metric boxes). Some of that belongs under **Do Not Glassify** (tables, modals, media).
+
+**Hover gotcha:** Do not pair `glass-card` with opaque `hover:bg-surface-raised` / `hover:bg-surface-hover` — that kills translucency on hover. Use `hover:bg-surface-raised-glass` (or border/shadow-only hover).
 
 ### Phase 5: Theme Persistence Alignment (SSR Cookie)
 - [x] Follow [AMBIENT_THEME.md](./AMBIENT_THEME.md) to implement cookie + SSR persistence so theme changes do not flash during page reloads.
@@ -167,8 +185,9 @@ In Tailwind CSS v4 (`src/app/globals.css`), declare glass utilities using the `@
 
 1. **`backdrop-filter` requires visible content behind the element.** Do not add `bg-surface-base` to the shell wrapper or `main`. Parent opaque layers block the effect even if the child is transparent.
 2. **Stacked opaque layers.** A glass card on an opaque section still blocks ambient. Either glass both layers or leave the page background transparent and glass only cards.
-3. **High-contrast themes.** When testing, always test against the **Grid** and **Mesh** themes in addition to **Aurora** to catch text legibility issues.
-4. **Performance.** Glass on nav + cards is fine; avoid `backdrop-blur` on high-frequency elements (table rows, list items in long virtualized lists).
+3. **Opaque hover overrides.** `hover:bg-surface-raised` (or other solid surface utilities) on a `glass-card` replaces the translucent fill on hover. Prefer `hover:bg-surface-raised-glass` or border/shadow-only feedback.
+4. **High-contrast themes.** When testing, always test against the **Grid** and **Mesh** themes in addition to **Aurora** to catch text legibility issues.
+5. **Performance.** Glass on nav + cards is fine; avoid `backdrop-blur` on high-frequency elements (table rows, list items in long virtualized lists).
 
 ---
 

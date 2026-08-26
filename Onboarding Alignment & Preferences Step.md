@@ -35,4 +35,5 @@ Reviewed and refactored the Onboarding flow into a unified 5-step journey that a
   - Step dots with checkmarks for completed steps and mobile progress bar.
 
 ### 4. Shared Theme Switcher
-- Created [`ThemeSwitcher.tsx`](file:///d:/runway/git/studio-web/src/components/shared/ThemeSwitcher.tsx) as a reusable component for the app.
+- Created [`ThemeSwitcher.tsx`](src/components/shared/ThemeSwitcher.tsx) as a reusable select control.
+  - **Status:** currently **unused** (no imports). Live pickers are Settings → Appearance and onboarding `PreferencesStep`. Wire up or delete in a follow-up.

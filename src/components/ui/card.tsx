@@ -32,14 +32,20 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
       lg: "p-6 sm:p-8",
     };
 
+    const interactiveExtras =
+      interactive && variant !== "interactive"
+        ? variant === "glass"
+          ? "cursor-pointer transition-all duration-200 hover:bg-surface-raised-glass hover:border-[var(--border-strong)]"
+          : "cursor-pointer transition-all duration-200 hover:bg-[var(--surface-hover)] hover:border-[var(--border-strong)]"
+        : "";
+
     return (
       <div
         ref={ref}
         className={cn(
           "rounded-xl",
-          interactive && !variant.includes("interactive")
-            ? variants.interactive
-            : variants[variant],
+          variants[variant],
+          interactiveExtras,
           paddings[padding],
           className
         )}

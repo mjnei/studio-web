@@ -28,12 +28,14 @@ Themes are **decoupled from the logo gradient** so a future logo rebrand does no
 
 | File | Role |
 |------|------|
-| `src/lib/ambient-background-shared.ts` | Server-safe constants + `parseAmbientBackgroundStyle` |
-| `src/lib/ambient-background.tsx` | Client provider: dual-write cookie + `localStorage`, cross-tab sync |
+| `src/lib/ambient-background-shared.ts` | Server-safe constants + `parseAmbientBackgroundStyle` / cookie helpers (no DOM) |
+| `src/lib/ambient-background.tsx` | Client provider: dual-write cookie + `localStorage`, cross-tab sync; re-exports shared API |
 | `src/components/shell/ambient-background.tsx` | Renders the fixed background layer for the active theme |
 | `src/app/globals.css` | `html[data-ambient-bg="…"]` token overrides + ambient CSS |
-| `src/app/layout.tsx` | Async SSR: reads `ambient-bg` cookie → `<html data-ambient-bg>` |
-| `src/app/(shell)/settings/page.tsx` | Theme picker UI |
+| `src/app/layout.tsx` | Async SSR: imports shared helpers from `@/lib/ambient-background-shared`, reads `ambient-bg` cookie → `<html data-ambient-bg>`, passes `initialStyle` into the provider |
+| `src/app/(shell)/settings/page.tsx` | In-app theme picker (Settings → Appearance) |
+| `src/components/onboarding/PreferencesStep.tsx` | Onboarding theme + locale picker (same `setStyle()` path) |
+| `src/components/shared/ThemeSwitcher.tsx` | **Orphan** — uses the provider but has no imports/callers; not part of the live UI. Prefer Settings / PreferencesStep, or wire this up / delete in a follow-up |
 
 ### Storage
 
@@ -44,7 +46,7 @@ Themes are **decoupled from the logo gradient** so a future logo rebrand does no
 ### Runtime flow
 
 1. Server reads `ambient-bg` cookie and sets `data-ambient-bg` on `<html>` (no teal flash).
-2. User picks a theme in Settings → `setStyle()` dual-writes cookie + localStorage and updates `dataset.ambientBg`.
+2. User picks a theme in Settings or onboarding Preferences → `setStyle()` dual-writes cookie + localStorage and updates `dataset.ambientBg`.
 3. CSS on `html[data-ambient-bg="…"]` swaps accent tokens site-wide.
 4. `AmbientBackground` re-renders the matching background layer.
 5. Other tabs receive `storage` events and stay in sync.

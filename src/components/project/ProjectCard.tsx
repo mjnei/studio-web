@@ -71,7 +71,7 @@ export function ProjectCard({
     return (
       <Link
         href={`/project/${project.id}`}
-        className="group flex gap-4 overflow-hidden rounded-xl glass-card p-4 transition-all hover:border-accent-cyan/50 hover:bg-surface-raised hover:shadow-lg hover:shadow-accent-cyan/5"
+        className="group flex gap-4 overflow-hidden rounded-xl glass-card p-4 transition-all hover:border-accent-cyan/50 hover:bg-surface-raised-glass hover:shadow-lg hover:shadow-accent-cyan/5"
       >
         {/* Project Info */}
         <div className="flex min-w-0 flex-1 flex-col justify-between py-1">

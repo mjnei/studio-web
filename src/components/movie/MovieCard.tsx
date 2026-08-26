@@ -47,7 +47,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
       <Link
         href={linkHref}
         className={cn(
-          "group flex gap-4 overflow-hidden rounded-xl glass-card p-4 transition-all hover:border-accent-cyan/50 hover:bg-surface-raised hover:shadow-lg hover:shadow-accent-cyan/5",
+          "group flex gap-4 overflow-hidden rounded-xl glass-card p-4 transition-all hover:border-accent-cyan/50 hover:bg-surface-raised-glass hover:shadow-lg hover:shadow-accent-cyan/5",
           className
         )}
       >
