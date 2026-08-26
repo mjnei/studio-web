@@ -6,7 +6,12 @@
  */
 
 import { request } from "@/lib/api-client";
-import type { QueuesListResponse, QueueStats, QueuePurgeResponse } from "@/lib/types/queue";
+import type {
+  QueuesListResponse,
+  QueueStats,
+  QueuePurgeResponse,
+  QueueHistory,
+} from "@/lib/types/queue";
 
 /**
  * List all registered queues with current statistics.
@@ -24,6 +29,20 @@ export async function listAllQueues(): Promise<QueuesListResponse> {
  */
 export async function getQueueStats(queueName: string): Promise<QueueStats> {
   return request<QueueStats>(`/queues/${queueName}/stats`);
+}
+
+/**
+ * Get sampled activity history for a queue (Valkey ZSET time series).
+ * Requires admin role.
+ *
+ * @param queueName - Queue name (e.g., 'tts_jobs')
+ * @param rangeSeconds - Lookback window (30–18000); default 18000 (5 hours)
+ */
+export async function getQueueHistory(
+  queueName: string,
+  rangeSeconds: number = 18000
+): Promise<QueueHistory> {
+  return request<QueueHistory>(`/queues/${queueName}/history?range_seconds=${rangeSeconds}`);
 }
 
 /**

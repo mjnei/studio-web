@@ -1,6 +1,9 @@
-import { useState } from "react";
+"use client";
+
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import type { QueueStats } from "@/lib/types/queue";
+import { getQueueHistory } from "@/lib/api/queue-admin";
+import type { QueueHistoryPoint, QueueStats } from "@/lib/types/queue";
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 
 interface QueueActivityChartProps {
@@ -8,288 +11,354 @@ interface QueueActivityChartProps {
   stats: QueueStats;
 }
 
-interface DataPoint {
-  timestamp: string;
+interface ChartPoint {
+  ts: number;
+  label: string;
   messageCount: number;
   consumerCount: number;
 }
 
-function createSeedHistory(stats: QueueStats): DataPoint[] {
-  const initialData: DataPoint[] = [];
+const HISTORY_RANGE_SECONDS = 18000;
+const HISTORY_POLL_MS = 30_000;
 
-  // Generate last hour of data (12 points, 5 minutes apart) with a stable wave.
-  for (let i = 11; i >= 0; i--) {
-    initialData.push({
-      timestamp: `-${i * 5}m`,
-      messageCount: Math.max(0, stats.message_count + ((i % 5) - 2) * 2),
-      consumerCount: stats.consumer_count,
-    });
+function formatClock(ts: number): string {
+  const d = new Date(ts * 1000);
+  return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
+}
+
+function toChartPoints(points: QueueHistoryPoint[]): ChartPoint[] {
+  return points.map((p) => ({
+    ts: p.ts,
+    label: formatClock(p.ts),
+    messageCount: p.message_count,
+    consumerCount: p.consumer_count,
+  }));
+}
+
+/** Append live stats as the newest point when they differ from the last sample. */
+function mergeLivePoint(points: ChartPoint[], stats: QueueStats): ChartPoint[] {
+  if (points.length === 0) {
+    return points;
   }
 
-  return initialData;
+  const nowTs = Math.floor(Date.now() / 1000);
+  const live: ChartPoint = {
+    ts: nowTs,
+    label: formatClock(nowTs),
+    messageCount: stats.message_count,
+    consumerCount: stats.consumer_count,
+  };
+
+  const last = points[points.length - 1];
+  if (last.messageCount === live.messageCount && last.consumerCount === live.consumerCount) {
+    return points;
+  }
+
+  return [...points, live];
 }
 
 export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps) {
-  const [history, setHistory] = useState<DataPoint[]>(() => createSeedHistory(stats));
-  const [trackedQueue, setTrackedQueue] = useState(queueName);
-  const [lastCounts, setLastCounts] = useState({
-    messageCount: stats.message_count,
-    consumerCount: stats.consumer_count,
-  });
+  const [history, setHistory] = useState<ChartPoint[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [unavailable, setUnavailable] = useState(false);
 
-  // Re-seed when navigating to a different queue.
-  if (queueName !== trackedQueue) {
-    setTrackedQueue(queueName);
-    setHistory(createSeedHistory(stats));
-    setLastCounts({
-      messageCount: stats.message_count,
-      consumerCount: stats.consumer_count,
-    });
-  } else if (
-    stats.message_count !== lastCounts.messageCount ||
-    stats.consumer_count !== lastCounts.consumerCount
-  ) {
-    // Append a rolling data point when live stats change.
-    setLastCounts({
-      messageCount: stats.message_count,
-      consumerCount: stats.consumer_count,
-    });
-    setHistory((prev) => [
-      ...prev.slice(1),
-      {
-        timestamp: "now",
-        messageCount: stats.message_count,
-        consumerCount: stats.consumer_count,
-      },
-    ]);
-  }
+  useEffect(() => {
+    let cancelled = false;
 
-  // Calculate trend
-  const firstValue = history[0]?.messageCount || 0;
-  const lastValue = history[history.length - 1]?.messageCount || 0;
+    async function loadHistory() {
+      try {
+        const data = await getQueueHistory(queueName, HISTORY_RANGE_SECONDS);
+        if (cancelled) return;
+        if (data.available === false) {
+          setUnavailable(true);
+          setHistory([]);
+        } else {
+          setHistory(toChartPoints(data.points ?? []));
+          setUnavailable(false);
+        }
+      } catch {
+        if (cancelled) return;
+        setUnavailable(true);
+        setHistory([]);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    setLoading(true);
+    void loadHistory();
+    const id = window.setInterval(() => {
+      void loadHistory();
+    }, HISTORY_POLL_MS);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(id);
+    };
+  }, [queueName]);
+
+  const displayHistory = mergeLivePoint(history, stats);
+  const hasSeries = displayHistory.length > 0;
+
+  const firstValue = displayHistory[0]?.messageCount || 0;
+  const lastValue = displayHistory[displayHistory.length - 1]?.messageCount || 0;
   const trend = lastValue - firstValue;
   const trendPercent =
     firstValue > 0 ? (((lastValue - firstValue) / firstValue) * 100).toFixed(1) : "0.0";
 
-  // Calculate max value for scaling
-  const maxMessages = Math.max(...history.map((d) => d.messageCount), 1);
-  const maxConsumers = Math.max(...history.map((d) => d.consumerCount), 1);
+  const maxMessages = Math.max(...displayHistory.map((d) => d.messageCount), 1);
+  const maxConsumers = Math.max(...displayHistory.map((d) => d.consumerCount), 1);
+
+  const emptyMessage = unavailable
+    ? "History unavailable"
+    : loading
+      ? "Loading history…"
+      : "Collecting samples…";
 
   return (
     <div className="space-y-6">
-      {/* Trend Summary */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
-            <span>Activity Trend (Last Hour)</span>
-            <div className="flex items-center gap-2 text-body font-normal">
-              {trend > 0 ? (
-                <>
-                  <TrendingUp className="h-4 w-4 text-red-500" />
-                  <span className="text-red-500">+{trendPercent}%</span>
-                </>
-              ) : trend < 0 ? (
-                <>
-                  <TrendingDown className="h-4 w-4 text-green-500" />
-                  <span className="text-green-500">{trendPercent}%</span>
-                </>
-              ) : (
-                <>
-                  <Minus className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">No change</span>
-                </>
-              )}
-            </div>
+            <span>Activity Trend (Last 5 Hours)</span>
+            {hasSeries && (
+              <div className="flex items-center gap-2 text-body font-normal">
+                {trend > 0 ? (
+                  <>
+                    <TrendingUp className="h-4 w-4 text-status-error" />
+                    <span className="text-status-error">+{trendPercent}%</span>
+                  </>
+                ) : trend < 0 ? (
+                  <>
+                    <TrendingDown className="h-4 w-4 text-status-success" />
+                    <span className="text-status-success">{trendPercent}%</span>
+                  </>
+                ) : (
+                  <>
+                    <Minus className="h-4 w-4 text-text-muted" />
+                    <span className="text-text-muted">No change</span>
+                  </>
+                )}
+              </div>
+            )}
           </CardTitle>
-          <CardDescription>Message count over time (sampled every 5 minutes)</CardDescription>
+          <CardDescription>Message count over time (sampled every 30 seconds)</CardDescription>
         </CardHeader>
       </Card>
 
-      {/* Message Count Chart */}
       <Card>
         <CardHeader>
           <CardTitle>Message Count</CardTitle>
           <CardDescription>Number of pending messages in the queue</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-2">
-            {/* Y-axis labels */}
-            <div className="flex justify-between text-caption text-muted-foreground mb-2">
-              <span>0</span>
-              <span>{Math.floor(maxMessages / 2)}</span>
-              <span>{maxMessages}</span>
+          {!hasSeries ? (
+            <p className="text-body text-text-muted py-12 text-center">{emptyMessage}</p>
+          ) : (
+            <div className="space-y-2">
+              <div className="flex justify-between text-caption text-text-muted mb-2">
+                <span>0</span>
+                <span>{Math.floor(maxMessages / 2)}</span>
+                <span>{maxMessages}</span>
+              </div>
+
+              <div className="relative h-48 rounded-lg border border-border-default bg-surface-raised p-4">
+                <svg
+                  className="h-full w-full text-accent-primary"
+                  viewBox="0 0 600 180"
+                  aria-hidden
+                >
+                  <line
+                    x1="0"
+                    y1="90"
+                    x2="600"
+                    y2="90"
+                    className="text-text-muted"
+                    stroke="currentColor"
+                    strokeOpacity="0.2"
+                    strokeDasharray="4"
+                  />
+                  <line
+                    x1="0"
+                    y1="45"
+                    x2="600"
+                    y2="45"
+                    className="text-text-muted"
+                    stroke="currentColor"
+                    strokeOpacity="0.2"
+                    strokeDasharray="4"
+                  />
+                  <line
+                    x1="0"
+                    y1="135"
+                    x2="600"
+                    y2="135"
+                    className="text-text-muted"
+                    stroke="currentColor"
+                    strokeOpacity="0.2"
+                    strokeDasharray="4"
+                  />
+
+                  {displayHistory.length > 1 && (
+                    <polyline
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinejoin="round"
+                      strokeLinecap="round"
+                      points={displayHistory
+                        .map((point, i) => {
+                          const x = (i / (displayHistory.length - 1)) * 580 + 10;
+                          const y = 160 - (point.messageCount / maxMessages) * 140;
+                          return `${x},${y}`;
+                        })
+                        .join(" ")}
+                    />
+                  )}
+
+                  {displayHistory.map((point, i) => {
+                    const x =
+                      displayHistory.length === 1
+                        ? 300
+                        : (i / (displayHistory.length - 1)) * 580 + 10;
+                    const y = 160 - (point.messageCount / maxMessages) * 140;
+                    return (
+                      <circle
+                        key={`${point.ts}-${i}`}
+                        cx={x}
+                        cy={y}
+                        r="3.5"
+                        fill="currentColor"
+                        stroke="var(--surface-raised)"
+                        strokeWidth="1.5"
+                      >
+                        <title>
+                          {point.label}: {point.messageCount} messages
+                        </title>
+                      </circle>
+                    );
+                  })}
+                </svg>
+              </div>
+
+              <div className="mt-2 flex justify-between text-caption text-text-muted">
+                <span>{displayHistory[0]?.label || ""}</span>
+                <span>{displayHistory[Math.floor(displayHistory.length / 2)]?.label || ""}</span>
+                <span>{displayHistory[displayHistory.length - 1]?.label || ""}</span>
+              </div>
             </div>
-
-            {/* Chart */}
-            <div className="relative h-48 border rounded-lg bg-muted/20 p-4">
-              <svg className="w-full h-full" viewBox="0 0 600 180">
-                {/* Grid lines */}
-                <line
-                  x1="0"
-                  y1="90"
-                  x2="600"
-                  y2="90"
-                  stroke="currentColor"
-                  strokeOpacity="0.1"
-                  strokeDasharray="4"
-                />
-                <line
-                  x1="0"
-                  y1="45"
-                  x2="600"
-                  y2="45"
-                  stroke="currentColor"
-                  strokeOpacity="0.1"
-                  strokeDasharray="4"
-                />
-                <line
-                  x1="0"
-                  y1="135"
-                  x2="600"
-                  y2="135"
-                  stroke="currentColor"
-                  strokeOpacity="0.1"
-                  strokeDasharray="4"
-                />
-
-                {/* Line chart */}
-                <polyline
-                  fill="none"
-                  stroke="hsl(var(--primary))"
-                  strokeWidth="2"
-                  points={history
-                    .map((point, i) => {
-                      const x = (i / (history.length - 1)) * 580 + 10;
-                      const y = 170 - (point.messageCount / maxMessages) * 160;
-                      return `${x},${y}`;
-                    })
-                    .join(" ")}
-                />
-
-                {/* Data points */}
-                {history.map((point, i) => {
-                  const x = (i / (history.length - 1)) * 580 + 10;
-                  const y = 170 - (point.messageCount / maxMessages) * 160;
-                  return (
-                    <circle
-                      key={i}
-                      cx={x}
-                      cy={y}
-                      r="3"
-                      fill="hsl(var(--primary))"
-                      className="hover:r-5 transition-all"
-                    >
-                      <title>
-                        {point.timestamp}: {point.messageCount} messages
-                      </title>
-                    </circle>
-                  );
-                })}
-              </svg>
-            </div>
-
-            {/* X-axis labels */}
-            <div className="flex justify-between text-caption text-muted-foreground mt-2">
-              <span>{history[0]?.timestamp || ""}</span>
-              <span>{history[Math.floor(history.length / 2)]?.timestamp || ""}</span>
-              <span>{history[history.length - 1]?.timestamp || ""}</span>
-            </div>
-          </div>
+          )}
         </CardContent>
       </Card>
 
-      {/* Consumer Count Chart */}
       <Card>
         <CardHeader>
           <CardTitle>Consumer Count</CardTitle>
           <CardDescription>Number of active consumers processing the queue</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-2">
-            {/* Y-axis labels */}
-            <div className="flex justify-between text-caption text-muted-foreground mb-2">
-              <span>0</span>
-              <span>{Math.max(1, Math.floor(maxConsumers / 2))}</span>
-              <span>{Math.max(1, maxConsumers)}</span>
+          {!hasSeries ? (
+            <p className="text-body text-text-muted py-8 text-center">{emptyMessage}</p>
+          ) : (
+            <div className="space-y-2">
+              <div className="mb-2 flex justify-between text-caption text-text-muted">
+                <span>0</span>
+                <span>{Math.max(1, Math.floor(maxConsumers / 2))}</span>
+                <span>{Math.max(1, maxConsumers)}</span>
+              </div>
+
+              <div className="relative h-32 rounded-lg border border-border-default bg-surface-raised p-4">
+                <svg
+                  className="h-full w-full text-accent-secondary"
+                  viewBox="0 0 600 120"
+                  aria-hidden
+                >
+                  <line
+                    x1="0"
+                    y1="60"
+                    x2="600"
+                    y2="60"
+                    className="text-text-muted"
+                    stroke="currentColor"
+                    strokeOpacity="0.2"
+                    strokeDasharray="4"
+                  />
+
+                  {displayHistory.map((point, i) => {
+                    if (i === 0 || displayHistory.length < 2) return null;
+                    const x1 = ((i - 1) / (displayHistory.length - 1)) * 580 + 10;
+                    const x2 = (i / (displayHistory.length - 1)) * 580 + 10;
+                    const y1 =
+                      100 - (displayHistory[i - 1].consumerCount / Math.max(1, maxConsumers)) * 80;
+                    const y2 = 100 - (point.consumerCount / Math.max(1, maxConsumers)) * 80;
+
+                    return (
+                      <g key={`step-${point.ts}-${i}`}>
+                        <line
+                          x1={x1}
+                          y1={y1}
+                          x2={x2}
+                          y2={y1}
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                        />
+                        <line
+                          x1={x2}
+                          y1={y1}
+                          x2={x2}
+                          y2={y2}
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeDasharray="2"
+                          strokeLinecap="round"
+                        />
+                      </g>
+                    );
+                  })}
+
+                  {displayHistory.map((point, i) => {
+                    const x =
+                      displayHistory.length === 1
+                        ? 300
+                        : (i / (displayHistory.length - 1)) * 580 + 10;
+                    const y = 100 - (point.consumerCount / Math.max(1, maxConsumers)) * 80;
+                    return (
+                      <circle
+                        key={`c-${point.ts}-${i}`}
+                        cx={x}
+                        cy={y}
+                        r="3.5"
+                        fill="currentColor"
+                        stroke="var(--surface-raised)"
+                        strokeWidth="1.5"
+                      >
+                        <title>
+                          {point.label}: {point.consumerCount} consumers
+                        </title>
+                      </circle>
+                    );
+                  })}
+                </svg>
+              </div>
+
+              <div className="mt-2 flex justify-between text-caption text-text-muted">
+                <span>{displayHistory[0]?.label || ""}</span>
+                <span>{displayHistory[Math.floor(displayHistory.length / 2)]?.label || ""}</span>
+                <span>{displayHistory[displayHistory.length - 1]?.label || ""}</span>
+              </div>
             </div>
-
-            {/* Chart */}
-            <div className="relative h-32 border rounded-lg bg-muted/20 p-4">
-              <svg className="w-full h-full" viewBox="0 0 600 120">
-                {/* Grid line */}
-                <line
-                  x1="0"
-                  y1="60"
-                  x2="600"
-                  y2="60"
-                  stroke="currentColor"
-                  strokeOpacity="0.1"
-                  strokeDasharray="4"
-                />
-
-                {/* Step chart (consumers usually don't change gradually) */}
-                {history.map((point, i) => {
-                  if (i === 0) return null;
-                  const x1 = ((i - 1) / (history.length - 1)) * 580 + 10;
-                  const x2 = (i / (history.length - 1)) * 580 + 10;
-                  const y1 = 110 - (history[i - 1].consumerCount / Math.max(1, maxConsumers)) * 100;
-                  const y2 = 110 - (point.consumerCount / Math.max(1, maxConsumers)) * 100;
-
-                  return (
-                    <g key={i}>
-                      <line
-                        x1={x1}
-                        y1={y1}
-                        x2={x2}
-                        y2={y1}
-                        stroke="hsl(var(--chart-2))"
-                        strokeWidth="2"
-                      />
-                      <line
-                        x1={x2}
-                        y1={y1}
-                        x2={x2}
-                        y2={y2}
-                        stroke="hsl(var(--chart-2))"
-                        strokeWidth="2"
-                        strokeDasharray="2"
-                      />
-                    </g>
-                  );
-                })}
-
-                {/* Data points */}
-                {history.map((point, i) => {
-                  const x = (i / (history.length - 1)) * 580 + 10;
-                  const y = 110 - (point.consumerCount / Math.max(1, maxConsumers)) * 100;
-                  return (
-                    <circle key={i} cx={x} cy={y} r="3" fill="hsl(var(--chart-2))">
-                      <title>
-                        {point.timestamp}: {point.consumerCount} consumers
-                      </title>
-                    </circle>
-                  );
-                })}
-              </svg>
-            </div>
-
-            {/* X-axis labels */}
-            <div className="flex justify-between text-caption text-muted-foreground mt-2">
-              <span>{history[0]?.timestamp || ""}</span>
-              <span>{history[Math.floor(history.length / 2)]?.timestamp || ""}</span>
-              <span>{history[history.length - 1]?.timestamp || ""}</span>
-            </div>
-          </div>
+          )}
         </CardContent>
       </Card>
 
-      {/* Note about data collection */}
-      <Card className="bg-muted/30">
+      <Card className="bg-surface-raised/60">
         <CardContent className="pt-6">
-          <p className="text-caption text-muted-foreground">
-            <strong>Note:</strong> Activity data is collected client-side during your current
-            session. Historical data from before you opened this page is not available. For
-            persistent monitoring, consider setting up a monitoring service.
+          <p className="text-caption text-text-muted">
+            History is sampled every 30 seconds by the background worker and stored in Valkey
+            (shared across admins). Enable{" "}
+            <code className="text-text-secondary">QUEUE_HISTORY_ENABLED</code> on the worker if the
+            chart stays empty.
           </p>
         </CardContent>
       </Card>

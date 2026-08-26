@@ -37,6 +37,21 @@ export interface QueuePurgeResponse {
   messages_deleted: number | null;
 }
 
+export interface QueueHistoryPoint {
+  ts: number;
+  message_count: number;
+  consumer_count: number;
+}
+
+export interface QueueHistory {
+  queue_name: string;
+  range_seconds: number;
+  sample_interval_seconds: number;
+  points: QueueHistoryPoint[];
+  /** False when Valkey is down; points will be empty. */
+  available?: boolean;
+}
+
 export interface QueueHealth {
   status: "healthy" | "warning" | "critical";
   message: string;
