@@ -18,9 +18,9 @@ interface ChartPoint {
   consumerCount: number;
 }
 
-/** Matches backend QUEUE_HISTORY_RETENTION_SECONDS (5h @ 30s samples → 600 pts max). */
+/** Matches backend QUEUE_HISTORY_RETENTION_SECONDS (5h @ 60s samples → 300 pts max). */
 const HISTORY_RANGE_SECONDS = 18000;
-const HISTORY_POLL_MS = 30_000;
+const HISTORY_POLL_MS = 60_000;
 
 const MSG_VIEW = { w: 600, h: 180, padX: 4, padY: 12 } as const;
 const CON_VIEW = { w: 600, h: 120, padX: 4, padY: 10 } as const;
@@ -172,7 +172,7 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
               </div>
             )}
           </CardTitle>
-          <CardDescription>Message count over time (sampled every 30 seconds)</CardDescription>
+          <CardDescription>Message count over time (sampled every 60 seconds)</CardDescription>
         </CardHeader>
       </Card>
 
@@ -378,7 +378,7 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
       <Card className="bg-surface-raised/60">
         <CardContent className="pt-6">
           <p className="text-caption text-text-muted">
-            History is sampled every 30 seconds by the background worker and stored in Valkey
+            History is sampled every 60 seconds by the background worker and stored in Valkey
             (shared across admins). Enable{" "}
             <code className="text-text-secondary">QUEUE_HISTORY_ENABLED</code> on the worker if the
             chart stays empty.
