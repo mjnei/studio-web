@@ -55,20 +55,6 @@
       "deleteSelected": "선택 항목 삭제",
       "clearSelection": "선택 해제"
     },
-    "analytics": {
-      "title": "분석 및 인사이트",
-      "monthlyOverview": "월간 개요",
-      "totalJobsProcessed": "처리된 전체 작업",
-      "showInsights": "인사이트 보기",
-      "hideInsights": "인사이트 숨기기",
-      "successRate": "성공률",
-      "creditsConsumed": "소모된 크레딧",
-      "topVoice": "인기 보이스",
-      "mostFrequently": "가장 자주 선택된 보이스",
-      "avgProcessingTime": "평균 처리 시간",
-      "perVideoRendering": "영상 렌더링당",
-      "acrossAllAttempts": "모든 생성 시도 기준"
-    },
     "activeJob": {
       "queued": "대기 중",
       "processing": "처리 중",

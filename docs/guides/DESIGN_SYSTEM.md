@@ -375,7 +375,7 @@ Always test UI copy over **Grid** and **Mesh** (high-contrast patterns), not onl
 
 1. **Opaque parents kill glass.** Do not add `bg-surface-base` / opaque wrappers around glass children or on shell `main`.
 2. **Opaque hover kills glass.** Never pair `glass-card` with `hover:bg-surface-raised` / `hover:bg-surface-hover`. Use `hover:bg-surface-raised-glass` or border/shadow-only feedback. `Card` with `variant="glass"` + `interactive` already does this.
-3. **Nested solids.** A glass card with opaque nested panels still blocks ambient — glassify nested boxes or leave gaps transparent (see AnalyticsPanel metric tiles).
+3. **Nested solids.** A glass card with opaque nested panels still blocks ambient — glassify nested boxes or leave gaps transparent.
 4. **Reduced transparency:** `@media (prefers-reduced-transparency: reduce)` restores solid `--surface-panel` / `--surface-raised` and disables blur.
 
 ### Adoption note
@@ -388,43 +388,42 @@ Consumer shell chrome, Settings/profile/help, jobs, voices, movies, projects, no
 
 ### Overview
 
-Primitives live in `src/components/ui/` (React 19, TypeScript, Tailwind CSS 4). **Barrel exports** (`src/components/ui/index.ts`) currently re-export: `Button`, `Badge`, `Input`/`TextArea`, `Card` family, `EmptyState`, `PageHeader`, `LoadingSpinner`, `Spinner`, `Icon`, `Grid`, `Heading`, `Text`, `typography`, `Label`, `ContextDrawer`, `ContextDrawerTrigger`. Other modules are imported from their file path.
+Primitives live in `src/components/ui/` (React 19, TypeScript, Tailwind CSS 4). Import from each module path (e.g. `@/components/ui/button`) — there is no barrel `index.ts`.
 
 **New UI must use these primitives.** Several pages still use raw HTML controls with copied classes — treat that as incomplete migration, not a pattern to extend.
 
-| Primitive                                                            | File                       | In barrel? | Notes                                         |
-| -------------------------------------------------------------------- | -------------------------- | ---------- | --------------------------------------------- |
-| `Button`                                                             | `button.tsx`               | yes        | Includes `destructive`                        |
-| `Card` (+ Header/Title/…)                                            | `card.tsx`                 | yes        | `CardTitle` = `Heading variant="section"`     |
-| `Input` / `TextArea`                                                 | `input.tsx`                | yes        | Default input height `h-9`; uses `Label`      |
-| `Label`                                                              | `label.tsx`                | yes        | `field` (body) / `meta` (caption) tones       |
-| `Select` / `MultiSelect`                                             | `select.tsx`               | no         | Custom listbox (not native `<select>`)        |
-| `Badge`                                                              | `badge.tsx`                | yes        | Includes `destructive` (same look as `error`) |
-| `Heading` / `Text`                                                   | `heading.tsx` / `text.tsx` | yes        | RSC-safe                                      |
-| `PageHeader`                                                         | `PageHeader.tsx`           | yes        | Page `h1` via `variant="page"`                |
-| `ContextDrawer` / `ContextDrawerTrigger`                             | `context-drawer.tsx` / `context-drawer-trigger.tsx` | yes | Step-page secondary context; icon-only trigger on mobile |
-| `EmptyState`                                                         | `EmptyState.tsx`           | yes        | Owns hero icon rings                          |
-| `Icon`                                                               | `icon.tsx`                 | yes        | Nav + dense repeated UI                       |
-| `Spinner`                                                            | `spinner.tsx`              | yes        | Animated `Loader2`                            |
-| `LoadingSpinner`                                                     | `LoadingSpinner.tsx`       | yes        | Status block wrapping `Spinner`               |
-| `LoadingSkeleton` / `PageLoadingSkeleton` / `InlineLoadingSkeleton`  | `loading-skeleton.tsx`     | no         | Page/section placeholders                     |
-| `Skeleton`                                                           | `skeleton.tsx`             | no         | Low-level shimmer shapes                      |
-| `Modal` / `ConfirmModal` / `FormModal` / `AlertModal` / `InputModal` | `modal.tsx`                | no         | `InputModal` uses shared `Input`              |
-| `ToastProvider` / `useToast`                                         | `toast.tsx`                | no         | Also wrapped by `@/lib/hooks/use-toast`       |
-| `Tooltip`                                                            | `tooltip.tsx`              | no         |                                               |
-| `Grid`                                                               | `Grid.tsx`                 | yes        |                                               |
-| `LayoutToggle`                                                       | `LayoutToggle.tsx`         | no         | Raw icon buttons, `h-9` cluster               |
-| `Pagination`                                                         | `Pagination.tsx`           | no         | Raw `<button>` internals                      |
-| `Tabs`                                                               | `tabs.tsx`                 | no         |                                               |
-| `AlertDialog`                                                        | `alert-dialog.tsx`         | no         |                                               |
-| `InputOTP`                                                           | `input-otp.tsx`            | no         |                                               |
-| `ExternalImage`                                                      | `ExternalImage.tsx`        | no         |                                               |
+| Primitive                                                            | File                       | Notes                                         |
+| -------------------------------------------------------------------- | -------------------------- | --------------------------------------------- |
+| `Button`                                                             | `button.tsx`               | Includes `destructive`                        |
+| `Card` (+ Header/Title/…)                                            | `card.tsx`                 | `CardTitle` = `Heading variant="section"`     |
+| `Input` / `TextArea`                                                 | `input.tsx`                | Default input height `h-9`; uses `Label`      |
+| `Label`                                                              | `label.tsx`                | `field` (body) / `meta` (caption) tones       |
+| `Select` / `MultiSelect`                                             | `select.tsx`               | Custom listbox (not native `<select>`)        |
+| `Badge`                                                              | `badge.tsx`                | Includes `destructive` (same look as `error`) |
+| `Heading` / `Text`                                                   | `heading.tsx` / `text.tsx` | RSC-safe                                      |
+| `PageHeader`                                                         | `PageHeader.tsx`           | Page `h1` via `variant="page"`                |
+| `ContextDrawer` / `ContextDrawerTrigger`                             | `context-drawer.tsx` / `context-drawer-trigger.tsx` | Step-page secondary context; icon-only trigger on mobile |
+| `EmptyState`                                                         | `EmptyState.tsx`           | Owns hero icon rings                          |
+| `Icon`                                                               | `icon.tsx`                 | Nav + dense repeated UI                       |
+| `Spinner`                                                            | `spinner.tsx`              | Animated `Loader2`                            |
+| `LoadingSpinner`                                                     | `LoadingSpinner.tsx`       | Status block wrapping `Spinner`               |
+| `LoadingSkeleton` / `PageLoadingSkeleton` / `InlineLoadingSkeleton`  | `loading-skeleton.tsx`     | Page/section placeholders                     |
+| `Skeleton`                                                           | `skeleton.tsx`             | Low-level shimmer shapes                      |
+| `Modal` / `ConfirmModal` / `FormModal` / `AlertModal`                | `modal.tsx`                | Dialogs, confirmations, forms, alerts         |
+| `ToastProvider` / `useToast`                                         | `toast.tsx`                | Also wrapped by `@/lib/hooks/use-toast`       |
+| `Tooltip`                                                            | `tooltip.tsx`              |                                               |
+| `Grid`                                                               | `Grid.tsx`                 |                                               |
+| `LayoutToggle`                                                       | `LayoutToggle.tsx`         | Raw icon buttons, `h-9` cluster               |
+| `Pagination`                                                         | `Pagination.tsx`           | Raw `<button>` internals                      |
+| `Tabs`                                                               | `tabs.tsx`                 |                                               |
+| `InputOTP`                                                           | `input-otp.tsx`            |                                               |
+| `ExternalImage`                                                      | `ExternalImage.tsx`        |                                               |
 
 ### Adoption gaps (current code)
 
 - **Raw `<select>`** remains for compact chrome only: `LanguageSwitcher` and the thumbnail editor toolbar (font/color). Prefer shared `Select` for form fields.
 - **Raw `<input>`** remains for checkboxes, file pickers, range sliders, color pickers, OTP, and a few password-reveal fields. Prefer `Input` for text/search/date/number fields.
-- **Raw `<textarea>`** remains for large script editors (`script-generation`, project script pages) and the thumbnail caption editor. Prefer `TextArea` for ordinary multi-line forms (playground TTS uses `TextArea`).
+- **Raw `<textarea>`** remains for large script editors (project script pages) and the thumbnail caption editor. Prefer `TextArea` for ordinary multi-line forms (playground TTS uses `TextArea`).
 - **`Label` primitive** (`field` | `meta` tones) is used by `Input` / `TextArea` / `Select` and TTS job detail modals. Remaining raw `<label>` is mostly checkbox rows and a few auth fields.
 - **Raw `<button>`** is justified inside `Select`, `Pagination`, `LayoutToggle`, drawer collapse, and notification bell. Product CTAs and form submits should use `Button`.
 - **`Icon` wrapper** is required for sidebar/nav; most other Lucide call sites still use direct `h-N w-N` sizing.
@@ -553,7 +552,7 @@ import { Tooltip } from "@/components/ui/tooltip";
 #### 7. Modal
 
 - **File**: `src/components/ui/modal.tsx`
-- **Components**: `Modal`, `ConfirmModal`, `FormModal`, `AlertModal`, `InputModal`
+- **Components**: `Modal`, `ConfirmModal`, `FormModal`, `AlertModal`
 - **Sizes**: sm, md, lg, xl, full
 - **Variants**: default, danger, success
 - **Features**: Backdrop click to close, keyboard escape support, customizable footer
@@ -696,7 +695,8 @@ import { Input, TextArea } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, MultiSelect } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Heading, Text } from "@/components/ui";
+import { Heading } from "@/components/ui/heading";
+import { Text } from "@/components/ui/text";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Icon } from "@/components/ui/icon";

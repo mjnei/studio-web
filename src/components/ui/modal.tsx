@@ -1,11 +1,10 @@
 "use client";
 
 import { X } from "lucide-react";
-import { useEffect, useRef, ReactNode, useState } from "react";
+import { useEffect, useRef, ReactNode } from "react";
 import { Button } from "./button";
 import { Heading } from "./heading";
 import { Text } from "./text";
-import { Input } from "./input";
 import { useI18n } from "@/i18n";
 
 export interface ModalProps {
@@ -309,78 +308,6 @@ export function AlertModal({
           {message}
         </Text>
       </div>
-    </Modal>
-  );
-}
-
-// Input Modal Preset
-export interface InputModalProps {
-  open: boolean;
-  onClose: () => void;
-  onSubmit: (value: string) => void;
-  title: string;
-  description?: string;
-  placeholder?: string;
-  defaultValue?: string;
-  submitText?: string;
-  cancelText?: string;
-  loading?: boolean;
-  inputType?: string;
-}
-
-export function InputModal({
-  open,
-  onClose,
-  onSubmit,
-  title,
-  description,
-  placeholder = "",
-  defaultValue = "",
-  submitText = "Submit",
-  cancelText = "Cancel",
-  loading = false,
-  inputType = "text",
-}: InputModalProps) {
-  const [value, setValue] = useState(defaultValue);
-  const [prevOpen, setPrevOpen] = useState(open);
-  const [prevDefaultValue, setPrevDefaultValue] = useState(defaultValue);
-
-  if (open !== prevOpen || defaultValue !== prevDefaultValue) {
-    setPrevOpen(open);
-    setPrevDefaultValue(defaultValue);
-    setValue(open ? defaultValue : "");
-  }
-
-  const handleSubmit = () => {
-    onSubmit(value);
-  };
-
-  return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      title={title}
-      description={description}
-      size="sm"
-      footer={
-        <>
-          <Button variant="secondary" size="md" onClick={onClose} disabled={loading}>
-            {cancelText}
-          </Button>
-          <Button variant="primary" size="md" onClick={handleSubmit} loading={loading}>
-            {submitText}
-          </Button>
-        </>
-      }
-    >
-      <Input
-        type={inputType}
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        placeholder={placeholder}
-        disabled={loading}
-        autoFocus
-      />
     </Modal>
   );
 }

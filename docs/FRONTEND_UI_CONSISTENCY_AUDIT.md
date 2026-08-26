@@ -80,7 +80,6 @@ Examples (remaining after Aug 24, 2026 migrations):
   - checkboxes / file / range / color (intentionally native)
 
 - Raw `<textarea>` instead of shared `TextArea`
-  - `src/components/project/script-generation.tsx` (script editor)
   - `src/app/project/new/script/page.tsx`
   - `src/app/project/[projectId]/script/page.tsx`
   - `src/components/project/ThumbnailEditorModal.tsx`
@@ -137,7 +136,6 @@ The icon documentation says `@/components/ui/icon` should be used for nav and re
 Examples:
 
 - `src/components/jobs/FiltersBar.tsx`
-- `src/components/project/script-generation.tsx`
 - `src/app/(shell)/settings/page.tsx`
 - `src/app/(shell)/billing/page.tsx`
 - `src/app/(shell)/referral/page.tsx`
@@ -172,7 +170,6 @@ Examples:
 - `src/components/ui/Pagination.tsx`
 - `src/components/ui/LayoutToggle.tsx`
 - `src/components/notifications/NotificationBell.tsx`
-- `src/components/shared/version-switcher.tsx`
 
 This is not a defect by itself, but it is a maintenance risk.
 

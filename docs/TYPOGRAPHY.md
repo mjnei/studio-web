@@ -226,7 +226,6 @@ For body/caption consistency:
 | `CardDescription` | Uses `body` / `caption` |
 | `EmptyState` titles | `section` or `page` as appropriate |
 | Modal titles | `section` (modal is not a page) |
-| `AlertDialog` title | `section` |
 
 Centralize class strings in one module, e.g. `src/components/ui/typography.ts`, so `Heading`, `PageHeader`, and `CardTitle` cannot drift.
 
@@ -384,10 +383,10 @@ Work in **phases**. Prefer small PRs. Do not mix unrelated UI redesign into typo
 - [x] Add `src/components/ui/typography.ts` with shared class maps
 - [x] Add `src/components/ui/heading.tsx` (`variant` + `as` + `className`)
 - [x] Optional: `src/components/ui/text.tsx` for `body` / `bodyLg` / `caption`
-- [x] Export from `src/components/ui/index.ts`
+- [x] Deep-import typography primitives from `@/components/ui/heading` / `text` (no UI barrel)
 - [x] Refactor `PageHeader` to use `typography.page` / `Heading`
 - [x] Refactor `CardTitle` / `CardDescription` to use shared typography
-- [x] Align modal / alert-dialog titles with `section`
+- [x] Align modal titles with `section`
 - [x] Reconcile `@layer base` `h1`–`h4` with the agreed fallback scale (no fighting utilities)
 - [x] Wire `@theme` tokens → `typography.ts` (use `text-page`, `text-section`, … not `text-2xl`, `text-xl`)
 - [x] Wire `--leading-*` tokens into all roles in `typography.ts`
@@ -412,8 +411,8 @@ Work in **phases**. Prefer small PRs. Do not mix unrelated UI redesign into typo
 Update components that appear on many routes (one PR or one PR per cluster):
 
 - [x] `EmptyState` / `EmptyState.tsx` (deleted unused duplicate `empty-state.tsx`)
-- [x] Jobs: `StatusCards`, `ActiveJobCard`, `FailedJobCard`, `AnalyticsPanel`
-- [x] Project shell: `project-shell`, `new-project-shell`, step headers (`movie-selection`, `script-generation`, `voice-selection-panel`, `tts-queue-status`)
+- [x] Jobs: `StatusCards`, `ActiveJobCard`, `FailedJobCard`
+- [x] Project shell: `project-shell`, `new-project-shell`, step headers (`movie-selection`, `voice-selection-panel`, `tts-queue-status`)
 - [x] Notifications dropdown / preferences modal titles
 - [x] Voice / movie / project card titles (`VoiceCard`, `MovieCard`, `ProjectCard`)
 - [x] Queue admin headers (`QueueMessagePeeker`, `DLQInspector`, `QueueStatsCard`)

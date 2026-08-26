@@ -55,20 +55,6 @@
       "deleteSelected": "Ausgewählte löschen",
       "clearSelection": "Auswahl aufheben"
     },
-    "analytics": {
-      "title": "Analysen & Einblicke",
-      "monthlyOverview": "Monatsübersicht",
-      "totalJobsProcessed": "Aufträge verarbeitet",
-      "showInsights": "Einblicke anzeigen",
-      "hideInsights": "Einblicke ausblenden",
-      "successRate": "Erfolgsrate",
-      "creditsConsumed": "Verbrauchte Credits",
-      "topVoice": "Top-Stimme",
-      "mostFrequently": "Am häufigsten gewählt",
-      "avgProcessingTime": "Ø Verarbeitungszeit",
-      "perVideoRendering": "Pro Video-Rendering",
-      "acrossAllAttempts": "Über alle Generierungsversuche"
-    },
     "activeJob": {
       "queued": "In Warteschlange",
       "processing": "Verarbeitung",

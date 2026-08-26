@@ -55,20 +55,6 @@
       "deleteSelected": "刪除所選",
       "clearSelection": "清除選取"
     },
-    "analytics": {
-      "title": "分析與洞察",
-      "monthlyOverview": "每月總覽",
-      "totalJobsProcessed": "已處理工作總數",
-      "showInsights": "顯示洞察",
-      "hideInsights": "隱藏洞察",
-      "successRate": "成功率",
-      "creditsConsumed": "已消耗點數",
-      "topVoice": "熱門音色",
-      "mostFrequently": "最常選用",
-      "avgProcessingTime": "平均處理時間",
-      "perVideoRendering": "每次影片渲染",
-      "acrossAllAttempts": "涵蓋所有產生嘗試"
-    },
     "activeJob": {
       "queued": "排隊中",
       "processing": "處理中",

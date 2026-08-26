@@ -55,20 +55,6 @@
       "deleteSelected": "删除所选任务",
       "clearSelection": "取消选择"
     },
-    "analytics": {
-      "title": "分析与洞察",
-      "monthlyOverview": "本月概览",
-      "totalJobsProcessed": "个任务已处理",
-      "showInsights": "显示洞察",
-      "hideInsights": "隐藏洞察",
-      "successRate": "成功率",
-      "creditsConsumed": "已消耗额度",
-      "topVoice": "常用音色",
-      "mostFrequently": "使用最多",
-      "avgProcessingTime": "平均处理时长",
-      "perVideoRendering": "单次视频渲染",
-      "acrossAllAttempts": "统计全部生成尝试"
-    },
     "activeJob": {
       "queued": "排队中",
       "processing": "处理中",

@@ -55,20 +55,6 @@
       "deleteSelected": "Delete Selected",
       "clearSelection": "Clear selection"
     },
-    "analytics": {
-      "title": "Analytics & Insights",
-      "monthlyOverview": "Monthly overview",
-      "totalJobsProcessed": "total jobs processed",
-      "showInsights": "Show Insights",
-      "hideInsights": "Hide Insights",
-      "successRate": "Success Rate",
-      "creditsConsumed": "Credits Consumed",
-      "topVoice": "Top Voice",
-      "mostFrequently": "Most frequently selected",
-      "avgProcessingTime": "Avg Processing Time",
-      "perVideoRendering": "Per video rendering",
-      "acrossAllAttempts": "Across all generation attempts"
-    },
     "activeJob": {
       "queued": "Queued",
       "processing": "Processing",

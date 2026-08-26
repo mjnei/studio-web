@@ -667,7 +667,7 @@ src/lib/
   project-client.ts          # API client functions (includes thumbnail fields + scheduleAgnesJobs)
   hooks/
     use-project-state.ts     # Project state management hook (includes thumbnail fields)
-  # SSE: see studio-backend/docs/SSE (Server-Sent Events).md (notifications live in notification-context; use-sse.ts unused)
+  # SSE: see studio-backend/docs/SSE (Server-Sent Events).md (notifications live in notification-context)
 ```
 
 ### Navigation Component

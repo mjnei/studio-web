@@ -55,20 +55,6 @@
       "deleteSelected": "選択を削除",
       "clearSelection": "選択をクリア"
     },
-    "analytics": {
-      "title": "分析とインサイト",
-      "monthlyOverview": "月次概要",
-      "totalJobsProcessed": "処理済みジョブ合計",
-      "showInsights": "インサイトを表示",
-      "hideInsights": "インサイトを非表示",
-      "successRate": "成功率",
-      "creditsConsumed": "消費クレジット",
-      "topVoice": "人気ボイス",
-      "mostFrequently": "最もよく選ばれたボイス",
-      "avgProcessingTime": "平均処理時間",
-      "perVideoRendering": "動画レンダリングごと",
-      "acrossAllAttempts": "すべての生成試行にわたる"
-    },
     "activeJob": {
       "queued": "キュー待ち",
       "processing": "処理中",
