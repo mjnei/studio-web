@@ -20,7 +20,7 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({ summary }) => {
     <Card variant="glass" padding="none" className="mb-6 border-border-default overflow-hidden">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-4 bg-surface-panel hover:bg-surface-hover transition-colors text-left"
+        className="w-full flex items-center justify-between p-4 hover:bg-surface-raised-glass transition-colors text-left"
       >
         <div className="flex items-center gap-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent-primary/15 text-accent-primary">
@@ -45,8 +45,8 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({ summary }) => {
       </button>
 
       {isOpen && (
-        <div className="p-4 border-t border-border-default bg-surface-base grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 animate-in fade-in duration-200">
-          <div className="p-3 rounded-lg bg-surface-panel border border-border-default flex items-center gap-3">
+        <div className="p-4 border-t border-border-default grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 animate-in fade-in duration-200">
+          <div className="p-3 rounded-lg glass-card flex items-center gap-3">
             <div className="p-2 rounded-md bg-status-success/15 text-status-success">
               <ShieldCheck className="h-4 w-4" />
             </div>
@@ -63,7 +63,7 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({ summary }) => {
             </div>
           </div>
 
-          <div className="p-3 rounded-lg bg-surface-panel border border-border-default flex items-center gap-3">
+          <div className="p-3 rounded-lg glass-card flex items-center gap-3">
             <div className="p-2 rounded-md bg-accent-secondary/15 text-accent-secondary">
               <Zap className="h-4 w-4" />
             </div>
@@ -80,7 +80,7 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({ summary }) => {
             </div>
           </div>
 
-          <div className="p-3 rounded-lg bg-surface-panel border border-border-default flex items-center gap-3">
+          <div className="p-3 rounded-lg glass-card flex items-center gap-3">
             <div className="p-2 rounded-md bg-accent-tertiary/15 text-accent-tertiary">
               <Mic className="h-4 w-4" />
             </div>
@@ -97,7 +97,7 @@ export const AnalyticsPanel: React.FC<AnalyticsPanelProps> = ({ summary }) => {
             </div>
           </div>
 
-          <div className="p-3 rounded-lg bg-surface-panel border border-border-default flex items-center gap-3">
+          <div className="p-3 rounded-lg glass-card flex items-center gap-3">
             <div className="p-2 rounded-md bg-blue-500/15 text-blue-400">
               <Clock className="h-4 w-4" />
             </div>

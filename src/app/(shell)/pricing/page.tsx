@@ -30,7 +30,7 @@ interface BillingToggleProps {
 
 function BillingToggle({ billingCycle, onBillingCycleChange, t }: BillingToggleProps) {
   return (
-    <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-surface-raised border border-border-default shadow-sm">
+    <div className="inline-flex items-center gap-1 p-1 rounded-xl glass-card shadow-sm">
       <button
         type="button"
         onClick={() => onBillingCycleChange("monthly")}
@@ -140,13 +140,13 @@ export default function PricingPage() {
   const getBgColorClasses = (color: PricingTier["color"]) => {
     switch (color) {
       case "blue":
-        return "bg-surface-raised";
+        return "glass-card";
       case "cyan":
-        return "bg-accent-cyan/5";
+        return "glass-card bg-accent-cyan/5";
       case "purple":
-        return "bg-accent-purple/5";
+        return "glass-card bg-accent-purple/5";
       default:
-        return "bg-surface-raised";
+        return "glass-card";
     }
   };
 
@@ -309,28 +309,28 @@ export default function PricingPage() {
           {t("pricing.faq.title")}
         </Heading>
         <div className="mx-auto max-w-3xl space-y-4">
-          <Card variant="elevated" padding="md">
+          <Card variant="glass" padding="md">
             <Heading variant="label" as="h3" className="mb-2 text-text-primary">
               {t("pricing.faq.creditQuestion")}
             </Heading>
             <p className="text-body text-text-secondary">{t("pricing.faq.creditAnswer")}</p>
           </Card>
 
-          <Card variant="elevated" padding="md">
+          <Card variant="glass" padding="md">
             <Heading variant="label" as="h3" className="mb-2 text-text-primary">
               {t("pricing.faq.rolloverQuestion")}
             </Heading>
             <p className="text-body text-text-secondary">{t("pricing.faq.rolloverAnswer")}</p>
           </Card>
 
-          <Card variant="elevated" padding="md">
+          <Card variant="glass" padding="md">
             <Heading variant="label" as="h3" className="mb-2 text-text-primary">
               {t("pricing.faq.changeQuestion")}
             </Heading>
             <p className="text-body text-text-secondary">{t("pricing.faq.changeAnswer")}</p>
           </Card>
 
-          <Card variant="elevated" padding="md">
+          <Card variant="glass" padding="md">
             <Heading variant="label" as="h3" className="mb-2 text-text-primary">
               {t("pricing.faq.teamQuestion")}
             </Heading>

@@ -13,7 +13,6 @@
    * Solid tokens above stay for inputs, modals, and full-contrast areas. */
   --surface-panel-glass: rgba(15, 20, 25, 0.55);
   --surface-raised-glass: rgba(22, 27, 34, 0.68);
-  --surface-elevated-glass: rgba(33, 38, 45, 0.72);
   --surface-sticky-glass: rgba(15, 20, 25, 0.88);
   --glass-blur: 16px;
 
@@ -84,7 +83,6 @@
   --color-surface-overlay: var(--surface-overlay);
   --color-surface-panel-glass: var(--surface-panel-glass);
   --color-surface-raised-glass: var(--surface-raised-glass);
-  --color-surface-elevated-glass: var(--surface-elevated-glass);
   --color-border-default: var(--border-default);
   --color-border-subtle: var(--border-subtle);
   --color-border-strong: var(--border-strong);
