@@ -101,17 +101,8 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         {/* Right Side Form */}
         <div className="flex flex-col w-full lg:w-1/2 items-center justify-center p-4">
           <div className="w-full max-w-md relative">
-            {/* Mobile Branding */}
+            {/* Mobile Branding (text only — logo button is desktop-only) */}
             <div className="mb-8 text-center lg:hidden">
-              <button
-                type="button"
-                onClick={() => void handleNextBackground()}
-                disabled={isSwitchingBackground}
-                className="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-2xl bg-gradient-to-br from-accent-secondary via-accent-primary to-accent-tertiary shadow-lg transition-transform hover:scale-105 disabled:opacity-70 disabled:cursor-wait disabled:hover:scale-100"
-                aria-label={t("auth.changeBackground")}
-              >
-                <Layers className="h-8 w-8 text-white" aria-hidden />
-              </button>
               <Heading variant="display" className="text-white drop-shadow-md">
                 Huavoi Studio
               </Heading>
