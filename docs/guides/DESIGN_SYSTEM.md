@@ -1,31 +1,41 @@
 # Frontend UI Design System
 
-**Version**: 2.4  
-**Last Updated**: August 24, 2026  
-**Status**: Living document — reflects the current frontend, including known adoption gaps  
+**Version**: 2.5  
+**Last Updated**: August 26, 2026  
+**Status**: Living document — **master source of truth** for design and UI in `studio-web`  
 **Repository**: `studio-web/`
 
 ---
 
 ## Table of Contents
 
-1. [Scope & current implementation](#scope--purpose)
+1. [Scope & Purpose](#scope--purpose)
 2. [Design Principles](#design-principles--global-guidelines)
 3. [Typography](#typography)
 4. [Icons](#icons)
 5. [Color System](#color-system)
-6. [Component Library](#component-library)
-7. [Layout Patterns](#layout-patterns)
-8. [Responsive Design](#responsive-design--breakpoints)
-9. [Animation & Transitions](#animation--transitions)
-10. [Accessibility](#accessibility)
-11. [Quick Reference](#quick-reference)
+6. [Ambient Themes & Glass Surfaces](#ambient-themes--glass-surfaces)
+7. [Component Library](#component-library)
+8. [Layout Patterns](#layout-patterns)
+9. [Responsive Design](#responsive-design--breakpoints)
+10. [Animation & Transitions](#animation--transitions)
+11. [Accessibility](#accessibility)
+12. [Quick Reference](#quick-reference)
 
 ---
 
 ## Scope & Purpose
 
-This is the **canonical frontend design system** for Huavoi Studio (TTS and AI-driven video generation). Tokens live in `src/app/globals.css`. Shared primitives live in `src/components/ui/`. Role-based type scale details are in [TYPOGRAPHY.md](../TYPOGRAPHY.md). Loading primitives (`Spinner`, `LoadingSpinner`, skeletons) are documented in this file. Agent summary: [AGENTS.md](../../AGENTS.md).
+This is the **canonical / master frontend design system** for Huavoi Studio (TTS and AI-driven video generation). When design or UI guidance conflicts elsewhere, **this document wins** (except [TYPOGRAPHY.md](../TYPOGRAPHY.md) for type-role details).
+
+| Layer | Location |
+| ----- | -------- |
+| Tokens & utilities | `src/app/globals.css` |
+| Shared primitives | `src/components/ui/` |
+| Ambient theme persistence | `src/lib/ambient-background-shared.ts`, `src/lib/ambient-background.tsx` |
+| Ambient background layers | `src/components/shell/ambient-background.tsx` |
+| Type roles (deep dive) | [TYPOGRAPHY.md](../TYPOGRAPHY.md) |
+| Agent summary | [AGENTS.md](../../AGENTS.md) |
 
 > [!IMPORTANT]
 > **Scope Rule**: These guidelines apply to **all frontend user-facing pages**. `src/app/(shell)/admin` is not held to the same premium consumer aesthetic — density and internal utility win there — but it **should still use the same tokens, type roles, Button/Input/Select/Spinner primitives, and icon size scale**.
@@ -35,14 +45,14 @@ This is the **canonical frontend design system** for Huavoi Studio (TTS and AI-d
 
 ### Related docs
 
-| Topic                                         | Source of truth                   |
-| --------------------------------------------- | --------------------------------- |
-| Type roles, tokens, Heading/Text API          | [TYPOGRAPHY.md](../TYPOGRAPHY.md) |
-| Agent conventions (port, i18n, icons pointer) | [AGENTS.md](../../AGENTS.md)      |
+| Topic | Role |
+| ----- | ---- |
+| [TYPOGRAPHY.md](../TYPOGRAPHY.md) | Type roles, tokens, Heading/Text API (detail) |
+| [AGENTS.md](../../AGENTS.md) | Agent conventions (port, i18n, icons pointer) |
 
 This document covers:
 
-- Color tokens as implemented in `globals.css`
+- Color tokens, glass surfaces, and ambient themes as implemented in `globals.css`
 - The current `src/components/ui/` inventory and APIs
 - Responsive breakpoints and grid patterns in use
 - Known adoption gaps (forms, labels, `Icon` wrapper)
@@ -55,19 +65,18 @@ Huavoi Studio's frontend embodies a premium, state-of-the-art aesthetic that is 
 
 1. **Rich Aesthetics** - We prioritize visual excellence. Our design uses curated, harmonious color palettes, sleek dark modes, and dynamic visual elements rather than generic plain colors.
 2. **Dynamic & Interactive** - The interface must feel responsive and alive. We achieve this with generous hover effects, smooth transitions, and subtle micro-animations that encourage user interaction.
-3. **Glassmorphism & Depth** - We heavily utilize ambient gradient backdrops and glassmorphism (backdrop blurs with subtle borders) to create a layered, premium feel without visual clutter.
+3. **Glassmorphism & Depth** - Ambient background themes show through translucent chrome and cards (`glass-chrome` / `glass-card`). Prefer glass over opaque panels on consumer surfaces; keep inputs, modals, tables, and media solid.
 4. **Responsive** - Mobile-first approach with seamless scaling across breakpoints. No horizontal scrolling; dense controls (36–40px) with larger hit areas only where primary mobile chrome needs them.
-5. **Accessible & Performant** - WCAG-compliant with proper contrast, focus states, and semantic HTML, powered by optimized GPU-accelerated CSS animations.
+5. **Accessible & Performant** - WCAG-compliant with proper contrast, focus states, and semantic HTML. Honor `prefers-reduced-transparency` and `prefers-reduced-motion`. Avoid `backdrop-filter` on high-frequency list/table rows.
 
 ### Global Design Guidelines
 
 #### Visual Styling
 
-- **Backgrounds**: Use layered surface colors (`var(--surface-base)` and `var(--surface-raised)`) with subtle ambient gradient glows (`bg-gradient-to-br from-accent/10 to-transparent blur-xl`) to establish depth.
-- **Cards & Containers**: Prefer `Card variant="glass"` (`glass-card`) where ambient themes should show through; use elevated/solid for modals, inputs, tables, and media. Chrome: `glass-chrome` on TopNav, desktop LeftRail, and project shells; sticky overlays: `glass-sticky`. On glass surfaces use `hover:bg-surface-raised-glass` (not opaque `hover:bg-surface-raised`). Tokens live in `src/app/globals.css` (`--surface-*-glass`, `@utility glass-*`). Respect `prefers-reduced-transparency`.
-- **Ambient color themes**: Settings → Appearance (and onboarding Theme step) set `aurora` / `mesh` / `grid`. Persisted via `ambient-bg` cookie (SSR `data-ambient-bg` on `<html>`) + `appearance:ambientBackground` localStorage; see `src/lib/ambient-background-shared.ts` and `AmbientBackgroundProvider`.
+- **Backgrounds**: `body` is transparent so the fixed `.ambient-bg` layer (z-index `-1`) shows through. Do **not** paint `bg-surface-base` on shell wrappers or `main` — that blocks glass blur and theme visibility. Solid surfaces stay on inputs, modals, editors, and media.
+- **Cards & Containers**: Prefer `Card variant="glass"` (or `glass-card`). See [Ambient Themes & Glass Surfaces](#ambient-themes--glass-surfaces).
 - **Typography**: Use the role-based type scale (`page`, `section`, `subsection`, `label`, `body`, `caption`, `metric`, `micro`). Do not use ad-hoc Tailwind sizes like `text-2xl`. Font is Geist (`--font-geist-sans` / `--font-geist-mono`).
-- **Colors**: Prefer `status-*` / `accent-*` tokens. Avoid new raw hex except in `globals.css`.
+- **Colors**: Prefer `status-*` / `accent-*` tokens. Accent values follow the active ambient theme. Avoid new raw hex except in `globals.css`.
 
 #### Interaction & Motion
 
@@ -77,10 +86,10 @@ Huavoi Studio's frontend embodies a premium, state-of-the-art aesthetic that is 
 
 #### Media & AI Workflows (TTS & Video)
 
-- **Audio & Voice Selection**: Use `Card variant="interactive"` with play/pause micro-animations for voice browsing. Highlight the currently selected voice using `border-accent-primary` or a glowing shadow.
-- **Script & Text Editors**: Editor areas should use `bg-surface-panel` to provide a subtle contrast against the page background, helping focus user attention on content creation.
+- **Audio & Voice Selection**: Use `Card variant="interactive"` or `variant="glass"` with play/pause micro-animations for voice browsing. Highlight the currently selected voice using `border-accent-primary` or a glowing shadow.
+- **Script & Text Editors**: Editor areas should use solid `bg-surface-panel` for contrast and focus (do not glassify dense editors).
 - **Generation Status**: Use step-based progress indicators with smooth transitions. Apply pulsating animations (`animate-pulse`) or glowing borders for elements in an active "processing" state (e.g., video rendering, TTS generation).
-- **Video Previews**: Wrap video elements in glassmorphic containers with rounded corners (`rounded-xl` or `rounded-2xl`) and soft drop shadows to make media stand out against the dark interface.
+- **Video Previews**: Keep media regions solid (no bleed-through). Outer chrome may be glass; the video/image plane itself should not.
 
 ---
 
@@ -235,32 +244,51 @@ Defaults include `aria-hidden={true}`. Parent buttons must expose accessible nam
 
 Colors are defined as CSS custom properties in `:root` in `src/app/globals.css` and mapped into Tailwind v4 via `@theme inline` (`--color-surface-base`, `--color-text-primary`, …). There is **no** `tailwind.config.ts` color map. Use utilities like `bg-surface-raised`, `text-text-primary`, `border-border-default`, `text-accent-primary`.
 
-Values below match `globals.css` as of August 24, 2026.
+Values below match `globals.css` as of August 26, 2026 (default **Aurora** accents). Mesh / Grid override accents via `html[data-ambient-bg]` — see [Ambient Themes & Glass Surfaces](#ambient-themes--glass-surfaces).
 
-### Surface Colors
+### Surface Colors (solid)
 
-- `--surface-base`: #0a0e17 (Page background)
-- `--surface-panel`: #0f1419 (Panel background)
-- `--surface-raised`: #161b22 (Card background)
-- `--surface-hover`: #1c2128 (Hover state)
-- `--surface-elevated`: #21262d (Elevated elements)
-- `--surface-overlay`: rgba(10, 14, 23, 0.8)
+| Token | Value | Use |
+| ----- | ----- | --- |
+| `--surface-base` | `#0a0e17` | Ambient layer base / page canvas |
+| `--surface-panel` | `#0f1419` | Solid panels, mobile drawers, editors |
+| `--surface-raised` | `#161b22` | Solid cards, reduced-transparency fallback for glass-card |
+| `--surface-hover` | `#1c2128` | Opaque hover (not on glass surfaces) |
+| `--surface-elevated` | `#21262d` | Elevated solid cards / accents |
+| `--surface-overlay` | `rgba(10, 14, 23, 0.8)` | Scrims |
+
+### Surface Colors (glass)
+
+| Token | Value | Use |
+| ----- | ----- | --- |
+| `--surface-panel-glass` | `rgba(15, 20, 25, 0.55)` | `glass-chrome` |
+| `--surface-raised-glass` | `rgba(22, 27, 34, 0.68)` | `glass-card` / `Card variant="glass"` |
+| `--surface-sticky-glass` | `rgba(15, 20, 25, 0.88)` | `glass-sticky` |
+| `--glass-blur` | `16px` | Chrome blur radius |
+
+Tailwind: `bg-surface-panel-glass`, `bg-surface-raised-glass` (via `@theme`). Prefer the `@utility` classes for full glass (blur + fill).
 
 ### Borders
 
 - `--border-default`: rgba(255, 255, 255, 0.08)
 - `--border-subtle`: rgba(255, 255, 255, 0.04)
 - `--border-strong`: rgba(255, 255, 255, 0.15)
-- `--border-focus`: rgba(99, 102, 241, 0.5)
+- `--border-focus`: theme-linked (Aurora default `rgba(20, 184, 166, 0.5)`)
 
-### Accent Colors
+### Accent Colors (Aurora defaults)
 
-- `--accent-primary`: #6366f1 (Indigo — primary actions)
-- `--accent-secondary`: #8b5cf6 (Purple)
-- `--accent-tertiary` / `--accent-cyan`: #06b6d4
-- `--accent-muted`: rgba(99, 102, 241, 0.15)
-- `--accent-cyan-muted`: rgba(6, 182, 212, 0.15)
-- `--accent-strong`: rgba(99, 102, 241, 0.25)
+Accents are **theme-dependent**. Defaults below are Aurora (teal studio). Mesh and Grid remap the same token names.
+
+- `--accent-primary`: `#14b8a6`
+- `--accent-secondary`: `#0ea5e9`
+- `--accent-tertiary` / `--accent-cyan`: `#5eead4`
+- `--accent-muted`: `rgba(20, 184, 166, 0.15)`
+- `--accent-cyan-muted`: `rgba(94, 234, 212, 0.15)`
+- `--accent-strong`: `rgba(20, 184, 166, 0.25)`
+- `--accent-gradient` / `--gradient-primary`: `linear-gradient(135deg, #0ea5e9, #14b8a6)`
+- `--accent-gradient-solid`: `#0f766e`
+
+Themes are decoupled from the logo mark so a future logo rebrand does not lock site-wide accents.
 
 ### Text Colors
 
@@ -280,11 +308,8 @@ Values below match `globals.css` as of August 24, 2026.
 
 ### Shadow Variables
 
-- `--shadow-sm`: Small shadow effect
-- `--shadow-md`: Medium shadow effect
-- `--shadow-lg`: Large shadow effect
-- `--shadow-glow`: Glowing shadow
-- `--shadow-glow-hover`: Hover glow shadow
+- `--shadow-sm`, `--shadow-md`, `--shadow-lg`
+- `--shadow-glow` / `--shadow-glow-hover` — theme-linked accent glows
 
 ### Animation Timing
 
@@ -296,11 +321,68 @@ Values below match `globals.css` as of August 24, 2026.
 
 ### Gradient Patterns
 
-- **Blue → Cyan**: Notifications, Privacy features
-- **Purple → Pink**: Projects, Files
-- **Green → Emerald**: Audio, Voice
-- **Orange → Red**: Video, Warnings
-- **Indigo → Purple**: Primary actions
+- `--gradient-primary` — theme-linked
+- `--gradient-success`, `--gradient-warning`, `--gradient-error`
+- Common icon-tile gradients in UI: blue→cyan, purple→pink, green→emerald, orange→red (decorative, not tokenized accents)
+
+---
+
+## Ambient Themes & Glass Surfaces
+
+### Ambient themes
+
+Settings → Appearance and onboarding `ThemeStep` expose three keys. Each swaps accent CSS variables **and** the fixed ambient background layer.
+
+| Key | Label (EN) | Accent feel | Background |
+| --- | ---------- | ----------- | ---------- |
+| `aurora` (default) | Teal studio | Teal + sky | Floating aurora orbs |
+| `mesh` | Amber workflow | Amber + gold | Dot matrix + top vignette |
+| `grid` | Blue infrastructure | Steel blue + slate | Grid lines + top beam |
+
+**Persistence (no theme flash on reload):**
+
+| Store | Key / name | Role |
+| ----- | ---------- | ---- |
+| Cookie | `ambient-bg` (`Path=/`, `Max-Age=31536000`, `SameSite=Lax`) | SSR: root layout sets `<html data-ambient-bg="…">` |
+| localStorage | `appearance:ambientBackground` | Cross-tab sync + migration for pre-cookie installs |
+
+**Key files:** `ambient-background-shared.ts` (server-safe parse/serialize), `ambient-background.tsx` (provider dual-write), `layout.tsx` (async cookie read), `shell/ambient-background.tsx` (layers), `globals.css` (`html[data-ambient-bg="…"]` overrides + `.ambient-*` CSS).
+
+Always test UI copy over **Grid** and **Mesh** (high-contrast patterns), not only Aurora.
+
+### Glass surface tiers
+
+| Tier | Utility / API | Opacity (approx) | Blur | Use |
+| ---- | ------------- | ---------------- | ---- | --- |
+| Chrome | `glass-chrome` | ~55% | `var(--glass-blur)` (16px) | TopNav, desktop LeftRail, `project-shell` / `new-project-shell` aside + header |
+| Content | `glass-card` or `Card variant="glass"` | ~68% | 12px | Cards, section panels, pricing tiers, job/voice/movie cards |
+| Sticky | `glass-sticky` | ~88% | 16px | Bulk action bars, notification dropdown, toast-like sticky UI |
+
+`.glass-panel` is a **legacy alias** of `glass-card` — do not use in new work.
+
+### Do not glassify
+
+| Area | Reason |
+| ---- | ------ |
+| Form inputs, selects | Legibility, focus rings |
+| Code blocks | Monospace contrast |
+| Mobile nav drawers | Solid `bg-surface-panel` |
+| Full-screen modals | Solid surfaces |
+| Video / image preview planes | No bleed-through |
+| Table rows / long virtualized lists | `backdrop-filter` cost |
+
+### Gotchas
+
+1. **Opaque parents kill glass.** Do not add `bg-surface-base` / opaque wrappers around glass children or on shell `main`.
+2. **Opaque hover kills glass.** Never pair `glass-card` with `hover:bg-surface-raised` / `hover:bg-surface-hover`. Use `hover:bg-surface-raised-glass` or border/shadow-only feedback. `Card` with `variant="glass"` + `interactive` already does this.
+3. **Nested solids.** A glass card with opaque nested panels still blocks ambient — glassify nested boxes or leave gaps transparent (see AnalyticsPanel metric tiles).
+4. **Reduced transparency:** `@media (prefers-reduced-transparency: reduce)` restores solid `--surface-panel` / `--surface-raised` and disables blur.
+
+### Adoption note
+
+Consumer shell chrome, Settings/profile/help, jobs, voices, movies, projects, notifications, pricing, and shared Pagination/EmptyState elevated style use glass. Admin tables/filters and some dashboard tiles may remain solid for density — prefer tokens either way.
+
+---
 
 ## Component Library
 
@@ -375,16 +457,16 @@ import { Button } from "@/components/ui/button";
 #### 2. Card
 
 - **File**: `src/components/ui/card.tsx`
-- **Variants**: default, elevated, interactive, gradient
+- **Variants**: `default`, `elevated`, `interactive`, `gradient`, **`glass`** (preferred for consumer content)
 - **Padding**: none, sm, md, lg
 - **Features**: Composable with Header, Title, Description, Content, Footer
-- **Properties**: `interactive` prop for hover states
-- **Usage**: Content containers, feature blocks, list items
+- **Properties**: `interactive` prop — on `glass`, hover uses `hover:bg-surface-raised-glass` (not opaque hover)
+- **Usage**: Content containers, feature blocks, list items. Prefer `glass` unless solid contrast is required (editors, nested form wells).
 
 ```tsx
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
-<Card variant="elevated" padding="md" interactive>
+<Card variant="glass" padding="md" interactive>
   <CardHeader>
     <CardTitle>Title</CardTitle>
     <CardDescription>Description</CardDescription>
@@ -678,7 +760,7 @@ Header buttons use `size="md"`; toolbar controls use `sm` / `icon`. `PageHeader`
 ```typescript
 <Grid cols={3} gap="md">
   {items.map(item => (
-    <Card variant="elevated" interactive>
+    <Card variant="glass" interactive>
       <CardHeader>
         <CardTitle>{item.title}</CardTitle>
         <CardDescription>{item.desc}</CardDescription>
@@ -976,6 +1058,12 @@ Target viewports for visual QA (human spot-checks at 375px / 1280px remain open 
 - All text meets WCAG AA standards (4.5:1 for normal text)
 - Interactive elements have sufficient contrast
 - Status colors distinguishable for colorblind users
+- Verify body copy and captions over **Grid** and **Mesh** ambient patterns (not only Aurora)
+
+### Reduced transparency & motion
+
+- `prefers-reduced-transparency: reduce` — glass utilities fall back to solid surfaces (no blur)
+- `prefers-reduced-motion: reduce` — ambient orbs stop animating
 
 ### Keyboard Navigation
 
@@ -995,17 +1083,49 @@ Target viewports for visual QA (human spot-checks at 375px / 1280px remain open 
 ### CSS Variables Quick Copy
 
 ```css
-/* Surfaces — src/app/globals.css :root */
---surface-base: #0a0e17 --surface-panel: #0f1419 --surface-raised: #161b22 --surface-hover: #1c2128
-  --surface-elevated: #21262d /* Text */ --text-primary: #f1f5f9 --text-secondary: #cbd5e1
-  --text-muted: #94a3b8 --text-disabled: #475569 /* Accents */ --accent-primary: #6366f1
-  --accent-secondary: #8b5cf6 --accent-tertiary: #06b6d4 --accent-cyan: #06b6d4
-  --accent-muted: rgba(99, 102, 241, 0.15) /* Status */ --status-success: #10b981
-  --status-completed: #22c55e --status-error: #ef4444 --status-failed: #ef4444
-  --status-warning: #f59e0b --status-info: #3b82f6 --status-processing: #3b82f6
-  --status-queued: #6b7280 /* Transitions */ --transition-ultra-fast: 75ms --transition-fast: 150ms
-  --transition-base: 200ms --transition-slow: 300ms --transition-slower: 500ms;
+/* Surfaces — src/app/globals.css :root (Aug 2026) */
+--surface-base: #0a0e17;
+--surface-panel: #0f1419;
+--surface-raised: #161b22;
+--surface-hover: #1c2128;
+--surface-elevated: #21262d;
+--surface-panel-glass: rgba(15, 20, 25, 0.55);
+--surface-raised-glass: rgba(22, 27, 34, 0.68);
+--surface-sticky-glass: rgba(15, 20, 25, 0.88);
+--glass-blur: 16px;
+
+/* Text */
+--text-primary: #f1f5f9;
+--text-secondary: #cbd5e1;
+--text-muted: #94a3b8;
+--text-disabled: #475569;
+
+/* Accents — Aurora defaults; Mesh/Grid override via html[data-ambient-bg] */
+--accent-primary: #14b8a6;
+--accent-secondary: #0ea5e9;
+--accent-tertiary: #5eead4;
+--accent-cyan: #5eead4;
+
+/* Status */
+--status-success: #10b981;
+--status-completed: #22c55e;
+--status-error: #ef4444;
+--status-failed: #ef4444;
+--status-warning: #f59e0b;
+--status-info: #3b82f6;
+--status-processing: #3b82f6;
+--status-queued: #6b7280;
+
+/* Transitions */
+--transition-ultra-fast: 75ms;
+--transition-fast: 150ms;
+--transition-base: 200ms;
+--transition-slow: 300ms;
+--transition-slower: 500ms;
 ```
+
+**Glass utilities**: `glass-chrome` · `glass-card` · `glass-sticky` · `Card variant="glass"`  
+**Ambient themes**: `aurora` | `mesh` | `grid` → cookie `ambient-bg` + localStorage `appearance:ambientBackground`
 
 ### Common Tailwind Utilities
 
@@ -1050,7 +1170,7 @@ Target viewports for visual QA (human spot-checks at 375px / 1280px remain open 
 **Stat Card with Gradient Icon:**
 
 ```tsx
-<Card variant="elevated" interactive>
+<Card variant="glass" interactive>
   <div className="flex items-start justify-between">
     <div className="flex-1">
       <Text variant="caption" className="text-text-secondary">
@@ -1113,7 +1233,7 @@ Target viewports for visual QA (human spot-checks at 375px / 1280px remain open 
 ```tsx
 <div className="grid gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
   {items.map((item) => (
-    <Card key={item.id} variant="elevated" interactive>
+    <Card key={item.id} variant="glass" interactive>
       {/* Card content */}
     </Card>
   ))}
@@ -1199,10 +1319,11 @@ className = "bg-gradient-to-r from-green-500 to-emerald-500";
 className = "bg-gradient-to-r from-orange-500 to-red-500";
 ```
 
-**Indigo → Purple** (Primary, Actions):
+**Teal → Sky** (Primary actions — prefer theme tokens):
 
 ```tsx
-className = "bg-gradient-to-r from-indigo-500 to-purple-500";
+className = "bg-gradient-to-r from-accent-secondary to-accent-primary";
+// or CSS: var(--accent-gradient) / var(--gradient-primary)
 ```
 
 ### Common Responsive Patterns
@@ -1258,19 +1379,20 @@ className = "flex flex-col md:flex-row gap-4";
 
 ---
 
-## Documented vs implemented (Aug 24, 2026)
+## Documented vs implemented (Aug 26, 2026)
 
-| Area                    | Standard                                 | Current implementation                                                                |
-| ----------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------- |
-| Type roles / tokens     | Use `Heading` / `Text` / token utilities | Adopted app-wide; ESLint enforces; decorative allowlist for emoji/avatar/chart labels |
-| Buttons                 | Shared `Button` + size roles             | Primitive matches this doc; some chrome still raw `<button>`                          |
-| Forms                   | `Input` / `TextArea` / `Select`          | Primitives exist; many routes still use raw controls                                  |
-| Labels                  | Shared label pattern                     | No `Label` component; mixed body vs caption/uppercase labels                          |
-| Icons                   | Lucide + size tokens; `Icon` for nav     | Size scale is followed; `Icon` wrapper mainly in the sidebar                          |
-| Spinners                | `Spinner` / `LoadingSpinner`             | Implemented; `Button` loading uses `Spinner`                                          |
-| Control height          | `h-8` / `h-9` / `h-10` (32–40px)         | Shared primitives match; form `Select` uses padding scale (`sm`/`md`/`lg`)            |
-| Touch 44×44 everywhere  | Not the product standard                 | Dense 36px default; bump only isolated mobile chrome                                  |
-| Visual QA at 375 / 1280 | Human spot-check after density pass      | Still open in [TYPOGRAPHY.md](../TYPOGRAPHY.md)                                       |
+| Area | Standard | Current implementation |
+| ---- | -------- | ---------------------- |
+| Type roles / tokens | Use `Heading` / `Text` / token utilities | Adopted app-wide; ESLint enforces; decorative allowlist for emoji/avatar/chart labels |
+| Ambient themes | Cookie SSR + localStorage; `aurora`/`mesh`/`grid` | Implemented (`AmbientBackgroundProvider`, `layout.tsx`) |
+| Glass surfaces | `glass-chrome` / `glass-card` / `glass-sticky` | Consumer chrome + primary cards; admin density may stay solid |
+| Buttons | Shared `Button` + size roles | Primitive matches this doc; some chrome still raw `<button>` |
+| Forms | `Input` / `TextArea` / `Select` / `Label` | Primitives exist; many routes still use raw controls |
+| Icons | Lucide + size tokens; `Icon` for nav | Size scale is followed; `Icon` wrapper mainly in the sidebar |
+| Spinners | `Spinner` / `LoadingSpinner` | Implemented; `Button` loading uses `Spinner` |
+| Control height | `h-8` / `h-9` / `h-10` (32–40px) | Shared primitives match; form `Select` uses padding scale (`sm`/`md`/`lg`) |
+| Touch 44×44 everywhere | Not the product standard | Dense 36px default; bump only isolated mobile chrome |
+| Visual QA at 375 / 1280 | Human spot-check after density pass | Still open in [TYPOGRAPHY.md](../TYPOGRAPHY.md) |
 
 ---
 
@@ -1285,6 +1407,7 @@ Do **not** treat historical “all pages tested” notes as current. After the A
 - Layout toggle on Projects, Movies, and admin movies
 - Overflow handling on shell layouts
 - `Button` loading a11y (`aria-busy` / `aria-disabled`)
+- Ambient theme SSR via `ambient-bg` cookie; glass chrome on shell / project shells
 
 ---
 

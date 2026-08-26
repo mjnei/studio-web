@@ -1,7 +1,7 @@
 # Project Workflow UX & UI Redesign Specification
 
 **Version:** 2.1  
-**Target Design System:** [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md) v2.4  
+**Target Design System:** [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md) v2.5
 **Scope:** `studio-web/src/app/project/[projectId]/*` and `@/components/project/*`  
 **Status:** Canonical Workflow & UI Specification (implemented)
 

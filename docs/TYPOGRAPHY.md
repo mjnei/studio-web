@@ -3,7 +3,7 @@
 **Version**: 1.3  
 **Last Updated**: August 24, 2026  
 **Status**: Adopted (role system + legacy migration complete)  
-**Related**: [DESIGN_SYSTEM.md](./guides/DESIGN_SYSTEM.md), [BREAKPOINT_REFERENCE.md](./guides/BREAKPOINT_REFERENCE.md)  
+**Related**: [DESIGN_SYSTEM.md](./guides/DESIGN_SYSTEM.md) (master design/UI doc), [BREAKPOINT_REFERENCE.md](./guides/BREAKPOINT_REFERENCE.md)
 **Source of truth**: `src/app/globals.css` (`@theme` tokens) + `src/components/ui/typography.ts` / `heading.tsx` / `text.tsx`
 
 ---
