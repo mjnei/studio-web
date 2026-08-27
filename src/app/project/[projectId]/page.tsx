@@ -7,6 +7,7 @@ import { formatRelativeTimeAgo, formatSessionResumeMessage } from "@/lib/utils/t
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { useI18n } from "@/i18n";
 import { useToast } from "@/components/ui/toast";
+import { ApiError } from "@/lib/api-client";
 
 const STEP_ORDER = ["source", "script", "voice", "details", "preview", "compose", "export"];
 

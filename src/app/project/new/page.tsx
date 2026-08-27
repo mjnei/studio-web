@@ -1,23 +1,9 @@
-"use client";
-
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useI18n } from "@/i18n";
-import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
+import { redirect } from "next/navigation";
 
 /**
- * This page redirects to the movie selection step.
- * No project is created - the user just browses and selects a movie.
- * Project creation happens when the first script is generated.
+ * Entry point for new project creation.
+ * Redirects immediately to movie selection — no project exists yet.
  */
 export default function NewProjectPage() {
-  const router = useRouter();
-  const { t } = useI18n();
-
-  useEffect(() => {
-    // Redirect to standalone movie selection page
-    router.replace("/project/new/source");
-  }, [router]);
-
-  return <PageLoadingSkeleton message={t("common.loading")} />;
+  redirect("/project/new/source");
 }
