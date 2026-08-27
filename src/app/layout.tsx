@@ -87,8 +87,9 @@ export default async function RootLayout({
       lang="en"
       data-ambient-bg={ambientStyle}
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className="min-h-dvh text-text-primary">
+      <body className="min-h-dvh text-text-primary" suppressHydrationWarning>
         <AmbientBackgroundProvider initialStyle={ambientStyle}>
           <AmbientBackground />
           <I18nProvider>
