@@ -62,7 +62,13 @@ function mergeLivePoint(points: ChartPoint[], stats: QueueStats): ChartPoint[] {
 }
 
 /** Map sample time onto [earliest, latest] so the series fills the plot width. */
-function xForTs(ts: number, rangeStart: number, rangeEnd: number, width: number, padX: number): number {
+function xForTs(
+  ts: number,
+  rangeStart: number,
+  rangeEnd: number,
+  width: number,
+  padX: number
+): number {
   if (rangeEnd <= rangeStart) {
     return width / 2;
   }
@@ -77,8 +83,12 @@ function yForValue(value: number, maxValue: number, height: number, padY: number
 
 export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps) {
   const [history, setHistory] = useState<ChartPoint[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loadedQueue, setLoadedQueue] = useState<string | null>(null);
   const [unavailable, setUnavailable] = useState(false);
+
+  // Derive loading from whether this queueName has finished a fetch — avoids
+  // synchronous setState in the effect when the queue changes.
+  const loading = loadedQueue !== queueName;
 
   useEffect(() => {
     let cancelled = false;
@@ -99,11 +109,10 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
         setUnavailable(true);
         setHistory([]);
       } finally {
-        if (!cancelled) setLoading(false);
+        if (!cancelled) setLoadedQueue(queueName);
       }
     }
 
-    setLoading(true);
     void loadHistory();
     const id = window.setInterval(() => {
       void loadHistory();
@@ -115,7 +124,7 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
     };
   }, [queueName]);
 
-  const displayHistory = mergeLivePoint(history, stats);
+  const displayHistory = mergeLivePoint(loading ? [] : history, stats);
   const hasSeries = displayHistory.length > 0;
 
   const rangeStart = hasSeries ? displayHistory[0].ts : 0;
@@ -131,10 +140,10 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
   const maxMessages = Math.max(...displayHistory.map((d) => d.messageCount), 1);
   const maxConsumers = Math.max(...displayHistory.map((d) => d.consumerCount), 1);
 
-  const emptyMessage = unavailable
-    ? "History unavailable"
-    : loading
-      ? "Loading history…"
+  const emptyMessage = loading
+    ? "Loading history…"
+    : unavailable
+      ? "History unavailable"
       : "Collecting samples…";
 
   const timeLabels = hasSeries ? (
@@ -240,8 +249,19 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
                       strokeLinecap="round"
                       points={displayHistory
                         .map((point) => {
-                          const x = xForTs(point.ts, rangeStart, rangeEnd, MSG_VIEW.w, MSG_VIEW.padX);
-                          const y = yForValue(point.messageCount, maxMessages, MSG_VIEW.h, MSG_VIEW.padY);
+                          const x = xForTs(
+                            point.ts,
+                            rangeStart,
+                            rangeEnd,
+                            MSG_VIEW.w,
+                            MSG_VIEW.padX
+                          );
+                          const y = yForValue(
+                            point.messageCount,
+                            maxMessages,
+                            MSG_VIEW.h,
+                            MSG_VIEW.padY
+                          );
                           return `${x},${y}`;
                         })
                         .join(" ")}
@@ -316,8 +336,18 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
                     const prev = displayHistory[i - 1];
                     const x1 = xForTs(prev.ts, rangeStart, rangeEnd, CON_VIEW.w, CON_VIEW.padX);
                     const x2 = xForTs(point.ts, rangeStart, rangeEnd, CON_VIEW.w, CON_VIEW.padX);
-                    const y1 = yForValue(prev.consumerCount, maxConsumers, CON_VIEW.h, CON_VIEW.padY);
-                    const y2 = yForValue(point.consumerCount, maxConsumers, CON_VIEW.h, CON_VIEW.padY);
+                    const y1 = yForValue(
+                      prev.consumerCount,
+                      maxConsumers,
+                      CON_VIEW.h,
+                      CON_VIEW.padY
+                    );
+                    const y2 = yForValue(
+                      point.consumerCount,
+                      maxConsumers,
+                      CON_VIEW.h,
+                      CON_VIEW.padY
+                    );
 
                     return (
                       <g key={`step-${point.ts}-${i}`}>
@@ -348,7 +378,12 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
 
                   {displayHistory.map((point, i) => {
                     const x = xForTs(point.ts, rangeStart, rangeEnd, CON_VIEW.w, CON_VIEW.padX);
-                    const y = yForValue(point.consumerCount, maxConsumers, CON_VIEW.h, CON_VIEW.padY);
+                    const y = yForValue(
+                      point.consumerCount,
+                      maxConsumers,
+                      CON_VIEW.h,
+                      CON_VIEW.padY
+                    );
                     return (
                       <circle
                         key={`c-${point.ts}-${i}`}
