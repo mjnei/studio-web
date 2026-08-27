@@ -129,7 +129,7 @@ export default function DashboardPage() {
                 </Heading>
               </div>
               <p className="text-text-secondary mb-4">{t("dashboard.welcomeBanner.message")}</p>
-              <Link href="/project/new">
+              <Link href="/project/new/source">
                 <Button variant="primary" size="md">
                   <Plus className="h-4 w-4" aria-hidden />
                   {t("dashboard.welcomeBanner.cta")}
@@ -189,7 +189,7 @@ export default function DashboardPage() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            <Link href="/project/new">
+            <Link href="/project/new/source">
               <Button
                 variant="secondary"
                 size="md"
@@ -341,7 +341,7 @@ export default function DashboardPage() {
                 title={t("dashboard.empty.title")}
                 description={t("dashboard.empty.message")}
                 action={
-                  <Link href="/project/new">
+                  <Link href="/project/new/source">
                     <Button variant="primary" size="md">
                       {t("dashboard.empty.cta")}
                     </Button>
