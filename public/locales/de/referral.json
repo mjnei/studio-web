@@ -9,8 +9,9 @@
       "title": "Freunde einladen, Credits verdienen",
       "description": "Teile deinen Empfehlungslink. Wenn sich jemand damit registriert, erhaltet ihr beide kostenlose Render-Credits.",
       "yourReferralLink": "Dein Empfehlungslink",
-      "yourCode": "Dein Code:",
+      "yourCode": "Dein Empfehlungscode",
       "copyLink": "Link kopieren",
+      "copyCode": "Code kopieren",
       "copied": "Kopiert!"
     },
     "stats": {

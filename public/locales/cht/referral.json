@@ -9,8 +9,9 @@
       "title": "邀請朋友，賺取點數",
       "description": "分享你的推薦連結。有人透過你的連結註冊時，雙方都能獲得免費算圖點數。",
       "yourReferralLink": "你的推薦連結",
-      "yourCode": "你的代碼：",
+      "yourCode": "你的推薦碼",
       "copyLink": "複製連結",
+      "copyCode": "複製代碼",
       "copied": "已複製！"
     },
     "stats": {

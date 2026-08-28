@@ -9,8 +9,9 @@
       "title": "邀请好友，赚取额度",
       "description": "分享你的推荐链接。好友通过链接注册后，双方都能获得免费渲染额度。",
       "yourReferralLink": "你的推荐链接",
-      "yourCode": "你的推荐码：",
+      "yourCode": "你的推荐码",
       "copyLink": "复制链接",
+      "copyCode": "复制代码",
       "copied": "已复制！"
     },
     "stats": {

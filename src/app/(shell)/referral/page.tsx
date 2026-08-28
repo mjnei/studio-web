@@ -25,7 +25,8 @@ import { useToast } from "@/components/ui/toast";
 export default function ReferralPage() {
   const { t } = useI18n();
   const toast = useToast();
-  const [copied, setCopied] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
+  const [codeCopied, setCodeCopied] = useState(false);
   const [loading, setLoading] = useState(true);
   const [codeData, setCodeData] = useState<ReferralCodeResponse | null>(null);
   const [stats, setStats] = useState<ReferralStatsResponse | null>(null);
@@ -65,12 +66,21 @@ export default function ReferralPage() {
     ? `${window.location.origin}/invite?code=${codeData.referral_code}`
     : null;
 
-  const handleCopy = () => {
+  const handleCopyLink = () => {
     if (inviteLink) {
       navigator.clipboard.writeText(inviteLink);
-      setCopied(true);
+      setLinkCopied(true);
       toast.success(t("referral.inviteCard.copied"), "");
-      setTimeout(() => setCopied(false), 2000);
+      setTimeout(() => setLinkCopied(false), 2000);
+    }
+  };
+
+  const handleCopyCode = () => {
+    if (codeData?.referral_code) {
+      navigator.clipboard.writeText(codeData.referral_code);
+      setCodeCopied(true);
+      toast.success(t("referral.inviteCard.copied"), "");
+      setTimeout(() => setCodeCopied(false), 2000);
     }
   };
 
@@ -145,30 +155,62 @@ export default function ReferralPage() {
           </CardHeader>
           <CardContent>
             <div className="flex flex-col gap-3">
-              <div className="flex flex-col sm:flex-row gap-3">
-                <div className="flex-1 rounded-lg border border-border-default bg-surface-raised px-4 py-3">
-                  <p className="text-caption font-medium text-text-muted mb-1">
+              {/* Referral Link */}
+              <div className="flex items-center justify-between gap-3 rounded-lg border border-border-default bg-surface-raised px-4 py-3">
+                <div className="min-w-0 flex-1">
+                  <p className="text-caption font-medium text-text-muted mb-1 truncate">
                     {t("referral.inviteCard.yourReferralLink")}
                   </p>
-                  <p className="truncate text-body text-text-primary font-mono">{inviteLink}</p>
+                  <p className="truncate text-body text-text-primary font-mono select-all">
+                    {inviteLink}
+                  </p>
                 </div>
-                <Button
-                  variant="primary"
-                  size="md"
-                  onClick={handleCopy}
-                  leftIcon={copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                  className="shrink-0"
+                <button
+                  type="button"
+                  onClick={handleCopyLink}
+                  className="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface-hover active:scale-95 transition-all shrink-0 focus-ring"
+                  aria-label={
+                    linkCopied ? t("referral.inviteCard.copied") : t("referral.inviteCard.copyLink")
+                  }
+                  title={
+                    linkCopied ? t("referral.inviteCard.copied") : t("referral.inviteCard.copyLink")
+                  }
                 >
-                  {copied ? t("referral.inviteCard.copied") : t("referral.inviteCard.copyLink")}
-                </Button>
+                  {linkCopied ? (
+                    <Check className="h-5 w-5 text-[var(--status-success)]" />
+                  ) : (
+                    <Copy className="h-5 w-5" />
+                  )}
+                </button>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="text-caption font-medium text-text-muted">
-                  {t("referral.inviteCard.yourCode")}
-                </span>
-                <code className="rounded-lg bg-accent-muted px-3 py-1.5 text-body font-mono text-accent-primary font-semibold">
-                  {codeData.referral_code}
-                </code>
+
+              {/* Referral Code */}
+              <div className="flex items-center justify-between gap-3 rounded-lg border border-border-default bg-surface-raised px-4 py-3">
+                <div className="min-w-0 flex-1">
+                  <p className="text-caption font-medium text-text-muted mb-1 truncate">
+                    {t("referral.inviteCard.yourCode")}
+                  </p>
+                  <p className="truncate text-body text-accent-primary font-mono font-semibold select-all">
+                    {codeData.referral_code}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleCopyCode}
+                  className="p-2 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface-hover active:scale-95 transition-all shrink-0 focus-ring"
+                  aria-label={
+                    codeCopied ? t("referral.inviteCard.copied") : t("referral.inviteCard.copyCode")
+                  }
+                  title={
+                    codeCopied ? t("referral.inviteCard.copied") : t("referral.inviteCard.copyCode")
+                  }
+                >
+                  {codeCopied ? (
+                    <Check className="h-5 w-5 text-[var(--status-success)]" />
+                  ) : (
+                    <Copy className="h-5 w-5" />
+                  )}
+                </button>
               </div>
             </div>
           </CardContent>

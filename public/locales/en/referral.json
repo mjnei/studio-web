@@ -9,8 +9,9 @@
       "title": "Invite friends, earn credits",
       "description": "Share your referral link. When someone signs up using your link, you both earn free render credits.",
       "yourReferralLink": "Your referral link",
-      "yourCode": "Your code:",
+      "yourCode": "Your referral code",
       "copyLink": "Copy Link",
+      "copyCode": "Copy Code",
       "copied": "Copied!"
     },
     "stats": {

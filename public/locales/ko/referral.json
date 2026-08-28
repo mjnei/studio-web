@@ -9,8 +9,9 @@
       "title": "친구를 초대하고 크레딧을 받으세요",
       "description": "추천 링크를 공유하세요. 링크를 통해 가입하면 둘 다 무료 렌더 크레딧을 받아요.",
       "yourReferralLink": "내 추천 링크",
-      "yourCode": "내 코드:",
+      "yourCode": "내 추천 코드",
       "copyLink": "링크 복사",
+      "copyCode": "코드 복사",
       "copied": "복사됨!"
     },
     "stats": {

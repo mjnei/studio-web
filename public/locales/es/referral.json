@@ -9,8 +9,9 @@
       "title": "Invita amigos, gana créditos",
       "description": "Comparte tu enlace de referido. Cuando alguien se registre con tu enlace, ambos ganáis créditos de render gratis.",
       "yourReferralLink": "Tu enlace de referido",
-      "yourCode": "Tu código:",
+      "yourCode": "Tu código de referido",
       "copyLink": "Copiar enlace",
+      "copyCode": "Copiar código",
       "copied": "¡Copiado!"
     },
     "stats": {

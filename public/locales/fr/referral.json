@@ -9,8 +9,9 @@
       "title": "Invite des amis, gagne des crédits",
       "description": "Partage ton lien de parrainage. Quand quelqu'un s'inscrit avec ton lien, vous gagnez tous les deux des crédits de rendu gratuits.",
       "yourReferralLink": "Ton lien de parrainage",
-      "yourCode": "Ton code :",
+      "yourCode": "Ton code de parrainage",
       "copyLink": "Copier le lien",
+      "copyCode": "Copier le code",
       "copied": "Copié !"
     },
     "stats": {
