@@ -20,10 +20,7 @@ import { VoiceRecordingModal } from "@/components/shared/voice-recording-modal";
 import { VoiceLimitDialog } from "@/components/voices/voice-limit-dialog";
 import { useToast } from "@/components/ui/toast";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
-import {
-  getAvailableVoices,
-  attachVoiceAudioUrls,
-} from "@/lib/api/voice-client";
+import { getAvailableVoices, attachVoiceAudioUrls } from "@/lib/api/voice-client";
 import { scheduleAgnesJobs, createTTSJob, advanceProjectStep } from "@/lib/project-client";
 import type { VoiceResponse, VoiceWithCreator } from "@/lib/types/api";
 import { useI18n } from "@/i18n";
@@ -127,10 +124,7 @@ export default function VoicePage() {
     };
   }, [t]);
 
-  const playVoicePreview = async (
-    voiceId: number,
-    voiceType: "own" | "community"
-  ) => {
+  const playVoicePreview = async (voiceId: number, voiceType: "own" | "community") => {
     const voice =
       voiceType === "own"
         ? ownVoices.find((v) => v.id === voiceId)

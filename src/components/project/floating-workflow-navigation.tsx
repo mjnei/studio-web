@@ -283,7 +283,9 @@ export function FloatingWorkflowNavigation({
                 variant="primary"
                 size="sm"
                 leftIcon={nextIcon}
-                rightIcon={!isLastStep && !nextIcon ? <ArrowRight className="h-4 w-4" /> : undefined}
+                rightIcon={
+                  !isLastStep && !nextIcon ? <ArrowRight className="h-4 w-4" /> : undefined
+                }
                 onClick={handleNext}
                 disabled={isProcessing || nextDisabled}
                 loading={isProcessing}

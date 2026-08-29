@@ -11,11 +11,7 @@ import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { MoviePoster } from "@/components/movie/MoviePoster";
 import { useI18n } from "@/i18n";
-import {
-  getPopularMovies,
-  searchMovies,
-  type MovieResponse,
-} from "@/lib/project-client";
+import { getPopularMovies, searchMovies, type MovieResponse } from "@/lib/project-client";
 
 export interface MovieSelectionItem {
   id: string;
@@ -49,7 +45,11 @@ function formatRuntime(minutes: number | null | undefined, unknownLabel: string)
   return `${Math.floor(minutes / 60)}h ${minutes % 60}m`;
 }
 
-function mapMovie(movie: MovieResponse, unknownLabel: string, uncategorizedLabel: string): MovieSelectionItem {
+function mapMovie(
+  movie: MovieResponse,
+  unknownLabel: string,
+  uncategorizedLabel: string
+): MovieSelectionItem {
   const genres = movie.genres
     ?.map((genre) => ("name" in genre && typeof genre.name === "string" ? genre.name : undefined))
     .filter(Boolean) as string[] | undefined;
