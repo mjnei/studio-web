@@ -42,7 +42,7 @@ export function ContextDrawerTrigger({
     >
       <span className="hidden sm:inline">{label}</span>
       {badge !== undefined && badge > 0 && (
-        <span className="absolute -top-1.5 -right-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent-cyan px-1 text-[10px] font-semibold leading-none text-surface-base sm:static sm:ml-1.5 sm:h-auto sm:rounded-full sm:px-1.5 sm:py-0.5 sm:text-[10px]">
+        <span className="absolute -top-1.5 -right-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent-cyan px-1 text-micro font-semibold leading-none text-surface-base sm:static sm:ml-1.5 sm:h-auto sm:rounded-full sm:px-1.5 sm:py-0.5 sm:text-micro">
           {badge}
         </span>
       )}

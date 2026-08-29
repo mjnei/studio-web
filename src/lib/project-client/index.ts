@@ -29,7 +29,7 @@ export {
   restoreProject,
 } from "./projects";
 
-export { searchMovies, getPopularMovies, getMovie, tmdbImageUrl } from "./movies";
+export { searchMovies, getPopularMovies, getMovie, tmdbImageUrl, type MovieSortBy } from "./movies";
 
 export { listVoices, searchVoices } from "./voices";
 

@@ -1,10 +1,16 @@
 import { request } from "@/lib/api-client";
 import type { MovieListResponse, MovieResponse } from "./types";
 
-export async function searchMovies(query: string, pageSize = 20): Promise<MovieListResponse> {
+export type MovieSortBy = "popularity" | "vote_average" | "release_date";
+
+export async function searchMovies(
+  query: string,
+  pageSize = 20,
+  sortBy: MovieSortBy = "popularity"
+): Promise<MovieListResponse> {
   const params = new URLSearchParams({
     page_size: String(pageSize),
-    sort_by: query.trim() ? "title" : "popularity",
+    sort_by: sortBy,
   });
   if (query.trim()) params.set("query", query.trim());
   return request<MovieListResponse>(`/movies/search?${params.toString()}`);
