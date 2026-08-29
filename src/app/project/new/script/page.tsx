@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { Edit2 } from "lucide-react";
 import { createScript } from "@/lib/project-client";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
@@ -97,14 +98,10 @@ export default function NewProjectScriptPage() {
     <>
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col gap-6 pb-24">
-          <div className="mb-6">
-            <Heading variant="section" as="h2" className="text-text-primary">
-              {t("project.script.createTitle")}
-            </Heading>
-            <p className="mt-1 text-body text-text-muted">
-              {t("project.script.createDescription", { title: selectedMovie.title })}
-            </p>
-          </div>
+          <PageHeader
+            title={t("project.script.createTitle")}
+            description={t("project.script.createDescription", { title: selectedMovie.title })}
+          />
 
           {/* Selected movie compact bar */}
           <div className="flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-surface-panel border border-border-default mb-6">

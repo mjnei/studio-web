@@ -16,33 +16,13 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
+import { Toggle } from "@/components/ui/toggle";
 import { useI18n } from "@/i18n";
 import {
   AMBIENT_BACKGROUND_STYLES,
   useAmbientBackground,
   type AmbientBackgroundStyle,
 } from "@/lib/ambient-background";
-
-function Toggle({ checked, onChange }: { checked: boolean; onChange: () => void }) {
-  return (
-    <button
-      role="switch"
-      aria-checked={checked}
-      onClick={onChange}
-      className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-all duration-200 ${
-        checked
-          ? "bg-gradient-to-r from-accent-primary to-accent-cyan shadow-glow"
-          : "bg-surface-elevated border border-border-default"
-      }`}
-    >
-      <span
-        className={`inline-block h-4 w-4 rounded-full bg-white transition-transform duration-200 ${
-          checked ? "translate-x-6" : "translate-x-1"
-        }`}
-      />
-    </button>
-  );
-}
 
 interface SettingRowProps {
   title: string;

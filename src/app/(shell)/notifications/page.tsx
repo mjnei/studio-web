@@ -58,74 +58,67 @@ export default function NotificationsPage() {
       <PageHeader
         title={t("notifications.title")}
         meta={`${unreadCount} ${unreadCount !== 1 ? t("notifications.unreadCountPlural") : t("notifications.unreadCount")}`}
-      />
-
-      <div className="mb-6">
-        {/* Actions Bar */}
-        <div className="flex items-start sm:items-center justify-between gap-3 flex-col sm:flex-row">
-          {/* Filters */}
-          <div className="w-full sm:w-auto">
-            {/* Mobile: Dropdown */}
-            <div className="w-full sm:hidden">
-              <Select
-                size="sm"
-                value={filter}
-                onChange={setFilter}
-                options={NOTIFICATION_FILTERS_WITH_LABELS.map((filterOption) => ({
-                  value: filterOption.value,
-                  label: filterOption.label,
-                }))}
-              />
-            </div>
-
-            {/* Desktop: Button group */}
-            <div className="hidden sm:flex items-center gap-2 flex-wrap">
-              <Filter className="h-4 w-4 text-text-muted" aria-hidden />
-              {NOTIFICATION_FILTERS_WITH_LABELS.map((filterOption) => {
-                const isSelected = filter === filterOption.value;
-                return (
-                  <button
-                    key={filterOption.value}
-                    onClick={() => setFilter(filterOption.value)}
-                    className={`px-3.5 py-1 rounded-full text-caption font-medium transition-all duration-200 ${
-                      isSelected
-                        ? "bg-accent-primary text-white shadow-sm shadow-accent-primary/25 scale-105"
-                        : "bg-surface-raised border border-border-default text-text-secondary hover:text-text-primary hover:border-border-strong"
-                    }`}
-                    aria-label={t("notifications.filterBy", { label: filterOption.label })}
-                  >
-                    {filterOption.label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div className="flex items-center gap-2 w-full sm:w-auto">
+        action={
+          <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3">
             {unreadCount > 0 && (
               <Button
                 variant="ghost"
-                size="sm"
+                size="md"
                 onClick={handleMarkAllAsRead}
-                className="gap-2 flex-1 sm:flex-none"
+                leftIcon={<CheckCheck className="h-4 w-4" />}
                 aria-label={t("notifications.markAllAsRead")}
               >
-                <CheckCheck className="h-4 w-4" aria-hidden />
                 <span>{t("notifications.markAllAsRead")}</span>
               </Button>
             )}
             <Button
               variant="outline"
-              size="sm"
+              size="md"
               onClick={() => setShowPreferences(true)}
-              className="gap-2 flex-1 sm:flex-none"
+              leftIcon={<Settings className="h-4 w-4" />}
               aria-label={t("notifications.notificationSettings")}
             >
-              <Settings className="h-4 w-4" aria-hidden />
               <span>{t("notifications.preferences")}</span>
             </Button>
           </div>
+        }
+      />
+
+      {/* Zone B: Filters Toolbar */}
+      <div className="mb-6">
+        {/* Mobile: Dropdown */}
+        <div className="w-full sm:hidden">
+          <Select
+            size="sm"
+            value={filter}
+            onChange={setFilter}
+            options={NOTIFICATION_FILTERS_WITH_LABELS.map((filterOption) => ({
+              value: filterOption.value,
+              label: filterOption.label,
+            }))}
+          />
+        </div>
+
+        {/* Desktop: Button group */}
+        <div className="hidden sm:flex items-center gap-2 flex-wrap">
+          <Filter className="h-4 w-4 text-text-muted" aria-hidden />
+          {NOTIFICATION_FILTERS_WITH_LABELS.map((filterOption) => {
+            const isSelected = filter === filterOption.value;
+            return (
+              <button
+                key={filterOption.value}
+                onClick={() => setFilter(filterOption.value)}
+                className={`px-3.5 py-1.5 rounded-full text-caption font-medium transition-all duration-200 focus-ring ${
+                  isSelected
+                    ? "bg-accent-primary text-white shadow-sm shadow-accent-primary/25 scale-105"
+                    : "bg-surface-raised border border-border-default text-text-secondary hover:text-text-primary hover:border-border-strong"
+                }`}
+                aria-label={t("notifications.filterBy", { label: filterOption.label })}
+              >
+                {filterOption.label}
+              </button>
+            );
+          })}
         </div>
       </div>
 

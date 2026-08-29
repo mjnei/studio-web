@@ -110,7 +110,7 @@ export default function ReferralPage() {
     return (
       <div className="max-w-6xl mx-auto">
         <PageHeader title={t("referral.title")} description={t("referral.description")} />
-        <Card variant="elevated" padding="lg">
+        <Card variant="glass" padding="lg">
           <p className="text-center text-text-muted">{t("referral.errorLoadingData")}</p>
         </Card>
       </div>
@@ -133,7 +133,7 @@ export default function ReferralPage() {
 
       {/* Referral Link Card */}
       <Card
-        variant="elevated"
+        variant="glass"
         padding="lg"
         className="mb-6 border-accent-cyan/20 bg-gradient-to-br from-accent-cyan/10 via-accent-primary/10 to-accent-secondary/10 overflow-hidden relative"
       >
@@ -220,8 +220,9 @@ export default function ReferralPage() {
       {/* Stats Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
         <Card
-          variant="elevated"
+          variant="glass"
           padding="md"
+          interactive
           className="group hover:border-accent-cyan/40 transition-all"
         >
           <div className="flex items-center justify-between">
@@ -240,8 +241,9 @@ export default function ReferralPage() {
         </Card>
 
         <Card
-          variant="elevated"
+          variant="glass"
           padding="md"
+          interactive
           className="group hover:border-accent-cyan/40 transition-all"
         >
           <div className="flex items-center justify-between">
@@ -258,8 +260,9 @@ export default function ReferralPage() {
         </Card>
 
         <Card
-          variant="elevated"
+          variant="glass"
           padding="md"
+          interactive
           className="group hover:border-accent-cyan/40 transition-all col-span-2 sm:col-span-1"
         >
           <div className="flex items-center justify-between">
@@ -278,7 +281,7 @@ export default function ReferralPage() {
 
       {/* Achievements */}
       {stats.achievements && stats.achievements.length > 0 && (
-        <Card variant="elevated" padding="lg" className="mb-6">
+        <Card variant="glass" padding="lg" className="mb-6">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Trophy className="h-5 w-5 text-amber-500" />
@@ -319,7 +322,7 @@ export default function ReferralPage() {
       )}
 
       {/* Referral History */}
-      <Card variant="elevated" padding="lg">
+      <Card variant="glass" padding="lg">
         <CardHeader>
           <CardTitle>{t("referral.history.title")}</CardTitle>
           <CardDescription>

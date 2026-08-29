@@ -4,8 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { MovieSelection } from "@/components/project/movie-selection";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
-import { Heading } from "@/components/ui/heading";
-import { Text } from "@/components/ui/text";
+import { PageHeader } from "@/components/ui/PageHeader";
 import { useI18n } from "@/i18n";
 
 /**
@@ -60,14 +59,10 @@ export default function NewProjectSourcePage() {
     <>
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col gap-6 pb-24">
-          <div className="mb-6">
-            <Heading variant="section" as="h2" className="text-text-primary">
-              {t("project.source.selectTitle")}
-            </Heading>
-            <Text variant="body" className="mt-1 text-text-muted">
-              {t("project.source.selectDescription")}
-            </Text>
-          </div>
+          <PageHeader
+            title={t("project.source.selectTitle")}
+            description={t("project.source.selectDescription")}
+          />
 
           <MovieSelection selectedMovie={selectedMovie?.id} onSelect={handleMovieSelect} />
         </div>

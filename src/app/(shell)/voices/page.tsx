@@ -20,11 +20,14 @@ import { useVoiceLimits } from "@/lib/hooks/use-voice-limits";
 import { getAvailableVoices, attachVoiceAudioUrls } from "@/lib/api/voice-client";
 import type { VoiceWithCreator } from "@/lib/types/api";
 
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+
 /**
  * Main Voices Page Component
  */
 export default function VoicesPage() {
-  const [tab, setTab] = useState<"private" | "community">("private");
+  const [tab, setTab] = useState<string>("private");
   const [showRecorder, setShowRecorder] = useState(false);
   const [showLimitDialog, setShowLimitDialog] = useState(false);
   const { user } = useAuth();
@@ -201,7 +204,7 @@ export default function VoicesPage() {
         description={t("voices.library.description")}
         meta={
           tab === "private" ? (
-            <span className="rounded-full bg-green-500/10 border border-green-500/30 px-3 py-1.5 text-caption font-medium text-green-600 whitespace-nowrap">
+            <span className="rounded-full bg-status-success/15 border border-status-success/30 px-3 py-1 text-caption font-medium text-status-success whitespace-nowrap">
               {voiceLimits.currentCount} / {voiceLimits.limit}{" "}
               {t("voices.tabs.private").toLowerCase()}
             </span>
@@ -209,62 +212,44 @@ export default function VoicesPage() {
             `${communityVoices.length} ${t("voices.tabs.community").toLowerCase()}`
           )
         }
+        action={
+          <Button
+            variant="primary"
+            size="md"
+            onClick={handleAddVoiceClick}
+            leftIcon={<Plus className="h-4 w-4" />}
+          >
+            {t("voices.addVoice")}
+          </Button>
+        }
       />
 
       {/* Tab Navigation */}
-      <div className="mb-6 overflow-x-auto scrollbar-hide">
-        <div className="inline-flex min-w-min items-center gap-1 rounded-xl bg-surface-panel p-1 shadow-sm border border-border-default">
-          <button
-            onClick={() => setTab("private")}
-            className={`relative flex shrink-0 items-center gap-2 whitespace-nowrap rounded-lg px-5 py-2 text-body font-semibold transition-all duration-200 ${
-              tab === "private"
-                ? "bg-accent-primary text-white shadow-md"
-                : "text-text-muted hover:text-text-primary hover:bg-surface-raised"
-            }`}
-          >
+      <Tabs value={tab} onValueChange={setTab} className="mb-6">
+        <TabsList>
+          <TabsTrigger value="private">
             <Mic className="h-4 w-4" />
             <span>{t("voices.tabs.private")}</span>
             {privateVoices.length > 0 && (
-              <span
-                className={`ml-1 rounded-full px-2 py-0.5 text-caption font-bold ${
-                  tab === "private"
-                    ? "bg-white/20 text-white"
-                    : "bg-surface-elevated text-text-muted"
-                }`}
-              >
+              <Badge variant="default" size="sm" className="ml-1">
                 {privateVoices.length}
-              </span>
+              </Badge>
             )}
-          </button>
+          </TabsTrigger>
 
-          <button
-            onClick={() => setTab("community")}
-            className={`relative flex shrink-0 items-center gap-2 whitespace-nowrap rounded-lg px-5 py-2 text-body font-semibold transition-all duration-200 ${
-              tab === "community"
-                ? "bg-accent-primary text-white shadow-md"
-                : "text-text-muted hover:text-text-primary hover:bg-surface-raised"
-            }`}
-          >
+          <TabsTrigger value="community">
             <Globe className="h-4 w-4" />
             <span>{t("voices.tabs.community")}</span>
             {communityVoices.length > 0 && (
-              <span
-                className={`ml-1 rounded-full px-2 py-0.5 text-caption font-bold ${
-                  tab === "community"
-                    ? "bg-white/20 text-white"
-                    : "bg-surface-elevated text-text-muted"
-                }`}
-              >
+              <Badge variant="default" size="sm" className="ml-1">
                 {communityVoices.length}
-              </span>
+              </Badge>
             )}
-          </button>
-        </div>
-      </div>
+          </TabsTrigger>
+        </TabsList>
 
-      {/* Content Area */}
-      {tab === "private" ? (
-        <div>
+        {/* Content Area */}
+        <TabsContent value="private" className="mt-6">
           {/* Voice Recorder Modal */}
           <VoiceRecordingModal
             isOpen={showRecorder}
@@ -285,10 +270,14 @@ export default function VoicesPage() {
           )}
 
           {/* Info Banner */}
-          <Card variant="glass" padding="md" className="mb-6 border-blue-500/30 bg-blue-500/5">
+          <Card
+            variant="glass"
+            padding="md"
+            className="mb-6 border-accent-secondary/30 bg-accent-secondary/5"
+          >
             <div className="flex items-start gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500/10 flex-shrink-0">
-                <Info className="h-5 w-5 text-blue-600" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-secondary/10 flex-shrink-0">
+                <Info className="h-5 w-5 text-accent-secondary" />
               </div>
               <div className="flex-1">
                 <Heading variant="label" as="h3" className="text-text-primary mb-1">
@@ -300,17 +289,6 @@ export default function VoicesPage() {
               </div>
             </div>
           </Card>
-
-          <div className="mb-6 flex justify-end">
-            <Button
-              variant="primary"
-              size="md"
-              onClick={handleAddVoiceClick}
-              leftIcon={<Plus className="h-4 w-4" />}
-            >
-              {t("voices.addVoice")}
-            </Button>
-          </div>
 
           {/* Error Message */}
           {error && (
@@ -365,9 +343,10 @@ export default function VoicesPage() {
 
               {/* Add Voice Card */}
               <Card
-                variant="default"
+                variant="glass"
                 padding="none"
-                className="border-dashed hover:border-accent-primary/50 hover:bg-accent-primary/5 transition-all cursor-pointer group min-h-[180px]"
+                interactive
+                className="border-dashed border-accent-primary/40 hover:border-accent-primary hover:bg-accent-primary/5 transition-all cursor-pointer group min-h-[180px]"
                 onClick={handleAddVoiceClick}
               >
                 <div className="flex flex-col items-center justify-center h-full p-6 text-center">
@@ -388,10 +367,10 @@ export default function VoicesPage() {
               </Card>
             </div>
           )}
-        </div>
-      ) : (
-        /* Community Voices Tab */
-        <div>
+        </TabsContent>
+
+        {/* Community Voices Tab */}
+        <TabsContent value="community" className="mt-6">
           {/* Info Banner */}
           <Card
             variant="glass"
@@ -457,8 +436,8 @@ export default function VoicesPage() {
               ))}
             </div>
           )}
-        </div>
-      )}
+        </TabsContent>
+      </Tabs>
 
       {/* Delete Confirmation Modal */}
       <ConfirmModal

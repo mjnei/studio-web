@@ -32,6 +32,7 @@ import { Collapsible } from "@/components/ui/collapsible";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
+import { Toggle } from "@/components/ui/toggle";
 
 /** Capitalize the first letter of each whitespace-separated word; leave the rest unchanged. */
 function capitalizeWordStarts(value: string): string {
@@ -408,17 +409,11 @@ export default function ProfilePage() {
                     label={t("profile.accountOverview.displayName")}
                     className="text-body font-medium"
                   />
-                  <label className="flex items-center gap-2 cursor-pointer select-none">
-                    <input
-                      type="checkbox"
-                      checked={autoCapitalizeWords}
-                      onChange={(e) => handleAutoCapitalizeToggle(e.target.checked)}
-                      className="w-4 h-4 shrink-0 rounded border-border-default text-accent-primary focus:ring-accent-primary focus:ring-offset-0 cursor-pointer"
-                    />
-                    <span className="text-body text-text-secondary">
-                      {t("profile.accountOverview.autoCapitalizeWords")}
-                    </span>
-                  </label>
+                  <Toggle
+                    checked={autoCapitalizeWords}
+                    onChange={handleAutoCapitalizeToggle}
+                    label={t("profile.accountOverview.autoCapitalizeWords")}
+                  />
                   <div className="flex items-center gap-2 pt-2">
                     <Button variant="ghost" size="sm" onClick={cancelEditing}>
                       {t("profile.accountOverview.cancel")}

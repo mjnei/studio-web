@@ -18,6 +18,7 @@ interface TabsTriggerProps {
   value: string;
   children: React.ReactNode;
   className?: string;
+  disabled?: boolean;
 }
 
 interface TabsContentProps {
@@ -46,7 +47,7 @@ export function TabsList({ children, className = "" }: TabsListProps) {
   return (
     <div className="overflow-x-auto scrollbar-hide">
       <div
-        className={`inline-flex h-9 min-w-min items-center justify-center rounded-lg bg-muted p-1 text-muted-foreground ${className}`}
+        className={`inline-flex min-w-min items-center gap-1 rounded-xl bg-surface-panel p-1 border border-border-default shadow-sm ${className}`}
         role="tablist"
       >
         {children}
@@ -55,19 +56,26 @@ export function TabsList({ children, className = "" }: TabsListProps) {
   );
 }
 
-export function TabsTrigger({ value, children, className = "" }: TabsTriggerProps) {
+export function TabsTrigger({
+  value,
+  children,
+  className = "",
+  disabled = false,
+}: TabsTriggerProps) {
   const context = React.useContext(TabsContext);
   const isActive = context.value === value;
 
   return (
     <button
+      type="button"
       role="tab"
       aria-selected={isActive}
+      disabled={disabled}
       onClick={() => context.onValueChange(value)}
-      className={`inline-flex shrink-0 items-center justify-center whitespace-nowrap rounded-md px-3 py-1.5 text-body font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 ${
+      className={`inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg px-4 py-2 text-body font-semibold transition-all duration-200 focus-ring disabled:pointer-events-none disabled:opacity-50 ${
         isActive
-          ? "bg-background text-foreground shadow-sm"
-          : "hover:bg-background/50 hover:text-foreground"
+          ? "bg-accent-primary text-white shadow-md"
+          : "text-text-muted hover:text-text-primary hover:bg-surface-raised"
       } ${className}`}
     >
       {children}
@@ -81,5 +89,9 @@ export function TabsContent({ value, children, className = "" }: TabsContentProp
 
   if (!isActive) return null;
 
-  return <div className={className}>{children}</div>;
+  return (
+    <div role="tabpanel" tabIndex={0} className={`focus:outline-none ${className}`}>
+      {children}
+    </div>
+  );
 }

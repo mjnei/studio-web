@@ -152,9 +152,9 @@ export default function DashboardPage() {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 mb-6">
         {stats.map((stat, index) => (
-          <Link key={index} href={stat.href}>
+          <Link key={index} href={stat.href} className="block">
             <Card
-              variant="elevated"
+              variant="glass"
               padding="md"
               interactive
               className="group fade-in h-full"
@@ -182,7 +182,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Quick Actions */}
-      <Card variant="elevated" padding="lg" className="mb-6 fade-in">
+      <Card variant="glass" padding="lg" className="mb-6 fade-in">
         <CardHeader>
           <CardTitle>{t("dashboard.quickActions.title")}</CardTitle>
           <CardDescription>{t("dashboard.quickActions.description")}</CardDescription>
@@ -194,9 +194,9 @@ export default function DashboardPage() {
                 variant="secondary"
                 size="md"
                 fullWidth
+                leftIcon={<Plus className="h-5 w-5" />}
                 className="justify-start hover:bg-surface-hover transition-all"
               >
-                <Plus className="h-5 w-5" aria-hidden />
                 {t("dashboard.quickActions.newProject")}
               </Button>
             </Link>
@@ -205,9 +205,9 @@ export default function DashboardPage() {
                 variant="secondary"
                 size="md"
                 fullWidth
+                leftIcon={<Film className="h-5 w-5" />}
                 className="justify-start hover:bg-surface-hover transition-all"
               >
-                <Film className="h-5 w-5" aria-hidden />
                 {t("dashboard.quickActions.browseMovies")}
               </Button>
             </Link>
@@ -216,9 +216,9 @@ export default function DashboardPage() {
                 variant="secondary"
                 size="md"
                 fullWidth
+                leftIcon={<Mic className="h-5 w-5" />}
                 className="justify-start hover:bg-surface-hover transition-all"
               >
-                <Mic className="h-5 w-5" aria-hidden />
                 {t("dashboard.quickActions.recordVoice")}
               </Button>
             </Link>
@@ -228,7 +228,7 @@ export default function DashboardPage() {
 
       {/* Recent Projects */}
       {(loadingProjects || projects.length > 0) && (
-        <Card variant="elevated" padding="lg" className="mb-6 fade-in">
+        <Card variant="glass" padding="lg" className="mb-6 fade-in">
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
@@ -237,9 +237,12 @@ export default function DashboardPage() {
               </div>
               {!loadingProjects && projects.length > 0 && (
                 <Link href="/projects">
-                  <Button variant="secondary" size="sm">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    rightIcon={<ArrowRight className="h-4 w-4" />}
+                  >
                     {t("dashboard.recentProjects.viewAll")}
-                    <ArrowRight className="h-4 w-4 ml-1" aria-hidden />
                   </Button>
                 </Link>
               )}
@@ -261,7 +264,7 @@ export default function DashboardPage() {
 
       {/* Popular Movies */}
       {(loadingMovies || popularMovies.length > 0) && (
-        <Card variant="elevated" padding="lg" className="fade-in">
+        <Card variant="glass" padding="lg" className="fade-in">
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
@@ -273,9 +276,12 @@ export default function DashboardPage() {
               </div>
               {!loadingMovies && popularMovies.length > 0 && (
                 <Link href="/movies">
-                  <Button variant="secondary" size="sm">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    rightIcon={<ArrowRight className="h-4 w-4" />}
+                  >
                     {t("dashboard.popularMovies.exploreAll")}
-                    <ArrowRight className="h-4 w-4 ml-1" aria-hidden />
                   </Button>
                 </Link>
               )}
@@ -294,7 +300,7 @@ export default function DashboardPage() {
                   <Link
                     key={movie.id}
                     href={`/movies/${movie.id}`}
-                    className="group overflow-hidden rounded-xl border border-border-default bg-surface-panel transition hover:border-accent-cyan/40 hover:shadow-lg"
+                    className="group overflow-hidden rounded-xl border border-border-default bg-surface-panel/80 backdrop-blur-sm transition hover:border-accent-cyan/40 hover:shadow-lg hover:shadow-accent-cyan/5"
                   >
                     <div className="relative aspect-[2/3] w-full overflow-hidden bg-surface-raised">
                       {movie.poster_path && tmdbImageUrl(movie.poster_path) ? (
@@ -311,11 +317,11 @@ export default function DashboardPage() {
                         </div>
                       )}
                     </div>
-                    <div className="p-2">
+                    <div className="p-2.5">
                       <Heading
                         variant="label"
                         as="h3"
-                        className="line-clamp-1 text-caption text-text-primary group-hover:text-accent-cyan"
+                        className="line-clamp-1 text-caption text-text-primary group-hover:text-accent-cyan transition-colors"
                       >
                         {movie.title}
                       </Heading>
@@ -333,7 +339,7 @@ export default function DashboardPage() {
         !loadingMovies &&
         projects.length === 0 &&
         popularMovies.length === 0 && (
-          <Card variant="elevated" padding="lg" className="fade-in">
+          <Card variant="glass" padding="lg" className="fade-in">
             <CardContent>
               <EmptyState
                 size="lg"
@@ -342,7 +348,7 @@ export default function DashboardPage() {
                 description={t("dashboard.empty.message")}
                 action={
                   <Link href="/project/new/source">
-                    <Button variant="primary" size="md">
+                    <Button variant="primary" size="md" leftIcon={<Plus className="h-4 w-4" />}>
                       {t("dashboard.empty.cta")}
                     </Button>
                   </Link>
