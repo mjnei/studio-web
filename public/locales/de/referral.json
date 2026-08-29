@@ -1,13 +1,13 @@
 {
   "referral": {
     "title": "Empfehlungsprogramm",
-    "description": "Lade Freunde ein und verdiene Einladungspunkte — getrennt von Render-Credits für Videos",
+    "description": "Lade Freunde ein und verdiene Empfehlungsbelohnungen — getrennt von Video-Credits für die Videogenerierung",
     "viewLeaderboard": "Rangliste anzeigen",
     "errorTitle": "Fehler",
     "errorLoadingData": "Empfehlungsdaten konnten nicht geladen werden",
     "inviteCard": {
       "title": "Freunde einladen, Credits verdienen",
-      "description": "Teile deinen Empfehlungslink. Bei der Registrierung erhaltet ihr beide Einladungspunkte.",
+      "description": "Teile deinen Empfehlungslink. Bei der Registrierung erhaltet ihr beide Empfehlungsbelohnungen.",
       "yourReferralLink": "Dein Empfehlungslink",
       "yourCode": "Dein Empfehlungscode",
       "copyLink": "Link kopieren",
@@ -17,17 +17,17 @@
     "stats": {
       "directReferrals": "Direkte Empfehlungen",
       "totalReferrals": "Empfehlungen gesamt (alle Ebenen)",
-      "rewardsEarned": "Verdiente Einladungspunkte",
-      "creditsEarned": "Verdiente Einladungspunkte",
-      "invitePoints": "Einladungspunkte",
+      "rewardsEarned": "Verdiente Empfehlungsbelohnungen",
+      "creditsEarned": "Verdiente Empfehlungsbelohnungen",
+      "referralRewards": "Empfehlungsbelohnungen",
       "pending": "Ausstehend"
     },
     "rewardsActivity": {
-      "title": "Einladungspunkte-Aktivität",
-      "description": "Willkommensbonus und Empfehlungsbelohnungen — nicht dasselbe wie Render-Credits",
-      "noRewards": "Noch keine Einladungspunkte",
+      "title": "Empfehlungsbelohnungen-Aktivität",
+      "description": "Willkommensbonus und Empfehlungsbelohnungen — nicht dasselbe wie Video-Credits",
+      "noRewards": "Noch keine Empfehlungsbelohnungen",
       "noRewardsDescription": "Anmeldeboni und Empfehlungsbelohnungen erscheinen hier",
-      "rewardTransaction": "Einladungspunkte-Transaktion",
+      "rewardTransaction": "Empfehlungsbelohnungen-Transaktion",
       "balance": "Kontostand:",
       "transactionTypes": {
         "welcome_bonus": "Willkommensbonus",

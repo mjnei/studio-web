@@ -1,13 +1,13 @@
 {
   "referral": {
     "title": "推荐计划",
-    "description": "邀请好友，赚取邀请积分——与视频渲染额度分开",
+    "description": "邀请好友，赚取推荐奖励——与视频生成额度分开",
     "viewLeaderboard": "查看排行榜",
     "errorTitle": "出错了",
     "errorLoadingData": "加载推荐数据失败",
     "inviteCard": {
-      "title": "邀请好友，赚取额度",
-      "description": "分享你的推荐链接。好友注册后，双方都能获得邀请积分。",
+      "title": "邀请好友，赚取奖励",
+      "description": "分享你的推荐链接。好友注册后，双方都能获得推荐奖励。",
       "yourReferralLink": "你的推荐链接",
       "yourCode": "你的推荐码",
       "copyLink": "复制链接",
@@ -17,17 +17,17 @@
     "stats": {
       "directReferrals": "直接推荐",
       "totalReferrals": "总推荐数（全部层级）",
-      "rewardsEarned": "已获邀请积分",
-      "creditsEarned": "已获邀请积分",
-      "invitePoints": "邀请积分",
+      "rewardsEarned": "已获推荐奖励",
+      "creditsEarned": "已获推荐奖励",
+      "referralRewards": "推荐奖励",
       "pending": "待到账"
     },
     "rewardsActivity": {
-      "title": "邀请积分记录",
-      "description": "欢迎奖励与推荐奖励——与渲染额度无关",
-      "noRewards": "暂无邀请积分",
+      "title": "推荐奖励记录",
+      "description": "欢迎奖励与推荐奖励——与视频额度无关",
+      "noRewards": "暂无推荐奖励",
       "noRewardsDescription": "注册奖励和推荐奖励会显示在这里",
-      "rewardTransaction": "邀请积分变动",
+      "rewardTransaction": "推荐奖励变动",
       "balance": "余额：",
       "transactionTypes": {
         "welcome_bonus": "欢迎奖励",

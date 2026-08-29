@@ -1,7 +1,7 @@
 {
   "billing": {
-    "title": "Facturation et crédits de rendu",
-    "description": "Gère ton abonnement, tes crédits de rendu et ton historique de facturation",
+    "title": "Facturation et crédits vidéo",
+    "description": "Gère ton abonnement, tes crédits vidéo et ton historique de facturation",
     "tabs": {
       "overview": "Aperçu",
       "history": "Historique",
@@ -10,7 +10,7 @@
     "overview": {
       "currentBalance": "Solde actuel",
       "credits": "crédits",
-      "renderCredits": "crédits de rendu",
+      "videoCredits": "crédits vidéo",
       "used": "utilisés ce mois-ci",
       "usedOfAllocation": "{used} sur {allocation} utilisés ce mois-ci",
       "percentUsed": "% utilisés",
@@ -45,11 +45,11 @@
       "nextBillingDate": "Prochaine date de facturation"
     },
     "history": {
-      "creditTransactionHistory": "Historique des crédits de rendu",
+      "creditTransactionHistory": "Historique des crédits vidéo",
       "trackUsage": "Suis la génération vidéo et les allocations mensuelles",
-      "noTransactions": "Pas encore de transactions de crédits de rendu",
+      "noTransactions": "Pas encore de transactions de crédits vidéo",
       "noTransactionsDescription": "Ton utilisation de génération vidéo apparaîtra ici",
-      "creditTransaction": "Transaction de crédits de rendu",
+      "creditTransaction": "Transaction de crédits vidéo",
       "balance": "Solde :",
       "time": {
         "justNow": "à l'instant",
@@ -59,7 +59,7 @@
       },
       "transactionTypes": {
         "allocation": "Allocation mensuelle",
-        "bonus": "Crédits de rendu bonus",
+        "bonus": "Crédits vidéo bonus",
         "consumption": "Génération vidéo",
         "refund": "Remboursement",
         "rollover": "Report",

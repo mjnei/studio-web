@@ -283,7 +283,7 @@ export default function ReferralPage() {
               <Heading variant="metric" className="text-accent-cyan">
                 {stats.total_invite_rewards_earned}
               </Heading>
-              <p className="text-caption text-text-muted mt-1">{t("referral.stats.invitePoints")}</p>
+              <p className="text-caption text-text-muted mt-1">{t("referral.stats.referralRewards")}</p>
             </div>
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center group-hover:scale-110 transition-transform">
               <Award className="h-6 w-6 text-white" />
@@ -379,7 +379,7 @@ export default function ReferralPage() {
                   </div>
                   <div className="text-right">
                     <p className="text-body font-semibold text-accent-cyan">
-                      {formatAmount(transaction.amount)} {t("referral.stats.invitePoints")}
+                      {formatAmount(transaction.amount)} {t("referral.stats.referralRewards")}
                     </p>
                     <p className="text-caption text-text-muted">
                       {t("referral.rewardsActivity.balance")} {transaction.balance_after}
@@ -444,7 +444,7 @@ export default function ReferralPage() {
                       <td className="py-3 text-text-muted">{row.downstream_referral_count}</td>
                       <td className="py-3 text-right">
                         <span className="text-accent-cyan font-semibold">
-                          +{row.rewards_earned} {t("referral.stats.invitePoints")}
+                          +{row.rewards_earned} {t("referral.stats.referralRewards")}
                         </span>
                       </td>
                     </tr>

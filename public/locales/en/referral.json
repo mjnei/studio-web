@@ -1,13 +1,13 @@
 {
   "referral": {
     "title": "Referral Program",
-    "description": "Invite friends and earn invite points — separate from render credits used for video generation",
+    "description": "Invite friends and earn referral rewards — separate from video credits used for video generation",
     "viewLeaderboard": "View Leaderboard",
     "errorTitle": "Error",
     "errorLoadingData": "Failed to load referral data",
     "inviteCard": {
-      "title": "Invite friends, earn credits",
-      "description": "Share your referral link. When someone signs up, you both earn invite points.",
+      "title": "Invite friends, earn rewards",
+      "description": "Share your referral link. When someone signs up, you both earn referral rewards.",
       "yourReferralLink": "Your referral link",
       "yourCode": "Your referral code",
       "copyLink": "Copy Link",
@@ -17,17 +17,17 @@
     "stats": {
       "directReferrals": "Direct Referrals",
       "totalReferrals": "Total Referrals (All Levels)",
-      "rewardsEarned": "Invite Points Earned",
-      "creditsEarned": "Invite Points Earned",
-      "invitePoints": "invite points",
+      "rewardsEarned": "Referral Rewards Earned",
+      "creditsEarned": "Referral Rewards Earned",
+      "referralRewards": "referral rewards",
       "pending": "Pending"
     },
     "rewardsActivity": {
-      "title": "Invite Points Activity",
-      "description": "Welcome bonuses and referral rewards — not the same as render credits",
-      "noRewards": "No invite points yet",
-      "noRewardsDescription": "Sign up bonuses and referral rewards will appear here",
-      "rewardTransaction": "Invite points transaction",
+      "title": "Referral Rewards Activity",
+      "description": "Welcome bonuses and referral rewards — not the same as video credits",
+      "noRewards": "No referral rewards yet",
+      "noRewardsDescription": "Sign-up bonuses and referral rewards will appear here",
+      "rewardTransaction": "Referral rewards transaction",
       "balance": "Balance:",
       "transactionTypes": {
         "welcome_bonus": "Welcome bonus",

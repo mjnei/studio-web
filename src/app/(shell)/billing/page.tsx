@@ -156,7 +156,7 @@ export default function BillingPage() {
                           {creditStatus.credits_remaining}
                         </Heading>
                         <span className="text-metric text-text-muted">
-                          {t("billing.overview.renderCredits")}
+                          {t("billing.overview.videoCredits")}
                         </span>
                       </div>
                       <p className="text-body text-text-secondary mt-2">
@@ -472,7 +472,7 @@ export default function BillingPage() {
                         <p
                           className={`text-body font-semibold ${isDebitTransaction(transaction) ? "text-text-secondary" : "text-status-success"}`}
                         >
-                          {formatAmount(transaction.amount)} {t("billing.overview.renderCredits")}
+                          {formatAmount(transaction.amount)} {t("billing.overview.videoCredits")}
                         </p>
                         <p className="text-caption text-text-muted">
                           {t("billing.history.balance")} {transaction.balance_after}

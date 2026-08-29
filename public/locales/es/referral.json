@@ -1,13 +1,13 @@
 {
   "referral": {
     "title": "Programa de referidos",
-    "description": "Invita amigos y gana puntos de invitación — separados de los créditos de render para vídeo",
+    "description": "Invita amigos y gana recompensas por referidos — separadas de los créditos de vídeo para generación",
     "viewLeaderboard": "Ver clasificación",
     "errorTitle": "Error",
     "errorLoadingData": "Error al cargar los datos de referidos",
     "inviteCard": {
       "title": "Invita amigos, gana créditos",
-      "description": "Comparte tu enlace de referido. Al registrarse, ambos ganáis puntos de invitación.",
+      "description": "Comparte tu enlace de referido. Al registrarse, ambos ganáis recompensas por referidos.",
       "yourReferralLink": "Tu enlace de referido",
       "yourCode": "Tu código de referido",
       "copyLink": "Copiar enlace",
@@ -17,17 +17,17 @@
     "stats": {
       "directReferrals": "Referidos directos",
       "totalReferrals": "Referidos totales (todos los niveles)",
-      "rewardsEarned": "Puntos de invitación ganados",
-      "creditsEarned": "Puntos de invitación ganados",
-      "invitePoints": "puntos de invitación",
+      "rewardsEarned": "Recompensas por referidos ganadas",
+      "creditsEarned": "Recompensas por referidos ganadas",
+      "referralRewards": "recompensas por referidos",
       "pending": "Pendiente"
     },
     "rewardsActivity": {
-      "title": "Actividad de puntos de invitación",
-      "description": "Bonos de bienvenida y recompensas por referidos — no son los mismos que los créditos de render",
-      "noRewards": "Aún no hay puntos de invitación",
+      "title": "Actividad de recompensas por referidos",
+      "description": "Bonos de bienvenida y recompensas por referidos — no son los mismos que los créditos de vídeo",
+      "noRewards": "Aún no hay recompensas por referidos",
       "noRewardsDescription": "Los bonos de registro y recompensas por referidos aparecerán aquí",
-      "rewardTransaction": "Transacción de puntos de invitación",
+      "rewardTransaction": "Transacción de recompensas por referidos",
       "balance": "Saldo:",
       "transactionTypes": {
         "welcome_bonus": "Bono de bienvenida",

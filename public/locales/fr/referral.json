@@ -1,13 +1,13 @@
 {
   "referral": {
     "title": "Programme de parrainage",
-    "description": "Invite des amis et gagne des points d'invitation — distincts des crédits de rendu pour la vidéo",
+    "description": "Invite des amis et gagne des récompenses de parrainage — distinctes des crédits vidéo pour la génération",
     "viewLeaderboard": "Voir le classement",
     "errorTitle": "Erreur",
     "errorLoadingData": "Échec du chargement des données de parrainage",
     "inviteCard": {
       "title": "Invite des amis, gagne des crédits",
-      "description": "Partage ton lien de parrainage. À l'inscription, vous gagnez tous les deux des points d'invitation.",
+      "description": "Partage ton lien de parrainage. À l'inscription, vous gagnez tous les deux des récompenses de parrainage.",
       "yourReferralLink": "Ton lien de parrainage",
       "yourCode": "Ton code de parrainage",
       "copyLink": "Copier le lien",
@@ -17,17 +17,17 @@
     "stats": {
       "directReferrals": "Parrainages directs",
       "totalReferrals": "Parrainages totaux (tous niveaux)",
-      "rewardsEarned": "Points d'invitation gagnés",
-      "creditsEarned": "Points d'invitation gagnés",
-      "invitePoints": "points d'invitation",
+      "rewardsEarned": "Récompenses de parrainage gagnées",
+      "creditsEarned": "Récompenses de parrainage gagnées",
+      "referralRewards": "récompenses de parrainage",
       "pending": "En attente"
     },
     "rewardsActivity": {
-      "title": "Activité des points d'invitation",
-      "description": "Bonus de bienvenue et récompenses de parrainage — pas les mêmes que les crédits de rendu",
-      "noRewards": "Pas encore de points d'invitation",
+      "title": "Activité des récompenses de parrainage",
+      "description": "Bonus de bienvenue et récompenses de parrainage — pas les mêmes que les crédits vidéo",
+      "noRewards": "Pas encore de récompenses de parrainage",
       "noRewardsDescription": "Les bonus d'inscription et récompenses de parrainage apparaîtront ici",
-      "rewardTransaction": "Transaction de points d'invitation",
+      "rewardTransaction": "Transaction de récompenses de parrainage",
       "balance": "Solde :",
       "transactionTypes": {
         "welcome_bonus": "Bonus de bienvenue",
