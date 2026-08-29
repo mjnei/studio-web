@@ -51,6 +51,12 @@
       "noTransactionsDescription": "動画生成の使用状況がここに表示されます",
       "creditTransaction": "レンダークレジット取引",
       "balance": "残高：",
+      "time": {
+        "justNow": "たった今",
+        "yesterday": "昨日",
+        "recently": "最近",
+        "ago": "{time}前"
+      },
       "transactionTypes": {
         "allocation": "月次割り当て",
         "bonus": "ボーナスレンダークレジット",

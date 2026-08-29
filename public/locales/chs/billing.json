@@ -51,6 +51,12 @@
       "noTransactionsDescription": "视频生成使用记录会显示在这里",
       "creditTransaction": "渲染额度变动",
       "balance": "余额：",
+      "time": {
+        "justNow": "刚刚",
+        "yesterday": "昨天",
+        "recently": "最近",
+        "ago": "{time}前"
+      },
       "transactionTypes": {
         "allocation": "每月发放",
         "bonus": "奖励渲染额度",

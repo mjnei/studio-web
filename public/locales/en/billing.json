@@ -51,6 +51,12 @@
       "noTransactionsDescription": "Your video generation usage will appear here",
       "creditTransaction": "Render credit transaction",
       "balance": "Balance:",
+      "time": {
+        "justNow": "just now",
+        "yesterday": "yesterday",
+        "recently": "recently",
+        "ago": "{time} ago"
+      },
       "transactionTypes": {
         "allocation": "Monthly allocation",
         "bonus": "Bonus render credits",

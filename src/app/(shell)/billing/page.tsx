@@ -31,6 +31,7 @@ import {
   type CreditTransaction,
 } from "@/lib/credit-client";
 import { gimmeCredits } from "@/lib/api-client";
+import { formatRelativeTimeAgoWithSuffix } from "@/lib/utils/time-format";
 
 export default function BillingPage() {
   const router = useRouter();
@@ -119,6 +120,9 @@ export default function BillingPage() {
   };
 
   const isDebitTransaction = (transaction: CreditTransaction) => transaction.amount < 0;
+
+  const isVideoGenerationTransaction = (transaction: CreditTransaction) =>
+    transaction.transaction_type === "consumption";
 
   if (isLoading) {
     return <PageLoadingSkeleton message={t("billing.loading")} />;
@@ -449,11 +453,19 @@ export default function BillingPage() {
                             {getTransactionLabel(transaction)}
                           </Heading>
                           <p className="text-caption text-text-muted">
-                            {transaction.reason || t("billing.history.creditTransaction")}
+                            {isVideoGenerationTransaction(transaction)
+                              ? formatRelativeTimeAgoWithSuffix(
+                                  transaction.created_at,
+                                  t,
+                                  "billing.history.time"
+                                )
+                              : transaction.reason || t("billing.history.creditTransaction")}
                           </p>
-                          <p className="text-caption text-text-muted mt-0.5">
-                            {formatDate(transaction.created_at)}
-                          </p>
+                          {!isVideoGenerationTransaction(transaction) && (
+                            <p className="text-caption text-text-muted mt-0.5">
+                              {formatDate(transaction.created_at)}
+                            </p>
+                          )}
                         </div>
                       </div>
                       <div className="text-right">

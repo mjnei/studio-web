@@ -51,6 +51,12 @@
       "noTransactionsDescription": "Deine Videogenerierung erscheint hier",
       "creditTransaction": "Render-Credit-Transaktion",
       "balance": "Credits:",
+      "time": {
+        "justNow": "gerade eben",
+        "yesterday": "gestern",
+        "recently": "kürzlich",
+        "ago": "vor {time}"
+      },
       "transactionTypes": {
         "allocation": "Monatliche Zuteilung",
         "bonus": "Bonus-Render-Credits",

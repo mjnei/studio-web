@@ -51,6 +51,12 @@
       "noTransactionsDescription": "영상 생성 사용 내역이 여기에 표시돼요",
       "creditTransaction": "렌더 크레딧 거래",
       "balance": "잔액:",
+      "time": {
+        "justNow": "방금",
+        "yesterday": "어제",
+        "recently": "최근",
+        "ago": "{time} 전"
+      },
       "transactionTypes": {
         "allocation": "월간 할당",
         "bonus": "보너스 렌더 크레딧",

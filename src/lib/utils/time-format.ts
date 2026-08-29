@@ -88,3 +88,22 @@ export function formatSessionResumeMessage(
   }
   return t("project.shell.sessionRestoredFromAgo", { time: relativeTime });
 }
+
+/** Relative time with an "ago" suffix (e.g. "5 minutes ago", "yesterday"). */
+export function formatRelativeTimeAgoWithSuffix(
+  dateInput: string | Date | number | undefined | null,
+  t: (key: string, options?: Record<string, string | number>) => string,
+  keyPrefix: string
+): string {
+  const relativeTime = formatRelativeTimeAgo(dateInput);
+  if (relativeTime === "just now") {
+    return t(`${keyPrefix}.justNow`);
+  }
+  if (relativeTime === "yesterday") {
+    return t(`${keyPrefix}.yesterday`);
+  }
+  if (relativeTime === "recently") {
+    return t(`${keyPrefix}.recently`);
+  }
+  return t(`${keyPrefix}.ago`, { time: relativeTime });
+}

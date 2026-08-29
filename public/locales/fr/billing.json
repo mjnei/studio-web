@@ -51,6 +51,12 @@
       "noTransactionsDescription": "Ton utilisation de génération vidéo apparaîtra ici",
       "creditTransaction": "Transaction de crédits de rendu",
       "balance": "Solde :",
+      "time": {
+        "justNow": "à l'instant",
+        "yesterday": "hier",
+        "recently": "récemment",
+        "ago": "il y a {time}"
+      },
       "transactionTypes": {
         "allocation": "Allocation mensuelle",
         "bonus": "Crédits de rendu bonus",

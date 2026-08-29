@@ -51,6 +51,12 @@
       "noTransactionsDescription": "Tu uso de generación de vídeo aparecerá aquí",
       "creditTransaction": "Transacción de créditos de render",
       "balance": "Saldo:",
+      "time": {
+        "justNow": "ahora mismo",
+        "yesterday": "ayer",
+        "recently": "recientemente",
+        "ago": "hace {time}"
+      },
       "transactionTypes": {
         "allocation": "Asignación mensual",
         "bonus": "Créditos de render bonus",

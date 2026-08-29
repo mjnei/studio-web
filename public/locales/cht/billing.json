@@ -51,6 +51,12 @@
       "noTransactionsDescription": "影片生成使用紀錄會顯示在這裡",
       "creditTransaction": "渲染額度變動",
       "balance": "餘額：",
+      "time": {
+        "justNow": "剛剛",
+        "yesterday": "昨天",
+        "recently": "最近",
+        "ago": "{time}前"
+      },
       "transactionTypes": {
         "allocation": "每月配額",
         "bonus": "獎勵渲染額度",
