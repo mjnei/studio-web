@@ -59,6 +59,8 @@ export default function AdminVoicesPage() {
     },
   });
 
+  const [isProcessing, setIsProcessing] = useState(false);
+
   const [approveModal, setApproveModal] = useState<{
     open: boolean;
     voice: VoiceWithCreator | null;
@@ -148,7 +150,8 @@ export default function AdminVoicesPage() {
   };
 
   const handleConfirmApprove = async () => {
-    if (!approveModal.voice) return;
+    if (!approveModal.voice || isProcessing) return;
+    setIsProcessing(true);
     try {
       await adminApproveVoice(approveModal.voice.id);
       toast.success("Voice approved", `Approved "${approveModal.voice.name}" for public catalog`);
@@ -157,6 +160,8 @@ export default function AdminVoicesPage() {
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "An error occurred";
       toast.error("Failed to approve voice", message);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -165,7 +170,8 @@ export default function AdminVoicesPage() {
   };
 
   const handleConfirmUnapprove = async () => {
-    if (!unapproveModal.voice) return;
+    if (!unapproveModal.voice || isProcessing) return;
+    setIsProcessing(true);
     try {
       await adminUnapproveVoice(unapproveModal.voice.id);
       toast.success("Approval revoked", `Revoked approval for "${unapproveModal.voice.name}"`);
@@ -174,6 +180,8 @@ export default function AdminVoicesPage() {
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "An error occurred";
       toast.error("Failed to unapprove voice", message);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -483,53 +491,58 @@ export default function AdminVoicesPage() {
                       : formatRelativeTime(voice.created_at)}
                   </p>
                 </div>
-                <div className="col-span-1 md:col-span-3 flex flex-wrap items-center gap-2">
-                  <div className="md:hidden text-caption font-medium text-text-muted mb-1 w-full">
+                <div className="col-span-1 md:col-span-3">
+                  <div className="md:hidden text-caption font-medium text-text-muted mb-1">
                     Actions
                   </div>
-                  <Button
-                    size="sm"
-                    variant={playingVoiceId === voice.id ? "primary" : "secondary"}
-                    onClick={() => handlePreviewToggle(voice)}
-                    leftIcon={
-                      playingVoiceId === voice.id ? (
-                        <Pause className="h-4 w-4" />
-                      ) : (
-                        <Play className="h-4 w-4" />
-                      )
-                    }
-                    rightIcon={
-                      playingVoiceId === voice.id ? (
-                        <Volume2 className="h-4 w-4 animate-pulse" />
-                      ) : undefined
-                    }
-                  >
-                    {playingVoiceId !== voice.id && (
-                      <span className="hidden md:inline">Preview</span>
-                    )}
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      size="sm"
+                      variant={playingVoiceId === voice.id ? "primary" : "secondary"}
+                      onClick={() => handlePreviewToggle(voice)}
+                      className="shrink-0"
+                      leftIcon={
+                        playingVoiceId === voice.id ? (
+                          <Pause className="h-4 w-4" />
+                        ) : (
+                          <Play className="h-4 w-4" />
+                        )
+                      }
+                      rightIcon={
+                        playingVoiceId === voice.id ? (
+                          <Volume2 className="h-4 w-4 animate-pulse" />
+                        ) : undefined
+                      }
+                    >
+                      {playingVoiceId !== voice.id && (
+                        <span className="hidden md:inline">Preview</span>
+                      )}
+                    </Button>
 
-                  {voice.is_shared ? (
-                    voice.is_approved ? (
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        onClick={() => handleUnapprove(voice)}
-                        leftIcon={<XCircle className="h-4 w-4" />}
-                      >
-                        <span className="hidden md:inline">Revoke</span>
-                      </Button>
-                    ) : (
-                      <Button
-                        size="sm"
-                        variant="success"
-                        onClick={() => handleApprove(voice)}
-                        leftIcon={<ThumbsUp className="h-4 w-4" />}
-                      >
-                        <span className="hidden md:inline">Approve</span>
-                      </Button>
-                    )
-                  ) : null}
+                    {voice.is_shared ? (
+                      voice.is_approved ? (
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => handleUnapprove(voice)}
+                          className="shrink-0"
+                          leftIcon={<XCircle className="h-4 w-4" />}
+                        >
+                          <span className="hidden md:inline">Revoke</span>
+                        </Button>
+                      ) : (
+                        <Button
+                          size="sm"
+                          variant="success"
+                          onClick={() => handleApprove(voice)}
+                          className="shrink-0"
+                          leftIcon={<ThumbsUp className="h-4 w-4" />}
+                        >
+                          <span className="hidden md:inline">Approve</span>
+                        </Button>
+                      )
+                    ) : null}
+                  </div>
                 </div>
               </div>
             </div>
@@ -547,6 +560,7 @@ export default function AdminVoicesPage() {
         confirmText="Approve"
         cancelText="Cancel"
         variant="success"
+        loading={isProcessing}
       />
 
       {/* Unapprove Confirmation Modal */}
@@ -559,6 +573,7 @@ export default function AdminVoicesPage() {
         confirmText="Revoke"
         cancelText="Cancel"
         variant="danger"
+        loading={isProcessing}
       />
 
       {/* Bulk Import Modal */}

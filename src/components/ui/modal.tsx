@@ -144,7 +144,6 @@ export function Modal({
   );
 }
 
-// Confirmation Modal Preset
 export interface ConfirmModalProps {
   open: boolean;
   onClose: () => void;
@@ -155,6 +154,7 @@ export interface ConfirmModalProps {
   cancelText?: string;
   variant?: "default" | "danger" | "success";
   loading?: boolean;
+  confirmOnEnter?: boolean;
   children?: ReactNode;
 }
 
@@ -168,10 +168,40 @@ export function ConfirmModal({
   cancelText = "Cancel",
   variant = "default",
   loading = false,
+  confirmOnEnter = true,
   children,
 }: ConfirmModalProps) {
   const buttonVariant =
     variant === "danger" ? "danger" : variant === "success" ? "success" : "primary";
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!confirmOnEnter || !open || loading) return;
+      if (e.key === "Enter") {
+        const target = e.target as HTMLElement | null;
+        if (
+          target &&
+          target.tagName === "BUTTON" &&
+          target.getAttribute("data-action") === "cancel"
+        ) {
+          return;
+        }
+        if (target && (target.tagName === "TEXTAREA" || target.isContentEditable)) {
+          return;
+        }
+        e.preventDefault();
+        onConfirm();
+      }
+    };
+
+    if (open) {
+      document.addEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [open, loading, onConfirm, confirmOnEnter]);
 
   return (
     <Modal
@@ -183,10 +213,22 @@ export function ConfirmModal({
       variant={variant}
       footer={
         <>
-          <Button variant="secondary" size="md" onClick={onClose} disabled={loading}>
+          <Button
+            variant="secondary"
+            size="md"
+            onClick={onClose}
+            disabled={loading}
+            data-action="cancel"
+          >
             {cancelText}
           </Button>
-          <Button variant={buttonVariant} size="md" onClick={onConfirm} loading={loading}>
+          <Button
+            variant={buttonVariant}
+            size="md"
+            onClick={onConfirm}
+            loading={loading}
+            data-action="confirm"
+          >
             {confirmText}
           </Button>
         </>
