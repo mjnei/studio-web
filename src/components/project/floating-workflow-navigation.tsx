@@ -13,11 +13,13 @@ interface FloatingWorkflowNavigationProps {
   currentStep: "source" | "script" | "details" | "voice" | "preview" | "compose" | "export";
   canGoNext?: boolean;
   nextLabel?: string;
+  nextIcon?: React.ReactNode;
   onNext?: () => void;
   canGoBack?: boolean;
   backLabel?: string;
   onBack?: () => void;
   isProcessing?: boolean;
+  nextDisabled?: boolean;
 }
 
 const stepKeys = ["source", "script", "voice", "details", "preview", "compose", "export"] as const;
@@ -39,11 +41,13 @@ export function FloatingWorkflowNavigation({
   currentStep,
   canGoNext = false,
   nextLabel,
+  nextIcon,
   onNext,
   canGoBack = true,
   backLabel,
   onBack,
   isProcessing = false,
+  nextDisabled = false,
 }: FloatingWorkflowNavigationProps) {
   const router = useRouter();
   const { t } = useI18n();
@@ -278,16 +282,17 @@ export function FloatingWorkflowNavigation({
               <Button
                 variant="primary"
                 size="sm"
-                rightIcon={!isLastStep ? <ArrowRight className="h-4 w-4" /> : undefined}
+                leftIcon={nextIcon}
+                rightIcon={!isLastStep && !nextIcon ? <ArrowRight className="h-4 w-4" /> : undefined}
                 onClick={handleNext}
-                disabled={isProcessing}
+                disabled={isProcessing || nextDisabled}
                 loading={isProcessing}
                 className="shadow-glow-hover touch-manipulation font-medium"
                 aria-label={resolvedNextLabel || t("project.nav.continueToNextStep")}
               >
                 <span className="hidden sm:inline">{resolvedNextLabel}</span>
                 <span className="sm:hidden">
-                  {isLastStep ? t("common.complete") : t("common.next")}
+                  {nextLabel ? nextLabel : isLastStep ? t("common.complete") : t("common.next")}
                 </span>
               </Button>
             )}

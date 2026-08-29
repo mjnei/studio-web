@@ -192,7 +192,10 @@ Render final video, manage versions, download/share.
 
 **Processing:** Live telemetry card; poll videos ~10s while any job is `queued`/`processing`; may refresh on `video_job_completed` notification.
 
-**Navigation:** Back → Compose. **Next (“Complete project”)** enabled when ≥1 completed video (default dock routing → `/projects`). Home always available.
+**Navigation:** Back → Compose. **Bottom Dock Action** adapts dynamically to video state:
+- **No completed video:** "Generate Video" (or "Retry Generation" if previous attempt failed) → opens generation flow.
+- **Queued / Stitching / Encoding:** "Generating..." (spinner, disabled).
+- **≥1 completed video:** "Complete Project" (with checkmark) → routes to `/projects`. Home always available.
 
 ---
 
@@ -297,7 +300,7 @@ Also: `src/lib/api/voice-client.ts` (available voices / upload / audio-url), `sr
 | Details | → Voice | Name entered | Continue: PATCH name + advance `details` |
 | Preview | → Details | TTS completed + `audio_url` | Next routes Compose **without** advance |
 | Compose | → Preview | Always | Continue: advance `export` |
-| Export | → Compose | ≥1 completed video | Next label: Complete → `/projects` |
+| Export | → Compose | Always (dynamic dock action) | Pre-flight: "Generate Video" / "Retry Generation" → generation modal; Rendering: "Generating..." (disabled); Completed: "Complete Project" → `/projects` |
 
 Access: completed steps revisitable via stepper; future steps not clickable from the dock. Resume uses stored `last_step` (so Preview/Compose visits that skip `advance` may resume earlier).
 

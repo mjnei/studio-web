@@ -935,13 +935,50 @@ export default function ExportPage() {
         />
       )}
 
-      <FloatingWorkflowNavigation
-        projectId={projectId}
-        currentStep="export"
-        canGoNext={completedVideos.length > 0}
-        nextLabel={t("project.nav.completeProject")}
-        canGoBack={true}
-      />
+      {(() => {
+        const hasCompletedVideo = completedVideos.length > 0;
+        const isProcessingVideo = processingVideos.length > 0 || isGeneratingVideo;
+        const hasFailedVideo = failedVideos.length > 0 && !hasCompletedVideo;
+
+        let dockNextLabel = t("project.nav.completeProject");
+        let dockNextAction: (() => void) | undefined = () => router.push("/projects");
+        let dockCanGoNext = true;
+        let dockIsProcessing = false;
+        let dockNextIcon: React.ReactNode = <Check className="h-4 w-4" />;
+
+        if (isProcessingVideo) {
+          dockNextLabel = t("project.export.generating");
+          dockNextAction = undefined;
+          dockCanGoNext = true;
+          dockIsProcessing = true;
+          dockNextIcon = undefined;
+        } else if (!hasCompletedVideo) {
+          if (hasFailedVideo) {
+            dockNextLabel = t("project.preview.retryGeneration");
+            dockNextAction = handleGenerateVideo;
+            dockCanGoNext = true;
+            dockNextIcon = <RotateCcw className="h-4 w-4" />;
+          } else {
+            dockNextLabel = t("project.export.generateVideo");
+            dockNextAction = handleGenerateVideo;
+            dockCanGoNext = true;
+            dockNextIcon = <Video className="h-4 w-4" />;
+          }
+        }
+
+        return (
+          <FloatingWorkflowNavigation
+            projectId={projectId}
+            currentStep="export"
+            canGoNext={dockCanGoNext}
+            nextLabel={dockNextLabel}
+            nextIcon={dockNextIcon}
+            onNext={dockNextAction}
+            isProcessing={dockIsProcessing}
+            canGoBack={true}
+          />
+        );
+      })()}
     </>
   );
 }
