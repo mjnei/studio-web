@@ -22,6 +22,7 @@ import { Heading } from "@/components/ui/heading";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Collapsible } from "@/components/ui/collapsible";
 import { ContextDrawer } from "@/components/ui/context-drawer";
 import { ContextDrawerTrigger } from "@/components/ui/context-drawer-trigger";
 import { useProjectState } from "@/lib/hooks/use-project-state";
@@ -558,6 +559,31 @@ export default function PreviewPage() {
                 </div>
               </div>
             </Card>
+          )}
+
+          {/* Inline Script Reference & Telemetry Accordion */}
+          {ttsJob?.status === "completed" && activeScript && (
+            <Collapsible
+              title={t("project.preview.narrationScript")}
+              subtitle={t("project.preview.wordCount", { count: activeScript.wordCount })}
+              icon={<FileText className="h-4 w-4" />}
+              badge={
+                <Badge variant="default" size="sm">
+                  {formatDuration(activeScript.duration)}
+                </Badge>
+              }
+              defaultOpen={false}
+              variant="elevated"
+            >
+              <div className="space-y-3 pt-1">
+                <div className="rounded-xl bg-surface-panel p-4 border border-border-default/80 max-h-48 overflow-y-auto">
+                  <p className="text-body text-text-secondary leading-relaxed whitespace-pre-wrap">
+                    {activeScript.content}
+                  </p>
+                </div>
+                {ttsJob && <TTSQueueStatus job={ttsJob} />}
+              </div>
+            </Collapsible>
           )}
 
           {/* Failed State Retry Card */}

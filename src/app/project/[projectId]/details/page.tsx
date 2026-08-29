@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Badge } from "@/components/ui/badge";
+import { Collapsible } from "@/components/ui/collapsible";
 import { ContextDrawer } from "@/components/ui/context-drawer";
 import { ContextDrawerTrigger } from "@/components/ui/context-drawer-trigger";
 import { typography } from "@/components/ui/typography";
@@ -395,8 +396,8 @@ export default function ProjectDetailsPage() {
             {(loadingAiSuggestions ||
               aiSuggestions.length > 0 ||
               fallbackSuggestions.length > 0) && (
-              <div className="pt-2 border-t border-border-default">
-                <div className="flex items-center justify-between gap-2 mb-3">
+              <div className="pt-4 border-t border-border-default space-y-3">
+                <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
                     <Heading variant="label" as="h4" className="text-text-secondary">
                       {t("project.details.suggestions")}
@@ -405,108 +406,98 @@ export default function ProjectDetailsPage() {
                   </div>
                   {activeScript?.content && (
                     <span className="inline-flex items-center gap-1 text-micro text-accent-primary font-medium">
-                      <Sparkles className="h-3 w-3" />
+                      <Sparkles className="h-3.5 w-3.5" />
                       {t("project.details.agnesTitleGenerator")}
                     </span>
                   )}
                 </div>
 
-                <div className="flex flex-col sm:grid sm:grid-cols-2 gap-3">
-                  {loadingAiSuggestions && aiSuggestions.length === 0 && activeScript?.content && (
-                    <div className="col-span-full">
-                      <InlineLoadingSkeleton message={t("project.details.generatingSuggestions")} />
-                    </div>
+                {loadingAiSuggestions && aiSuggestions.length === 0 && activeScript?.content && (
+                  <InlineLoadingSkeleton message={t("project.details.generatingSuggestions")} />
+                )}
+
+                {/* Primary AI Suggestions or Fallback Suggestions Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {(aiSuggestions.length > 0 ? aiSuggestions : fallbackSuggestions).map(
+                    (suggestion, idx) => {
+                      const isSelected = projectName === suggestion.name;
+                      return (
+                        <button
+                          key={`suggestion-${idx}`}
+                          type="button"
+                          onClick={() => handleSuggestionClick(suggestion)}
+                          className={`group relative text-left p-3.5 rounded-xl border transition-all duration-200 ${
+                            isSelected
+                              ? "border-accent-primary bg-accent-primary/15 shadow-glow ring-2 ring-accent-primary/30"
+                              : "border-border-default bg-surface-base hover:border-accent-primary/40 hover:bg-surface-raised"
+                          }`}
+                        >
+                          <div className="flex items-start gap-2.5">
+                            <Sparkles
+                              className={`h-4 w-4 shrink-0 mt-0.5 ${
+                                isSelected
+                                  ? "text-accent-primary animate-pulse"
+                                  : "text-accent-primary/70 group-hover:text-accent-primary"
+                              }`}
+                            />
+                            <div className="flex-1 min-w-0">
+                              <p
+                                className={`font-semibold text-body transition-colors break-words ${
+                                  isSelected
+                                    ? "text-accent-primary"
+                                    : "text-text-primary group-hover:text-accent-primary"
+                                }`}
+                              >
+                                {suggestion.name}
+                              </p>
+                              {suggestion.reason && (
+                                <p className="mt-0.5 text-caption text-text-muted line-clamp-1 group-hover:line-clamp-2 transition-all">
+                                  {suggestion.reason}
+                                </p>
+                              )}
+                            </div>
+                            {isSelected && (
+                              <div className="shrink-0 h-5 w-5 rounded-full bg-accent-primary text-white flex items-center justify-center">
+                                <Check className="h-3 w-3 stroke-[3]" />
+                              </div>
+                            )}
+                          </div>
+                        </button>
+                      );
+                    }
                   )}
-
-                  {/* AI Suggestions (Agnes AI) */}
-                  {aiSuggestions.map((suggestion, idx) => {
-                    const isSelected = projectName === suggestion.name;
-                    return (
-                      <button
-                        key={`ai-${idx}`}
-                        type="button"
-                        onClick={() => handleSuggestionClick(suggestion)}
-                        className={`group relative text-left p-4 rounded-xl border transition-all duration-200 ${
-                          isSelected
-                            ? "border-accent-primary bg-accent-primary/15 shadow-glow ring-2 ring-accent-primary/30"
-                            : "border-border-default bg-surface-base hover:border-accent-primary/40 hover:bg-surface-raised"
-                        }`}
-                      >
-                        <div className="flex items-start gap-3">
-                          <Sparkles
-                            className={`h-4 w-4 shrink-0 mt-0.5 ${
-                              isSelected
-                                ? "text-accent-primary animate-pulse"
-                                : "text-accent-primary"
-                            }`}
-                          />
-                          <div className="flex-1 min-w-0">
-                            <p
-                              className={`font-semibold text-body transition-colors break-words ${
-                                isSelected
-                                  ? "text-accent-primary"
-                                  : "text-text-primary group-hover:text-accent-primary"
-                              }`}
-                            >
-                              {suggestion.name}
-                            </p>
-                            {suggestion.reason && (
-                              <p className="mt-1 text-caption text-text-secondary line-clamp-2">
-                                {suggestion.reason}
-                              </p>
-                            )}
-                          </div>
-                          {isSelected && (
-                            <div className="shrink-0 h-5 w-5 rounded-full bg-accent-primary text-white flex items-center justify-center">
-                              <Check className="h-3 w-3 stroke-[3]" />
-                            </div>
-                          )}
-                        </div>
-                      </button>
-                    );
-                  })}
-
-                  {/* Fallback Suggestions */}
-                  {fallbackSuggestions.map((suggestion, idx) => {
-                    const isSelected = projectName === suggestion.name;
-                    return (
-                      <button
-                        key={`fallback-${idx}`}
-                        type="button"
-                        onClick={() => handleSuggestionClick(suggestion)}
-                        className={`group text-left p-4 rounded-xl border transition-all duration-200 ${
-                          isSelected
-                            ? "border-accent-primary bg-accent-primary/10 shadow-sm ring-2 ring-accent-primary/20"
-                            : "border-border-default bg-surface-base hover:border-border-strong hover:bg-surface-raised"
-                        }`}
-                      >
-                        <div className="flex items-start gap-3">
-                          <div className="flex-1 min-w-0">
-                            <p
-                              className={`font-medium text-body transition-colors break-words ${
-                                isSelected
-                                  ? "text-accent-primary"
-                                  : "text-text-secondary group-hover:text-text-primary"
-                              }`}
-                            >
-                              {suggestion.name}
-                            </p>
-                            {suggestion.reason && (
-                              <p className="mt-1 text-caption text-text-muted line-clamp-2">
-                                {suggestion.reason}
-                              </p>
-                            )}
-                          </div>
-                          {isSelected && (
-                            <div className="shrink-0 h-5 w-5 rounded-full bg-accent-primary text-white flex items-center justify-center">
-                              <Check className="h-3 w-3 stroke-[3]" />
-                            </div>
-                          )}
-                        </div>
-                      </button>
-                    );
-                  })}
                 </div>
+
+                {/* Collapsible Local Fallbacks (only shown if AI suggestions exist and user wants extra options) */}
+                {aiSuggestions.length > 0 && fallbackSuggestions.length > 0 && (
+                  <Collapsible
+                    title={t("project.details.reasonDirect")}
+                    subtitle="Alternative classic title variations"
+                    variant="ghost"
+                    className="border border-border-default/60"
+                    contentClassName="pt-2"
+                  >
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {fallbackSuggestions.map((suggestion, idx) => {
+                        const isSelected = projectName === suggestion.name;
+                        return (
+                          <button
+                            key={`fallback-${idx}`}
+                            type="button"
+                            onClick={() => handleSuggestionClick(suggestion)}
+                            className={`group text-left p-3 rounded-lg border text-caption transition-all duration-200 ${
+                              isSelected
+                                ? "border-accent-primary bg-accent-primary/10 font-semibold text-accent-primary"
+                                : "border-border-default bg-surface-panel hover:bg-surface-raised text-text-secondary"
+                            }`}
+                          >
+                            <span className="truncate block">{suggestion.name}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </Collapsible>
+                )}
               </div>
             )}
           </Card>

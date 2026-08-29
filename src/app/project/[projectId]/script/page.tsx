@@ -3,10 +3,22 @@
 import { useParams, useRouter } from "next/navigation";
 import { useState, useRef } from "react";
 import Image from "next/image";
-import { Edit2, FileText, Clock, Check, X, ChevronDown, ChevronUp } from "lucide-react";
+import {
+  Edit2,
+  FileText,
+  Clock,
+  Check,
+  X,
+  ChevronDown,
+  ChevronUp,
+  History,
+  Clapperboard,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
+import { Badge } from "@/components/ui/badge";
+import { Collapsible } from "@/components/ui/collapsible";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
@@ -89,33 +101,45 @@ export default function ScriptPage() {
             </div>
           </div>
 
-          {/* Movie info card */}
+          {/* Movie info compact card */}
           {state?.movieTitle && (
-            <Card variant="elevated" padding="md">
-              <div className="flex items-center gap-4">
-                {state.moviePoster && (
-                  <div className="h-24 w-16 overflow-hidden rounded-md bg-surface-raised flex-shrink-0">
+            <div className="flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-surface-panel border border-border-default">
+              <div className="flex items-center gap-3 min-w-0">
+                {state.moviePoster ? (
+                  <div className="h-10 w-7 overflow-hidden rounded bg-surface-raised shrink-0 border border-border-default">
                     <Image
                       src={state.moviePoster}
                       alt={state.movieTitle}
                       className="h-full w-full object-cover"
-                      width={64}
-                      height={96}
+                      width={28}
+                      height={40}
                     />
                   </div>
+                ) : (
+                  <div className="h-9 w-9 rounded-lg bg-accent-cyan/10 text-accent-cyan flex items-center justify-center shrink-0">
+                    <Clapperboard className="h-4 w-4" />
+                  </div>
                 )}
-                <div className="flex-1 min-w-0">
-                  <Heading variant="label" as="h3" className="text-text-primary">
+                <div className="min-w-0">
+                  <p className="font-semibold text-body text-text-primary truncate">
                     {state.movieTitle}
-                  </Heading>
-                  <p className="mt-1 text-body text-text-muted">
+                  </p>
+                  <p className="text-caption text-text-muted truncate">
                     {state.movieGenre && `${state.movieGenre} • `}
                     {state.movieRating &&
                       t("project.common.ratingValue", { value: state.movieRating.toFixed(1) })}
                   </p>
                 </div>
               </div>
-            </Card>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => router.push(`/project/${projectId}/source`)}
+                className="text-caption text-text-muted hover:text-text-primary shrink-0"
+              >
+                {t("common.edit")}
+              </Button>
+            </div>
           )}
 
           {/* Script preview/edit card */}
@@ -215,13 +239,21 @@ export default function ScriptPage() {
             )}
           </Card>
 
-          {/* Script versions */}
+          {/* Script versions collapsible */}
           {state?.scripts && state.scripts.length > 1 && (
-            <Card variant="elevated" padding="lg">
-              <Heading variant="subsection" as="h3" className="mb-4 text-text-primary">
-                {t("project.script.versions")}
-              </Heading>
-              <div className="space-y-2">
+            <Collapsible
+              title={t("project.script.versions")}
+              subtitle={`${state.scripts.length} revisions`}
+              icon={<History className="h-4 w-4" />}
+              badge={
+                <Badge variant="default" size="sm">
+                  {state.scripts.length}
+                </Badge>
+              }
+              defaultOpen={false}
+              variant="elevated"
+            >
+              <div className="space-y-2 pt-1">
                 {state.scripts.map((script, index) => (
                   <button
                     key={script.id}
@@ -257,7 +289,7 @@ export default function ScriptPage() {
                   </button>
                 ))}
               </div>
-            </Card>
+            </Collapsible>
           )}
         </div>
       </div>

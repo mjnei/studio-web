@@ -106,25 +106,25 @@ export default function NewProjectScriptPage() {
             </p>
           </div>
 
-          {/* Selected movie card */}
-          <Card variant="elevated" padding="md" className="mb-6">
-            <div className="flex items-center gap-4">
+          {/* Selected movie compact bar */}
+          <div className="flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-surface-panel border border-border-default mb-6">
+            <div className="flex items-center gap-3 min-w-0">
               {selectedMovie.poster && (
-                <div className="h-24 w-16 overflow-hidden rounded-md bg-surface-raised">
+                <div className="h-10 w-7 overflow-hidden rounded bg-surface-raised shrink-0 border border-border-default">
                   <Image
                     src={selectedMovie.poster}
                     alt={selectedMovie.title}
                     className="h-full w-full object-cover"
-                    width={64}
-                    height={96}
+                    width={28}
+                    height={40}
                   />
                 </div>
               )}
-              <div className="flex-1">
-                <Heading variant="label" as="h3" className="text-text-primary">
+              <div className="min-w-0">
+                <p className="font-semibold text-body text-text-primary truncate">
                   {selectedMovie.title}
-                </Heading>
-                <p className="mt-1 text-body text-text-muted">
+                </p>
+                <p className="text-caption text-text-muted truncate">
                   {selectedMovie.genre && `${selectedMovie.genre.join(", ")} • `}
                   {selectedMovie.rating &&
                     t("project.common.ratingValue", {
@@ -133,7 +133,14 @@ export default function NewProjectScriptPage() {
                 </p>
               </div>
             </div>
-          </Card>
+            <button
+              type="button"
+              onClick={handleBack}
+              className="text-caption font-medium text-text-muted hover:text-text-primary shrink-0 transition-colors"
+            >
+              {t("common.edit")}
+            </button>
+          </div>
 
           {/* Script editor */}
           <Card variant="elevated" padding="lg" className="text-center">
