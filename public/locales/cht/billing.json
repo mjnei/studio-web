@@ -1,7 +1,7 @@
 {
   "billing": {
-    "title": "帳單與點數",
-    "description": "管理訂閱、點數與帳單紀錄",
+    "title": "帳單與渲染額度",
+    "description": "管理訂閱、渲染額度與帳單紀錄",
     "tabs": {
       "overview": "總覽",
       "history": "紀錄",
@@ -10,6 +10,7 @@
     "overview": {
       "currentBalance": "目前餘額",
       "credits": "點數",
+      "renderCredits": "渲染額度",
       "used": "本月已使用",
       "usedOfAllocation": "本月已用 {used}／{allocation}",
       "percentUsed": "% 已使用",
@@ -44,12 +45,20 @@
       "nextBillingDate": "下次帳單日期"
     },
     "history": {
-      "creditTransactionHistory": "點數交易紀錄",
-      "trackUsage": "追蹤點數使用與配額",
-      "noTransactions": "尚無點數交易",
-      "noTransactionsDescription": "你的點數使用紀錄會顯示在這裡",
-      "creditTransaction": "點數交易",
-      "balance": "餘額："
+      "creditTransactionHistory": "渲染額度紀錄",
+      "trackUsage": "追蹤影片生成使用與每月配額",
+      "noTransactions": "尚無渲染額度紀錄",
+      "noTransactionsDescription": "影片生成使用紀錄會顯示在這裡",
+      "creditTransaction": "渲染額度變動",
+      "balance": "餘額：",
+      "transactionTypes": {
+        "allocation": "每月配額",
+        "bonus": "獎勵渲染額度",
+        "consumption": "影片生成",
+        "refund": "退款",
+        "rollover": "結轉",
+        "adjustment": "調整"
+      }
     },
     "invoices": {
       "invoices": "發票",

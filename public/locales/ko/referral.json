@@ -1,13 +1,13 @@
 {
   "referral": {
     "title": "추천 프로그램",
-    "description": "친구를 초대하고 함께 크레딧을 받으세요",
+    "description": "친구를 초대하고 초대 포인트를 받으세요 — 영상 생성용 렌더 크레딧과는 별개예요",
     "viewLeaderboard": "리더보드 보기",
     "errorTitle": "오류",
     "errorLoadingData": "추천 데이터를 불러오지 못했어요",
     "inviteCard": {
       "title": "친구를 초대하고 크레딧을 받으세요",
-      "description": "추천 링크를 공유하세요. 링크를 통해 가입하면 둘 다 무료 렌더 크레딧을 받아요.",
+      "description": "추천 링크를 공유하세요. 가입하면 둘 다 초대 포인트를 받아요.",
       "yourReferralLink": "내 추천 링크",
       "yourCode": "내 추천 코드",
       "copyLink": "링크 복사",
@@ -17,9 +17,22 @@
     "stats": {
       "directReferrals": "직접 추천",
       "totalReferrals": "전체 추천 (모든 레벨)",
-      "rewardsEarned": "획득 크레딧",
-      "creditsEarned": "획득 크레딧",
+      "rewardsEarned": "획득 초대 포인트",
+      "creditsEarned": "획득 초대 포인트",
+      "invitePoints": "초대 포인트",
       "pending": "대기 중"
+    },
+    "rewardsActivity": {
+      "title": "초대 포인트 활동",
+      "description": "웰컴 보너스와 추천 보상 — 렌더 크레딧과는 별개예요",
+      "noRewards": "아직 초대 포인트가 없어요",
+      "noRewardsDescription": "가입 보너스와 추천 보상이 여기에 표시돼요",
+      "rewardTransaction": "초대 포인트 거래",
+      "balance": "잔액:",
+      "transactionTypes": {
+        "welcome_bonus": "웰컴 보너스",
+        "invite_reward_earned": "추천 보상"
+      }
     },
     "achievements": {
       "title": "업적",

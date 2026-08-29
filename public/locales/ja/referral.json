@@ -1,13 +1,13 @@
 {
   "referral": {
     "title": "紹介プログラム",
-    "description": "友達を招待して、一緒にクレジットを獲得",
+    "description": "友達を招待して招待ポイントを獲得——動画生成用のレンダークレジットとは別です",
     "viewLeaderboard": "リーダーボードを見る",
     "errorTitle": "エラー",
     "errorLoadingData": "紹介データを読み込めませんでした",
     "inviteCard": {
       "title": "友達を招待してクレジットを獲得",
-      "description": "紹介リンクを共有しましょう。リンクから登録すると、双方に無料のレンダークレジットが付与されます。",
+      "description": "紹介リンクを共有しましょう。登録すると双方に招待ポイントが付与されます。",
       "yourReferralLink": "あなたの紹介リンク",
       "yourCode": "あなたの紹介コード",
       "copyLink": "リンクをコピー",
@@ -17,9 +17,22 @@
     "stats": {
       "directReferrals": "直接紹介",
       "totalReferrals": "総紹介数（全レベル）",
-      "rewardsEarned": "獲得クレジット",
-      "creditsEarned": "獲得クレジット",
+      "rewardsEarned": "獲得招待ポイント",
+      "creditsEarned": "獲得招待ポイント",
+      "invitePoints": "招待ポイント",
       "pending": "保留中"
+    },
+    "rewardsActivity": {
+      "title": "招待ポイント履歴",
+      "description": "ウェルカムボーナスと紹介報酬——レンダークレジットとは別です",
+      "noRewards": "招待ポイントはまだありません",
+      "noRewardsDescription": "登録ボーナスと紹介報酬がここに表示されます",
+      "rewardTransaction": "招待ポイント取引",
+      "balance": "残高：",
+      "transactionTypes": {
+        "welcome_bonus": "ウェルカムボーナス",
+        "invite_reward_earned": "紹介報酬"
+      }
     },
     "achievements": {
       "title": "実績",

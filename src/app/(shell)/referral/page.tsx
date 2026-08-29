@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useI18n } from "@/i18n";
-import { Copy, Check, Users, Award, Gift, TrendingUp, Share2, Trophy } from "lucide-react";
+import { Copy, Check, Users, Award, Gift, TrendingUp, Share2, Trophy, Sparkles } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,7 @@ import {
   type ReferralHistoryItem,
   type ReferralStatsResponse,
 } from "@/lib/api/referral-client";
+import { getReferralRewardHistory, type CreditTransaction } from "@/lib/credit-client";
 import { useToast } from "@/components/ui/toast";
 
 export default function ReferralPage() {
@@ -32,21 +33,24 @@ export default function ReferralPage() {
   const [stats, setStats] = useState<ReferralStatsResponse | null>(null);
   const [history, setHistory] = useState<ReferralHistoryItem[]>([]);
   const [historyTotal, setHistoryTotal] = useState(0);
+  const [rewardTransactions, setRewardTransactions] = useState<CreditTransaction[]>([]);
 
   useEffect(() => {
     const loadData = async () => {
       try {
         setLoading(true);
-        const [codeResponse, statsResponse, historyResponse] = await Promise.all([
+        const [codeResponse, statsResponse, historyResponse, rewardsResponse] = await Promise.all([
           getMyReferralCode(),
           getMyReferralStats(),
           getMyReferralHistory({ limit: 10, offset: 0, sort_by: "date", order: "desc" }),
+          getReferralRewardHistory(20),
         ]);
 
         setCodeData(codeResponse);
         setStats(statsResponse);
         setHistory(historyResponse.referrals);
         setHistoryTotal(historyResponse.total);
+        setRewardTransactions(rewardsResponse);
       } catch (error) {
         console.error("Failed to load referral data:", error);
         toast.error(t("referral.errorTitle"), t("referral.errorLoadingData"));
@@ -88,6 +92,14 @@ export default function ReferralPage() {
     const date = new Date(dateString);
     return date.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
   };
+
+  const getRewardLabel = (transaction: CreditTransaction) => {
+    const key = `referral.rewardsActivity.transactionTypes.${transaction.transaction_type}`;
+    const translated = t(key);
+    return translated === key ? transaction.transaction_type : translated;
+  };
+
+  const formatAmount = (amount: number) => (amount >= 0 ? `+${amount}` : `${amount}`);
 
   const getLevelBadgeVariant = (level: number) => {
     if (level === 1) return "success";
@@ -271,6 +283,7 @@ export default function ReferralPage() {
               <Heading variant="metric" className="text-accent-cyan">
                 {stats.total_invite_rewards_earned}
               </Heading>
+              <p className="text-caption text-text-muted mt-1">{t("referral.stats.invitePoints")}</p>
             </div>
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center group-hover:scale-110 transition-transform">
               <Award className="h-6 w-6 text-white" />
@@ -320,6 +333,64 @@ export default function ReferralPage() {
           </CardContent>
         </Card>
       )}
+
+      {/* Rewards Activity (welcome bonus + invite earnings) */}
+      <Card variant="glass" padding="lg" className="mb-6">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-accent-cyan" />
+            {t("referral.rewardsActivity.title")}
+          </CardTitle>
+          <CardDescription>{t("referral.rewardsActivity.description")}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {rewardTransactions.length === 0 ? (
+            <EmptyState
+              icon={<Gift aria-hidden />}
+              title={t("referral.rewardsActivity.noRewards")}
+              description={t("referral.rewardsActivity.noRewardsDescription")}
+            />
+          ) : (
+            <div className="space-y-3">
+              {rewardTransactions.map((transaction) => (
+                <div
+                  key={transaction.id}
+                  className="flex items-center justify-between p-4 rounded-lg bg-surface-raised border border-border-default"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="p-2 rounded-lg bg-accent-cyan/10">
+                      {transaction.transaction_type === "welcome_bonus" ? (
+                        <Gift className="h-5 w-5 text-accent-cyan" />
+                      ) : (
+                        <Award className="h-5 w-5 text-accent-cyan" />
+                      )}
+                    </div>
+                    <div>
+                      <p className="text-body font-medium text-text-primary">
+                        {getRewardLabel(transaction)}
+                      </p>
+                      <p className="text-caption text-text-muted">
+                        {transaction.reason || t("referral.rewardsActivity.rewardTransaction")}
+                      </p>
+                      <p className="text-caption text-text-muted mt-0.5">
+                        {formatDate(transaction.created_at)}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-body font-semibold text-accent-cyan">
+                      {formatAmount(transaction.amount)} {t("referral.stats.invitePoints")}
+                    </p>
+                    <p className="text-caption text-text-muted">
+                      {t("referral.rewardsActivity.balance")} {transaction.balance_after}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Referral History */}
       <Card variant="glass" padding="lg">
@@ -373,7 +444,7 @@ export default function ReferralPage() {
                       <td className="py-3 text-text-muted">{row.downstream_referral_count}</td>
                       <td className="py-3 text-right">
                         <span className="text-accent-cyan font-semibold">
-                          +{row.rewards_earned}
+                          +{row.rewards_earned} {t("referral.stats.invitePoints")}
                         </span>
                       </td>
                     </tr>

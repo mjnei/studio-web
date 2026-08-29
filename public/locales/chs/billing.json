@@ -1,7 +1,7 @@
 {
   "billing": {
-    "title": "账单与额度",
-    "description": "管理订阅、额度和账单记录",
+    "title": "账单与渲染额度",
+    "description": "管理订阅、渲染额度和账单记录",
     "tabs": {
       "overview": "概览",
       "history": "明细",
@@ -10,6 +10,7 @@
     "overview": {
       "currentBalance": "当前余额",
       "credits": "额度",
+      "renderCredits": "渲染额度",
       "used": "本月已用",
       "usedOfAllocation": "本月已用 {used} / {allocation}",
       "percentUsed": "% 已用",
@@ -44,12 +45,20 @@
       "nextBillingDate": "下次扣款日"
     },
     "history": {
-      "creditTransactionHistory": "额度流水",
-      "trackUsage": "查看额度使用与发放记录",
-      "noTransactions": "暂无额度记录",
-      "noTransactionsDescription": "使用额度后，记录会显示在这里",
-      "creditTransaction": "额度变动",
-      "balance": "余额："
+      "creditTransactionHistory": "渲染额度流水",
+      "trackUsage": "查看视频生成使用与每月发放记录",
+      "noTransactions": "暂无渲染额度记录",
+      "noTransactionsDescription": "视频生成使用记录会显示在这里",
+      "creditTransaction": "渲染额度变动",
+      "balance": "余额：",
+      "transactionTypes": {
+        "allocation": "每月发放",
+        "bonus": "奖励渲染额度",
+        "consumption": "视频生成",
+        "refund": "退款",
+        "rollover": "结转",
+        "adjustment": "调整"
+      }
     },
     "invoices": {
       "invoices": "发票",

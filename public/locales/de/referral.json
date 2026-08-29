@@ -1,13 +1,13 @@
 {
   "referral": {
     "title": "Empfehlungsprogramm",
-    "description": "Lade Freunde ein und verdient gemeinsam Credits",
+    "description": "Lade Freunde ein und verdiene Einladungspunkte — getrennt von Render-Credits für Videos",
     "viewLeaderboard": "Rangliste anzeigen",
     "errorTitle": "Fehler",
     "errorLoadingData": "Empfehlungsdaten konnten nicht geladen werden",
     "inviteCard": {
       "title": "Freunde einladen, Credits verdienen",
-      "description": "Teile deinen Empfehlungslink. Wenn sich jemand damit registriert, erhaltet ihr beide kostenlose Render-Credits.",
+      "description": "Teile deinen Empfehlungslink. Bei der Registrierung erhaltet ihr beide Einladungspunkte.",
       "yourReferralLink": "Dein Empfehlungslink",
       "yourCode": "Dein Empfehlungscode",
       "copyLink": "Link kopieren",
@@ -17,9 +17,22 @@
     "stats": {
       "directReferrals": "Direkte Empfehlungen",
       "totalReferrals": "Empfehlungen gesamt (alle Ebenen)",
-      "rewardsEarned": "Verdiente Credits",
-      "creditsEarned": "Verdiente Credits",
+      "rewardsEarned": "Verdiente Einladungspunkte",
+      "creditsEarned": "Verdiente Einladungspunkte",
+      "invitePoints": "Einladungspunkte",
       "pending": "Ausstehend"
+    },
+    "rewardsActivity": {
+      "title": "Einladungspunkte-Aktivität",
+      "description": "Willkommensbonus und Empfehlungsbelohnungen — nicht dasselbe wie Render-Credits",
+      "noRewards": "Noch keine Einladungspunkte",
+      "noRewardsDescription": "Anmeldeboni und Empfehlungsbelohnungen erscheinen hier",
+      "rewardTransaction": "Einladungspunkte-Transaktion",
+      "balance": "Kontostand:",
+      "transactionTypes": {
+        "welcome_bonus": "Willkommensbonus",
+        "invite_reward_earned": "Empfehlungsbelohnung"
+      }
     },
     "achievements": {
       "title": "Erfolge",

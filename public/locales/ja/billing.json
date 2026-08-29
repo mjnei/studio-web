@@ -1,7 +1,7 @@
 {
   "billing": {
-    "title": "お支払いとクレジット",
-    "description": "サブスクリプション、クレジット、請求履歴を管理します",
+    "title": "お支払いとレンダークレジット",
+    "description": "サブスクリプション、レンダークレジット、請求履歴を管理します",
     "tabs": {
       "overview": "概要",
       "history": "履歴",
@@ -10,6 +10,7 @@
     "overview": {
       "currentBalance": "現在の残高",
       "credits": "クレジット",
+      "renderCredits": "レンダークレジット",
       "used": "今月の使用分",
       "usedOfAllocation": "今月 {used} / {allocation} 使用",
       "percentUsed": "% 使用",
@@ -44,12 +45,20 @@
       "nextBillingDate": "次回請求日"
     },
     "history": {
-      "creditTransactionHistory": "クレジット取引履歴",
-      "trackUsage": "クレジットの使用と割り当てを確認",
-      "noTransactions": "まだクレジット取引がありません",
-      "noTransactionsDescription": "クレジットの使用状況がここに表示されます",
-      "creditTransaction": "クレジット取引",
-      "balance": "残高："
+      "creditTransactionHistory": "レンダークレジット履歴",
+      "trackUsage": "動画生成の使用と月次割り当てを確認",
+      "noTransactions": "レンダークレジットの取引はまだありません",
+      "noTransactionsDescription": "動画生成の使用状況がここに表示されます",
+      "creditTransaction": "レンダークレジット取引",
+      "balance": "残高：",
+      "transactionTypes": {
+        "allocation": "月次割り当て",
+        "bonus": "ボーナスレンダークレジット",
+        "consumption": "動画生成",
+        "refund": "返金",
+        "rollover": "繰越",
+        "adjustment": "調整"
+      }
     },
     "invoices": {
       "invoices": "請求書",

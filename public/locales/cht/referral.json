@@ -1,13 +1,13 @@
 {
   "referral": {
     "title": "推薦計畫",
-    "description": "邀請朋友，一起賺點數",
+    "description": "邀請朋友，賺取邀請積分——與影片渲染額度分開",
     "viewLeaderboard": "查看排行榜",
     "errorTitle": "錯誤",
     "errorLoadingData": "無法載入推薦資料",
     "inviteCard": {
       "title": "邀請朋友，賺取點數",
-      "description": "分享你的推薦連結。有人透過你的連結註冊時，雙方都能獲得免費算圖點數。",
+      "description": "分享你的推薦連結。有人註冊後，雙方都能獲得邀請積分。",
       "yourReferralLink": "你的推薦連結",
       "yourCode": "你的推薦碼",
       "copyLink": "複製連結",
@@ -17,9 +17,22 @@
     "stats": {
       "directReferrals": "直接推薦",
       "totalReferrals": "總推薦數（所有層級）",
-      "rewardsEarned": "已獲得點數",
-      "creditsEarned": "已獲得點數",
+      "rewardsEarned": "已獲邀請積分",
+      "creditsEarned": "已獲邀請積分",
+      "invitePoints": "邀請積分",
       "pending": "待發放"
+    },
+    "rewardsActivity": {
+      "title": "邀請積分記錄",
+      "description": "歡迎獎勵與推薦獎勵——與渲染額度無關",
+      "noRewards": "尚無邀請積分",
+      "noRewardsDescription": "註冊獎勵與推薦獎勵會顯示在這裡",
+      "rewardTransaction": "邀請積分變動",
+      "balance": "餘額：",
+      "transactionTypes": {
+        "welcome_bonus": "歡迎獎勵",
+        "invite_reward_earned": "推薦獎勵"
+      }
     },
     "achievements": {
       "title": "成就",

@@ -1,13 +1,13 @@
 {
   "referral": {
     "title": "Programme de parrainage",
-    "description": "Invite des amis et gagnez des crédits ensemble",
+    "description": "Invite des amis et gagne des points d'invitation — distincts des crédits de rendu pour la vidéo",
     "viewLeaderboard": "Voir le classement",
     "errorTitle": "Erreur",
     "errorLoadingData": "Échec du chargement des données de parrainage",
     "inviteCard": {
       "title": "Invite des amis, gagne des crédits",
-      "description": "Partage ton lien de parrainage. Quand quelqu'un s'inscrit avec ton lien, vous gagnez tous les deux des crédits de rendu gratuits.",
+      "description": "Partage ton lien de parrainage. À l'inscription, vous gagnez tous les deux des points d'invitation.",
       "yourReferralLink": "Ton lien de parrainage",
       "yourCode": "Ton code de parrainage",
       "copyLink": "Copier le lien",
@@ -17,9 +17,22 @@
     "stats": {
       "directReferrals": "Parrainages directs",
       "totalReferrals": "Parrainages totaux (tous niveaux)",
-      "rewardsEarned": "Crédits gagnés",
-      "creditsEarned": "Crédits gagnés",
+      "rewardsEarned": "Points d'invitation gagnés",
+      "creditsEarned": "Points d'invitation gagnés",
+      "invitePoints": "points d'invitation",
       "pending": "En attente"
+    },
+    "rewardsActivity": {
+      "title": "Activité des points d'invitation",
+      "description": "Bonus de bienvenue et récompenses de parrainage — pas les mêmes que les crédits de rendu",
+      "noRewards": "Pas encore de points d'invitation",
+      "noRewardsDescription": "Les bonus d'inscription et récompenses de parrainage apparaîtront ici",
+      "rewardTransaction": "Transaction de points d'invitation",
+      "balance": "Solde :",
+      "transactionTypes": {
+        "welcome_bonus": "Bonus de bienvenue",
+        "invite_reward_earned": "Récompense de parrainage"
+      }
     },
     "achievements": {
       "title": "Succès",

@@ -18,22 +18,40 @@ export interface CreditBalance {
   credits_remaining: number;
 }
 
+/** Video generation credits — monthly allocation, consumption, refunds, etc. */
+export const VIDEO_CREDIT_TRANSACTION_TYPES = [
+  "allocation",
+  "bonus",
+  "consumption",
+  "refund",
+  "rollover",
+  "adjustment",
+] as const;
+
+/** Referral program rewards — welcome bonus and invite earnings (separate balance). */
+export const REFERRAL_REWARD_TRANSACTION_TYPES = ["welcome_bonus", "invite_reward_earned"] as const;
+
+export type VideoCreditTransactionType = (typeof VIDEO_CREDIT_TRANSACTION_TYPES)[number];
+export type ReferralRewardTransactionType = (typeof REFERRAL_REWARD_TRANSACTION_TYPES)[number];
+
 export interface CreditTransaction {
   id: number;
-  user_id: string;
-  transaction_type: "allocation" | "usage" | "refund" | "bonus" | "rollover" | "adjustment";
+  transaction_type: string;
   amount: number;
+  balance_before: number;
   balance_after: number;
-  description: string | null;
-  video_job_id: string | null;
+  reason: string | null;
+  video_job_id: number | null;
+  project_id: number | null;
   created_at: string;
 }
 
 export interface CreditHistoryResponse {
+  user_id: number;
+  total_count: number;
   transactions: CreditTransaction[];
-  total: number;
-  page: number;
-  page_size: number;
+  limit: number;
+  offset: number;
 }
 
 export interface VideoGenerationResponse {
@@ -70,12 +88,36 @@ export async function getCreditStatus(): Promise<CreditStatus> {
   return request<CreditStatus>("/users/me/credits");
 }
 
-export async function getCreditHistory(page = 1, pageSize = 20): Promise<CreditHistoryResponse> {
+export async function getCreditHistory(
+  limit = 50,
+  offset = 0,
+  transactionType?: string
+): Promise<CreditHistoryResponse> {
   const params = new URLSearchParams({
-    page: String(page),
-    page_size: String(pageSize),
+    limit: String(limit),
+    offset: String(offset),
   });
+  if (transactionType) {
+    params.set("transaction_type", transactionType);
+  }
   return request<CreditHistoryResponse>(`/users/me/credits/history?${params.toString()}`);
+}
+
+export async function getVideoCreditHistory(limit = 50, offset = 0): Promise<CreditTransaction[]> {
+  const history = await getCreditHistory(limit, offset);
+  return history.transactions.filter((transaction) =>
+    (VIDEO_CREDIT_TRANSACTION_TYPES as readonly string[]).includes(transaction.transaction_type)
+  );
+}
+
+export async function getReferralRewardHistory(
+  limit = 50,
+  offset = 0
+): Promise<CreditTransaction[]> {
+  const history = await getCreditHistory(limit, offset);
+  return history.transactions.filter((transaction) =>
+    (REFERRAL_REWARD_TRANSACTION_TYPES as readonly string[]).includes(transaction.transaction_type)
+  );
 }
 
 export async function getProjectVideos(projectId: string): Promise<ProjectVideosResponse> {

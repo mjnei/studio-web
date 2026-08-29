@@ -26,7 +26,7 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   getCreditStatus,
-  getCreditHistory,
+  getVideoCreditHistory,
   type CreditStatus,
   type CreditTransaction,
 } from "@/lib/credit-client";
@@ -51,10 +51,10 @@ export default function BillingPage() {
     const loadData = async () => {
       setIsLoading(true);
       try {
-        const [status, history] = await Promise.all([getCreditStatus(), getCreditHistory(1, 10)]);
+        const [status, history] = await Promise.all([getCreditStatus(), getVideoCreditHistory(10)]);
         if (isMounted) {
           setCreditStatus(status);
-          setTransactions(history.transactions);
+          setTransactions(history);
         }
       } catch (error) {
         console.error("Failed to load billing data:", error);
@@ -86,9 +86,9 @@ export default function BillingPage() {
     try {
       await gimmeCredits();
       // Refresh credit status to show updated credits
-      const [status, history] = await Promise.all([getCreditStatus(), getCreditHistory(1, 10)]);
+      const [status, history] = await Promise.all([getCreditStatus(), getVideoCreditHistory(10)]);
       setCreditStatus(status);
-      setTransactions(history.transactions);
+      setTransactions(history);
       setCreditsSuccess(true);
       setShowCreditsConfirm(false);
       // Clear success message after 3 seconds
@@ -112,9 +112,13 @@ export default function BillingPage() {
     return amount >= 0 ? `+${amount}` : `${amount}`;
   };
 
-  const getTransactionColor = (amount: number) => {
-    return amount > 0 ? "text-status-success" : "text-text-secondary";
+  const getTransactionLabel = (transaction: CreditTransaction) => {
+    const key = `billing.history.transactionTypes.${transaction.transaction_type}`;
+    const translated = t(key);
+    return translated === key ? transaction.transaction_type : translated;
   };
+
+  const isDebitTransaction = (transaction: CreditTransaction) => transaction.amount < 0;
 
   if (isLoading) {
     return <PageLoadingSkeleton message={t("billing.loading")} />;
@@ -148,7 +152,7 @@ export default function BillingPage() {
                           {creditStatus.credits_remaining}
                         </Heading>
                         <span className="text-metric text-text-muted">
-                          {t("billing.overview.credits")}
+                          {t("billing.overview.renderCredits")}
                         </span>
                       </div>
                       <p className="text-body text-text-secondary mt-2">
@@ -432,20 +436,20 @@ export default function BillingPage() {
                     >
                       <div className="flex items-center gap-4">
                         <div
-                          className={`p-2 rounded-lg ${getTransactionColor(transaction.amount)}/10`}
+                          className={`p-2 rounded-lg ${isDebitTransaction(transaction) ? "text-status-failed" : "text-status-success"}/10`}
                         >
-                          {transaction.transaction_type === "usage" ? (
+                          {isDebitTransaction(transaction) ? (
                             <Coins className="h-5 w-5 text-status-failed" />
                           ) : (
                             <TrendingUp className="h-5 w-5 text-status-success" />
                           )}
                         </div>
                         <div>
-                          <Heading variant="label" as="h4" className="text-text-primary capitalize">
-                            {transaction.transaction_type}
+                          <Heading variant="label" as="h4" className="text-text-primary">
+                            {getTransactionLabel(transaction)}
                           </Heading>
                           <p className="text-caption text-text-muted">
-                            {transaction.description || t("billing.history.creditTransaction")}
+                            {transaction.reason || t("billing.history.creditTransaction")}
                           </p>
                           <p className="text-caption text-text-muted mt-0.5">
                             {formatDate(transaction.created_at)}
@@ -454,9 +458,9 @@ export default function BillingPage() {
                       </div>
                       <div className="text-right">
                         <p
-                          className={`text-body font-semibold ${getTransactionColor(transaction.amount)}`}
+                          className={`text-body font-semibold ${isDebitTransaction(transaction) ? "text-text-secondary" : "text-status-success"}`}
                         >
-                          {formatAmount(transaction.amount)} {t("billing.overview.credits")}
+                          {formatAmount(transaction.amount)} {t("billing.overview.renderCredits")}
                         </p>
                         <p className="text-caption text-text-muted">
                           {t("billing.history.balance")} {transaction.balance_after}

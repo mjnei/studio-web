@@ -1,7 +1,7 @@
 {
   "billing": {
-    "title": "Billing & Credits",
-    "description": "Manage your subscription, credits, and billing history",
+    "title": "Billing & Render Credits",
+    "description": "Manage your subscription, render credits, and billing history",
     "tabs": {
       "overview": "Overview",
       "history": "History",
@@ -10,6 +10,7 @@
     "overview": {
       "currentBalance": "Current Balance",
       "credits": "credits",
+      "renderCredits": "render credits",
       "used": "used this month",
       "usedOfAllocation": "{used} of {allocation} used this month",
       "percentUsed": "% used",
@@ -44,12 +45,20 @@
       "nextBillingDate": "Next Billing Date"
     },
     "history": {
-      "creditTransactionHistory": "Credit Transaction History",
-      "trackUsage": "Track your credit usage and allocations",
-      "noTransactions": "No credit transactions yet",
-      "noTransactionsDescription": "Your credit usage will appear here",
-      "creditTransaction": "Credit transaction",
-      "balance": "Balance:"
+      "creditTransactionHistory": "Render Credit History",
+      "trackUsage": "Track video generation usage and monthly allocations",
+      "noTransactions": "No render credit transactions yet",
+      "noTransactionsDescription": "Your video generation usage will appear here",
+      "creditTransaction": "Render credit transaction",
+      "balance": "Balance:",
+      "transactionTypes": {
+        "allocation": "Monthly allocation",
+        "bonus": "Bonus render credits",
+        "consumption": "Video generation",
+        "refund": "Refund",
+        "rollover": "Rollover",
+        "adjustment": "Adjustment"
+      }
     },
     "invoices": {
       "invoices": "Invoices",

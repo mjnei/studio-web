@@ -1,7 +1,7 @@
 {
   "billing": {
-    "title": "Abrechnung & Credits",
-    "description": "Verwalte Abonnement, Credits und Abrechnungsverlauf",
+    "title": "Abrechnung & Render-Credits",
+    "description": "Verwalte Abonnement, Render-Credits und Abrechnungsverlauf",
     "tabs": {
       "overview": "Übersicht",
       "history": "Verlauf",
@@ -10,6 +10,7 @@
     "overview": {
       "currentBalance": "Aktuelle Credits",
       "credits": "Credits",
+      "renderCredits": "Render-Credits",
       "used": "diesen Monat genutzt",
       "usedOfAllocation": "{used} von {allocation} diesen Monat genutzt",
       "percentUsed": "% genutzt",
@@ -44,12 +45,20 @@
       "nextBillingDate": "Nächstes Abrechnungsdatum"
     },
     "history": {
-      "creditTransactionHistory": "Credit-Transaktionsverlauf",
-      "trackUsage": "Verfolge deine Credit-Nutzung und Zuteilungen",
-      "noTransactions": "Noch keine Credit-Transaktionen",
-      "noTransactionsDescription": "Deine Credit-Nutzung erscheint hier",
-      "creditTransaction": "Credit-Transaktion",
-      "balance": "Credits:"
+      "creditTransactionHistory": "Render-Credit-Verlauf",
+      "trackUsage": "Videogenerierung und monatliche Zuteilungen verfolgen",
+      "noTransactions": "Noch keine Render-Credit-Transaktionen",
+      "noTransactionsDescription": "Deine Videogenerierung erscheint hier",
+      "creditTransaction": "Render-Credit-Transaktion",
+      "balance": "Credits:",
+      "transactionTypes": {
+        "allocation": "Monatliche Zuteilung",
+        "bonus": "Bonus-Render-Credits",
+        "consumption": "Videogenerierung",
+        "refund": "Erstattung",
+        "rollover": "Übertrag",
+        "adjustment": "Anpassung"
+      }
     },
     "invoices": {
       "invoices": "Rechnungen",
