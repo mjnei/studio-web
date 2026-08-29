@@ -53,8 +53,13 @@ export default function ExportPage() {
   const params = useParams();
   const router = useRouter();
   const projectId = params.projectId as string;
-  const { state, isLoading, refresh: refreshProject } = useProjectState(projectId);
-  const toast = useToast();
+  const {
+    state,
+    isLoading,
+    error: projectError,
+    refresh: refreshProject,
+  } = useProjectState(projectId);
+  const { error: showErrorToast, success: showSuccessToast } = useToast();
   const { refreshNotifications } = useNotifications();
   const { t, locale } = useI18n();
   const dateLocale = getDateLocale(locale);
@@ -89,13 +94,12 @@ export default function ExportPage() {
   const handleVideoLoadError = React.useCallback(
     (error: unknown) => {
       console.error("Failed to load videos:", error);
-      if (isProjectNotFoundError(error)) {
-        // ProjectShell handles not-found toast and redirect.
-        return;
-      }
-      toast.error(t("project.export.loadVideosFailed"), t("project.export.loadVideosFailedDesc"));
+      showErrorToast(
+        t("project.export.loadVideosFailed"),
+        t("project.export.loadVideosFailedDesc")
+      );
     },
-    [toast, t]
+    [showErrorToast, t]
   );
 
   const applyVideosResponse = React.useCallback(
@@ -143,7 +147,13 @@ export default function ExportPage() {
   }
 
   React.useEffect(() => {
-    if (!projectId) return;
+    if (!projectId || isLoading) return;
+
+    if (projectError && isProjectNotFoundError(projectError)) {
+      setIsLoadingVideos(false);
+      return;
+    }
+
     let cancelled = false;
 
     getProjectVideos(projectId)
@@ -180,7 +190,7 @@ export default function ExportPage() {
     return () => {
       cancelled = true;
     };
-  }, [projectId, handleVideoLoadError]);
+  }, [projectId, isLoading, projectError, handleVideoLoadError]);
 
   // Listen for video completion notifications
   const { notifications } = useNotifications();
@@ -266,7 +276,7 @@ export default function ExportPage() {
       setShowCreditConfirmationModal(true);
     } catch (error) {
       console.error("Failed to load credit status:", error);
-      toast.error(
+      showErrorToast(
         t("project.export.checkCreditsFailed"),
         t("project.export.checkCreditsFailedDesc")
       );
@@ -278,7 +288,7 @@ export default function ExportPage() {
     setIsGeneratingVideo(true);
     try {
       await regenerateVideo(projectId);
-      toast.success(
+      showSuccessToast(
         t("project.export.generationStarted"),
         t("project.export.generationStartedDesc")
       );
@@ -292,9 +302,9 @@ export default function ExportPage() {
         await loadCreditStatus();
         setShowInsufficientCreditsModal(true);
       } else if (err.status === 500) {
-        toast.error(t("project.export.serverError"), t("project.export.serverErrorDesc"));
+        showErrorToast(t("project.export.serverError"), t("project.export.serverErrorDesc"));
       } else {
-        toast.error(
+        showErrorToast(
           t("project.export.generationFailedTitle"),
           err.message || t("project.export.generationFailedDesc")
         );
@@ -311,11 +321,11 @@ export default function ExportPage() {
 
     try {
       await deleteProjectVideo(projectId, videoId);
-      toast.success(t("project.export.videoDeleted"), t("project.export.videoDeletedDesc"));
+      showSuccessToast(t("project.export.videoDeleted"), t("project.export.videoDeletedDesc"));
       await loadVideos();
     } catch (error) {
       console.error("Failed to delete video:", error);
-      toast.error(t("project.export.deleteFailed"), t("project.export.deleteFailedDesc"));
+      showErrorToast(t("project.export.deleteFailed"), t("project.export.deleteFailedDesc"));
     }
   };
 
@@ -912,7 +922,7 @@ export default function ExportPage() {
                 size="md"
                 leftIcon={<WeChatIcon className="h-4 w-4" />}
                 onClick={() => {
-                  toast.success(t("project.export.urlCopied"));
+                  showSuccessToast(t("project.export.urlCopied"));
                 }}
                 className="w-full"
               >

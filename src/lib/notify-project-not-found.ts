@@ -43,11 +43,6 @@ export function notifyProjectNotFound(
   notifiedProjectIds.add(projectId);
   showError(title, description);
 
-  const existingTimer = redirectTimers.get(projectId);
-  if (existingTimer) {
-    clearTimeout(existingTimer);
-  }
-
   const timer = setTimeout(() => {
     redirectTimers.delete(projectId);
     redirect();

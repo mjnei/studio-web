@@ -1,14 +1,7 @@
 "use client";
 
 import { CheckCircle2, XCircle, AlertCircle, Info, X } from "lucide-react";
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useCallback,
-  useMemo,
-  ReactNode,
-} from "react";
+import React, { createContext, useContext, useState, useCallback, useMemo, ReactNode } from "react";
 import { useI18n } from "@/i18n";
 import { Text } from "./text";
 
