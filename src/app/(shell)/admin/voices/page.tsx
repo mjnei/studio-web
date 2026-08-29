@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Mic,
   CheckCircle2,
@@ -28,9 +28,10 @@ import {
   adminApproveVoice,
   adminUnapproveVoice,
   adminGetVoiceRecordings,
-  getAdminRecordingAudioUrl,
   adminGetAllVoices,
+  attachAdminVoiceAudioUrls,
 } from "@/lib/api/admin";
+import { useVoiceAudioPlayback } from "@/lib/hooks/use-voice-audio-playback";
 import type { VoiceWithCreator } from "@/lib/types/api";
 
 type ViewType = "pending" | "approved" | "all";
@@ -44,8 +45,19 @@ export default function AdminVoicesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [viewType, setViewType] = useState<ViewType>("pending");
-  const [playingVoiceId, setPlayingVoiceId] = useState<number | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const { togglePlayback, playingVoiceId } = useVoiceAudioPlayback({
+    onError: (error) => {
+      if (error === "unavailable") {
+        toast.error("Audio unavailable", "Audio preview URL is not available for this voice.");
+        return;
+      }
+
+      toast.error(
+        "Audio playback failed",
+        error === "play_failed" ? "Failed to play audio" : "Failed to load audio"
+      );
+    },
+  });
 
   const [approveModal, setApproveModal] = useState<{
     open: boolean;
@@ -68,9 +80,14 @@ export default function AdminVoicesPage() {
         adminGetAllVoices(),
         adminGetVoiceRecordings(),
       ]);
-      setPendingVoices(pending);
-      setApprovedVoices(approved);
-      setAllSharedVoices(allVoices);
+      const [pendingWithUrls, approvedWithUrls, allVoicesWithUrls] = await Promise.all([
+        attachAdminVoiceAudioUrls(pending),
+        attachAdminVoiceAudioUrls(approved),
+        attachAdminVoiceAudioUrls(allVoices),
+      ]);
+      setPendingVoices(pendingWithUrls);
+      setApprovedVoices(approvedWithUrls);
+      setAllSharedVoices(allVoicesWithUrls);
       setAllRecordings(recordings);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "An error occurred";
@@ -92,10 +109,15 @@ export default function AdminVoicesPage() {
           adminGetAllVoices(),
           adminGetVoiceRecordings(),
         ]);
+        const [pendingWithUrls, approvedWithUrls, allVoicesWithUrls] = await Promise.all([
+          attachAdminVoiceAudioUrls(pending),
+          attachAdminVoiceAudioUrls(approved),
+          attachAdminVoiceAudioUrls(allVoices),
+        ]);
         if (isMounted) {
-          setPendingVoices(pending);
-          setApprovedVoices(approved);
-          setAllSharedVoices(allVoices);
+          setPendingVoices(pendingWithUrls);
+          setApprovedVoices(approvedWithUrls);
+          setAllSharedVoices(allVoicesWithUrls);
           setAllRecordings(recordings);
         }
       } catch (error: unknown) {
@@ -117,52 +139,9 @@ export default function AdminVoicesPage() {
     };
   }, [toast]);
 
-  const playVoiceAudio = async (voiceId: number) => {
-    try {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-
-      setPlayingVoiceId(voiceId);
-
-      const { audio_url } = await getAdminRecordingAudioUrl(String(voiceId));
-
-      const audio = new Audio(audio_url);
-      audioRef.current = audio;
-
-      audio.onerror = () => {
-        toast.error("Audio playback failed", "Failed to play audio");
-        setPlayingVoiceId(null);
-      };
-
-      audio.onended = () => {
-        setPlayingVoiceId(null);
-      };
-
-      await audio.play();
-    } catch (error) {
-      console.error("Audio playback error:", error);
-      toast.error("Audio playback failed", "Failed to play voice");
-      setPlayingVoiceId(null);
-    }
+  const handlePreviewToggle = (voice: VoiceWithCreator) => {
+    void togglePlayback(voice.id, voice.audio_url);
   };
-
-  const stopAudio = () => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current = null;
-    }
-    setPlayingVoiceId(null);
-  };
-
-  useEffect(() => {
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-      }
-    };
-  }, []);
 
   const handleApprove = (voice: VoiceWithCreator) => {
     setApproveModal({ open: true, voice });
@@ -511,13 +490,7 @@ export default function AdminVoicesPage() {
                   <Button
                     size="sm"
                     variant={playingVoiceId === voice.id ? "primary" : "secondary"}
-                    onClick={() => {
-                      if (playingVoiceId === voice.id) {
-                        stopAudio();
-                      } else {
-                        playVoiceAudio(voice.id);
-                      }
-                    }}
+                    onClick={() => handlePreviewToggle(voice)}
                     leftIcon={
                       playingVoiceId === voice.id ? (
                         <Pause className="h-4 w-4" />

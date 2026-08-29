@@ -250,6 +250,35 @@ export async function getAdminRecordingAudioUrl(recordingId: string): Promise<{
   }>(`/admin/voice-recordings/${recordingId}/audio`);
 }
 
+type AdminVoiceWithOptionalAudio = {
+  audio_url?: string;
+  audio_expires_in?: number | null;
+};
+
+/**
+ * Fetch presigned audio URLs for admin voice lists in parallel.
+ * Must be called before user-initiated playback so the browser keeps the click gesture.
+ */
+export async function attachAdminVoiceAudioUrls<T extends { id: number }>(
+  voices: T[]
+): Promise<(T & AdminVoiceWithOptionalAudio)[]> {
+  return Promise.all(
+    voices.map(async (voice) => {
+      try {
+        const audioUrlData = await getAdminRecordingAudioUrl(String(voice.id));
+        return {
+          ...voice,
+          audio_url: audioUrlData.audio_url,
+          audio_expires_in: audioUrlData.expires_in,
+        };
+      } catch (err) {
+        console.error(`Failed to fetch admin audio URL for voice ${voice.id}:`, err);
+        return voice;
+      }
+    })
+  );
+}
+
 // ============================================================================
 // Admin Voice Bulk Import
 // All imported voices must be assigned to a specific user.

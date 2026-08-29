@@ -157,6 +157,8 @@ type VoiceWithOptionalAudio = {
   audio_expires_in?: number | null;
 };
 
+export type { VoiceWithOptionalAudio };
+
 /**
  * Fetch presigned audio URLs for a list of voices in parallel.
  * Must be called before user-initiated playback so the browser keeps the click gesture.

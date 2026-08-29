@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
 import { Play, Pause, Trash2, Share2, Lock, Clock, CheckCircle2, User } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,6 +7,7 @@ import { Heading } from "@/components/ui/heading";
 import { useToast } from "@/components/ui/toast";
 import { useI18n, type InterpolationValues } from "@/i18n";
 import { Spinner } from "@/components/ui/spinner";
+import { useVoiceAudioPlayback } from "@/lib/hooks/use-voice-audio-playback";
 import type { VoiceWithCreator, VoiceResponse } from "@/lib/types/api";
 
 interface VoiceCardProps {
@@ -92,75 +92,33 @@ export function VoiceCard({
   onShare,
   onUnshare,
 }: VoiceCardProps) {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   const toast = useToast();
   const { t } = useI18n();
+  const { togglePlayback, isPlaying, isLoading } = useVoiceAudioPlayback({
+    onError: (error) => {
+      if (error === "unavailable") {
+        toast.error(
+          t("voices.playback.audioUnavailable"),
+          t("voices.playback.audioUrlNotAvailable")
+        );
+        return;
+      }
+
+      toast.error(
+        t("voices.playback.playbackFailed"),
+        error === "play_failed"
+          ? t("voices.playback.failedToPlayAudio")
+          : t("voices.playback.failedToLoadAudio")
+      );
+    },
+  });
 
   const isOwnVoice = currentUserId && voice.user_id === parseInt(currentUserId, 10);
   const creatorInfo = "creator_username" in voice ? voice : null;
 
-  const togglePlayback = async () => {
-    if (isPlaying && audioRef.current) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-      return;
-    }
-
-    if (!audioRef.current) {
-      setIsLoading(true);
-
-      try {
-        const audioUrl = voice.audio_url;
-
-        if (!audioUrl) {
-          toast.error(
-            t("voices.playback.audioUnavailable"),
-            t("voices.playback.audioUrlNotAvailable")
-          );
-          setIsLoading(false);
-          return;
-        }
-
-        const audio = new Audio(audioUrl);
-        audioRef.current = audio;
-
-        audio.onended = () => {
-          setIsPlaying(false);
-        };
-
-        audio.onerror = () => {
-          setIsPlaying(false);
-          setIsLoading(false);
-          toast.error(t("voices.playback.playbackFailed"), t("voices.playback.failedToPlayAudio"));
-        };
-
-        audio.oncanplay = () => {
-          setIsLoading(false);
-        };
-
-        await audio.play();
-        setIsPlaying(true);
-      } catch (error) {
-        console.error("Audio playback error:", error);
-        setIsLoading(false);
-        toast.error(t("voices.playback.playbackFailed"), t("voices.playback.failedToLoadAudio"));
-      }
-    } else {
-      audioRef.current.play();
-      setIsPlaying(true);
-    }
+  const handleTogglePlayback = () => {
+    void togglePlayback(voice.id, voice.audio_url);
   };
-
-  useEffect(() => {
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-    };
-  }, []);
 
   const renderStatusBadge = () => {
     if (variant === "private") {
@@ -243,22 +201,22 @@ export function VoiceCard({
           <Button
             size="md"
             variant="ghost"
-            onClick={togglePlayback}
-            disabled={isLoading}
+            onClick={handleTogglePlayback}
+            disabled={isLoading(voice.id)}
             className="flex-1"
             leftIcon={
-              isLoading ? (
+              isLoading(voice.id) ? (
                 <Spinner size="sm" className="text-current" />
-              ) : isPlaying ? (
+              ) : isPlaying(voice.id) ? (
                 <Pause className="h-4 w-4" />
               ) : (
                 <Play className="h-4 w-4" />
               )
             }
           >
-            {isLoading
+            {isLoading(voice.id)
               ? t("voices.playback.loading")
-              : isPlaying
+              : isPlaying(voice.id)
                 ? t("voices.playback.pause")
                 : t("voices.playback.play")}
           </Button>

@@ -11,7 +11,7 @@ import { ContextDrawer } from "@/components/ui/context-drawer";
 import { ContextDrawerTrigger } from "@/components/ui/context-drawer-trigger";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { useVoiceLimits } from "@/lib/hooks/use-voice-limits";
-import { useVoicePreview } from "@/lib/hooks/use-voice-preview";
+import { useVoiceAudioPlayback } from "@/lib/hooks/use-voice-audio-playback";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { StepRevisitBanner } from "@/components/project/step-revisit-banner";
 import { VoiceSelectionPanel } from "@/components/project/voice-selection-panel";
@@ -22,7 +22,6 @@ import { useToast } from "@/components/ui/toast";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import {
   getAvailableVoices,
-  getVoiceAudioUrl,
   attachVoiceAudioUrls,
 } from "@/lib/api/voice-client";
 import { scheduleAgnesJobs, createTTSJob, advanceProjectStep } from "@/lib/project-client";
@@ -37,7 +36,24 @@ export default function VoicePage() {
   const projectId = params.projectId as string;
   const { state, updateVoice, activeScript, isLoading } = useProjectState(projectId);
   const { error: toastError, success: toastSuccess } = useToast();
-  const { playVoicePreview, playingVoiceId } = useVoicePreview();
+  const { togglePlayback, playingVoiceId } = useVoiceAudioPlayback({
+    onError: (error) => {
+      if (error === "unavailable") {
+        toastError(
+          t("project.voice.previewUnavailable"),
+          t("project.voice.previewUnavailableDesc")
+        );
+        return;
+      }
+
+      toastError(
+        t("project.voice.playbackFailed"),
+        error === "play_failed"
+          ? t("project.voice.playbackFailedPlay")
+          : t("project.voice.playbackFailedLoad")
+      );
+    },
+  });
 
   const [availableVoicesLoading, setAvailableVoicesLoading] = useState(true);
   const [availableVoicesError, setAvailableVoicesError] = useState<string | null>(null);
@@ -111,6 +127,23 @@ export default function VoicePage() {
     };
   }, [t]);
 
+  const playVoicePreview = async (
+    voiceId: number,
+    voiceType: "own" | "community"
+  ) => {
+    const voice =
+      voiceType === "own"
+        ? ownVoices.find((v) => v.id === voiceId)
+        : communityVoices.find((v) => v.id === voiceId);
+
+    if (!voice) {
+      toastError(t("project.voice.voiceNotFound"), t("project.voice.voiceNotFoundDesc"));
+      return;
+    }
+
+    await togglePlayback(voiceId, voice.audio_url);
+  };
+
   const handleVoiceSelect = async (voiceId: number) => {
     const voice =
       ownVoices.find((v) => v.id === voiceId) || communityVoices.find((v) => v.id === voiceId);
@@ -118,6 +151,9 @@ export default function VoicePage() {
     if (!voice) return;
 
     setSelectedVoiceId(voiceId);
+
+    const voiceType = ownVoices.some((v) => v.id === voiceId) ? "own" : "community";
+    void playVoicePreview(voiceId, voiceType);
 
     await updateVoice({
       id: String(voiceId),
@@ -137,34 +173,31 @@ export default function VoicePage() {
     } catch (e) {
       console.error("Failed to save voice to localStorage:", e);
     }
-
-    const voiceType = ownVoices.some((v) => v.id === voiceId) ? "own" : "community";
-    await playVoicePreview(voiceId, voiceType, ownVoices, communityVoices);
   };
 
   const handlePreviewToggle = async (voiceId: number, voiceType: "own" | "community") => {
-    await playVoicePreview(voiceId, voiceType, ownVoices, communityVoices);
+    await playVoicePreview(voiceId, voiceType);
   };
 
   const handleRecordingSaved = async (
     newRecording: VoiceResponse & { title?: string; file_path?: string }
   ) => {
     try {
-      const audioUrlData = await getVoiceAudioUrl(newRecording.id);
-      const recordingWithUrl: VoiceResponse = {
-        id: newRecording.id,
-        user_id: newRecording.user_id,
-        name: newRecording.name || newRecording.title || t("project.voice.recordedVoice"),
-        audio_path: newRecording.audio_path || newRecording.file_path || "",
-        mime_type: newRecording.mime_type,
-        duration_seconds: newRecording.duration_seconds,
-        is_shared: false,
-        is_approved: false,
-        is_deleted: false,
-        created_at: newRecording.created_at,
-        updated_at: newRecording.updated_at,
-        audio_url: audioUrlData.audio_url,
-      };
+      const [recordingWithUrl] = await attachVoiceAudioUrls([
+        {
+          id: newRecording.id,
+          user_id: newRecording.user_id,
+          name: newRecording.name || newRecording.title || t("project.voice.recordedVoice"),
+          audio_path: newRecording.audio_path || newRecording.file_path || "",
+          mime_type: newRecording.mime_type,
+          duration_seconds: newRecording.duration_seconds,
+          is_shared: false,
+          is_approved: false,
+          is_deleted: false,
+          created_at: newRecording.created_at,
+          updated_at: newRecording.updated_at,
+        },
+      ]);
 
       setShowRecorder(false);
       setOwnVoices([recordingWithUrl, ...ownVoices]);

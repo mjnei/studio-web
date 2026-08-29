@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { Trash2, Play, Pause, Share2, Lock, CheckCircle2, Clock } from "lucide-react";
 import { VoiceResponse } from "@/lib/types/api";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { Heading } from "@/components/ui/heading";
 import { ConfirmModal, AlertModal } from "@/components/ui/modal";
 import { useI18n } from "@/i18n";
+import { useVoiceAudioPlayback } from "@/lib/hooks/use-voice-audio-playback";
 
 interface VoiceRecordingCardProps {
   recording: VoiceResponse;
@@ -24,8 +25,6 @@ export function VoiceRecordingCard({
 }: VoiceRecordingCardProps) {
   const { t } = useI18n();
   const [isDeleting, setIsDeleting] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [isTogglingSharing, setIsTogglingSharing] = useState(false);
   const [isShared, setIsShared] = useState(recording.is_shared || false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -33,7 +32,17 @@ export function VoiceRecordingCard({
     open: false,
     message: "",
   });
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const { togglePlayback, isPlaying, isLoading } = useVoiceAudioPlayback({
+    onError: (error) => {
+      const message =
+        error === "unavailable"
+          ? t("voices.recordingCard.audioUrlUnavailable")
+          : error === "play_failed"
+            ? t("voices.recordingCard.playFailed")
+            : t("voices.recordingCard.loadFailed");
+      setAudioErrorAlert({ open: true, message });
+    },
+  });
 
   const handleDeleteClick = () => {
     setDeleteConfirmOpen(true);
@@ -69,71 +78,9 @@ export function VoiceRecordingCard({
     }
   };
 
-  const togglePlayback = async () => {
-    if (isPlaying && audioRef.current) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-      return;
-    }
-
-    if (!audioRef.current) {
-      setIsLoading(true);
-
-      try {
-        // Use audio URL attached by useVoices hook from new endpoint
-        // The hook fetches from /api/v1/voices/{id}/audio-url and attaches audio_url property
-        const audioUrl = recording.audio_url;
-
-        if (!audioUrl) {
-          setAudioErrorAlert({
-            open: true,
-            message: t("voices.recordingCard.audioUrlUnavailable"),
-          });
-          setIsLoading(false);
-          return;
-        }
-
-        const audio = new Audio(audioUrl);
-        audioRef.current = audio;
-
-        audio.onended = () => {
-          setIsPlaying(false);
-        };
-
-        audio.onerror = () => {
-          setIsPlaying(false);
-          setIsLoading(false);
-          setAudioErrorAlert({
-            open: true,
-            message: t("voices.recordingCard.playFailed"),
-          });
-        };
-
-        audio.oncanplay = () => {
-          setIsLoading(false);
-        };
-
-        await audio.play();
-        setIsPlaying(true);
-      } catch (error) {
-        console.error("Audio playback error:", error);
-        setIsLoading(false);
-        setAudioErrorAlert({ open: true, message: t("voices.recordingCard.loadFailed") });
-      }
-    } else {
-      audioRef.current.play();
-      setIsPlaying(true);
-    }
+  const handleTogglePlayback = () => {
+    void togglePlayback(recording.id, recording.audio_url);
   };
-
-  useEffect(() => {
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-    };
-  }, []);
 
   const formatDuration = (seconds: number | null | undefined) => {
     if (!seconds) return t("voices.recordingCard.unknown");
@@ -253,15 +200,15 @@ export function VoiceRecordingCard({
           variant="secondary"
           size="sm"
           className="flex-1"
-          onClick={togglePlayback}
-          disabled={isLoading}
+          onClick={handleTogglePlayback}
+          disabled={isLoading(recording.id)}
         >
-          {isLoading ? (
+          {isLoading(recording.id) ? (
             <>
               <Spinner className="mr-1 h-3 w-3 text-current" />
               {t("voices.playback.loading")}
             </>
-          ) : isPlaying ? (
+          ) : isPlaying(recording.id) ? (
             <>
               <Pause className="mr-1 h-3.5 w-3.5" aria-hidden />
               {t("voices.playback.pause")}

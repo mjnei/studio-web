@@ -6,8 +6,8 @@ import {
   deleteVoice,
   listVoices,
   uploadVoice,
-  getVoiceAudioUrl,
   toggleVoiceSharing,
+  attachVoiceAudioUrls,
 } from "../api/voice-client";
 
 export interface UseVoicesReturn {
@@ -20,6 +20,12 @@ export interface UseVoicesReturn {
   refetch: () => Promise<void>;
 }
 
+async function loadVoicesWithAudioUrls(): Promise<VoiceResponse[]> {
+  const data = await listVoices();
+  const activeVoices = data.filter((voice) => !voice.is_deleted);
+  return attachVoiceAudioUrls(activeVoices);
+}
+
 export function useVoices(): UseVoicesReturn {
   const [voices, setVoices] = useState<VoiceResponse[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,24 +35,9 @@ export function useVoices(): UseVoicesReturn {
     async (file: Blob, name: string, duration?: number): Promise<VoiceResponse> => {
       try {
         const newVoice = await uploadVoice(file, name, "en", duration);
-
-        // Fetch audio URL for the newly uploaded voice
-        try {
-          const audioUrlData = await getVoiceAudioUrl(newVoice.id);
-          const voiceWithUrl = {
-            ...newVoice,
-            audio_url: audioUrlData.audio_url,
-            audio_storage_type: audioUrlData.storage_type,
-            audio_expires_in: audioUrlData.expires_in,
-          };
-          setVoices((prev) => [voiceWithUrl, ...prev]);
-          return voiceWithUrl;
-        } catch (err) {
-          // Even if audio URL fetch fails, add the voice to state
-          console.error(`Failed to fetch audio URL for new voice ${newVoice.id}:`, err);
-          setVoices((prev) => [newVoice, ...prev]);
-          return newVoice;
-        }
+        const [voiceWithUrl] = await attachVoiceAudioUrls([newVoice]);
+        setVoices((prev) => [voiceWithUrl, ...prev]);
+        return voiceWithUrl;
       } catch (err) {
         const message = err instanceof Error ? err.message : "Failed to upload voice";
         setError(message);
@@ -86,33 +77,7 @@ export function useVoices(): UseVoicesReturn {
     try {
       setLoading(true);
       setError(null);
-
-      // Fetch voices from the backend
-      const data = await listVoices();
-
-      // Filter out deleted voices (soft delete support per Requirement 7.1)
-      const activeVoices = data.filter((voice) => !voice.is_deleted);
-
-      // Fetch audio URLs for all voices in parallel
-      const voicesWithAudioUrls = await Promise.all(
-        activeVoices.map(async (voice) => {
-          try {
-            const audioUrlData = await getVoiceAudioUrl(voice.id);
-            return {
-              ...voice,
-              audio_url: audioUrlData.audio_url,
-              audio_storage_type: audioUrlData.storage_type,
-              audio_expires_in: audioUrlData.expires_in,
-            };
-          } catch (err) {
-            // Log but don't fail - audio URL fetch is optional
-            console.error(`Failed to fetch audio URL for voice ${voice.id}:`, err);
-            return voice;
-          }
-        })
-      );
-
-      setVoices(voicesWithAudioUrls);
+      setVoices(await loadVoicesWithAudioUrls());
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to fetch voices";
       setError(message);
@@ -122,7 +87,6 @@ export function useVoices(): UseVoicesReturn {
     }
   }, []);
 
-  // Fetch voices on mount
   useEffect(() => {
     let isMounted = true;
 
@@ -130,34 +94,7 @@ export function useVoices(): UseVoicesReturn {
       try {
         setLoading(true);
         setError(null);
-
-        // Fetch voices from the backend
-        const data = await listVoices();
-
-        if (!isMounted) return;
-
-        // Filter out deleted voices (soft delete support per Requirement 7.1)
-        const activeVoices = data.filter((voice) => !voice.is_deleted);
-
-        // Fetch audio URLs for all voices in parallel
-        const voicesWithAudioUrls = await Promise.all(
-          activeVoices.map(async (voice) => {
-            try {
-              const audioUrlData = await getVoiceAudioUrl(voice.id);
-              return {
-                ...voice,
-                audio_url: audioUrlData.audio_url,
-                audio_storage_type: audioUrlData.storage_type,
-                audio_expires_in: audioUrlData.expires_in,
-              };
-            } catch (err) {
-              // Log but don't fail - audio URL fetch is optional
-              console.error(`Failed to fetch audio URL for voice ${voice.id}:`, err);
-              return voice;
-            }
-          })
-        );
-
+        const voicesWithAudioUrls = await loadVoicesWithAudioUrls();
         if (isMounted) {
           setVoices(voicesWithAudioUrls);
         }
