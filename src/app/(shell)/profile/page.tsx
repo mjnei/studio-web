@@ -192,7 +192,7 @@ export default function ProfilePage() {
     : null;
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6 pb-12">
+    <div className="max-w-6xl mx-auto space-y-6 pb-12">
       <PageHeader title={t("profile.title")} description={t("profile.description")} />
 
       {/* Main Grid: Responsive 2-column layout (12 cols on desktop) */}

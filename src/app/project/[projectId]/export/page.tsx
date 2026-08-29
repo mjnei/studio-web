@@ -388,7 +388,7 @@ export default function ExportPage() {
 
   return (
     <>
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <div className="flex flex-col gap-6 pb-28">
           <PageHeader
             title={t("project.export.title")}

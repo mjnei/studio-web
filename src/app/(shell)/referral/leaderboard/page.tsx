@@ -67,7 +67,7 @@ export default function LeaderboardPage() {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <PageHeader
           title={t("referral.leaderboard.title")}
           description={t("referral.leaderboard.description")}
@@ -80,7 +80,7 @@ export default function LeaderboardPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-6xl mx-auto">
       <PageHeader
         title={t("referral.leaderboard.title")}
         description={t("referral.leaderboard.description")}

@@ -58,7 +58,7 @@ export default function NewProjectSourcePage() {
 
   return (
     <>
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <div className="flex flex-col gap-6 pb-24">
           <div className="mb-6">
             <Heading variant="section" as="h2" className="text-text-primary">

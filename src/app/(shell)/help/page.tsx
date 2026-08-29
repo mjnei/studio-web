@@ -102,7 +102,7 @@ export default function HelpPage() {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-6xl mx-auto">
       <PageHeader title={t("help.title")} description={t("help.description")} />
 
       {/* Quick Links */}

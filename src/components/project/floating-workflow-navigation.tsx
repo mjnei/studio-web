@@ -156,7 +156,7 @@ export function FloatingWorkflowNavigation({
       <div className="absolute inset-0 bg-surface-panel/90 backdrop-blur-2xl border-t border-border-strong shadow-2xl" />
 
       {/* Navigation container */}
-      <div className="relative mx-auto max-w-5xl px-3 py-2 sm:px-5 sm:py-3">
+      <div className="relative mx-auto max-w-6xl px-3 py-2 sm:px-5 sm:py-3">
         {/* Top meta row on tablet/desktop: Phase indicator & Step track */}
         <div className="mb-2 flex items-center justify-between gap-3">
           {/* Phase Badge */}

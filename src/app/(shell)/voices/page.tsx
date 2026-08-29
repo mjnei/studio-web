@@ -195,7 +195,7 @@ export default function VoicesPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-6xl mx-auto">
       <PageHeader
         title={t("voices.library.title")}
         description={t("voices.library.description")}

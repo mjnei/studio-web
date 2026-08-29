@@ -112,7 +112,7 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-6xl mx-auto">
       {/* Welcome Banner for New Users */}
       {showWelcomeBanner && (
         <Card

@@ -57,7 +57,7 @@ export function NewProjectShell({ children }: { children: React.ReactNode }) {
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Header */}
         <header className="glass-chrome flex shrink-0 flex-col border-b border-border-default md:h-14 md:flex-row md:items-center md:gap-4 md:px-4">
-          <div className="mx-auto w-full max-w-7xl flex h-14 items-center gap-2 px-3 md:shrink-0 md:px-0 md:h-full md:gap-4">
+          <div className="mx-auto w-full max-w-6xl flex h-14 items-center gap-2 px-3 md:shrink-0 md:px-0 md:h-full md:gap-4">
             {isNarrow && (
               <button
                 onClick={toggle}

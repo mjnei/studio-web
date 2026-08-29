@@ -97,7 +97,7 @@ export default function ReferralPage() {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <PageHeader title={t("referral.title")} description={t("referral.description")} />
         <div className="flex items-center justify-center py-20">
           <Spinner size="md" className="text-accent-primary" />
@@ -108,7 +108,7 @@ export default function ReferralPage() {
 
   if (!codeData || !stats) {
     return (
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <PageHeader title={t("referral.title")} description={t("referral.description")} />
         <Card variant="elevated" padding="lg">
           <p className="text-center text-text-muted">{t("referral.errorLoadingData")}</p>
@@ -118,7 +118,7 @@ export default function ReferralPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-6xl mx-auto">
       <PageHeader
         title={t("referral.title")}
         description={t("referral.description")}

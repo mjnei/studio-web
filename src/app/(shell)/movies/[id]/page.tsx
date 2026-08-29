@@ -177,7 +177,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
           )}
 
           {/* Content */}
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8 -mt-20 sm:-mt-24 relative z-10">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6 py-8 -mt-20 sm:-mt-24 relative z-10">
             <div className="grid gap-6 md:grid-cols-[280px_1fr] lg:grid-cols-[320px_1fr]">
               {/* Left Sidebar - Poster & Actions */}
               <div className="flex flex-col gap-4 md:sticky md:top-4 md:self-start">

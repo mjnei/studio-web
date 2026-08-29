@@ -86,7 +86,7 @@ export default function JobsPage() {
   const totalJobsMeta = `${summary.totalCount} ${t("jobs.status.total").toLowerCase()}`;
 
   return (
-    <div className="max-w-7xl mx-auto pb-12">
+    <div className="max-w-6xl mx-auto pb-12">
       <PageHeader
         title={t("jobs.dashboard.title")}
         description={t("jobs.dashboard.description")}

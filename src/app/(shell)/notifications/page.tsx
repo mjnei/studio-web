@@ -54,7 +54,7 @@ export default function NotificationsPage() {
   });
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-6xl mx-auto">
       <PageHeader
         title={t("notifications.title")}
         meta={`${unreadCount} ${unreadCount !== 1 ? t("notifications.unreadCountPlural") : t("notifications.unreadCount")}`}

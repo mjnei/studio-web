@@ -127,7 +127,7 @@ export default function ProjectsPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-6xl mx-auto">
       <PageHeader
         title={t("projects.title")}
         description={t("projects.description")}

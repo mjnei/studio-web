@@ -164,7 +164,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-6xl mx-auto">
       <PageHeader
         title={t("settings.title")}
         description={t("settings.description")}

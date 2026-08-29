@@ -185,7 +185,7 @@ export default function PricingPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-6xl mx-auto">
       <PageHeader title={t("pricing.title")} description={t("pricing.description")} />
 
       {/* Pricing Header with Badge and Billing Toggle */}
