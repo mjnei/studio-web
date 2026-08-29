@@ -8,48 +8,21 @@ import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { useI18n } from "@/i18n";
 
-const getBackgroundVideoSrc = (index: number) => `/videos/background${index}.mp4`;
-
-const canLoadVideo = (src: string) =>
-  new Promise<boolean>((resolve) => {
-    const video = document.createElement("video");
-
-    const cleanup = () => {
-      video.onloadeddata = null;
-      video.onerror = null;
-    };
-
-    video.preload = "metadata";
-    video.onloadeddata = () => {
-      cleanup();
-      resolve(true);
-    };
-    video.onerror = () => {
-      cleanup();
-      resolve(false);
-    };
-    video.src = src;
-  });
+const BACKGROUND_VIDEOS = [
+  "https://uhxdobvynuwpyzyfqccq.supabase.co/storage/v1/object/public/bo/videos/1.mp4",
+  "https://uhxdobvynuwpyzyfqccq.supabase.co/storage/v1/object/public/bo/videos/2.mp4",
+  "https://uhxdobvynuwpyzyfqccq.supabase.co/storage/v1/object/public/bo/videos/3.mp4",
+  "https://uhxdobvynuwpyzyfqccq.supabase.co/storage/v1/object/public/bo/videos/4.mp4",
+] as const;
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { t } = useI18n();
   const isOnboardingPage = pathname === "/onboarding";
-  const [backgroundIndex, setBackgroundIndex] = useState(1);
-  const [isSwitchingBackground, setIsSwitchingBackground] = useState(false);
+  const [backgroundIndex, setBackgroundIndex] = useState(0);
 
-  const handleNextBackground = async () => {
-    if (isSwitchingBackground) {
-      return;
-    }
-
-    setIsSwitchingBackground(true);
-
-    const nextIndex = backgroundIndex + 1;
-    const nextVideoExists = await canLoadVideo(getBackgroundVideoSrc(nextIndex));
-
-    setBackgroundIndex(nextVideoExists ? nextIndex : 1);
-    setIsSwitchingBackground(false);
+  const handleNextBackground = () => {
+    setBackgroundIndex((current) => (current + 1) % BACKGROUND_VIDEOS.length);
   };
 
   // For onboarding page, render children directly without wrapper
@@ -70,7 +43,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           playsInline
           className="absolute inset-0 w-full h-full object-cover"
         >
-          <source src={getBackgroundVideoSrc(backgroundIndex)} type="video/mp4" />
+          <source src={BACKGROUND_VIDEOS[backgroundIndex]} type="video/mp4" />
         </video>
         {/* Dark gradient overlay for branding and aesthetics */}
         <div className="absolute inset-0 bg-black/20" />
@@ -82,9 +55,8 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         <div className="mb-8 flex flex-col items-center px-4 text-center text-white lg:mb-0 lg:w-1/2 lg:items-start lg:justify-end lg:p-12 lg:text-left">
           <button
             type="button"
-            onClick={() => void handleNextBackground()}
-            disabled={isSwitchingBackground}
-            className="mb-6 hidden h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-accent-secondary via-accent-primary to-accent-tertiary shadow-lg transition-transform hover:scale-105 disabled:cursor-wait disabled:opacity-70 disabled:hover:scale-100 lg:inline-flex"
+            onClick={handleNextBackground}
+            className="mb-6 hidden h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-accent-secondary via-accent-primary to-accent-tertiary shadow-lg transition-transform hover:scale-105 lg:inline-flex"
             aria-label={t("auth.changeBackground")}
           >
             <Layers className="h-8 w-8 text-white" aria-hidden />
