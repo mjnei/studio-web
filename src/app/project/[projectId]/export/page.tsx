@@ -46,6 +46,7 @@ import { useNotifications } from "@/lib/notification-context";
 import { ExportFormatModal } from "@/components/project/ExportFormatModal";
 import { useI18n, getDateLocale } from "@/i18n";
 import { useStuckAsync } from "@/lib/hooks/use-stuck-async";
+import { isProjectNotFoundError } from "@/lib/notify-project-not-found";
 import { XIcon, WeChatIcon } from "@/components/icons";
 
 export default function ExportPage() {
@@ -88,17 +89,13 @@ export default function ExportPage() {
   const handleVideoLoadError = React.useCallback(
     (error: unknown) => {
       console.error("Failed to load videos:", error);
-      const apiError = error as { status?: number; message?: string };
-      if (apiError.status === 404) {
-        toast.error(t("project.common.projectNotFound"), t("project.common.projectNotFoundDesc"));
-        setTimeout(() => {
-          router.push("/projects");
-        }, 2000);
-      } else {
-        toast.error(t("project.export.loadVideosFailed"), t("project.export.loadVideosFailedDesc"));
+      if (isProjectNotFoundError(error)) {
+        // ProjectShell handles not-found toast and redirect.
+        return;
       }
+      toast.error(t("project.export.loadVideosFailed"), t("project.export.loadVideosFailedDesc"));
     },
-    [toast, router, t]
+    [toast, t]
   );
 
   const applyVideosResponse = React.useCallback(

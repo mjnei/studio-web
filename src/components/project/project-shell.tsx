@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { ArrowLeft, PanelLeft, Sparkles } from "lucide-react";
 import { DrawerContent } from "@/components/shell/drawer-content";
 import { useSidebar } from "@/components/shell/sidebar-context";
@@ -14,14 +14,13 @@ import { useToast } from "@/components/ui/toast";
 import { Heading } from "@/components/ui/heading";
 import { useI18n } from "@/i18n";
 import { formatSessionResumeMessage } from "@/lib/utils/time-format";
-import { ApiError } from "@/lib/api-client";
+import { isProjectNotFoundError, notifyProjectNotFound } from "@/lib/notify-project-not-found";
 
 export function ProjectShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const { error: showErrorToast, info: showInfoToast } = useToast();
   const { t } = useI18n();
-  const handledNotFoundRef = useRef(false);
   const segments = pathname.split("/");
   const projectId = segments[2];
   const currentStep = segments[3] || "source";
@@ -30,27 +29,18 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
   // Get project state from persistent storage
   const { state: projectState, isLoading, error } = useProjectState(projectId);
 
-  useEffect(() => {
-    handledNotFoundRef.current = false;
-  }, [projectId]);
-
   // Redirect to projects list if project not found (404 error)
   useEffect(() => {
-    if (!isLoading && error && !handledNotFoundRef.current) {
-      const is404 =
-        (error instanceof ApiError && error.status === 404) ||
-        error.message.includes("not found") ||
-        error.message.includes("Project not found");
-
-      if (is404) {
-        handledNotFoundRef.current = true;
-        showErrorToast(t("project.common.projectNotFound"), t("project.common.projectNotFoundDesc"));
-        setTimeout(() => {
-          router.push("/projects");
-        }, 2000);
-      }
+    if (!isLoading && error && isProjectNotFoundError(error)) {
+      notifyProjectNotFound(
+        projectId,
+        showErrorToast,
+        t("project.common.projectNotFound"),
+        t("project.common.projectNotFoundDesc"),
+        () => router.push("/projects")
+      );
     }
-  }, [isLoading, error, router, showErrorToast, t]);
+  }, [isLoading, error, projectId, router, showErrorToast, t]);
 
   // Fallback: resume toast if a deep link still uses ?resumed=true
   useEffect(() => {
