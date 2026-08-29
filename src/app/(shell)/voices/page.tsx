@@ -17,30 +17,8 @@ import { useToast } from "@/components/ui/toast";
 import { useI18n } from "@/i18n";
 import { useVoices } from "@/lib/hooks/use-voices";
 import { useVoiceLimits } from "@/lib/hooks/use-voice-limits";
-import { getAvailableVoices, getVoiceAudioUrl } from "@/lib/api/voice-client";
+import { getAvailableVoices, attachVoiceAudioUrls } from "@/lib/api/voice-client";
 import type { VoiceWithCreator } from "@/lib/types/api";
-
-/**
- * Fetch audio URLs for community voices in parallel
- */
-async function fetchAudioUrlsForVoices(voices: VoiceWithCreator[]): Promise<VoiceWithCreator[]> {
-  return Promise.all(
-    voices.map(async (voice) => {
-      try {
-        const audioUrlData = await getVoiceAudioUrl(voice.id);
-        return {
-          ...voice,
-          audio_url: audioUrlData.audio_url,
-          audio_storage_type: audioUrlData.storage_type,
-          audio_expires_in: audioUrlData.expires_in,
-        };
-      } catch (err) {
-        console.error(`Failed to fetch audio URL for voice ${voice.id}:`, err);
-        return voice;
-      }
-    })
-  );
-}
 
 /**
  * Main Voices Page Component
@@ -84,7 +62,7 @@ export default function VoicesPage() {
         setCommunityLoading(true);
         try {
           const data = await getAvailableVoices();
-          const voicesWithAudioUrls = await fetchAudioUrlsForVoices(data.community_voices);
+          const voicesWithAudioUrls = await attachVoiceAudioUrls(data.community_voices);
           setCommunityVoices(voicesWithAudioUrls);
           setCommunityError(null);
         } catch (err) {
@@ -138,7 +116,7 @@ export default function VoicesPage() {
 
       // Always refresh community voices (cache has been invalidated)
       const data = await getAvailableVoices();
-      const voicesWithAudioUrls = await fetchAudioUrlsForVoices(data.community_voices);
+      const voicesWithAudioUrls = await attachVoiceAudioUrls(data.community_voices);
       setCommunityVoices(voicesWithAudioUrls);
     } catch (err) {
       toast.error(
@@ -172,7 +150,7 @@ export default function VoicesPage() {
 
       // Always refresh community voices (cache has been invalidated)
       const data = await getAvailableVoices();
-      const voicesWithAudioUrls = await fetchAudioUrlsForVoices(data.community_voices);
+      const voicesWithAudioUrls = await attachVoiceAudioUrls(data.community_voices);
       setCommunityVoices(voicesWithAudioUrls);
     } catch (err) {
       toast.error(
@@ -204,7 +182,7 @@ export default function VoicesPage() {
 
       // Always refresh community voices (cache has been invalidated)
       const data = await getAvailableVoices();
-      const voicesWithAudioUrls = await fetchAudioUrlsForVoices(data.community_voices);
+      const voicesWithAudioUrls = await attachVoiceAudioUrls(data.community_voices);
       setCommunityVoices(voicesWithAudioUrls);
     } catch (err) {
       toast.error(

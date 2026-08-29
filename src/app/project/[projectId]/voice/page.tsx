@@ -20,7 +20,11 @@ import { VoiceRecordingModal } from "@/components/shared/voice-recording-modal";
 import { VoiceLimitDialog } from "@/components/voices/voice-limit-dialog";
 import { useToast } from "@/components/ui/toast";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
-import { getAvailableVoices, getVoiceAudioUrl } from "@/lib/api/voice-client";
+import {
+  getAvailableVoices,
+  getVoiceAudioUrl,
+  attachVoiceAudioUrls,
+} from "@/lib/api/voice-client";
 import { scheduleAgnesJobs, createTTSJob, advanceProjectStep } from "@/lib/project-client";
 import type { VoiceResponse, VoiceWithCreator } from "@/lib/types/api";
 import { useI18n } from "@/i18n";
@@ -76,10 +80,17 @@ export default function VoicePage() {
   useEffect(() => {
     let cancelled = false;
     getAvailableVoices()
-      .then((data) => {
+      .then(async (data) => {
+        if (cancelled) return;
+
+        const [ownWithUrls, communityWithUrls] = await Promise.all([
+          attachVoiceAudioUrls(data.own_voices),
+          attachVoiceAudioUrls(data.community_voices),
+        ]);
+
         if (!cancelled) {
-          setOwnVoices(data.own_voices);
-          setCommunityVoices(data.community_voices);
+          setOwnVoices(ownWithUrls);
+          setCommunityVoices(communityWithUrls);
           setAvailableVoicesError(null);
           setAvailableVoicesLoading(false);
         }

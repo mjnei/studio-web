@@ -151,6 +151,38 @@ export async function getVoiceAudioUrl(id: number): Promise<{
   }>(`/voices/${id}/audio-url`);
 }
 
+type VoiceWithOptionalAudio = {
+  audio_url?: string;
+  audio_storage_type?: "s3" | "local";
+  audio_expires_in?: number | null;
+};
+
+/**
+ * Fetch presigned audio URLs for a list of voices in parallel.
+ * Must be called before user-initiated playback so the browser keeps the click gesture.
+ * Individual failures are logged but do not fail the whole batch.
+ */
+export async function attachVoiceAudioUrls<T extends { id: number }>(
+  voices: T[]
+): Promise<(T & VoiceWithOptionalAudio)[]> {
+  return Promise.all(
+    voices.map(async (voice) => {
+      try {
+        const audioUrlData = await getVoiceAudioUrl(voice.id);
+        return {
+          ...voice,
+          audio_url: audioUrlData.audio_url,
+          audio_storage_type: audioUrlData.storage_type,
+          audio_expires_in: audioUrlData.expires_in,
+        };
+      } catch (err) {
+        console.error(`Failed to fetch audio URL for voice ${voice.id}:`, err);
+        return voice;
+      }
+    })
+  );
+}
+
 /**
  * Toggle voice sharing status
  * PATCH /api/v1/voices/{id}/share
