@@ -8,6 +8,7 @@ import { NotificationPreferencesModal } from "@/components/notifications/Notific
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Bell, Settings, CheckCheck, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Select } from "@/components/ui/select";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Spinner } from "@/components/ui/spinner";
@@ -80,20 +81,23 @@ export default function NotificationsPage() {
             {/* Desktop: Button group */}
             <div className="hidden sm:flex items-center gap-2 flex-wrap">
               <Filter className="h-4 w-4 text-text-muted" aria-hidden />
-              {NOTIFICATION_FILTERS_WITH_LABELS.map((filterOption) => (
-                <button
-                  key={filterOption.value}
-                  onClick={() => setFilter(filterOption.value)}
-                  className={`px-3 py-1.5 rounded-lg text-body font-medium transition-all ${
-                    filter === filterOption.value
-                      ? "bg-accent-primary text-white"
-                      : "bg-surface-raised text-text-secondary hover:bg-surface-hover hover:text-text-primary border border-border-default"
-                  }`}
-                  aria-label={t("notifications.filterBy", { label: filterOption.label })}
-                >
-                  {filterOption.label}
-                </button>
-              ))}
+              {NOTIFICATION_FILTERS_WITH_LABELS.map((filterOption) => {
+                const isSelected = filter === filterOption.value;
+                return (
+                  <button
+                    key={filterOption.value}
+                    onClick={() => setFilter(filterOption.value)}
+                    className={`px-3.5 py-1 rounded-full text-caption font-medium transition-all duration-200 ${
+                      isSelected
+                        ? "bg-accent-primary text-white shadow-sm shadow-accent-primary/25 scale-105"
+                        : "bg-surface-raised border border-border-default text-text-secondary hover:text-text-primary hover:border-border-strong"
+                    }`}
+                    aria-label={t("notifications.filterBy", { label: filterOption.label })}
+                  >
+                    {filterOption.label}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -126,7 +130,7 @@ export default function NotificationsPage() {
       </div>
 
       {/* Notifications List */}
-      <div className="glass-card rounded-xl overflow-hidden">
+      <Card variant="glass" padding="none" className="overflow-hidden">
         {isLoading ? (
           <div className="p-12 flex flex-col items-center justify-center">
             <Spinner size="lg" className="text-accent-primary mb-4" />
@@ -155,7 +159,7 @@ export default function NotificationsPage() {
             ))}
           </div>
         )}
-      </div>
+      </Card>
 
       {/* Load More (if needed in future) */}
       {filteredNotifications.length >= 50 && (

@@ -11,9 +11,6 @@ function stopAudioElement(audioRef: React.RefObject<HTMLAudioElement | null>) {
 
   audioRef.current.pause();
   audioRef.current.currentTime = 0;
-  if (audioRef.current.src?.startsWith("blob:")) {
-    URL.revokeObjectURL(audioRef.current.src);
-  }
   audioRef.current = null;
 }
 
@@ -83,26 +80,16 @@ export function useVoicePreview() {
         return;
       }
 
-      const response = await fetch(audioUrl);
-      if (!response.ok) {
-        throw new Error("Failed to load voice audio");
-      }
-
-      const blob = await response.blob();
-      const blobUrl = URL.createObjectURL(blob);
-
-      const audio = new Audio(blobUrl);
+      const audio = new Audio(audioUrl);
       audioRef.current = audio;
 
       audio.onended = () => {
         setPlayingVoiceId(null);
-        URL.revokeObjectURL(blobUrl);
       };
       audio.onerror = (e) => {
         console.error("Audio playback error:", audio.error, e);
         setPlayingVoiceId(null);
         toastError(t("project.voice.playbackFailed"), t("project.voice.playbackFailedPlay"));
-        URL.revokeObjectURL(blobUrl);
       };
 
       await audio.play();

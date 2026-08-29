@@ -16,6 +16,7 @@ import {
 import Link from "next/link";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { ExternalImage } from "@/components/ui/ExternalImage";
 import { Heading } from "@/components/ui/heading";
 import { getMovie, type MovieResponse } from "@/lib/project-client";
@@ -213,7 +214,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                 </Button>
 
                 {/* Stats Card */}
-                <div className="space-y-3 rounded-xl glass-card p-4">
+                <Card variant="glass" padding="md" className="space-y-3">
                   <Heading
                     variant="label"
                     as="h3"
@@ -254,11 +255,11 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                       </Heading>
                     </div>
                   )}
-                </div>
+                </Card>
 
                 {/* External IDs */}
                 {(movie.imdb_id || movie.douban_id) && (
-                  <div className="space-y-3 rounded-xl glass-card p-4">
+                  <Card variant="glass" padding="md" className="space-y-3">
                     <Heading
                       variant="label"
                       as="h3"
@@ -282,7 +283,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
                         <p className="text-body font-mono text-text-primary">{movie.douban_id}</p>
                       </div>
                     )}
-                  </div>
+                  </Card>
                 )}
               </div>
 
@@ -363,12 +364,12 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
 
                 {/* Overview */}
                 {movie.overview && (
-                  <div className="rounded-xl glass-card p-6">
+                  <Card variant="glass" padding="lg">
                     <Heading variant="subsection" as="h2" className="mb-3 text-text-primary">
                       {t("movies.detail.overview")}
                     </Heading>
                     <p className="text-body leading-loose text-text-secondary">{movie.overview}</p>
-                  </div>
+                  </Card>
                 )}
               </div>
             </div>

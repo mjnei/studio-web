@@ -28,6 +28,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Collapsible } from "@/components/ui/collapsible";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
@@ -723,75 +724,68 @@ export default function ProfilePage() {
             </CardContent>
           </Card>
 
-          {/* Danger Zone */}
-          <Card variant="glass" padding="lg" className="border-status-failed/30 bg-status-failed/5">
-            <CardHeader>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center shadow-sm shrink-0">
-                  <AlertTriangle className="h-5 w-5 text-white" />
-                </div>
-                <div>
-                  <CardTitle className="text-status-failed">
-                    {t("profile.dangerZone.title")}
-                  </CardTitle>
-                  <CardDescription>{t("profile.dangerZone.description")}</CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <p className="text-body text-text-muted">
-                  {t("profile.dangerZone.deleteAccountWarning")}
-                </p>
-                {showDeleteConfirm ? (
-                  <div className="space-y-4 rounded-xl border border-status-failed/30 bg-surface-raised p-4">
-                    <p className="text-body text-status-failed flex items-center gap-2 font-medium">
-                      <AlertTriangle className="h-4 w-4 shrink-0" />
-                      {t("profile.dangerZone.confirmDelete")}
-                    </p>
-                    <Input
-                      type="text"
-                      value={deleteText}
-                      onChange={(e) => setDeleteText(e.target.value)}
-                      placeholder={t("profile.dangerZone.deleteAccountPlaceholder")}
-                      className="max-w-sm"
-                    />
-                    <div className="flex flex-row flex-wrap items-center gap-2 pt-1">
-                      <Button
-                        variant="ghost"
-                        size="md"
-                        onClick={() => {
-                          setShowDeleteConfirm(false);
-                          setDeleteText("");
-                        }}
-                      >
-                        {t("profile.dangerZone.deleteAccountConfirmCancel")}
-                      </Button>
-                      <Button
-                        variant="danger"
-                        size="md"
-                        onClick={handleDeleteAccount}
-                        disabled={deleteText !== "delete my account"}
-                        leftIcon={<Trash2 className="h-4 w-4" />}
-                      >
-                        {t("profile.dangerZone.permanentlyDeleteAccount")}
-                      </Button>
-                    </div>
+          {/* Danger Zone (Collapsible) */}
+          <Collapsible
+            title={t("profile.dangerZone.title")}
+            subtitle={t("profile.dangerZone.description")}
+            icon={<AlertTriangle className="h-5 w-5 text-status-failed" />}
+            defaultOpen={false}
+            variant="surface"
+            className="border-status-failed/30 bg-status-failed/5"
+            contentClassName="p-4 sm:p-6"
+          >
+            <div className="space-y-4">
+              <p className="text-body text-text-muted">
+                {t("profile.dangerZone.deleteAccountWarning")}
+              </p>
+              {showDeleteConfirm ? (
+                <div className="space-y-4 rounded-xl border border-status-failed/30 bg-surface-raised p-4">
+                  <p className="text-body text-status-failed flex items-center gap-2 font-medium">
+                    <AlertTriangle className="h-4 w-4 shrink-0" />
+                    {t("profile.dangerZone.confirmDelete")}
+                  </p>
+                  <Input
+                    type="text"
+                    value={deleteText}
+                    onChange={(e) => setDeleteText(e.target.value)}
+                    placeholder={t("profile.dangerZone.deleteAccountPlaceholder")}
+                    className="max-w-sm"
+                  />
+                  <div className="flex flex-row flex-wrap items-center gap-2 pt-1">
+                    <Button
+                      variant="ghost"
+                      size="md"
+                      onClick={() => {
+                        setShowDeleteConfirm(false);
+                        setDeleteText("");
+                      }}
+                    >
+                      {t("profile.dangerZone.deleteAccountConfirmCancel")}
+                    </Button>
+                    <Button
+                      variant="danger"
+                      size="md"
+                      onClick={handleDeleteAccount}
+                      disabled={deleteText !== "delete my account"}
+                      leftIcon={<Trash2 className="h-4 w-4" />}
+                    >
+                      {t("profile.dangerZone.permanentlyDeleteAccount")}
+                    </Button>
                   </div>
-                ) : (
-                  <Button
-                    variant="danger"
-                    size="md"
-                    onClick={() => setShowDeleteConfirm(true)}
-                    leftIcon={<Trash2 className="h-4 w-4" />}
-                    className="w-full sm:w-auto"
-                  >
-                    {t("profile.dangerZone.deleteAccount")}
-                  </Button>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+                </div>
+              ) : (
+                <Button
+                  variant="danger"
+                  size="md"
+                  onClick={() => setShowDeleteConfirm(true)}
+                  leftIcon={<Trash2 className="h-4 w-4" />}
+                  className="w-full sm:w-auto"
+                >
+                  {t("profile.dangerZone.deleteAccount")}
+                </Button>
+              )}
+            </div>
+          </Collapsible>
         </div>
       </div>
     </div>

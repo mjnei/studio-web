@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useNotifications } from "@/lib/notification-context";
 import { Monitor, Check, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Heading } from "@/components/ui/heading";
@@ -129,7 +130,11 @@ export default function NotificationSettingsPage() {
                   )}
                 </Heading>
 
-                <div className="glass-card rounded-xl divide-y divide-border-default">
+                <Card
+                  variant="glass"
+                  padding="none"
+                  className="overflow-hidden divide-y divide-border-default"
+                >
                   {categoryNotifications.map(({ type }) => {
                     const pref = localPreferences[type] || { in_app: true };
                     // Map notification type to i18n key
@@ -165,13 +170,17 @@ export default function NotificationSettingsPage() {
                               {t("notificationSettings.inApp")}
                             </span>
                             <button
+                              role="switch"
+                              aria-checked={pref.in_app}
                               onClick={() => handleToggle(type)}
-                              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                                pref.in_app ? "bg-accent-primary" : "bg-surface-muted"
+                              className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-all duration-200 ${
+                                pref.in_app
+                                  ? "bg-gradient-to-r from-accent-primary to-accent-cyan shadow-glow"
+                                  : "bg-surface-elevated border border-border-default"
                               }`}
                             >
                               <span
-                                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                                className={`inline-block h-4 w-4 rounded-full bg-white transition-transform duration-200 ${
                                   pref.in_app ? "translate-x-6" : "translate-x-1"
                                 }`}
                               />
@@ -181,7 +190,7 @@ export default function NotificationSettingsPage() {
                       </div>
                     );
                   })}
-                </div>
+                </Card>
               </section>
             );
           })}

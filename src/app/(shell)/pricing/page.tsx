@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { useI18n } from "@/i18n";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
-import { Check, Sparkles, Zap, Crown, Coins, TrendingUp } from "lucide-react";
+import { Check, Sparkles, Zap, Crown, Coins, TrendingUp, HelpCircle } from "lucide-react";
+import { Collapsible } from "@/components/ui/collapsible";
 
 interface PricingTier {
   name: string;
@@ -31,14 +31,14 @@ interface BillingToggleProps {
 function BillingToggle({ billingCycle, onBillingCycleChange, t }: BillingToggleProps) {
   return (
     <div className="overflow-x-auto scrollbar-hide">
-      <div className="inline-flex min-w-min items-center gap-1 p-1 rounded-xl glass-card shadow-sm">
+      <div className="inline-flex min-w-min items-center gap-1 p-1 rounded-xl bg-surface-panel shadow-sm border border-border-default">
         <button
           type="button"
           onClick={() => onBillingCycleChange("monthly")}
-          className={`h-9 shrink-0 whitespace-nowrap px-3.5 sm:px-4 rounded-lg text-body font-medium transition-all ${
+          className={`flex shrink-0 items-center gap-2 whitespace-nowrap rounded-lg px-5 py-2 text-body font-semibold transition-all duration-200 ${
             billingCycle === "monthly"
-              ? "bg-accent-primary text-white shadow-glow"
-              : "text-text-muted hover:text-text-primary"
+              ? "bg-accent-primary text-white shadow-md"
+              : "text-text-muted hover:text-text-primary hover:bg-surface-raised"
           }`}
         >
           {t("pricing.billingToggle.monthly")}
@@ -46,14 +46,16 @@ function BillingToggle({ billingCycle, onBillingCycleChange, t }: BillingToggleP
         <button
           type="button"
           onClick={() => onBillingCycleChange("annual")}
-          className={`h-9 shrink-0 whitespace-nowrap px-3.5 sm:px-4 rounded-lg text-body font-medium transition-all ${
+          className={`flex shrink-0 items-center gap-2 whitespace-nowrap rounded-lg px-5 py-2 text-body font-semibold transition-all duration-200 ${
             billingCycle === "annual"
-              ? "bg-accent-primary text-white shadow-glow"
-              : "text-text-muted hover:text-text-primary"
+              ? "bg-accent-primary text-white shadow-md"
+              : "text-text-muted hover:text-text-primary hover:bg-surface-raised"
           }`}
         >
           <span>{t("pricing.billingToggle.annual")}</span>
-          <span className="ml-2 text-caption opacity-75">{t("pricing.billingToggle.savings")}</span>
+          <span className="ml-1.5 rounded-full bg-accent-secondary/20 px-2 py-0.5 text-caption font-bold text-accent-secondary">
+            {t("pricing.billingToggle.savings")}
+          </span>
         </button>
       </div>
     </div>
@@ -306,38 +308,54 @@ export default function PricingPage() {
       </div>
 
       {/* FAQ Section */}
-      <div className="mb-6">
+      <div className="mb-8">
         <Heading variant="section" as="h2" className="mb-6 text-center text-text-primary">
           {t("pricing.faq.title")}
         </Heading>
-        <div className="mx-auto max-w-3xl space-y-4">
-          <Card variant="glass" padding="md">
-            <Heading variant="label" as="h3" className="mb-2 text-text-primary">
-              {t("pricing.faq.creditQuestion")}
-            </Heading>
-            <p className="text-body text-text-secondary">{t("pricing.faq.creditAnswer")}</p>
-          </Card>
+        <div className="mx-auto max-w-3xl space-y-3">
+          <Collapsible
+            title={t("pricing.faq.creditQuestion")}
+            icon={<HelpCircle className="h-4 w-4" />}
+            defaultOpen={true}
+            variant="elevated"
+          >
+            <p className="text-body text-text-secondary leading-relaxed">
+              {t("pricing.faq.creditAnswer")}
+            </p>
+          </Collapsible>
 
-          <Card variant="glass" padding="md">
-            <Heading variant="label" as="h3" className="mb-2 text-text-primary">
-              {t("pricing.faq.rolloverQuestion")}
-            </Heading>
-            <p className="text-body text-text-secondary">{t("pricing.faq.rolloverAnswer")}</p>
-          </Card>
+          <Collapsible
+            title={t("pricing.faq.rolloverQuestion")}
+            icon={<HelpCircle className="h-4 w-4" />}
+            defaultOpen={false}
+            variant="elevated"
+          >
+            <p className="text-body text-text-secondary leading-relaxed">
+              {t("pricing.faq.rolloverAnswer")}
+            </p>
+          </Collapsible>
 
-          <Card variant="glass" padding="md">
-            <Heading variant="label" as="h3" className="mb-2 text-text-primary">
-              {t("pricing.faq.changeQuestion")}
-            </Heading>
-            <p className="text-body text-text-secondary">{t("pricing.faq.changeAnswer")}</p>
-          </Card>
+          <Collapsible
+            title={t("pricing.faq.changeQuestion")}
+            icon={<HelpCircle className="h-4 w-4" />}
+            defaultOpen={false}
+            variant="elevated"
+          >
+            <p className="text-body text-text-secondary leading-relaxed">
+              {t("pricing.faq.changeAnswer")}
+            </p>
+          </Collapsible>
 
-          <Card variant="glass" padding="md">
-            <Heading variant="label" as="h3" className="mb-2 text-text-primary">
-              {t("pricing.faq.teamQuestion")}
-            </Heading>
-            <p className="text-body text-text-secondary">{t("pricing.faq.teamAnswer")}</p>
-          </Card>
+          <Collapsible
+            title={t("pricing.faq.teamQuestion")}
+            icon={<HelpCircle className="h-4 w-4" />}
+            defaultOpen={false}
+            variant="elevated"
+          >
+            <p className="text-body text-text-secondary leading-relaxed">
+              {t("pricing.faq.teamAnswer")}
+            </p>
+          </Collapsible>
         </div>
       </div>
     </div>

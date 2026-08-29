@@ -44,7 +44,6 @@ import { InsufficientCreditsModal } from "@/components/credits/InsufficientCredi
 import { CreditConfirmationModal } from "@/components/credits/CreditConfirmationModal";
 import { useNotifications } from "@/lib/notification-context";
 import { ExportFormatModal } from "@/components/project/ExportFormatModal";
-import { Collapsible } from "@/components/ui/collapsible";
 import { useI18n, getDateLocale } from "@/i18n";
 import { useStuckAsync } from "@/lib/hooks/use-stuck-async";
 import { XIcon, WeChatIcon } from "@/components/icons";
@@ -460,11 +459,10 @@ export default function ExportPage() {
                         key={video.id}
                         type="button"
                         onClick={() => setSelectedVideoId(video.id)}
-                        className={`shrink-0 px-3 py-1.5 rounded-lg text-caption font-medium transition-all ${
-                          video.id === displayVideo.id
+                        className={`shrink-0 px-3 py-1.5 rounded-lg text-caption font-medium transition-all ${video.id === displayVideo.id
                             ? "bg-accent-primary text-white shadow-glow"
                             : "bg-surface-raised text-text-secondary hover:bg-surface-raised-hover border border-border-default"
-                        }`}
+                          }`}
                       >
                         {t("project.export.versionOption", { n: video.generation_attempt })}
                       </button>
@@ -588,34 +586,24 @@ export default function ExportPage() {
                   </p>
                 </div>
 
-                {/* ── 4 Automatic Green Checkmarks Pre-Flight Checklist (Collapsible) ── */}
-                <Collapsible
-                  title={t("project.export.checklistTitle")}
-                  subtitle={
-                    hasCredits
-                      ? t("project.export.statusVerified")
-                      : t("project.export.statusLowBalance")
-                  }
-                  icon={<CheckCircle2 className="h-5 w-5 text-green-500" />}
-                  badge={
-                    <Badge variant={hasCredits ? "success" : "error"} size="sm">
+                {/* ── 4 Automatic Green Checkmarks Pre-Flight Checklist ── */}
+                <div className="rounded-2xl bg-surface-elevated/90 backdrop-blur-md p-6 border border-border-default shadow-lg space-y-4">
+                  <div className="flex items-center justify-between border-b border-border-default pb-3">
+                    <span className="text-caption font-bold uppercase tracking-wider text-text-muted">
+                      {t("project.export.checklistTitle")}
+                    </span>
+                    <Badge variant="success" size="sm">
                       <Check className="h-3 w-3 mr-1" />
-                      {t("project.export.checklistVerifiedCount", {
-                        passed: hasCredits ? 4 : 3,
-                        total: 4,
-                      })}
+                      {t("project.export.checklistVerifiedCount", { passed: 4, total: 4 })}
                     </Badge>
-                  }
-                  defaultOpen={!hasCredits}
-                  variant="surface"
-                  className="border-border-default/80"
-                >
-                  <div className="space-y-3 pt-1">
+                  </div>
+
+                  <div className="space-y-3">
                     {/* Checkmark 1: Source Footage Linked */}
-                    <div className="flex items-center justify-between p-3 rounded-xl bg-surface-panel border border-border-default/80">
+                    <div className="flex items-center justify-between p-3.5 rounded-xl bg-surface-base border border-border-default">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-green-500/20 text-green-500 shrink-0">
-                          <CheckCircle2 className="h-4 w-4" />
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500/20 text-green-500 shrink-0">
+                          <CheckCircle2 className="h-5 w-5" />
                         </div>
                         <div>
                           <p className="text-body font-semibold text-text-primary">
@@ -634,10 +622,10 @@ export default function ExportPage() {
                     </div>
 
                     {/* Checkmark 2: Narrator Audio Ready */}
-                    <div className="flex items-center justify-between p-3 rounded-xl bg-surface-panel border border-border-default/80">
+                    <div className="flex items-center justify-between p-3.5 rounded-xl bg-surface-base border border-border-default">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-green-500/20 text-green-500 shrink-0">
-                          <CheckCircle2 className="h-4 w-4" />
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500/20 text-green-500 shrink-0">
+                          <CheckCircle2 className="h-5 w-5" />
                         </div>
                         <div>
                           <p className="text-body font-semibold text-text-primary">
@@ -656,10 +644,10 @@ export default function ExportPage() {
                     </div>
 
                     {/* Checkmark 3: Captions Formatted */}
-                    <div className="flex items-center justify-between p-3 rounded-xl bg-surface-panel border border-border-default/80">
+                    <div className="flex items-center justify-between p-3.5 rounded-xl bg-surface-base border border-border-default">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-green-500/20 text-green-500 shrink-0">
-                          <CheckCircle2 className="h-4 w-4" />
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500/20 text-green-500 shrink-0">
+                          <CheckCircle2 className="h-5 w-5" />
                         </div>
                         <div>
                           <p className="text-body font-semibold text-text-primary">
@@ -676,19 +664,15 @@ export default function ExportPage() {
                     </div>
 
                     {/* Checkmark 4: Available User Credits */}
-                    <div className="flex items-center justify-between p-3 rounded-xl bg-surface-panel border border-border-default/80">
+                    <div className="flex items-center justify-between p-3.5 rounded-xl bg-surface-base border border-border-default">
                       <div className="flex items-center gap-3">
                         <div
-                          className={`flex h-7 w-7 items-center justify-center rounded-full shrink-0 ${
-                            hasCredits
-                              ? "bg-green-500/20 text-green-500"
-                              : "bg-error-bg text-error-text"
-                          }`}
+                          className={`flex h-8 w-8 items-center justify-center rounded-full shrink-0 ${hasCredits ? "bg-green-500/20 text-green-500" : "bg-error-bg text-error-text"}`}
                         >
                           {hasCredits ? (
-                            <CheckCircle2 className="h-4 w-4" />
+                            <CheckCircle2 className="h-5 w-5" />
                           ) : (
-                            <AlertCircle className="h-4 w-4" />
+                            <AlertCircle className="h-5 w-5" />
                           )}
                         </div>
                         <div>
@@ -707,7 +691,7 @@ export default function ExportPage() {
                       </Badge>
                     </div>
                   </div>
-                </Collapsible>
+                </div>
 
                 {/* Dominant Hero Render Trigger */}
                 <div className="text-center space-y-4">

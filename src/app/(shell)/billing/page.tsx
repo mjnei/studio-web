@@ -5,10 +5,10 @@ import { useRouter } from "next/navigation";
 import { useI18n } from "@/i18n";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Modal } from "@/components/ui/modal";
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Heading } from "@/components/ui/heading";
-import { Text } from "@/components/ui/text";
 import { useToast } from "@/components/ui/toast";
 import {
   Clock,
@@ -541,54 +541,41 @@ export default function BillingPage() {
       </Card>
 
       {/* Credits Confirmation Modal */}
-      {showCreditsConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <Card
-            variant="elevated"
-            padding="lg"
-            className="max-w-sm w-full animate-in fade-in zoom-in-95"
-          >
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-cyan to-accent-primary flex items-center justify-center">
-                <Sparkles className="h-5 w-5 text-white" />
-              </div>
-              <div>
-                <Heading variant="section" as="h2" className="text-text-primary">
-                  {t("billing.creditsModal.title")}
-                </Heading>
-                <Text variant="body" className="text-text-muted">
-                  {t("billing.creditsModal.subtitle")}
-                </Text>
-              </div>
-            </div>
-            <p className="text-body text-text-secondary mb-6">
-              {t("billing.creditsModal.description")}
-            </p>
-            <div className="flex gap-3">
-              <Button
-                variant="ghost"
-                size="md"
-                onClick={() => setShowCreditsConfirm(false)}
-                fullWidth
-              >
-                {t("billing.creditsModal.cancel")}
-              </Button>
-              <Button
-                variant="primary"
-                size="md"
-                onClick={handleGimmeCredits}
-                disabled={addingCredits}
-                fullWidth
-                leftIcon={<Sparkles className="h-4 w-4" />}
-              >
-                {addingCredits
-                  ? t("billing.overview.adding")
-                  : t("billing.creditsModal.addCredits")}
-              </Button>
-            </div>
-          </Card>
+      <Modal
+        open={showCreditsConfirm}
+        onClose={() => setShowCreditsConfirm(false)}
+        title={t("billing.creditsModal.title")}
+        description={t("billing.creditsModal.subtitle")}
+        size="sm"
+        footer={
+          <>
+            <Button
+              variant="secondary"
+              size="md"
+              onClick={() => setShowCreditsConfirm(false)}
+              fullWidth
+            >
+              {t("billing.creditsModal.cancel")}
+            </Button>
+            <Button
+              variant="primary"
+              size="md"
+              onClick={handleGimmeCredits}
+              loading={addingCredits}
+              fullWidth
+              leftIcon={<Sparkles className="h-4 w-4" />}
+            >
+              {addingCredits ? t("billing.overview.adding") : t("billing.creditsModal.addCredits")}
+            </Button>
+          </>
+        }
+      >
+        <div className="space-y-4">
+          <p className="text-body text-text-secondary leading-relaxed">
+            {t("billing.creditsModal.description")}
+          </p>
         </div>
-      )}
+      </Modal>
     </div>
   );
 }
