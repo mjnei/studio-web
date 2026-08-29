@@ -13,6 +13,12 @@ const BACKGROUND_VIDEOS = [
   "https://uhxdobvynuwpyzyfqccq.supabase.co/storage/v1/object/public/bo/videos/2.mp4",
   "https://uhxdobvynuwpyzyfqccq.supabase.co/storage/v1/object/public/bo/videos/3.mp4",
   "https://uhxdobvynuwpyzyfqccq.supabase.co/storage/v1/object/public/bo/videos/4.mp4",
+  "https://uhxdobvynuwpyzyfqccq.supabase.co/storage/v1/object/public/bo/videos/5.mp4",
+  "https://uhxdobvynuwpyzyfqccq.supabase.co/storage/v1/object/public/bo/videos/6.mp4",
+  "https://uhxdobvynuwpyzyfqccq.supabase.co/storage/v1/object/public/bo/videos/7.mp4",
+  "https://uhxdobvynuwpyzyfqccq.supabase.co/storage/v1/object/public/bo/videos/8.mp4",
+  "https://uhxdobvynuwpyzyfqccq.supabase.co/storage/v1/object/public/bo/videos/9.mp4",
+  "https://uhxdobvynuwpyzyfqccq.supabase.co/storage/v1/object/public/bo/videos/10.mp4",
 ] as const;
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
