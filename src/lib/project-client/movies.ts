@@ -23,6 +23,5 @@ export async function getMovie(movieId: number, locale: string = "en"): Promise<
 
 export function tmdbImageUrl(path?: string | null, size = "w500"): string | undefined {
   if (!path) return undefined;
-  if (path.startsWith("http")) return path;
   return `https://image.tmdb.org/t/p/${size}${path}`;
 }

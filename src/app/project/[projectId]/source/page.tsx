@@ -2,7 +2,6 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
-import Image from "next/image";
 import { Film, Info, RefreshCw, Layers, CheckCircle2, Clapperboard } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
@@ -10,7 +9,9 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { useProjectState } from "@/lib/hooks/use-project-state";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { StepRevisitBanner } from "@/components/project/step-revisit-banner";
-import { MovieSelection } from "@/components/project/movie-selection";
+import { MovieSelection, type MovieSelectionItem } from "@/components/project/movie-selection";
+import { MoviePoster } from "@/components/movie/MoviePoster";
+import { tmdbImageUrl } from "@/lib/project-client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ContextDrawer } from "@/components/ui/context-drawer";
@@ -25,21 +26,13 @@ export default function SourcePage() {
   const { t } = useI18n();
   const { state, isLoading, updateMovie } = useProjectState(projectId);
 
-  const [selectedMovie, setSelectedMovie] = useState<{
-    id: string;
-    title: string;
-    year: number;
-    poster: string;
-    rating: number;
-    genre: string[];
-    duration: string;
-  } | null>(() => {
+  const [selectedMovie, setSelectedMovie] = useState<MovieSelectionItem | null>(() => {
     if (state?.movieId && state?.movieTitle) {
       return {
         id: state.movieId,
         title: state.movieTitle,
         year: 0,
-        poster: state.moviePoster || "",
+        posterPath: state.moviePosterPath ?? null,
         rating: state.movieRating || 0,
         genre: state.movieGenre?.split(", ") || [],
         duration: state.movieDuration ? `${state.movieDuration} min` : "",
@@ -52,15 +45,7 @@ export default function SourcePage() {
   const [isSaving, setIsSaving] = useState(false);
   const [showMetadataDrawer, setShowMetadataDrawer] = useState(false);
 
-  const handleMovieSelect = (movie: {
-    id: string;
-    title: string;
-    year: number;
-    poster: string;
-    rating: number;
-    genre: string[];
-    duration: string;
-  }) => {
+  const handleMovieSelect = (movie: MovieSelectionItem) => {
     setSelectedMovie(movie);
   };
 
@@ -72,7 +57,7 @@ export default function SourcePage() {
       await updateMovie({
         id: selectedMovie.id,
         title: selectedMovie.title,
-        poster: selectedMovie.poster,
+        posterPath: selectedMovie.posterPath,
         genre: selectedMovie.genre.join(", "),
         rating: selectedMovie.rating,
         duration: parseInt(selectedMovie.duration) || 0,
@@ -141,23 +126,22 @@ export default function SourcePage() {
               className="overflow-hidden relative border-accent-cyan/30 bg-gradient-to-br from-surface-panel via-surface-panel to-surface-panel"
             >
               {/* Subtle ambient card backdrop */}
-              {state.moviePoster && (
+              {state.moviePosterPath && tmdbImageUrl(state.moviePosterPath) && (
                 <div
                   className="pointer-events-none absolute -right-20 -top-20 h-96 w-96 rounded-full bg-cover opacity-20 filter blur-3xl"
-                  style={{ backgroundImage: `url(${state.moviePoster})` }}
+                  style={{ backgroundImage: `url(${tmdbImageUrl(state.moviePosterPath)})` }}
                   aria-hidden
                 />
               )}
 
               <div className="relative z-10 flex flex-col md:flex-row items-center md:items-start gap-8">
-                {state.moviePoster && (
+                {state.moviePosterPath && (
                   <div className="h-80 w-56 shrink-0 overflow-hidden rounded-2xl bg-surface-raised border border-border-default shadow-xl group">
-                    <Image
-                      src={state.moviePoster}
-                      alt={state.movieTitle || t("project.common.poster")}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      width={224}
-                      height={320}
+                    <MoviePoster
+                      posterPath={state.moviePosterPath}
+                      title={state.movieTitle || t("project.common.poster")}
+                      size="w500"
+                      className="h-full transition-transform duration-500 group-hover:scale-105"
                       priority
                     />
                   </div>

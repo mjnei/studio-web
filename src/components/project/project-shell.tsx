@@ -7,6 +7,7 @@ import { ArrowLeft, PanelLeft, Sparkles } from "lucide-react";
 import { DrawerContent } from "@/components/shell/drawer-content";
 import { useSidebar } from "@/components/shell/sidebar-context";
 import { useProjectState } from "@/lib/hooks/use-project-state";
+import { tmdbImageUrl } from "@/lib/project-client";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { CreditStatus } from "@/components/credits/CreditStatus";
 import { useToast } from "@/components/ui/toast";
@@ -179,10 +180,12 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
           </div>
         </header>
         <main className="safe-area-bottom relative flex-1 overflow-y-auto p-4 md:p-6">
-          {projectState?.moviePoster && (
+          {projectState?.moviePosterPath && tmdbImageUrl(projectState.moviePosterPath) && (
             <div
               className="pointer-events-none fixed inset-0 z-0 bg-cover bg-center filter blur-3xl opacity-5 dark:opacity-10 transition-opacity duration-700"
-              style={{ backgroundImage: `url(${projectState.moviePoster})` }}
+              style={{
+                backgroundImage: `url(${tmdbImageUrl(projectState.moviePosterPath)})`,
+              }}
               aria-hidden
             />
           )}

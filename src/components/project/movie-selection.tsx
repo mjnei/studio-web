@@ -6,23 +6,22 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ExternalImage } from "@/components/ui/ExternalImage";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
+import { MoviePoster } from "@/components/movie/MoviePoster";
 import { useI18n } from "@/i18n";
 import {
   getPopularMovies,
   searchMovies,
-  tmdbImageUrl,
   type MovieResponse,
 } from "@/lib/project-client";
 
-interface Movie {
+export interface MovieSelectionItem {
   id: string;
   title: string;
   year: number;
-  poster: string;
+  posterPath: string | null;
   rating: number;
   genre: string[];
   duration: string;
@@ -30,7 +29,7 @@ interface Movie {
 
 interface MovieSelectionProps {
   selectedMovie?: string;
-  onSelect: (movie: Movie) => void;
+  onSelect: (movie: MovieSelectionItem) => void;
 }
 
 const GENRE_OPTIONS = [
@@ -50,7 +49,7 @@ function formatRuntime(minutes: number | null | undefined, unknownLabel: string)
   return `${Math.floor(minutes / 60)}h ${minutes % 60}m`;
 }
 
-function mapMovie(movie: MovieResponse, unknownLabel: string, uncategorizedLabel: string): Movie {
+function mapMovie(movie: MovieResponse, unknownLabel: string, uncategorizedLabel: string): MovieSelectionItem {
   const genres = movie.genres
     ?.map((genre) => ("name" in genre && typeof genre.name === "string" ? genre.name : undefined))
     .filter(Boolean) as string[] | undefined;
@@ -59,7 +58,7 @@ function mapMovie(movie: MovieResponse, unknownLabel: string, uncategorizedLabel
     id: String(movie.id),
     title: movie.title,
     year: movie.release_date ? new Date(movie.release_date).getUTCFullYear() : 0,
-    poster: tmdbImageUrl(movie.poster_path) ?? "",
+    posterPath: movie.poster_path ?? null,
     rating: movie.vote_average ?? 0,
     genre: genres?.length ? genres : [uncategorizedLabel],
     duration: formatRuntime(movie.runtime, unknownLabel),
@@ -70,7 +69,7 @@ export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps)
   const { t } = useI18n();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedGenre, setSelectedGenre] = useState<string>("All");
-  const [movies, setMovies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<MovieSelectionItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -191,13 +190,7 @@ export function MovieSelection({ selectedMovie, onSelect }: MovieSelectionProps)
               >
                 {/* 2:3 Poster Frame */}
                 <div className="relative aspect-[2/3] overflow-hidden bg-surface-hover">
-                  <ExternalImage
-                    src={movie.poster}
-                    alt={movie.title}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    fill
-                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 200px"
-                  />
+                  <MoviePoster posterPath={movie.posterPath} title={movie.title} size="w500" />
                   {/* Subtle hover gradient */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
 

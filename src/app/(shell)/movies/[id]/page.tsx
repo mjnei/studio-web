@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ExternalImage } from "@/components/ui/ExternalImage";
 import { Heading } from "@/components/ui/heading";
-import { getMovie, type MovieResponse } from "@/lib/project-client";
+import { getMovie, tmdbImageUrl, type MovieResponse } from "@/lib/project-client";
 import { useI18n, getApiLocale, getDateLocale } from "@/i18n";
 
 type MovieGenre = { id?: number; name?: string };
@@ -116,12 +116,8 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
     router.push("/project/new/script");
   };
 
-  const posterUrl = movie?.poster_path
-    ? `https://image.tmdb.org/t/p/w780${movie.poster_path}`
-    : null;
-  const backdropUrl = movie?.backdrop_path
-    ? `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`
-    : null;
+  const posterUrl = tmdbImageUrl(movie?.poster_path, "w780") ?? null;
+  const backdropUrl = tmdbImageUrl(movie?.backdrop_path, "w1280") ?? null;
 
   return (
     <div className="min-h-screen">

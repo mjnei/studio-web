@@ -459,10 +459,11 @@ export default function ExportPage() {
                         key={video.id}
                         type="button"
                         onClick={() => setSelectedVideoId(video.id)}
-                        className={`shrink-0 px-3 py-1.5 rounded-lg text-caption font-medium transition-all ${video.id === displayVideo.id
+                        className={`shrink-0 px-3 py-1.5 rounded-lg text-caption font-medium transition-all ${
+                          video.id === displayVideo.id
                             ? "bg-accent-primary text-white shadow-glow"
                             : "bg-surface-raised text-text-secondary hover:bg-surface-raised-hover border border-border-default"
-                          }`}
+                        }`}
                       >
                         {t("project.export.versionOption", { n: video.generation_attempt })}
                       </button>

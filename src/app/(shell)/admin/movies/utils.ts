@@ -1,11 +1,11 @@
 import type { LayoutMode } from "@/components/ui/LayoutToggle";
+import { tmdbImageUrl } from "@/lib/project-client";
 
 export function getTmdbImageUrl(
   path: string | null | undefined,
   size: "w500" | "w780" = "w500"
 ): string | null {
-  if (!path) return null;
-  return `https://image.tmdb.org/t/p/${size}${path}`;
+  return tmdbImageUrl(path, size) ?? null;
 }
 
 export function getGridClass(layoutMode: LayoutMode): string {

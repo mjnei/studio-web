@@ -2,8 +2,9 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
-import Image from "next/image";
 import { Check, Edit2, Sparkles, X, Layers, FileText } from "lucide-react";
+import { ExternalImage } from "@/components/ui/ExternalImage";
+import { MoviePoster } from "@/components/movie/MoviePoster";
 import { Spinner } from "@/components/ui/spinner";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
@@ -521,14 +522,13 @@ export default function ProjectDetailsPage() {
           {/* Movie Details Reference */}
           {state?.movieTitle && (
             <div className="flex items-center gap-4 p-3.5 rounded-xl bg-surface-panel border border-border-default">
-              {state.moviePoster && (
+              {state.moviePosterPath && (
                 <div className="h-20 w-14 overflow-hidden rounded-lg bg-surface-raised shrink-0 border border-border-default">
-                  <Image
-                    src={state.moviePoster}
-                    alt={state.movieTitle}
-                    className="h-full w-full object-cover"
-                    width={56}
-                    height={80}
+                  <MoviePoster
+                    posterPath={state.moviePosterPath}
+                    title={state.movieTitle}
+                    size="w342"
+                    className="h-full"
                   />
                 </div>
               )}
@@ -584,7 +584,7 @@ export default function ProjectDetailsPage() {
                 </Heading>
               </div>
               <div className="aspect-video rounded-xl overflow-hidden bg-surface-raised border border-border-default">
-                <Image
+                <ExternalImage
                   src={state.thumbnailUrl}
                   alt={t("project.details.thumbnailPreviewAlt")}
                   className="w-full h-full object-cover"

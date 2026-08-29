@@ -2,6 +2,7 @@ import React from "react";
 import { Film } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { ExternalImage } from "@/components/ui/ExternalImage";
+import { tmdbImageUrl } from "@/lib/project-client";
 
 interface MoviePosterProps {
   posterPath?: string | null;
@@ -20,12 +21,7 @@ export const MoviePoster: React.FC<MoviePosterProps> = ({
   className,
   priority = false,
 }) => {
-  const getImageUrl = (path: string | null | undefined, imageSize: string = "w500") => {
-    if (!path) return null;
-    return `https://image.tmdb.org/t/p/${imageSize}${path}`;
-  };
-
-  const imageUrl = getImageUrl(posterPath, size);
+  const imageUrl = tmdbImageUrl(posterPath, size);
 
   const aspectClasses = {
     poster: "aspect-[2/3]",

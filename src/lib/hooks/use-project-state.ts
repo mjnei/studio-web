@@ -10,7 +10,6 @@ import {
   listProjectScripts,
   updateProjectMovie,
   updateProjectName,
-  tmdbImageUrl,
   type MovieResponse,
   type ProjectResponse,
   type ProjectScriptResponse,
@@ -34,7 +33,7 @@ export interface ProjectState {
 
   movieId?: string;
   movieTitle?: string;
-  moviePoster?: string;
+  moviePosterPath?: string | null;
   movieGenre?: string;
   movieRating?: number;
   movieDuration?: number;
@@ -147,7 +146,7 @@ function mapProject(project: ProjectResponse, scripts: ProjectScriptResponse[] =
     projectName: project.project_name ?? undefined,
     movieId: project.movie_id ? String(project.movie_id) : undefined,
     movieTitle: movie?.title,
-    moviePoster: tmdbImageUrl(movie?.poster_path),
+    moviePosterPath: movie?.poster_path ?? undefined,
     movieGenre: genreNames(movie),
     movieRating: movie?.vote_average ?? undefined,
     movieDuration: movie?.runtime ?? undefined,
@@ -318,7 +317,7 @@ export function useProjectState(projectId: string) {
         id: projectId,
         movieId: movie.id,
         movieTitle: movie.title,
-        moviePoster: movie.poster,
+        moviePosterPath: movie.posterPath,
         movieGenre: movie.genre,
         movieRating: movie.rating,
         movieDuration: movie.duration,

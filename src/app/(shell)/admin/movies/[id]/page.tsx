@@ -32,6 +32,7 @@ import {
   adminDeleteMovie,
   type MovieDetailsResponse,
 } from "@/lib/api/admin";
+import { tmdbImageUrl } from "@/lib/project-client";
 
 type Toast = {
   id: number;
@@ -153,16 +154,8 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
     }
   };
 
-  const getImageUrl = (
-    path: string | null | undefined,
-    size: "w500" | "w780" | "h632" = "w780"
-  ) => {
-    if (!path) return null;
-    return `https://image.tmdb.org/t/p/${size}${path}`;
-  };
-
-  const posterUrl = movie?.poster_path ? getImageUrl(movie.poster_path, "w780") : null;
-  const backdropUrl = movie?.backdrop_path ? getImageUrl(movie.backdrop_path, "w780") : null;
+  const posterUrl = tmdbImageUrl(movie?.poster_path, "w780") ?? null;
+  const backdropUrl = tmdbImageUrl(movie?.backdrop_path, "w780") ?? null;
 
   // Group cast by role
   const actors = movie?.cast.filter((c) => c.role === "actor" || c.role === "actress") || [];
@@ -519,7 +512,7 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                             {credit.person.profile_path ? (
                               <div className="relative h-20 w-20 overflow-hidden rounded-full">
                                 <ExternalImage
-                                  src={getImageUrl(credit.person.profile_path, "h632") || ""}
+                                  src={tmdbImageUrl(credit.person.profile_path, "h632") || ""}
                                   alt={credit.person.display_name}
                                   fill
                                   className="object-cover"
@@ -561,7 +554,7 @@ export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id
                             {credit.person.profile_path ? (
                               <div className="relative h-20 w-20 overflow-hidden rounded-full">
                                 <ExternalImage
-                                  src={getImageUrl(credit.person.profile_path, "h632") || ""}
+                                  src={tmdbImageUrl(credit.person.profile_path, "h632") || ""}
                                   alt={credit.person.display_name}
                                   fill
                                   className="object-cover"

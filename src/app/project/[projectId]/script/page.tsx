@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useState, useRef } from "react";
-import Image from "next/image";
+import { MoviePoster } from "@/components/movie/MoviePoster";
 import {
   Edit2,
   FileText,
@@ -105,14 +105,13 @@ export default function ScriptPage() {
           {state?.movieTitle && (
             <div className="flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-surface-panel border border-border-default">
               <div className="flex items-center gap-3 min-w-0">
-                {state.moviePoster ? (
+                {state.moviePosterPath ? (
                   <div className="h-10 w-7 overflow-hidden rounded bg-surface-raised shrink-0 border border-border-default">
-                    <Image
-                      src={state.moviePoster}
-                      alt={state.movieTitle}
-                      className="h-full w-full object-cover"
-                      width={28}
-                      height={40}
+                    <MoviePoster
+                      posterPath={state.moviePosterPath}
+                      title={state.movieTitle}
+                      size="w342"
+                      className="h-full"
                     />
                   </div>
                 ) : (
