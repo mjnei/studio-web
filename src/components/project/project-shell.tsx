@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { ArrowLeft, PanelLeft, Sparkles } from "lucide-react";
 import { DrawerContent } from "@/components/shell/drawer-content";
 import { useSidebar } from "@/components/shell/sidebar-context";
@@ -19,8 +19,9 @@ import { ApiError } from "@/lib/api-client";
 export function ProjectShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const toast = useToast();
+  const { error: showErrorToast, info: showInfoToast } = useToast();
   const { t } = useI18n();
+  const handledNotFoundRef = useRef(false);
   const segments = pathname.split("/");
   const projectId = segments[2];
   const currentStep = segments[3] || "source";
@@ -29,22 +30,27 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
   // Get project state from persistent storage
   const { state: projectState, isLoading, error } = useProjectState(projectId);
 
+  useEffect(() => {
+    handledNotFoundRef.current = false;
+  }, [projectId]);
+
   // Redirect to projects list if project not found (404 error)
   useEffect(() => {
-    if (!isLoading && error) {
+    if (!isLoading && error && !handledNotFoundRef.current) {
       const is404 =
         (error instanceof ApiError && error.status === 404) ||
         error.message.includes("not found") ||
         error.message.includes("Project not found");
 
       if (is404) {
-        toast.error(t("project.common.projectNotFound"), t("project.common.projectNotFoundDesc"));
+        handledNotFoundRef.current = true;
+        showErrorToast(t("project.common.projectNotFound"), t("project.common.projectNotFoundDesc"));
         setTimeout(() => {
           router.push("/projects");
         }, 2000);
       }
     }
-  }, [isLoading, error, router, toast, t]);
+  }, [isLoading, error, router, showErrorToast, t]);
 
   // Fallback: resume toast if a deep link still uses ?resumed=true
   useEffect(() => {
@@ -58,7 +64,7 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
         const timeString = timeAgo
           ? decodeURIComponent(timeAgo)
           : t("project.shell.sessionRecently");
-        toast.info(
+        showInfoToast(
           t("project.shell.sessionRestoredTitle"),
           formatSessionResumeMessage(timeString, t)
         );
@@ -72,7 +78,7 @@ export function ProjectShell({ children }: { children: React.ReactNode }) {
     } catch {
       // Ignore URL parsing errors
     }
-  }, [pathname, toast, t]);
+  }, [pathname, showInfoToast, t]);
 
   const projectTitle =
     projectState?.projectName ||

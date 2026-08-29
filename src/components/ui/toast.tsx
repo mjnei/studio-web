@@ -1,7 +1,14 @@
 "use client";
 
 import { CheckCircle2, XCircle, AlertCircle, Info, X } from "lucide-react";
-import React, { createContext, useContext, useState, useCallback, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useMemo,
+  ReactNode,
+} from "react";
 import { useI18n } from "@/i18n";
 import { Text } from "./text";
 
@@ -111,8 +118,13 @@ export function ToastProvider({
     "bottom-left": "bottom-2 left-2 sm:bottom-4 sm:left-4",
   };
 
+  const contextValue = useMemo(
+    () => ({ toasts, addToast, removeToast, success, error, warning, info }),
+    [toasts, addToast, removeToast, success, error, warning, info]
+  );
+
   return (
-    <ToastContext.Provider value={{ toasts, addToast, removeToast, success, error, warning, info }}>
+    <ToastContext.Provider value={contextValue}>
       {children}
       <div className={`fixed z-50 flex flex-col gap-2 pointer-events-none ${positions[position]}`}>
         {toasts.map((toast) => (
