@@ -57,7 +57,7 @@ export default function SourcePage() {
       await updateMovie({
         id: selectedMovie.id,
         title: selectedMovie.title,
-        posterPath: selectedMovie.posterPath,
+        poster: selectedMovie.posterPath ?? undefined,
         genre: selectedMovie.genre.join(", "),
         rating: selectedMovie.rating,
         duration: parseInt(selectedMovie.duration) || 0,

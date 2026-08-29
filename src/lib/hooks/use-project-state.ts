@@ -317,7 +317,7 @@ export function useProjectState(projectId: string) {
         id: projectId,
         movieId: movie.id,
         movieTitle: movie.title,
-        moviePosterPath: movie.posterPath,
+        moviePosterPath: movie.poster,
         movieGenre: movie.genre,
         movieRating: movie.rating,
         movieDuration: movie.duration,

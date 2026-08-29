@@ -12,6 +12,8 @@ export interface ContextDrawerTriggerProps {
   onClick: () => void;
   variant?: "outline" | "secondary";
   className?: string;
+  /** Optional count badge rendered as a small pill on the button. */
+  badge?: number;
 }
 
 /**
@@ -25,6 +27,7 @@ export function ContextDrawerTrigger({
   onClick,
   variant = "outline",
   className,
+  badge,
 }: ContextDrawerTriggerProps) {
   return (
     <Button
@@ -34,10 +37,15 @@ export function ContextDrawerTrigger({
       onClick={onClick}
       aria-label={label}
       title={label}
-      className={cn("h-8 w-8 shrink-0 px-0 touch-manipulation sm:h-8 sm:w-auto sm:px-3", className)}
+      className={cn("relative h-8 w-8 shrink-0 px-0 touch-manipulation sm:h-8 sm:w-auto sm:px-3", className)}
       leftIcon={<Icon icon={icon} size="sm" />}
     >
       <span className="hidden sm:inline">{label}</span>
+      {badge !== undefined && badge > 0 && (
+        <span className="absolute -top-1.5 -right-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent-cyan px-1 text-[10px] font-semibold leading-none text-surface-base sm:static sm:ml-1.5 sm:h-auto sm:rounded-full sm:px-1.5 sm:py-0.5 sm:text-[10px]">
+          {badge}
+        </span>
+      )}
     </Button>
   );
 }

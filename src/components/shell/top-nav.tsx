@@ -1,11 +1,11 @@
 "use client";
 
-import { PanelLeft, Search } from "lucide-react";
+import { PanelLeft } from "lucide-react";
 import { useSidebar } from "@/components/shell/sidebar-context";
 import { CreditStatus } from "@/components/credits/CreditStatus";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
-import { Input } from "@/components/ui/input";
+
 import { useI18n } from "@/i18n";
 
 export function TopNav() {
@@ -26,15 +26,6 @@ export function TopNav() {
       )}
 
       <div className="ml-auto flex items-center gap-1.5 md:gap-2">
-        <div className="hidden lg:block">
-          <Input
-            type="search"
-            placeholder={t("common.searchEllipsis")}
-            icon={<Search className="h-4 w-4" aria-hidden />}
-            wrapperClassName="w-64"
-            aria-label={t("common.searchEllipsis")}
-          />
-        </div>
 
         <CreditStatus />
         <LanguageSwitcher />

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { MovieSelection } from "@/components/project/movie-selection";
+import { MovieSelection, type MovieSelectionItem } from "@/components/project/movie-selection";
 import { FloatingWorkflowNavigation } from "@/components/project/floating-workflow-navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { useI18n } from "@/i18n";
@@ -15,25 +15,9 @@ import { useI18n } from "@/i18n";
 export default function NewProjectSourcePage() {
   const router = useRouter();
   const { t } = useI18n();
-  const [selectedMovie, setSelectedMovie] = useState<{
-    id: string;
-    title: string;
-    year: number;
-    poster: string;
-    rating: number;
-    genre: string[];
-    duration: string;
-  } | null>(null);
+  const [selectedMovie, setSelectedMovie] = useState<MovieSelectionItem | null>(null);
 
-  const handleMovieSelect = (movie: {
-    id: string;
-    title: string;
-    year: number;
-    poster: string;
-    rating: number;
-    genre: string[];
-    duration: string;
-  }) => {
+  const handleMovieSelect = (movie: MovieSelectionItem) => {
     setSelectedMovie(movie);
     // Store selected movie in sessionStorage for script creation step
     if (typeof window !== "undefined") {

@@ -122,7 +122,10 @@ export default function PreviewPage() {
     };
   }, [ttsJob, isPlaying]);
 
-  // Load existing or scheduled TTS job
+  // Load existing or scheduled TTS job.
+  // If the user went back to Script and changed the script, the saved activeTtsJobId
+  // will belong to the old script. We detect this by comparing the loaded job's
+  // script_id against the current activeScript.id, and force a new TTS job when they differ.
   useEffect(() => {
     if (!state || !activeScript || isLoading) return;
 
@@ -195,10 +198,49 @@ export default function PreviewPage() {
           });
       }
     } else if (state.activeTtsJobId) {
+      // Load the saved job but verify it still belongs to the current script.
+      // If the user edited the script since this job was created, discard it and
+      // synthesize fresh audio for the updated script content.
       if (!isCreatingJobRef.current) {
         getTTSJob(String(state.activeTtsJobId))
           .then((job) => {
-            if (!cancelled) {
+            if (cancelled) return;
+
+            const jobScriptId = job.script_id ? String(job.script_id) : null;
+            const scriptMismatch = !!currentScriptId && !!jobScriptId && jobScriptId !== currentScriptId;
+
+            if (scriptMismatch) {
+              // The active job belongs to a different (older) script version.
+              // Synthesize new audio for the current script.
+              if (!isCreatingJobRef.current) {
+                isCreatingJobRef.current = true;
+                createTTSJob({
+                  projectId: String(state.id),
+                  scriptId: String(activeScript.id),
+                  voiceId: voiceId!,
+                  voiceName: voiceName,
+                  scriptText: activeScript.content,
+                  language: "zh",
+                  autoActivate: true,
+                })
+                  .then((newJob) => {
+                    if (!cancelled) {
+                      setTtsJob(newJob);
+                      setTtsError(null);
+                    }
+                  })
+                  .catch((error) => {
+                    if (!cancelled) {
+                      setTtsError(
+                        error instanceof Error ? error.message : t("project.preview.createJobFailed")
+                      );
+                    }
+                  })
+                  .finally(() => {
+                    isCreatingJobRef.current = false;
+                  });
+              }
+            } else {
               setTtsJob(job);
             }
           })

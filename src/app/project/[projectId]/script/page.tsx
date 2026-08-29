@@ -279,7 +279,7 @@ export default function ScriptPage() {
                   <MoviePoster
                     posterPath={state.moviePosterPath}
                     title={state.movieTitle}
-                    size="w185"
+                    size="w342"
                     className="h-full"
                   />
                 </div>
