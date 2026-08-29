@@ -37,7 +37,10 @@ export function ContextDrawerTrigger({
       onClick={onClick}
       aria-label={label}
       title={label}
-      className={cn("relative h-8 w-8 shrink-0 px-0 touch-manipulation sm:h-8 sm:w-auto sm:px-3", className)}
+      className={cn(
+        "relative h-8 w-8 shrink-0 px-0 touch-manipulation sm:h-8 sm:w-auto sm:px-3",
+        className
+      )}
       leftIcon={<Icon icon={icon} size="sm" />}
     >
       <span className="hidden sm:inline">{label}</span>

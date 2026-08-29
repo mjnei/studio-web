@@ -89,7 +89,7 @@ export function Modal({
       aria-describedby={description ? "modal-description" : undefined}
     >
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200" />
 
       {/* Modal */}
       <div
@@ -318,10 +318,10 @@ export function AlertModal({
   icon,
 }: AlertModalProps) {
   const iconColors = {
-    info: "text-blue-500",
-    success: "text-green-500",
-    warning: "text-yellow-500",
-    error: "text-red-500",
+    info: "text-status-info",
+    success: "text-status-success",
+    warning: "text-status-warning",
+    error: "text-status-error",
   };
 
   const buttonVariants = {

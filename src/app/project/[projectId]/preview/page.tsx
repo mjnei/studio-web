@@ -207,7 +207,8 @@ export default function PreviewPage() {
             if (cancelled) return;
 
             const jobScriptId = job.script_id ? String(job.script_id) : null;
-            const scriptMismatch = !!currentScriptId && !!jobScriptId && jobScriptId !== currentScriptId;
+            const scriptMismatch =
+              !!currentScriptId && !!jobScriptId && jobScriptId !== currentScriptId;
 
             if (scriptMismatch) {
               // The active job belongs to a different (older) script version.
@@ -232,7 +233,9 @@ export default function PreviewPage() {
                   .catch((error) => {
                     if (!cancelled) {
                       setTtsError(
-                        error instanceof Error ? error.message : t("project.preview.createJobFailed")
+                        error instanceof Error
+                          ? error.message
+                          : t("project.preview.createJobFailed")
                       );
                     }
                   })

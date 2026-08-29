@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 :root {
+  color-scheme: dark;
   /* Surfaces */
   --surface-base: #0a0e17;
   --surface-panel: #0f1419;
@@ -221,7 +222,7 @@ body {
   border-radius: 50%;
   filter: blur(72px);
   will-change: transform;
-  opacity: 0.6;
+  opacity: 0.5;
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
 }
@@ -268,7 +269,7 @@ body {
   animation-duration: 12s;
   animation-delay: -2s;
   animation-direction: reverse;
-  opacity: 0.5;
+  opacity: 0.4;
 }
 
 .ambient-mesh {
@@ -545,6 +546,17 @@ body {
     }
   }
 
+  @keyframes slideOutToTop {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+  }
+
   @keyframes slideInFromLeft {
     from {
       transform: translateX(-100%);
@@ -611,7 +623,7 @@ body {
     }
   }
 
-  @keyframes fadeIn {
+  @keyframes fadeInUp {
     from {
       opacity: 0;
       transform: translateY(10px);
@@ -643,7 +655,7 @@ body {
   }
 
   .animate-fadeIn {
-    animation: fadeIn 0.3s ease-out;
+    animation: fadeInUp 0.3s ease-out;
   }
 
   /* Enhanced shadow utilities */
@@ -717,6 +729,30 @@ body {
 
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+
+  /* Themed scrollbar — thin accent track for visible scroll areas */
+  .scrollbar-themed {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+  }
+
+  .scrollbar-themed::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+
+  .scrollbar-themed::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-themed::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: 9999px;
+  }
+
+  .scrollbar-themed::-webkit-scrollbar-thumb:hover {
+    background: var(--border-focus);
   }
 
   /* Gradient text */

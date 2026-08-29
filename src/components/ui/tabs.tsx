@@ -47,7 +47,7 @@ export function TabsList({ children, className = "" }: TabsListProps) {
   return (
     <div className="overflow-x-auto scrollbar-hide">
       <div
-        className={`inline-flex min-w-min items-center gap-1 rounded-xl bg-surface-panel p-1 border border-border-default shadow-sm ${className}`}
+        className={`inline-flex min-w-min items-center gap-1 rounded-lg bg-surface-panel p-1 border border-border-default shadow-sm ${className}`}
         role="tablist"
       >
         {children}
@@ -74,7 +74,7 @@ export function TabsTrigger({
       onClick={() => context.onValueChange(value)}
       className={`inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg px-4 py-2 text-body font-semibold transition-all duration-200 focus-ring disabled:pointer-events-none disabled:opacity-50 ${
         isActive
-          ? "bg-accent-primary text-white shadow-md"
+          ? "glass-card border border-accent-primary/40 text-accent-primary shadow-sm"
           : "text-text-muted hover:text-text-primary hover:bg-surface-raised"
       } ${className}`}
     >

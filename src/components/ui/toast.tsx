@@ -1,7 +1,7 @@
 "use client";
 
 import { CheckCircle2, XCircle, AlertCircle, Info, X } from "lucide-react";
-import { createContext, useContext, useState, useCallback, ReactNode } from "react";
+import React, { createContext, useContext, useState, useCallback, ReactNode } from "react";
 import { useI18n } from "@/i18n";
 import { Text } from "./text";
 
@@ -130,6 +130,15 @@ interface ToastItemProps {
 
 function ToastItem({ toast, onClose }: ToastItemProps) {
   const { t } = useI18n();
+  const [exiting, setExiting] = React.useState(false);
+
+  const handleClose = React.useCallback(() => {
+    setExiting(true);
+    setTimeout(() => {
+      onClose();
+    }, 250);
+  }, [onClose]);
+
   const variants = {
     success: {
       icon: <CheckCircle2 className="h-5 w-5" aria-hidden />,
@@ -165,6 +174,7 @@ function ToastItem({ toast, onClose }: ToastItemProps) {
 
   return (
     <div
+      style={exiting ? { animation: "slideOutToTop 250ms ease-in forwards" } : undefined}
       className={`
  pointer-events-auto w-full sm:w-96 rounded-lg border backdrop-blur-sm
  shadow-lg animate-in slide-in-from-top-2 fade-in duration-300
@@ -188,7 +198,7 @@ function ToastItem({ toast, onClose }: ToastItemProps) {
           )}
         </div>
         <button
-          onClick={onClose}
+          onClick={handleClose}
           className="shrink-0 rounded-lg p-1 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all touch-manipulation"
           aria-label={t("common.closeNotification")}
         >

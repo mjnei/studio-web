@@ -22,11 +22,11 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
         "bg-[var(--surface-elevated)] text-[var(--text-secondary)] border border-[var(--border-default)]",
       primary: "bg-[var(--accent-muted)] text-[var(--accent-primary)] border-0",
       secondary: "bg-purple-500/20 text-purple-400 border-0",
-      success: "bg-green-500/20 text-green-400 border-0",
-      warning: "bg-yellow-500/20 text-yellow-400 border-0",
-      error: "bg-red-500/20 text-red-400 border-0",
-      destructive: "bg-red-500/20 text-red-400 border-0",
-      info: "bg-blue-500/20 text-blue-400 border-0",
+      success: "bg-status-success/15 text-status-success border-0",
+      warning: "bg-status-warning/15 text-status-warning border-0",
+      error: "bg-status-error/15 text-status-error border-0",
+      destructive: "bg-status-error/15 text-status-error border-0",
+      info: "bg-status-info/15 text-status-info border-0",
       outline: "bg-transparent text-[var(--text-secondary)] border border-[var(--border-default)]",
     };
 

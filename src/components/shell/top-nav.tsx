@@ -26,7 +26,6 @@ export function TopNav() {
       )}
 
       <div className="ml-auto flex items-center gap-1.5 md:gap-2">
-
         <CreditStatus />
         <LanguageSwitcher />
         <NotificationBell />

@@ -172,7 +172,7 @@ function RailLink({
           : "px-3 py-2.5 text-body font-medium lg:px-2.5 lg:py-2"
       } ${
         active
-          ? "bg-gradient-to-r from-accent-secondary/20 via-accent-primary/20 to-accent-tertiary/20 text-accent-primary shadow-sm border border-accent-primary/30"
+          ? "bg-accent-muted text-accent-primary border border-accent-primary/30 shadow-sm"
           : "text-text-secondary hover:bg-surface-hover hover:text-text-primary hover:border hover:border-border-default"
       }`}
     >
@@ -208,7 +208,7 @@ function UserSection({ collapsed, onNavigate }: { collapsed?: boolean; onNavigat
 
   return (
     <div
-      className={`border-t border-border-default p-4 lg:p-3 bg-surface-raised/50 ${
+      className={`border-t border-border-default p-4 lg:p-3 ${
         collapsed ? "flex flex-col items-center gap-2 lg:gap-1.5" : ""
       }`}
     >

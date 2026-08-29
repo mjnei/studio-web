@@ -44,19 +44,19 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     const variants = {
       primary:
-        "bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-white shadow-glow hover:shadow-glow-hover disabled:opacity-50 disabled:cursor-not-allowed",
+        "bg-[var(--accent-primary)] hover:bg-[var(--accent-secondary)] text-white shadow-glow hover:shadow-glow-hover hover:scale-[1.02] active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed",
       secondary:
         "bg-[var(--surface-elevated)] hover:bg-[var(--surface-hover)] text-[var(--text-primary)] border border-[var(--border-default)] hover:border-[var(--border-strong)]",
       outline:
-        "border-2 border-[var(--accent-primary)] text-[var(--accent-primary)] hover:bg-[var(--accent-muted)] disabled:opacity-50",
+        "border-2 border-[var(--accent-primary)] text-[var(--accent-primary)] hover:bg-[var(--accent-muted)] hover:scale-[1.02] active:scale-[0.97] disabled:opacity-50",
       ghost:
         "text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-hover)]",
       danger:
-        "bg-[var(--status-error)] hover:bg-red-600 text-white disabled:opacity-50 disabled:cursor-not-allowed",
+        "bg-[var(--status-error)] hover:bg-red-600 text-white active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed",
       destructive:
-        "bg-red-600 hover:bg-red-700 text-white disabled:opacity-50 disabled:cursor-not-allowed",
+        "bg-red-600 hover:bg-red-700 text-white active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed",
       success:
-        "bg-[var(--status-success)] hover:bg-green-600 text-white disabled:opacity-50 disabled:cursor-not-allowed",
+        "bg-[var(--status-success)] hover:bg-green-600 text-white hover:scale-[1.02] active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed",
     };
 
     const sizes = {
@@ -70,7 +70,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         className={cn(
-          "inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-200 focus-ring disabled:pointer-events-none",
+          "inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-all duration-200 will-change-transform focus-ring disabled:pointer-events-none",
           variants[variant],
           sizes[size],
           fullWidth && "w-full",

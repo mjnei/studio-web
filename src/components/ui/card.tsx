@@ -19,7 +19,7 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
       elevated:
         "bg-[var(--surface-elevated)] border border-[var(--border-default)] shadow-[var(--shadow-md)]",
       interactive:
-        "bg-[var(--surface-raised)] border border-[var(--border-default)] hover:bg-[var(--surface-hover)] hover:border-[var(--border-strong)] transition-all duration-200 cursor-pointer",
+        "bg-[var(--surface-raised)] border border-[var(--border-default)] hover:bg-surface-raised-glass hover:border-[var(--border-strong)] hover:shadow-[var(--shadow-md)] active:scale-[0.99] transition-all duration-200 cursor-pointer",
       gradient:
         "bg-gradient-to-br from-[var(--accent-primary)] to-[var(--accent-secondary)] border-0 text-white",
       glass: "glass-card",
@@ -35,8 +35,8 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
     const interactiveExtras =
       interactive && variant !== "interactive"
         ? variant === "glass"
-          ? "cursor-pointer transition-all duration-200 hover:bg-surface-raised-glass hover:border-[var(--border-strong)]"
-          : "cursor-pointer transition-all duration-200 hover:bg-[var(--surface-hover)] hover:border-[var(--border-strong)]"
+          ? "cursor-pointer transition-all duration-200 hover:bg-surface-raised-glass hover:border-[var(--border-strong)] hover:shadow-[var(--shadow-md)] active:scale-[0.99]"
+          : "cursor-pointer transition-all duration-200 hover:bg-surface-raised-glass hover:border-[var(--border-strong)] hover:shadow-[var(--shadow-md)] active:scale-[0.99]"
         : "";
 
     return (
