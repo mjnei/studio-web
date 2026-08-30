@@ -8,6 +8,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { Heading } from "@/components/ui/heading";
 import { ConfirmModal, AlertModal } from "@/components/ui/modal";
 import { useI18n } from "@/i18n";
+import { getVoiceLanguageTranslationKey } from "@/i18n/config";
 import { useVoiceAudioPlayback } from "@/lib/hooks/use-voice-audio-playback";
 
 interface VoiceRecordingCardProps {
@@ -136,11 +137,11 @@ export function VoiceRecordingCard({
   };
 
   const formatLanguage = (language: string | null | undefined): string | null => {
-    // Handle null and undefined explicitly per Requirement 7.4
     if (!language) return null;
 
-    const normalized = language === "zh-CN" ? "zhCN" : language === "zh-TW" ? "zhTW" : language;
-    const key = `voices.languages.${normalized}`;
+    const key = getVoiceLanguageTranslationKey(language);
+    if (!key) return language.toUpperCase();
+
     const translated = t(key);
     return translated === key ? language.toUpperCase() : translated;
   };

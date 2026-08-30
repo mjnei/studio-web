@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { useI18n } from "@/i18n";
+import { useI18n, getDateLocale } from "@/i18n";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/modal";
@@ -102,7 +102,7 @@ export default function BillingPage() {
   }
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString(locale === "chs" ? "zh-CN" : "en-US", {
+    return new Date(dateString).toLocaleDateString(getDateLocale(locale), {
       month: "short",
       day: "numeric",
       year: "numeric",

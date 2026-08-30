@@ -45,7 +45,9 @@ type EditingMovie = {
   douban_id?: string;
 };
 
-const SUPPORTED_LOCALES = ["en", "de", "fr", "es", "zh-CN", "zh-TW", "ja", "ko"];
+import { apiLocales } from "@/i18n";
+
+const SUPPORTED_LOCALES = [...apiLocales];
 
 export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();

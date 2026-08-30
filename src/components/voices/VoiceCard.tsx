@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { useToast } from "@/components/ui/toast";
 import { useI18n, type InterpolationValues } from "@/i18n";
+import { getVoiceLanguageTranslationKey } from "@/i18n/config";
 import { Spinner } from "@/components/ui/spinner";
 import { useVoiceAudioPlayback } from "@/lib/hooks/use-voice-audio-playback";
 import type { VoiceWithCreator, VoiceResponse } from "@/lib/types/api";
@@ -62,26 +63,7 @@ function formatDuration(seconds: number | null | undefined): string {
  * Format language code to translation key
  */
 function formatLanguageKey(language: string | null | undefined): string | null {
-  if (!language) return null;
-
-  const languageKeyMap: Record<string, string> = {
-    en: "voices.languages.en",
-    es: "voices.languages.es",
-    fr: "voices.languages.fr",
-    de: "voices.languages.de",
-    it: "voices.languages.it",
-    pt: "voices.languages.pt",
-    ru: "voices.languages.ru",
-    ja: "voices.languages.ja",
-    zh: "voices.languages.zh",
-    "zh-CN": "voices.languages.zhCN",
-    "zh-TW": "voices.languages.zhTW",
-    ko: "voices.languages.ko",
-    ar: "voices.languages.ar",
-    hi: "voices.languages.hi",
-  };
-
-  return languageKeyMap[language] || null;
+  return getVoiceLanguageTranslationKey(language);
 }
 
 export function VoiceCard({

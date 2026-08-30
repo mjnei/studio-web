@@ -1,4 +1,4 @@
-export const SUPPORTED_LOCALES = ["en", "de", "fr", "es", "zh-CN", "zh-TW", "ja", "ko"];
+export { apiLocales as SUPPORTED_LOCALES } from "@/i18n";
 
 export const LAYOUT_STORAGE_KEY = "layoutMode:admin-movies";
 

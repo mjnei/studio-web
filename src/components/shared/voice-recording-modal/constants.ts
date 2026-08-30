@@ -12,18 +12,10 @@ export const SUPPORTED_MIME_TYPES = [
   "audio/mp4",
 ] as const;
 
-export const RECORDING_LANGUAGES = [
-  { code: "en" },
-  { code: "es" },
-  { code: "fr" },
-  { code: "de" },
-  { code: "ja" },
-  { code: "ko" },
-  { code: "zh" },
-  { code: "pt" },
-  { code: "it" },
-  { code: "ru" },
-] as const;
+import { voiceLocales } from "@/i18n";
+
+/** Supported voice language codes — aligned with backend VOICE_LOCALES. */
+export const RECORDING_LANGUAGES = voiceLocales.map((code) => ({ code }));
 
 const VOICE_NAME_ADJECTIVES = [
   "amber",

@@ -5,6 +5,7 @@ import { Select } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
 import { Heading } from "@/components/ui/heading";
 import { RECORDING_LANGUAGES } from "../constants";
+import { voiceLanguageLabelKey } from "@/i18n";
 import type { TranslateFn } from "../types";
 
 interface VoiceNamingFormProps {
@@ -77,7 +78,7 @@ export function VoiceNamingForm({
         icon={<Globe className="h-4 w-4" aria-hidden />}
         options={RECORDING_LANGUAGES.map((lang) => ({
           value: lang.code,
-          label: t(`voices.languages.${lang.code}`),
+          label: t(`voices.languages.${voiceLanguageLabelKey[lang.code]}`),
         }))}
       />
 
