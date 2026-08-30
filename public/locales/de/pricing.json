@@ -29,7 +29,8 @@
         "quality": "720p-Videoqualität",
         "storage": "Standard-Projektspeicher"
       },
-      "button": "Aktueller Plan"
+      "button": "Aktueller Plan",
+      "buttonSignup": "Loslegen"
     },
     "pro": {
       "name": "Pro",
@@ -100,6 +101,10 @@
         "a": "Absolut. Neben KI-generierten Skripten und Stimmen kannst du eigene Skripte hochladen, Audio aufnehmen oder mit Voice Cloning (Enterprise) bestimmte Stimmen replizieren."
       }
     },
-    "subscribeComingSoon": "Abonnement der Stufe {tier}... (Zahlungsintegration kommt bald)"
+    "subscribeComingSoon": "Die Abrechnung für den {tier}-Plan ist bald verfügbar.",
+    "currentPlan": "Aktueller Plan",
+    "checkoutComingSoonTitle": "Zahlungen kommen bald",
+    "checkoutErrorTitle": "Checkout nicht verfügbar",
+    "checkoutError": "Checkout konnte nicht gestartet werden. Bitte versuche es erneut."
   }
 }

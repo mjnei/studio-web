@@ -29,7 +29,8 @@
         "quality": "Qualité vidéo 720p",
         "storage": "Stockage de projets standard"
       },
-      "button": "Forfait actuel"
+      "button": "Forfait actuel",
+      "buttonSignup": "Commencer"
     },
     "pro": {
       "name": "Pro",
@@ -100,6 +101,10 @@
         "a": "Absolument. En plus des scripts et voix générés par l'IA, tu peux importer tes scripts, enregistrer de l'audio personnalisé ou utiliser le clonage vocal (Enterprise) pour reproduire des voix spécifiques."
       }
     },
-    "subscribeComingSoon": "Abonnement au niveau {tier}... (Intégration des paiements bientôt disponible)"
+    "subscribeComingSoon": "La facturation du forfait {tier} sera bientôt disponible.",
+    "currentPlan": "Forfait actuel",
+    "checkoutComingSoonTitle": "Paiements bientôt disponibles",
+    "checkoutErrorTitle": "Paiement indisponible",
+    "checkoutError": "Impossible de démarrer le paiement. Veuillez réessayer."
   }
 }

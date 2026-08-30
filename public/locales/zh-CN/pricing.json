@@ -29,7 +29,8 @@
         "quality": "720p 画质",
         "storage": "标准项目存储"
       },
-      "button": "当前套餐"
+      "button": "当前套餐",
+      "buttonSignup": "立即开始"
     },
     "pro": {
       "name": "Pro",
@@ -100,6 +101,10 @@
         "a": "当然可以。虽然我们的 AI 可以生成脚本和语音，但您也可以上传自己的脚本、录制自定义音频，或使用语音克隆功能（企业版）来复制特定声音。"
       }
     },
-    "subscribeComingSoon": "正在订阅 {tier} 套餐…（支付功能即将上线）"
+    "subscribeComingSoon": "{tier} 套餐的支付功能即将上线。",
+    "currentPlan": "当前套餐",
+    "checkoutComingSoonTitle": "支付功能即将上线",
+    "checkoutErrorTitle": "无法发起结账",
+    "checkoutError": "无法启动结账，请稍后重试。"
   }
 }

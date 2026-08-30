@@ -29,7 +29,8 @@
         "quality": "Calidad de vídeo 720p",
         "storage": "Almacenamiento de proyectos estándar"
       },
-      "button": "Plan actual"
+      "button": "Plan actual",
+      "buttonSignup": "Empezar"
     },
     "pro": {
       "name": "Pro",
@@ -100,6 +101,10 @@
         "a": "Por supuesto. Además de guiones y voces generados por IA, puedes subir tus guiones, grabar audio personalizado o usar clonación de voz (Enterprise) para replicar voces específicas."
       }
     },
-    "subscribeComingSoon": "Suscribiéndote al nivel {tier}... (Integración de pagos próximamente)"
+    "subscribeComingSoon": "La facturación del plan {tier} estará disponible pronto.",
+    "currentPlan": "Plan actual",
+    "checkoutComingSoonTitle": "Pagos próximamente",
+    "checkoutErrorTitle": "Pago no disponible",
+    "checkoutError": "No se pudo iniciar el pago. Inténtalo de nuevo."
   }
 }

@@ -29,7 +29,8 @@
         "quality": "720p 影片畫質",
         "storage": "標準專案儲存空間"
       },
-      "button": "目前方案"
+      "button": "目前方案",
+      "buttonSignup": "立即開始"
     },
     "pro": {
       "name": "Pro",
@@ -100,6 +101,10 @@
         "a": "當然可以。雖然我們的 AI 可以產生腳本和語音，你也可以上傳自己的腳本、錄製自訂音訊，或使用語音克隆功能（Enterprise）來複製特定聲音。"
       }
     },
-    "subscribeComingSoon": "正在訂閱 {tier} 方案…（付款整合即將推出）"
+    "subscribeComingSoon": "{tier} 方案的付款功能即將推出。",
+    "currentPlan": "目前方案",
+    "checkoutComingSoonTitle": "付款功能即將推出",
+    "checkoutErrorTitle": "無法啟動結帳",
+    "checkoutError": "無法啟動結帳，請稍後再試。"
   }
 }

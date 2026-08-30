@@ -29,7 +29,8 @@
         "quality": "720p video quality",
         "storage": "Standard project storage"
       },
-      "button": "Current Plan"
+      "button": "Current Plan",
+      "buttonSignup": "Get Started"
     },
     "pro": {
       "name": "Pro",
@@ -100,6 +101,10 @@
         "a": "Absolutely. While our AI can generate scripts and voices, you can upload your own scripts, record custom audio, or use our voice cloning feature (Enterprise) to replicate specific voices."
       }
     },
-    "subscribeComingSoon": "Subscribing to {tier} tier... (Payment integration coming soon)"
+    "subscribeComingSoon": "Billing for the {tier} plan will be available soon.",
+    "currentPlan": "Current Plan",
+    "checkoutComingSoonTitle": "Payments coming soon",
+    "checkoutErrorTitle": "Checkout unavailable",
+    "checkoutError": "Unable to start checkout. Please try again."
   }
 }

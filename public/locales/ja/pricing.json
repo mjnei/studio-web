@@ -29,7 +29,8 @@
         "quality": "720p画質",
         "storage": "標準のプロジェクト保存"
       },
-      "button": "現在のプラン"
+      "button": "現在のプラン",
+      "buttonSignup": "始める"
     },
     "pro": {
       "name": "Pro",
@@ -100,6 +101,10 @@
         "a": "もちろんです。AIでスクリプトやボイスを生成できるほか、独自のスクリプトをアップロードしたり、カスタム音声を録音したり、ボイスクローニング（Enterprise）で特定の声を再現できます。"
       }
     },
-    "subscribeComingSoon": "{tier} プランに登録中…（決済連携は近日公開）"
+    "subscribeComingSoon": "{tier} プランの決済は近日公開予定です。",
+    "currentPlan": "現在のプラン",
+    "checkoutComingSoonTitle": "決済は近日公開",
+    "checkoutErrorTitle": "チェックアウトを開始できません",
+    "checkoutError": "チェックアウトを開始できませんでした。しばらくしてからもう一度お試しください。"
   }
 }

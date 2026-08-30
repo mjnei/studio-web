@@ -29,7 +29,8 @@
         "quality": "720p 화질",
         "storage": "표준 프로젝트 저장 공간"
       },
-      "button": "현재 요금제"
+      "button": "현재 요금제",
+      "buttonSignup": "시작하기"
     },
     "pro": {
       "name": "Pro",
@@ -100,6 +101,10 @@
         "a": "물론이에요. AI가 스크립트와 보이스를 생성할 수 있을 뿐 아니라, 직접 스크립트를 업로드하거나 맞춤 오디오를 녹음하거나, 보이스 클로닝(Enterprise)으로 특정 목소리를 복제할 수도 있어요."
       }
     },
-    "subscribeComingSoon": "{tier} 요금제 구독 중… (결제 연동 준비 중)"
+    "subscribeComingSoon": "{tier} 요금제 결제는 곧 제공될 예정이에요.",
+    "currentPlan": "현재 요금제",
+    "checkoutComingSoonTitle": "결제 기능 준비 중",
+    "checkoutErrorTitle": "결제를 시작할 수 없음",
+    "checkoutError": "결제를 시작할 수 없습니다. 잠시 후 다시 시도해 주세요."
   }
 }
