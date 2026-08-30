@@ -60,6 +60,13 @@ export async function updateAdminUserStatus(userId: number, isActive: boolean): 
   });
 }
 
+export async function setAdminUserPassword(userId: number, password: string): Promise<AdminUser> {
+  return request<AdminUser>(`/admin/users/${userId}/set-password`, {
+    method: "POST",
+    body: JSON.stringify({ password }),
+  });
+}
+
 export async function resetAdminUserPassword(userId: number): Promise<AdminPasswordResetResponse> {
   return request<AdminPasswordResetResponse>(`/admin/users/${userId}/reset-password`, {
     method: "POST",

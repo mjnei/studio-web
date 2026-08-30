@@ -14,6 +14,7 @@ import {
   getAdminUsers,
   removeAdminUserPicture,
   resetAdminUserPassword,
+  setAdminUserPassword,
   updateAdminUserRole,
   updateAdminUserStatus,
 } from "@/lib/api/admin-users-client";
@@ -121,13 +122,33 @@ export default function AdminUsersPage() {
     }
   }
 
-  async function handleResetPassword(userId: number): Promise<void> {
+  async function handleSetPassword(userId: number, password: string): Promise<void> {
+    try {
+      const updated = await setAdminUserPassword(userId, password);
+      setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, ...updated } : u)));
+      setSelected(updated);
+      toast.success(
+        updated.has_password ? "Password updated" : "Password set",
+        `User #${userId}`
+      );
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "An error occurred";
+      toast.error("Failed to set password", message);
+      throw error;
+    }
+  }
+
+  async function handleClearPassword(userId: number): Promise<void> {
     try {
       await resetAdminUserPassword(userId);
+      setUsers((prev) =>
+        prev.map((u) => (u.id === userId ? { ...u, has_password: false } : u))
+      );
+      setSelected((prev) => (prev?.id === userId ? { ...prev, has_password: false } : prev));
       toast.success("Password cleared", `User #${userId} must set a new password`);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "An error occurred";
-      toast.error("Failed to reset password", message);
+      toast.error("Failed to clear password", message);
       throw error;
     }
   }
@@ -262,7 +283,8 @@ export default function AdminUsersPage() {
         }}
         onRoleChange={handleRoleChange}
         onStatusChange={handleStatusChange}
-        onResetPassword={handleResetPassword}
+        onSetPassword={handleSetPassword}
+        onClearPassword={handleClearPassword}
         onRemovePicture={handleRemovePicture}
         onDelete={handleDelete}
       />

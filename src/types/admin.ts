@@ -388,6 +388,7 @@ export interface AdminUser {
   referrer_id?: number | null;
   referrer_name?: string | null;
   referrer_email?: string | null;
+  has_password: boolean;
 }
 
 export interface AdminUserListResponse {

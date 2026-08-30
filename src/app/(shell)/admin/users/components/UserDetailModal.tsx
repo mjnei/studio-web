@@ -2,6 +2,7 @@
 
 import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { useToast } from "@/components/ui/toast";
 import { UserAvatar } from "@/components/ui/UserAvatar";
@@ -15,7 +16,8 @@ interface UserDetailModalProps {
   onClose: () => void;
   onRoleChange: (userId: number, role: AdminUserRole) => Promise<void>;
   onStatusChange: (userId: number, isActive: boolean) => Promise<void>;
-  onResetPassword: (userId: number) => Promise<void>;
+  onSetPassword: (userId: number, password: string) => Promise<void>;
+  onClearPassword: (userId: number) => Promise<void>;
   onRemovePicture: (userId: number) => Promise<void>;
   onDelete: (user: AdminUser) => Promise<void>;
 }
@@ -44,7 +46,8 @@ export function UserDetailModal({
   onClose,
   onRoleChange,
   onStatusChange,
-  onResetPassword,
+  onSetPassword,
+  onClearPassword,
   onRemovePicture,
   onDelete,
 }: UserDetailModalProps) {
@@ -53,7 +56,12 @@ export function UserDetailModal({
   const [roleSource, setRoleSource] = useState(user);
   const [savingRole, setSavingRole] = useState(false);
   const [savingStatus, setSavingStatus] = useState(false);
-  const [resetting, setResetting] = useState(false);
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [savingPassword, setSavingPassword] = useState(false);
+  const [clearingPassword, setClearingPassword] = useState(false);
   const [removingPicture, setRemovingPicture] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -61,6 +69,10 @@ export function UserDetailModal({
     setRoleSource(user);
     if (user) {
       setRole(user.role);
+      setShowPasswordForm(false);
+      setNewPassword("");
+      setConfirmPassword("");
+      setPasswordError("");
     }
   }
 
@@ -89,16 +101,52 @@ export function UserDetailModal({
     }
   }
 
-  async function handleResetPassword() {
+  function resetPasswordForm() {
+    setShowPasswordForm(false);
+    setNewPassword("");
+    setConfirmPassword("");
+    setPasswordError("");
+  }
+
+  async function handleSavePassword() {
+    if (!user) return;
+
+    if (newPassword.length < 8) {
+      setPasswordError("Password must be at least 8 characters");
+      return;
+    }
+    if (newPassword.length > 128) {
+      setPasswordError("Password must be no more than 128 characters");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordError("Passwords do not match");
+      return;
+    }
+
+    setPasswordError("");
+    setSavingPassword(true);
+    try {
+      await onSetPassword(user.id, newPassword);
+      resetPasswordForm();
+    } catch {
+      // Parent shows toast; keep form open for retry.
+    } finally {
+      setSavingPassword(false);
+    }
+  }
+
+  async function handleClearPassword() {
     if (!user) return;
     if (!confirm(`Clear the password for ${user.email}? They will need to set a new password.`)) {
       return;
     }
-    setResetting(true);
+    setClearingPassword(true);
     try {
-      await onResetPassword(user.id);
+      await onClearPassword(user.id);
+      resetPasswordForm();
     } finally {
-      setResetting(false);
+      setClearingPassword(false);
     }
   }
 
@@ -276,6 +324,91 @@ export function UserDetailModal({
                 </div>
               </div>
 
+              <div className="rounded-xl border border-border-default bg-surface-raised p-4">
+                <p className="mb-2 text-caption font-semibold uppercase tracking-wider text-text-muted">
+                  Password
+                </p>
+                <div className="mb-3 flex items-center gap-2">
+                  <KeyRound className="h-4 w-4 text-text-muted" aria-hidden />
+                  <span
+                    className={
+                      user.has_password ? "text-status-completed" : "text-text-muted"
+                    }
+                  >
+                    {user.has_password ? "Configured" : "Not set"}
+                  </span>
+                </div>
+
+                {passwordError && (
+                  <p className="mb-3 text-body text-status-failed">{passwordError}</p>
+                )}
+
+                {showPasswordForm ? (
+                  <div className="space-y-3">
+                    <Input
+                      type="password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      label="New password"
+                      autoComplete="new-password"
+                    />
+                    <Input
+                      type="password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      label="Confirm password"
+                      autoComplete="new-password"
+                    />
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        type="button"
+                        size="sm"
+                        disabled={savingPassword}
+                        onClick={() => void handleSavePassword()}
+                      >
+                        {savingPassword
+                          ? "Saving…"
+                          : user.has_password
+                            ? "Update password"
+                            : "Set password"}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        disabled={savingPassword}
+                        onClick={resetPasswordForm}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      leftIcon={<KeyRound className="h-4 w-4" />}
+                      onClick={() => setShowPasswordForm(true)}
+                    >
+                      {user.has_password ? "Modify password" : "Set password"}
+                    </Button>
+                    {user.has_password && (
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        disabled={clearingPassword}
+                        onClick={() => void handleClearPassword()}
+                      >
+                        {clearingPassword ? "Clearing…" : "Clear password"}
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </div>
+
               <div className="flex flex-wrap gap-2">
                 <Button
                   type="button"
@@ -289,17 +422,6 @@ export function UserDetailModal({
                     : user.is_active
                       ? "Suspend account"
                       : "Reactivate account"}
-                </Button>
-
-                <Button
-                  type="button"
-                  variant="secondary"
-                  size="sm"
-                  disabled={resetting}
-                  leftIcon={<KeyRound className="h-4 w-4" />}
-                  onClick={() => void handleResetPassword()}
-                >
-                  {resetting ? "Clearing…" : "Reset password"}
                 </Button>
 
                 <Button
