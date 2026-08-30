@@ -45,6 +45,7 @@ describe("locale codes", () => {
     expect(voiceLanguageLabelKey["zh-TW"]).toBe("zhTW");
     expect(getVoiceLanguageTranslationKey("zh-CN")).toBe("voices.languages.zhCN");
     expect(getVoiceLanguageTranslationKey("zh-TW")).toBe("voices.languages.zhTW");
+    expect(getVoiceLanguageTranslationKey("zh")).toBe("voices.languages.zhCN");
     expect(getVoiceLanguageTranslationKey("chs")).toBeNull();
   });
 

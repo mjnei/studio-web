@@ -12,7 +12,7 @@ import {
  *
  * @param file - Audio file blob
  * @param name - Voice name (NOT title)
- * @param language - ISO language code (e.g., 'en', 'es', 'fr', 'de', 'ja', 'ko', 'zh')
+ * @param language - BCP-47 language code (e.g. en, zh-CN, zh-TW, ja, ko, de, fr, es)
  * @param durationSeconds - Optional duration in seconds
  * @returns Promise<VoiceResponse>
  */

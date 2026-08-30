@@ -101,7 +101,6 @@ export function getVoiceLanguageTranslationKey(language: string | null | undefin
     it: "voices.languages.it",
     pt: "voices.languages.pt",
     ru: "voices.languages.ru",
-    zh: "voices.languages.zh",
     ar: "voices.languages.ar",
     hi: "voices.languages.hi",
   };

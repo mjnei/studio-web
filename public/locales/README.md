@@ -13,7 +13,7 @@ This directory contains translation files for the Huavoi Studio application.
 - **French (fr)**: Français
 - **Spanish (es)**: Español
 
-Locale codes are BCP-47 throughout (UI, API, TMDB, voices, TTS job metadata). Helpers: `getDateLocale`, `resolveTtsLanguage` in `src/i18n/config.ts`.
+Locale codes are BCP-47 throughout (UI, API, TMDB, voices, TTS job metadata). Helpers in `src/i18n/config.ts`: `normalizeLocale`, `resolveStoredLocale`, `getDateLocale`, `resolveTtsLanguage`.
 
 ## Structure
 
