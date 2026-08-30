@@ -36,7 +36,29 @@
     },
     "achievements": {
       "title": "Achievements",
-      "description": "Unlock badges as you refer more users"
+      "description": "Unlock badges as you refer more users",
+      "types": {
+        "referral_starter": {
+          "name": "Starter",
+          "description": "Made your first referral"
+        },
+        "referral_advocate": {
+          "name": "Advocate",
+          "description": "Referred 5 users"
+        },
+        "referral_champion": {
+          "name": "Champion",
+          "description": "Referred 10 users"
+        },
+        "referral_leader": {
+          "name": "Leader",
+          "description": "Referred 25 users"
+        },
+        "referral_influencer": {
+          "name": "Influencer",
+          "description": "Referred 50 users"
+        }
+      }
     },
     "history": {
       "title": "Referral History",

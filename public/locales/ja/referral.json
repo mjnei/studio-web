@@ -36,7 +36,29 @@
     },
     "achievements": {
       "title": "実績",
-      "description": "紹介が増えるとバッジを解除できます"
+      "description": "紹介が増えるとバッジを解除できます",
+      "types": {
+        "referral_starter": {
+          "name": "スターター",
+          "description": "初めての紹介を達成"
+        },
+        "referral_advocate": {
+          "name": "アドボケート",
+          "description": "5人を紹介"
+        },
+        "referral_champion": {
+          "name": "チャンピオン",
+          "description": "10人を紹介"
+        },
+        "referral_leader": {
+          "name": "リーダー",
+          "description": "25人を紹介"
+        },
+        "referral_influencer": {
+          "name": "インフルエンサー",
+          "description": "50人を紹介"
+        }
+      }
     },
     "history": {
       "title": "紹介履歴",

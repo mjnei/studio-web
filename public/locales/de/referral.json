@@ -36,7 +36,29 @@
     },
     "achievements": {
       "title": "Erfolge",
-      "description": "Schalte Abzeichen frei, indem du mehr Nutzer einlädst"
+      "description": "Schalte Abzeichen frei, indem du mehr Nutzer einlädst",
+      "types": {
+        "referral_starter": {
+          "name": "Starter",
+          "description": "Deine erste Empfehlung"
+        },
+        "referral_advocate": {
+          "name": "Advocate",
+          "description": "5 Nutzer empfohlen"
+        },
+        "referral_champion": {
+          "name": "Champion",
+          "description": "10 Nutzer empfohlen"
+        },
+        "referral_leader": {
+          "name": "Leader",
+          "description": "25 Nutzer empfohlen"
+        },
+        "referral_influencer": {
+          "name": "Influencer",
+          "description": "50 Nutzer empfohlen"
+        }
+      }
     },
     "history": {
       "title": "Empfehlungsverlauf",

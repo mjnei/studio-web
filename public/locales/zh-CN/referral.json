@@ -36,7 +36,29 @@
     },
     "achievements": {
       "title": "成就",
-      "description": "推荐更多用户即可解锁徽章"
+      "description": "推荐更多用户即可解锁徽章",
+      "types": {
+        "referral_starter": {
+          "name": "新手",
+          "description": "完成首次推荐"
+        },
+        "referral_advocate": {
+          "name": "推广者",
+          "description": "推荐 5 位用户"
+        },
+        "referral_champion": {
+          "name": "达人",
+          "description": "推荐 10 位用户"
+        },
+        "referral_leader": {
+          "name": "引领者",
+          "description": "推荐 25 位用户"
+        },
+        "referral_influencer": {
+          "name": "影响者",
+          "description": "推荐 50 位用户"
+        }
+      }
     },
     "history": {
       "title": "推荐记录",

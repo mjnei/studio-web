@@ -36,7 +36,29 @@
     },
     "achievements": {
       "title": "업적",
-      "description": "더 많은 사용자를 추천하며 배지를 잠금 해제하세요"
+      "description": "더 많은 사용자를 추천하며 배지를 잠금 해제하세요",
+      "types": {
+        "referral_starter": {
+          "name": "스타터",
+          "description": "첫 추천 달성"
+        },
+        "referral_advocate": {
+          "name": "어드보킷",
+          "description": "5명 추천"
+        },
+        "referral_champion": {
+          "name": "챔피언",
+          "description": "10명 추천"
+        },
+        "referral_leader": {
+          "name": "리더",
+          "description": "25명 추천"
+        },
+        "referral_influencer": {
+          "name": "인플루언서",
+          "description": "50명 추천"
+        }
+      }
     },
     "history": {
       "title": "추천 내역",

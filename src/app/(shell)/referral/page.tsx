@@ -27,6 +27,7 @@ import {
   getMyReferralCode,
   getMyReferralHistory,
   getMyReferralStats,
+  type Achievement,
   type ReferralCodeResponse,
   type ReferralHistoryItem,
   type ReferralStatsResponse,
@@ -120,6 +121,12 @@ export default function ReferralPage() {
     const key = `referral.rewardsActivity.transactionTypes.${transaction.transaction_type}`;
     const translated = t(key);
     return translated === key ? transaction.transaction_type : translated;
+  };
+
+  const getAchievementText = (achievement: Achievement, field: "name" | "description") => {
+    const key = `referral.achievements.types.${achievement.type}.${field}`;
+    const translated = t(key);
+    return translated === key ? achievement[field] : translated;
   };
 
   const formatAmount = (amount: number) => (amount >= 0 ? `+${amount}` : `${amount}`);
@@ -334,24 +341,32 @@ export default function ReferralPage() {
                   key={i}
                   className="rounded-lg border border-border-default bg-surface-raised p-4 text-center hover:border-accent-cyan/40 transition-all"
                 >
-                  {achievement.icon_url ? (
-                    <Image
-                      src={achievement.icon_url}
-                      alt={achievement.name}
-                      className="w-12 h-12 mx-auto mb-2"
-                      width={48}
-                      height={48}
-                    />
-                  ) : (
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center mx-auto mb-2">
-                      <Trophy className="h-6 w-6 text-white" />
+                  <Tooltip
+                    content={getAchievementText(achievement, "description")}
+                    position="top"
+                  >
+                    <div className="cursor-default">
+                      {achievement.icon_url ? (
+                        <Image
+                          src={achievement.icon_url}
+                          alt={getAchievementText(achievement, "name")}
+                          className="w-12 h-12 mx-auto mb-2"
+                          width={48}
+                          height={48}
+                        />
+                      ) : (
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center mx-auto mb-2">
+                          <Trophy className="h-6 w-6 text-white" />
+                        </div>
+                      )}
+                      <p className="text-body font-semibold text-text-primary">
+                        {getAchievementText(achievement, "name")}
+                      </p>
+                      <p className="text-caption text-text-secondary mt-1">
+                        {formatDate(achievement.earned_at)}
+                      </p>
                     </div>
-                  )}
-                  <p className="text-body font-semibold text-text-primary">{achievement.name}</p>
-                  <p className="text-caption text-text-muted mt-1">{achievement.description}</p>
-                  <p className="text-caption text-text-secondary mt-1">
-                    {formatDate(achievement.earned_at)}
-                  </p>
+                  </Tooltip>
                 </div>
               ))}
             </div>

@@ -36,7 +36,29 @@
     },
     "achievements": {
       "title": "Logros",
-      "description": "Desbloquea insignias al referir más usuarios"
+      "description": "Desbloquea insignias al referir más usuarios",
+      "types": {
+        "referral_starter": {
+          "name": "Principiante",
+          "description": "Tu primera referencia"
+        },
+        "referral_advocate": {
+          "name": "Defensor",
+          "description": "5 usuarios referidos"
+        },
+        "referral_champion": {
+          "name": "Campeón",
+          "description": "10 usuarios referidos"
+        },
+        "referral_leader": {
+          "name": "Líder",
+          "description": "25 usuarios referidos"
+        },
+        "referral_influencer": {
+          "name": "Influencer",
+          "description": "50 usuarios referidos"
+        }
+      }
     },
     "history": {
       "title": "Historial de referidos",

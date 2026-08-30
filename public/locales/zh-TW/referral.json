@@ -36,7 +36,29 @@
     },
     "achievements": {
       "title": "成就",
-      "description": "推薦越多使用者，解鎖越多徽章"
+      "description": "推薦越多使用者，解鎖越多徽章",
+      "types": {
+        "referral_starter": {
+          "name": "新手",
+          "description": "完成首次推薦"
+        },
+        "referral_advocate": {
+          "name": "推廣者",
+          "description": "推薦 5 位使用者"
+        },
+        "referral_champion": {
+          "name": "達人",
+          "description": "推薦 10 位使用者"
+        },
+        "referral_leader": {
+          "name": "引領者",
+          "description": "推薦 25 位使用者"
+        },
+        "referral_influencer": {
+          "name": "影響者",
+          "description": "推薦 50 位使用者"
+        }
+      }
     },
     "history": {
       "title": "推薦紀錄",

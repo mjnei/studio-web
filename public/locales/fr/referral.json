@@ -36,7 +36,29 @@
     },
     "achievements": {
       "title": "Succès",
-      "description": "Débloque des badges en parrainant plus d'utilisateurs"
+      "description": "Débloque des badges en parrainant plus d'utilisateurs",
+      "types": {
+        "referral_starter": {
+          "name": "Débutant",
+          "description": "Votre premier parrainage"
+        },
+        "referral_advocate": {
+          "name": "Ambassadeur",
+          "description": "5 utilisateurs parrainés"
+        },
+        "referral_champion": {
+          "name": "Champion",
+          "description": "10 utilisateurs parrainés"
+        },
+        "referral_leader": {
+          "name": "Leader",
+          "description": "25 utilisateurs parrainés"
+        },
+        "referral_influencer": {
+          "name": "Influenceur",
+          "description": "50 utilisateurs parrainés"
+        }
+      }
     },
     "history": {
       "title": "Historique de parrainage",
