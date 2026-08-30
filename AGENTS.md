@@ -2,7 +2,7 @@
 
 ## Project
 
-Next.js 16.2.9 App Router + React 19 + TypeScript + Tailwind CSS 4 + Firebase auth + i18n (next-intl).
+Next.js 16.2.9 App Router + React 19 + TypeScript + Tailwind CSS 4 + Firebase auth + custom i18n (`src/i18n/`).
 
 ## Commands
 
