@@ -190,6 +190,54 @@ export default function SettingsPage() {
         <Card variant="glass" padding="lg">
           <CardHeader>
             <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
+                <Palette className="h-5 w-5 text-white" aria-hidden />
+              </div>
+              <div>
+                <CardTitle>{t("settings.appearance.title")}</CardTitle>
+                <CardDescription>{t("settings.appearance.description")}</CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-1">
+            <BackgroundStylePicker />
+            <SettingRow
+              title={t("settings.appearance.compactMode")}
+              description={t("settings.appearance.compactModeDesc")}
+            >
+              <Toggle
+                checked={appearance.compactMode}
+                onChange={() => setAppearance((a) => ({ ...a, compactMode: !a.compactMode }))}
+              />
+            </SettingRow>
+            <SettingRow
+              title={t("settings.appearance.autoPlayPreviews")}
+              description={t("settings.appearance.autoPlayPreviewsDesc")}
+            >
+              <Toggle
+                checked={appearance.autoPlayPreviews}
+                onChange={() =>
+                  setAppearance((a) => ({ ...a, autoPlayPreviews: !a.autoPlayPreviews }))
+                }
+              />
+            </SettingRow>
+            <SettingRow
+              title={t("settings.appearance.waveformAnimations")}
+              description={t("settings.appearance.waveformAnimationsDesc")}
+            >
+              <Toggle
+                checked={appearance.waveformAnimation}
+                onChange={() =>
+                  setAppearance((a) => ({ ...a, waveformAnimation: !a.waveformAnimation }))
+                }
+              />
+            </SettingRow>
+          </CardContent>
+        </Card>
+
+        <Card variant="glass" padding="lg">
+          <CardHeader>
+            <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
                 <FileText className="h-5 w-5 text-white" aria-hidden />
               </div>
@@ -242,54 +290,6 @@ export default function SettingsPage() {
                 ]}
               />
             </div>
-          </CardContent>
-        </Card>
-
-        <Card variant="glass" padding="lg">
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
-                <Palette className="h-5 w-5 text-white" aria-hidden />
-              </div>
-              <div>
-                <CardTitle>{t("settings.appearance.title")}</CardTitle>
-                <CardDescription>{t("settings.appearance.description")}</CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-1">
-            <BackgroundStylePicker />
-            <SettingRow
-              title={t("settings.appearance.compactMode")}
-              description={t("settings.appearance.compactModeDesc")}
-            >
-              <Toggle
-                checked={appearance.compactMode}
-                onChange={() => setAppearance((a) => ({ ...a, compactMode: !a.compactMode }))}
-              />
-            </SettingRow>
-            <SettingRow
-              title={t("settings.appearance.autoPlayPreviews")}
-              description={t("settings.appearance.autoPlayPreviewsDesc")}
-            >
-              <Toggle
-                checked={appearance.autoPlayPreviews}
-                onChange={() =>
-                  setAppearance((a) => ({ ...a, autoPlayPreviews: !a.autoPlayPreviews }))
-                }
-              />
-            </SettingRow>
-            <SettingRow
-              title={t("settings.appearance.waveformAnimations")}
-              description={t("settings.appearance.waveformAnimationsDesc")}
-            >
-              <Toggle
-                checked={appearance.waveformAnimation}
-                onChange={() =>
-                  setAppearance((a) => ({ ...a, waveformAnimation: !a.waveformAnimation }))
-                }
-              />
-            </SettingRow>
           </CardContent>
         </Card>
 

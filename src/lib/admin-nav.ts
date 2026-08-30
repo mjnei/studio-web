@@ -55,6 +55,15 @@ export const ADMIN_NAV: AdminNavItem[] = [
     },
   },
   {
+    href: "/admin/referrals",
+    labelKey: "shell.adminReferrals",
+    icon: Gift,
+    showInDrawer: true,
+    showOnDashboard: true,
+    dashboardTitle: "Referrals",
+    dashboardDescription: "Monitor referral analytics, signup mix, and fraud detection",
+  },
+  {
     href: "/admin/movies",
     labelKey: "shell.movies",
     icon: Film,
@@ -131,15 +140,6 @@ export const ADMIN_NAV: AdminNavItem[] = [
     showOnDashboard: true,
     dashboardTitle: "Audit Logs",
     dashboardDescription: "Search compliance logs with filters, stats, and CSV export",
-  },
-  {
-    href: "/admin/referrals",
-    labelKey: "shell.adminReferrals",
-    icon: Gift,
-    showInDrawer: true,
-    showOnDashboard: true,
-    dashboardTitle: "Referrals",
-    dashboardDescription: "Monitor referral analytics, signup mix, and fraud detection",
   },
 ];
 
