@@ -50,7 +50,8 @@ interface ReferralDateFilterProps {
 }
 
 export function ReferralDateFilter({ filters, onSelect }: ReferralDateFilterProps) {
-  const activePreset = filters.preset ?? (filters.start_date || filters.end_date ? undefined : "all");
+  const activePreset =
+    filters.preset ?? (filters.start_date || filters.end_date ? undefined : "all");
   const activeLabel =
     DATE_PRESETS.find((preset) => preset.id === activePreset)?.label ??
     (filters.start_date || filters.end_date ? "Custom range" : "All time");
@@ -84,7 +85,9 @@ export function ReferralDateFilter({ filters, onSelect }: ReferralDateFilterProp
 
       <p className="mt-3 text-caption text-text-muted">
         Showing analytics for {activeLabel.toLowerCase()}
-        {filters.start_date && filters.end_date ? ` (${filters.start_date} – ${filters.end_date})` : ""}
+        {filters.start_date && filters.end_date
+          ? ` (${filters.start_date} – ${filters.end_date})`
+          : ""}
       </p>
     </div>
   );

@@ -69,7 +69,11 @@ export function ReferralFraudStatsPanel({ fraud }: ReferralFraudStatsPanelProps)
 
       {eventTypes.length > 0 && (
         <div className="rounded-xl border border-border-default bg-surface-panel p-5">
-          <Heading variant="label" as="h3" className="mb-4 uppercase tracking-wider text-text-muted">
+          <Heading
+            variant="label"
+            as="h3"
+            className="mb-4 uppercase tracking-wider text-text-muted"
+          >
             Events by Type
           </Heading>
           <div className="space-y-3">
@@ -122,7 +126,9 @@ export function ReferralFraudStatsPanel({ fraud }: ReferralFraudStatsPanelProps)
                     <td className="px-3 py-2 text-text-secondary">
                       {new Date(event.created_at).toLocaleString()}
                     </td>
-                    <td className="px-3 py-2 text-text-primary">{formatEventType(event.event_type)}</td>
+                    <td className="px-3 py-2 text-text-primary">
+                      {formatEventType(event.event_type)}
+                    </td>
                     <td className="px-3 py-2 text-text-secondary">
                       {event.user_id ? `#${event.user_id}` : "—"}
                     </td>

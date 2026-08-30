@@ -24,7 +24,9 @@ export function ReferralProgramSummary({ program }: ReferralProgramSummaryProps)
           <Heading variant="label" as="h3" className="text-text-primary">
             Fraud Thresholds
           </Heading>
-          <p className="text-caption text-text-muted">Automatic detection limits for the referral program</p>
+          <p className="text-caption text-text-muted">
+            Automatic detection limits for the referral program
+          </p>
         </div>
       </div>
       <div className="grid gap-2 sm:grid-cols-2">
@@ -34,7 +36,9 @@ export function ReferralProgramSummary({ program }: ReferralProgramSummaryProps)
             className="flex items-center justify-between rounded-lg border border-border-default bg-surface-raised px-3 py-2"
           >
             <span className="text-body text-text-secondary">{THRESHOLD_LABELS[key] ?? key}</span>
-            <span className="text-body font-semibold text-text-primary">{value.toLocaleString()}</span>
+            <span className="text-body font-semibold text-text-primary">
+              {value.toLocaleString()}
+            </span>
           </div>
         ))}
       </div>

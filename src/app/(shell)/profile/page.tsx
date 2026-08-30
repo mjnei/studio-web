@@ -293,7 +293,6 @@ export default function ProfilePage() {
               </div>
             </div>
           </Card>
-
         </div>
 
         {/* Right Column (8 cols): Detailed Management Cards */}

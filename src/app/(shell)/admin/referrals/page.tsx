@@ -25,7 +25,9 @@ export default function AdminReferralsPage() {
   const toast = useToast();
   const [isLoading, setIsLoading] = useState(true);
   const [overview, setOverview] = useState<AdminReferralOverviewResponse | null>(null);
-  const [dateRange, setDateRange] = useState<ReferralDateRange>(() => buildReferralDateRange("30d"));
+  const [dateRange, setDateRange] = useState<ReferralDateRange>(() =>
+    buildReferralDateRange("30d")
+  );
 
   const loadData = useCallback(async () => {
     try {
