@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { useI18n, getUiLocaleFromApi } from "@/i18n";
+import { useI18n } from "@/i18n";
 import { signInWithPopup, signOut as firebaseSignOut } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/firebase";
 import {
@@ -67,28 +67,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
-  const { setLocale } = useI18n();
-
   const isAuthenticated = user !== null;
-
-  const applyUserLocale = useCallback(
-    (me: UserResponse) => {
-      const uiLocale = getUiLocaleFromApi(me.locale);
-      if (uiLocale) setLocale(uiLocale);
-    },
-    [setLocale]
-  );
 
   const refreshUser = useCallback(async () => {
     try {
       const me = await getMe();
       setUser(me);
-      applyUserLocale(me);
     } catch {
       setUser(null);
       setAccessToken(null);
     }
-  }, [applyUserLocale]);
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -136,7 +125,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const tokenRes = await loginWithFirebase(idToken, referralCode);
         const me = await getMe();
         setUser(me);
-        applyUserLocale(me);
 
         // Redirect based on onboarding status
         if (!me.onboarding_completed) {
@@ -163,7 +151,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw err;
       }
     },
-    [router, applyUserLocale]
+    [router]
   );
 
   const loginWithPassword = useCallback(
@@ -171,7 +159,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await apiLoginWithPassword(email, password);
       const me = await getMe();
       setUser(me);
-      applyUserLocale(me);
 
       // Redirect based on onboarding status
       if (!me.onboarding_completed) {
@@ -180,7 +167,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         router.push("/dashboard");
       }
     },
-    [router, applyUserLocale]
+    [router]
   );
 
   const signupWithPassword = useCallback(
@@ -188,7 +175,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const tokenRes = await apiSignupWithPassword(email, password, name, referralCode);
       const me = await getMe();
       setUser(me);
-      applyUserLocale(me);
 
       // New users should go to onboarding
       if (!me.onboarding_completed) {
@@ -201,7 +187,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         referralIpRateLimited: Boolean(tokenRes.referral_ip_rate_limited),
       };
     },
-    [router, applyUserLocale]
+    [router]
   );
 
   const logout = useCallback(async () => {
