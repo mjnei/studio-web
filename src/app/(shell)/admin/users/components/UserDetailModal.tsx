@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { useToast } from "@/components/ui/toast";
 import { UserAvatar } from "@/components/ui/UserAvatar";
-import { ChevronDown, Copy, ImageOff, KeyRound, Trash2, X } from "lucide-react";
+import { ChevronDown, Copy, KeyRound, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import type { AdminUser, AdminUserRole } from "@/types/admin";
 
@@ -91,7 +91,7 @@ export function UserDetailModal({
   async function handleToggleStatus() {
     if (!user) return;
     const next = !user.is_active;
-    const action = next ? "reactivate" : "suspend";
+    const action = next ? "reactivate" : "deactivate";
     if (!confirm(`${action.charAt(0).toUpperCase() + action.slice(1)} ${user.email}?`)) return;
     setSavingStatus(true);
     try {
@@ -209,20 +209,20 @@ export function UserDetailModal({
                 >
                   <Copy className="h-4 w-4" />
                 </Button>
+                {user.picture_url && !user.is_deleted && (
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="icon"
+                    title="Remove picture"
+                    aria-label="Remove picture"
+                    disabled={removingPicture}
+                    onClick={() => void handleRemovePicture()}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                )}
               </div>
-              {user.picture_url && !user.is_deleted && (
-                <Button
-                  type="button"
-                  variant="secondary"
-                  size="sm"
-                  className="mt-2"
-                  disabled={removingPicture}
-                  leftIcon={<ImageOff className="h-4 w-4" />}
-                  onClick={() => void handleRemovePicture()}
-                >
-                  {removingPicture ? "Removing…" : "Remove picture"}
-                </Button>
-              )}
             </div>
           </div>
           <Button type="button" variant="ghost" size="icon" onClick={onClose} aria-label="Close">
@@ -269,169 +269,176 @@ export function UserDetailModal({
               <span>Account details</span>
               <ChevronDown className="h-4 w-4 transition-transform group-open:rotate-180" />
             </summary>
-            <div className="grid grid-cols-2 gap-3 border-t border-border-default px-4 py-3">
-              <div>
-                <p className="text-caption uppercase tracking-wider text-text-muted">User ID</p>
-                <p className="mt-1 text-text-primary">{user.id}</p>
+            <div className="space-y-4 border-t border-border-default px-4 py-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <p className="text-caption uppercase tracking-wider text-text-muted">User ID</p>
+                  <p className="mt-1 text-text-primary">{user.id}</p>
+                </div>
+                <div>
+                  <p className="text-caption uppercase tracking-wider text-text-muted">Credits</p>
+                  <p className="mt-1 text-text-primary">{user.credits_remaining ?? "—"}</p>
+                </div>
+                <div>
+                  <p className="text-caption uppercase tracking-wider text-text-muted">Provider</p>
+                  <p className="mt-1 text-text-primary">{user.provider}</p>
+                </div>
+                <div>
+                  <p className="text-caption uppercase tracking-wider text-text-muted">Tier</p>
+                  <p className="mt-1 text-text-primary">{user.membership_tier}</p>
+                </div>
+                <div>
+                  <p className="text-caption uppercase tracking-wider text-text-muted">Last login</p>
+                  <p className="mt-1 text-text-primary">
+                    {user.last_login_at ? new Date(user.last_login_at).toLocaleString() : "Never"}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-caption uppercase tracking-wider text-text-muted">Joined</p>
+                  <p className="mt-1 text-text-primary">
+                    {new Date(user.created_at).toLocaleString()}
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="text-caption uppercase tracking-wider text-text-muted">Credits</p>
-                <p className="mt-1 text-text-primary">{user.credits_remaining ?? "—"}</p>
-              </div>
-              <div>
-                <p className="text-caption uppercase tracking-wider text-text-muted">Provider</p>
-                <p className="mt-1 text-text-primary">{user.provider}</p>
-              </div>
-              <div>
-                <p className="text-caption uppercase tracking-wider text-text-muted">Tier</p>
-                <p className="mt-1 text-text-primary">{user.membership_tier}</p>
-              </div>
-              <div>
-                <p className="text-caption uppercase tracking-wider text-text-muted">Last login</p>
-                <p className="mt-1 text-text-primary">
-                  {user.last_login_at ? new Date(user.last_login_at).toLocaleString() : "Never"}
-                </p>
-              </div>
-              <div>
-                <p className="text-caption uppercase tracking-wider text-text-muted">Joined</p>
-                <p className="mt-1 text-text-primary">
-                  {new Date(user.created_at).toLocaleString()}
-                </p>
-              </div>
+
+              {!user.is_deleted && (
+                <>
+                  <div className="rounded-xl border border-border-default bg-surface-panel p-4">
+                    <p className="mb-2 text-caption font-semibold uppercase tracking-wider text-text-muted">
+                      Role
+                    </p>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Select
+                        value={role}
+                        onChange={(value) => setRole(value as AdminUserRole)}
+                        options={ROLES.map((r) => ({ value: r, label: r }))}
+                      />
+                      <Button
+                        type="button"
+                        size="sm"
+                        disabled={savingRole || role === user.role}
+                        onClick={() => void handleSaveRole()}
+                      >
+                        {savingRole ? "Saving…" : "Save role"}
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="rounded-xl border border-border-default bg-surface-panel p-4">
+                    <p className="mb-2 text-caption font-semibold uppercase tracking-wider text-text-muted">
+                      Password
+                    </p>
+                    <div className="mb-3 flex items-center gap-2">
+                      <KeyRound className="h-4 w-4 text-text-muted" aria-hidden />
+                      <span
+                        className={user.has_password ? "text-status-completed" : "text-text-muted"}
+                      >
+                        {user.has_password ? "Configured" : "Not set"}
+                      </span>
+                    </div>
+
+                    {passwordError && (
+                      <p className="mb-3 text-body text-status-failed">{passwordError}</p>
+                    )}
+
+                    {showPasswordForm ? (
+                      <div className="space-y-3">
+                        <Input
+                          type="password"
+                          value={newPassword}
+                          onChange={(e) => setNewPassword(e.target.value)}
+                          label="New password"
+                          autoComplete="new-password"
+                        />
+                        <Input
+                          type="password"
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                          label="Confirm password"
+                          autoComplete="new-password"
+                        />
+                        <div className="flex flex-wrap gap-2">
+                          <Button
+                            type="button"
+                            size="sm"
+                            disabled={savingPassword}
+                            onClick={() => void handleSavePassword()}
+                          >
+                            {savingPassword
+                              ? "Saving…"
+                              : user.has_password
+                                ? "Update password"
+                                : "Set password"}
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="secondary"
+                            size="sm"
+                            disabled={savingPassword}
+                            onClick={resetPasswordForm}
+                          >
+                            Cancel
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex flex-wrap gap-2">
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="sm"
+                          leftIcon={<KeyRound className="h-4 w-4" />}
+                          onClick={() => setShowPasswordForm(true)}
+                        >
+                          {user.has_password ? "Modify password" : "Set password"}
+                        </Button>
+                        {user.has_password && (
+                          <Button
+                            type="button"
+                            variant="secondary"
+                            size="sm"
+                            disabled={clearingPassword}
+                            onClick={() => void handleClearPassword()}
+                          >
+                            {clearingPassword ? "Clearing…" : "Clear password"}
+                          </Button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
           </details>
 
           {!user.is_deleted && (
-            <>
-              <div className="rounded-xl border border-border-default bg-surface-raised p-4">
-                <p className="mb-2 text-caption font-semibold uppercase tracking-wider text-text-muted">
-                  Role
-                </p>
-                <div className="flex flex-wrap items-center gap-2">
-                  <Select
-                    value={role}
-                    onChange={(value) => setRole(value as AdminUserRole)}
-                    options={ROLES.map((r) => ({ value: r, label: r }))}
-                  />
-                  <Button
-                    type="button"
-                    size="sm"
-                    disabled={savingRole || role === user.role}
-                    onClick={() => void handleSaveRole()}
-                  >
-                    {savingRole ? "Saving…" : "Save role"}
-                  </Button>
-                </div>
-              </div>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                type="button"
+                variant={user.is_active ? "outline" : "primary"}
+                size="sm"
+                className={
+                  user.is_active
+                    ? "border-status-warning/50 text-status-warning hover:bg-status-warning/10"
+                    : undefined
+                }
+                disabled={savingStatus}
+                onClick={() => void handleToggleStatus()}
+              >
+                {savingStatus ? "Updating…" : user.is_active ? "Deactivate" : "Reactivate"}
+              </Button>
 
-              <div className="rounded-xl border border-border-default bg-surface-raised p-4">
-                <p className="mb-2 text-caption font-semibold uppercase tracking-wider text-text-muted">
-                  Password
-                </p>
-                <div className="mb-3 flex items-center gap-2">
-                  <KeyRound className="h-4 w-4 text-text-muted" aria-hidden />
-                  <span className={user.has_password ? "text-status-completed" : "text-text-muted"}>
-                    {user.has_password ? "Configured" : "Not set"}
-                  </span>
-                </div>
-
-                {passwordError && (
-                  <p className="mb-3 text-body text-status-failed">{passwordError}</p>
-                )}
-
-                {showPasswordForm ? (
-                  <div className="space-y-3">
-                    <Input
-                      type="password"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      label="New password"
-                      autoComplete="new-password"
-                    />
-                    <Input
-                      type="password"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      label="Confirm password"
-                      autoComplete="new-password"
-                    />
-                    <div className="flex flex-wrap gap-2">
-                      <Button
-                        type="button"
-                        size="sm"
-                        disabled={savingPassword}
-                        onClick={() => void handleSavePassword()}
-                      >
-                        {savingPassword
-                          ? "Saving…"
-                          : user.has_password
-                            ? "Update password"
-                            : "Set password"}
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="secondary"
-                        size="sm"
-                        disabled={savingPassword}
-                        onClick={resetPasswordForm}
-                      >
-                        Cancel
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex flex-wrap gap-2">
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      size="sm"
-                      leftIcon={<KeyRound className="h-4 w-4" />}
-                      onClick={() => setShowPasswordForm(true)}
-                    >
-                      {user.has_password ? "Modify password" : "Set password"}
-                    </Button>
-                    {user.has_password && (
-                      <Button
-                        type="button"
-                        variant="secondary"
-                        size="sm"
-                        disabled={clearingPassword}
-                        onClick={() => void handleClearPassword()}
-                      >
-                        {clearingPassword ? "Clearing…" : "Clear password"}
-                      </Button>
-                    )}
-                  </div>
-                )}
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                <Button
-                  type="button"
-                  variant={user.is_active ? "danger" : "success"}
-                  size="sm"
-                  disabled={savingStatus}
-                  onClick={() => void handleToggleStatus()}
-                >
-                  {savingStatus
-                    ? "Updating…"
-                    : user.is_active
-                      ? "Suspend account"
-                      : "Reactivate account"}
-                </Button>
-
-                <Button
-                  type="button"
-                  variant="danger"
-                  size="sm"
-                  disabled={deleting}
-                  leftIcon={<Trash2 className="h-4 w-4" />}
-                  onClick={() => void handleDelete()}
-                >
-                  {deleting ? "Deleting…" : "Delete user"}
-                </Button>
-              </div>
-            </>
+              <Button
+                type="button"
+                variant="danger"
+                size="sm"
+                disabled={deleting}
+                leftIcon={<Trash2 className="h-4 w-4" />}
+                onClick={() => void handleDelete()}
+              >
+                {deleting ? "Deleting…" : "Hard delete"}
+              </Button>
+            </div>
           )}
         </div>
       </div>
