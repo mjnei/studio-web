@@ -82,8 +82,7 @@ export function TTSJobsPageHeader({
       </div>
 
       <p className="text-caption text-text-muted">
-        Last refreshed: {formatRefreshTime(lastRefresh)}{" "}
-        {autoRefresh && "(auto-refresh every 5s)"}
+        Last refreshed: {formatRefreshTime(lastRefresh)} {autoRefresh && "(auto-refresh every 5s)"}
       </p>
     </div>
   );

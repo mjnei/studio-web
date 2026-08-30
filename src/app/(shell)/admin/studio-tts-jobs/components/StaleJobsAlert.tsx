@@ -22,9 +22,7 @@ export function StaleJobsAlert({ staleJobs, onCancel }: StaleJobsAlertProps) {
         `Duration: ${formatStaleDuration(job.duration_seconds)} | Voice ID: ${job.voice_id}`
       }
       renderPreview={(job) =>
-        job.text ? (
-          <p className="text-caption text-text-muted mt-1 truncate">{job.text}</p>
-        ) : null
+        job.text ? <p className="text-caption text-text-muted mt-1 truncate">{job.text}</p> : null
       }
     />
   );

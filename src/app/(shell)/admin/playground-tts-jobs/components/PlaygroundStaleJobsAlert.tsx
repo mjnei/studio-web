@@ -26,9 +26,7 @@ export function PlaygroundStaleJobsAlert({ staleJobs, onCancel }: PlaygroundStal
         } | IP: ${formatIPHash(job.client_ip_address)}`
       }
       renderPreview={(job) =>
-        job.text ? (
-          <p className="text-caption text-text-muted mt-1 truncate">{job.text}</p>
-        ) : null
+        job.text ? <p className="text-caption text-text-muted mt-1 truncate">{job.text}</p> : null
       }
     />
   );

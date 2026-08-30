@@ -235,214 +235,205 @@ export function VoiceBulkImportModal({ open, onClose, onSuccess }: VoiceBulkImpo
         </>
       }
     >
-          {/* User Selection */}
-          <div>
-            <div className="relative">
-              <Input
-                label="Target user *"
-                type="search"
-                placeholder="Search by name or email..."
-                value={userSearchQuery}
-                onChange={(e) => {
-                  setUserSearchQuery(e.target.value);
-                  if (selectedUser && e.target.value !== selectedUser.name) {
-                    setSelectedUser(null);
-                  }
-                }}
-                onFocus={() => {
-                  if (userSearchResults.length > 0) setShowUserDropdown(true);
-                }}
-                disabled={isImporting}
-                icon={<Search className="h-4 w-4" />}
-                rightIcon={
-                  isSearching ? <Spinner size="sm" className="text-text-muted" /> : undefined
-                }
-              />
+      {/* User Selection */}
+      <div>
+        <div className="relative">
+          <Input
+            label="Target user *"
+            type="search"
+            placeholder="Search by name or email..."
+            value={userSearchQuery}
+            onChange={(e) => {
+              setUserSearchQuery(e.target.value);
+              if (selectedUser && e.target.value !== selectedUser.name) {
+                setSelectedUser(null);
+              }
+            }}
+            onFocus={() => {
+              if (userSearchResults.length > 0) setShowUserDropdown(true);
+            }}
+            disabled={isImporting}
+            icon={<Search className="h-4 w-4" />}
+            rightIcon={isSearching ? <Spinner size="sm" className="text-text-muted" /> : undefined}
+          />
 
-              {/* User Dropdown */}
-              {showUserDropdown && userSearchResults.length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-2 rounded-xl border border-border-default bg-surface-panel shadow-xl z-20 max-h-64 overflow-y-auto">
-                  {userSearchResults.map((user) => (
-                    <button
-                      key={user.id}
-                      onClick={() => handleUserSelect(user)}
-                      className="w-full flex items-center gap-3 px-4 py-3 hover:bg-surface-raised transition-colors text-left border-b border-border-default last:border-0"
-                    >
-                      <UserAvatar
-                        seed={user.id}
-                        name={user.name}
-                        email={user.email}
-                        pictureUrl={user.picture_url}
-                        width={32}
-                        height={32}
-                        ringWidth={0}
-                        className="w-8 h-8 rounded-full text-caption"
-                        imageClassName="w-8 h-8 rounded-full object-cover"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-body font-semibold text-text-primary truncate">
-                          {user.name}
-                        </p>
-                        <p className="text-caption text-text-muted truncate">{user.email}</p>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              )}
+          {/* User Dropdown */}
+          {showUserDropdown && userSearchResults.length > 0 && (
+            <div className="absolute top-full left-0 right-0 mt-2 rounded-xl border border-border-default bg-surface-panel shadow-xl z-20 max-h-64 overflow-y-auto">
+              {userSearchResults.map((user) => (
+                <button
+                  key={user.id}
+                  onClick={() => handleUserSelect(user)}
+                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-surface-raised transition-colors text-left border-b border-border-default last:border-0"
+                >
+                  <UserAvatar
+                    seed={user.id}
+                    name={user.name}
+                    email={user.email}
+                    pictureUrl={user.picture_url}
+                    width={32}
+                    height={32}
+                    ringWidth={0}
+                    className="w-8 h-8 rounded-full text-caption"
+                    imageClassName="w-8 h-8 rounded-full object-cover"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-body font-semibold text-text-primary truncate">
+                      {user.name}
+                    </p>
+                    <p className="text-caption text-text-muted truncate">{user.email}</p>
+                  </div>
+                </button>
+              ))}
             </div>
+          )}
+        </div>
 
-            {selectedUser && (
-              <div className="mt-3 flex items-center gap-3 p-3 rounded-lg bg-green-500/10 border border-green-500/30">
-                <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-body font-semibold text-green-600">
-                    Selected: {selectedUser.name}
-                  </p>
-                  <p className="text-caption text-green-600/80">{selectedUser.email}</p>
+        {selectedUser && (
+          <div className="mt-3 flex items-center gap-3 p-3 rounded-lg bg-green-500/10 border border-green-500/30">
+            <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0" />
+            <div className="flex-1 min-w-0">
+              <p className="text-body font-semibold text-green-600">
+                Selected: {selectedUser.name}
+              </p>
+              <p className="text-caption text-green-600/80">{selectedUser.email}</p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* File Upload */}
+      <div>
+        <Label>Audio files *</Label>
+        <div
+          onClick={() => !isImporting && fileInputRef.current?.click()}
+          className={`relative rounded-xl border-2 border-dashed border-border-default bg-surface-panel p-8 text-center transition-colors ${
+            isImporting
+              ? "cursor-not-allowed opacity-50"
+              : "cursor-pointer hover:border-accent-primary hover:bg-accent-primary/5"
+          }`}
+        >
+          <input
+            ref={fileInputRef}
+            type="file"
+            multiple
+            accept="audio/*,.mp3,.wav,.ogg,.webm,.m4a,.aac"
+            onChange={handleFileSelect}
+            disabled={isImporting}
+            className="hidden"
+          />
+          <div className="flex flex-col items-center gap-3">
+            <div className="flex items-center justify-center w-16 h-16 rounded-full bg-accent-primary/10">
+              <FileAudio className="h-8 w-8 text-accent-primary" />
+            </div>
+            <div>
+              <p className="text-body font-semibold text-text-primary">
+                Click to select audio files
+              </p>
+              <p className="text-caption text-text-muted mt-1">
+                Supports MP3, WAV, OGG, WebM, M4A, AAC
+              </p>
+            </div>
+          </div>
+        </div>
+        <p className="mt-2 text-caption text-text-muted">
+          All voices will be uploaded with language set to English by default
+        </p>
+      </div>
+
+      {/* Selected Files List */}
+      {selectedFiles.length > 0 && (
+        <div>
+          <Label>Selected files ({selectedFiles.length})</Label>
+          <div className="rounded-xl border border-border-default bg-surface-panel overflow-hidden max-h-64 overflow-y-auto">
+            {selectedFiles.map((file, index) => (
+              <div
+                key={index}
+                className="flex items-center gap-3 px-4 py-3 border-b border-border-default last:border-0 hover:bg-surface-raised transition-colors"
+              >
+                <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-accent-primary/10 flex-shrink-0">
+                  <FileAudio className="h-5 w-5 text-accent-primary" />
                 </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-body font-semibold text-text-primary truncate">{file.name}</p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-caption text-text-muted">
+                      {formatFileSize(file.size)}
+                    </span>
+                    <span className="text-caption text-text-muted">•</span>
+                    <span className="text-caption text-text-muted">{file.type}</span>
+                  </div>
+                </div>
+                {!isImporting && (
+                  <button
+                    onClick={() => removeFile(index)}
+                    className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-red-500/10 text-text-muted hover:text-red-600 transition-colors"
+                    aria-label="Remove file"
+                  >
+                    <X className="h-4 w-4" aria-hidden />
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Import Progress */}
+      {isImporting && importProgress.total > 0 && (
+        <div className="rounded-xl border border-border-default bg-surface-panel p-4">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-body font-semibold text-text-primary">Uploading files...</span>
+            <span className="text-body font-medium text-accent-primary">
+              {importProgress.current} / {importProgress.total}
+            </span>
+          </div>
+          <div className="w-full h-2 rounded-full bg-surface-raised overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-accent-primary to-purple-600 transition-all duration-300"
+              style={{
+                width: `${(importProgress.current / importProgress.total) * 100}%`,
+              }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Import Result */}
+      {importResult && (
+        <div className="rounded-xl border border-border-default bg-surface-panel p-4">
+          <Heading variant="label" as="h3" className="text-text-primary mb-3">
+            Import Result
+          </Heading>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-body text-text-secondary">Success:</span>
+              <span className="text-body font-bold text-green-600">
+                {importResult.success_count}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-body text-text-secondary">Failed:</span>
+              <span className="text-body font-bold text-orange-600">
+                {importResult.failure_count}
+              </span>
+            </div>
+            {importResult.errors.length > 0 && (
+              <div className="mt-3 pt-3 border-t border-border-default">
+                <p className="text-caption font-semibold text-text-muted mb-2">Errors:</p>
+                <ul className="space-y-1 max-h-32 overflow-y-auto">
+                  {importResult.errors.map((error, index) => (
+                    <li key={index} className="flex items-start gap-2 text-caption text-orange-600">
+                      <AlertCircle className="h-3 w-3 flex-shrink-0 mt-0.5" />
+                      <span>{error}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             )}
           </div>
-
-          {/* File Upload */}
-          <div>
-            <Label>Audio files *</Label>
-            <div
-              onClick={() => !isImporting && fileInputRef.current?.click()}
-              className={`relative rounded-xl border-2 border-dashed border-border-default bg-surface-panel p-8 text-center transition-colors ${
-                isImporting
-                  ? "cursor-not-allowed opacity-50"
-                  : "cursor-pointer hover:border-accent-primary hover:bg-accent-primary/5"
-              }`}
-            >
-              <input
-                ref={fileInputRef}
-                type="file"
-                multiple
-                accept="audio/*,.mp3,.wav,.ogg,.webm,.m4a,.aac"
-                onChange={handleFileSelect}
-                disabled={isImporting}
-                className="hidden"
-              />
-              <div className="flex flex-col items-center gap-3">
-                <div className="flex items-center justify-center w-16 h-16 rounded-full bg-accent-primary/10">
-                  <FileAudio className="h-8 w-8 text-accent-primary" />
-                </div>
-                <div>
-                  <p className="text-body font-semibold text-text-primary">
-                    Click to select audio files
-                  </p>
-                  <p className="text-caption text-text-muted mt-1">
-                    Supports MP3, WAV, OGG, WebM, M4A, AAC
-                  </p>
-                </div>
-              </div>
-            </div>
-            <p className="mt-2 text-caption text-text-muted">
-              All voices will be uploaded with language set to English by default
-            </p>
-          </div>
-
-          {/* Selected Files List */}
-          {selectedFiles.length > 0 && (
-            <div>
-              <Label>Selected files ({selectedFiles.length})</Label>
-              <div className="rounded-xl border border-border-default bg-surface-panel overflow-hidden max-h-64 overflow-y-auto">
-                {selectedFiles.map((file, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-3 px-4 py-3 border-b border-border-default last:border-0 hover:bg-surface-raised transition-colors"
-                  >
-                    <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-accent-primary/10 flex-shrink-0">
-                      <FileAudio className="h-5 w-5 text-accent-primary" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-body font-semibold text-text-primary truncate">
-                        {file.name}
-                      </p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-caption text-text-muted">
-                          {formatFileSize(file.size)}
-                        </span>
-                        <span className="text-caption text-text-muted">•</span>
-                        <span className="text-caption text-text-muted">{file.type}</span>
-                      </div>
-                    </div>
-                    {!isImporting && (
-                      <button
-                        onClick={() => removeFile(index)}
-                        className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-red-500/10 text-text-muted hover:text-red-600 transition-colors"
-                        aria-label="Remove file"
-                      >
-                        <X className="h-4 w-4" aria-hidden />
-                      </button>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Import Progress */}
-          {isImporting && importProgress.total > 0 && (
-            <div className="rounded-xl border border-border-default bg-surface-panel p-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-body font-semibold text-text-primary">
-                  Uploading files...
-                </span>
-                <span className="text-body font-medium text-accent-primary">
-                  {importProgress.current} / {importProgress.total}
-                </span>
-              </div>
-              <div className="w-full h-2 rounded-full bg-surface-raised overflow-hidden">
-                <div
-                  className="h-full bg-gradient-to-r from-accent-primary to-purple-600 transition-all duration-300"
-                  style={{
-                    width: `${(importProgress.current / importProgress.total) * 100}%`,
-                  }}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Import Result */}
-          {importResult && (
-            <div className="rounded-xl border border-border-default bg-surface-panel p-4">
-              <Heading variant="label" as="h3" className="text-text-primary mb-3">
-                Import Result
-              </Heading>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-body text-text-secondary">Success:</span>
-                  <span className="text-body font-bold text-green-600">
-                    {importResult.success_count}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-body text-text-secondary">Failed:</span>
-                  <span className="text-body font-bold text-orange-600">
-                    {importResult.failure_count}
-                  </span>
-                </div>
-                {importResult.errors.length > 0 && (
-                  <div className="mt-3 pt-3 border-t border-border-default">
-                    <p className="text-caption font-semibold text-text-muted mb-2">Errors:</p>
-                    <ul className="space-y-1 max-h-32 overflow-y-auto">
-                      {importResult.errors.map((error, index) => (
-                        <li
-                          key={index}
-                          className="flex items-start gap-2 text-caption text-orange-600"
-                        >
-                          <AlertCircle className="h-3 w-3 flex-shrink-0 mt-0.5" />
-                          <span>{error}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
+        </div>
+      )}
     </Modal>
   );
 }

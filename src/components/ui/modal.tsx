@@ -135,12 +135,21 @@ export function Modal({
               {header ?? (
                 <>
                   {title && (
-                    <Heading id="modal-title" variant="section" as="h2" className="text-text-primary">
+                    <Heading
+                      id="modal-title"
+                      variant="section"
+                      as="h2"
+                      className="text-text-primary"
+                    >
                       {title}
                     </Heading>
                   )}
                   {description && (
-                    <Text id="modal-description" variant="body" className="mt-1 text-text-secondary">
+                    <Text
+                      id="modal-description"
+                      variant="body"
+                      className="mt-1 text-text-secondary"
+                    >
                       {description}
                     </Text>
                   )}

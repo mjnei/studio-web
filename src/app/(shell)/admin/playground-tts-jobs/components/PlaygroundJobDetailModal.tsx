@@ -3,16 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Modal } from "@/components/ui/modal";
-import {
-  Clock,
-  CheckCircle2,
-  XCircle,
-  Zap,
-  FileText,
-  Mic,
-  ShieldAlert,
-  Globe,
-} from "lucide-react";
+import { Clock, CheckCircle2, XCircle, Zap, FileText, Mic, ShieldAlert, Globe } from "lucide-react";
 import type { PlaygroundTTSJob } from "@/types/admin";
 
 interface PlaygroundJobDetailModalProps {
@@ -204,7 +195,9 @@ export function PlaygroundJobDetailModal({ job, open, onClose }: PlaygroundJobDe
             Client IP (Hashed)
           </Label>
           <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
-            <p className="text-caption font-mono text-text-primary">{formatIPHash(job.client_ip_address)}</p>
+            <p className="text-caption font-mono text-text-primary">
+              {formatIPHash(job.client_ip_address)}
+            </p>
           </div>
         </div>
         <div>

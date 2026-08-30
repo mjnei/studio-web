@@ -4,10 +4,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { useState } from "react";
 import { CheckCircle2, Clock, AlertCircle } from "lucide-react";
 import type { PlaygroundFailedJob } from "@/types/admin";
-import {
-  formatIPHash,
-  formatRelativeTime,
-} from "@/app/(shell)/admin/tts-jobs/_shared/formatters";
+import { formatIPHash, formatRelativeTime } from "@/app/(shell)/admin/tts-jobs/_shared/formatters";
 import { DetailsButton, RetryButton } from "@/app/(shell)/admin/tts-jobs/_shared/table-actions";
 
 interface PlaygroundFailedJobsTableProps {

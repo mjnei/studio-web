@@ -42,9 +42,7 @@ export function LanguageSwitcher({ compactOnSmallScreens = false }: LanguageSwit
           className="pointer-events-none absolute inset-y-0 left-0 flex w-11 items-center justify-center text-body leading-none md:hidden"
           aria-hidden
         >
-          <span
-            className={`leading-none ${isChineseLocale(locale) ? "text-sm" : "text-base"}`}
-          >
+          <span className={`leading-none ${isChineseLocale(locale) ? "text-sm" : "text-base"}`}>
             {localeNames[locale].flag}
           </span>
         </div>

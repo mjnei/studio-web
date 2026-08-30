@@ -238,233 +238,227 @@ export function UserDetailModal({
       }
       contentClassName="space-y-4 text-body"
     >
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <p className="text-caption uppercase tracking-wider text-text-muted">Projects</p>
-              <p className="mt-1 text-text-primary">{user.project_count}</p>
-            </div>
-            <div>
-              <p className="text-caption uppercase tracking-wider text-text-muted">
-                Referral balance
-              </p>
-              <p className="mt-1 text-text-primary">{user.referral_balance ?? 0}</p>
-            </div>
-            <div>
-              <p className="text-caption uppercase tracking-wider text-text-muted">Referred by</p>
-              <p className="mt-1 text-text-primary">{referrerLabel}</p>
-            </div>
-            <div>
-              <p className="text-caption uppercase tracking-wider text-text-muted">Referral code</p>
-              <div className="mt-1 flex items-center gap-2">
-                <p className="font-mono text-text-primary">{user.referral_code}</p>
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <p className="text-caption uppercase tracking-wider text-text-muted">Projects</p>
+          <p className="mt-1 text-text-primary">{user.project_count}</p>
+        </div>
+        <div>
+          <p className="text-caption uppercase tracking-wider text-text-muted">Referral balance</p>
+          <p className="mt-1 text-text-primary">{user.referral_balance ?? 0}</p>
+        </div>
+        <div>
+          <p className="text-caption uppercase tracking-wider text-text-muted">Referred by</p>
+          <p className="mt-1 text-text-primary">{referrerLabel}</p>
+        </div>
+        <div>
+          <p className="text-caption uppercase tracking-wider text-text-muted">Referral code</p>
+          <div className="mt-1 flex items-center gap-2">
+            <p className="font-mono text-text-primary">{user.referral_code}</p>
+            <Button
+              type="button"
+              variant="secondary"
+              size="icon"
+              title="Copy referral code"
+              aria-label="Copy referral code"
+              onClick={() => void handleCopy(user.referral_code, "Referral code copied")}
+            >
+              <Copy className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {!user.is_deleted && (
+        <div className="rounded-xl border border-border-default bg-surface-panel p-4">
+          <p className="mb-2 text-caption font-semibold uppercase tracking-wider text-text-muted">
+            Password
+          </p>
+          <div className="mb-3 flex items-center gap-2">
+            <KeyRound className="h-4 w-4 text-text-muted" aria-hidden />
+            <span className={user.has_password ? "text-status-completed" : "text-text-muted"}>
+              {user.has_password ? "Configured" : "Not set"}
+            </span>
+          </div>
+
+          {passwordError && <p className="mb-3 text-body text-status-failed">{passwordError}</p>}
+
+          {showPasswordForm ? (
+            <div className="space-y-3">
+              <Input
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                label="New password"
+                autoComplete="new-password"
+              />
+              <Input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                label="Confirm password"
+                autoComplete="new-password"
+              />
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  disabled={savingPassword}
+                  onClick={() => void handleSavePassword()}
+                >
+                  {savingPassword
+                    ? "Saving…"
+                    : user.has_password
+                      ? "Update password"
+                      : "Set password"}
+                </Button>
                 <Button
                   type="button"
                   variant="secondary"
-                  size="icon"
-                  title="Copy referral code"
-                  aria-label="Copy referral code"
-                  onClick={() => void handleCopy(user.referral_code, "Referral code copied")}
+                  size="sm"
+                  disabled={savingPassword}
+                  onClick={resetPasswordForm}
                 >
-                  <Copy className="h-4 w-4" />
+                  Cancel
                 </Button>
               </div>
+            </div>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                leftIcon={<KeyRound className="h-4 w-4" />}
+                onClick={() => setShowPasswordForm(true)}
+              >
+                {user.has_password ? "Modify password" : "Set password"}
+              </Button>
+              {user.has_password && (
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  disabled={clearingPassword}
+                  onClick={() => void handleClearPassword()}
+                >
+                  {clearingPassword ? "Clearing…" : "Clear password"}
+                </Button>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      <details className="group rounded-xl border border-border-default bg-surface-raised">
+        <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-caption font-semibold uppercase tracking-wider text-text-muted marker:content-none">
+          <span>Account details</span>
+          <ChevronDown className="h-4 w-4 transition-transform group-open:rotate-180" />
+        </summary>
+        <div className="space-y-4 border-t border-border-default px-4 py-3">
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <p className="text-caption uppercase tracking-wider text-text-muted">User ID</p>
+              <p className="mt-1 text-text-primary">{user.id}</p>
+            </div>
+            <div>
+              <p className="text-caption uppercase tracking-wider text-text-muted">Credits</p>
+              <p className="mt-1 text-text-primary">{user.credits_remaining ?? "—"}</p>
+            </div>
+            <div>
+              <p className="text-caption uppercase tracking-wider text-text-muted">Provider</p>
+              <p className="mt-1 text-text-primary">{user.provider}</p>
+            </div>
+            <div>
+              <p className="text-caption uppercase tracking-wider text-text-muted">Tier</p>
+              <p className="mt-1 text-text-primary">{user.membership_tier}</p>
+            </div>
+            <div>
+              <p className="text-caption uppercase tracking-wider text-text-muted">Last login</p>
+              <p className="mt-1 text-text-primary">
+                {user.last_login_at ? new Date(user.last_login_at).toLocaleString() : "Never"}
+              </p>
+            </div>
+            <div>
+              <p className="text-caption uppercase tracking-wider text-text-muted">Joined</p>
+              <p className="mt-1 text-text-primary">{new Date(user.created_at).toLocaleString()}</p>
             </div>
           </div>
 
           {!user.is_deleted && (
             <div className="rounded-xl border border-border-default bg-surface-panel p-4">
               <p className="mb-2 text-caption font-semibold uppercase tracking-wider text-text-muted">
-                Password
+                Role
               </p>
-              <div className="mb-3 flex items-center gap-2">
-                <KeyRound className="h-4 w-4 text-text-muted" aria-hidden />
-                <span className={user.has_password ? "text-status-completed" : "text-text-muted"}>
-                  {user.has_password ? "Configured" : "Not set"}
+              <div className="flex flex-wrap items-center gap-2">
+                <Select
+                  value={role}
+                  onChange={(value) => setRole(value as AdminUserRole)}
+                  options={ROLES.map((r) => ({ value: r, label: r }))}
+                />
+                <Button
+                  type="button"
+                  size="sm"
+                  disabled={savingRole || role === user.role}
+                  onClick={() => void handleSaveRole()}
+                >
+                  {savingRole ? "Saving…" : "Save role"}
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      </details>
+
+      {!user.is_deleted && (
+        <div className="flex flex-wrap gap-2">
+          <Button
+            type="button"
+            variant={user.is_active ? "outline" : "primary"}
+            size="sm"
+            className={
+              user.is_active
+                ? "border-status-warning/50 text-status-warning hover:bg-status-warning/10"
+                : undefined
+            }
+            disabled={savingStatus}
+            onClick={() => void handleToggleStatus()}
+          >
+            {savingStatus ? "Updating…" : user.is_active ? "Deactivate" : "Reactivate"}
+          </Button>
+
+          <Button
+            type="button"
+            variant="danger"
+            size="sm"
+            disabled={deleting}
+            leftIcon={<Trash2 className="h-4 w-4" />}
+            onClick={() => void handleDelete()}
+          >
+            {deleting ? "Deleting…" : "Hard delete"}
+          </Button>
+        </div>
+      )}
+
+      {user.is_deleted && (
+        <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-4">
+          <div className="flex items-start gap-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-red-500/15">
+              <UserX className="h-5 w-5 text-red-600" aria-hidden />
+            </div>
+            <div className="min-w-0">
+              <p className="text-body font-semibold text-red-600">Account deleted</p>
+              <p className="mt-1 text-body text-text-secondary">
+                This account was soft-deleted. Last updated{" "}
+                <span className="font-medium text-text-primary">
+                  {formatTimestamp(user.updated_at)}
                 </span>
-              </div>
-
-              {passwordError && (
-                <p className="mb-3 text-body text-status-failed">{passwordError}</p>
-              )}
-
-              {showPasswordForm ? (
-                <div className="space-y-3">
-                  <Input
-                    type="password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    label="New password"
-                    autoComplete="new-password"
-                  />
-                  <Input
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    label="Confirm password"
-                    autoComplete="new-password"
-                  />
-                  <div className="flex flex-wrap gap-2">
-                    <Button
-                      type="button"
-                      size="sm"
-                      disabled={savingPassword}
-                      onClick={() => void handleSavePassword()}
-                    >
-                      {savingPassword
-                        ? "Saving…"
-                        : user.has_password
-                          ? "Update password"
-                          : "Set password"}
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      size="sm"
-                      disabled={savingPassword}
-                      onClick={resetPasswordForm}
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    size="sm"
-                    leftIcon={<KeyRound className="h-4 w-4" />}
-                    onClick={() => setShowPasswordForm(true)}
-                  >
-                    {user.has_password ? "Modify password" : "Set password"}
-                  </Button>
-                  {user.has_password && (
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      size="sm"
-                      disabled={clearingPassword}
-                      onClick={() => void handleClearPassword()}
-                    >
-                      {clearingPassword ? "Clearing…" : "Clear password"}
-                    </Button>
-                  )}
-                </div>
-              )}
+                .
+              </p>
             </div>
-          )}
-
-          <details className="group rounded-xl border border-border-default bg-surface-raised">
-            <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-caption font-semibold uppercase tracking-wider text-text-muted marker:content-none">
-              <span>Account details</span>
-              <ChevronDown className="h-4 w-4 transition-transform group-open:rotate-180" />
-            </summary>
-            <div className="space-y-4 border-t border-border-default px-4 py-3">
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <p className="text-caption uppercase tracking-wider text-text-muted">User ID</p>
-                  <p className="mt-1 text-text-primary">{user.id}</p>
-                </div>
-                <div>
-                  <p className="text-caption uppercase tracking-wider text-text-muted">Credits</p>
-                  <p className="mt-1 text-text-primary">{user.credits_remaining ?? "—"}</p>
-                </div>
-                <div>
-                  <p className="text-caption uppercase tracking-wider text-text-muted">Provider</p>
-                  <p className="mt-1 text-text-primary">{user.provider}</p>
-                </div>
-                <div>
-                  <p className="text-caption uppercase tracking-wider text-text-muted">Tier</p>
-                  <p className="mt-1 text-text-primary">{user.membership_tier}</p>
-                </div>
-                <div>
-                  <p className="text-caption uppercase tracking-wider text-text-muted">Last login</p>
-                  <p className="mt-1 text-text-primary">
-                    {user.last_login_at ? new Date(user.last_login_at).toLocaleString() : "Never"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-caption uppercase tracking-wider text-text-muted">Joined</p>
-                  <p className="mt-1 text-text-primary">
-                    {new Date(user.created_at).toLocaleString()}
-                  </p>
-                </div>
-              </div>
-
-              {!user.is_deleted && (
-                <div className="rounded-xl border border-border-default bg-surface-panel p-4">
-                  <p className="mb-2 text-caption font-semibold uppercase tracking-wider text-text-muted">
-                    Role
-                  </p>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <Select
-                      value={role}
-                      onChange={(value) => setRole(value as AdminUserRole)}
-                      options={ROLES.map((r) => ({ value: r, label: r }))}
-                    />
-                    <Button
-                      type="button"
-                      size="sm"
-                      disabled={savingRole || role === user.role}
-                      onClick={() => void handleSaveRole()}
-                    >
-                      {savingRole ? "Saving…" : "Save role"}
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </div>
-          </details>
-
-          {!user.is_deleted && (
-            <div className="flex flex-wrap gap-2">
-              <Button
-                type="button"
-                variant={user.is_active ? "outline" : "primary"}
-                size="sm"
-                className={
-                  user.is_active
-                    ? "border-status-warning/50 text-status-warning hover:bg-status-warning/10"
-                    : undefined
-                }
-                disabled={savingStatus}
-                onClick={() => void handleToggleStatus()}
-              >
-                {savingStatus ? "Updating…" : user.is_active ? "Deactivate" : "Reactivate"}
-              </Button>
-
-              <Button
-                type="button"
-                variant="danger"
-                size="sm"
-                disabled={deleting}
-                leftIcon={<Trash2 className="h-4 w-4" />}
-                onClick={() => void handleDelete()}
-              >
-                {deleting ? "Deleting…" : "Hard delete"}
-              </Button>
-            </div>
-          )}
-
-          {user.is_deleted && (
-            <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-4">
-              <div className="flex items-start gap-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-red-500/15">
-                  <UserX className="h-5 w-5 text-red-600" aria-hidden />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-body font-semibold text-red-600">Account deleted</p>
-                  <p className="mt-1 text-body text-text-secondary">
-                    This account was soft-deleted. Last updated{" "}
-                    <span className="font-medium text-text-primary">
-                      {formatTimestamp(user.updated_at)}
-                    </span>
-                    .
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
+          </div>
+        </div>
+      )}
     </Modal>
   );
 }

@@ -183,7 +183,11 @@ export function AudioPlayer({ audioUrl, jobId, jobName, onDismiss }: AudioPlayer
             className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-accent-primary to-purple-600 text-white hover:shadow-md hover:shadow-accent-primary/30 transition-all"
             aria-label={isPlaying ? "Pause" : "Play"}
           >
-            {isPlaying ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5 ml-0.5" />}
+            {isPlaying ? (
+              <Pause className="h-3.5 w-3.5" />
+            ) : (
+              <Play className="h-3.5 w-3.5 ml-0.5" />
+            )}
           </button>
           <button
             type="button"

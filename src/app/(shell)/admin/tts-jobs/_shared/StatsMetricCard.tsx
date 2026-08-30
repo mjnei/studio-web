@@ -32,9 +32,7 @@ export function StatsMetricCard({
           </Heading>
           <p className="text-caption text-text-secondary mt-1">{subtitle}</p>
         </div>
-        <div
-          className={`flex items-center justify-center w-12 h-12 rounded-xl ${iconClassName}`}
-        >
+        <div className={`flex items-center justify-center w-12 h-12 rounded-xl ${iconClassName}`}>
           {icon}
         </div>
       </div>
