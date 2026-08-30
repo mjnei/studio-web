@@ -1,8 +1,10 @@
 # Translation Guide (Huavoi Studio)
 
-Guide for translators and engineers adding or updating UI copy. Source locale is **English (`en`)**. All other locales must follow these principles so product language stays consistent as we scale to ~8 languages.
+Guide for translators and engineers adding or updating UI copy in **Huavoi Studio** (the authenticated creator app). Source locale is **English (`en`)**. All other locales must follow these principles so product language stays consistent across ~8 languages.
 
-Files live in `public/locales/{locale}/{namespace}.json`. Namespaces are listed in `src/i18n/context.tsx` (`translationFiles`).
+For file layout, `useI18n` usage, and namespace inventory, see also [`public/locales/README.md`](../../public/locales/README.md). For the marketing site and TTS playground, see the companion guide in the **official-landing** repo (`docs/guides/TRANSLATION_GUIDE.md`) — shared terms (voices, credits, playground) should align across both products.
+
+Translation files live in `public/locales/{locale}/{namespace}.json`. Namespaces are registered in `src/i18n/context.tsx` (`translationFiles`).
 
 ---
 
@@ -69,6 +71,19 @@ Canonical English → meaning → current Simplified Chinese (`zh-CN`) reference
 
 When introducing a **new** English product term, add a row here **before** translating into 8 locales.
 
+### Cross-product alignment (Huavoi landing site)
+
+The public **official-landing** repo shares locale codes and several concepts. Keep these aligned where both surfaces appear:
+
+| Concept | Studio (`zh-CN`) | Landing (`zh-CN`) |
+|---|---|---|
+| Playground (nav) | 试用场 | 体验 |
+| Voices / voice library | 音色 | 音色 (playground) |
+| TTS / synthesis | 语音合成 | 语音合成 |
+| Pricing | 定价 / 方案 | 价格 / 定价 |
+
+Landing uses more marketing copy; Studio uses more workflow copy — but **core product nouns should not contradict**.
+
 ### Domain nuance: Voices vs speech
 
 - **Voice library / my voices / select voice** → treat as **voice identity / timbre** (cloneable profile).
@@ -105,9 +120,21 @@ Do not force one word to cover all three if the language distinguishes them.
 
 ### Interpolation
 
-- Preserve placeholders exactly: `{name}`, `{count}`, `{tier}`, `{credits}`.
-- Do not reorder placeholder **names**; you may reorder where they appear in the sentence for grammar.
+Studio’s `t()` accepts a second argument for placeholder substitution:
+
+```tsx
+t("auth.signup.invitedBy", { name: "Alex" })
+// en: "Invited by Alex"
+```
+
+Rules:
+
+- Preserve placeholder **names** exactly: `{name}`, `{count}`, `{tier}`, `{credits}`, `{email}`.
+- You may reorder where placeholders appear in the sentence for grammar.
 - Do not translate placeholder keys.
+- Missing option values leave the raw `{key}` in output — ensure components pass all required values.
+
+See `src/i18n/__tests__/t-interpolation.test.ts` for expected behavior.
 
 ### Brand and proper nouns
 
@@ -157,11 +184,11 @@ public/locales/
 
 1. Copy `public/locales/en/*.json` → `public/locales/{locale}/`.
 2. Translate values only; keep key trees identical to `en`.
-3. Apply the **glossary** for that locale (create a small table in a PR description or below).
+3. Apply the **glossary** for that locale (document choices in the PR description).
 4. Native review pass focused on: **shell nav**, **auth**, **onboarding**, **common buttons**, **credits**, **voices**.
-5. Register the locale in `src/i18n/config.ts`.
+5. Register the locale in `src/i18n/config.ts` (`locales`, `localeNames`, `voiceLanguageLabelKey`, `localeToDateLocale`).
 6. Spot-check in the UI (language switcher) — especially truncation in the sidebar and modals.
-7. Do not leave incomplete namespaces: missing files fall back empty/merge behavior; treat parity with `en` as required.
+7. Do not leave incomplete namespaces: missing files fall back empty; treat parity with `en` as required.
 
 ### Updating copy
 
@@ -194,7 +221,8 @@ For each locale PR, reviewers should confirm:
 - [ ] No dictionary fails on **onboarding / dashboard / voices / credits / jobs**
 - [ ] Glossary terms used consistently across namespaces
 - [ ] Buttons read as local UI, not translated English sentences
-- [ ] Placeholders intact; no visible `{plural}` / `{name}` bugs
+- [ ] Placeholders intact; `t(key, options)` substitutions work in UI
+- [ ] No visible raw `{name}` / `{count}` bugs
 - [ ] Register (你/您, formal/informal) consistent within the locale
 - [ ] JSON valid; key tree matches `en`
 - [ ] Confirmation / type-to-confirm strings still match code expectations
@@ -231,9 +259,11 @@ For each locale PR, reviewers should confirm:
 ## 9. Engineering notes (for implementers)
 
 - Runtime loads every namespace in `translationFiles` (`src/i18n/context.tsx`). New namespace JSON must be added there.
-- Fallback: failed loads for a non-default locale fall back to `en`.
+- Fallback: failed loads for a non-default locale fall back to `en`; missing keys within a loaded locale also fall back to `en`.
+- Use `t(key, options)` for dynamic values — do not concatenate translated fragments around English words.
 - Do not hardcode user-visible English in components when a key already exists — or add a key to `en` + all locales.
 - Admin-only surfaces may stay English longer; still avoid shipping wrong-domain terms in shared `shell` keys.
+- Voice language labels use `voices.languages.*` keys mapped via `voiceLanguageLabelKey` in `config.ts`.
 
 ---
 
@@ -248,6 +278,11 @@ For each locale PR, reviewers should confirm:
 
 - en: `Dashboard` / `Voices` / `Profile` / `Credits`
 - zh-CN: `工作台` / `音色` / `个人中心` / `额度`
+
+**Interpolation**
+
+- en: `Invited by {name}` → `t("auth.signup.invitedBy", { name })`
+- zh-CN: `由 {name} 邀请` (placeholder name unchanged)
 
 **Validation**
 
