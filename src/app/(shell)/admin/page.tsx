@@ -122,7 +122,7 @@ export default function AdminPage() {
       value: stats ? stats.total_users.toLocaleString() : "-",
       icon: Users,
       color: "from-purple-500 to-pink-500",
-      comingSoon: true,
+      href: "/admin/users",
     },
     {
       label: "Projects Created",

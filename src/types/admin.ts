@@ -357,3 +357,59 @@ export interface AdminProjectUpdate {
   last_step?: AdminProjectStep;
   movie_id?: number | null;
 }
+
+// ============================================================================
+// Admin Users Types
+// ============================================================================
+
+export type AdminUserRole = "user" | "admin";
+
+export interface AdminUser {
+  id: number;
+  email: string;
+  name: string;
+  picture_url?: string | null;
+  role: AdminUserRole;
+  is_active: boolean;
+  is_deleted: boolean;
+  provider: string;
+  locale?: string | null;
+  membership_tier: string;
+  subscription_status: string;
+  onboarding_completed: boolean;
+  referral_code: string;
+  firebase_uid?: string | null;
+  last_login_at?: string | null;
+  created_at: string;
+  updated_at: string;
+  credits_remaining?: number | null;
+  project_count: number;
+}
+
+export interface AdminUserListResponse {
+  users: AdminUser[];
+  total: number;
+  page: number;
+  page_size: number;
+}
+
+export interface AdminUserStats {
+  total: number;
+  active: number;
+  suspended: number;
+  admins: number;
+  deleted: number;
+}
+
+export interface AdminUserFilter {
+  q?: string;
+  role?: AdminUserRole;
+  is_active?: boolean;
+  include_deleted?: boolean;
+  deleted_only?: boolean;
+}
+
+export interface AdminPasswordResetResponse {
+  message: string;
+  reset_link?: string | null;
+}
