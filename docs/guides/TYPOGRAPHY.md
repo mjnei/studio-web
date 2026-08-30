@@ -448,7 +448,7 @@ For each page: replace page titles and section titles with `PageHeader` / `Headi
 #### PR 3c — Admin area
 
 - [x] admin hub (`admin/page.tsx`)
-- [x] admin: movies, queues, playground, TTS jobs, audit-logs, voices, tmdb
+- [x] admin: movies, queues, playground, TTS jobs, audit-logs, voices
 
 #### PR 3d — Project workflow
 
