@@ -53,7 +53,7 @@
     },
     "premium": {
       "name": "Premium",
-      "description": "Capacité illimitée pour les professionnels",
+      "description": "Pour les professionnels ayant besoin d’une capacité maximale",
       "price": {
         "monthly": "199 $/mois",
         "annual": "159 $/mois"
@@ -74,14 +74,30 @@
     },
     "faq": {
       "title": "Questions fréquentes",
-      "creditQuestion": "Qu'est-ce qu'un crédit et comment est-il utilisé ?",
-      "creditAnswer": "Un crédit sert à générer une vidéo. Chaque génération consomme 1 crédit, quelle que soit la durée ou la complexité. Les générations échouées sont automatiquement remboursées.",
-      "rolloverQuestion": "Comment fonctionne le report de crédits ?",
-      "rolloverAnswer": "Les crédits non utilisés sont reportés au mois suivant, jusqu'à la limite de ton niveau (Free : 10, Pro : 50, Premium : illimité). Les crédits expirent après 6 mois d'inactivité.",
-      "changeQuestion": "Puis-je changer ou annuler mon forfait ?",
-      "changeAnswer": "Oui, tu peux upgrader, downgrader ou annuler à tout moment. En cas de downgrade, tu gardes les fonctionnalités de ton forfait actuel jusqu'à la fin du cycle de facturation.",
-      "teamQuestion": "Proposez-vous des forfaits équipe ?",
-      "teamAnswer": "Les forfaits équipe avec crédits partagés et collaboration sont disponibles pour les abonnés Premium. Contacte-nous pour un tarif personnalisé."
+      "q1": {
+        "q": "Qu'est-ce qu'un crédit et comment est-il utilisé ?",
+        "a": "Un crédit sert à générer une vidéo. Chaque génération consomme 1 crédit, quelle que soit la durée ou la complexité. Les générations échouées sont automatiquement remboursées."
+      },
+      "q2": {
+        "q": "Comment fonctionne le report de crédits ?",
+        "a": "Les crédits non utilisés sont reportés au mois suivant, jusqu'à la limite de ton niveau (Free : 10, Pro : 50, Premium : illimité). Les crédits expirent après 6 mois d'inactivité."
+      },
+      "q3": {
+        "q": "Puis-je changer ou annuler mon forfait ?",
+        "a": "Oui, tu peux upgrader, downgrader ou annuler à tout moment. Lors d'un upgrade, la différence au prorata est facturée. En cas de downgrade, tu gardes les fonctionnalités de ton forfait actuel jusqu'à la fin du cycle de facturation."
+      },
+      "q4": {
+        "q": "Proposez-vous des forfaits équipe ?",
+        "a": "Les forfaits équipe avec crédits partagés et collaboration sont disponibles pour les abonnés Premium. Contacte-nous pour un tarif personnalisé."
+      },
+      "q5": {
+        "q": "Quels formats et qualités vidéo sont pris en charge ?",
+        "a": "Nous prenons en charge les formats MP4, MOV et WebM. La qualité va de 720p (Free) à 1080p HD (Pro) et 4K Ultra HD (Premium et Enterprise)."
+      },
+      "q6": {
+        "q": "Puis-je utiliser mes propres scripts ou voix ?",
+        "a": "Absolument. En plus des scripts et voix générés par l'IA, tu peux importer tes scripts, enregistrer de l'audio personnalisé ou utiliser le clonage vocal (Enterprise) pour reproduire des voix spécifiques."
+      }
     },
     "subscribeComingSoon": "Abonnement au niveau {tier}... (Intégration des paiements bientôt disponible)"
   }

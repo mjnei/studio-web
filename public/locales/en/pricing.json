@@ -53,7 +53,7 @@
     },
     "premium": {
       "name": "Premium",
-      "description": "Unlimited capacity for professionals",
+      "description": "For professionals who need maximum capacity",
       "price": {
         "monthly": "$199/mo",
         "annual": "$159/mo"
@@ -74,14 +74,30 @@
     },
     "faq": {
       "title": "Frequently Asked Questions",
-      "creditQuestion": "What is a credit and how is it used?",
-      "creditAnswer": "A credit is used to generate one video. Each video generation consumes 1 credit, regardless of video length or complexity. Failed generations are automatically refunded.",
-      "rolloverQuestion": "How does credit rollover work?",
-      "rolloverAnswer": "Unused credits roll over to the next month, up to the maximum rollover limit for your tier (Free: 10, Pro: 50, Premium: unlimited). Credits expire after 6 months of inactivity.",
-      "changeQuestion": "Can I change or cancel my plan?",
-      "changeAnswer": "Yes, you can upgrade, downgrade, or cancel your plan at any time. When downgrading, you keep access to your current plan features until the end of your billing cycle.",
-      "teamQuestion": "Do you offer team plans?",
-      "teamAnswer": "Team plans with shared credits and collaborative features are available for Premium tier subscribers. Contact us for custom pricing."
+      "q1": {
+        "q": "What is a credit and how is it used?",
+        "a": "A credit is used to generate one video. Each video generation consumes 1 credit, regardless of video length or complexity. Failed generations are automatically refunded."
+      },
+      "q2": {
+        "q": "How does credit rollover work?",
+        "a": "Unused credits roll over to the next month, up to the maximum rollover limit for your tier (Free: 10, Pro: 50, Premium: unlimited). Credits expire after 6 months of inactivity."
+      },
+      "q3": {
+        "q": "Can I change or cancel my plan?",
+        "a": "Yes, you can upgrade, downgrade, or cancel your plan at any time. When upgrading, you'll be charged the prorated difference. When downgrading, you keep access to your current plan features until the end of your billing cycle."
+      },
+      "q4": {
+        "q": "Do you offer team plans?",
+        "a": "Team plans with shared credits and collaborative features are available for Premium tier subscribers. Contact us for custom pricing."
+      },
+      "q5": {
+        "q": "What video formats and quality do you support?",
+        "a": "We support MP4, MOV, and WebM formats. Quality ranges from 720p (Free) to 1080p HD (Pro) to 4K Ultra HD (Premium and Enterprise)."
+      },
+      "q6": {
+        "q": "Can I use my own scripts or voices?",
+        "a": "Absolutely. While our AI can generate scripts and voices, you can upload your own scripts, record custom audio, or use our voice cloning feature (Enterprise) to replicate specific voices."
+      }
     },
     "subscribeComingSoon": "Subscribing to {tier} tier... (Payment integration coming soon)"
   }

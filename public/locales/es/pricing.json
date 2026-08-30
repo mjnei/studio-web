@@ -53,7 +53,7 @@
     },
     "premium": {
       "name": "Premium",
-      "description": "Capacidad ilimitada para profesionales",
+      "description": "Para profesionales que necesitan la máxima capacidad",
       "price": {
         "monthly": "$199/mes",
         "annual": "$159/mes"
@@ -74,14 +74,30 @@
     },
     "faq": {
       "title": "Preguntas frecuentes",
-      "creditQuestion": "¿Qué es un crédito y cómo se usa?",
-      "creditAnswer": "Un crédito se usa para generar un vídeo. Cada generación consume 1 crédito, sin importar la duración o la complejidad. Las generaciones fallidas se reembolsan automáticamente.",
-      "rolloverQuestion": "¿Cómo funciona la acumulación de créditos?",
-      "rolloverAnswer": "Los créditos no usados se acumulan al mes siguiente, hasta el máximo de tu nivel (Free: 10, Pro: 50, Premium: ilimitado). Los créditos caducan tras 6 meses de inactividad.",
-      "changeQuestion": "¿Puedo cambiar o cancelar mi plan?",
-      "changeAnswer": "Sí, puedes mejorar, reducir o cancelar tu plan en cualquier momento. Al reducir, mantienes las funciones de tu plan actual hasta el final del ciclo de facturación.",
-      "teamQuestion": "¿Ofrecéis planes de equipo?",
-      "teamAnswer": "Los planes de equipo con créditos compartidos y colaboración están disponibles para suscriptores Premium. Contáctanos para precios personalizados."
+      "q1": {
+        "q": "¿Qué es un crédito y cómo se usa?",
+        "a": "Un crédito se usa para generar un vídeo. Cada generación consume 1 crédito, sin importar la duración o la complejidad. Las generaciones fallidas se reembolsan automáticamente."
+      },
+      "q2": {
+        "q": "¿Cómo funciona la acumulación de créditos?",
+        "a": "Los créditos no usados se acumulan al mes siguiente, hasta el máximo de tu nivel (Free: 10, Pro: 50, Premium: ilimitado). Los créditos caducan tras 6 meses de inactividad."
+      },
+      "q3": {
+        "q": "¿Puedo cambiar o cancelar mi plan?",
+        "a": "Sí, puedes mejorar, reducir o cancelar tu plan en cualquier momento. Al mejorar, se cobra la diferencia prorrateada. Al reducir, mantienes las funciones de tu plan actual hasta el final del ciclo de facturación."
+      },
+      "q4": {
+        "q": "¿Ofrecéis planes de equipo?",
+        "a": "Los planes de equipo con créditos compartidos y colaboración están disponibles para suscriptores Premium. Contáctanos para precios personalizados."
+      },
+      "q5": {
+        "q": "¿Qué formatos y calidades de vídeo admitís?",
+        "a": "Admitimos los formatos MP4, MOV y WebM. La calidad va desde 720p (Free) hasta 1080p HD (Pro) y 4K Ultra HD (Premium y Enterprise)."
+      },
+      "q6": {
+        "q": "¿Puedo usar mis propios guiones o voces?",
+        "a": "Por supuesto. Además de guiones y voces generados por IA, puedes subir tus guiones, grabar audio personalizado o usar clonación de voz (Enterprise) para replicar voces específicas."
+      }
     },
     "subscribeComingSoon": "Suscribiéndote al nivel {tier}... (Integración de pagos próximamente)"
   }

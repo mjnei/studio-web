@@ -313,49 +313,19 @@ export default function PricingPage() {
           {t("pricing.faq.title")}
         </Heading>
         <div className="mx-auto max-w-3xl space-y-3">
-          <Collapsible
-            title={t("pricing.faq.creditQuestion")}
-            icon={<HelpCircle className="h-4 w-4" />}
-            defaultOpen={true}
-            variant="elevated"
-          >
-            <p className="text-body text-text-secondary leading-relaxed">
-              {t("pricing.faq.creditAnswer")}
-            </p>
-          </Collapsible>
-
-          <Collapsible
-            title={t("pricing.faq.rolloverQuestion")}
-            icon={<HelpCircle className="h-4 w-4" />}
-            defaultOpen={false}
-            variant="elevated"
-          >
-            <p className="text-body text-text-secondary leading-relaxed">
-              {t("pricing.faq.rolloverAnswer")}
-            </p>
-          </Collapsible>
-
-          <Collapsible
-            title={t("pricing.faq.changeQuestion")}
-            icon={<HelpCircle className="h-4 w-4" />}
-            defaultOpen={false}
-            variant="elevated"
-          >
-            <p className="text-body text-text-secondary leading-relaxed">
-              {t("pricing.faq.changeAnswer")}
-            </p>
-          </Collapsible>
-
-          <Collapsible
-            title={t("pricing.faq.teamQuestion")}
-            icon={<HelpCircle className="h-4 w-4" />}
-            defaultOpen={false}
-            variant="elevated"
-          >
-            <p className="text-body text-text-secondary leading-relaxed">
-              {t("pricing.faq.teamAnswer")}
-            </p>
-          </Collapsible>
+          {[1, 2, 3, 4, 5, 6].map((n) => (
+            <Collapsible
+              key={n}
+              title={t(`pricing.faq.q${n}.q`)}
+              icon={<HelpCircle className="h-4 w-4" />}
+              defaultOpen={n === 1}
+              variant="elevated"
+            >
+              <p className="text-body text-text-secondary leading-relaxed">
+                {t(`pricing.faq.q${n}.a`)}
+              </p>
+            </Collapsible>
+          ))}
         </div>
       </div>
     </div>

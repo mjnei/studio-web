@@ -18,35 +18,36 @@ Related:
 
 ---
 
-## Current state (updated after P0 + P1 pass)
+## Current state (updated after P0 + P1 + P2 pass)
 
 ### What matches (both repos)
 
 - Tier names on plan cards: **Free / Pro / Premium** (Landing also has **Enterprise** — marketing-only)
 - Price points: Free $0; Pro $49/$39; Premium $199/$159 (monthly/annual)
+- **Annual billing UX**: `$39/mo` + “billed annually” + strikethrough `$49/mo when billed monthly` (paid tiers)
 - **Credits model**: 5 / 25 / 100 per month with rollover caps 10 / 50 / unlimited
 - Voice limits: Free 2, Pro 5, Premium 10 custom voices
 - Video quality ladder: 720p → 1080p → 4K
 - Pro is the highlighted / “most popular” tier
+- Premium description: maximum capacity (100 credits/month — not unlimited)
 - Landing prices live in `pricing.json` (no hardcoded numbers in `page.tsx`)
 - Landing compare table uses correct tier keys (`free` / `pro` / `premium` / `enterprise`)
+- **FAQ**: identical 6-question set (`faq.q1`–`faq.q6`) in all 8 locales — credits, rollover, plan changes, team plans, video formats, own scripts/voices. No free-trial or refund copy.
 
 ### Intentional differences
 
-| Area | official-landing | studio-web |
-|------|------------------|------------|
-| Tier count | 4 (Enterprise marketing-only) | 3 |
-| Compare table | Yes | No |
-| Marketing CTAs | Custom solution, free trial, signup URL | Subscribe placeholder alert |
-| FAQ focus | 5 marketing FAQs (trial, formats, refunds) | 4 in-app FAQs (credits, rollover) |
-| i18n key schema | `features.f1`…`f10`, `faq.q1.q` | `features.credits`, `faq.creditQuestion` |
-| Annual billing UX | Per-month price for both cycles | Strikethrough + “billed annually” |
-| Free tier CTA | “Get Started” → signup URL | “Current Plan” (disabled) |
+| Area              | official-landing                           | studio-web                               |
+| ----------------- | ------------------------------------------ | ---------------------------------------- |
+| Tier count        | 4 (Enterprise marketing-only)              | 3                                        |
+| Compare table     | Yes                                        | No                                       |
+| Marketing CTAs    | Custom solution, signup URL                | Subscribe placeholder alert              |
+| i18n key schema   | `features.f1`…`f10`                        | `features.credits`, `features.rollover`  |
+| Free tier CTA     | “Get Started” → signup URL                 | “Current Plan” (disabled)                |
+| Extra sections    | Compare table, custom-solution CTA         | —                                        |
 
 ### Still open
 
-- FAQ content not fully merged (no contradictions, but different questions)
-- Shared `pricing.json` key schema not unified
+- Shared `pricing.json` key schema not unified (feature keys differ; FAQ keys now aligned)
 - Studio checkout not wired (`subscribeComingSoon` placeholder)
 
 ---
@@ -70,16 +71,16 @@ Related:
 ### P2 — Structural / product alignment
 
 - [x] **Enterprise tier** — Landing-only (marketing). Studio stays 3 tiers. Documented here.
-- [ ] **Annual billing UX** — presentation still differs between surfaces
-- [ ] **FAQ alignment** — merge into one canonical set without contradictions
-- [x] **Sections only on Landing** — compare table, custom-solution CTA, free-trial CTA stay Landing-only (decided)
+- [x] **Annual billing UX** — Landing now matches Studio (strikethrough + “billed annually”)
+- [x] **FAQ alignment** — 6 canonical FAQs merged on both surfaces; free-trial and refund copy removed
+- [x] **Sections only on Landing** — compare table, custom-solution CTA stay Landing-only (free-trial CTA removed)
 
 ---
 
 ### P3 — i18n engineering alignment
 
 - [ ] **Shared `pricing.json` key schema**  
-      Landing and Studio use different key structures.  
+      Feature keys still differ (`f1`…`f10` vs `features.credits`). FAQ keys now unified (`faq.q1`–`faq.q6`).  
       **Fix:** Define one schema (extend this doc or `SHARED_I18N_CHECKLIST.md`) and migrate both repos.
 
 - [ ] **Glossary updates**  
@@ -87,7 +88,7 @@ Related:
       **Fix:** Add pricing glossary rows (credits, rollover, tier names) and note cross-repo impact on pricing PRs.
 
 - [x] **All 8 locales in sync (Landing)** — `pricing.json` updated for en, zh-CN, zh-TW, ja, ko, de, fr, es
-- [ ] **All 8 locales in sync (both repos)** — verify Studio stays aligned when Landing copy changes
+- [x] **All 8 locales in sync (both repos)** — FAQ and pricing copy aligned across all locales
 
 ---
 
@@ -95,7 +96,7 @@ Related:
 
 - [ ] **Signup vs upgrade flow**  
       Landing CTAs → `NEXT_PUBLIC_SIGNUP_URL`. Studio CTAs → `subscribeComingSoon` alert.  
-      **Fix:** When billing ships, Landing “Start trial” should land in Studio on the correct tier; Studio buttons should call real checkout.
+      **Fix:** When billing ships, Landing “Get Started” should land in Studio on the correct tier; Studio buttons should call real checkout.
 
 - [ ] **Free tier CTA**  
       Landing: “Get Started” (external link). Studio: “Current Plan” (disabled).  
@@ -124,6 +125,21 @@ Use this table when updating copy. Adjust only with explicit product decision.
 
 ---
 
+## Canonical FAQ set (both repos)
+
+| Key | Topic |
+| --- | ----- |
+| `faq.q1` | What is a credit and how is it used? |
+| `faq.q2` | How does credit rollover work? |
+| `faq.q3` | Can I change or cancel my plan? |
+| `faq.q4` | Do you offer team plans? |
+| `faq.q5` | What video formats and quality do you support? |
+| `faq.q6` | Can I use my own scripts or voices? |
+
+**Excluded (by product decision):** free-trial FAQs, refund/money-back FAQs.
+
+---
+
 ## Suggested execution order
 
 | Step | Work                                                               | Repo(s) | Status |
@@ -134,8 +150,9 @@ Use this table when updating copy. Adjust only with explicit product decision.
 | 4    | Propagate to 7 non-English locales                                 | Landing | Done   |
 | 5    | Move Landing prices into JSON; remove hardcoded numbers            | Landing | Done   |
 | 6    | Decide Enterprise + section parity                                 | Both    | Done   |
-| 7    | Wire CTAs to signup / checkout                                     | Both    | Open   |
+| 7    | Align annual billing UX + merge FAQs                               | Both    | Done   |
 | 8    | Document final `pricing.json` schema in `SHARED_I18N_CHECKLIST.md` | Both    | Open   |
+| 9    | Wire CTAs to signup / checkout                                     | Both    | Open   |
 
 ---
 

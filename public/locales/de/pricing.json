@@ -53,7 +53,7 @@
     },
     "premium": {
       "name": "Premium",
-      "description": "Unbegrenzte Kapazität für Profis",
+      "description": "Für Profis mit maximalem Kapazitätsbedarf",
       "price": {
         "monthly": "$199/Mo.",
         "annual": "$159/Mo."
@@ -74,14 +74,30 @@
     },
     "faq": {
       "title": "Häufig gestellte Fragen",
-      "creditQuestion": "Was ist ein Credit und wofür wird er verwendet?",
-      "creditAnswer": "Ein Credit wird für die Generierung eines Videos verwendet. Jede Videogenerierung verbraucht 1 Credit — unabhängig von Länge oder Komplexität. Fehlgeschlagene Generierungen werden automatisch erstattet.",
-      "rolloverQuestion": "Wie funktioniert der Credit-Übertrag?",
-      "rolloverAnswer": "Ungenutzte Credits werden in den nächsten Monat übertragen, bis zum Maximalübertrag deiner Stufe (Free: 10, Pro: 50, Premium: unbegrenzt). Credits verfallen nach 6 Monaten Inaktivität.",
-      "changeQuestion": "Kann ich meinen Plan ändern oder kündigen?",
-      "changeAnswer": "Ja, du kannst jederzeit upgraden, downgraden oder kündigen. Beim Downgrade behältst du die Funktionen deines aktuellen Plans bis zum Ende des Abrechnungszyklus.",
-      "teamQuestion": "Gibt es Team-Pläne?",
-      "teamAnswer": "Team-Pläne mit geteilten Credits und Kollaborationsfunktionen sind für Premium-Abonnenten verfügbar. Kontaktiere uns für individuelle Preise."
+      "q1": {
+        "q": "Was ist ein Credit und wofür wird er verwendet?",
+        "a": "Ein Credit wird für die Generierung eines Videos verwendet. Jede Videogenerierung verbraucht 1 Credit — unabhängig von Länge oder Komplexität. Fehlgeschlagene Generierungen werden automatisch erstattet."
+      },
+      "q2": {
+        "q": "Wie funktioniert der Credit-Übertrag?",
+        "a": "Ungenutzte Credits werden in den nächsten Monat übertragen, bis zum Maximalübertrag deiner Stufe (Free: 10, Pro: 50, Premium: unbegrenzt). Credits verfallen nach 6 Monaten Inaktivität."
+      },
+      "q3": {
+        "q": "Kann ich meinen Plan ändern oder kündigen?",
+        "a": "Ja, du kannst jederzeit upgraden, downgraden oder kündigen. Beim Upgrade wird die anteilige Differenz berechnet. Beim Downgrade behältst du die Funktionen deines aktuellen Plans bis zum Ende des Abrechnungszyklus."
+      },
+      "q4": {
+        "q": "Gibt es Team-Pläne?",
+        "a": "Team-Pläne mit geteilten Credits und Kollaborationsfunktionen sind für Premium-Abonnenten verfügbar. Kontaktiere uns für individuelle Preise."
+      },
+      "q5": {
+        "q": "Welche Videoformate und Qualitäten werden unterstützt?",
+        "a": "Wir unterstützen MP4, MOV und WebM. Die Qualität reicht von 720p (Free) über 1080p HD (Pro) bis 4K Ultra HD (Premium und Enterprise)."
+      },
+      "q6": {
+        "q": "Kann ich eigene Skripte oder Stimmen verwenden?",
+        "a": "Absolut. Neben KI-generierten Skripten und Stimmen kannst du eigene Skripte hochladen, Audio aufnehmen oder mit Voice Cloning (Enterprise) bestimmte Stimmen replizieren."
+      }
     },
     "subscribeComingSoon": "Abonnement der Stufe {tier}... (Zahlungsintegration kommt bald)"
   }
