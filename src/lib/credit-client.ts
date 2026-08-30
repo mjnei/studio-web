@@ -1,3 +1,5 @@
+"use client";
+
 import { request } from "@/lib/api-client";
 
 export interface CreditStatus {
@@ -103,21 +105,24 @@ export async function getCreditHistory(
   return request<CreditHistoryResponse>(`/users/me/credits/history?${params.toString()}`);
 }
 
+/** Video-only history; backend `/users/me/credits/history` reads `video_credit_transactions`. */
 export async function getVideoCreditHistory(limit = 50, offset = 0): Promise<CreditTransaction[]> {
   const history = await getCreditHistory(limit, offset);
-  return history.transactions.filter((transaction) =>
-    (VIDEO_CREDIT_TRANSACTION_TYPES as readonly string[]).includes(transaction.transaction_type)
-  );
+  return history.transactions;
 }
 
 export async function getReferralRewardHistory(
   limit = 50,
   offset = 0
 ): Promise<CreditTransaction[]> {
-  const history = await getCreditHistory(limit, offset);
-  return history.transactions.filter((transaction) =>
-    (REFERRAL_REWARD_TRANSACTION_TYPES as readonly string[]).includes(transaction.transaction_type)
-  );
+  const params = new URLSearchParams({
+    limit: String(limit),
+    offset: String(offset),
+  });
+  const response = await request<{
+    transactions: CreditTransaction[];
+  }>(`/referrals/rewards/history?${params.toString()}`);
+  return response.transactions;
 }
 
 export async function getProjectVideos(projectId: string): Promise<ProjectVideosResponse> {

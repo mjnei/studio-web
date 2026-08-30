@@ -26,7 +26,7 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   getCreditStatus,
-  getVideoCreditHistory,
+  getCreditHistory,
   type CreditStatus,
   type CreditTransaction,
 } from "@/lib/credit-client";
@@ -52,10 +52,10 @@ export default function BillingPage() {
     const loadData = async () => {
       setIsLoading(true);
       try {
-        const [status, history] = await Promise.all([getCreditStatus(), getVideoCreditHistory(10)]);
+        const [status, history] = await Promise.all([getCreditStatus(), getCreditHistory(10)]);
         if (isMounted) {
           setCreditStatus(status);
-          setTransactions(history);
+          setTransactions(history.transactions);
         }
       } catch (error) {
         console.error("Failed to load billing data:", error);
@@ -87,9 +87,9 @@ export default function BillingPage() {
     try {
       await gimmeCredits();
       // Refresh credit status to show updated credits
-      const [status, history] = await Promise.all([getCreditStatus(), getVideoCreditHistory(10)]);
+      const [status, history] = await Promise.all([getCreditStatus(), getCreditHistory(10)]);
       setCreditStatus(status);
-      setTransactions(history);
+      setTransactions(history.transactions);
       setCreditsSuccess(true);
       setShowCreditsConfirm(false);
       // Clear success message after 3 seconds
