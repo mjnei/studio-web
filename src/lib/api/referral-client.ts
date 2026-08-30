@@ -100,18 +100,33 @@ export interface ReferralProgramSettings {
   fraud_thresholds: Record<string, number>;
 }
 
+export interface FraudEventDetails {
+  reason?: string;
+  context?: string;
+  existing_referrer_id?: number;
+  attempted_referrer_id?: number;
+  code_valid?: boolean;
+  is_own_code?: boolean;
+  error?: string;
+  is_comeback_user?: boolean;
+  [key: string]: unknown;
+}
+
 export interface FraudEventSummary {
   id: number;
   event_type: string;
   user_id: number | null;
   ip_address: string | null;
   referral_code: string | null;
+  details: FraudEventDetails;
   created_at: string;
 }
 
 export interface ReferralFraudStats {
   total_events: number;
   events_by_type: Record<string, number>;
+  event_type_labels: Record<string, string>;
+  event_categories: Record<string, string>;
   flagged_relationships: number;
   recent_events: FraudEventSummary[];
 }

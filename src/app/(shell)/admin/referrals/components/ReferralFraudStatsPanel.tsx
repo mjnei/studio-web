@@ -2,30 +2,62 @@
 
 import { Heading } from "@/components/ui/heading";
 import { AlertTriangle, ShieldAlert } from "lucide-react";
-import type { ReferralFraudStats } from "@/lib/api/referral-client";
+import type { FraudEventDetails, ReferralFraudStats } from "@/lib/api/referral-client";
 
 interface ReferralFraudStatsPanelProps {
   fraud: ReferralFraudStats;
 }
 
-const EVENT_TYPE_LABELS: Record<string, string> = {
+const FALLBACK_EVENT_TYPE_LABELS: Record<string, string> = {
   rate_limit_exceeded: "User referral rate limit",
   ip_rate_limit: "IP signup rate limit",
   referral_creation_failed: "Referral creation blocked",
-  suspicious_payment: "Suspicious payment",
   self_referral_attempt: "Self-referral attempt",
   duplicate_referee: "Duplicate referee",
   referral_code_ignored_existing_user: "Referral code at login (existing user)",
   referral_code_ignored_already_referred: "Referral code rejected (already referred)",
 };
 
-function formatEventType(eventType: string): string {
-  return EVENT_TYPE_LABELS[eventType] ?? eventType.replaceAll("_", " ");
+function formatEventType(eventType: string, labels?: Record<string, string>): string {
+  return labels?.[eventType] ?? FALLBACK_EVENT_TYPE_LABELS[eventType] ?? eventType.replaceAll("_", " ");
+}
+
+function formatEventDetails(details?: FraudEventDetails): string {
+  if (!details || Object.keys(details).length === 0) {
+    return "—";
+  }
+
+  const parts: string[] = [];
+
+  if (typeof details.context === "string") {
+    parts.push(`context: ${details.context}`);
+  }
+  if (typeof details.existing_referrer_id === "number") {
+    parts.push(`existing referrer #${details.existing_referrer_id}`);
+  }
+  if (typeof details.attempted_referrer_id === "number") {
+    parts.push(`attempted referrer #${details.attempted_referrer_id}`);
+  }
+  if (typeof details.code_valid === "boolean") {
+    parts.push(details.code_valid ? "valid code" : "invalid code");
+  }
+  if (details.is_own_code === true) {
+    parts.push("own code");
+  }
+  if (typeof details.error === "string") {
+    parts.push(details.error);
+  }
+  if (typeof details.reason === "string" && parts.length === 0) {
+    parts.push(details.reason);
+  }
+
+  return parts.length > 0 ? parts.join(" · ") : "—";
 }
 
 export function ReferralFraudStatsPanel({ fraud }: ReferralFraudStatsPanelProps) {
   const eventTypes = Object.entries(fraud.events_by_type).sort(([, a], [, b]) => b - a);
   const totalForPercent = fraud.total_events || 1;
+  const eventTypeLabels = fraud.event_type_labels;
 
   return (
     <div className="space-y-4">
@@ -85,7 +117,7 @@ export function ReferralFraudStatsPanel({ fraud }: ReferralFraudStatsPanelProps)
                 <div key={eventType} className="space-y-1">
                   <div className="flex items-center justify-between text-body">
                     <span className="font-medium text-text-primary">
-                      {formatEventType(eventType)}
+                      {formatEventType(eventType, eventTypeLabels)}
                     </span>
                     <span className="text-text-muted">
                       {count.toLocaleString()} ({percentage.toFixed(1)}%)
@@ -112,11 +144,12 @@ export function ReferralFraudStatsPanel({ fraud }: ReferralFraudStatsPanelProps)
           <p className="text-body text-text-muted">No fraud events recorded in this range.</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[640px] text-left text-body">
+            <table className="w-full min-w-[760px] text-left text-body">
               <thead>
                 <tr className="border-b border-border-default text-caption uppercase tracking-wider text-text-muted">
                   <th className="px-3 py-2 font-medium">Time</th>
                   <th className="px-3 py-2 font-medium">Event</th>
+                  <th className="px-3 py-2 font-medium">Details</th>
                   <th className="px-3 py-2 font-medium">User</th>
                   <th className="px-3 py-2 font-medium">IP</th>
                   <th className="px-3 py-2 font-medium">Code</th>
@@ -129,7 +162,10 @@ export function ReferralFraudStatsPanel({ fraud }: ReferralFraudStatsPanelProps)
                       {new Date(event.created_at).toLocaleString()}
                     </td>
                     <td className="px-3 py-2 text-text-primary">
-                      {formatEventType(event.event_type)}
+                      {formatEventType(event.event_type, eventTypeLabels)}
+                    </td>
+                    <td className="px-3 py-2 text-caption text-text-secondary">
+                      {formatEventDetails(event.details)}
                     </td>
                     <td className="px-3 py-2 text-text-secondary">
                       {event.user_id ? `#${event.user_id}` : "—"}
