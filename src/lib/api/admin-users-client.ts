@@ -66,7 +66,9 @@ export async function resetAdminUserPassword(userId: number): Promise<AdminPassw
   });
 }
 
-export async function removeAdminUserPicture(userId: number): Promise<AdminUserPictureRemoveResponse> {
+export async function removeAdminUserPicture(
+  userId: number
+): Promise<AdminUserPictureRemoveResponse> {
   return request<AdminUserPictureRemoveResponse>(`/admin/users/${userId}/picture`, {
     method: "DELETE",
   });

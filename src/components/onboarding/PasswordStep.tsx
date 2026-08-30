@@ -219,10 +219,7 @@ export default function PasswordStep({ onNext, onSkip, onBack }: PasswordStepPro
           </div>
 
           <div>
-            <Label
-              htmlFor="confirm-password"
-              className="text-text-primary font-medium mb-1 block"
-            >
+            <Label htmlFor="confirm-password" className="text-text-primary font-medium mb-1 block">
               {t("onboarding.password.confirmPasswordLabel")}
             </Label>
             <PasswordInput

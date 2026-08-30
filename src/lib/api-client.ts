@@ -191,8 +191,7 @@ export async function request<T>(path: string, options: RequestInit = {}): Promi
     // Try to parse JSON error response
     try {
       const errorJson = JSON.parse(errorText);
-      const detail =
-        normalizeApiErrorDetail(errorJson.detail ?? errorJson.message) ?? errorText;
+      const detail = normalizeApiErrorDetail(errorJson.detail ?? errorJson.message) ?? errorText;
       throw new ApiError(res.status, detail);
     } catch (err) {
       if (err instanceof ApiError) throw err;

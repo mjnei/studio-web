@@ -141,9 +141,7 @@ export function UsersTable({ users, isLoading, onView }: UsersTableProps) {
             </div>
 
             <div className="md:col-span-2">
-              <span className="text-body text-text-primary">
-                {user.credits_remaining ?? "—"}
-              </span>
+              <span className="text-body text-text-primary">{user.credits_remaining ?? "—"}</span>
               <p className="text-caption text-text-muted">{user.membership_tier}</p>
             </div>
 

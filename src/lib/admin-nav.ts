@@ -141,8 +141,8 @@ export function getAdminDrawerNavItems(): AdminNavItem[] {
 }
 
 export function getAdminStatNavItems(): AdminNavItem[] {
-  return ADMIN_NAV.filter((item): item is AdminNavItem & { stat: NonNullable<AdminNavItem["stat"]> } =>
-    Boolean(item.stat)
+  return ADMIN_NAV.filter(
+    (item): item is AdminNavItem & { stat: NonNullable<AdminNavItem["stat"]> } => Boolean(item.stat)
   );
 }
 

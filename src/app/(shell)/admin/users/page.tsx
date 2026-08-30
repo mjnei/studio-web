@@ -53,10 +53,7 @@ export default function AdminUsersPage() {
   useEffect(() => {
     let cancelled = false;
 
-    Promise.all([
-      getAdminUserStats(),
-      getAdminUsers(pagination.page, pagination.pageSize, filters),
-    ])
+    Promise.all([getAdminUserStats(), getAdminUsers(pagination.page, pagination.pageSize, filters)])
       .then(([statsData, listData]) => {
         if (cancelled) return;
         setStats(statsData);
@@ -114,10 +111,7 @@ export default function AdminUsersPage() {
       const updated = await updateAdminUserStatus(userId, isActive);
       setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, ...updated } : u)));
       setSelected(updated);
-      toast.success(
-        isActive ? "Account reactivated" : "Account suspended",
-        `User #${userId}`
-      );
+      toast.success(isActive ? "Account reactivated" : "Account suspended", `User #${userId}`);
       const statsData = await getAdminUserStats();
       setStats(statsData);
     } catch (error: unknown) {

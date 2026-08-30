@@ -3,7 +3,17 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useI18n } from "@/i18n";
-import { Copy, Check, Users, Award, Gift, TrendingUp, Share2, Trophy, Sparkles } from "lucide-react";
+import {
+  Copy,
+  Check,
+  Users,
+  Award,
+  Gift,
+  TrendingUp,
+  Share2,
+  Trophy,
+  Sparkles,
+} from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -283,7 +293,9 @@ export default function ReferralPage() {
               <Heading variant="metric" className="text-accent-cyan">
                 {stats.total_invite_rewards_earned}
               </Heading>
-              <p className="text-caption text-text-muted mt-1">{t("referral.stats.referralRewards")}</p>
+              <p className="text-caption text-text-muted mt-1">
+                {t("referral.stats.referralRewards")}
+              </p>
             </div>
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center group-hover:scale-110 transition-transform">
               <Award className="h-6 w-6 text-white" />
