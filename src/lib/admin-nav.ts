@@ -2,6 +2,7 @@ import {
   Activity,
   BarChart3,
   Film,
+  Gift,
   Layers,
   Mic,
   Play,
@@ -130,6 +131,15 @@ export const ADMIN_NAV: AdminNavItem[] = [
     showOnDashboard: true,
     dashboardTitle: "Audit Logs",
     dashboardDescription: "Search compliance logs with filters, stats, and CSV export",
+  },
+  {
+    href: "/admin/referrals",
+    labelKey: "shell.adminReferrals",
+    icon: Gift,
+    showInDrawer: true,
+    showOnDashboard: true,
+    dashboardTitle: "Referrals",
+    dashboardDescription: "Monitor referral analytics, signup mix, and fraud detection",
   },
 ];
 

@@ -82,6 +82,8 @@ export interface AdminAnalyticsResponse {
   total_referral_relationships: number;
   total_invite_rewards_distributed: number;
   average_referrals_per_user: number;
+  total_users: number;
+  average_referrals_per_all_users: number;
   fraud_alerts_count: number;
   referrals_by_level: Record<string, number>;
   date_range: {
@@ -92,6 +94,32 @@ export interface AdminAnalyticsResponse {
 
 export interface ReferralConfigResponse {
   parameters: Record<string, number>;
+}
+
+export interface ReferralProgramSettings {
+  fraud_thresholds: Record<string, number>;
+}
+
+export interface FraudEventSummary {
+  id: number;
+  event_type: string;
+  user_id: number | null;
+  ip_address: string | null;
+  referral_code: string | null;
+  created_at: string;
+}
+
+export interface ReferralFraudStats {
+  total_events: number;
+  events_by_type: Record<string, number>;
+  flagged_relationships: number;
+  recent_events: FraudEventSummary[];
+}
+
+export interface AdminReferralOverviewResponse {
+  analytics: AdminAnalyticsResponse;
+  fraud: ReferralFraudStats;
+  program: ReferralProgramSettings;
 }
 
 // ============================================================================
@@ -158,6 +186,23 @@ export async function getMyReferralStats(): Promise<ReferralStatsResponse> {
 // ============================================================================
 
 /**
+ * Get referral program admin overview (analytics, fraud stats, program settings)
+ */
+export async function getAdminReferralOverview(params: {
+  start_date?: string;
+  end_date?: string;
+}): Promise<AdminReferralOverviewResponse> {
+  const queryParams = new URLSearchParams();
+  if (params.start_date) queryParams.append("start_date", params.start_date);
+  if (params.end_date) queryParams.append("end_date", params.end_date);
+
+  const query = queryParams.toString();
+  return request<AdminReferralOverviewResponse>(
+    `/referrals/admin/overview${query ? `?${query}` : ""}`
+  );
+}
+
+/**
  * Get referral program analytics (admin only)
  */
 export async function getAdminAnalytics(params: {
@@ -169,14 +214,14 @@ export async function getAdminAnalytics(params: {
   if (params.end_date) queryParams.append("end_date", params.end_date);
 
   const query = queryParams.toString();
-  return request<AdminAnalyticsResponse>(`/admin/referrals/analytics${query ? `?${query}` : ""}`);
+  return request<AdminAnalyticsResponse>(`/referrals/admin/analytics${query ? `?${query}` : ""}`);
 }
 
 /**
  * Flag a referral for fraud review (admin only)
  */
 export async function flagReferral(referralId: number, reason: string): Promise<void> {
-  await request<void>(`/admin/referrals/flag/${referralId}`, {
+  await request<void>(`/referrals/admin/flag/${referralId}`, {
     method: "POST",
     body: JSON.stringify({ reason }),
   });
@@ -186,7 +231,7 @@ export async function flagReferral(referralId: number, reason: string): Promise<
  * Approve a flagged referral (admin only)
  */
 export async function approveReferral(referralId: number): Promise<void> {
-  await request<void>(`/admin/referrals/approve/${referralId}`, {
+  await request<void>(`/referrals/admin/approve/${referralId}`, {
     method: "POST",
   });
 }
@@ -195,7 +240,7 @@ export async function approveReferral(referralId: number): Promise<void> {
  * Get referral program configuration (admin only)
  */
 export async function getAdminConfig(): Promise<ReferralConfigResponse> {
-  return request<ReferralConfigResponse>("/admin/referrals/config");
+  return request<ReferralConfigResponse>("/referrals/admin/config");
 }
 
 /**
@@ -205,7 +250,7 @@ export async function updateAdminConfig(
   parameter_name: string,
   parameter_value: number
 ): Promise<ReferralConfigResponse> {
-  return request<ReferralConfigResponse>("/admin/referrals/config", {
+  return request<ReferralConfigResponse>("/referrals/admin/config", {
     method: "PATCH",
     body: JSON.stringify({ parameter_name, parameter_value }),
   });

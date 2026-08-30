@@ -54,7 +54,7 @@ export default function AdminPage() {
     <div className="mx-auto max-w-7xl">
       <PageHeader
         title="Admin Dashboard"
-        description="Manage movies, voices, users, queues, TTS jobs, and audit logs"
+        description="Manage movies, voices, users, referrals, queues, TTS jobs, and audit logs"
       />
 
       {error && (
