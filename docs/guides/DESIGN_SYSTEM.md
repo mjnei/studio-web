@@ -553,10 +553,11 @@ import { Tooltip } from "@/components/ui/tooltip";
 
 - **File**: `src/components/ui/modal.tsx`
 - **Components**: `Modal`, `ConfirmModal`, `FormModal`, `AlertModal`
-- **Sizes**: sm, md, lg, xl, full
+- **Sizes**: sm, md, lg, xl, 2xl, 3xl, full
 - **Variants**: default, danger, success
 - **Features**: Backdrop click to close, keyboard escape support, customizable footer
 - **Usage**: Dialogs, confirmations, forms, alerts
+- **Catalog**: [MODALS.md](./MODALS.md) — feature modals, admin vs consumer routes, dismiss policy
 
 ```tsx
 import { Modal, ConfirmModal, FormModal } from "@/components/ui/modal";

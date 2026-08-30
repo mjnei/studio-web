@@ -2,6 +2,8 @@
 
 Shared modal for capturing a short voice clip, reviewing it, and uploading it as a custom voice. Used on the voices page and project voice page.
 
+**Dismiss policy and route map:** [MODALS.md](./MODALS.md#voicerecordingmodal)
+
 **Source:** `src/components/shared/voice-recording-modal/`
 
 **Import:**
