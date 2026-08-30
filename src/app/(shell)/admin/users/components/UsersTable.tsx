@@ -2,7 +2,7 @@
 
 import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
-import { Eye } from "lucide-react";
+import { Eye, User } from "lucide-react";
 import type { AdminUser } from "@/types/admin";
 
 interface UsersTableProps {
@@ -21,6 +21,35 @@ function formatRelativeTime(dateString: string | null | undefined): string {
   if (diffDays < 7) return `${diffDays} days ago`;
   if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
   return `${Math.floor(diffDays / 30)} months ago`;
+}
+
+function UserAvatar({ user }: { user: AdminUser }) {
+  if (user.picture_url) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element -- presigned S3 URLs use dynamic hosts
+      <img
+        src={user.picture_url}
+        alt={user.name}
+        className="h-9 w-9 shrink-0 rounded-full object-cover ring-2 ring-border-default"
+        width={36}
+        height={36}
+      />
+    );
+  }
+
+  const initials = user.name
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
+  return (
+    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent-primary/10 text-caption font-semibold text-accent-primary">
+      {initials || <User className="h-4 w-4" aria-hidden />}
+    </span>
+  );
 }
 
 function RoleBadge({ role }: { role: string }) {
@@ -93,11 +122,14 @@ export function UsersTable({ users, isLoading, onView }: UsersTableProps) {
             key={user.id}
             className="grid grid-cols-1 gap-3 px-4 py-4 md:grid-cols-12 md:items-center"
           >
-            <div className="md:col-span-3">
-              <Heading variant="label" as="h3" className="text-text-primary">
-                {user.name}
-              </Heading>
-              <p className="mt-0.5 text-caption text-text-muted">{user.email}</p>
+            <div className="flex items-center gap-3 md:col-span-3">
+              <UserAvatar user={user} />
+              <div className="min-w-0">
+                <Heading variant="label" as="h3" className="truncate text-text-primary">
+                  {user.name}
+                </Heading>
+                <p className="mt-0.5 truncate text-caption text-text-muted">{user.email}</p>
+              </div>
             </div>
 
             <div className="md:col-span-2">

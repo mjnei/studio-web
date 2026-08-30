@@ -4,7 +4,7 @@ import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { useToast } from "@/components/ui/toast";
-import { Copy, KeyRound, Trash2, X } from "lucide-react";
+import { ChevronDown, Copy, KeyRound, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import type { AdminUser, AdminUserRole } from "@/types/admin";
 
@@ -127,24 +127,8 @@ export function UserDetailModal({
         <div className="space-y-4 px-5 py-4 text-body">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <p className="text-caption uppercase tracking-wider text-text-muted">User ID</p>
-              <p className="mt-1 text-text-primary">{user.id}</p>
-            </div>
-            <div>
-              <p className="text-caption uppercase tracking-wider text-text-muted">Provider</p>
-              <p className="mt-1 text-text-primary">{user.provider}</p>
-            </div>
-            <div>
-              <p className="text-caption uppercase tracking-wider text-text-muted">Credits</p>
-              <p className="mt-1 text-text-primary">{user.credits_remaining ?? "—"}</p>
-            </div>
-            <div>
               <p className="text-caption uppercase tracking-wider text-text-muted">Projects</p>
               <p className="mt-1 text-text-primary">{user.project_count}</p>
-            </div>
-            <div>
-              <p className="text-caption uppercase tracking-wider text-text-muted">Tier</p>
-              <p className="mt-1 text-text-primary">{user.membership_tier}</p>
             </div>
             <div>
               <p className="text-caption uppercase tracking-wider text-text-muted">
@@ -152,11 +136,11 @@ export function UserDetailModal({
               </p>
               <p className="mt-1 text-text-primary">{user.referral_balance ?? 0}</p>
             </div>
-            <div className="col-span-2">
+            <div>
               <p className="text-caption uppercase tracking-wider text-text-muted">Referred by</p>
               <p className="mt-1 text-text-primary">{referrerLabel}</p>
             </div>
-            <div className="col-span-2">
+            <div>
               <p className="text-caption uppercase tracking-wider text-text-muted">Referral code</p>
               <div className="mt-1 flex items-center gap-2">
                 <p className="font-mono text-text-primary">{user.referral_code}</p>
@@ -172,19 +156,44 @@ export function UserDetailModal({
                 </Button>
               </div>
             </div>
-            <div>
-              <p className="text-caption uppercase tracking-wider text-text-muted">Last login</p>
-              <p className="mt-1 text-text-primary">
-                {user.last_login_at ? new Date(user.last_login_at).toLocaleString() : "Never"}
-              </p>
-            </div>
-            <div>
-              <p className="text-caption uppercase tracking-wider text-text-muted">Joined</p>
-              <p className="mt-1 text-text-primary">
-                {new Date(user.created_at).toLocaleString()}
-              </p>
-            </div>
           </div>
+
+          <details className="group rounded-xl border border-border-default bg-surface-raised">
+            <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-caption font-semibold uppercase tracking-wider text-text-muted marker:content-none">
+              <span>Account details</span>
+              <ChevronDown className="h-4 w-4 transition-transform group-open:rotate-180" />
+            </summary>
+            <div className="grid grid-cols-2 gap-3 border-t border-border-default px-4 py-3">
+              <div>
+                <p className="text-caption uppercase tracking-wider text-text-muted">User ID</p>
+                <p className="mt-1 text-text-primary">{user.id}</p>
+              </div>
+              <div>
+                <p className="text-caption uppercase tracking-wider text-text-muted">Credits</p>
+                <p className="mt-1 text-text-primary">{user.credits_remaining ?? "—"}</p>
+              </div>
+              <div>
+                <p className="text-caption uppercase tracking-wider text-text-muted">Provider</p>
+                <p className="mt-1 text-text-primary">{user.provider}</p>
+              </div>
+              <div>
+                <p className="text-caption uppercase tracking-wider text-text-muted">Tier</p>
+                <p className="mt-1 text-text-primary">{user.membership_tier}</p>
+              </div>
+              <div>
+                <p className="text-caption uppercase tracking-wider text-text-muted">Last login</p>
+                <p className="mt-1 text-text-primary">
+                  {user.last_login_at ? new Date(user.last_login_at).toLocaleString() : "Never"}
+                </p>
+              </div>
+              <div>
+                <p className="text-caption uppercase tracking-wider text-text-muted">Joined</p>
+                <p className="mt-1 text-text-primary">
+                  {new Date(user.created_at).toLocaleString()}
+                </p>
+              </div>
+            </div>
+          </details>
 
           {!user.is_deleted && (
             <>
@@ -236,6 +245,17 @@ export function UserDetailModal({
                     {resetting ? "Generating…" : "Reset password"}
                   </Button>
                 )}
+
+                <Button
+                  type="button"
+                  variant="danger"
+                  size="sm"
+                  disabled={deleting}
+                  leftIcon={<Trash2 className="h-4 w-4" />}
+                  onClick={() => void handleDelete()}
+                >
+                  {deleting ? "Deleting…" : "Delete user"}
+                </Button>
               </div>
 
               {resetLink && (
@@ -256,22 +276,6 @@ export function UserDetailModal({
                   </Button>
                 </div>
               )}
-
-              <div className="border-t border-border-default pt-4">
-                <Button
-                  type="button"
-                  variant="danger"
-                  size="sm"
-                  disabled={deleting}
-                  leftIcon={<Trash2 className="h-4 w-4" />}
-                  onClick={() => void handleDelete()}
-                >
-                  {deleting ? "Deleting…" : "Permanently delete user"}
-                </Button>
-                <p className="mt-2 text-caption text-text-muted">
-                  Removes all projects, voices, tokens, and Firebase auth. Cannot be undone.
-                </p>
-              </div>
             </>
           )}
         </div>
