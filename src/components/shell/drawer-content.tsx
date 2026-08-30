@@ -14,12 +14,14 @@ import {
   Search,
   CreditCard,
   Activity,
+  Crown,
   type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { useIsAdmin } from "@/lib/hooks/use-admin";
 import { useI18n } from "@/i18n";
+import { Badge } from "@/components/ui/badge";
 import { Icon } from "@/components/ui/icon";
 import { UserAvatar } from "@/components/ui/UserAvatar";
 import { getAdminDrawerNavItems, isAdminNavActive } from "@/lib/admin-nav";
@@ -153,6 +155,10 @@ function UserSection({ collapsed, onNavigate }: { collapsed?: boolean; onNavigat
   const { t } = useI18n();
   const displayName = user?.name || t("common.unknown");
   const displayEmail = user?.email || "";
+  const membershipTier = user?.membership_tier || "free";
+  const tierLabel = t(`profile.membershipBilling.tiers.${membershipTier}`);
+  const isPaidTier = membershipTier !== "free";
+  const tierBadgeVariant = isPaidTier ? "success" : "default";
 
   return (
     <div
@@ -163,28 +169,46 @@ function UserSection({ collapsed, onNavigate }: { collapsed?: boolean; onNavigat
       <Link
         href="/profile"
         onClick={onNavigate}
+        title={collapsed ? tierLabel : undefined}
         className={`flex items-center gap-3 lg:gap-2.5 rounded-lg text-body transition-all focus-ring ${
           collapsed
             ? "justify-center p-0"
             : "px-3 py-2.5 hover:bg-surface-hover border border-transparent hover:border-border-default lg:px-2.5 lg:py-2"
         }`}
       >
-        <UserAvatar
-          seed={user?.id ?? "guest"}
-          name={displayName}
-          email={displayEmail}
-          pictureUrl={user?.picture_url}
-          width={40}
-          height={40}
-          initialsLength={1}
-          ringWidth={2}
-          className="h-10 w-10 rounded-full text-body shadow-lg"
-          imageClassName="h-10 w-10 rounded-full object-cover ring-2 ring-accent-primary/20"
-        />
+        <div className="relative shrink-0">
+          <UserAvatar
+            seed={user?.id ?? "guest"}
+            name={displayName}
+            email={displayEmail}
+            pictureUrl={user?.picture_url}
+            width={40}
+            height={40}
+            initialsLength={1}
+            ringWidth={2}
+            className="h-10 w-10 rounded-full text-body shadow-lg"
+            imageClassName="h-10 w-10 rounded-full object-cover ring-2 ring-accent-primary/20"
+          />
+          {collapsed && (
+            <span
+              className={`absolute -bottom-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full shadow-sm ${
+                isPaidTier
+                  ? "bg-accent-cyan text-white"
+                  : "border border-border-default bg-surface-elevated text-text-muted"
+              }`}
+              aria-hidden
+            >
+              <Crown className="h-2.5 w-2.5" />
+            </span>
+          )}
+        </div>
         {!collapsed && (
-          <div className="flex-1 overflow-hidden">
+          <div className="min-w-0 flex-1 overflow-hidden">
             <p className="truncate text-body font-medium text-text-primary">{displayName}</p>
-            <p className="truncate text-caption text-text-secondary">{displayEmail}</p>
+            <Badge variant={tierBadgeVariant} size="sm" className="mt-1">
+              <Crown className="mr-0.5 h-3 w-3" />
+              {tierLabel}
+            </Badge>
           </div>
         )}
       </Link>

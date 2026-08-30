@@ -17,7 +17,6 @@ import {
   Sparkles,
   AlertTriangle,
   Settings,
-  CreditCard,
   KeyRound,
   CheckCircle2,
 } from "lucide-react";
@@ -295,35 +294,6 @@ export default function ProfilePage() {
             </div>
           </Card>
 
-          {/* Quick Subscription Overview Card */}
-          <Card variant="glass" padding="md" className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Crown className="h-4 w-4 text-accent-cyan" />
-                <Text variant="caption" className="font-semibold text-text-primary">
-                  {t("profile.membershipBilling.currentPlan")}
-                </Text>
-              </div>
-              <Badge variant={isFreeUser ? "default" : "success"} size="sm">
-                {tierLabel}
-              </Badge>
-            </div>
-            <div className="flex items-center justify-between gap-2 pt-2 border-t border-border-default">
-              <Link href="/pricing" className="flex-1">
-                <Button variant="outline" size="sm" className="w-full">
-                  {isFreeUser
-                    ? t("profile.membershipBilling.upgradePlan")
-                    : t("profile.membershipBilling.viewAllPlans")}
-                </Button>
-              </Link>
-              <Link href="/billing" className="flex-1">
-                <Button variant="ghost" size="sm" className="w-full">
-                  <CreditCard className="h-3.5 w-3.5 mr-1" />
-                  {t("profile.upgradeBanner.billing")}
-                </Button>
-              </Link>
-            </div>
-          </Card>
         </div>
 
         {/* Right Column (8 cols): Detailed Management Cards */}
@@ -355,19 +325,11 @@ export default function ProfilePage() {
                     </Text>
                   </div>
                 </div>
-                <div className="flex flex-row flex-wrap items-center gap-2 shrink-0 w-full sm:w-auto">
-                  <Link href="/pricing" className="flex-1 sm:flex-none">
-                    <Button variant="primary" size="sm" className="w-full">
-                      {t("profile.upgradeBanner.viewPlans")}
-                    </Button>
-                  </Link>
-                  <Link href="/billing" className="flex-1 sm:flex-none">
-                    <Button variant="secondary" size="sm" className="w-full">
-                      <CreditCard className="h-3.5 w-3.5 mr-1" />
-                      {t("profile.upgradeBanner.billing")}
-                    </Button>
-                  </Link>
-                </div>
+                <Link href="/pricing" className="shrink-0 w-full sm:w-auto">
+                  <Button variant="primary" size="sm" className="w-full sm:w-auto">
+                    {t("profile.upgradeBanner.viewPlans")}
+                  </Button>
+                </Link>
               </div>
             </Card>
           )}
@@ -457,93 +419,6 @@ export default function ProfilePage() {
                   <span>{t("profile.accountOverview.profileUpdatedSuccess")}</span>
                 </div>
               )}
-            </CardContent>
-          </Card>
-
-          {/* Membership & Billing */}
-          <Card variant="glass" padding="lg">
-            <CardHeader>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent-cyan to-blue-500 flex items-center justify-center shadow-sm shrink-0">
-                  <Crown className="h-5 w-5 text-white" />
-                </div>
-                <div>
-                  <CardTitle>{t("profile.membershipBilling.title")}</CardTitle>
-                  <CardDescription>{t("profile.membershipBilling.description")}</CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="rounded-xl border border-border-default bg-surface-raised p-4 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Text variant="caption" className="text-text-muted">
-                        {t("profile.membershipBilling.currentPlan")}
-                      </Text>
-                      <Heading variant="subsection" className="capitalize mt-0.5 text-text-primary">
-                        {tierLabel}
-                      </Heading>
-                    </div>
-                    {user.subscription_status && (
-                      <Badge
-                        variant={
-                          user.subscription_status === "active"
-                            ? "success"
-                            : user.subscription_status === "canceled"
-                              ? "warning"
-                              : "error"
-                        }
-                        size="md"
-                      >
-                        {subscriptionStatusLabel}
-                      </Badge>
-                    )}
-                  </div>
-                  {user.subscription_start_date && (
-                    <p className="text-caption text-text-muted">
-                      {t("profile.membershipBilling.activeSince")}{" "}
-                      {new Date(user.subscription_start_date).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    </p>
-                  )}
-                  {user.subscription_end_date && (
-                    <p className="text-caption text-text-muted">
-                      {user.subscription_status === "canceled"
-                        ? t("profile.membershipBilling.expiresOn")
-                        : t("profile.membershipBilling.renewsOn")}{" "}
-                      {new Date(user.subscription_end_date).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    </p>
-                  )}
-                </div>
-
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                  <Link href="/pricing" className="w-full sm:w-auto">
-                    <Button variant="primary" size="md" className="w-full sm:w-auto">
-                      {isFreeUser
-                        ? t("profile.membershipBilling.upgradePlan")
-                        : t("profile.membershipBilling.viewAllPlans")}
-                    </Button>
-                  </Link>
-                  <Link href="/billing" className="w-full sm:w-auto">
-                    <Button
-                      variant="secondary"
-                      size="md"
-                      leftIcon={<CreditCard className="h-4 w-4" />}
-                      className="w-full sm:w-auto"
-                    >
-                      {t("profile.membershipBilling.manageBilling")}
-                    </Button>
-                  </Link>
-                </div>
-              </div>
             </CardContent>
           </Card>
 
