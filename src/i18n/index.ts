@@ -11,5 +11,6 @@ export {
   getVoiceLanguageTranslationKey,
   resolveStoredLocale,
   resolveTtsLanguage,
+  isChineseLocale,
   type Locale,
 } from "./config";

@@ -1,7 +1,14 @@
 "use client";
 
 import { ChevronDown } from "lucide-react";
-import { useI18n, locales, localeNames, defaultLocale, normalizeLocale } from "@/i18n";
+import {
+  useI18n,
+  locales,
+  localeNames,
+  defaultLocale,
+  normalizeLocale,
+  isChineseLocale,
+} from "@/i18n";
 
 interface LanguageSwitcherProps {
   /** On small screens, show only the locale symbol in the closed control (top nav). */
@@ -21,18 +28,25 @@ export function LanguageSwitcher({ compactOnSmallScreens = false }: LanguageSwit
           compactOnSmallScreens ? "max-md:text-transparent max-md:w-11 max-md:px-2" : ""
         }`}
       >
-        {locales.map((loc) => (
-          <option key={loc} value={loc} className="bg-surface-raised text-text-primary">
-            {localeNames[loc].flag} {localeNames[loc].name}
-          </option>
-        ))}
+        {locales.map((loc) => {
+          const { flag, name } = localeNames[loc];
+          return (
+            <option key={loc} value={loc} className="bg-surface-raised text-text-primary">
+              {flag} {name}
+            </option>
+          );
+        })}
       </select>
       {compactOnSmallScreens && (
         <div
           className="pointer-events-none absolute inset-y-0 left-0 flex w-11 items-center justify-center text-body leading-none md:hidden"
           aria-hidden
         >
-          {localeNames[locale].flag}
+          <span
+            className={`leading-none ${isChineseLocale(locale) ? "text-sm" : "text-base"}`}
+          >
+            {localeNames[locale].flag}
+          </span>
         </div>
       )}
       <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-text-secondary">

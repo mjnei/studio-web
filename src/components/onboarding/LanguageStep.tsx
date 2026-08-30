@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Check, Globe } from "lucide-react";
 import { updateUser } from "@/lib/api-client";
-import { useI18n, locales, localeNames } from "@/i18n";
+import { useI18n, locales, localeNames, isChineseLocale } from "@/i18n";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { Button } from "@/components/ui/button";
@@ -96,7 +96,11 @@ export default function LanguageStep({ onNext, onBack }: LanguageStepProps) {
                 }`}
               >
                 <span className="flex items-center gap-2 truncate text-body font-medium">
-                  <span className="text-section leading-none">{flag}</span>
+                  <span
+                    className={`leading-none ${isChineseLocale(loc) ? "text-sm" : "text-base"}`}
+                  >
+                    {flag}
+                  </span>
                   <span className="truncate">{name}</span>
                 </span>
                 {isSelected && (

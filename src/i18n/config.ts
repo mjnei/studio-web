@@ -3,13 +3,13 @@ export type Locale = (typeof locales)[number];
 
 export const localeNames: Record<Locale, { name: string; flag: string }> = {
   en: { name: "English", flag: "🇺🇸" },
-  "zh-CN": { name: "简体中文", flag: "🇨🇳" },
-  "zh-TW": { name: "繁體中文", flag: "🇹🇼" },
-  ja: { name: "日本語", flag: "🇯🇵" },
-  ko: { name: "한국어", flag: "🇰🇷" },
-  de: { name: "Deutsch", flag: "🇩🇪" },
-  fr: { name: "Français", flag: "🇫🇷" },
   es: { name: "Español", flag: "🇪🇸" },
+  fr: { name: "Français", flag: "🇫🇷" },
+  de: { name: "Deutsch", flag: "🇩🇪" },
+  ko: { name: "한국어", flag: "🇰🇷" },
+  ja: { name: "日本語", flag: "🇯🇵" },
+  "zh-CN": { name: "简体中文", flag: "简" },
+  "zh-TW": { name: "繁體中文", flag: "繁" },
 };
 
 export const defaultLocale: Locale = "en";
@@ -100,6 +100,10 @@ export function getVoiceLanguageTranslationKey(language: string | null | undefin
 
 export function getDateLocale(locale: Locale): string {
   return localeToDateLocale[locale] ?? "en-US";
+}
+
+export function isChineseLocale(locale: Locale): boolean {
+  return locale === "zh-CN" || locale === "zh-TW";
 }
 
 /** BCP-47 language for TTS job metadata — prefer voice language, else UI locale. */
