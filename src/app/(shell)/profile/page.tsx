@@ -280,19 +280,8 @@ export default function ProfilePage() {
                 )}
               </div>
 
-              {/* Primary Action & Intuitive Sign Out Button */}
-              <div className="w-full pt-4 border-t border-border-default/60 space-y-2">
-                {!editing && (
-                  <Button
-                    variant="secondary"
-                    size="md"
-                    className="w-full justify-center"
-                    onClick={startEditing}
-                    leftIcon={<Settings className="h-4 w-4" />}
-                  >
-                    {t("profile.accountOverview.edit")}
-                  </Button>
-                )}
+              {/* Sign Out */}
+              <div className="w-full pt-4 border-t border-border-default/60">
                 <Button
                   variant="outline"
                   size="md"
@@ -386,14 +375,27 @@ export default function ProfilePage() {
           {/* Account Overview / Personal Details */}
           <Card variant="glass" padding="lg">
             <CardHeader>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-accent-primary flex items-center justify-center shadow-sm shrink-0">
-                  <User className="h-5 w-5 text-white" />
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-accent-primary flex items-center justify-center shadow-sm shrink-0">
+                    <User className="h-5 w-5 text-white" />
+                  </div>
+                  <div className="min-w-0">
+                    <CardTitle>{t("profile.accountOverview.title")}</CardTitle>
+                    <CardDescription>{t("profile.accountOverview.description")}</CardDescription>
+                  </div>
                 </div>
-                <div>
-                  <CardTitle>{t("profile.accountOverview.title")}</CardTitle>
-                  <CardDescription>{t("profile.accountOverview.description")}</CardDescription>
-                </div>
+                {!editing && (
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    className="shrink-0"
+                    onClick={startEditing}
+                    leftIcon={<Settings className="h-4 w-4" />}
+                  >
+                    {t("profile.accountOverview.edit")}
+                  </Button>
+                )}
               </div>
             </CardHeader>
             <CardContent>
