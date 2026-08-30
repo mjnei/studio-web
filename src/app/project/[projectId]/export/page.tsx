@@ -146,13 +146,12 @@ export default function ExportPage() {
     setSelectedVideoId(null);
   }
 
+  const isProjectNotFound =
+    !isLoading && Boolean(projectError && isProjectNotFoundError(projectError));
+
   React.useEffect(() => {
     if (!projectId || isLoading) return;
-
-    if (projectError && isProjectNotFoundError(projectError)) {
-      setIsLoadingVideos(false);
-      return;
-    }
+    if (isProjectNotFound) return;
 
     let cancelled = false;
 
@@ -190,7 +189,7 @@ export default function ExportPage() {
     return () => {
       cancelled = true;
     };
-  }, [projectId, isLoading, projectError, handleVideoLoadError]);
+  }, [projectId, isLoading, isProjectNotFound, handleVideoLoadError]);
 
   // Listen for video completion notifications
   const { notifications } = useNotifications();
@@ -343,7 +342,7 @@ export default function ExportPage() {
     setShowExportFormatModal(true);
   };
 
-  const isPageLoading = isLoading || isLoadingVideos;
+  const isPageLoading = isLoading || (isLoadingVideos && !isProjectNotFound);
   const completedVideos = videos?.filter((v) => v.status === "completed") || [];
   const processingVideos =
     videos?.filter((v) => v.status === "processing" || v.status === "queued") || [];

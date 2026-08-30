@@ -39,6 +39,17 @@ export const ADMIN_NAV: AdminNavItem[] = [
     showInDrawer: true,
   },
   {
+    href: "/admin/users",
+    labelKey: "shell.adminUsers",
+    icon: Users,
+    showInDrawer: true,
+    stat: {
+      key: "total_users",
+      label: "Total Users",
+      gradient: "from-purple-500 to-pink-500",
+    },
+  },
+  {
     href: "/admin/movies",
     labelKey: "shell.movies",
     icon: Film,
@@ -58,20 +69,6 @@ export const ADMIN_NAV: AdminNavItem[] = [
       key: "active_voices",
       label: "Active Voices",
       gradient: "from-green-500 to-emerald-500",
-    },
-  },
-  {
-    href: "/admin/users",
-    labelKey: "shell.adminUsers",
-    icon: Users,
-    showInDrawer: true,
-    showOnDashboard: true,
-    dashboardTitle: "User Management",
-    dashboardDescription: "Manage accounts, roles, suspension, and access across the platform",
-    stat: {
-      key: "total_users",
-      label: "Total Users",
-      gradient: "from-purple-500 to-pink-500",
     },
   },
   {
