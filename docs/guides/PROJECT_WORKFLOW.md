@@ -186,7 +186,9 @@ Thumbnail / cover studio only — **no video generation**.
 
 Render final video, manage versions, download/share.
 
-**When no completed video:** Pre-flight checklist + Start Generation CTA (credit badge). Checklist items 1–3 are **informational UI**; item 4 (credits) is the real gate when balance &lt; 1. Confirm modal, then `regenerateVideo(projectId)`.
+**When no completed video:** Pre-flight checklist + Start Generation CTA (credit badge), or a **failed-only hero** with inline retry and error summary when all attempts failed. Checklist items 1–3 are **informational UI**; item 4 (credits) is the real gate when balance &lt; 1. Confirm modal, then `regenerateVideo(projectId)`.
+
+**While rendering (no completed video yet):** Waiting hero with compact "4/4 verified" checklist strip + live telemetry (no Start CTA).
 
 **When completed:** Master player, version switcher, download / export-format modal / share (X intent URL; WeChat shows a copied-URL toast).
 

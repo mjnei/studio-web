@@ -23,9 +23,7 @@ import {
   RefreshCw,
   Film,
   Check,
-  CheckCircle2,
   AlertCircle,
-  Clock,
   RotateCcw,
   Sparkles,
   Sliders,
@@ -44,6 +42,10 @@ import { InsufficientCreditsModal } from "@/components/credits/InsufficientCredi
 import { CreditConfirmationModal } from "@/components/credits/CreditConfirmationModal";
 import { useNotifications } from "@/lib/notification-context";
 import { ExportFormatModal } from "@/components/project/ExportFormatModal";
+import { ExportFailedHero } from "@/components/project/ExportFailedHero";
+import { ExportPreflightHero } from "@/components/project/ExportPreflightHero";
+import { ExportRenderingHero } from "@/components/project/ExportRenderingHero";
+import { VideoRenderTelemetry } from "@/components/project/VideoRenderTelemetry";
 import { useI18n, getDateLocale } from "@/i18n";
 import { useStuckAsync } from "@/lib/hooks/use-stuck-async";
 import { isProjectNotFoundError } from "@/lib/notify-project-not-found";
@@ -54,98 +56,6 @@ const RENDER_STUCK_TIMEOUT_MS = 90_000;
 
 function isOptimisticVideoId(id: string) {
   return id.startsWith(OPTIMISTIC_VIDEO_ID_PREFIX);
-}
-
-function RenderStuckBanner({
-  onRefresh,
-  t,
-}: {
-  onRefresh: () => void;
-  t: (key: string) => string;
-}) {
-  return (
-    <div
-      role="alert"
-      className="flex flex-col items-center gap-3 rounded-xl border border-error-border/30 bg-surface-panel p-4 text-center sm:flex-row sm:text-left"
-    >
-      <AlertCircle className="h-5 w-5 shrink-0 text-error-text" aria-hidden />
-      <div className="flex-1">
-        <p className="text-body font-semibold text-text-primary">
-          {t("project.export.processingTimedOut")}
-        </p>
-        <p className="text-caption text-text-secondary">
-          {t("project.export.processingTimedOutDesc")}
-        </p>
-      </div>
-      <Button
-        variant="secondary"
-        size="sm"
-        leftIcon={<RotateCcw className="h-4 w-4" aria-hidden />}
-        onClick={onRefresh}
-        className="shrink-0"
-      >
-        {t("project.export.refreshStatus")}
-      </Button>
-    </div>
-  );
-}
-
-function ProcessingTelemetryList({
-  videos,
-  getStatusLabel,
-  t,
-}: {
-  videos: VideoGenerationResponse[];
-  getStatusLabel: (status: string) => string;
-  t: (key: string, params?: Record<string, string | number>) => string;
-}) {
-  if (videos.length === 0) {
-    return null;
-  }
-
-  return (
-    <div className="space-y-4">
-      {videos.map((video) => (
-        <div
-          key={video.id}
-          className="p-4 rounded-xl bg-surface-raised border border-accent-primary/30 space-y-3"
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Spinner className="h-5 w-5 text-accent-primary shrink-0" />
-              <div>
-                <p className="text-body font-semibold text-text-primary">
-                  {t("project.export.versionOption", { n: video.generation_attempt })}
-                </p>
-                <p className="text-caption text-text-muted">
-                  {video.status === "queued"
-                    ? t("project.export.queuedStatus")
-                    : t("project.export.stitchingStatus")}
-                </p>
-              </div>
-            </div>
-            <Badge variant="primary" size="sm">
-              {getStatusLabel(video.status)}
-            </Badge>
-          </div>
-
-          <div className="grid grid-cols-3 gap-2 text-micro font-medium text-center pt-2 border-t border-border-default">
-            <div className="p-1.5 rounded bg-accent-primary/10 text-accent-primary">
-              {t("project.export.stepQueue")}
-            </div>
-            <div
-              className={`p-1.5 rounded ${video.status === "processing" ? "bg-accent-primary/20 text-accent-primary animate-pulse" : "bg-surface-panel text-text-muted"}`}
-            >
-              {t("project.export.stepStitch")}
-            </div>
-            <div className="p-1.5 rounded bg-surface-panel text-text-muted">
-              {t("project.export.stepEncode")}
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
 }
 
 export default function ExportPage() {
@@ -482,8 +392,17 @@ export default function ExportPage() {
   }
 
   const displayVideo = completedVideos.find((v) => v.id === selectedVideoId) || completedVideos[0];
+  const latestFailedVideo = [...failedVideos].sort(
+    (a, b) => b.generation_attempt - a.generation_attempt
+  )[0];
   const creditsAvailable = creditStatus?.credits_remaining ?? 0;
   const hasCredits = creditsAvailable >= 1;
+  const telemetryProps = {
+    videos: processingVideos,
+    getStatusLabel,
+    showStuckBanner: isRenderStuck,
+    onRefresh: handleRefreshRenderStatus,
+  };
 
   return (
     <>
@@ -663,213 +582,40 @@ export default function ExportPage() {
                 </Button>
               </div>
 
-              {isAwaitingRender && (
-                <div className="mt-6 rounded-xl border border-accent-primary/30 bg-surface-raised p-4 space-y-3">
-                  <Heading
-                    variant="label"
-                    as="h3"
-                    className="text-text-primary flex items-center gap-2"
-                  >
-                    <Clock className="h-4 w-4 text-accent-primary" />
-                    {t("project.export.liveTelemetry")}
-                  </Heading>
-                  <ProcessingTelemetryList
-                    videos={processingVideos}
-                    getStatusLabel={getStatusLabel}
-                    t={t}
-                  />
-                  {isRenderStuck && (
-                    <RenderStuckBanner onRefresh={handleRefreshRenderStatus} t={t} />
-                  )}
-                </div>
-              )}
+              {isAwaitingRender && <VideoRenderTelemetry variant="banner" {...telemetryProps} />}
             </Card>
           ) : isAwaitingRender ? (
-            <Card variant="elevated" padding="lg" className="border-accent-primary/30 shadow-xl">
-              <div className="max-w-2xl mx-auto py-4 space-y-6">
-                <div className="text-center space-y-3">
-                  <div className="flex justify-center">
-                    <Spinner className="h-10 w-10 text-accent-primary" />
-                  </div>
-                  <Heading variant="section" as="h2" className="text-text-primary">
-                    {t("project.export.liveTelemetry")}
-                  </Heading>
-                  <p className="text-body text-text-secondary">
-                    {t("project.export.generationStartedDesc")}
-                  </p>
-                </div>
-                <ProcessingTelemetryList
-                  videos={processingVideos}
-                  getStatusLabel={getStatusLabel}
-                  t={t}
-                />
-                {isRenderStuck && (
-                  <RenderStuckBanner onRefresh={handleRefreshRenderStatus} t={t} />
-                )}
-              </div>
-            </Card>
+            <ExportRenderingHero
+              processingVideos={processingVideos}
+              getStatusLabel={getStatusLabel}
+              movieTitle={state?.movieTitle}
+              voiceName={state?.voiceName}
+              creditsAvailable={creditsAvailable}
+              hasCredits={hasCredits}
+              showStuckBanner={isRenderStuck}
+              onRefresh={handleRefreshRenderStatus}
+            />
+          ) : hasOnlyFailed && latestFailedVideo ? (
+            <ExportFailedHero
+              latestFailedVideo={latestFailedVideo}
+              failedCount={failedVideos.length}
+              movieTitle={state?.movieTitle}
+              voiceName={state?.voiceName}
+              creditsAvailable={creditsAvailable}
+              hasCredits={hasCredits}
+              creditStatus={creditStatus}
+              onRetry={handleGenerateVideo}
+              onOpenDiagnostics={() => setShowDiagnosticsDrawer(true)}
+            />
           ) : (
-            /* Dominant Hero: Pre-Flight Sanity Checklist & Render Engine Deck */
-            <Card
-              variant="elevated"
-              padding="lg"
-              className="border-2 border-accent-primary/40 bg-gradient-to-br from-accent-primary/15 via-surface-panel to-surface-panel shadow-2xl"
-            >
-              <div className="max-w-2xl mx-auto py-4 space-y-8">
-                {/* Header */}
-                <div className="text-center space-y-2">
-                  <div className="flex justify-center">
-                    <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-primary/20 text-accent-primary shadow-glow">
-                      <Video className="h-8 w-8" />
-                    </div>
-                  </div>
-                  <Heading variant="section" as="h2" className="text-text-primary">
-                    {t("project.export.preflightHeading")}
-                  </Heading>
-                  <p className="text-body text-text-secondary max-w-lg mx-auto">
-                    {t("project.export.preflightIntro")}
-                  </p>
-                </div>
-
-                {/* ── 4 Automatic Green Checkmarks Pre-Flight Checklist ── */}
-                <div className="rounded-2xl bg-surface-elevated/90 backdrop-blur-md p-6 border border-border-default shadow-lg space-y-4">
-                  <div className="flex items-center justify-between border-b border-border-default pb-3">
-                    <span className="text-caption font-bold uppercase tracking-wider text-text-muted">
-                      {t("project.export.checklistTitle")}
-                    </span>
-                    <Badge variant="success" size="sm">
-                      <Check className="h-3 w-3 mr-1" />
-                      {t("project.export.checklistVerifiedCount", { passed: 4, total: 4 })}
-                    </Badge>
-                  </div>
-
-                  <div className="space-y-3">
-                    {/* Checkmark 1: Source Footage Linked */}
-                    <div className="flex items-center justify-between p-3.5 rounded-xl bg-surface-base border border-border-default">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500/20 text-green-500 shrink-0">
-                          <CheckCircle2 className="h-5 w-5" />
-                        </div>
-                        <div>
-                          <p className="text-body font-semibold text-text-primary">
-                            {t("project.export.check1Title")}
-                          </p>
-                          <p className="text-caption text-text-muted">
-                            {state?.movieTitle
-                              ? t("project.export.check1DescWithTitle", { title: state.movieTitle })
-                              : t("project.export.check1Desc")}
-                          </p>
-                        </div>
-                      </div>
-                      <Badge variant="success" size="sm">
-                        {t("project.export.statusVerified")}
-                      </Badge>
-                    </div>
-
-                    {/* Checkmark 2: Narrator Audio Ready */}
-                    <div className="flex items-center justify-between p-3.5 rounded-xl bg-surface-base border border-border-default">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500/20 text-green-500 shrink-0">
-                          <CheckCircle2 className="h-5 w-5" />
-                        </div>
-                        <div>
-                          <p className="text-body font-semibold text-text-primary">
-                            {t("project.export.check2Title")}
-                          </p>
-                          <p className="text-caption text-text-muted">
-                            {t("project.export.check2Desc", {
-                              name: state?.voiceName || t("project.export.selectedVoiceFallback"),
-                            })}
-                          </p>
-                        </div>
-                      </div>
-                      <Badge variant="success" size="sm">
-                        {t("project.export.statusReady")}
-                      </Badge>
-                    </div>
-
-                    {/* Checkmark 3: Captions Formatted */}
-                    <div className="flex items-center justify-between p-3.5 rounded-xl bg-surface-base border border-border-default">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500/20 text-green-500 shrink-0">
-                          <CheckCircle2 className="h-5 w-5" />
-                        </div>
-                        <div>
-                          <p className="text-body font-semibold text-text-primary">
-                            {t("project.export.check3Title")}
-                          </p>
-                          <p className="text-caption text-text-muted">
-                            {t("project.export.check3Desc")}
-                          </p>
-                        </div>
-                      </div>
-                      <Badge variant="success" size="sm">
-                        {t("project.export.statusFormatted")}
-                      </Badge>
-                    </div>
-
-                    {/* Checkmark 4: Available User Credits */}
-                    <div className="flex items-center justify-between p-3.5 rounded-xl bg-surface-base border border-border-default">
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={`flex h-8 w-8 items-center justify-center rounded-full shrink-0 ${hasCredits ? "bg-green-500/20 text-green-500" : "bg-error-bg text-error-text"}`}
-                        >
-                          {hasCredits ? (
-                            <CheckCircle2 className="h-5 w-5" />
-                          ) : (
-                            <AlertCircle className="h-5 w-5" />
-                          )}
-                        </div>
-                        <div>
-                          <p className="text-body font-semibold text-text-primary">
-                            {t("project.export.check4Title")}
-                          </p>
-                          <p className="text-caption text-text-muted">
-                            {t("project.export.check4Desc", { count: creditsAvailable })}
-                          </p>
-                        </div>
-                      </div>
-                      <Badge variant={hasCredits ? "success" : "error"} size="sm">
-                        {hasCredits
-                          ? t("project.export.statusSufficient")
-                          : t("project.export.statusLowBalance")}
-                      </Badge>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Dominant Hero Render Trigger */}
-                {!isAwaitingRender && (
-                  <div className="text-center space-y-4">
-                    {creditStatus && (
-                      <div className="flex justify-center">
-                        <CreditUsageIndicator
-                          cost={1}
-                          remainingCredits={creditStatus.credits_remaining}
-                        />
-                      </div>
-                    )}
-
-                    <Button
-                      variant="primary"
-                      size="lg"
-                      leftIcon={<Video className="h-5 w-5" />}
-                      onClick={handleGenerateVideo}
-                      disabled={!hasCredits}
-                      className="w-full max-w-md shadow-glow-hover font-semibold text-body py-4 mx-auto"
-                    >
-                      {`🎬 ${t("project.export.startGenerationCta")}`}
-                    </Button>
-
-                    {!hasCredits && (
-                      <p className="text-caption text-error-text">
-                        {t("project.export.insufficientCredits")}
-                      </p>
-                    )}
-                  </div>
-                )}
-              </div>
-            </Card>
+            <ExportPreflightHero
+              movieTitle={state?.movieTitle}
+              voiceName={state?.voiceName}
+              creditsAvailable={creditsAvailable}
+              hasCredits={hasCredits}
+              creditStatus={creditStatus}
+              onGenerate={handleGenerateVideo}
+            />
           )}
         </div>
       </div>

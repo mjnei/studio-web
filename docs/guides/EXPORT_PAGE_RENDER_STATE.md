@@ -1,7 +1,7 @@
 # Export Page — Video Render State & UI Plan
 
-**Status:** Phase 1–2 implemented (2026-08-30)  
-**Scope:** `src/app/project/[projectId]/export/page.tsx`
+**Status:** Complete (Phases 1–3, 2026-08-30)  
+**Scope:** `src/app/project/[projectId]/export/page.tsx` and `src/components/project/Export*.tsx`, `VideoRenderTelemetry.tsx`
 
 ---
 
