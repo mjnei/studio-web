@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { Locale, defaultLocale, locales } from "./config";
+import { Locale, defaultLocale, resolveStoredLocale } from "./config";
 
 type TranslationValue = string | { [key: string]: TranslationValue };
 type Translations = { [key: string]: TranslationValue };
@@ -36,12 +36,6 @@ const translationFiles = [
 ] as const;
 
 const translationsCache: Record<Locale, Translations> = {} as Record<Locale, Translations>;
-
-/** Transitional shim — remove in Phase 6 after migration window. */
-const LEGACY_UI_LOCALE: Record<string, Locale> = {
-  chs: "zh-CN",
-  cht: "zh-TW",
-};
 
 function deepMerge(target: Translations, source: Translations): Translations {
   const result = { ...target };
@@ -128,10 +122,8 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const rawLocale = localStorage.getItem("locale");
-    if (!rawLocale) return;
-
-    const savedLocale = (LEGACY_UI_LOCALE[rawLocale] ?? rawLocale) as Locale;
-    if (!locales.includes(savedLocale)) return;
+    const savedLocale = resolveStoredLocale(rawLocale);
+    if (!savedLocale) return;
 
     if (rawLocale !== savedLocale) {
       localStorage.setItem("locale", savedLocale);

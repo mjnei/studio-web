@@ -64,7 +64,7 @@ Do not document SSE behavior in this repo. Canonical status for notifications SS
 
 ## Internationalization (i18n)
 
-**Supported languages**: English (en), Simplified Chinese (chs), Traditional Chinese (cht), Japanese (ja), Korean (ko), German (de), French (fr), Spanish (es) — aligned with TMDB catalog locales (`zh-CN`/`zh-TW` via `chs`/`cht`)
+**Supported languages**: English (en), Simplified Chinese (zh-CN), Traditional Chinese (zh-TW), Japanese (ja), Korean (ko), German (de), French (fr), Spanish (es) — BCP-47 codes aligned with TMDB catalog and backend API
 
 **Implementation**: Custom i18n provider using client-side context and translation files in `public/locales/`
 

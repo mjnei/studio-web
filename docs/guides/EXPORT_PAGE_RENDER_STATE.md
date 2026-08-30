@@ -220,7 +220,7 @@ Keeps mental model clear: “generating” on screen = server job state; “subm
 | `project.export.renderingIntro` | Your video is being composed. This usually takes a few minutes. |
 | `project.export.newVersionInProgress` | Version {n} is rendering… |
 
-Add to all 8 locales if new copy is introduced (`en`, `chs`, `cht`, `ja`, `ko`, `de`, `fr`, `es`).
+Add to all 8 locales if new copy is introduced (`en`, `zh-CN`, `zh-TW`, `ja`, `ko`, `de`, `fr`, `es`).
 
 ---
 

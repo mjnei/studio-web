@@ -3,6 +3,7 @@ import {
   getVoiceLanguageTranslationKey,
   locales,
   normalizeVoiceLanguage,
+  resolveStoredLocale,
   voiceLanguageLabelKey,
 } from "../config";
 
@@ -28,5 +29,15 @@ describe("locale codes", () => {
     expect(getVoiceLanguageTranslationKey("zh-CN")).toBe("voices.languages.zhCN");
     expect(getVoiceLanguageTranslationKey("zh-TW")).toBe("voices.languages.zhTW");
     expect(getVoiceLanguageTranslationKey("chs")).toBe("voices.languages.zhCN");
+  });
+
+  it("resolves stored locale with legacy localStorage migration", () => {
+    expect(resolveStoredLocale("chs")).toBe("zh-CN");
+    expect(resolveStoredLocale("cht")).toBe("zh-TW");
+    expect(resolveStoredLocale("zh-CN")).toBe("zh-CN");
+    expect(resolveStoredLocale("zh-TW")).toBe("zh-TW");
+    expect(resolveStoredLocale("en")).toBe("en");
+    expect(resolveStoredLocale("invalid")).toBeNull();
+    expect(resolveStoredLocale(null)).toBeNull();
   });
 });

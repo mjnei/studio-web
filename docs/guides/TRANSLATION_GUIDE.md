@@ -47,9 +47,9 @@ Prefer second person where the locale normally does for apps (`you` / `你` / `�
 
 Agree terms **once per locale**, then reuse everywhere (shell, billing, project flow, toasts). Do not invent synonyms for the same concept.
 
-Canonical English → meaning → current Simplified Chinese (`chs`) reference:
+Canonical English → meaning → current Simplified Chinese (`zh-CN`) reference:
 
-| English key concept | Meaning in product | `chs` (reference) | Notes for other locales |
+| English key concept | Meaning in product | `zh-CN` (reference) | Notes for other locales |
 |---|---|---|---|
 | **Onboarding** | First-run product setup wizard | 新手引导 | Not HR onboarding |
 | **Dashboard** | Main authenticated home | 工作台 | Not “instrument panel” |
@@ -95,7 +95,7 @@ Do not force one word to cover all three if the language distinguishes them.
 ### Placeholders
 
 - Show format or example, not instructions duplicated from the label.
-- Keep examples culturally local when they are names (`张三`, not `John Doe` in `chs`).
+- Keep examples culturally local when they are names (`张三`, not `John Doe` in `zh-CN`).
 
 ### Plurals and grammar
 
@@ -140,7 +140,7 @@ Do not force one word to cover all three if the language distinguishes them.
 ```text
 public/locales/
   en/          # source of truth for keys + English meaning
-  chs/         # Simplified Chinese (reference localization)
+  zh-CN/       # Simplified Chinese (reference localization)
   {locale}/    # one folder per locale code
     common.json
     auth.json
@@ -151,8 +151,7 @@ public/locales/
 ### Locale codes
 
 - Use the codes registered in `src/i18n/config.ts` (`locales`, `localeNames`).
-- Current: `en`, `chs`, `cht`, `ja`, `ko`, `de`, `fr`, `es`.
-- Prefer short product codes consistent with existing style (`chs` / `cht`, not `zh-CN` / `zh-TW`). API/TMDB mapping is in `src/i18n/config.ts` (`localeToApiLocale`).
+- Current: `en`, `zh-CN`, `zh-TW`, `ja`, `ko`, `de`, `fr`, `es` (BCP-47 throughout — UI folders, API, TMDB, voices).
 
 ### Adding a new locale (checklist)
 
@@ -209,16 +208,16 @@ For each locale PR, reviewers should confirm:
 - Source of truth for **keys and product meaning**.
 - Prefer clear product English; avoid idioms that will not travel (`hit the ground running`).
 
-### Simplified Chinese (`chs`)
+### Simplified Chinese (`zh-CN`)
 
 - Reference localization for tone and glossary (see table above).
 - Prefer internet-product phrasing over print/literary Chinese.
 - TTS clones: **音色**; process: **语音合成**; workflow step: **配音** is acceptable.
 - Credits: **额度** only.
 
-### Traditional Chinese (`cht`)
+### Traditional Chinese (`zh-TW`)
 
-- Translate **from English**, not by converting `chs`. Taiwan product wording differs (e.g. 登入 / 影片 / 設定 / 專案 / 點數).
+- Translate **from English**, not by converting `zh-CN`. Taiwan product wording differs (e.g. 登入 / 影片 / 設定 / 專案 / 點數).
 - Credits: **點數** (not Mainland 额度).
 - Voices library: **音色**; workflow step: **配音**; TTS process: **語音合成**.
 
@@ -243,17 +242,17 @@ For each locale PR, reviewers should confirm:
 **Onboarding aria / completion**
 
 - en: `Completing onboarding`
-- chs: `正在完成新手引导` (not `入职流程`)
+- zh-CN: `正在完成新手引导` (not `入职流程`)
 
 **Nav**
 
 - en: `Dashboard` / `Voices` / `Profile` / `Credits`
-- chs: `工作台` / `音色` / `个人中心` / `额度`
+- zh-CN: `工作台` / `音色` / `个人中心` / `额度`
 
 **Validation**
 
 - en: `Name is required`
-- chs: `请填写姓名` (not `名称是必需的`)
+- zh-CN: `请填写姓名` (not `名称是必需的`)
 
 **Credits in pricing**
 

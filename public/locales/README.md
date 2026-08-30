@@ -5,15 +5,15 @@ This directory contains translation files for the Huavoi Studio application.
 ## Supported Languages
 
 - **English (en)**: Default language
-- **Simplified Chinese (chs)**: 简体中文
-- **Traditional Chinese (cht)**: 繁體中文 (Taiwan UI phrasing; maps to TMDB `zh-TW`)
+- **Simplified Chinese (zh-CN)**: 简体中文
+- **Traditional Chinese (zh-TW)**: 繁體中文 (Taiwan UI phrasing)
 - **Japanese (ja)**: 日本語
 - **Korean (ko)**: 한국어
 - **German (de)**: Deutsch
 - **French (fr)**: Français
 - **Spanish (es)**: Español
 
-UI locale → movie API locale helpers live in `src/i18n/config.ts` (`getApiLocale` / `getDateLocale`).
+Locale codes are BCP-47 throughout (UI, API, TMDB, voices). Date formatting helpers live in `src/i18n/config.ts` (`getDateLocale`).
 
 ## Structure
 
@@ -28,7 +28,7 @@ locales/
 │   ├── jobs.json        # Job queue and processing
 │   ├── voices.json      # Voice library and settings
 │   └── shell.json       # Navigation and shell UI
-└── chs/
+└── zh-CN/
     ├── common.json
     ├── auth.json
     ├── project.json
@@ -59,7 +59,7 @@ function MyComponent() {
 ## Adding New Translations
 
 1. Add the key-value pair to the appropriate namespace file in `en/`
-2. Add the corresponding translation to the same namespace file in `chs/`
+2. Add the corresponding translation to the same namespace file in `zh-CN/` (and other locales)
 3. Use the translation key with the `t()` function in your component
 
 Example:
@@ -71,7 +71,7 @@ Example:
   }
 }
 
-// chs/common.json
+// zh-CN/common.json
 {
   "common": {
     "newKey": "新文本"
@@ -95,7 +95,7 @@ function Header() {
 }
 ```
 
-The selected language is persisted in `localStorage` and will be remembered across sessions.
+The selected language is persisted in `localStorage` under key `"locale"` using BCP-47 codes (`zh-CN`, `zh-TW`, etc.). Legacy values (`chs`, `cht`) are migrated automatically on load.
 
 ## ⚠️ Admin Pages
 

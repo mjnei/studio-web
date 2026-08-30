@@ -46,6 +46,19 @@ const VOICE_LANGUAGE_ALIASES: Record<string, Locale> = {
   "zh-hant": "zh-TW",
 };
 
+/** Transitional shim — remove in Phase 6 after migration window. */
+const LEGACY_UI_LOCALE: Record<string, Locale> = {
+  chs: "zh-CN",
+  cht: "zh-TW",
+};
+
+/** Resolve a raw localStorage locale value to a supported locale (with legacy migration). */
+export function resolveStoredLocale(raw: string | null | undefined): Locale | null {
+  if (!raw) return null;
+  const candidate = (LEGACY_UI_LOCALE[raw] ?? raw) as Locale;
+  return locales.includes(candidate) ? candidate : null;
+}
+
 /** Normalize any language input to a supported locale code. */
 export function normalizeVoiceLanguage(language: string | null | undefined): Locale | null {
   if (!language) return null;

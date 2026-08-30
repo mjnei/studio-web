@@ -8,5 +8,6 @@ export {
   getDateLocale,
   normalizeVoiceLanguage,
   getVoiceLanguageTranslationKey,
+  resolveStoredLocale,
   type Locale,
 } from "./config";
