@@ -3,7 +3,8 @@
 import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
-import { Copy, KeyRound, X } from "lucide-react";
+import { useToast } from "@/components/ui/toast";
+import { Copy, KeyRound, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import type { AdminUser, AdminUserRole } from "@/types/admin";
 
@@ -14,6 +15,7 @@ interface UserDetailModalProps {
   onRoleChange: (userId: number, role: AdminUserRole) => Promise<void>;
   onStatusChange: (userId: number, isActive: boolean) => Promise<void>;
   onResetPassword: (userId: number) => Promise<string | null>;
+  onDelete: (user: AdminUser) => Promise<void>;
 }
 
 const ROLES: AdminUserRole[] = ["user", "admin"];
@@ -25,12 +27,15 @@ export function UserDetailModal({
   onRoleChange,
   onStatusChange,
   onResetPassword,
+  onDelete,
 }: UserDetailModalProps) {
+  const toast = useToast();
   const [role, setRole] = useState<AdminUserRole>(user?.role ?? "user");
   const [roleSource, setRoleSource] = useState(user);
   const [savingRole, setSavingRole] = useState(false);
   const [savingStatus, setSavingStatus] = useState(false);
   const [resetting, setResetting] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [resetLink, setResetLink] = useState<string | null>(null);
 
   if (user !== roleSource) {
@@ -78,10 +83,31 @@ export function UserDetailModal({
     }
   }
 
-  async function handleCopyResetLink() {
-    if (!resetLink) return;
-    await navigator.clipboard.writeText(resetLink);
+  async function handleDelete() {
+    if (!user) return;
+    if (
+      !confirm(
+        `Permanently delete ${user.email}? This removes all projects, voices, and auth data. This cannot be undone.`
+      )
+    ) {
+      return;
+    }
+    setDeleting(true);
+    try {
+      await onDelete(user);
+    } finally {
+      setDeleting(false);
+    }
   }
+
+  async function handleCopy(text: string, label: string) {
+    await navigator.clipboard.writeText(text);
+    toast.success("Copied", label);
+  }
+
+  const referrerLabel = user.referrer_name
+    ? `${user.referrer_name}${user.referrer_email ? ` (${user.referrer_email})` : ""}`
+    : "—";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
@@ -121,8 +147,30 @@ export function UserDetailModal({
               <p className="mt-1 text-text-primary">{user.membership_tier}</p>
             </div>
             <div>
+              <p className="text-caption uppercase tracking-wider text-text-muted">
+                Referral balance
+              </p>
+              <p className="mt-1 text-text-primary">{user.referral_balance ?? 0}</p>
+            </div>
+            <div className="col-span-2">
+              <p className="text-caption uppercase tracking-wider text-text-muted">Referred by</p>
+              <p className="mt-1 text-text-primary">{referrerLabel}</p>
+            </div>
+            <div className="col-span-2">
               <p className="text-caption uppercase tracking-wider text-text-muted">Referral code</p>
-              <p className="mt-1 font-mono text-text-primary">{user.referral_code}</p>
+              <div className="mt-1 flex items-center gap-2">
+                <p className="font-mono text-text-primary">{user.referral_code}</p>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="icon"
+                  title="Copy referral code"
+                  aria-label="Copy referral code"
+                  onClick={() => void handleCopy(user.referral_code, "Referral code copied")}
+                >
+                  <Copy className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
             <div>
               <p className="text-caption uppercase tracking-wider text-text-muted">Last login</p>
@@ -202,12 +250,28 @@ export function UserDetailModal({
                     size="sm"
                     className="mt-2"
                     leftIcon={<Copy className="h-4 w-4" />}
-                    onClick={() => void handleCopyResetLink()}
+                    onClick={() => void handleCopy(resetLink, "Reset link copied")}
                   >
                     Copy link
                   </Button>
                 </div>
               )}
+
+              <div className="border-t border-border-default pt-4">
+                <Button
+                  type="button"
+                  variant="danger"
+                  size="sm"
+                  disabled={deleting}
+                  leftIcon={<Trash2 className="h-4 w-4" />}
+                  onClick={() => void handleDelete()}
+                >
+                  {deleting ? "Deleting…" : "Permanently delete user"}
+                </Button>
+                <p className="mt-2 text-caption text-text-muted">
+                  Removes all projects, voices, tokens, and Firebase auth. Cannot be undone.
+                </p>
+              </div>
             </>
           )}
         </div>

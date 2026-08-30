@@ -2,6 +2,7 @@ import { request } from "@/lib/api-client";
 import type {
   AdminPasswordResetResponse,
   AdminUser,
+  AdminUserDeleteResponse,
   AdminUserFilter,
   AdminUserListResponse,
   AdminUserRole,
@@ -61,5 +62,11 @@ export async function updateAdminUserStatus(userId: number, isActive: boolean): 
 export async function resetAdminUserPassword(userId: number): Promise<AdminPasswordResetResponse> {
   return request<AdminPasswordResetResponse>(`/admin/users/${userId}/reset-password`, {
     method: "POST",
+  });
+}
+
+export async function deleteAdminUser(userId: number): Promise<AdminUserDeleteResponse> {
+  return request<AdminUserDeleteResponse>(`/admin/users/${userId}`, {
+    method: "DELETE",
   });
 }

@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useToast } from "@/components/ui/toast";
 import {
+  deleteAdminUser,
+  getAdminUser,
   getAdminUserStats,
   getAdminUsers,
   resetAdminUserPassword,
@@ -136,6 +138,34 @@ export default function AdminUsersPage() {
     }
   }
 
+  async function handleViewUser(user: AdminUser) {
+    try {
+      const detail = await getAdminUser(user.id, user.is_deleted);
+      setSelected(detail);
+      setModalOpen(true);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "An error occurred";
+      toast.error("Failed to load user", message);
+    }
+  }
+
+  async function handleDelete(user: AdminUser) {
+    try {
+      const result = await deleteAdminUser(user.id);
+      toast.success(
+        "User deleted",
+        `Removed ${result.projects_deleted} projects and ${result.voices_deleted} voices`
+      );
+      setModalOpen(false);
+      setSelected(null);
+      await loadData();
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "An error occurred";
+      toast.error("Failed to delete user", message);
+      throw error;
+    }
+  }
+
   const totalPages = Math.max(1, Math.ceil(pagination.total / pagination.pageSize));
 
   return (
@@ -185,10 +215,7 @@ export default function AdminUsersPage() {
       <UsersTable
         users={users}
         isLoading={isLoading && users.length === 0}
-        onView={(user) => {
-          setSelected(user);
-          setModalOpen(true);
-        }}
+        onView={handleViewUser}
       />
 
       {pagination.total > 0 && (
@@ -229,6 +256,7 @@ export default function AdminUsersPage() {
         onRoleChange={handleRoleChange}
         onStatusChange={handleStatusChange}
         onResetPassword={handleResetPassword}
+        onDelete={handleDelete}
       />
     </div>
   );

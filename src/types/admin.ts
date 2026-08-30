@@ -384,6 +384,10 @@ export interface AdminUser {
   updated_at: string;
   credits_remaining?: number | null;
   project_count: number;
+  referral_balance?: number;
+  referrer_id?: number | null;
+  referrer_name?: string | null;
+  referrer_email?: string | null;
 }
 
 export interface AdminUserListResponse {
@@ -412,4 +416,10 @@ export interface AdminUserFilter {
 export interface AdminPasswordResetResponse {
   message: string;
   reset_link?: string | null;
+}
+
+export interface AdminUserDeleteResponse {
+  message: string;
+  projects_deleted: number;
+  voices_deleted: number;
 }
