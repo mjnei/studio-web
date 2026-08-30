@@ -117,9 +117,14 @@ function SignupContent() {
     setLoading(true);
 
     try {
-      const { isNewUser } = await loginWithGoogle(codeToUse);
+      const { isNewUser, referralIpRateLimited } = await loginWithGoogle(codeToUse);
       if (isNewUser) {
-        toast.success(t("auth.signup.successTitle"), t("auth.signup.successMessage"));
+        toast.success(
+          t("auth.signup.successTitle"),
+          referralIpRateLimited
+            ? t("auth.signup.referralIpRateLimitedMessage")
+            : t("auth.signup.successMessage")
+        );
       } else {
         toast.success(t("auth.login.successTitle"), t("auth.login.successMessageGoogle"));
       }

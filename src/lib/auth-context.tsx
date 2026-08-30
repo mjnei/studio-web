@@ -25,6 +25,7 @@ type AuthContextValue = {
   loginWithGoogle: (referralCode?: string | null) => Promise<{
     isNewUser: boolean;
     isComebackUser: boolean;
+    referralIpRateLimited: boolean;
   }>;
   loginWithPassword: (email: string, password: string) => Promise<void>;
   signupWithPassword: (
@@ -32,7 +33,7 @@ type AuthContextValue = {
     password: string,
     name: string,
     referralCode?: string | null
-  ) => Promise<void>;
+  ) => Promise<{ referralIpRateLimited: boolean }>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
   deleteUser: () => Promise<void>;
@@ -136,6 +137,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return {
           isNewUser: Boolean(tokenRes.is_new_user),
           isComebackUser: Boolean(tokenRes.is_comeback_user),
+          referralIpRateLimited: Boolean(tokenRes.referral_ip_rate_limited),
         };
       } catch (err) {
         // Clear Firebase session if backend rejected (e.g. missing referral for new account)
@@ -171,7 +173,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signupWithPassword = useCallback(
     async (email: string, password: string, name: string, referralCode?: string | null) => {
-      await apiSignupWithPassword(email, password, name, referralCode);
+      const tokenRes = await apiSignupWithPassword(email, password, name, referralCode);
       const me = await getMe();
       setUser(me);
 
@@ -181,6 +183,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } else {
         router.push("/dashboard");
       }
+
+      return {
+        referralIpRateLimited: Boolean(tokenRes.referral_ip_rate_limited),
+      };
     },
     [router]
   );

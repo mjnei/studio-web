@@ -192,6 +192,7 @@ export interface AuthTokenResponse {
   token_type?: string;
   is_comeback_user?: boolean;
   is_new_user?: boolean;
+  referral_ip_rate_limited?: boolean;
 }
 
 export async function loginWithFirebase(
@@ -228,7 +229,7 @@ export async function signupWithPassword(
   password: string,
   name: string,
   referralCode?: string | null
-): Promise<{ access_token: string }> {
+): Promise<AuthTokenResponse> {
   const body: { email: string; password: string; name: string; referral_code?: string } = {
     email,
     password,
@@ -238,7 +239,7 @@ export async function signupWithPassword(
     body.referral_code = referralCode;
   }
 
-  const res = await request<{ access_token: string }>("/auth/register", {
+  const res = await request<AuthTokenResponse>("/auth/register", {
     method: "POST",
     body: JSON.stringify(body),
   });
