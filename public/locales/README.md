@@ -101,7 +101,7 @@ function Header() {
 }
 ```
 
-The selected language is persisted in `localStorage` under key `"locale"` using BCP-47 codes (`zh-CN`, `zh-TW`, etc.). Legacy values (`chs`, `cht`) are migrated automatically on load.
+The selected language is persisted in `localStorage` under key `"locale"` using BCP-47 codes (`zh-CN`, `zh-TW`, etc.).
 
 ## ⚠️ Admin Pages
 

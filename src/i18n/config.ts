@@ -38,12 +38,6 @@ export const localeToDateLocale: Record<Locale, string> = {
   es: "es-ES",
 };
 
-/** Transitional input shorthands — remove in Phase 6. */
-const LEGACY_INPUT_SHORTHAND: Record<string, Locale> = {
-  chs: "zh-CN",
-  cht: "zh-TW",
-};
-
 const LOCALE_BY_LOWER = new Map<string, Locale>(
   locales.map((locale) => [locale.toLowerCase(), locale])
 );
@@ -62,17 +56,13 @@ export function normalizeLocale(input: string | null | undefined): Locale | null
 
   const lower = normalized.toLowerCase();
 
-  if (lower in LEGACY_INPUT_SHORTHAND) {
-    return LEGACY_INPUT_SHORTHAND[lower];
-  }
-
   const caseMatch = LOCALE_BY_LOWER.get(lower);
   if (caseMatch) {
     return caseMatch;
   }
 
   if (lower.startsWith("zh")) {
-    if (lower.includes("hant") || lower === "zh-tw" || lower === "cht") {
+    if (lower.includes("hant") || lower === "zh-tw") {
       return "zh-TW";
     }
     return "zh-CN";
@@ -88,7 +78,7 @@ export function normalizeLocale(input: string | null | undefined): Locale | null
   return null;
 }
 
-/** Resolve a raw localStorage locale value to a supported locale (with legacy migration). */
+/** Resolve a raw localStorage locale value to a supported locale. */
 export function resolveStoredLocale(raw: string | null | undefined): Locale | null {
   return normalizeLocale(raw);
 }

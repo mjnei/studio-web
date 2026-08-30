@@ -23,8 +23,8 @@ describe("locale codes", () => {
     expect(normalizeLocale("zh-tw")).toBe("zh-TW");
     expect(normalizeLocale("zh_CN")).toBe("zh-CN");
     expect(normalizeLocale("zh_TW")).toBe("zh-TW");
-    expect(normalizeLocale("chs")).toBe("zh-CN");
-    expect(normalizeLocale("cht")).toBe("zh-TW");
+    expect(normalizeLocale("chs")).toBeNull();
+    expect(normalizeLocale("cht")).toBeNull();
     expect(normalizeLocale("zh")).toBe("zh-CN");
     expect(normalizeLocale("zh-Hans")).toBe("zh-CN");
     expect(normalizeLocale("zh-Hant")).toBe("zh-TW");
@@ -34,8 +34,8 @@ describe("locale codes", () => {
   it("normalizes voice language aliases to canonical locale codes", () => {
     expect(normalizeVoiceLanguage("zh-CN")).toBe("zh-CN");
     expect(normalizeVoiceLanguage("zh-TW")).toBe("zh-TW");
-    expect(normalizeVoiceLanguage("chs")).toBe("zh-CN");
-    expect(normalizeVoiceLanguage("cht")).toBe("zh-TW");
+    expect(normalizeVoiceLanguage("chs")).toBeNull();
+    expect(normalizeVoiceLanguage("cht")).toBeNull();
     expect(normalizeVoiceLanguage("zh-Hans")).toBe("zh-CN");
     expect(normalizeVoiceLanguage("zh-Hant")).toBe("zh-TW");
   });
@@ -45,12 +45,12 @@ describe("locale codes", () => {
     expect(voiceLanguageLabelKey["zh-TW"]).toBe("zhTW");
     expect(getVoiceLanguageTranslationKey("zh-CN")).toBe("voices.languages.zhCN");
     expect(getVoiceLanguageTranslationKey("zh-TW")).toBe("voices.languages.zhTW");
-    expect(getVoiceLanguageTranslationKey("chs")).toBe("voices.languages.zhCN");
+    expect(getVoiceLanguageTranslationKey("chs")).toBeNull();
   });
 
-  it("resolves stored locale with legacy localStorage migration", () => {
-    expect(resolveStoredLocale("chs")).toBe("zh-CN");
-    expect(resolveStoredLocale("cht")).toBe("zh-TW");
+  it("resolves stored locale from BCP-47 values", () => {
+    expect(resolveStoredLocale("chs")).toBeNull();
+    expect(resolveStoredLocale("cht")).toBeNull();
     expect(resolveStoredLocale("zh-CN")).toBe("zh-CN");
     expect(resolveStoredLocale("zh-cn")).toBe("zh-CN");
     expect(resolveStoredLocale("zh_CN")).toBe("zh-CN");
@@ -65,7 +65,7 @@ describe("locale codes", () => {
 
   it("resolveTtsLanguage prefers voice language over UI locale", () => {
     expect(resolveTtsLanguage("zh-CN", "en")).toBe("zh-CN");
-    expect(resolveTtsLanguage("chs", "en")).toBe("zh-CN");
+    expect(resolveTtsLanguage("chs", "en")).toBe("en");
     expect(resolveTtsLanguage(null, "ja")).toBe("ja");
     expect(resolveTtsLanguage(undefined, "de")).toBe("de");
   });
