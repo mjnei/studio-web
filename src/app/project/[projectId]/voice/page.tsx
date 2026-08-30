@@ -23,13 +23,13 @@ import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { getAvailableVoices, attachVoiceAudioUrls } from "@/lib/api/voice-client";
 import { scheduleAgnesJobs, createTTSJob, advanceProjectStep } from "@/lib/project-client";
 import type { VoiceResponse, VoiceWithCreator } from "@/lib/types/api";
-import { useI18n } from "@/i18n";
+import { useI18n, resolveTtsLanguage } from "@/i18n";
 import { formatDuration } from "@/lib/utils/time-format";
 
 export default function VoicePage() {
   const params = useParams();
   const router = useRouter();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const projectId = params.projectId as string;
   const { state, updateVoice, activeScript, isLoading } = useProjectState(projectId);
   const { error: toastError, success: toastSuccess } = useToast();
@@ -161,6 +161,7 @@ export default function VoicePage() {
         JSON.stringify({
           id: voiceId,
           name: voice.name,
+          language: voice.language,
           type: ownVoices.some((v) => v.id === voiceId) ? "own" : "community",
         })
       );
@@ -233,7 +234,7 @@ export default function VoicePage() {
         voiceId: String(selectedVoiceId),
         voiceName: voice?.name,
         scriptText: activeScript.content,
-        language: "en",
+        language: resolveTtsLanguage(voice?.language, locale),
         ratio,
         autoActivate: true,
       });

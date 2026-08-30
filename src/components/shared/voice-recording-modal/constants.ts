@@ -14,7 +14,7 @@ export const SUPPORTED_MIME_TYPES = [
 
 import { locales } from "@/i18n";
 
-/** Supported voice language codes — aligned with backend VOICE_LOCALES. */
+/** Supported voice language codes — aligned with backend LOCALES. */
 export const RECORDING_LANGUAGES = locales.map((code) => ({ code }));
 
 const VOICE_NAME_ADJECTIVES = [

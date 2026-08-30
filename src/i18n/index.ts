@@ -10,5 +10,6 @@ export {
   normalizeVoiceLanguage,
   getVoiceLanguageTranslationKey,
   resolveStoredLocale,
+  resolveTtsLanguage,
   type Locale,
 } from "./config";

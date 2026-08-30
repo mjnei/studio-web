@@ -13,28 +13,34 @@ This directory contains translation files for the Huavoi Studio application.
 - **French (fr)**: Français
 - **Spanish (es)**: Español
 
-Locale codes are BCP-47 throughout (UI, API, TMDB, voices). Date formatting helpers live in `src/i18n/config.ts` (`getDateLocale`).
+Locale codes are BCP-47 throughout (UI, API, TMDB, voices, TTS job metadata). Helpers: `getDateLocale`, `resolveTtsLanguage` in `src/i18n/config.ts`.
 
 ## Structure
 
-Each language has its own directory with namespace files:
+Each language has its own directory with namespace files (17 total — see `translationFiles` in `src/i18n/context.tsx`):
 
 ```
 locales/
 ├── en/
-│   ├── common.json      # Common UI elements
-│   ├── auth.json        # Authentication related
-│   ├── project.json     # Project management
-│   ├── jobs.json        # Job queue and processing
-│   ├── voices.json      # Voice library and settings
-│   └── shell.json       # Navigation and shell UI
+│   ├── common.json
+│   ├── auth.json
+│   ├── onboarding.json
+│   ├── dashboard.json
+│   ├── projects.json
+│   ├── project.json
+│   ├── jobs.json
+│   ├── voices.json
+│   ├── settings.json
+│   ├── shell.json
+│   ├── profile.json
+│   ├── help.json
+│   ├── pricing.json
+│   ├── billing.json
+│   ├── referral.json
+│   ├── notifications.json
+│   └── movies.json
 └── zh-CN/
-    ├── common.json
-    ├── auth.json
-    ├── project.json
-    ├── jobs.json
-    ├── voices.json
-    └── shell.json
+    └── (same namespaces)
 ```
 
 ## Usage

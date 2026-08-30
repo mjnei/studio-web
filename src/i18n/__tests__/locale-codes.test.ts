@@ -5,6 +5,7 @@ import {
   normalizeLocale,
   normalizeVoiceLanguage,
   resolveStoredLocale,
+  resolveTtsLanguage,
   voiceLanguageLabelKey,
 } from "../config";
 
@@ -60,5 +61,12 @@ describe("locale codes", () => {
     expect(resolveStoredLocale("en")).toBe("en");
     expect(resolveStoredLocale("invalid")).toBeNull();
     expect(resolveStoredLocale(null)).toBeNull();
+  });
+
+  it("resolveTtsLanguage prefers voice language over UI locale", () => {
+    expect(resolveTtsLanguage("zh-CN", "en")).toBe("zh-CN");
+    expect(resolveTtsLanguage("chs", "en")).toBe("zh-CN");
+    expect(resolveTtsLanguage(null, "ja")).toBe("ja");
+    expect(resolveTtsLanguage(undefined, "de")).toBe("de");
   });
 });

@@ -30,14 +30,14 @@ import { FloatingWorkflowNavigation } from "@/components/project/floating-workfl
 import { PageLoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { TTSQueueStatus } from "@/components/project/tts-queue-status";
 import { createTTSJob, getTTSJob, type TTSJobResponse } from "@/lib/project-client";
-import { useI18n } from "@/i18n";
+import { useI18n, resolveTtsLanguage } from "@/i18n";
 import { formatDuration } from "@/lib/utils/time-format";
 
 export default function PreviewPage() {
   const params = useParams();
   const projectId = params.projectId as string;
   const { state, activeScript, isLoading } = useProjectState(projectId);
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
   const [showTelemetryDrawer, setShowTelemetryDrawer] = useState(false);
   const [ttsJob, setTtsJob] = useState<TTSJobResponse | null>(null);
@@ -52,7 +52,7 @@ export default function PreviewPage() {
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const createNewTTSJob = useCallback(
-    async (voiceId: string, voiceName?: string) => {
+    async (voiceId: string, voiceName?: string, voiceLanguage?: string | null) => {
       if (!state || !activeScript || isCreatingJobRef.current) return;
       if (!voiceId) return;
 
@@ -64,7 +64,7 @@ export default function PreviewPage() {
           voiceId: voiceId,
           voiceName: voiceName,
           scriptText: activeScript.content,
-          language: "zh",
+          language: resolveTtsLanguage(voiceLanguage, locale),
           autoActivate: true,
         });
 
@@ -77,7 +77,7 @@ export default function PreviewPage() {
         isCreatingJobRef.current = false;
       }
     },
-    [state, activeScript, t]
+    [state, activeScript, t, locale]
   );
 
   // Poll studio TTS job status over HTTP
@@ -131,15 +131,21 @@ export default function PreviewPage() {
 
     let voiceId = state.voiceId;
     let voiceName = state.voiceName;
+    let voiceLanguage: string | null | undefined;
 
     if (!voiceId) {
       try {
         const storedVoice = localStorage.getItem(`project_${projectId}_voice`);
         if (storedVoice) {
-          const voice = JSON.parse(storedVoice);
+          const voice = JSON.parse(storedVoice) as {
+            id?: number | string;
+            name?: string;
+            language?: string | null;
+          };
           if (voice.id) {
-            voiceId = voice.id;
+            voiceId = String(voice.id);
             voiceName = voice.name;
+            voiceLanguage = voice.language;
           }
         }
       } catch (e) {
@@ -178,7 +184,7 @@ export default function PreviewPage() {
           voiceId: voiceId,
           voiceName: voiceName,
           scriptText: activeScript.content,
-          language: "zh",
+          language: resolveTtsLanguage(voiceLanguage, locale),
           autoActivate: true,
         })
           .then((job) => {
@@ -221,7 +227,7 @@ export default function PreviewPage() {
                   voiceId: voiceId!,
                   voiceName: voiceName,
                   scriptText: activeScript.content,
-                  language: "zh",
+                  language: resolveTtsLanguage(voiceLanguage, locale),
                   autoActivate: true,
                 })
                   .then((newJob) => {

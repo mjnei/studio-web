@@ -122,3 +122,11 @@ export function getVoiceLanguageTranslationKey(language: string | null | undefin
 export function getDateLocale(locale: Locale): string {
   return localeToDateLocale[locale] ?? "en-US";
 }
+
+/** BCP-47 language for TTS job metadata — prefer voice language, else UI locale. */
+export function resolveTtsLanguage(
+  voiceLanguage: string | null | undefined,
+  uiLocale: Locale = defaultLocale
+): Locale {
+  return normalizeVoiceLanguage(voiceLanguage) ?? uiLocale;
+}

@@ -23,7 +23,7 @@ export async function createTTSJob(data: {
       voice_id: data.voiceId,
       voice_name: data.voiceName,
       text: data.scriptText,
-      language: data.language ?? "zh",
+      language: data.language ?? "en",
       ratio: data.ratio ?? 1.0,
     }),
   });
