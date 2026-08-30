@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { useToast } from "@/components/ui/toast";
 import { UserAvatar } from "@/components/ui/UserAvatar";
-import { ChevronDown, Copy, KeyRound, Trash2, X } from "lucide-react";
+import { ChevronDown, Copy, KeyRound, Trash2, UserX, X } from "lucide-react";
 import { useState } from "react";
 import type { AdminUser, AdminUserRole } from "@/types/admin";
 
@@ -23,6 +23,11 @@ interface UserDetailModalProps {
 }
 
 const ROLES: AdminUserRole[] = ["user", "admin"];
+
+function formatTimestamp(dateString: string | null | undefined): string {
+  if (!dateString) return "Unknown";
+  return new Date(dateString).toLocaleString();
+}
 
 function UserAvatarCell({ user }: { user: AdminUser }) {
   return (
@@ -438,6 +443,26 @@ export function UserDetailModal({
               >
                 {deleting ? "Deleting…" : "Hard delete"}
               </Button>
+            </div>
+          )}
+
+          {user.is_deleted && (
+            <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-4">
+              <div className="flex items-start gap-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-red-500/15">
+                  <UserX className="h-5 w-5 text-red-600" aria-hidden />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-body font-semibold text-red-600">Account deleted</p>
+                  <p className="mt-1 text-body text-text-secondary">
+                    This account was soft-deleted. Last updated{" "}
+                    <span className="font-medium text-text-primary">
+                      {formatTimestamp(user.updated_at)}
+                    </span>
+                    .
+                  </p>
+                </div>
+              </div>
             </div>
           )}
         </div>
