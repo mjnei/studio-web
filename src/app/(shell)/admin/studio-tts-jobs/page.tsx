@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Zap, RefreshCw, Download } from "lucide-react";
+import { Zap } from "lucide-react";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useToast } from "@/components/ui/toast";
-import { Heading } from "@/components/ui/heading";
-import { Button } from "@/components/ui/button";
-import { AudioPlayer } from "@/app/(shell)/admin/playground/components/AudioPlayer";
+import { TTSJobsPageHeader } from "@/app/(shell)/admin/tts-jobs/_shared/TTSJobsPageHeader";
+import { TTSJobsTabBar } from "@/app/(shell)/admin/tts-jobs/_shared/TTSJobsTabBar";
+import { TTSJobsAudioBar } from "@/app/(shell)/admin/tts-jobs/_shared/TTSJobsAudioBar";
+import { downloadCsv } from "@/app/(shell)/admin/tts-jobs/_shared/formatters";
 import { TTSStatsWidget } from "./components/TTSStatsWidget";
 import { StaleJobsAlert } from "./components/StaleJobsAlert";
 import { FailedJobsTable } from "./components/FailedJobsTable";
@@ -65,7 +66,6 @@ export default function TTSJobsPage() {
     }
   }, [toast]);
 
-  // Initial load
   useEffect(() => {
     let isMounted = true;
 
@@ -105,7 +105,6 @@ export default function TTSJobsPage() {
     };
   }, [toast]);
 
-  // Auto-refresh every 5 seconds
   useEffect(() => {
     if (!autoRefresh) return;
 
@@ -129,7 +128,6 @@ export default function TTSJobsPage() {
 
   const handleCancel = async (jobId: string) => {
     try {
-      // Find the numeric ID from job_id
       const staleJob = staleJobs.find((j) => j.job_id === jobId);
       if (!staleJob) return;
 
@@ -143,7 +141,6 @@ export default function TTSJobsPage() {
   };
 
   const handleViewDetails = (job: FailedJob | CompletedJob) => {
-    // Convert job to TTSJob format for modal
     const ttsJob: TTSJob = {
       id: job.id,
       job_id: job.job_id,
@@ -185,7 +182,6 @@ export default function TTSJobsPage() {
       return;
     }
 
-    // Create CSV content
     const headers =
       activeTab === "failed"
         ? ["Job ID", "Status", "Voice ID", "Error Message", "Created At", "Failed At"]
@@ -210,165 +206,64 @@ export default function TTSJobsPage() {
           failedJob.created_at,
           failedJob.completed_at || "N/A",
         ];
-      } else {
-        const completedJob = job as CompletedJob;
-        return [
-          completedJob.job_id,
-          completedJob.status,
-          completedJob.voice_id,
-          completedJob.audio_duration || "N/A",
-          completedJob.synthesis_duration_seconds || "N/A",
-          completedJob.created_at,
-          completedJob.completed_at || "N/A",
-        ];
       }
+
+      const completedJob = job as CompletedJob;
+      return [
+        completedJob.job_id,
+        completedJob.status,
+        completedJob.voice_id,
+        completedJob.audio_duration || "N/A",
+        completedJob.synthesis_duration_seconds || "N/A",
+        completedJob.created_at,
+        completedJob.completed_at || "N/A",
+      ];
     });
 
-    const csvContent = [
-      headers.join(","),
-      ...rows.map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(",")),
-    ].join("\n");
-
-    // Download CSV
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-    link.setAttribute("href", url);
-    link.setAttribute("download", `tts-${activeTab}-jobs-${new Date().toISOString()}.csv`);
-    link.style.visibility = "hidden";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
+    downloadCsv(`tts-${activeTab}-jobs-${new Date().toISOString()}.csv`, headers, rows);
     toast.success("CSV exported", `${activeTab} jobs exported successfully`);
   };
 
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    });
-  };
+  const tabs = [
+    { id: "failed", label: "Failed Jobs", count: failedJobs.length, tone: "failed" as const },
+    {
+      id: "completed",
+      label: "Completed Jobs",
+      count: completedJobs.length,
+      tone: "completed" as const,
+    },
+  ];
 
   return (
-    <div className="mx-auto max-w-7xl pb-32">
-      {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <div className="flex items-center gap-3 mb-2">
-              <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-accent-primary to-purple-600 shadow-lg">
-                <Zap className="h-6 w-6 text-white" />
-              </div>
-              <Heading variant="page" className="text-text-primary">
-                Studio TTS Jobs
-              </Heading>
-            </div>
-            <p className="text-text-secondary">
-              Monitor Studio project TTS job health and diagnose failures in real-time
-            </p>
-          </div>
+    <div className={`mx-auto max-w-7xl ${showAudioPlayer ? "pb-32" : ""}`}>
+      <TTSJobsPageHeader
+        icon={<Zap className="h-6 w-6 text-white" />}
+        iconGradientClassName="bg-gradient-to-br from-accent-primary to-purple-600"
+        title="Studio TTS Jobs"
+        description="Monitor Studio project TTS job health and diagnose failures in real-time"
+        autoRefresh={autoRefresh}
+        isLoading={isLoading}
+        lastRefresh={lastRefresh}
+        exportDisabled={activeTab === "failed" ? !failedJobs.length : !completedJobs.length}
+        onToggleAutoRefresh={() => setAutoRefresh(!autoRefresh)}
+        onRefresh={() => loadData()}
+        onExport={handleExportCSV}
+      />
 
-          {/* Controls */}
-          <div className="flex items-center gap-3">
-            {/* Auto-refresh toggle */}
-            <Button
-              size="md"
-              variant={autoRefresh ? "success" : "secondary"}
-              onClick={() => setAutoRefresh(!autoRefresh)}
-              leftIcon={<RefreshCw className={`h-4 w-4 ${autoRefresh ? "animate-spin" : ""}`} />}
-            >
-              Auto-refresh {autoRefresh ? "ON" : "OFF"}
-            </Button>
-
-            {/* Manual refresh */}
-            <Button
-              size="md"
-              variant="secondary"
-              onClick={() => loadData()}
-              disabled={isLoading}
-              leftIcon={<RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />}
-            >
-              Refresh
-            </Button>
-
-            {/* Export CSV */}
-            <Button
-              size="md"
-              onClick={handleExportCSV}
-              disabled={activeTab === "failed" ? !failedJobs.length : !completedJobs.length}
-              leftIcon={<Download className="h-4 w-4" />}
-            >
-              Export CSV
-            </Button>
-          </div>
-        </div>
-
-        {/* Last refresh time */}
-        <p className="text-caption text-text-muted">
-          Last refreshed: {formatTime(lastRefresh)} {autoRefresh && "(auto-refresh every 5s)"}
-        </p>
-      </div>
-
-      {/* Loading State */}
       {isLoading && !stats ? (
         <LoadingSpinner size="lg" message="Loading TTS job data..." fullHeight />
       ) : (
         <div className="space-y-6">
-          {/* Statistics */}
           {stats && <TTSStatsWidget stats={stats} />}
-
-          {/* Stale Jobs Alert */}
           {staleJobs.length > 0 && <StaleJobsAlert staleJobs={staleJobs} onCancel={handleCancel} />}
 
-          {/* Tabs Section */}
           <div>
-            {/* Tab Navigation */}
-            <div className="mb-6 overflow-x-auto scrollbar-hide">
-              <div className="inline-flex min-w-min items-center gap-2">
-                <button
-                  onClick={() => setActiveTab("failed")}
-                  className={`flex h-9 shrink-0 items-center gap-2 whitespace-nowrap px-3.5 py-0 rounded-lg text-body font-semibold transition-all ${
-                    activeTab === "failed"
-                      ? "bg-red-500/10 text-red-600 border-2 border-red-500/30"
-                      : "border-2 border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:bg-accent-primary/5"
-                  }`}
-                >
-                  Failed Jobs
-                  <span
-                    className={`px-2 py-0.5 rounded-full text-caption font-bold ${
-                      activeTab === "failed"
-                        ? "bg-red-600 text-white"
-                        : "bg-text-muted/10 text-text-muted"
-                    }`}
-                  >
-                    {failedJobs.length}
-                  </span>
-                </button>
-                <button
-                  onClick={() => setActiveTab("completed")}
-                  className={`flex h-9 shrink-0 items-center gap-2 whitespace-nowrap px-3.5 py-0 rounded-lg text-body font-semibold transition-all ${
-                    activeTab === "completed"
-                      ? "bg-green-500/10 text-green-600 border-2 border-green-500/30"
-                      : "border-2 border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:bg-accent-primary/5"
-                  }`}
-                >
-                  Completed Jobs
-                  <span
-                    className={`px-2 py-0.5 rounded-full text-caption font-bold ${
-                      activeTab === "completed"
-                        ? "bg-green-600 text-white"
-                        : "bg-text-muted/10 text-text-muted"
-                    }`}
-                  >
-                    {completedJobs.length}
-                  </span>
-                </button>
-              </div>
-            </div>
+            <TTSJobsTabBar
+              tabs={tabs}
+              activeTab={activeTab}
+              onTabChange={(tabId) => setActiveTab(tabId as TabType)}
+            />
 
-            {/* Tab Content */}
             {activeTab === "failed" ? (
               <FailedJobsTable
                 failedJobs={failedJobs}
@@ -386,21 +281,15 @@ export default function TTSJobsPage() {
         </div>
       )}
 
-      {/* Sticky Bottom Audio Player */}
       {showAudioPlayer && currentAudio && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-border-default bg-surface-base/95 backdrop-blur-lg shadow-2xl">
-          <div className="mx-auto max-w-7xl px-4 py-2">
-            <AudioPlayer
-              audioUrl={currentAudio.url}
-              jobId={currentAudio.jobId}
-              jobName={currentAudio.jobName}
-              onDismiss={handleDismissPlayer}
-            />
-          </div>
-        </div>
+        <TTSJobsAudioBar
+          audioUrl={currentAudio.url}
+          jobId={currentAudio.jobId}
+          jobName={currentAudio.jobName}
+          onDismiss={handleDismissPlayer}
+        />
       )}
 
-      {/* Job Detail Modal */}
       <JobDetailModal job={selectedJob} open={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );

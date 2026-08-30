@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Gamepad2, RefreshCw, Download, ShieldAlert } from "lucide-react";
+import { Gamepad2, ShieldAlert } from "lucide-react";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useToast } from "@/components/ui/toast";
-import { Heading } from "@/components/ui/heading";
-import { Button } from "@/components/ui/button";
-import { AudioPlayer } from "@/app/(shell)/admin/playground/components/AudioPlayer";
+import { TTSJobsPageHeader } from "@/app/(shell)/admin/tts-jobs/_shared/TTSJobsPageHeader";
+import { TTSJobsTabBar } from "@/app/(shell)/admin/tts-jobs/_shared/TTSJobsTabBar";
+import { TTSJobsAudioBar } from "@/app/(shell)/admin/tts-jobs/_shared/TTSJobsAudioBar";
+import { downloadCsv } from "@/app/(shell)/admin/tts-jobs/_shared/formatters";
 import { PlaygroundStatsWidget } from "./components/PlaygroundStatsWidget";
 import { PlaygroundStaleJobsAlert } from "./components/PlaygroundStaleJobsAlert";
 import { PlaygroundFailedJobsTable } from "./components/PlaygroundFailedJobsTable";
@@ -64,7 +65,6 @@ export default function PlaygroundTTSJobsPage() {
       ]);
 
       setStats(statsData);
-      // Combine queued and processing stale jobs
       setStaleJobs([...staleData.queued_jobs, ...staleData.processing_jobs]);
       setFailedJobs(failedData);
       setRateLimitedJobs(rateLimitedData);
@@ -78,7 +78,6 @@ export default function PlaygroundTTSJobsPage() {
     }
   }, [toast]);
 
-  // Initial load
   useEffect(() => {
     let isMounted = true;
 
@@ -121,7 +120,6 @@ export default function PlaygroundTTSJobsPage() {
     };
   }, [toast]);
 
-  // Auto-refresh every 5 seconds
   useEffect(() => {
     if (!autoRefresh) return;
 
@@ -145,7 +143,6 @@ export default function PlaygroundTTSJobsPage() {
 
   const handleCancel = async (jobId: string) => {
     try {
-      // Find the numeric ID from job_id
       const staleJob = staleJobs.find((j) => j.job_id === jobId);
       if (!staleJob) return;
 
@@ -161,19 +158,18 @@ export default function PlaygroundTTSJobsPage() {
   const handleViewDetails = (
     job: PlaygroundFailedJob | PlaygroundRateLimitedJob | PlaygroundCompletedJob
   ) => {
-    // Convert job to PlaygroundTTSJob format for modal
     const ttsJob: PlaygroundTTSJob = {
       id: job.id,
       job_id: job.job_id,
       status: job.status,
       created_at: job.created_at,
       completed_at: job.completed_at,
-      expires_at: "", // Will be fetched if needed
+      expires_at: "",
       error_message: "error_message" in job ? job.error_message : undefined,
       voice_id: job.voice_id,
       anonymous_voice_id: job.anonymous_voice_id,
       text: job.text,
-      language: "", // Will be fetched if needed
+      language: "",
       ratio: 1.0,
       retry_count: "retry_count" in job ? job.retry_count : 0,
       audio_path: "audio_path" in job ? job.audio_path : undefined,
@@ -204,10 +200,10 @@ export default function PlaygroundTTSJobsPage() {
     setCurrentAudio(null);
   };
 
-  const handleExportCSV = () => {
-    const voiceLabel = (job: { voice_id?: number; anonymous_voice_id?: number }) =>
-      job.voice_id ? `Voice ${job.voice_id}` : `Anon ${job.anonymous_voice_id}`;
+  const voiceLabel = (job: { voice_id?: number; anonymous_voice_id?: number }) =>
+    job.voice_id ? `Voice ${job.voice_id}` : `Anon ${job.anonymous_voice_id}`;
 
+  const handleExportCSV = () => {
     let headers: string[] = [];
     let rows: (string | number)[][] = [];
 
@@ -269,180 +265,68 @@ export default function PlaygroundTTSJobsPage() {
       return;
     }
 
-    const csvContent = [
-      headers.join(","),
-      ...rows.map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(",")),
-    ].join("\n");
-
-    // Download CSV
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-    link.setAttribute("href", url);
-    link.setAttribute(
-      "download",
-      `playground-tts-${activeTab}-jobs-${new Date().toISOString()}.csv`
+    downloadCsv(
+      `playground-tts-${activeTab}-jobs-${new Date().toISOString()}.csv`,
+      headers,
+      rows
     );
-    link.style.visibility = "hidden";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
     toast.success("CSV exported", `${activeTab} playground jobs exported successfully`);
   };
 
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    });
-  };
+  const tabs = [
+    { id: "failed", label: "Failed Jobs", count: failedJobs.length, tone: "failed" as const },
+    {
+      id: "rate_limited",
+      label: "Rate Limited",
+      count: rateLimitedJobs.length,
+      tone: "rate_limited" as const,
+      icon: <ShieldAlert className="h-4 w-4" />,
+    },
+    {
+      id: "completed",
+      label: "Completed Jobs",
+      count: completedJobs.length,
+      tone: "completed" as const,
+    },
+  ];
+
+  const exportDisabled =
+    (activeTab === "failed" && !failedJobs.length) ||
+    (activeTab === "rate_limited" && !rateLimitedJobs.length) ||
+    (activeTab === "completed" && !completedJobs.length);
 
   return (
-    <div className="mx-auto max-w-7xl">
-      {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <div className="flex items-center gap-3 mb-2">
-              <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 shadow-lg">
-                <Gamepad2 className="h-6 w-6 text-white" />
-              </div>
-              <Heading variant="page" className="text-text-primary">
-                Playground TTS Jobs
-              </Heading>
-            </div>
-            <p className="text-text-secondary">
-              Track anonymous user activity, rate limiting, abuse patterns, and resource usage
-            </p>
-          </div>
+    <div className={`mx-auto max-w-7xl ${showAudioPlayer ? "pb-32" : ""}`}>
+      <TTSJobsPageHeader
+        icon={<Gamepad2 className="h-6 w-6 text-white" />}
+        iconGradientClassName="bg-gradient-to-br from-purple-500 to-pink-600"
+        title="Playground TTS Jobs"
+        description="Track anonymous user activity, rate limiting, abuse patterns, and resource usage"
+        autoRefresh={autoRefresh}
+        isLoading={isLoading}
+        lastRefresh={lastRefresh}
+        exportDisabled={exportDisabled}
+        onToggleAutoRefresh={() => setAutoRefresh(!autoRefresh)}
+        onRefresh={() => loadData()}
+        onExport={handleExportCSV}
+      />
 
-          {/* Controls */}
-          <div className="flex items-center gap-3">
-            {/* Auto-refresh toggle */}
-            <Button
-              size="md"
-              variant={autoRefresh ? "success" : "secondary"}
-              onClick={() => setAutoRefresh(!autoRefresh)}
-              leftIcon={<RefreshCw className={`h-4 w-4 ${autoRefresh ? "animate-spin" : ""}`} />}
-            >
-              Auto-refresh {autoRefresh ? "ON" : "OFF"}
-            </Button>
-
-            {/* Manual refresh */}
-            <Button
-              size="md"
-              variant="secondary"
-              onClick={() => loadData()}
-              disabled={isLoading}
-              leftIcon={<RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />}
-            >
-              Refresh
-            </Button>
-
-            {/* Export CSV */}
-            <Button
-              size="md"
-              onClick={handleExportCSV}
-              disabled={
-                (activeTab === "failed" && !failedJobs.length) ||
-                (activeTab === "rate_limited" && !rateLimitedJobs.length) ||
-                (activeTab === "completed" && !completedJobs.length)
-              }
-              leftIcon={<Download className="h-4 w-4" />}
-            >
-              Export CSV
-            </Button>
-          </div>
-        </div>
-
-        {/* Last refresh time */}
-        <p className="text-caption text-text-muted">
-          Last refreshed: {formatTime(lastRefresh)} {autoRefresh && "(auto-refresh every 5s)"}
-        </p>
-      </div>
-
-      {/* Loading State */}
       {isLoading && !stats ? (
         <LoadingSpinner size="lg" message="Loading playground TTS job data..." fullHeight />
       ) : (
         <div className="space-y-6">
-          {/* Statistics */}
           {stats && <PlaygroundStatsWidget stats={stats} />}
-
-          {/* Stale Jobs Alert */}
           {staleJobs.length > 0 && (
             <PlaygroundStaleJobsAlert staleJobs={staleJobs} onCancel={handleCancel} />
           )}
 
-          {/* Tabs Section */}
           <div>
-            {/* Tab Navigation */}
-            <div className="mb-6 overflow-x-auto scrollbar-hide">
-              <div className="inline-flex min-w-min items-center gap-2">
-                <button
-                  onClick={() => setActiveTab("failed")}
-                  className={`flex h-9 shrink-0 items-center gap-2 whitespace-nowrap px-3.5 py-0 rounded-lg text-body font-semibold transition-all ${
-                    activeTab === "failed"
-                      ? "bg-red-500/10 text-red-600 border-2 border-red-500/30"
-                      : "border-2 border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:bg-accent-primary/5"
-                  }`}
-                >
-                  Failed Jobs
-                  <span
-                    className={`px-2 py-0.5 rounded-full text-caption font-bold ${
-                      activeTab === "failed"
-                        ? "bg-red-600 text-white"
-                        : "bg-text-muted/10 text-text-muted"
-                    }`}
-                  >
-                    {failedJobs.length}
-                  </span>
-                </button>
-                <button
-                  onClick={() => setActiveTab("rate_limited")}
-                  className={`flex h-9 shrink-0 items-center gap-2 whitespace-nowrap px-3.5 py-0 rounded-lg text-body font-semibold transition-all ${
-                    activeTab === "rate_limited"
-                      ? "bg-orange-500/10 text-orange-600 border-2 border-orange-500/30"
-                      : "border-2 border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:bg-accent-primary/5"
-                  }`}
-                >
-                  <ShieldAlert className="h-4 w-4" />
-                  Rate Limited
-                  <span
-                    className={`px-2 py-0.5 rounded-full text-caption font-bold ${
-                      activeTab === "rate_limited"
-                        ? "bg-orange-600 text-white"
-                        : "bg-text-muted/10 text-text-muted"
-                    }`}
-                  >
-                    {rateLimitedJobs.length}
-                  </span>
-                </button>
-                <button
-                  onClick={() => setActiveTab("completed")}
-                  className={`flex h-9 shrink-0 items-center gap-2 whitespace-nowrap px-3.5 py-0 rounded-lg text-body font-semibold transition-all ${
-                    activeTab === "completed"
-                      ? "bg-green-500/10 text-green-600 border-2 border-green-500/30"
-                      : "border-2 border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:bg-accent-primary/5"
-                  }`}
-                >
-                  Completed Jobs
-                  <span
-                    className={`px-2 py-0.5 rounded-full text-caption font-bold ${
-                      activeTab === "completed"
-                        ? "bg-green-600 text-white"
-                        : "bg-text-muted/10 text-text-muted"
-                    }`}
-                  >
-                    {completedJobs.length}
-                  </span>
-                </button>
-              </div>
-            </div>
+            <TTSJobsTabBar
+              tabs={tabs}
+              activeTab={activeTab}
+              onTabChange={(tabId) => setActiveTab(tabId as TabType)}
+            />
 
-            {/* Tab Content */}
             {activeTab === "failed" ? (
               <PlaygroundFailedJobsTable
                 failedJobs={failedJobs}
@@ -466,21 +350,15 @@ export default function PlaygroundTTSJobsPage() {
         </div>
       )}
 
-      {/* Sticky Bottom Audio Player */}
       {showAudioPlayer && currentAudio && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-border-default bg-surface-base/95 backdrop-blur-lg shadow-2xl">
-          <div className="mx-auto max-w-7xl px-4 py-2">
-            <AudioPlayer
-              audioUrl={currentAudio.url}
-              jobId={currentAudio.jobId}
-              jobName={currentAudio.jobName}
-              onDismiss={handleDismissPlayer}
-            />
-          </div>
-        </div>
+        <TTSJobsAudioBar
+          audioUrl={currentAudio.url}
+          jobId={currentAudio.jobId}
+          jobName={currentAudio.jobName}
+          onDismiss={handleDismissPlayer}
+        />
       )}
 
-      {/* Job Detail Modal */}
       <PlaygroundJobDetailModal
         job={selectedJob}
         open={isModalOpen}
