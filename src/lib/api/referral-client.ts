@@ -109,6 +109,9 @@ export interface FraudEventDetails {
   is_own_code?: boolean;
   error?: string;
   is_comeback_user?: boolean;
+  count?: number;
+  limit?: number;
+  window?: number;
   [key: string]: unknown;
 }
 

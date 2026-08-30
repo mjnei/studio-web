@@ -18,8 +18,18 @@ const FALLBACK_EVENT_TYPE_LABELS: Record<string, string> = {
   referral_code_ignored_already_referred: "Referral code rejected (already referred)",
 };
 
+const CATEGORY_ORDER = ["rate_limits", "referral_abuse", "ignored_codes"] as const;
+
+const CATEGORY_LABELS: Record<string, string> = {
+  rate_limits: "Rate limits",
+  referral_abuse: "Referral abuse",
+  ignored_codes: "Ignored codes",
+};
+
 function formatEventType(eventType: string, labels?: Record<string, string>): string {
-  return labels?.[eventType] ?? FALLBACK_EVENT_TYPE_LABELS[eventType] ?? eventType.replaceAll("_", " ");
+  return (
+    labels?.[eventType] ?? FALLBACK_EVENT_TYPE_LABELS[eventType] ?? eventType.replaceAll("_", " ")
+  );
 }
 
 function formatEventDetails(details?: FraudEventDetails): string {
@@ -50,12 +60,41 @@ function formatEventDetails(details?: FraudEventDetails): string {
   if (typeof details.reason === "string" && parts.length === 0) {
     parts.push(details.reason);
   }
+  if (typeof details.count === "number" && typeof details.limit === "number") {
+    parts.push(`${details.count}/${details.limit}`);
+  }
 
   return parts.length > 0 ? parts.join(" · ") : "—";
 }
 
+function groupEventsByCategory(
+  eventsByType: Record<string, number>,
+  eventCategories: Record<string, string>
+): Array<{ category: string; events: Array<[string, number]> }> {
+  const grouped = new Map<string, Array<[string, number]>>();
+
+  for (const [eventType, count] of Object.entries(eventsByType)) {
+    const category = eventCategories[eventType] ?? "other";
+    const bucket = grouped.get(category) ?? [];
+    bucket.push([eventType, count]);
+    grouped.set(category, bucket);
+  }
+
+  const orderedCategories = [
+    ...CATEGORY_ORDER.filter((category) => grouped.has(category)),
+    ...[...grouped.keys()].filter(
+      (category) => !CATEGORY_ORDER.includes(category as (typeof CATEGORY_ORDER)[number])
+    ),
+  ];
+
+  return orderedCategories.map((category) => ({
+    category,
+    events: grouped.get(category)!.sort(([, a], [, b]) => b - a),
+  }));
+}
+
 export function ReferralFraudStatsPanel({ fraud }: ReferralFraudStatsPanelProps) {
-  const eventTypes = Object.entries(fraud.events_by_type).sort(([, a], [, b]) => b - a);
+  const eventGroups = groupEventsByCategory(fraud.events_by_type, fraud.event_categories);
   const totalForPercent = fraud.total_events || 1;
   const eventTypeLabels = fraud.event_type_labels;
 
@@ -101,7 +140,7 @@ export function ReferralFraudStatsPanel({ fraud }: ReferralFraudStatsPanelProps)
         </div>
       </div>
 
-      {eventTypes.length > 0 && (
+      {eventGroups.length > 0 && (
         <div className="rounded-xl border border-border-default bg-surface-panel p-5">
           <Heading
             variant="label"
@@ -110,28 +149,35 @@ export function ReferralFraudStatsPanel({ fraud }: ReferralFraudStatsPanelProps)
           >
             Events by Type
           </Heading>
-          <div className="space-y-3">
-            {eventTypes.map(([eventType, count]) => {
-              const percentage = (count / totalForPercent) * 100;
-              return (
-                <div key={eventType} className="space-y-1">
-                  <div className="flex items-center justify-between text-body">
-                    <span className="font-medium text-text-primary">
-                      {formatEventType(eventType, eventTypeLabels)}
-                    </span>
-                    <span className="text-text-muted">
-                      {count.toLocaleString()} ({percentage.toFixed(1)}%)
-                    </span>
-                  </div>
-                  <div className="h-2 w-full overflow-hidden rounded-full bg-surface-raised">
-                    <div
-                      className="h-full rounded-full bg-red-500 transition-all duration-300"
-                      style={{ width: `${percentage}%` }}
-                    />
-                  </div>
-                </div>
-              );
-            })}
+          <div className="space-y-6">
+            {eventGroups.map(({ category, events }) => (
+              <div key={category} className="space-y-3">
+                <p className="text-caption font-medium uppercase tracking-wider text-text-muted">
+                  {CATEGORY_LABELS[category] ?? category.replaceAll("_", " ")}
+                </p>
+                {events.map(([eventType, count]) => {
+                  const percentage = (count / totalForPercent) * 100;
+                  return (
+                    <div key={eventType} className="space-y-1">
+                      <div className="flex items-center justify-between text-body">
+                        <span className="font-medium text-text-primary">
+                          {formatEventType(eventType, eventTypeLabels)}
+                        </span>
+                        <span className="text-text-muted">
+                          {count.toLocaleString()} ({percentage.toFixed(1)}%)
+                        </span>
+                      </div>
+                      <div className="h-2 w-full overflow-hidden rounded-full bg-surface-raised">
+                        <div
+                          className="h-full rounded-full bg-red-500 transition-all duration-300"
+                          style={{ width: `${percentage}%` }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
           </div>
         </div>
       )}

@@ -98,9 +98,7 @@ export function normalizeVoiceLanguage(language: string | null | undefined): Voi
 }
 
 /** Translation key for a voice language code (supports legacy DB values). */
-export function getVoiceLanguageTranslationKey(
-  language: string | null | undefined
-): string | null {
+export function getVoiceLanguageTranslationKey(language: string | null | undefined): string | null {
   if (!language) return null;
 
   const voiceLocale = normalizeVoiceLanguage(language);
