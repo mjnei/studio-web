@@ -47,7 +47,8 @@
         "video": "HD 影片產生（1080p）",
         "priority": "優先處理",
         "analytics": "進階分析",
-        "export": "匯出客製化"
+        "export": "匯出客製化",
+        "api": "API 存取"
       },
       "button": "升級至 Pro"
     },

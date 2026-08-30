@@ -47,7 +47,8 @@
         "video": "HD-Videogenerierung (1080p)",
         "priority": "Priorisierte Verarbeitung",
         "analytics": "Erweiterte Analysen",
-        "export": "Export-Anpassung"
+        "export": "Export-Anpassung",
+        "api": "API-Zugang"
       },
       "button": "Auf Pro upgraden"
     },

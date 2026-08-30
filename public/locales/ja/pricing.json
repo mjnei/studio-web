@@ -47,7 +47,8 @@
         "video": "HD動画生成（1080p）",
         "priority": "優先処理",
         "analytics": "高度な分析",
-        "export": "書き出しのカスタマイズ"
+        "export": "書き出しのカスタマイズ",
+        "api": "APIアクセス"
       },
       "button": "Proにアップグレード"
     },

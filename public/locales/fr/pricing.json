@@ -47,7 +47,8 @@
         "video": "Génération vidéo HD (1080p)",
         "priority": "Traitement prioritaire",
         "analytics": "Analyses avancées",
-        "export": "Personnalisation de l'export"
+        "export": "Personnalisation de l'export",
+        "api": "Accès API"
       },
       "button": "Passer à Pro"
     },

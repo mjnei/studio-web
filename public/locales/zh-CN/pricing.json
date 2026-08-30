@@ -47,7 +47,8 @@
         "video": "高清视频生成（1080p）",
         "priority": "优先处理",
         "analytics": "高级数据分析",
-        "export": "自定义导出"
+        "export": "自定义导出",
+        "api": "API 访问"
       },
       "button": "升级到 Pro"
     },

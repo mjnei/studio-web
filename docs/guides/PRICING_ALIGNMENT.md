@@ -18,7 +18,7 @@ Related:
 
 ---
 
-## Current state (updated after P0 + P1 + P2 pass)
+## Current state (updated after P0 + P1 + P2 + P3 pass)
 
 ### What matches (both repos)
 
@@ -33,6 +33,7 @@ Related:
 - Landing prices live in `pricing.json` (no hardcoded numbers in `page.tsx`)
 - Landing compare table uses correct tier keys (`free` / `pro` / `premium` / `enterprise`)
 - **FAQ**: identical 6-question set (`faq.q1`–`faq.q6`) in all 8 locales — credits, rollover, plan changes, team plans, video formats, own scripts/voices. No free-trial or refund copy.
+- **Feature keys**: semantic schema shared for free/pro/premium (`features.credits`, `features.rollover`, …) — documented in `SHARED_I18N_CHECKLIST.md`
 
 ### Intentional differences
 
@@ -41,13 +42,12 @@ Related:
 | Tier count        | 4 (Enterprise marketing-only)              | 3                                        |
 | Compare table     | Yes                                        | No                                       |
 | Marketing CTAs    | Custom solution, signup URL                | Subscribe placeholder alert              |
-| i18n key schema   | `features.f1`…`f10`                        | `features.credits`, `features.rollover`  |
 | Free tier CTA     | “Get Started” → signup URL                 | “Current Plan” (disabled)                |
-| Extra sections    | Compare table, custom-solution CTA         | —                                        |
+| Extra sections    | Compare table, custom-solution CTA, Enterprise tier | —                                |
+| Surface-only keys | `subtitle`, `cta`, `monthly`/`annual`      | `description`, `button`, `billingToggle` |
 
 ### Still open
 
-- Shared `pricing.json` key schema not unified (feature keys differ; FAQ keys now aligned)
 - Studio checkout not wired (`subscribeComingSoon` placeholder)
 
 ---
@@ -79,16 +79,14 @@ Related:
 
 ### P3 — i18n engineering alignment
 
-- [ ] **Shared `pricing.json` key schema**  
-      Feature keys still differ (`f1`…`f10` vs `features.credits`). FAQ keys now unified (`faq.q1`–`faq.q6`).  
-      **Fix:** Define one schema (extend this doc or `SHARED_I18N_CHECKLIST.md`) and migrate both repos.
+- [x] **Shared `pricing.json` key schema**  
+      Feature keys unified to semantic names (`credits`, `rollover`, `voices`, …). FAQ keys unified (`faq.q1`–`faq.q6`). Schema documented in `SHARED_I18N_CHECKLIST.md`.
 
-- [ ] **Glossary updates**  
-      When tier names or “credits” copy changes, update both repos and both `TRANSLATION_GUIDE.md` files.  
-      **Fix:** Add pricing glossary rows (credits, rollover, tier names) and note cross-repo impact on pricing PRs.
+- [x] **Glossary updates**  
+      Credits, rollover, and tier naming added to both `TRANSLATION_GUIDE.md` files and `SHARED_I18N_CHECKLIST.md`.
 
 - [x] **All 8 locales in sync (Landing)** — `pricing.json` updated for en, zh-CN, zh-TW, ja, ko, de, fr, es
-- [x] **All 8 locales in sync (both repos)** — FAQ and pricing copy aligned across all locales
+- [x] **All 8 locales in sync (both repos)** — FAQ, feature keys, and pricing copy aligned across all locales
 
 ---
 
@@ -151,7 +149,7 @@ Use this table when updating copy. Adjust only with explicit product decision.
 | 5    | Move Landing prices into JSON; remove hardcoded numbers            | Landing | Done   |
 | 6    | Decide Enterprise + section parity                                 | Both    | Done   |
 | 7    | Align annual billing UX + merge FAQs                               | Both    | Done   |
-| 8    | Document final `pricing.json` schema in `SHARED_I18N_CHECKLIST.md` | Both    | Open   |
+| 8    | Document final `pricing.json` schema in `SHARED_I18N_CHECKLIST.md` | Both    | Done   |
 | 9    | Wire CTAs to signup / checkout                                     | Both    | Open   |
 
 ---
@@ -179,5 +177,6 @@ Pricing is aligned when:
 - [ ] Landing `page.tsx` — no hardcoded prices
 - [ ] Compare table keys match tier names (Landing)
 - [ ] FAQ answers consistent (Landing + Studio)
+- [ ] Feature keys match `SHARED_I18N_CHECKLIST.md` schema
 - [ ] Cross-repo PR linked (if only one repo touched)
 ```

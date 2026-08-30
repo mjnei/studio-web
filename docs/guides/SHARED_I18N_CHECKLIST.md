@@ -30,15 +30,55 @@ When changing any of these in one repo, check the other:
 | Voices (TTS profiles) | e.g. zh-CN: **音色** |
 | TTS / speech synthesis | e.g. zh-CN: **语音合成** |
 | Playground | Landing nav: **体验**; Studio nav: **试用场** (intentionally different surface labels, same product) |
-| Credits (if surfaced) | e.g. zh-CN: **额度** (Studio); landing may add later |
-| Plan tiers | Free / Pro / Premium / Enterprise — consistent tier naming in `pricing.json` |
+| Credits | e.g. zh-CN: **额度**; zh-TW: **點數** — one term per locale across pricing, jobs, settings |
+| Credit rollover | e.g. zh-CN: **结转**; zh-TW: **結轉** — cap limits must match tier matrix (10 / 50 / unlimited) |
+| Plan tiers | Free / Pro / Premium / Enterprise — tier **names** stay in English in JSON; descriptions localized |
 
 - [ ] Glossary row added or updated in both `TRANSLATION_GUIDE.md` files when introducing a new shared term
 - [ ] zh-TW translated from English in each repo (not converted from zh-CN)
 
 ---
 
-## Per-repo file parity
+## `pricing.json` schema (shared feature + FAQ keys)
+
+Canonical schema for tier features and FAQs. **Feature keys and FAQ keys must match across both repos.** Surface-specific keys may differ (see table below).
+
+Related: `docs/guides/PRICING_ALIGNMENT.md` — tier matrix, FAQ topics, alignment checklist.
+
+### Shared tier feature keys
+
+| Tier | Keys (display order) |
+| ---- | -------------------- |
+| **free** | `credits`, `rollover`, `voices`, `video`, `quality`, `storage` |
+| **pro** | `credits`, `rollover`, `voices`, `video`, `priority`, `analytics`, `export`, `api` |
+| **premium** | `credits`, `rollover`, `voices`, `quality`, `support`, `ai`, `team`, `whiteLabel`, `api` |
+| **enterprise** (Landing only) | `unlimited`, `unlimitedVoices`, `customModels`, `voiceCloning`, `whiteLabel`, `accountManager`, `onPremise`, `customIntegrations`, `volumeDiscounts`, `customSla` |
+
+Path: `pricing.{tier}.features.{key}`
+
+### Shared FAQ keys
+
+`pricing.faq.q1`–`pricing.faq.q6` — each `{ q, a }`. Topics documented in `PRICING_ALIGNMENT.md`.
+
+### Intentional surface-specific keys
+
+| Key area | official-landing | studio-web |
+| -------- | ---------------- | ---------- |
+| Page subtitle | `pricing.subtitle` | `pricing.description` |
+| Billing toggle | `pricing.monthly` / `annual` / `save20` | `pricing.billingToggle.*` |
+| Tier CTA | `pricing.{tier}.cta` | `pricing.{tier}.button` |
+| Credits on card | — | `rolloverAmount`, `creditsPerMonth`, `rolloverLabel` |
+| Landing-only | `compare`, `customSolution`, `enterprise` tier | — |
+| Studio-only | — | `subscribeComingSoon` |
+
+### Pricing PR checklist
+
+- [ ] Feature keys identical across repos for shared tiers (free / pro / premium)
+- [ ] FAQ `q1`–`q6` identical across repos (all 8 locales)
+- [ ] Tier matrix limits unchanged or updated in `PRICING_ALIGNMENT.md`
+- [ ] Cross-repo PR linked when only one repo touched
+
+---
 
 ### official-landing
 

@@ -47,7 +47,8 @@
         "video": "HD 영상 생성 (1080p)",
         "priority": "우선 처리",
         "analytics": "고급 분석",
-        "export": "내보내기 맞춤 설정"
+        "export": "내보내기 맞춤 설정",
+        "api": "API 접근"
       },
       "button": "Pro로 업그레이드"
     },

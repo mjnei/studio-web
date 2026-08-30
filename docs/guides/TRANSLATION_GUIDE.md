@@ -59,7 +59,9 @@ Canonical English → meaning → current Simplified Chinese (`zh-CN`) reference
 | **Voices** | TTS / clone voice profiles | 音色 | Align with CapCut / TTS vendor wording in that market |
 | **Voice** (workflow step) | Narration / voiceover step | 配音 or 音色 | Step name may differ from library name; keep intentional |
 | **TTS / speech synthesis** | Generating spoken audio | 语音合成 | “Speech synthesis” as a process is OK even if clones are 音色 |
-| **Credits** | Consumable generation balance | 额度 | One word only — never mix 积分 / 信用 / credits transliteration in the same locale |
+| **Credits** | Consumable generation balance | 额度 | zh-TW: **點數** — one term per locale; see `pricing.json` |
+| **Rollover** | Unused credits carried to next month | 结转 | zh-TW: **結轉**; caps per tier: 10 / 50 / unlimited |
+| **Plan tiers** | Free / Pro / Premium / Enterprise | 免费版 / 专业版 / 高级版 / 企业版 | Tier **names** in JSON stay English; localize descriptions only |
 | **Jobs** | Async generation tasks | 任务 | “Jobs” as employment is wrong |
 | **Playground** | Experimental / admin sandbox | 试用场 | Or keep “Playground” if loanwords are normal in that market |
 | **Filter** | UI filter control | 筛选 | Not “过滤器” unless technical docs |
@@ -81,6 +83,8 @@ The public **official-landing** repo shares locale codes and several concepts. K
 | Voices / voice library | 音色 | 音色 (playground) |
 | TTS / synthesis | 语音合成 | 语音合成 |
 | Pricing | 定价 / 方案 | 价格 / 定价 |
+| Credits | 额度 | 额度 |
+| Rollover | 结转 | 结转 |
 
 Landing uses more marketing copy; Studio uses more workflow copy — but **core product nouns should not contradict**.
 

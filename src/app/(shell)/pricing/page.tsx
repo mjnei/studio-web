@@ -99,6 +99,7 @@ export default function PricingPage() {
         t("pricing.pro.features.priority"),
         t("pricing.pro.features.analytics"),
         t("pricing.pro.features.export"),
+        t("pricing.pro.features.api"),
       ],
       credits: 25,
       rollover: t("pricing.pro.rolloverAmount"),
