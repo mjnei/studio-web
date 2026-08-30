@@ -49,6 +49,105 @@ import { useStuckAsync } from "@/lib/hooks/use-stuck-async";
 import { isProjectNotFoundError } from "@/lib/notify-project-not-found";
 import { XIcon, WeChatIcon } from "@/components/icons";
 
+const OPTIMISTIC_VIDEO_ID_PREFIX = "optimistic-";
+const RENDER_STUCK_TIMEOUT_MS = 90_000;
+
+function isOptimisticVideoId(id: string) {
+  return id.startsWith(OPTIMISTIC_VIDEO_ID_PREFIX);
+}
+
+function RenderStuckBanner({
+  onRefresh,
+  t,
+}: {
+  onRefresh: () => void;
+  t: (key: string) => string;
+}) {
+  return (
+    <div
+      role="alert"
+      className="flex flex-col items-center gap-3 rounded-xl border border-error-border/30 bg-surface-panel p-4 text-center sm:flex-row sm:text-left"
+    >
+      <AlertCircle className="h-5 w-5 shrink-0 text-error-text" aria-hidden />
+      <div className="flex-1">
+        <p className="text-body font-semibold text-text-primary">
+          {t("project.export.processingTimedOut")}
+        </p>
+        <p className="text-caption text-text-secondary">
+          {t("project.export.processingTimedOutDesc")}
+        </p>
+      </div>
+      <Button
+        variant="secondary"
+        size="sm"
+        leftIcon={<RotateCcw className="h-4 w-4" aria-hidden />}
+        onClick={onRefresh}
+        className="shrink-0"
+      >
+        {t("project.export.refreshStatus")}
+      </Button>
+    </div>
+  );
+}
+
+function ProcessingTelemetryList({
+  videos,
+  getStatusLabel,
+  t,
+}: {
+  videos: VideoGenerationResponse[];
+  getStatusLabel: (status: string) => string;
+  t: (key: string, params?: Record<string, string | number>) => string;
+}) {
+  if (videos.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="space-y-4">
+      {videos.map((video) => (
+        <div
+          key={video.id}
+          className="p-4 rounded-xl bg-surface-raised border border-accent-primary/30 space-y-3"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Spinner className="h-5 w-5 text-accent-primary shrink-0" />
+              <div>
+                <p className="text-body font-semibold text-text-primary">
+                  {t("project.export.versionOption", { n: video.generation_attempt })}
+                </p>
+                <p className="text-caption text-text-muted">
+                  {video.status === "queued"
+                    ? t("project.export.queuedStatus")
+                    : t("project.export.stitchingStatus")}
+                </p>
+              </div>
+            </div>
+            <Badge variant="primary" size="sm">
+              {getStatusLabel(video.status)}
+            </Badge>
+          </div>
+
+          <div className="grid grid-cols-3 gap-2 text-micro font-medium text-center pt-2 border-t border-border-default">
+            <div className="p-1.5 rounded bg-accent-primary/10 text-accent-primary">
+              {t("project.export.stepQueue")}
+            </div>
+            <div
+              className={`p-1.5 rounded ${video.status === "processing" ? "bg-accent-primary/20 text-accent-primary animate-pulse" : "bg-surface-panel text-text-muted"}`}
+            >
+              {t("project.export.stepStitch")}
+            </div>
+            <div className="p-1.5 rounded bg-surface-panel text-text-muted">
+              {t("project.export.stepEncode")}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function ExportPage() {
   const params = useParams();
   const router = useRouter();
@@ -85,7 +184,7 @@ export default function ExportPage() {
   const [creditStatus, setCreditStatus] = useState<CreditStatus | null>(null);
   const [showInsufficientCreditsModal, setShowInsufficientCreditsModal] = useState(false);
   const [showCreditConfirmationModal, setShowCreditConfirmationModal] = useState(false);
-  const [isGeneratingVideo, setIsGeneratingVideo] = useState(false);
+  const [isSubmittingGeneration, setIsSubmittingGeneration] = useState(false);
   const [selectedVideoId, setSelectedVideoId] = useState<string | null>(null);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showExportFormatModal, setShowExportFormatModal] = useState(false);
@@ -106,16 +205,55 @@ export default function ExportPage() {
     (response: { videos: VideoGenerationResponse[] }) => {
       setVideos(response.videos);
       setSelectedVideoId((current) => {
-        if (current) return current;
-        const firstCompleted = response.videos.find((v) => v.status === "completed");
-        if (firstCompleted) {
-          return firstCompleted.id;
+        if (current && response.videos.some((video) => video.id === current)) {
+          return current;
         }
-        return null;
+        const firstCompleted = response.videos.find((video) => video.status === "completed");
+        return firstCompleted ? firstCompleted.id : null;
       });
     },
     []
   );
+
+  const upsertVideo = React.useCallback((video: VideoGenerationResponse) => {
+    setVideos((prev) => {
+      const rest = prev.filter(
+        (existing) => !isOptimisticVideoId(existing.id) && existing.id !== video.id
+      );
+      return [video, ...rest];
+    });
+  }, []);
+
+  const insertOptimisticQueuedVideo = React.useCallback(() => {
+    setVideos((prev) => {
+      const nextAttempt =
+        prev.reduce((max, video) => Math.max(max, video.generation_attempt), 0) + 1;
+
+      return [
+        {
+          id: `${OPTIMISTIC_VIDEO_ID_PREFIX}${Date.now()}`,
+          project_id: projectId,
+          user_id: "",
+          status: "queued",
+          progress: 0,
+          video_url: null,
+          thumbnail_url: null,
+          credit_cost: 1,
+          generation_attempt: nextAttempt,
+          is_published: false,
+          error_message: null,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          script_id: null,
+          voice_id: null,
+          voice_name: state?.voiceName ?? null,
+          thumbnail_id: null,
+          tts_job_id: null,
+        },
+        ...prev.filter((video) => !isOptimisticVideoId(video.id)),
+      ];
+    });
+  }, [projectId, state?.voiceName]);
 
   // ── Video data loaders ─────────────────────────────────────────────────────
   const loadVideos = React.useCallback(async () => {
@@ -150,46 +288,11 @@ export default function ExportPage() {
     !isLoading && Boolean(projectError && isProjectNotFoundError(projectError));
 
   React.useEffect(() => {
-    if (!projectId || isLoading) return;
-    if (isProjectNotFound) return;
+    if (!projectId || isLoading || isProjectNotFound) return;
 
-    let cancelled = false;
-
-    getProjectVideos(projectId)
-      .then((response) => {
-        if (cancelled) return;
-        setVideos(response.videos);
-        setSelectedVideoId((current) => {
-          if (current) return current;
-          const firstCompleted = response.videos.find((v) => v.status === "completed");
-          return firstCompleted ? firstCompleted.id : null;
-        });
-      })
-      .catch((error) => {
-        if (!cancelled) {
-          handleVideoLoadError(error);
-        }
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setIsLoadingVideos(false);
-        }
-      });
-
-    getCreditStatus()
-      .then((status) => {
-        if (!cancelled) {
-          setCreditStatus(status);
-        }
-      })
-      .catch((error) => {
-        console.error("Failed to load credit status:", error);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [projectId, isLoading, isProjectNotFound, handleVideoLoadError]);
+    void loadVideos();
+    void loadCreditStatus();
+  }, [projectId, isLoading, isProjectNotFound, loadVideos, loadCreditStatus]);
 
   // Listen for video completion notifications
   const { notifications } = useNotifications();
@@ -204,44 +307,9 @@ export default function ExportPage() {
       return;
     }
 
-    let cancelled = false;
-
-    getProjectVideos(projectId)
-      .then((response) => {
-        if (!cancelled) {
-          setVideos(response.videos);
-          setSelectedVideoId((current) => {
-            if (current) return current;
-            const firstCompleted = response.videos.find((v) => v.status === "completed");
-            return firstCompleted ? firstCompleted.id : null;
-          });
-        }
-      })
-      .catch((error) => {
-        if (!cancelled) {
-          handleVideoLoadError(error);
-        }
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setIsLoadingVideos(false);
-        }
-      });
-
-    getCreditStatus()
-      .then((status) => {
-        if (!cancelled) {
-          setCreditStatus(status);
-        }
-      })
-      .catch((error) => {
-        console.error("Failed to load credit status:", error);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [notifications, projectId, handleVideoLoadError]);
+    void loadVideos();
+    void loadCreditStatus();
+  }, [notifications, projectId, loadVideos, loadCreditStatus]);
 
   // Poll video job status over HTTP
   React.useEffect(() => {
@@ -284,9 +352,12 @@ export default function ExportPage() {
 
   const handleConfirmGenerate = async () => {
     setShowCreditConfirmationModal(false);
-    setIsGeneratingVideo(true);
+    setIsSubmittingGeneration(true);
+    insertOptimisticQueuedVideo();
+
     try {
-      await regenerateVideo(projectId);
+      const newJob = await regenerateVideo(projectId);
+      upsertVideo(newJob);
       showSuccessToast(
         t("project.export.generationStarted"),
         t("project.export.generationStartedDesc")
@@ -296,6 +367,7 @@ export default function ExportPage() {
       await refreshNotifications();
     } catch (error) {
       console.error("Failed to generate video:", error);
+      setVideos((prev) => prev.filter((video) => !isOptimisticVideoId(video.id)));
       const err = error as { status?: number; message?: string };
       if (err.status === 402) {
         await loadCreditStatus();
@@ -309,7 +381,7 @@ export default function ExportPage() {
         );
       }
     } finally {
-      setIsGeneratingVideo(false);
+      setIsSubmittingGeneration(false);
     }
   };
 
@@ -348,13 +420,34 @@ export default function ExportPage() {
     videos?.filter((v) => v.status === "processing" || v.status === "queued") || [];
   const failedVideos = videos?.filter((v) => v.status === "failed") || [];
 
+  const isAwaitingRender = isSubmittingGeneration || processingVideos.length > 0;
+  const hasCompletedVideo = completedVideos.length > 0;
+  const hasOnlyFailed =
+    failedVideos.length > 0 && !hasCompletedVideo && !isAwaitingRender;
+
+  const renderActivityKey = processingVideos
+    .map((video) => `${video.id}:${video.status}:${video.progress}:${video.updated_at}`)
+    .join("|");
+
   const { isStuck: isLoadStuck, reset: resetLoadStuck } = useStuckAsync(isPageLoading);
+  const { isStuck: isRenderStuck, reset: resetRenderStuck } = useStuckAsync(
+    isAwaitingRender,
+    RENDER_STUCK_TIMEOUT_MS,
+    renderActivityKey
+  );
 
   const handleRetryLoad = () => {
     resetLoadStuck();
     void refreshProject();
     void loadVideos();
     void loadCreditStatus();
+  };
+
+  const handleRefreshRenderStatus = () => {
+    resetRenderStuck();
+    void loadVideos();
+    void loadCreditStatus();
+    void refreshNotifications();
   };
 
   if (isPageLoading && !isLoadStuck) {
@@ -437,16 +530,16 @@ export default function ExportPage() {
                     variant="outline"
                     size="sm"
                     leftIcon={
-                      isGeneratingVideo ? (
+                      isAwaitingRender ? (
                         <Spinner className="h-3.5 w-3.5" />
                       ) : (
                         <RefreshCw className="h-3.5 w-3.5" />
                       )
                     }
                     onClick={handleGenerateVideo}
-                    disabled={isGeneratingVideo}
+                    disabled={isAwaitingRender}
                   >
-                    {isGeneratingVideo
+                    {isAwaitingRender
                       ? t("project.export.generating")
                       : t("project.export.newVersion")}
                   </Button>
@@ -568,6 +661,51 @@ export default function ExportPage() {
                 >
                   {t("common.share")}
                 </Button>
+              </div>
+
+              {isAwaitingRender && (
+                <div className="mt-6 rounded-xl border border-accent-primary/30 bg-surface-raised p-4 space-y-3">
+                  <Heading
+                    variant="label"
+                    as="h3"
+                    className="text-text-primary flex items-center gap-2"
+                  >
+                    <Clock className="h-4 w-4 text-accent-primary" />
+                    {t("project.export.liveTelemetry")}
+                  </Heading>
+                  <ProcessingTelemetryList
+                    videos={processingVideos}
+                    getStatusLabel={getStatusLabel}
+                    t={t}
+                  />
+                  {isRenderStuck && (
+                    <RenderStuckBanner onRefresh={handleRefreshRenderStatus} t={t} />
+                  )}
+                </div>
+              )}
+            </Card>
+          ) : isAwaitingRender ? (
+            <Card variant="elevated" padding="lg" className="border-accent-primary/30 shadow-xl">
+              <div className="max-w-2xl mx-auto py-4 space-y-6">
+                <div className="text-center space-y-3">
+                  <div className="flex justify-center">
+                    <Spinner className="h-10 w-10 text-accent-primary" />
+                  </div>
+                  <Heading variant="section" as="h2" className="text-text-primary">
+                    {t("project.export.liveTelemetry")}
+                  </Heading>
+                  <p className="text-body text-text-secondary">
+                    {t("project.export.generationStartedDesc")}
+                  </p>
+                </div>
+                <ProcessingTelemetryList
+                  videos={processingVideos}
+                  getStatusLabel={getStatusLabel}
+                  t={t}
+                />
+                {isRenderStuck && (
+                  <RenderStuckBanner onRefresh={handleRefreshRenderStatus} t={t} />
+                )}
               </div>
             </Card>
           ) : (
@@ -701,97 +839,35 @@ export default function ExportPage() {
                 </div>
 
                 {/* Dominant Hero Render Trigger */}
-                <div className="text-center space-y-4">
-                  {creditStatus && (
-                    <div className="flex justify-center">
-                      <CreditUsageIndicator
-                        cost={1}
-                        remainingCredits={creditStatus.credits_remaining}
-                      />
-                    </div>
-                  )}
-
-                  <Button
-                    variant="primary"
-                    size="lg"
-                    leftIcon={
-                      isGeneratingVideo ? (
-                        <Spinner className="h-5 w-5" />
-                      ) : (
-                        <Video className="h-5 w-5" />
-                      )
-                    }
-                    onClick={handleGenerateVideo}
-                    disabled={isGeneratingVideo || !hasCredits}
-                    className="w-full max-w-md shadow-glow-hover font-semibold text-body py-4 mx-auto"
-                  >
-                    {isGeneratingVideo
-                      ? t("project.export.generating")
-                      : `🎬 ${t("project.export.startGenerationCta")}`}
-                  </Button>
-
-                  {!hasCredits && (
-                    <p className="text-caption text-error-text">
-                      {t("project.export.insufficientCredits")}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </Card>
-          )}
-
-          {/* ── Live Render Telemetry When Processing ── */}
-          {processingVideos.length > 0 && (
-            <Card variant="elevated" padding="md" className="border-accent-primary/30">
-              <Heading
-                variant="label"
-                as="h3"
-                className="text-text-primary mb-4 flex items-center gap-2"
-              >
-                <Clock className="h-4 w-4 text-accent-primary" />
-                {t("project.export.liveTelemetry")}
-              </Heading>
-
-              <div className="space-y-4">
-                {processingVideos.map((video) => (
-                  <div
-                    key={video.id}
-                    className="p-4 rounded-xl bg-surface-raised border border-accent-primary/30 space-y-3"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <Spinner className="h-5 w-5 text-accent-primary shrink-0" />
-                        <div>
-                          <p className="text-body font-semibold text-text-primary">
-                            {t("project.export.versionOption", { n: video.generation_attempt })}
-                          </p>
-                          <p className="text-caption text-text-muted">
-                            {video.status === "queued"
-                              ? t("project.export.queuedStatus")
-                              : t("project.export.stitchingStatus")}
-                          </p>
-                        </div>
+                {!isAwaitingRender && (
+                  <div className="text-center space-y-4">
+                    {creditStatus && (
+                      <div className="flex justify-center">
+                        <CreditUsageIndicator
+                          cost={1}
+                          remainingCredits={creditStatus.credits_remaining}
+                        />
                       </div>
-                      <Badge variant="primary" size="sm">
-                        {getStatusLabel(video.status)}
-                      </Badge>
-                    </div>
+                    )}
 
-                    <div className="grid grid-cols-3 gap-2 text-micro font-medium text-center pt-2 border-t border-border-default">
-                      <div className="p-1.5 rounded bg-accent-primary/10 text-accent-primary">
-                        {t("project.export.stepQueue")}
-                      </div>
-                      <div
-                        className={`p-1.5 rounded ${video.status === "processing" ? "bg-accent-primary/20 text-accent-primary animate-pulse" : "bg-surface-panel text-text-muted"}`}
-                      >
-                        {t("project.export.stepStitch")}
-                      </div>
-                      <div className="p-1.5 rounded bg-surface-panel text-text-muted">
-                        {t("project.export.stepEncode")}
-                      </div>
-                    </div>
+                    <Button
+                      variant="primary"
+                      size="lg"
+                      leftIcon={<Video className="h-5 w-5" />}
+                      onClick={handleGenerateVideo}
+                      disabled={!hasCredits}
+                      className="w-full max-w-md shadow-glow-hover font-semibold text-body py-4 mx-auto"
+                    >
+                      {`🎬 ${t("project.export.startGenerationCta")}`}
+                    </Button>
+
+                    {!hasCredits && (
+                      <p className="text-caption text-error-text">
+                        {t("project.export.insufficientCredits")}
+                      </p>
+                    )}
                   </div>
-                ))}
+                )}
               </div>
             </Card>
           )}
@@ -880,7 +956,7 @@ export default function ExportPage() {
         onConfirm={handleConfirmGenerate}
         creditCost={1}
         creditsRemaining={creditStatus?.credits_remaining || 0}
-        isProcessing={isGeneratingVideo}
+        isProcessing={isSubmittingGeneration}
       />
 
       {/* Insufficient Credits Modal */}
@@ -942,50 +1018,40 @@ export default function ExportPage() {
         />
       )}
 
-      {(() => {
-        const hasCompletedVideo = completedVideos.length > 0;
-        const isProcessingVideo = processingVideos.length > 0 || isGeneratingVideo;
-        const hasFailedVideo = failedVideos.length > 0 && !hasCompletedVideo;
-
-        let dockNextLabel = t("project.nav.completeProject");
-        let dockNextAction: (() => void) | undefined = () => router.push("/projects");
-        let dockCanGoNext = true;
-        let dockIsProcessing = false;
-        let dockNextIcon: React.ReactNode = <Check className="h-4 w-4" />;
-
-        if (isProcessingVideo) {
-          dockNextLabel = t("project.export.generating");
-          dockNextAction = undefined;
-          dockCanGoNext = true;
-          dockIsProcessing = true;
-          dockNextIcon = undefined;
-        } else if (!hasCompletedVideo) {
-          if (hasFailedVideo) {
-            dockNextLabel = t("project.preview.retryGeneration");
-            dockNextAction = handleGenerateVideo;
-            dockCanGoNext = true;
-            dockNextIcon = <RotateCcw className="h-4 w-4" />;
-          } else {
-            dockNextLabel = t("project.export.generateVideo");
-            dockNextAction = handleGenerateVideo;
-            dockCanGoNext = true;
-            dockNextIcon = <Video className="h-4 w-4" />;
-          }
+      <FloatingWorkflowNavigation
+        projectId={projectId}
+        currentStep="export"
+        canGoNext={true}
+        nextLabel={
+          isAwaitingRender
+            ? t("project.export.generating")
+            : !hasCompletedVideo
+              ? hasOnlyFailed
+                ? t("project.preview.retryGeneration")
+                : t("project.export.generateVideo")
+              : t("project.nav.completeProject")
         }
-
-        return (
-          <FloatingWorkflowNavigation
-            projectId={projectId}
-            currentStep="export"
-            canGoNext={dockCanGoNext}
-            nextLabel={dockNextLabel}
-            nextIcon={dockNextIcon}
-            onNext={dockNextAction}
-            isProcessing={dockIsProcessing}
-            canGoBack={true}
-          />
-        );
-      })()}
+        nextIcon={
+          isAwaitingRender ? undefined : !hasCompletedVideo ? (
+            hasOnlyFailed ? (
+              <RotateCcw className="h-4 w-4" />
+            ) : (
+              <Video className="h-4 w-4" />
+            )
+          ) : (
+            <Check className="h-4 w-4" />
+          )
+        }
+        onNext={
+          isAwaitingRender
+            ? undefined
+            : !hasCompletedVideo
+              ? handleGenerateVideo
+              : () => router.push("/projects")
+        }
+        isProcessing={isAwaitingRender}
+        canGoBack={true}
+      />
     </>
   );
 }

@@ -190,9 +190,7 @@ Render final video, manage versions, download/share.
 
 **When completed:** Master player, version switcher, download / export-format modal / share (X intent URL; WeChat shows a copied-URL toast).
 
-**Processing:** Live telemetry card; poll videos ~10s while any job is `queued`/`processing`; may refresh on `video_job_completed` notification.
-
-**Known gap (main hero):** While a job is `queued`/`processing`, the pre-flight Start CTA can still appear above the telemetry card until the next poll. The bottom dock already shows "Generating…" correctly. Planned fix: [EXPORT_PAGE_RENDER_STATE.md](./EXPORT_PAGE_RENDER_STATE.md).
+**Processing:** Live telemetry is shown in the page hero while a job is `queued`/`processing` (or submit is in flight). First-time generation replaces the pre-flight Start CTA with a waiting state; regenerating a new version shows a compact telemetry banner under the master showcase. Poll videos ~10s while any job is active; may refresh on `video_job_completed` notification.
 
 **Navigation:** Back → Compose. **Bottom Dock Action** adapts dynamically to video state:
 - **No completed video:** "Generate Video" (or "Retry Generation" if previous attempt failed) → opens generation flow.
