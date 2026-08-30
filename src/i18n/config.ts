@@ -45,6 +45,18 @@ export function getApiLocale(locale: Locale): string {
   return localeToApiLocale[locale] ?? "en";
 }
 
+/** Backend / TMDB locale (e.g. zh-CN) → UI locale (e.g. chs). */
+export function getUiLocaleFromApi(apiLocale: string | null | undefined): Locale | null {
+  if (!apiLocale) return null;
+  for (const [uiLocale, mappedApiLocale] of Object.entries(localeToApiLocale) as [
+    Locale,
+    string,
+  ][]) {
+    if (mappedApiLocale === apiLocale) return uiLocale;
+  }
+  return null;
+}
+
 export function getDateLocale(locale: Locale): string {
   return localeToDateLocale[locale] ?? "en-US";
 }

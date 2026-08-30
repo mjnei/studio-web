@@ -7,5 +7,6 @@ export {
   localeToDateLocale,
   getApiLocale,
   getDateLocale,
+  getUiLocaleFromApi,
   type Locale,
 } from "./config";
