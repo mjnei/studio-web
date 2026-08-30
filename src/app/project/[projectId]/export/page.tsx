@@ -334,6 +334,7 @@ export default function ExportPage() {
   const hasCompletedVideo = completedVideos.length > 0;
   const hasOnlyFailed =
     failedVideos.length > 0 && !hasCompletedVideo && !isAwaitingRender;
+  const canStartGeneration = !isAwaitingRender && hasCredits;
 
   const renderActivityKey = processingVideos
     .map((video) => `${video.id}:${video.status}:${video.progress}:${video.updated_at}`)
@@ -603,6 +604,7 @@ export default function ExportPage() {
               voiceName={state?.voiceName}
               creditsAvailable={creditsAvailable}
               hasCredits={hasCredits}
+              canStartGeneration={canStartGeneration}
               creditStatus={creditStatus}
               onRetry={handleGenerateVideo}
               onOpenDiagnostics={() => setShowDiagnosticsDrawer(true)}
@@ -613,6 +615,7 @@ export default function ExportPage() {
               voiceName={state?.voiceName}
               creditsAvailable={creditsAvailable}
               hasCredits={hasCredits}
+              canStartGeneration={canStartGeneration}
               creditStatus={creditStatus}
               onGenerate={handleGenerateVideo}
             />

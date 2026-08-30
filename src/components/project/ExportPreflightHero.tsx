@@ -14,6 +14,7 @@ export type ExportPreflightHeroProps = {
   voiceName?: string | null;
   creditsAvailable: number;
   hasCredits: boolean;
+  canStartGeneration: boolean;
   creditStatus: CreditStatus | null;
   onGenerate: () => void;
 };
@@ -23,6 +24,7 @@ export function ExportPreflightHero({
   voiceName,
   creditsAvailable,
   hasCredits,
+  canStartGeneration,
   creditStatus,
   onGenerate,
 }: ExportPreflightHeroProps) {
@@ -69,7 +71,7 @@ export function ExportPreflightHero({
             size="lg"
             leftIcon={<Video className="h-5 w-5" />}
             onClick={onGenerate}
-            disabled={!hasCredits}
+            disabled={!canStartGeneration}
             className="mx-auto w-full max-w-md py-4 text-body font-semibold shadow-glow-hover"
           >
             {`🎬 ${t("project.export.startGenerationCta")}`}

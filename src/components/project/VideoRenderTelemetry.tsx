@@ -136,7 +136,7 @@ export function VideoRenderTelemetry({
   }
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6 py-4">
+    <div className="space-y-6">
       <div className="space-y-3 text-center">
         <div className="flex justify-center">
           <Spinner className="h-10 w-10 text-accent-primary" />
