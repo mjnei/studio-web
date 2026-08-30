@@ -1,6 +1,5 @@
 "use client";
 
-import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 
 import { useState, useRef, useEffect } from "react";
@@ -20,7 +19,6 @@ export function AudioPlayer({ audioUrl, jobId, jobName, onDismiss }: AudioPlayer
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1);
   const [isMuted, setIsMuted] = useState(false);
-  const [waveformHeights] = useState(() => Array.from({ length: 40 }, () => Math.random() * 100));
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Reset player state when the audio source changes (render-time adjustment).
@@ -176,98 +174,89 @@ export function AudioPlayer({ audioUrl, jobId, jobName, onDismiss }: AudioPlayer
   return (
     <>
       <audio ref={audioRef} src={audioUrl} className="hidden" />
-      <div className="rounded-xl border border-border-default bg-gradient-to-br from-surface-panel to-surface-raised p-6 shadow-lg">
-        <div className="flex items-center justify-between mb-4">
-          <Heading variant="subsection" as="h3" className="text-text-primary">
-            {jobName || `Job ${jobId || ""}`}
-          </Heading>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={handleDownload}
-              leftIcon={<Download className="h-4 w-4" />}
-            >
-              Download
-            </Button>
-            <Button variant="ghost" size="icon" onClick={handleDismiss} aria-label="Close player">
-              <X className="h-4 w-4" aria-hidden />
-            </Button>
-          </div>
-        </div>
-
-        {/* Waveform visualization (placeholder) */}
-        <div className="mb-4 h-20 rounded-lg bg-surface-base border border-border-default flex items-center justify-center">
-          <div className="flex items-end gap-1 h-16">
-            {waveformHeights.map((height, i) => (
-              <div
-                key={i}
-                className="w-1 bg-accent-primary rounded-t transition-all"
-                style={{
-                  height: `${height}%`,
-                  opacity: currentTime > (i / 40) * duration ? 1 : 0.3,
-                }}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Progress Bar */}
-        <div className="mb-4">
-          <input
-            type="range"
-            min="0"
-            max={duration || 0}
-            step="0.1"
-            value={currentTime}
-            onChange={handleSeek}
-            className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-surface-raised accent-accent-primary"
-          />
-          <div className="mt-2 flex items-center justify-between text-caption text-text-muted">
-            <span>{formatTime(currentTime)}</span>
-            <span>{formatTime(duration)}</span>
-          </div>
-        </div>
-
-        {/* Controls */}
-        <div className="flex items-center gap-3">
-          {/* Play/Pause */}
+      <div className="flex items-center gap-3">
+        {/* Transport controls */}
+        <div className="flex shrink-0 items-center gap-1.5">
           <button
             type="button"
             onClick={togglePlay}
-            className="flex items-center justify-center h-10 w-10 rounded-full bg-gradient-to-r from-accent-primary to-purple-600 text-white hover:shadow-lg hover:shadow-accent-primary/30 transition-all"
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-r from-accent-primary to-purple-600 text-white hover:shadow-md hover:shadow-accent-primary/30 transition-all"
+            aria-label={isPlaying ? "Pause" : "Play"}
           >
-            {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4 ml-0.5" />}
+            {isPlaying ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5 ml-0.5" />}
           </button>
-
-          {/* Restart */}
           <button
             type="button"
             onClick={handleRestart}
-            className="flex items-center justify-center h-9 w-9 rounded-full border border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:text-accent-primary hover:bg-accent-primary/5 transition-all"
+            className="flex h-7 w-7 items-center justify-center rounded-full border border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:text-accent-primary hover:bg-accent-primary/5 transition-all"
+            aria-label="Restart"
           >
-            <RotateCcw className="h-4 w-4" />
+            <RotateCcw className="h-3.5 w-3.5" />
           </button>
+        </div>
 
-          {/* Volume */}
-          <div className="flex-1 flex items-center gap-3">
-            <button
-              type="button"
-              onClick={toggleMute}
-              className="flex items-center justify-center h-9 w-9 rounded-full border border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:text-accent-primary hover:bg-accent-primary/5 transition-all"
-            >
-              {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-            </button>
+        {/* Title + progress */}
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-caption font-medium text-text-primary">
+            {jobName || `Job ${jobId || ""}`}
+          </p>
+          <div className="mt-1 flex items-center gap-2">
             <input
               type="range"
               min="0"
-              max="1"
-              step="0.01"
-              value={isMuted ? 0 : volume}
-              onChange={handleVolumeChange}
-              className="flex-1 h-2 rounded-lg appearance-none cursor-pointer bg-surface-raised accent-accent-primary"
+              max={duration || 0}
+              step="0.1"
+              value={currentTime}
+              onChange={handleSeek}
+              className="h-1.5 flex-1 cursor-pointer appearance-none rounded-lg bg-surface-raised accent-accent-primary"
             />
+            <span className="shrink-0 text-caption tabular-nums text-text-muted">
+              {formatTime(currentTime)} / {formatTime(duration)}
+            </span>
           </div>
+        </div>
+
+        {/* Volume (hidden on narrow screens) */}
+        <div className="hidden shrink-0 items-center gap-1.5 sm:flex">
+          <button
+            type="button"
+            onClick={toggleMute}
+            className="flex h-7 w-7 items-center justify-center rounded-full border border-border-default bg-surface-base text-text-secondary hover:border-accent-primary hover:text-accent-primary hover:bg-accent-primary/5 transition-all"
+            aria-label={isMuted ? "Unmute" : "Mute"}
+          >
+            {isMuted ? <VolumeX className="h-3.5 w-3.5" /> : <Volume2 className="h-3.5 w-3.5" />}
+          </button>
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            value={isMuted ? 0 : volume}
+            onChange={handleVolumeChange}
+            className="h-1.5 w-16 cursor-pointer appearance-none rounded-lg bg-surface-raised accent-accent-primary"
+          />
+        </div>
+
+        {/* Actions */}
+        <div className="flex shrink-0 items-center gap-1">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleDownload}
+            aria-label="Download audio"
+            className="h-8 w-8"
+          >
+            <Download className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleDismiss}
+            aria-label="Close player"
+            className="h-8 w-8"
+          >
+            <X className="h-4 w-4" aria-hidden />
+          </Button>
         </div>
       </div>
     </>

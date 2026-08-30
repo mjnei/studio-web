@@ -262,7 +262,7 @@ export default function PlaygroundPage() {
       {/* Sticky Bottom Audio Player */}
       {showAudioPlayer && currentJob?.status === "completed" && currentJob.audio_url && (
         <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-border-default bg-surface-base/95 backdrop-blur-lg shadow-2xl">
-          <div className="mx-auto max-w-7xl px-4 py-4">
+          <div className="mx-auto max-w-7xl px-4 py-2">
             <AudioPlayer
               audioUrl={currentJob.audio_url}
               jobId={currentJob.id}
