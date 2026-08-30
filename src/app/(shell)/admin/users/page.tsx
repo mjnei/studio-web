@@ -35,6 +35,7 @@ export default function AdminUsersPage() {
   const [modalOpen, setModalOpen] = useState(false);
 
   const loadData = useCallback(async () => {
+    setIsLoading(true);
     try {
       const [statsData, listData] = await Promise.all([
         getAdminUserStats(),
@@ -52,38 +53,15 @@ export default function AdminUsersPage() {
   }, [filters, pagination.page, pagination.pageSize, toast]);
 
   useEffect(() => {
-    let cancelled = false;
-
-    Promise.all([getAdminUserStats(), getAdminUsers(pagination.page, pagination.pageSize, filters)])
-      .then(([statsData, listData]) => {
-        if (cancelled) return;
-        setStats(statsData);
-        setUsers(listData.users);
-        setPagination((prev) => ({ ...prev, total: listData.total }));
-      })
-      .catch((error: unknown) => {
-        if (cancelled) return;
-        const message = error instanceof Error ? error.message : "An error occurred";
-        toast.error("Failed to load users", message);
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setIsLoading(false);
-        }
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [filters, pagination.page, pagination.pageSize, toast]);
+    void loadData();
+  }, [loadData]);
 
   function handleRefresh() {
-    setIsLoading(true);
     void loadData();
   }
 
   function handleFilterChange(next: AdminUserFilter) {
-    setFilters(next);
+    setFilters({ ...next });
     setPagination((prev) => ({ ...prev, page: 1 }));
   }
 
@@ -235,11 +213,7 @@ export default function AdminUsersPage() {
         onClear={handleClearFilters}
       />
 
-      <UsersTable
-        users={users}
-        isLoading={isLoading && users.length === 0}
-        onView={handleViewUser}
-      />
+      <UsersTable users={users} isLoading={isLoading} onView={handleViewUser} />
 
       {pagination.total > 0 && (
         <div className="flex items-center justify-between text-body text-text-secondary">
