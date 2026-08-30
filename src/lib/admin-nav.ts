@@ -30,6 +30,10 @@ export type AdminNavItem = {
   };
 };
 
+export type AdminStatNavItem = AdminNavItem & {
+  stat: NonNullable<AdminNavItem["stat"]>;
+};
+
 /** Single source of truth for admin navigation (shell drawer + admin dashboard). */
 export const ADMIN_NAV: AdminNavItem[] = [
   {
@@ -140,10 +144,8 @@ export function getAdminDrawerNavItems(): AdminNavItem[] {
   return ADMIN_NAV.filter((item) => item.showInDrawer !== false);
 }
 
-export function getAdminStatNavItems(): AdminNavItem[] {
-  return ADMIN_NAV.filter(
-    (item): item is AdminNavItem & { stat: NonNullable<AdminNavItem["stat"]> } => Boolean(item.stat)
-  );
+export function getAdminStatNavItems(): AdminStatNavItem[] {
+  return ADMIN_NAV.filter((item): item is AdminStatNavItem => Boolean(item.stat));
 }
 
 export function getAdminFeatureNavItems(): AdminNavItem[] {
