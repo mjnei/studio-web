@@ -4,9 +4,10 @@ import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
+import { Modal } from "@/components/ui/modal";
 import { useToast } from "@/components/ui/toast";
 import { UserAvatar } from "@/components/ui/UserAvatar";
-import { ChevronDown, Copy, KeyRound, Trash2, UserX, X } from "lucide-react";
+import { ChevronDown, Copy, KeyRound, Trash2, UserX } from "lucide-react";
 import { useState } from "react";
 import type { AdminUser, AdminUserRole } from "@/types/admin";
 
@@ -193,49 +194,50 @@ export function UserDetailModal({
     : "—";
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-border-default bg-surface-panel shadow-xl">
-        <div className="flex items-start justify-between border-b border-border-default px-5 py-4">
-          <div className="flex items-start gap-4">
-            <UserAvatarCell user={user} />
-            <div>
-              <Heading variant="section" as="h2" className="text-text-primary">
-                {user.name}
-              </Heading>
-              <div className="mt-1 flex items-center gap-2">
-                <p className="text-body text-text-muted">{user.email}</p>
+    <Modal
+      open={open}
+      onClose={onClose}
+      size="lg"
+      scrollable
+      closeOnOverlayClick={false}
+      header={
+        <div className="flex items-start gap-4">
+          <UserAvatarCell user={user} />
+          <div className="min-w-0">
+            <Heading variant="section" as="h2" className="text-text-primary">
+              {user.name}
+            </Heading>
+            <div className="mt-1 flex items-center gap-2">
+              <p className="text-body text-text-muted">{user.email}</p>
+              <Button
+                type="button"
+                variant="secondary"
+                size="icon"
+                title="Copy email"
+                aria-label="Copy email"
+                onClick={() => void handleCopy(user.email, "Email copied")}
+              >
+                <Copy className="h-4 w-4" />
+              </Button>
+              {user.picture_url && !user.is_deleted && (
                 <Button
                   type="button"
                   variant="secondary"
                   size="icon"
-                  title="Copy email"
-                  aria-label="Copy email"
-                  onClick={() => void handleCopy(user.email, "Email copied")}
+                  title="Remove picture"
+                  aria-label="Remove picture"
+                  disabled={removingPicture}
+                  onClick={() => void handleRemovePicture()}
                 >
-                  <Copy className="h-4 w-4" />
+                  <Trash2 className="h-4 w-4" />
                 </Button>
-                {user.picture_url && !user.is_deleted && (
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    size="icon"
-                    title="Remove picture"
-                    aria-label="Remove picture"
-                    disabled={removingPicture}
-                    onClick={() => void handleRemovePicture()}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                )}
-              </div>
+              )}
             </div>
           </div>
-          <Button type="button" variant="ghost" size="icon" onClick={onClose} aria-label="Close">
-            <X className="h-5 w-5" aria-hidden />
-          </Button>
         </div>
-
-        <div className="space-y-4 px-5 py-4 text-body">
+      }
+      contentClassName="space-y-4 text-body"
+    >
           <div className="grid grid-cols-2 gap-3">
             <div>
               <p className="text-caption uppercase tracking-wider text-text-muted">Projects</p>
@@ -465,8 +467,6 @@ export function UserDetailModal({
               </div>
             </div>
           )}
-        </div>
-      </div>
-    </div>
+    </Modal>
   );
 }

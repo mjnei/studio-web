@@ -174,6 +174,7 @@ export function ThumbnailEditorModal({
       onClose={onClose}
       title={t("project.thumbnailEditor.title")}
       size="xl"
+      closeOnOverlayClick={false}
       footer={
         <>
           <Button variant="secondary" size="md" onClick={onClose} disabled={isFinalizing}>

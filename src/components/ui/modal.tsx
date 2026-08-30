@@ -12,14 +12,21 @@ export interface ModalProps {
   onClose: () => void;
   title?: string;
   description?: string;
+  header?: ReactNode;
   children?: ReactNode;
-  size?: "sm" | "md" | "lg" | "xl" | "full";
+  size?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "full";
   variant?: "default" | "danger" | "success";
   showCloseButton?: boolean;
+  closeButtonDisabled?: boolean;
   closeOnOverlayClick?: boolean;
   closeOnEscape?: boolean;
+  scrollable?: boolean;
   footer?: ReactNode;
   className?: string;
+  overlayClassName?: string;
+  headerClassName?: string;
+  contentClassName?: string;
+  footerClassName?: string;
 }
 
 export function Modal({
@@ -27,14 +34,21 @@ export function Modal({
   onClose,
   title,
   description,
+  header,
   children,
   size = "md",
   variant = "default",
   showCloseButton = true,
+  closeButtonDisabled = false,
   closeOnOverlayClick = true,
   closeOnEscape = true,
+  scrollable = false,
   footer,
   className = "",
+  overlayClassName = "",
+  headerClassName = "",
+  contentClassName = "",
+  footerClassName = "",
 }: ModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const { t } = useI18n();
@@ -70,58 +84,75 @@ export function Modal({
     md: "max-w-md",
     lg: "max-w-lg",
     xl: "max-w-xl",
+    "2xl": "max-w-2xl",
+    "3xl": "max-w-3xl",
     full: "max-w-full mx-4",
   };
 
-  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (closeOnOverlayClick && e.target === e.currentTarget) {
+  const hasHeader = Boolean(header || title || showCloseButton);
+
+  const handleBackdropClick = () => {
+    if (closeOnOverlayClick) {
       onClose();
     }
   };
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-200"
-      onClick={handleOverlayClick}
+      className={`fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-200 ${overlayClassName}`}
       role="dialog"
       aria-modal="true"
       aria-labelledby={title ? "modal-title" : undefined}
       aria-describedby={description ? "modal-description" : undefined}
     >
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200" />
+      <div
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+        onClick={handleBackdropClick}
+        aria-hidden="true"
+      />
 
       {/* Modal */}
       <div
         ref={modalRef}
         tabIndex={-1}
-        className={`relative w-full ${sizes[size]} rounded-xl bg-surface-elevated border ${
+        className={`relative z-10 flex w-full flex-col ${sizes[size]} rounded-xl bg-surface-elevated border ${
           variant === "danger"
             ? "border-status-error/30"
             : variant === "success"
               ? "border-status-success/30"
               : "border-border-default"
-        } shadow-lg animate-in slide-in-from-bottom-4 duration-300 ${className}`}
+        } shadow-lg animate-in slide-in-from-bottom-4 duration-300 ${
+          scrollable ? "max-h-[90vh]" : ""
+        } ${className}`}
       >
         {/* Header */}
-        {(title || showCloseButton) && (
-          <div className="flex items-start justify-between border-b border-border-default p-6 pb-4">
-            <div className="flex-1">
-              {title && (
-                <Heading id="modal-title" variant="section" as="h2" className="text-text-primary">
-                  {title}
-                </Heading>
-              )}
-              {description && (
-                <Text id="modal-description" variant="body" className="mt-1 text-text-secondary">
-                  {description}
-                </Text>
+        {hasHeader && (
+          <div
+            className={`flex shrink-0 items-start justify-between border-b border-border-default p-6 pb-4 ${headerClassName}`}
+          >
+            <div className="min-w-0 flex-1">
+              {header ?? (
+                <>
+                  {title && (
+                    <Heading id="modal-title" variant="section" as="h2" className="text-text-primary">
+                      {title}
+                    </Heading>
+                  )}
+                  {description && (
+                    <Text id="modal-description" variant="body" className="mt-1 text-text-secondary">
+                      {description}
+                    </Text>
+                  )}
+                </>
               )}
             </div>
             {showCloseButton && (
               <button
+                type="button"
                 onClick={onClose}
-                className="ml-4 rounded-lg p-1.5 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all focus-ring"
+                disabled={closeButtonDisabled}
+                className="ml-4 shrink-0 rounded-lg p-1.5 text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all focus-ring disabled:pointer-events-none disabled:opacity-50"
                 aria-label={t("common.closeModal")}
               >
                 <X className="h-5 w-5" aria-hidden />
@@ -131,11 +162,19 @@ export function Modal({
         )}
 
         {/* Content */}
-        {children && <div className="p-6">{children}</div>}
+        {children && (
+          <div
+            className={`p-6 ${scrollable ? "min-h-0 flex-1 overflow-y-auto" : ""} ${contentClassName}`}
+          >
+            {children}
+          </div>
+        )}
 
         {/* Footer */}
         {footer && (
-          <div className="flex items-center justify-end gap-3 border-t border-border-default p-6 pt-4">
+          <div
+            className={`flex shrink-0 items-center justify-end gap-3 border-t border-border-default p-6 pt-4 ${footerClassName}`}
+          >
             {footer}
           </div>
         )}
@@ -211,6 +250,7 @@ export function ConfirmModal({
       description={description}
       size="sm"
       variant={variant}
+      closeOnOverlayClick={false}
       footer={
         <>
           <Button
@@ -281,6 +321,7 @@ export function FormModal({
       title={title}
       description={description}
       size={size}
+      closeOnOverlayClick={false}
       footer={
         <>
           <Button variant="secondary" size="md" onClick={onClose} disabled={loading}>

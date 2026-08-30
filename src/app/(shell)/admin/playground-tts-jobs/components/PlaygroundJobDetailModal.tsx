@@ -1,11 +1,9 @@
 "use client";
 
-import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-
+import { Modal } from "@/components/ui/modal";
 import {
-  X,
   Clock,
   CheckCircle2,
   XCircle,
@@ -90,204 +88,178 @@ export function PlaygroundJobDetailModal({ job, open, onClose }: PlaygroundJobDe
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border border-border-default bg-surface-base shadow-2xl">
-        {/* Header */}
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border-default bg-surface-panel px-6 py-4">
-          <div>
-            <Heading variant="section" as="h2" className="text-text-primary">
-              Playground Job Details
-            </Heading>
-            <p className="text-body text-text-muted mt-1">#{job.job_id}</p>
-          </div>
-          <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close">
-            <X className="h-5 w-5" aria-hidden />
-          </Button>
-        </div>
-
-        {/* Content */}
-        <div className="p-6 space-y-6">
-          {/* Status */}
-          <div>
-            <Label tone="meta" className="uppercase tracking-wider">
-              Status
-            </Label>
-            <div className="mt-2 flex items-center gap-3">
-              {getStatusBadge(job.status)}
-              {job.retry_count > 0 && (
-                <span className="text-caption text-text-muted">Retries: {job.retry_count}</span>
-              )}
-            </div>
-          </div>
-
-          {/* Timestamps */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label tone="meta" className="uppercase tracking-wider">
-                Created At
-              </Label>
-              <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
-                <p className="text-body text-text-primary">{formatDateTime(job.created_at)}</p>
-              </div>
-            </div>
-            <div>
-              <Label tone="meta" className="uppercase tracking-wider">
-                Completed At
-              </Label>
-              <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
-                <p className="text-body text-text-primary">{formatDateTime(job.completed_at)}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Expires At */}
-          <div>
-            <Label tone="meta" className="uppercase tracking-wider">
-              Expires At (30-day cleanup)
-            </Label>
-            <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
-              <p className="text-body text-text-primary">{formatDateTime(job.expires_at)}</p>
-            </div>
-          </div>
-
-          {/* Audio Duration & Synthesis Time */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label tone="meta" className="uppercase tracking-wider">
-                Audio Duration
-              </Label>
-              <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
-                <p className="text-body text-text-primary">{formatDuration(job.audio_duration)}</p>
-              </div>
-            </div>
-            <div>
-              <Label tone="meta" className="uppercase tracking-wider">
-                Synthesis Time
-              </Label>
-              <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
-                <p className="text-body text-text-primary">
-                  {formatDuration(job.synthesis_duration_seconds)}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Voice ID */}
-          <div>
-            <Label tone="meta" className="uppercase tracking-wider flex items-center gap-2">
-              <Mic className="h-3.5 w-3.5" />
-              Voice Source
-            </Label>
-            <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
-              <p className="text-body text-text-primary">
-                {job.voice_id
-                  ? `Approved Voice #${job.voice_id}`
-                  : `Anonymous Voice #${job.anonymous_voice_id}`}
-              </p>
-            </div>
-          </div>
-
-          {/* Language & Speed */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label tone="meta" className="uppercase tracking-wider flex items-center gap-2">
-                <Globe className="h-3.5 w-3.5" />
-                Language
-              </Label>
-              <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
-                <p className="text-body text-text-primary">{job.language}</p>
-              </div>
-            </div>
-            <div>
-              <Label tone="meta" className="uppercase tracking-wider">
-                Speed Ratio
-              </Label>
-              <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
-                <p className="text-body text-text-primary">{job.ratio}x</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Client Info */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label tone="meta" className="uppercase tracking-wider">
-                Client IP (Hashed)
-              </Label>
-              <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
-                <p className="text-caption font-mono text-text-primary">
-                  {formatIPHash(job.client_ip_address)}
-                </p>
-              </div>
-            </div>
-            <div>
-              <Label tone="meta" className="uppercase tracking-wider">
-                Correlation ID
-              </Label>
-              <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
-                <p className="text-caption font-mono text-text-primary">{job.correlation_id}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* User Agent */}
-          {job.user_agent && (
-            <div>
-              <Label tone="meta" className="uppercase tracking-wider">
-                User Agent
-              </Label>
-              <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
-                <p className="text-caption text-text-primary break-all">{job.user_agent}</p>
-              </div>
-            </div>
+    <Modal
+      open={open}
+      onClose={onClose}
+      title="Playground Job Details"
+      description={`#${job.job_id}`}
+      size="2xl"
+      scrollable
+      contentClassName="space-y-6"
+      footer={
+        <Button size="md" fullWidth onClick={onClose}>
+          Close
+        </Button>
+      }
+      footerClassName="!p-4"
+    >
+      <div>
+        <Label tone="meta" className="uppercase tracking-wider">
+          Status
+        </Label>
+        <div className="mt-2 flex items-center gap-3">
+          {getStatusBadge(job.status)}
+          {job.retry_count > 0 && (
+            <span className="text-caption text-text-muted">Retries: {job.retry_count}</span>
           )}
-
-          {/* Text */}
-          <div>
-            <Label tone="meta" className="uppercase tracking-wider flex items-center gap-2">
-              <FileText className="h-3.5 w-3.5" />
-              Input Text
-            </Label>
-            <div className="mt-2 rounded-lg border border-border-default bg-surface-panel p-4">
-              <p className="text-body text-text-primary whitespace-pre-wrap">{job.text}</p>
-            </div>
-          </div>
-
-          {/* Error Message */}
-          {job.error_message && (
-            <div>
-              <Label tone="meta" className="uppercase tracking-wider flex items-center gap-2">
-                <XCircle className="h-3.5 w-3.5 text-red-500" />
-                Error Message
-              </Label>
-              <div className="mt-2 rounded-lg border-2 border-red-500/50 bg-red-500/10 p-4">
-                <p className="text-body text-red-600 font-mono">{job.error_message}</p>
-              </div>
-            </div>
-          )}
-
-          {/* Audio Path */}
-          {job.audio_path && (
-            <div>
-              <Label tone="meta" className="uppercase tracking-wider">
-                Audio Path
-              </Label>
-              <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
-                <p className="text-caption text-accent-primary font-mono break-all">
-                  {job.audio_path}
-                </p>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Footer */}
-        <div className="sticky bottom-0 border-t border-border-default bg-surface-panel px-6 py-4">
-          <Button size="md" fullWidth onClick={onClose}>
-            Close
-          </Button>
         </div>
       </div>
-    </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <Label tone="meta" className="uppercase tracking-wider">
+            Created At
+          </Label>
+          <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
+            <p className="text-body text-text-primary">{formatDateTime(job.created_at)}</p>
+          </div>
+        </div>
+        <div>
+          <Label tone="meta" className="uppercase tracking-wider">
+            Completed At
+          </Label>
+          <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
+            <p className="text-body text-text-primary">{formatDateTime(job.completed_at)}</p>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <Label tone="meta" className="uppercase tracking-wider">
+          Expires At (30-day cleanup)
+        </Label>
+        <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
+          <p className="text-body text-text-primary">{formatDateTime(job.expires_at)}</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <Label tone="meta" className="uppercase tracking-wider">
+            Audio Duration
+          </Label>
+          <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
+            <p className="text-body text-text-primary">{formatDuration(job.audio_duration)}</p>
+          </div>
+        </div>
+        <div>
+          <Label tone="meta" className="uppercase tracking-wider">
+            Synthesis Time
+          </Label>
+          <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
+            <p className="text-body text-text-primary">
+              {formatDuration(job.synthesis_duration_seconds)}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <Label tone="meta" className="uppercase tracking-wider flex items-center gap-2">
+          <Mic className="h-3.5 w-3.5" />
+          Voice Source
+        </Label>
+        <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
+          <p className="text-body text-text-primary">
+            {job.voice_id
+              ? `Approved Voice #${job.voice_id}`
+              : `Anonymous Voice #${job.anonymous_voice_id}`}
+          </p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <Label tone="meta" className="uppercase tracking-wider flex items-center gap-2">
+            <Globe className="h-3.5 w-3.5" />
+            Language
+          </Label>
+          <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
+            <p className="text-body text-text-primary">{job.language}</p>
+          </div>
+        </div>
+        <div>
+          <Label tone="meta" className="uppercase tracking-wider">
+            Speed Ratio
+          </Label>
+          <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
+            <p className="text-body text-text-primary">{job.ratio}x</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <Label tone="meta" className="uppercase tracking-wider">
+            Client IP (Hashed)
+          </Label>
+          <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
+            <p className="text-caption font-mono text-text-primary">{formatIPHash(job.client_ip_address)}</p>
+          </div>
+        </div>
+        <div>
+          <Label tone="meta" className="uppercase tracking-wider">
+            Correlation ID
+          </Label>
+          <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
+            <p className="text-caption font-mono text-text-primary">{job.correlation_id}</p>
+          </div>
+        </div>
+      </div>
+
+      {job.user_agent && (
+        <div>
+          <Label tone="meta" className="uppercase tracking-wider">
+            User Agent
+          </Label>
+          <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
+            <p className="text-caption text-text-primary break-all">{job.user_agent}</p>
+          </div>
+        </div>
+      )}
+
+      <div>
+        <Label tone="meta" className="uppercase tracking-wider flex items-center gap-2">
+          <FileText className="h-3.5 w-3.5" />
+          Input Text
+        </Label>
+        <div className="mt-2 rounded-lg border border-border-default bg-surface-panel p-4">
+          <p className="text-body text-text-primary whitespace-pre-wrap">{job.text}</p>
+        </div>
+      </div>
+
+      {job.error_message && (
+        <div>
+          <Label tone="meta" className="uppercase tracking-wider flex items-center gap-2">
+            <XCircle className="h-3.5 w-3.5 text-red-500" />
+            Error Message
+          </Label>
+          <div className="mt-2 rounded-lg border-2 border-red-500/50 bg-red-500/10 p-4">
+            <p className="text-body text-red-600 font-mono">{job.error_message}</p>
+          </div>
+        </div>
+      )}
+
+      {job.audio_path && (
+        <div>
+          <Label tone="meta" className="uppercase tracking-wider">
+            Audio Path
+          </Label>
+          <div className="mt-2 rounded-lg border border-border-default bg-surface-panel px-3 py-2">
+            <p className="text-caption text-accent-primary font-mono break-all">{job.audio_path}</p>
+          </div>
+        </div>
+      )}
+    </Modal>
   );
 }

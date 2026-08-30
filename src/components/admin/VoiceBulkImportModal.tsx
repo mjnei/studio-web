@@ -9,6 +9,7 @@ import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Modal } from "@/components/ui/modal";
 import { adminSearchUsers, adminBulkUploadVoices, type UserSearchResult } from "@/lib/api/admin";
 
 interface VoiceBulkImportModalProps {
@@ -180,35 +181,60 @@ export function VoiceBulkImportModal({ open, onClose, onSuccess }: VoiceBulkImpo
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl border border-border-default bg-surface-base shadow-2xl">
-        {/* Header */}
-        <div className="sticky top-0 z-10 border-b border-border-default bg-gradient-to-r from-accent-primary to-purple-600 px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-white/20">
-                <Upload className="h-5 w-5 text-white" />
-              </div>
-              <div>
-                <Heading variant="section" as="h2" className="text-white">
-                  Bulk Import Voices
-                </Heading>
-                <p className="text-body text-white/80">Upload multiple audio files for a user</p>
-              </div>
+    <Modal
+      open={open}
+      onClose={handleClose}
+      size="3xl"
+      scrollable
+      showCloseButton={false}
+      closeOnOverlayClick={!isImporting}
+      closeOnEscape={!isImporting}
+      header={
+        <div className="flex w-full items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20">
+              <Upload className="h-5 w-5 text-white" />
             </div>
-            <button
-              onClick={handleClose}
-              disabled={isImporting}
-              className="text-white/80 hover:text-white transition-colors disabled:opacity-50"
-              aria-label="Close"
-            >
-              <X className="h-6 w-6" aria-hidden />
-            </button>
+            <div>
+              <Heading variant="section" as="h2" className="text-white">
+                Bulk Import Voices
+              </Heading>
+              <p className="text-body text-white/80">Upload multiple audio files for a user</p>
+            </div>
           </div>
+          <button
+            type="button"
+            onClick={handleClose}
+            disabled={isImporting}
+            className="text-white/80 transition-colors hover:text-white disabled:opacity-50"
+            aria-label="Close"
+          >
+            <X className="h-6 w-6" aria-hidden />
+          </button>
         </div>
-
-        {/* Content */}
-        <div className="p-6 space-y-6">
+      }
+      headerClassName="sticky top-0 z-10 border-b-0 bg-gradient-to-r from-accent-primary to-purple-600 !p-4"
+      contentClassName="space-y-6"
+      footer={
+        <>
+          <Button variant="secondary" size="md" onClick={handleClose} disabled={isImporting}>
+            {importResult ? "Close" : "Cancel"}
+          </Button>
+          <Button
+            variant="primary"
+            size="md"
+            onClick={handleImport}
+            disabled={!selectedUser || selectedFiles.length === 0 || isImporting}
+            loading={isImporting}
+            leftIcon={!isImporting ? <Upload className="h-4 w-4" /> : undefined}
+          >
+            {isImporting
+              ? "Uploading..."
+              : `Upload ${selectedFiles.length > 0 ? `${selectedFiles.length} Files` : "Voices"}`}
+          </Button>
+        </>
+      }
+    >
           {/* User Selection */}
           <div>
             <div className="relative">
@@ -417,29 +443,6 @@ export function VoiceBulkImportModal({ open, onClose, onSuccess }: VoiceBulkImpo
               </div>
             </div>
           )}
-        </div>
-
-        {/* Footer */}
-        <div className="sticky bottom-0 border-t border-border-default bg-surface-base px-6 py-4">
-          <div className="flex items-center justify-end gap-3">
-            <Button variant="secondary" size="md" onClick={handleClose} disabled={isImporting}>
-              {importResult ? "Close" : "Cancel"}
-            </Button>
-            <Button
-              variant="primary"
-              size="md"
-              onClick={handleImport}
-              disabled={!selectedUser || selectedFiles.length === 0 || isImporting}
-              loading={isImporting}
-              leftIcon={!isImporting ? <Upload className="h-4 w-4" /> : undefined}
-            >
-              {isImporting
-                ? "Uploading..."
-                : `Upload ${selectedFiles.length > 0 ? `${selectedFiles.length} Files` : "Voices"}`}
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
+    </Modal>
   );
 }

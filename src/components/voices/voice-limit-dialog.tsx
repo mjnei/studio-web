@@ -4,6 +4,7 @@ import { AlertCircle, Sparkles, Crown } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
+import { Modal } from "@/components/ui/modal";
 import { useI18n } from "@/i18n";
 
 interface VoiceLimitDialogProps {
@@ -45,13 +46,34 @@ export function VoiceLimitDialog({
   const tierName = getTierName(tier);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <Card
-        variant="elevated"
-        padding="lg"
-        className="w-full max-w-md mx-4 border-accent-primary/30"
-      >
-        {/* Icon */}
+    <Modal
+      open
+      onClose={onClose}
+      size="sm"
+      showCloseButton={false}
+      className="border-accent-primary/30"
+      contentClassName="!p-0"
+      footer={
+        <div className="flex w-full gap-3">
+          <Button variant="secondary" size="md" onClick={onClose} className="flex-1">
+            {t("voices.limitDialog.closeButton")}
+          </Button>
+          {upgradeRequired && onUpgrade && (
+            <Button
+              variant="primary"
+              size="md"
+              onClick={onUpgrade}
+              className="flex-1 shadow-lg shadow-accent-primary/20"
+            >
+              <Sparkles className="h-4 w-4 mr-2" />
+              {t("voices.limitDialog.upgradeButton")}
+            </Button>
+          )}
+        </div>
+      }
+      footerClassName="!border-t-0 !pt-0"
+    >
+      <Card variant="elevated" padding="lg" className="border-0 shadow-none">
         <div className="flex justify-center mb-4">
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent-primary/10">
             {upgradeRequired ? (
@@ -62,14 +84,12 @@ export function VoiceLimitDialog({
           </div>
         </div>
 
-        {/* Title */}
         <Heading variant="section" as="h3" className="text-text-primary text-center mb-2">
           {isAtMax
             ? t("voices.limitDialog.limitReachedTitle")
             : t("voices.limitDialog.upgradeTitle")}
         </Heading>
 
-        {/* Message */}
         <p className="text-body text-text-secondary text-center mb-6">
           <span className="font-semibold text-text-primary">
             {t("voices.limitDialog.message", {
@@ -80,7 +100,6 @@ export function VoiceLimitDialog({
           </span>
         </p>
 
-        {/* Upgrade Benefits (if applicable) */}
         {upgradeRequired && (
           <div className="mb-6 space-y-3">
             <Card variant="default" padding="sm" className="border-accent-cyan/20 bg-accent-cyan/5">
@@ -103,31 +122,12 @@ export function VoiceLimitDialog({
           </div>
         )}
 
-        {/* Actions */}
-        <div className="flex gap-3">
-          <Button variant="secondary" size="md" onClick={onClose} className="flex-1">
-            {t("voices.limitDialog.closeButton")}
-          </Button>
-          {upgradeRequired && onUpgrade && (
-            <Button
-              variant="primary"
-              size="md"
-              onClick={onUpgrade}
-              className="flex-1 shadow-lg shadow-accent-primary/20"
-            >
-              <Sparkles className="h-4 w-4 mr-2" />
-              {t("voices.limitDialog.upgradeButton")}
-            </Button>
-          )}
-        </div>
-
-        {/* Tip for Premium users */}
         {isAtMax && (
-          <p className="mt-4 text-caption text-center text-text-muted">
+          <p className="text-caption text-center text-text-muted">
             💡 {t("voices.limitDialog.premiumTip")}
           </p>
         )}
       </Card>
-    </div>
+    </Modal>
   );
 }
