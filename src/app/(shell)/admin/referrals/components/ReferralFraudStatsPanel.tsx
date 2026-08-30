@@ -14,6 +14,7 @@ const EVENT_TYPE_LABELS: Record<string, string> = {
   referral_creation_failed: "Referral creation blocked",
   suspicious_payment: "Suspicious payment",
   self_referral_attempt: "Self-referral attempt",
+  duplicate_referee: "Duplicate referee",
 };
 
 function formatEventType(eventType: string): string {
