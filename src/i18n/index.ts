@@ -1,20 +1,12 @@
 export { I18nProvider, useI18n, type InterpolationValues } from "./context";
 export {
   locales,
-  apiLocales,
-  voiceLocales,
   localeNames,
   defaultLocale,
-  localeToApiLocale,
-  apiLocaleToUiLocale,
   voiceLanguageLabelKey,
   localeToDateLocale,
-  getApiLocale,
   getDateLocale,
-  getUiLocaleFromApi,
   normalizeVoiceLanguage,
   getVoiceLanguageTranslationKey,
   type Locale,
-  type ApiLocale,
-  type VoiceLocale,
 } from "./config";

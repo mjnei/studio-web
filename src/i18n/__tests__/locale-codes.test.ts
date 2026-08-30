@@ -1,8 +1,5 @@
 import { describe, expect, it } from "vitest";
 import {
-  apiLocales,
-  getApiLocale,
-  getUiLocaleFromApi,
   getVoiceLanguageTranslationKey,
   locales,
   normalizeVoiceLanguage,
@@ -10,29 +7,26 @@ import {
 } from "../config";
 
 describe("locale codes", () => {
-  it("defines 8 UI locales and 8 API locales", () => {
+  it("defines 8 BCP-47 locales", () => {
     expect(locales).toHaveLength(8);
-    expect(apiLocales).toHaveLength(8);
+    expect(locales).toContain("zh-CN");
+    expect(locales).toContain("zh-TW");
   });
 
-  it("maps UI ↔ API for all 8 locales", () => {
-    for (const uiLocale of locales) {
-      const api = getApiLocale(uiLocale);
-      expect(getUiLocaleFromApi(api)).toBe(uiLocale);
-    }
+  it("normalizes voice language aliases to canonical locale codes", () => {
+    expect(normalizeVoiceLanguage("zh-CN")).toBe("zh-CN");
+    expect(normalizeVoiceLanguage("zh-TW")).toBe("zh-TW");
+    expect(normalizeVoiceLanguage("chs")).toBe("zh-CN");
+    expect(normalizeVoiceLanguage("cht")).toBe("zh-TW");
+    expect(normalizeVoiceLanguage("zh-Hans")).toBe("zh-CN");
+    expect(normalizeVoiceLanguage("zh-Hant")).toBe("zh-TW");
   });
 
-  it("normalizes voice language aliases", () => {
-    expect(normalizeVoiceLanguage("chs")).toBe("chs");
-    expect(normalizeVoiceLanguage("zh-CN")).toBe("chs");
-    expect(normalizeVoiceLanguage("cht")).toBe("cht");
-    expect(normalizeVoiceLanguage("zh-TW")).toBe("cht");
-  });
-
-  it("maps voice locales to translation keys", () => {
-    expect(voiceLanguageLabelKey.chs).toBe("zhCN");
-    expect(voiceLanguageLabelKey.cht).toBe("zhTW");
-    expect(getVoiceLanguageTranslationKey("chs")).toBe("voices.languages.zhCN");
+  it("maps locales to voice translation keys", () => {
+    expect(voiceLanguageLabelKey["zh-CN"]).toBe("zhCN");
+    expect(voiceLanguageLabelKey["zh-TW"]).toBe("zhTW");
+    expect(getVoiceLanguageTranslationKey("zh-CN")).toBe("voices.languages.zhCN");
     expect(getVoiceLanguageTranslationKey("zh-TW")).toBe("voices.languages.zhTW");
+    expect(getVoiceLanguageTranslationKey("chs")).toBe("voices.languages.zhCN");
   });
 });

@@ -45,9 +45,9 @@ type EditingMovie = {
   douban_id?: string;
 };
 
-import { apiLocales } from "@/i18n";
+import { locales } from "@/i18n";
 
-const SUPPORTED_LOCALES = [...apiLocales];
+const SUPPORTED_LOCALES = [...locales];
 
 export default function AdminMovieDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();

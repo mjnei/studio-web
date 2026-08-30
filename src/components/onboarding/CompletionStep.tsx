@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { CheckCircle2, Sparkles, Rocket, AlertCircle } from "lucide-react";
 import { completeOnboarding, updateUser } from "@/lib/api-client";
 import { useAuth } from "@/lib/auth-context";
-import { useI18n, getApiLocale } from "@/i18n";
+import { useI18n } from "@/i18n";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { Spinner } from "@/components/ui/spinner";
@@ -28,7 +28,7 @@ export default function CompletionStep() {
 
     const complete = async () => {
       try {
-        await updateUser({ locale: getApiLocale(locale) });
+        await updateUser({ locale });
         await completeOnboarding();
         setIsCompleting(false);
 
@@ -72,7 +72,7 @@ export default function CompletionStep() {
     setIsCompleting(true);
     setCountdown(5);
 
-    updateUser({ locale: getApiLocale(locale) })
+    updateUser({ locale })
       .then(() => completeOnboarding())
       .then(() => {
         setIsCompleting(false);

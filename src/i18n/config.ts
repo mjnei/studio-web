@@ -1,18 +1,10 @@
-export const locales = ["en", "chs", "cht", "ja", "ko", "de", "fr", "es"] as const;
+export const locales = ["en", "zh-CN", "zh-TW", "ja", "ko", "de", "fr", "es"] as const;
 export type Locale = (typeof locales)[number];
-
-/** BCP-47 catalog codes — canonical for user.locale, TMDB, notifications. */
-export const apiLocales = ["en", "zh-CN", "zh-TW", "ja", "ko", "de", "fr", "es"] as const;
-export type ApiLocale = (typeof apiLocales)[number];
-
-/** Voice / UI shorthand — matches public/locales/* folder names and voice.language. */
-export const voiceLocales = locales;
-export type VoiceLocale = Locale;
 
 export const localeNames: Record<Locale, { name: string; flag: string }> = {
   en: { name: "English", flag: "🇺🇸" },
-  chs: { name: "简体中文", flag: "🇨🇳" },
-  cht: { name: "繁體中文", flag: "🇹🇼" },
+  "zh-CN": { name: "简体中文", flag: "🇨🇳" },
+  "zh-TW": { name: "繁體中文", flag: "🇹🇼" },
   ja: { name: "日本語", flag: "🇯🇵" },
   ko: { name: "한국어", flag: "🇰🇷" },
   de: { name: "Deutsch", flag: "🇩🇪" },
@@ -22,11 +14,11 @@ export const localeNames: Record<Locale, { name: string; flag: string }> = {
 
 export const defaultLocale: Locale = "en";
 
-/** UI/voice shorthand → API/catalog locale. */
-export const localeToApiLocale: Record<Locale, ApiLocale> = {
+/** voices.languages.* translation key suffix for each locale. */
+export const voiceLanguageLabelKey: Record<Locale, string> = {
   en: "en",
-  chs: "zh-CN",
-  cht: "zh-TW",
+  "zh-CN": "zhCN",
+  "zh-TW": "zhTW",
   ja: "ja",
   ko: "ko",
   de: "de",
@@ -34,35 +26,11 @@ export const localeToApiLocale: Record<Locale, ApiLocale> = {
   es: "es",
 };
 
-/** API/catalog locale → UI/voice shorthand. */
-export const apiLocaleToUiLocale: Record<ApiLocale, Locale> = {
-  en: "en",
-  "zh-CN": "chs",
-  "zh-TW": "cht",
-  ja: "ja",
-  ko: "ko",
-  de: "de",
-  fr: "fr",
-  es: "es",
-};
-
-/** voices.languages.* translation key suffix for each voice locale. */
-export const voiceLanguageLabelKey: Record<VoiceLocale, string> = {
-  en: "en",
-  chs: "zhCN",
-  cht: "zhTW",
-  ja: "ja",
-  ko: "ko",
-  de: "de",
-  fr: "fr",
-  es: "es",
-};
-
-/** UI locale → BCP 47 tag for `Intl` / `toLocaleDateString`. */
+/** Locale → BCP 47 tag for `Intl` / `toLocaleDateString`. */
 export const localeToDateLocale: Record<Locale, string> = {
   en: "en-US",
-  chs: "zh-CN",
-  cht: "zh-TW",
+  "zh-CN": "zh-CN",
+  "zh-TW": "zh-TW",
   ja: "ja-JP",
   ko: "ko-KR",
   de: "de-DE",
@@ -70,31 +38,21 @@ export const localeToDateLocale: Record<Locale, string> = {
   es: "es-ES",
 };
 
-export function getApiLocale(locale: Locale): ApiLocale {
-  return localeToApiLocale[locale] ?? "en";
-}
+const VOICE_LANGUAGE_ALIASES: Record<string, Locale> = {
+  chs: "zh-CN",
+  cht: "zh-TW",
+  zh: "zh-CN",
+  "zh-hans": "zh-CN",
+  "zh-hant": "zh-TW",
+};
 
-/** Backend / TMDB locale (e.g. zh-CN) → UI locale (e.g. chs). */
-export function getUiLocaleFromApi(apiLocale: string | null | undefined): Locale | null {
-  if (!apiLocale) return null;
-  if (apiLocale in apiLocaleToUiLocale) {
-    return apiLocaleToUiLocale[apiLocale as ApiLocale];
-  }
-  const lower = apiLocale.toLowerCase().replace("_", "-");
-  if (lower in localeToApiLocale) return lower as Locale;
-  if (lower === "zh-cn" || lower === "zh-hans" || lower === "zh") return "chs";
-  if (lower === "zh-tw" || lower === "zh-hant") return "cht";
-  return null;
-}
-
-/** Normalize any language input to a supported voice/UI shorthand code. */
-export function normalizeVoiceLanguage(language: string | null | undefined): VoiceLocale | null {
+/** Normalize any language input to a supported locale code. */
+export function normalizeVoiceLanguage(language: string | null | undefined): Locale | null {
   if (!language) return null;
+  if (locales.includes(language as Locale)) return language as Locale;
   const lower = language.toLowerCase().replace("_", "-");
   if (locales.includes(lower as Locale)) return lower as Locale;
-  const ui = getUiLocaleFromApi(language);
-  if (ui) return ui;
-  return null;
+  return VOICE_LANGUAGE_ALIASES[lower] ?? null;
 }
 
 /** Translation key for a voice language code (supports legacy DB values). */

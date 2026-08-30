@@ -37,6 +37,12 @@ const translationFiles = [
 
 const translationsCache: Record<Locale, Translations> = {} as Record<Locale, Translations>;
 
+/** Transitional shim — remove in Phase 6 after migration window. */
+const LEGACY_UI_LOCALE: Record<string, Locale> = {
+  chs: "zh-CN",
+  cht: "zh-TW",
+};
+
 function deepMerge(target: Translations, source: Translations): Translations {
   const result = { ...target };
   for (const key of Object.keys(source)) {
@@ -121,12 +127,19 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const [translations, setTranslations] = useState<Translations>({});
 
   useEffect(() => {
-    const savedLocale = localStorage.getItem("locale") as Locale;
-    if (savedLocale && locales.includes(savedLocale)) {
-      setTimeout(() => {
-        setLocaleState(savedLocale);
-      }, 0);
+    const rawLocale = localStorage.getItem("locale");
+    if (!rawLocale) return;
+
+    const savedLocale = (LEGACY_UI_LOCALE[rawLocale] ?? rawLocale) as Locale;
+    if (!locales.includes(savedLocale)) return;
+
+    if (rawLocale !== savedLocale) {
+      localStorage.setItem("locale", savedLocale);
     }
+
+    setTimeout(() => {
+      setLocaleState(savedLocale);
+    }, 0);
   }, []);
 
   useEffect(() => {

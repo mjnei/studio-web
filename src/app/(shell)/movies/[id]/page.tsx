@@ -20,7 +20,7 @@ import { Card } from "@/components/ui/card";
 import { ExternalImage } from "@/components/ui/ExternalImage";
 import { Heading } from "@/components/ui/heading";
 import { getMovie, tmdbImageUrl, type MovieResponse } from "@/lib/project-client";
-import { useI18n, getApiLocale, getDateLocale } from "@/i18n";
+import { useI18n, getDateLocale } from "@/i18n";
 
 type MovieGenre = { id?: number; name?: string };
 
@@ -52,7 +52,7 @@ export default function MovieDetailsPage({ params }: { params: Promise<{ id: str
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const movieLocale = getApiLocale(locale);
+  const movieLocale = locale;
   const dateLocale = getDateLocale(locale);
 
   useEffect(() => {

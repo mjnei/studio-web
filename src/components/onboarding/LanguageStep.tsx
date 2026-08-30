@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Check, Globe } from "lucide-react";
 import { updateUser } from "@/lib/api-client";
-import { useI18n, locales, localeNames, getApiLocale } from "@/i18n";
+import { useI18n, locales, localeNames } from "@/i18n";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { Button } from "@/components/ui/button";
@@ -31,7 +31,7 @@ export default function LanguageStep({ onNext, onBack }: LanguageStepProps) {
     setError("");
     setIsSaving(true);
     try {
-      await updateUser({ locale: getApiLocale(locale) });
+      await updateUser({ locale });
       onNext();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to save language preference");
