@@ -127,10 +127,7 @@ export default function AdminUsersPage() {
       const updated = await setAdminUserPassword(userId, password);
       setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, ...updated } : u)));
       setSelected(updated);
-      toast.success(
-        updated.has_password ? "Password updated" : "Password set",
-        `User #${userId}`
-      );
+      toast.success(updated.has_password ? "Password updated" : "Password set", `User #${userId}`);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "An error occurred";
       toast.error("Failed to set password", message);
@@ -141,9 +138,7 @@ export default function AdminUsersPage() {
   async function handleClearPassword(userId: number): Promise<void> {
     try {
       await resetAdminUserPassword(userId);
-      setUsers((prev) =>
-        prev.map((u) => (u.id === userId ? { ...u, has_password: false } : u))
-      );
+      setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, has_password: false } : u)));
       setSelected((prev) => (prev?.id === userId ? { ...prev, has_password: false } : prev));
       toast.success("Password cleared", `User #${userId} must set a new password`);
     } catch (error: unknown) {

@@ -330,11 +330,7 @@ export function UserDetailModal({
                 </p>
                 <div className="mb-3 flex items-center gap-2">
                   <KeyRound className="h-4 w-4 text-text-muted" aria-hidden />
-                  <span
-                    className={
-                      user.has_password ? "text-status-completed" : "text-text-muted"
-                    }
-                  >
+                  <span className={user.has_password ? "text-status-completed" : "text-text-muted"}>
                     {user.has_password ? "Configured" : "Not set"}
                   </span>
                 </div>
