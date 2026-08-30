@@ -1,15 +1,27 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useI18n } from "@/i18n";
+import { useAuth } from "@/lib/auth-context";
+import {
+  BILLING_ENABLED,
+  createCheckoutSession,
+  type BillingCycle,
+  type PaidPricingTierId,
+} from "@/lib/api/billing-client";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
+import { useToast } from "@/components/ui/toast";
 import { Check, Sparkles, Zap, Crown, Coins, TrendingUp, HelpCircle } from "lucide-react";
 import { Collapsible } from "@/components/ui/collapsible";
 
+type PricingTierId = "free" | PaidPricingTierId;
+
 interface PricingTier {
+  id: PricingTierId;
   name: string;
   icon: React.ElementType;
   description: string;
@@ -23,10 +35,16 @@ interface PricingTier {
 }
 
 interface BillingToggleProps {
-  billingCycle: "monthly" | "annual";
-  onBillingCycleChange: (cycle: "monthly" | "annual") => void;
+  billingCycle: BillingCycle;
+  onBillingCycleChange: (cycle: BillingCycle) => void;
   t: (key: string) => string;
 }
+
+const TIER_RANK: Record<PricingTierId, number> = {
+  free: 0,
+  pro: 1,
+  premium: 2,
+};
 
 function BillingToggle({ billingCycle, onBillingCycleChange, t }: BillingToggleProps) {
   return (
@@ -62,12 +80,75 @@ function BillingToggle({ billingCycle, onBillingCycleChange, t }: BillingToggleP
   );
 }
 
+function getColorClasses(color: PricingTier["color"]) {
+  switch (color) {
+    case "blue":
+      return "text-text-secondary";
+    case "cyan":
+      return "text-accent-cyan";
+    case "purple":
+      return "text-accent-purple";
+    default:
+      return "text-text-secondary";
+  }
+}
+
+function getIconBgClasses(color: PricingTier["color"]) {
+  switch (color) {
+    case "blue":
+      return "bg-surface-raised-glass";
+    case "cyan":
+      return "bg-accent-cyan/10";
+    case "purple":
+      return "bg-accent-purple/10";
+    default:
+      return "bg-surface-raised-glass";
+  }
+}
+
+function getBorderColorClasses(color: PricingTier["color"]) {
+  switch (color) {
+    case "blue":
+      return "border-border-default";
+    case "cyan":
+      return "border-accent-cyan/30";
+    case "purple":
+      return "border-accent-purple/30";
+    default:
+      return "border-border-default";
+  }
+}
+
+function getButtonVariant(color: PricingTier["color"]) {
+  switch (color) {
+    case "blue":
+      return "secondary" as const;
+    case "cyan":
+      return "primary" as const;
+    case "purple":
+      return "primary" as const;
+    default:
+      return "secondary" as const;
+  }
+}
+
+function isPaidTier(tierId: PricingTierId): tierId is PaidPricingTierId {
+  return tierId === "pro" || tierId === "premium";
+}
+
 export default function PricingPage() {
   const { t } = useI18n();
-  const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
+  const router = useRouter();
+  const toast = useToast();
+  const { user, isAuthenticated } = useAuth();
+  const [billingCycle, setBillingCycle] = useState<BillingCycle>("monthly");
+  const [checkoutTier, setCheckoutTier] = useState<PaidPricingTierId | null>(null);
+
+  const userTier: PricingTierId = user?.membership_tier ?? "free";
 
   const pricingTiers: PricingTier[] = [
     {
+      id: "free",
       name: t("pricing.free.name"),
       icon: Coins,
       description: t("pricing.free.description"),
@@ -86,6 +167,7 @@ export default function PricingPage() {
       color: "blue",
     },
     {
+      id: "pro",
       name: t("pricing.pro.name"),
       icon: Zap,
       description: t("pricing.pro.description"),
@@ -107,6 +189,7 @@ export default function PricingPage() {
       color: "cyan",
     },
     {
+      id: "premium",
       name: t("pricing.premium.name"),
       icon: Crown,
       description: t("pricing.premium.description"),
@@ -129,67 +212,62 @@ export default function PricingPage() {
     },
   ];
 
-  const getColorClasses = (color: PricingTier["color"]) => {
-    switch (color) {
-      case "blue":
-        return "text-text-secondary";
-      case "cyan":
-        return "text-accent-cyan";
-      case "purple":
-        return "text-accent-purple";
-      default:
-        return "text-text-secondary";
+  const getTierButtonLabel = (tierId: PricingTierId): string => {
+    if (tierId === "free") {
+      return isAuthenticated ? t("pricing.free.button") : t("pricing.free.buttonSignup");
     }
+    if (isAuthenticated && userTier === tierId) {
+      return t("pricing.currentPlan");
+    }
+    return t(`pricing.${tierId}.button`);
   };
 
-  const getIconBgClasses = (color: PricingTier["color"]) => {
-    switch (color) {
-      case "blue":
-        return "bg-surface-raised-glass";
-      case "cyan":
-        return "bg-accent-cyan/10";
-      case "purple":
-        return "bg-accent-purple/10";
-      default:
-        return "bg-surface-raised-glass";
+  const isTierButtonDisabled = (tierId: PricingTierId): boolean => {
+    if (tierId === "free") {
+      return isAuthenticated;
     }
+    if (!isAuthenticated) {
+      return false;
+    }
+    return userTier === tierId || TIER_RANK[userTier] >= TIER_RANK[tierId];
   };
 
-  const getBorderColorClasses = (color: PricingTier["color"]) => {
-    switch (color) {
-      case "blue":
-        return "border-border-default";
-      case "cyan":
-        return "border-accent-cyan/30";
-      case "purple":
-        return "border-accent-purple/30";
-      default:
-        return "border-border-default";
+  const handleTierAction = async (tierId: PricingTierId) => {
+    if (!isAuthenticated) {
+      router.push("/signup");
+      return;
     }
-  };
 
-  const getButtonVariant = (color: PricingTier["color"]) => {
-    switch (color) {
-      case "blue":
-        return "secondary" as const;
-      case "cyan":
-        return "primary" as const;
-      case "purple":
-        return "primary" as const;
-      default:
-        return "secondary" as const;
+    if (!isPaidTier(tierId) || userTier === tierId || TIER_RANK[userTier] >= TIER_RANK[tierId]) {
+      return;
     }
-  };
 
-  const handleSubscribe = (tier: string) => {
-    alert(t("pricing.subscribeComingSoon", { tier }));
+    if (!BILLING_ENABLED) {
+      toast.info(
+        t("pricing.checkoutComingSoonTitle"),
+        t("pricing.subscribeComingSoon", { tier: tierId })
+      );
+      return;
+    }
+
+    setCheckoutTier(tierId);
+    try {
+      const session = await createCheckoutSession({
+        tier: tierId,
+        billing_cycle: billingCycle,
+      });
+      window.location.assign(session.checkout_url);
+    } catch {
+      toast.error(t("pricing.checkoutErrorTitle"), t("pricing.checkoutError"));
+    } finally {
+      setCheckoutTier(null);
+    }
   };
 
   return (
     <div className="max-w-6xl mx-auto">
       <PageHeader title={t("pricing.title")} description={t("pricing.description")} />
 
-      {/* Pricing Header with Badge and Billing Toggle */}
       <div className="text-center mb-6">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-muted text-accent-primary text-body font-medium mb-4">
           <Sparkles className="h-4 w-4" />
@@ -200,16 +278,16 @@ export default function PricingPage() {
         </div>
       </div>
 
-      {/* Pricing Grid */}
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mb-6">
         {pricingTiers.map((tier) => {
           const Icon = tier.icon;
           const currentPrice = billingCycle === "annual" ? tier.annualPrice : tier.monthlyPrice;
           const isAnnual = billingCycle === "annual";
+          const isCheckingOut = checkoutTier === tier.id;
 
           return (
             <div
-              key={tier.name}
+              key={tier.id}
               className={`relative rounded-xl glass-card ${getBorderColorClasses(
                 tier.color
               )} border-2 p-6 h-full flex flex-col transition-all duration-300 hover:scale-[1.02] ${
@@ -225,7 +303,6 @@ export default function PricingPage() {
                 </div>
               )}
 
-              {/* Tier Header */}
               <div className="mb-6">
                 <div className="flex items-center gap-3 mb-3">
                   <div className={`p-2.5 rounded-lg ${getIconBgClasses(tier.color)}`}>
@@ -241,26 +318,24 @@ export default function PricingPage() {
                   </div>
                 </div>
 
-                {/* Price */}
                 <div className="mb-2">
                   <div className="flex items-baseline gap-2">
                     <Heading variant="metric" as="span" className="text-text-primary">
                       {currentPrice}
                     </Heading>
-                    {isAnnual && tier.name !== t("pricing.free.name") && (
+                    {isAnnual && tier.id !== "free" && (
                       <span className="text-body text-text-muted">
                         {t("pricing.free.price.billedAnnually")}
                       </span>
                     )}
                   </div>
-                  {isAnnual && tier.name !== t("pricing.free.name") && (
+                  {isAnnual && tier.id !== "free" && (
                     <p className="text-body text-text-muted line-through">
                       {tier.monthlyPrice} {t("pricing.free.price.billedMonthly")}
                     </p>
                   )}
                 </div>
 
-                {/* Credits */}
                 <div className="flex items-center gap-2 mb-4">
                   <TrendingUp className={`h-5 w-5 ${getColorClasses(tier.color)}`} />
                   <span className={`text-body font-semibold ${getColorClasses(tier.color)}`}>
@@ -272,7 +347,6 @@ export default function PricingPage() {
                 </div>
               </div>
 
-              {/* Features */}
               <div className="flex-1 mb-8">
                 <Heading
                   variant="label"
@@ -291,24 +365,21 @@ export default function PricingPage() {
                 </ul>
               </div>
 
-              {/* CTA */}
               <Button
                 variant={getButtonVariant(tier.color)}
                 size="md"
-                onClick={() => handleSubscribe(tier.name)}
+                onClick={() => void handleTierAction(tier.id)}
                 className="w-full"
-                disabled={tier.name === t("pricing.free.name")}
+                disabled={isTierButtonDisabled(tier.id)}
+                loading={isCheckingOut}
               >
-                {tier.name === t("pricing.free.name")
-                  ? t("pricing.free.button")
-                  : `${t(tier.name === t("pricing.pro.name") ? "pricing.pro.button" : "pricing.premium.button")}`}
+                {getTierButtonLabel(tier.id)}
               </Button>
             </div>
           );
         })}
       </div>
 
-      {/* FAQ Section */}
       <div className="mb-8">
         <Heading variant="section" as="h2" className="mb-6 text-center text-text-primary">
           {t("pricing.faq.title")}

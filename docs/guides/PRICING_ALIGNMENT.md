@@ -41,14 +41,20 @@ Related:
 | ----------------- | ------------------------------------------ | ---------------------------------------- |
 | Tier count        | 4 (Enterprise marketing-only)              | 3                                        |
 | Compare table     | Yes                                        | No                                       |
-| Marketing CTAs    | Custom solution, signup URL                | Subscribe placeholder alert              |
-| Free tier CTA     | “Get Started” → signup URL                 | “Current Plan” (disabled)                |
+| Marketing CTAs    | All tiers → `NEXT_PUBLIC_SIGNUP_URL` (Enterprise → contact) | Upgrade → checkout API (or coming-soon toast) |
+| Free tier CTA     | “Get Started” → signup URL                 | “Get Started” (logged out) / “Current Plan” (on Free) |
 | Extra sections    | Compare table, custom-solution CTA, Enterprise tier | —                                |
 | Surface-only keys | `subtitle`, `cta`, `monthly`/`annual`      | `description`, `button`, `billingToggle` |
 
-### Still open
+### Checkout wiring (P4)
 
-- Studio checkout not wired (`subscribeComingSoon` placeholder)
+- **Landing** tier CTAs (Free / Pro / Premium) → `NEXT_PUBLIC_SIGNUP_URL`; Enterprise → `/about#connect-with-us`
+- **Studio** upgrade buttons call `POST /billing/checkout-session` when `NEXT_PUBLIC_BILLING_ENABLED=true`; otherwise shows an info toast
+- **Studio** unauthenticated users → `/signup`
+
+### Still blocked on backend
+
+- Stripe / `POST /billing/checkout-session` must return `{ checkout_url }` before setting `NEXT_PUBLIC_BILLING_ENABLED=true`
 
 ---
 
@@ -92,13 +98,11 @@ Related:
 
 ### P4 — CTA / funnel alignment
 
-- [ ] **Signup vs upgrade flow**  
-      Landing CTAs → `NEXT_PUBLIC_SIGNUP_URL`. Studio CTAs → `subscribeComingSoon` alert.  
-      **Fix:** When billing ships, Landing “Get Started” should land in Studio on the correct tier; Studio buttons should call real checkout.
+- [x] **Signup vs upgrade flow**  
+      Landing all tiers → `NEXT_PUBLIC_SIGNUP_URL`. Studio upgrade → checkout API (gated by `NEXT_PUBLIC_BILLING_ENABLED`) with coming-soon toast fallback.
 
-- [ ] **Free tier CTA**  
-      Landing: “Get Started” (external link). Studio: “Current Plan” (disabled).  
-      **Fix:** Expected surface difference, but tone should stay consistent.
+- [x] **Free tier CTA**  
+      Landing: “Get Started”. Studio: “Get Started” when logged out, “Current Plan” when on Free (intentional surface difference, aligned tone).
 
 ---
 
@@ -150,7 +154,7 @@ Use this table when updating copy. Adjust only with explicit product decision.
 | 6    | Decide Enterprise + section parity                                 | Both    | Done   |
 | 7    | Align annual billing UX + merge FAQs                               | Both    | Done   |
 | 8    | Document final `pricing.json` schema in `SHARED_I18N_CHECKLIST.md` | Both    | Done   |
-| 9    | Wire CTAs to signup / checkout                                     | Both    | Open   |
+| 9    | Wire CTAs to signup / checkout                                     | Both    | Done   |
 
 ---
 

@@ -69,7 +69,7 @@ Path: `pricing.{tier}.features.{key}`
 | Tier CTA | `pricing.{tier}.cta` | `pricing.{tier}.button` |
 | Credits on card | — | `rolloverAmount`, `creditsPerMonth`, `rolloverLabel` |
 | Landing-only | `compare`, `customSolution`, `enterprise` tier | — |
-| Studio-only | — | `subscribeComingSoon` |
+| Studio-only | — | `subscribeComingSoon`, `currentPlan`, `checkoutError`, `free.buttonSignup` |
 
 ### Pricing PR checklist
 
