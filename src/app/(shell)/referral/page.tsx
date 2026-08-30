@@ -341,10 +341,7 @@ export default function ReferralPage() {
                   key={i}
                   className="rounded-lg border border-border-default bg-surface-raised p-4 text-center hover:border-accent-cyan/40 transition-all"
                 >
-                  <Tooltip
-                    content={getAchievementText(achievement, "description")}
-                    position="top"
-                  >
+                  <Tooltip content={getAchievementText(achievement, "description")} position="top">
                     <div className="cursor-default">
                       {achievement.icon_url ? (
                         <Image

@@ -265,28 +265,24 @@ export default function PlaygroundTTSJobsPage() {
       return;
     }
 
-    downloadCsv(
-      `playground-tts-${activeTab}-jobs-${new Date().toISOString()}.csv`,
-      headers,
-      rows
-    );
+    downloadCsv(`playground-tts-${activeTab}-jobs-${new Date().toISOString()}.csv`, headers, rows);
     toast.success("CSV exported", `${activeTab} playground jobs exported successfully`);
   };
 
   const tabs = [
     { id: "failed", label: "Failed Jobs", count: failedJobs.length, tone: "failed" as const },
     {
+      id: "completed",
+      label: "Completed Jobs",
+      count: completedJobs.length,
+      tone: "completed" as const,
+    },
+    {
       id: "rate_limited",
       label: "Rate Limited",
       count: rateLimitedJobs.length,
       tone: "rate_limited" as const,
       icon: <ShieldAlert className="h-4 w-4" />,
-    },
-    {
-      id: "completed",
-      label: "Completed Jobs",
-      count: completedJobs.length,
-      tone: "completed" as const,
     },
   ];
 
