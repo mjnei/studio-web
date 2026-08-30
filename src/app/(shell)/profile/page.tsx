@@ -33,7 +33,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { Toggle } from "@/components/ui/toggle";
-import { UserAvatarFallback } from "@/components/ui/UserAvatarFallback";
+import { UserAvatar } from "@/components/ui/UserAvatar";
 
 /** Capitalize the first letter of each whitespace-separated word; leave the rest unchanged. */
 function capitalizeWordStarts(value: string): string {
@@ -183,8 +183,6 @@ export default function ProfilePage() {
 
   if (!user) return null;
 
-  const initials = (user.name?.[0] || user.email[0]).toUpperCase();
-
   // Normalize membership_tier to handle null/undefined cases
   const membershipTier = user.membership_tier || "free";
   const isFreeUser = membershipTier === "free";
@@ -214,23 +212,18 @@ export default function ProfilePage() {
             <div className="relative flex flex-col items-center text-center space-y-4">
               {/* Avatar with Glow Ring */}
               <div className="relative group">
-                {user.picture_url ? (
-                  // eslint-disable-next-line @next/next/no-img-element -- presigned S3 URLs use dynamic hosts
-                  <img
-                    src={user.picture_url}
-                    alt={user.name}
-                    className="h-28 w-28 rounded-2xl object-cover ring-4 ring-accent-primary/20 shadow-md transition-all duration-300 group-hover:scale-105 group-hover:ring-accent-primary/40"
-                    width={112}
-                    height={112}
-                  />
-                ) : (
-                  <UserAvatarFallback
-                    seed={user.id}
-                    initials={initials}
-                    label={user.name}
-                    className="h-28 w-28 rounded-2xl text-4xl group-hover:scale-105"
-                  />
-                )}
+                <UserAvatar
+                  seed={user.id}
+                  name={user.name}
+                  email={user.email}
+                  pictureUrl={user.picture_url}
+                  width={112}
+                  height={112}
+                  initialsLength={1}
+                  ringWidth={4}
+                  className="h-28 w-28 rounded-2xl text-4xl group-hover:scale-105"
+                  imageClassName="h-28 w-28 rounded-2xl object-cover ring-4 ring-accent-primary/20 shadow-md transition-all duration-300 group-hover:scale-105 group-hover:ring-accent-primary/40"
+                />
                 <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-lg bg-surface-elevated border border-border-default flex items-center justify-center shadow-sm">
                   <Shield className="h-3.5 w-3.5 text-accent-cyan" />
                 </div>

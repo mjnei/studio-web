@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import { useI18n } from "@/i18n";
-import { Trophy, Medal, Award, TrendingUp, Users } from "lucide-react";
+import { Trophy, Medal, Award, TrendingUp } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
+import { UserAvatar } from "@/components/ui/UserAvatar";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Heading } from "@/components/ui/heading";
@@ -97,19 +97,16 @@ export default function LeaderboardPage() {
           >
             <div className="text-center">
               <div className="flex justify-center mb-3">
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-slate-400 to-slate-600 flex items-center justify-center">
-                  {leaderboard[1].avatar_url ? (
-                    <Image
-                      src={leaderboard[1].avatar_url}
-                      alt={leaderboard[1].user_name}
-                      className="w-full h-full rounded-full object-cover"
-                      width={80}
-                      height={80}
-                    />
-                  ) : (
-                    <Medal className="h-10 w-10 text-white" />
-                  )}
-                </div>
+                <UserAvatar
+                  seed={leaderboard[1].user_name}
+                  name={leaderboard[1].user_name}
+                  pictureUrl={leaderboard[1].avatar_url}
+                  width={80}
+                  height={80}
+                  ringWidth={2}
+                  className="w-20 h-20 rounded-full text-section"
+                  imageClassName="w-full h-full rounded-full object-cover"
+                />
               </div>
               <Badge variant="default" className="mb-2">
                 #{leaderboard[1].rank}
@@ -142,19 +139,16 @@ export default function LeaderboardPage() {
           >
             <div className="text-center">
               <div className="flex justify-center mb-3">
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center">
-                  {leaderboard[0].avatar_url ? (
-                    <Image
-                      src={leaderboard[0].avatar_url}
-                      alt={leaderboard[0].user_name}
-                      className="w-full h-full rounded-full object-cover"
-                      width={96}
-                      height={96}
-                    />
-                  ) : (
-                    <Trophy className="h-12 w-12 text-white" />
-                  )}
-                </div>
+                <UserAvatar
+                  seed={leaderboard[0].user_name}
+                  name={leaderboard[0].user_name}
+                  pictureUrl={leaderboard[0].avatar_url}
+                  width={96}
+                  height={96}
+                  ringWidth={2}
+                  className="w-24 h-24 rounded-full text-page"
+                  imageClassName="w-full h-full rounded-full object-cover"
+                />
               </div>
               <Badge variant="warning" className="mb-2">
                 👑 #{leaderboard[0].rank}
@@ -187,19 +181,16 @@ export default function LeaderboardPage() {
           >
             <div className="text-center">
               <div className="flex justify-center mb-3">
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-700 to-amber-900 flex items-center justify-center">
-                  {leaderboard[2].avatar_url ? (
-                    <Image
-                      src={leaderboard[2].avatar_url}
-                      alt={leaderboard[2].user_name}
-                      className="w-full h-full rounded-full object-cover"
-                      width={80}
-                      height={80}
-                    />
-                  ) : (
-                    <Award className="h-10 w-10 text-white" />
-                  )}
-                </div>
+                <UserAvatar
+                  seed={leaderboard[2].user_name}
+                  name={leaderboard[2].user_name}
+                  pictureUrl={leaderboard[2].avatar_url}
+                  width={80}
+                  height={80}
+                  ringWidth={2}
+                  className="w-20 h-20 rounded-full text-section"
+                  imageClassName="w-full h-full rounded-full object-cover"
+                />
               </div>
               <Badge variant="default" className="mb-2">
                 #{leaderboard[2].rank}
@@ -287,19 +278,16 @@ export default function LeaderboardPage() {
                       </td>
                       <td className="py-3">
                         <div className="flex items-center gap-3">
-                          {entry.avatar_url ? (
-                            <Image
-                              src={entry.avatar_url}
-                              alt={entry.user_name}
-                              className="w-10 h-10 rounded-full object-cover"
-                              width={40}
-                              height={40}
-                            />
-                          ) : (
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-accent-primary to-accent-secondary flex items-center justify-center">
-                              <Users className="h-5 w-5 text-white" />
-                            </div>
-                          )}
+                          <UserAvatar
+                            seed={entry.user_name}
+                            name={entry.user_name}
+                            pictureUrl={entry.avatar_url}
+                            width={40}
+                            height={40}
+                            ringWidth={0}
+                            className="w-10 h-10 rounded-full text-caption"
+                            imageClassName="w-10 h-10 rounded-full object-cover"
+                          />
                           <p className="font-medium text-text-primary">{entry.user_name}</p>
                         </div>
                       </td>

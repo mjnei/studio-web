@@ -2,7 +2,8 @@
 
 import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
-import { Eye, User } from "lucide-react";
+import { Eye } from "lucide-react";
+import { UserAvatar } from "@/components/ui/UserAvatar";
 import type { AdminUser } from "@/types/admin";
 
 interface UsersTableProps {
@@ -23,32 +24,19 @@ function formatRelativeTime(dateString: string | null | undefined): string {
   return `${Math.floor(diffDays / 30)} months ago`;
 }
 
-function UserAvatar({ user }: { user: AdminUser }) {
-  if (user.picture_url) {
-    return (
-      // eslint-disable-next-line @next/next/no-img-element -- presigned S3 URLs use dynamic hosts
-      <img
-        src={user.picture_url}
-        alt={user.name}
-        className="h-9 w-9 shrink-0 rounded-full object-cover ring-2 ring-border-default"
-        width={36}
-        height={36}
-      />
-    );
-  }
-
-  const initials = user.name
-    .split(/\s+/)
-    .filter(Boolean)
-    .map((part) => part[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-
+function UserAvatarCell({ user }: { user: AdminUser }) {
   return (
-    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent-primary/10 text-caption font-semibold text-accent-primary">
-      {initials || <User className="h-4 w-4" aria-hidden />}
-    </span>
+    <UserAvatar
+      seed={user.id}
+      name={user.name}
+      email={user.email}
+      pictureUrl={user.picture_url}
+      width={36}
+      height={36}
+      ringWidth={2}
+      className="h-9 w-9 rounded-full text-caption"
+      imageClassName="h-9 w-9 rounded-full object-cover ring-2 ring-border-default"
+    />
   );
 }
 
@@ -123,7 +111,7 @@ export function UsersTable({ users, isLoading, onView }: UsersTableProps) {
             className="grid grid-cols-1 gap-3 px-4 py-4 md:grid-cols-12 md:items-center"
           >
             <div className="flex items-center gap-3 md:col-span-3">
-              <UserAvatar user={user} />
+              <UserAvatarCell user={user} />
               <div className="min-w-0">
                 <Heading variant="label" as="h3" className="truncate text-text-primary">
                   {user.name}

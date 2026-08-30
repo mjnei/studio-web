@@ -18,6 +18,29 @@ function hsl(h: number, s: number, l: number): string {
   return `hsl(${h} ${s}% ${l}%)`;
 }
 
+/** Derive display initials from name and optional email. */
+export function getUserInitials(
+  name: string,
+  email?: string,
+  maxLength: 1 | 2 = 2
+): string {
+  const parts = name.split(/\s+/).filter(Boolean);
+
+  if (maxLength === 1) {
+    const char = parts[0]?.[0] ?? email?.[0] ?? "?";
+    return char.toUpperCase();
+  }
+
+  const fromName = parts
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
+  if (fromName) return fromName;
+  return (email?.[0] ?? "?").toUpperCase();
+}
+
 /** Deterministic multi-stop gradient from a user identifier (id, email, etc.). */
 export function getAvatarGradientStyle(seed: string): AvatarGradientStyle {
   const hash = hashString(seed);

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Upload, Search, User, AlertCircle, CheckCircle2, FileAudio, X } from "lucide-react";
+import { Upload, Search, AlertCircle, CheckCircle2, FileAudio, X } from "lucide-react";
+import { UserAvatar } from "@/components/ui/UserAvatar";
 import { useToast } from "@/components/ui/toast";
 import { Spinner } from "@/components/ui/spinner";
 import { Heading } from "@/components/ui/heading";
@@ -241,20 +242,17 @@ export function VoiceBulkImportModal({ open, onClose, onSuccess }: VoiceBulkImpo
                       onClick={() => handleUserSelect(user)}
                       className="w-full flex items-center gap-3 px-4 py-3 hover:bg-surface-raised transition-colors text-left border-b border-border-default last:border-0"
                     >
-                      {user.picture_url ? (
-                        // eslint-disable-next-line @next/next/no-img-element -- presigned S3 URLs use dynamic hosts
-                        <img
-                          src={user.picture_url}
-                          alt={user.name}
-                          className="w-8 h-8 rounded-full object-cover"
-                          width={32}
-                          height={32}
-                        />
-                      ) : (
-                        <div className="w-8 h-8 rounded-full bg-accent-primary/10 flex items-center justify-center">
-                          <User className="h-4 w-4 text-accent-primary" />
-                        </div>
-                      )}
+                      <UserAvatar
+                        seed={user.id}
+                        name={user.name}
+                        email={user.email}
+                        pictureUrl={user.picture_url}
+                        width={32}
+                        height={32}
+                        ringWidth={0}
+                        className="w-8 h-8 rounded-full text-caption"
+                        imageClassName="w-8 h-8 rounded-full object-cover"
+                      />
                       <div className="flex-1 min-w-0">
                         <p className="text-body font-semibold text-text-primary truncate">
                           {user.name}

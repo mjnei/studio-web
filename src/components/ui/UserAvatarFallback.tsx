@@ -10,6 +10,8 @@ interface UserAvatarFallbackProps {
   className?: string;
   /** Accessible label; defaults to initials. */
   label?: string;
+  /** Outer ring width in pixels; set to 0 to hide. Default 4. */
+  ringWidth?: 0 | 2 | 4;
 }
 
 export function UserAvatarFallback({
@@ -17,15 +19,19 @@ export function UserAvatarFallback({
   initials,
   className,
   label,
+  ringWidth = 4,
 }: UserAvatarFallbackProps) {
   const gradient = useMemo(() => getAvatarGradientStyle(seed), [seed]);
+
+  const ringShadow =
+    ringWidth > 0 ? `0 0 0 ${ringWidth}px var(--avatar-ring), ` : "";
 
   return (
     <div
       role="img"
       aria-label={label ?? initials}
       className={cn(
-        "flex items-center justify-center font-bold text-white shadow-md [--avatar-ring:var(--avatar-ring-base)] transition-[box-shadow,transform] duration-300 group-hover:[--avatar-ring:var(--avatar-ring-hover)]",
+        "flex shrink-0 items-center justify-center font-bold text-white shadow-md [--avatar-ring:var(--avatar-ring-base)] transition-[box-shadow,transform] duration-300 group-hover:[--avatar-ring:var(--avatar-ring-hover)]",
         className
       )}
       style={
@@ -34,8 +40,7 @@ export function UserAvatarFallback({
           textShadow: "0 1px 3px rgba(0,0,0,0.28)",
           "--avatar-ring-base": gradient.ringColor,
           "--avatar-ring-hover": gradient.hoverRingColor,
-          boxShadow:
-            "0 0 0 4px var(--avatar-ring), 0 4px 6px -1px rgba(0,0,0,0.12), 0 2px 4px -2px rgba(0,0,0,0.08)",
+          boxShadow: `${ringShadow}0 4px 6px -1px rgba(0,0,0,0.12), 0 2px 4px -2px rgba(0,0,0,0.08)`,
         } as CSSProperties
       }
     >

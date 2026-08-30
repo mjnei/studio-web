@@ -4,7 +4,8 @@ import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { useToast } from "@/components/ui/toast";
-import { ChevronDown, Copy, ImageOff, KeyRound, Trash2, User, X } from "lucide-react";
+import { UserAvatar } from "@/components/ui/UserAvatar";
+import { ChevronDown, Copy, ImageOff, KeyRound, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import type { AdminUser, AdminUserRole } from "@/types/admin";
 
@@ -21,32 +22,19 @@ interface UserDetailModalProps {
 
 const ROLES: AdminUserRole[] = ["user", "admin"];
 
-function UserAvatar({ user }: { user: AdminUser }) {
-  if (user.picture_url) {
-    return (
-      // eslint-disable-next-line @next/next/no-img-element -- presigned S3 URLs use dynamic hosts
-      <img
-        src={user.picture_url}
-        alt={user.name}
-        className="h-16 w-16 shrink-0 rounded-full object-cover ring-2 ring-border-default"
-        width={64}
-        height={64}
-      />
-    );
-  }
-
-  const initials = user.name
-    .split(/\s+/)
-    .filter(Boolean)
-    .map((part) => part[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-
+function UserAvatarCell({ user }: { user: AdminUser }) {
   return (
-    <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-accent-primary/10 text-body font-semibold text-accent-primary">
-      {initials || <User className="h-6 w-6" aria-hidden />}
-    </span>
+    <UserAvatar
+      seed={user.id}
+      name={user.name}
+      email={user.email}
+      pictureUrl={user.picture_url}
+      width={64}
+      height={64}
+      ringWidth={2}
+      className="h-16 w-16 rounded-full text-body"
+      imageClassName="h-16 w-16 rounded-full object-cover ring-2 ring-border-default"
+    />
   );
 }
 
@@ -156,7 +144,7 @@ export function UserDetailModal({
       <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-border-default bg-surface-panel shadow-xl">
         <div className="flex items-start justify-between border-b border-border-default px-5 py-4">
           <div className="flex items-start gap-4">
-            <UserAvatar user={user} />
+            <UserAvatarCell user={user} />
             <div>
               <Heading variant="section" as="h2" className="text-text-primary">
                 {user.name}

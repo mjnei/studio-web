@@ -21,6 +21,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useIsAdmin } from "@/lib/hooks/use-admin";
 import { useI18n } from "@/i18n";
 import { Icon } from "@/components/ui/icon";
+import { UserAvatar } from "@/components/ui/UserAvatar";
 import { getAdminDrawerNavItems, isAdminNavActive } from "@/lib/admin-nav";
 
 const mainItems = [
@@ -150,7 +151,6 @@ function LogoMark({ collapsed }: { collapsed?: boolean }) {
 function UserSection({ collapsed, onNavigate }: { collapsed?: boolean; onNavigate?: () => void }) {
   const { user } = useAuth();
   const { t } = useI18n();
-  const initials = user ? (user.name?.[0] || user.email[0]).toUpperCase() : "U";
   const displayName = user?.name || t("common.unknown");
   const displayEmail = user?.email || "";
 
@@ -169,20 +169,18 @@ function UserSection({ collapsed, onNavigate }: { collapsed?: boolean; onNavigat
             : "px-3 py-2.5 hover:bg-surface-hover border border-transparent hover:border-border-default lg:px-2.5 lg:py-2"
         }`}
       >
-        {user?.picture_url ? (
-          // eslint-disable-next-line @next/next/no-img-element -- presigned S3 URLs use dynamic hosts
-          <img
-            src={user.picture_url}
-            alt={displayName}
-            className="h-10 w-10 shrink-0 rounded-full object-cover ring-2 ring-accent-primary/20"
-            width={40}
-            height={40}
-          />
-        ) : (
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-accent-secondary to-accent-primary text-body font-bold text-white shadow-lg">
-            {initials}
-          </span>
-        )}
+        <UserAvatar
+          seed={user?.id ?? "guest"}
+          name={displayName}
+          email={displayEmail}
+          pictureUrl={user?.picture_url}
+          width={40}
+          height={40}
+          initialsLength={1}
+          ringWidth={2}
+          className="h-10 w-10 rounded-full text-body shadow-lg"
+          imageClassName="h-10 w-10 rounded-full object-cover ring-2 ring-accent-primary/20"
+        />
         {!collapsed && (
           <div className="flex-1 overflow-hidden">
             <p className="truncate text-body font-medium text-text-primary">{displayName}</p>
