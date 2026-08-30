@@ -415,7 +415,10 @@ export interface AdminUserFilter {
 
 export interface AdminPasswordResetResponse {
   message: string;
-  reset_link?: string | null;
+}
+
+export interface AdminUserPictureRemoveResponse {
+  message: string;
 }
 
 export interface AdminUserDeleteResponse {

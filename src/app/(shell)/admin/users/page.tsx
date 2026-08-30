@@ -12,6 +12,7 @@ import {
   getAdminUser,
   getAdminUserStats,
   getAdminUsers,
+  removeAdminUserPicture,
   resetAdminUserPassword,
   updateAdminUserRole,
   updateAdminUserStatus,
@@ -126,14 +127,26 @@ export default function AdminUsersPage() {
     }
   }
 
-  async function handleResetPassword(userId: number): Promise<string | null> {
+  async function handleResetPassword(userId: number): Promise<void> {
     try {
-      const result = await resetAdminUserPassword(userId);
-      toast.success("Reset link generated", "Copy the link from the modal");
-      return result.reset_link ?? null;
+      await resetAdminUserPassword(userId);
+      toast.success("Password cleared", `User #${userId} must set a new password`);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "An error occurred";
-      toast.error("Failed to generate reset link", message);
+      toast.error("Failed to reset password", message);
+      throw error;
+    }
+  }
+
+  async function handleRemovePicture(userId: number): Promise<void> {
+    try {
+      const updated = await removeAdminUserPicture(userId);
+      setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, picture_url: null } : u)));
+      setSelected((prev) => (prev?.id === userId ? { ...prev, picture_url: null } : prev));
+      toast.success("Picture removed", updated.message);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "An error occurred";
+      toast.error("Failed to remove picture", message);
       throw error;
     }
   }
@@ -256,6 +269,7 @@ export default function AdminUsersPage() {
         onRoleChange={handleRoleChange}
         onStatusChange={handleStatusChange}
         onResetPassword={handleResetPassword}
+        onRemovePicture={handleRemovePicture}
         onDelete={handleDelete}
       />
     </div>

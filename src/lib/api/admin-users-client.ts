@@ -5,6 +5,7 @@ import type {
   AdminUserDeleteResponse,
   AdminUserFilter,
   AdminUserListResponse,
+  AdminUserPictureRemoveResponse,
   AdminUserRole,
   AdminUserStats,
 } from "@/types/admin";
@@ -62,6 +63,12 @@ export async function updateAdminUserStatus(userId: number, isActive: boolean): 
 export async function resetAdminUserPassword(userId: number): Promise<AdminPasswordResetResponse> {
   return request<AdminPasswordResetResponse>(`/admin/users/${userId}/reset-password`, {
     method: "POST",
+  });
+}
+
+export async function removeAdminUserPicture(userId: number): Promise<AdminUserPictureRemoveResponse> {
+  return request<AdminUserPictureRemoveResponse>(`/admin/users/${userId}/picture`, {
+    method: "DELETE",
   });
 }
 

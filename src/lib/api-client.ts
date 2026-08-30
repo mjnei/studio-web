@@ -82,6 +82,33 @@ function shouldAttemptSessionRefreshOn401(path: string): boolean {
   return true;
 }
 
+const ACCOUNT_SUSPENDED_MESSAGE = "Account suspended. Please contact support.";
+
+function parseApiErrorDetail(errorText: string): string | null {
+  try {
+    const errorJson = JSON.parse(errorText);
+    const detail = errorJson.detail ?? errorJson.message;
+    if (typeof detail === "string") return detail;
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+function isAccountSuspendedMessage(message: string | null | undefined): boolean {
+  if (!message) return false;
+  const normalized = message.toLowerCase();
+  return normalized.includes("account suspended") || normalized.includes("suspended");
+}
+
+function unauthorizedMessage(errorText?: string): string {
+  const detail = errorText ? parseApiErrorDetail(errorText) : null;
+  if (isAccountSuspendedMessage(detail)) {
+    return ACCOUNT_SUSPENDED_MESSAGE;
+  }
+  return "Session expired. Please log in again.";
+}
+
 export async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -98,6 +125,12 @@ export async function request<T>(path: string, options: RequestInit = {}): Promi
 
   // Handle 401 Unauthorized - attempt token refresh for authenticated API calls
   if (res.status === 401 && shouldAttemptSessionRefreshOn401(path)) {
+    const initialErrorText = await res.text();
+    if (isAccountSuspendedMessage(parseApiErrorDetail(initialErrorText))) {
+      setAccessToken(null);
+      throw new ApiError(401, ACCOUNT_SUSPENDED_MESSAGE);
+    }
+
     const refreshed = await refreshSession();
     if (refreshed) {
       // Update headers with new token
@@ -120,7 +153,7 @@ export async function request<T>(path: string, options: RequestInit = {}): Promi
         if (retry.status === 401) {
           // Even after refresh, still unauthorized - clear session
           setAccessToken(null);
-          throw new ApiError(401, "Session expired. Please log in again.");
+          throw new ApiError(401, unauthorizedMessage(errorText));
         }
         throw new ApiError(retry.status, errorText);
       }
@@ -131,7 +164,7 @@ export async function request<T>(path: string, options: RequestInit = {}): Promi
 
     // Refresh failed - clear session
     setAccessToken(null);
-    throw new ApiError(401, "Session expired. Please log in again.");
+    throw new ApiError(401, unauthorizedMessage(initialErrorText));
   }
 
   if (!res.ok) {

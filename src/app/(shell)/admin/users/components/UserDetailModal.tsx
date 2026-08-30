@@ -4,7 +4,7 @@ import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { useToast } from "@/components/ui/toast";
-import { ChevronDown, Copy, KeyRound, Trash2, X } from "lucide-react";
+import { ChevronDown, Copy, ImageOff, KeyRound, Trash2, User, X } from "lucide-react";
 import { useState } from "react";
 import type { AdminUser, AdminUserRole } from "@/types/admin";
 
@@ -14,11 +14,41 @@ interface UserDetailModalProps {
   onClose: () => void;
   onRoleChange: (userId: number, role: AdminUserRole) => Promise<void>;
   onStatusChange: (userId: number, isActive: boolean) => Promise<void>;
-  onResetPassword: (userId: number) => Promise<string | null>;
+  onResetPassword: (userId: number) => Promise<void>;
+  onRemovePicture: (userId: number) => Promise<void>;
   onDelete: (user: AdminUser) => Promise<void>;
 }
 
 const ROLES: AdminUserRole[] = ["user", "admin"];
+
+function UserAvatar({ user }: { user: AdminUser }) {
+  if (user.picture_url) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element -- presigned S3 URLs use dynamic hosts
+      <img
+        src={user.picture_url}
+        alt={user.name}
+        className="h-16 w-16 shrink-0 rounded-full object-cover ring-2 ring-border-default"
+        width={64}
+        height={64}
+      />
+    );
+  }
+
+  const initials = user.name
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
+  return (
+    <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-accent-primary/10 text-body font-semibold text-accent-primary">
+      {initials || <User className="h-6 w-6" aria-hidden />}
+    </span>
+  );
+}
 
 export function UserDetailModal({
   user,
@@ -27,6 +57,7 @@ export function UserDetailModal({
   onRoleChange,
   onStatusChange,
   onResetPassword,
+  onRemovePicture,
   onDelete,
 }: UserDetailModalProps) {
   const toast = useToast();
@@ -35,14 +66,13 @@ export function UserDetailModal({
   const [savingRole, setSavingRole] = useState(false);
   const [savingStatus, setSavingStatus] = useState(false);
   const [resetting, setResetting] = useState(false);
+  const [removingPicture, setRemovingPicture] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const [resetLink, setResetLink] = useState<string | null>(null);
 
   if (user !== roleSource) {
     setRoleSource(user);
     if (user) {
       setRole(user.role);
-      setResetLink(null);
     }
   }
 
@@ -73,13 +103,25 @@ export function UserDetailModal({
 
   async function handleResetPassword() {
     if (!user) return;
-    if (!confirm(`Generate a password reset link for ${user.email}?`)) return;
+    if (!confirm(`Clear the password for ${user.email}? They will need to set a new password.`)) {
+      return;
+    }
     setResetting(true);
     try {
-      const link = await onResetPassword(user.id);
-      setResetLink(link);
+      await onResetPassword(user.id);
     } finally {
       setResetting(false);
+    }
+  }
+
+  async function handleRemovePicture() {
+    if (!user) return;
+    if (!confirm(`Remove the profile picture for ${user.email}?`)) return;
+    setRemovingPicture(true);
+    try {
+      await onRemovePicture(user.id);
+    } finally {
+      setRemovingPicture(false);
     }
   }
 
@@ -113,11 +155,27 @@ export function UserDetailModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
       <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl border border-border-default bg-surface-panel shadow-xl">
         <div className="flex items-start justify-between border-b border-border-default px-5 py-4">
-          <div>
-            <Heading variant="section" as="h2" className="text-text-primary">
-              {user.name}
-            </Heading>
-            <p className="mt-1 text-body text-text-muted">{user.email}</p>
+          <div className="flex items-start gap-4">
+            <UserAvatar user={user} />
+            <div>
+              <Heading variant="section" as="h2" className="text-text-primary">
+                {user.name}
+              </Heading>
+              <p className="mt-1 text-body text-text-muted">{user.email}</p>
+              {user.picture_url && !user.is_deleted && (
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  className="mt-2"
+                  disabled={removingPicture}
+                  leftIcon={<ImageOff className="h-4 w-4" />}
+                  onClick={() => void handleRemovePicture()}
+                >
+                  {removingPicture ? "Removing…" : "Remove picture"}
+                </Button>
+              )}
+            </div>
           </div>
           <Button type="button" variant="ghost" size="icon" onClick={onClose} aria-label="Close">
             <X className="h-5 w-5" aria-hidden />
@@ -233,18 +291,16 @@ export function UserDetailModal({
                       : "Reactivate account"}
                 </Button>
 
-                {user.firebase_uid && (
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    size="sm"
-                    disabled={resetting}
-                    leftIcon={<KeyRound className="h-4 w-4" />}
-                    onClick={() => void handleResetPassword()}
-                  >
-                    {resetting ? "Generating…" : "Reset password"}
-                  </Button>
-                )}
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  disabled={resetting}
+                  leftIcon={<KeyRound className="h-4 w-4" />}
+                  onClick={() => void handleResetPassword()}
+                >
+                  {resetting ? "Clearing…" : "Reset password"}
+                </Button>
 
                 <Button
                   type="button"
@@ -257,25 +313,6 @@ export function UserDetailModal({
                   {deleting ? "Deleting…" : "Delete user"}
                 </Button>
               </div>
-
-              {resetLink && (
-                <div className="rounded-xl border border-border-default bg-surface-raised p-4">
-                  <p className="mb-2 text-caption font-semibold uppercase tracking-wider text-text-muted">
-                    Password reset link
-                  </p>
-                  <p className="break-all text-caption text-text-secondary">{resetLink}</p>
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    size="sm"
-                    className="mt-2"
-                    leftIcon={<Copy className="h-4 w-4" />}
-                    onClick={() => void handleCopy(resetLink, "Reset link copied")}
-                  >
-                    Copy link
-                  </Button>
-                </div>
-              )}
             </>
           )}
         </div>
