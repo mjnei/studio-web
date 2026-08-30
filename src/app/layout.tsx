@@ -12,6 +12,7 @@ import {
   AMBIENT_BACKGROUND_COOKIE,
   parseAmbientBackgroundStyle,
 } from "@/lib/ambient-background-shared";
+import { SITE_TITLE } from "@/lib/metadata";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -28,7 +29,10 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 const metadataBase = siteUrl ? new URL(siteUrl) : undefined;
 
 export const metadata: Metadata = {
-  title: "Huavoi Studio",
+  title: {
+    template: `%s | ${SITE_TITLE}`,
+    default: SITE_TITLE,
+  },
   description: "AI-assisted video production — Source to Script to Voice to Final Cut",
   metadataBase,
   applicationName: "Huavoi Studio",
