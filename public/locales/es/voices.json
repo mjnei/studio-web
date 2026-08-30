@@ -124,16 +124,10 @@
       "es": "Español",
       "fr": "Francés",
       "de": "Alemán",
-      "it": "Italiano",
-      "pt": "Portugués",
-      "ru": "Ruso",
       "ja": "Japonés",
-      "zh": "Chino",
       "zhCN": "Chino simplificado",
       "zhTW": "Chino tradicional",
-      "ko": "Coreano",
-      "ar": "Árabe",
-      "hi": "Hindi"
+      "ko": "Coreano"
     },
     "errors": {
       "loadingVoices": "Cargando tus voces...",

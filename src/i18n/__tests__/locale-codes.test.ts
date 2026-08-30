@@ -47,6 +47,7 @@ describe("locale codes", () => {
     expect(getVoiceLanguageTranslationKey("zh-TW")).toBe("voices.languages.zhTW");
     expect(getVoiceLanguageTranslationKey("zh")).toBe("voices.languages.zhCN");
     expect(getVoiceLanguageTranslationKey("chs")).toBeNull();
+    expect(getVoiceLanguageTranslationKey("it")).toBeNull();
   });
 
   it("resolves stored locale from BCP-47 values", () => {

@@ -88,24 +88,14 @@ export function normalizeVoiceLanguage(language: string | null | undefined): Loc
   return normalizeLocale(language);
 }
 
-/** Translation key for a voice language code (supports legacy DB values). */
+/** Translation key for a voice language code (BCP-47 canonical set only). */
 export function getVoiceLanguageTranslationKey(language: string | null | undefined): string | null {
   if (!language) return null;
 
   const voiceLocale = normalizeVoiceLanguage(language);
-  if (voiceLocale) {
-    return `voices.languages.${voiceLanguageLabelKey[voiceLocale]}`;
-  }
+  if (!voiceLocale) return null;
 
-  const legacyKeys: Record<string, string> = {
-    it: "voices.languages.it",
-    pt: "voices.languages.pt",
-    ru: "voices.languages.ru",
-    ar: "voices.languages.ar",
-    hi: "voices.languages.hi",
-  };
-
-  return legacyKeys[language] ?? null;
+  return `voices.languages.${voiceLanguageLabelKey[voiceLocale]}`;
 }
 
 export function getDateLocale(locale: Locale): string {
