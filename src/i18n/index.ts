@@ -6,6 +6,7 @@ export {
   voiceLanguageLabelKey,
   localeToDateLocale,
   getDateLocale,
+  normalizeLocale,
   normalizeVoiceLanguage,
   getVoiceLanguageTranslationKey,
   resolveStoredLocale,

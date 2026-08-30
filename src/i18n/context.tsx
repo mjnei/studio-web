@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { Locale, defaultLocale, resolveStoredLocale } from "./config";
+import { Locale, defaultLocale, normalizeLocale, resolveStoredLocale } from "./config";
 
 type TranslationValue = string | { [key: string]: TranslationValue };
 type Translations = { [key: string]: TranslationValue };
@@ -64,7 +64,9 @@ async function loadTranslations(locale: Locale): Promise<Translations> {
   try {
     const results = await Promise.all(
       translationFiles.map(async (file) => {
-        const response = await fetch(`/locales/${locale}/${file}.json`);
+        const response = await fetch(
+          `/locales/${encodeURIComponent(locale)}/${encodeURIComponent(file)}.json`
+        );
         if (!response.ok) {
           return {} as Translations;
         }
@@ -139,8 +141,9 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   }, [locale]);
 
   const setLocale = (newLocale: Locale) => {
-    setLocaleState(newLocale);
-    localStorage.setItem("locale", newLocale);
+    const normalized = normalizeLocale(newLocale) ?? defaultLocale;
+    setLocaleState(normalized);
+    localStorage.setItem("locale", normalized);
   };
 
   const t = (key: string, options?: InterpolationValues): string => {
