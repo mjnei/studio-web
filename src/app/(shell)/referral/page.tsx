@@ -22,6 +22,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Heading } from "@/components/ui/heading";
 import { Badge } from "@/components/ui/badge";
+import { Tooltip } from "@/components/ui/tooltip";
 import {
   getMyReferralCode,
   getMyReferralHistory,
@@ -101,6 +102,18 @@ export default function ReferralPage() {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+  };
+
+  const formatDateTime = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
   };
 
   const getRewardLabel = (transaction: CreditTransaction) => {
@@ -384,9 +397,11 @@ export default function ReferralPage() {
                       <p className="text-caption text-text-muted">
                         {transaction.reason || t("referral.rewardsActivity.rewardTransaction")}
                       </p>
-                      <p className="text-caption text-text-muted mt-0.5">
-                        {formatDate(transaction.created_at)}
-                      </p>
+                      <Tooltip content={formatDateTime(transaction.created_at)} position="top">
+                        <p className="text-caption text-text-muted mt-0.5 cursor-default w-fit">
+                          {formatDate(transaction.created_at)}
+                        </p>
+                      </Tooltip>
                     </div>
                   </div>
                   <div className="text-right">
