@@ -23,8 +23,7 @@ export function UserAvatarFallback({
 }: UserAvatarFallbackProps) {
   const gradient = useMemo(() => getAvatarGradientStyle(seed), [seed]);
 
-  const ringShadow =
-    ringWidth > 0 ? `0 0 0 ${ringWidth}px var(--avatar-ring), ` : "";
+  const ringShadow = ringWidth > 0 ? `0 0 0 ${ringWidth}px var(--avatar-ring), ` : "";
 
   return (
     <div

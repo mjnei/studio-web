@@ -149,7 +149,19 @@ export function UserDetailModal({
               <Heading variant="section" as="h2" className="text-text-primary">
                 {user.name}
               </Heading>
-              <p className="mt-1 text-body text-text-muted">{user.email}</p>
+              <div className="mt-1 flex items-center gap-2">
+                <p className="text-body text-text-muted">{user.email}</p>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="icon"
+                  title="Copy email"
+                  aria-label="Copy email"
+                  onClick={() => void handleCopy(user.email, "Email copied")}
+                >
+                  <Copy className="h-4 w-4" />
+                </Button>
+              </div>
               {user.picture_url && !user.is_deleted && (
                 <Button
                   type="button"

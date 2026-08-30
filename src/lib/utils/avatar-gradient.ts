@@ -19,11 +19,7 @@ function hsl(h: number, s: number, l: number): string {
 }
 
 /** Derive display initials from name and optional email. */
-export function getUserInitials(
-  name: string,
-  email?: string,
-  maxLength: 1 | 2 = 2
-): string {
+export function getUserInitials(name: string, email?: string, maxLength: 1 | 2 = 2): string {
   const parts = name.split(/\s+/).filter(Boolean);
 
   if (maxLength === 1) {
