@@ -11,15 +11,9 @@ import {
   Gift,
   PanelLeft,
   X,
-  Activity,
   Search,
-  ShieldCheck,
   CreditCard,
-  Layers,
-  Zap,
-  Play,
-  Gamepad2,
-  BarChart3,
+  Activity,
   type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
@@ -27,6 +21,7 @@ import { useAuth } from "@/lib/auth-context";
 import { useIsAdmin } from "@/lib/hooks/use-admin";
 import { useI18n } from "@/i18n";
 import { Icon } from "@/components/ui/icon";
+import { getAdminDrawerNavItems, isAdminNavActive } from "@/lib/admin-nav";
 
 const mainItems = [
   {
@@ -70,51 +65,11 @@ const utilityItems = [
   },
 ];
 
-const adminItems = [
-  {
-    href: "/admin",
-    labelKey: "shell.admin",
-  },
-  {
-    href: "/admin/movies",
-    labelKey: "shell.movies",
-  },
-  {
-    href: "/admin/projects",
-    labelKey: "shell.adminProjects",
-  },
-  {
-    href: "/admin/voices",
-    labelKey: "shell.voices",
-  },
-  {
-    href: "/admin/queues",
-    labelKey: "shell.queues",
-  },
-  {
-    href: "/admin/studio-tts-jobs",
-    labelKey: "shell.studioTTSJobs",
-  },
-  {
-    href: "/admin/playground-tts-jobs",
-    labelKey: "shell.playgroundTTSJobs",
-  },
-  {
-    href: "/admin/playground",
-    labelKey: "shell.playgroundTTS",
-  },
-  {
-    href: "/admin/audit-logs",
-    labelKey: "shell.auditLogs",
-  },
-];
-
 function isActive(pathname: string, href: string) {
-  // Exact match for /admin dashboard to avoid highlighting when on /admin/movies or /admin/voices
   if (href === "/admin") {
     return pathname === "/admin";
   }
-  return pathname === href || pathname.startsWith(href + "/");
+  return pathname === href || pathname.startsWith(`${href}/`);
 }
 
 const iconMap: Record<string, LucideIcon> = {
@@ -127,15 +82,6 @@ const iconMap: Record<string, LucideIcon> = {
   "/referral": Gift,
   "/help": HelpCircle,
   "/settings": Settings,
-  "/admin": ShieldCheck,
-  "/admin/movies": Film,
-  "/admin/voices": Mic,
-  "/admin/queues": Layers,
-  "/admin/studio-tts-jobs": Zap,
-  "/admin/playground-tts-jobs": Gamepad2,
-  "/admin/playground": Play,
-  "/admin/audit-logs": Activity,
-  "/admin/projects": BarChart3,
 };
 
 /** Drawer section headers — caption (12px) per typography minimum readable size */
@@ -152,14 +98,16 @@ function RailLink({
   onClick,
   collapsed,
   label,
+  icon,
 }: {
   item: { href: string; labelKey: string };
   isActive: boolean;
   onClick?: () => void;
   collapsed?: boolean;
   label: string;
+  icon?: LucideIcon;
 }) {
-  const NavIcon = iconMap[item.href] ?? Search;
+  const NavIcon = icon ?? iconMap[item.href] ?? Search;
 
   return (
     <Link
@@ -341,11 +289,12 @@ export function DrawerContent({
             />
             {!collapsed && <SectionLabel>{t("shell.admin")}</SectionLabel>}
             <div className="space-y-1 lg:space-y-0.5">
-              {adminItems.map((item) => (
+              {getAdminDrawerNavItems().map((item) => (
                 <RailLink
                   key={item.href}
                   item={item}
-                  isActive={isActive(pathname, item.href)}
+                  icon={item.icon}
+                  isActive={isAdminNavActive(pathname, item.href)}
                   onClick={onNavigate}
                   collapsed={collapsed}
                   label={t(item.labelKey)}
