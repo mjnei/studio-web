@@ -4,9 +4,8 @@ Guides for design, workflow, i18n, and cross-repo alignment.
 
 | Guide | Role |
 | ----- | ---- |
-| [guides/DESIGN_SYSTEM.md](./guides/DESIGN_SYSTEM.md) | **Master** UI/design system (tokens, components, layout) |
+| [guides/DESIGN_SYSTEM.md](./guides/DESIGN_SYSTEM.md) | **Master** UI/design system (tokens, components, layout, responsive rules) |
 | [TYPOGRAPHY.md](./TYPOGRAPHY.md) | Type roles, tokens, `Heading` / `Text` API |
-| [guides/BREAKPOINT_REFERENCE.md](./guides/BREAKPOINT_REFERENCE.md) | Responsive grids, spacing, touch targets |
 | [guides/PROJECT_WORKFLOW.md](./guides/PROJECT_WORKFLOW.md) | 7-step project creation flow |
 | [guides/MODALS.md](./guides/MODALS.md) | Feature modal catalog |
 | [guides/VOICE_RECORDING_MODAL.md](./guides/VOICE_RECORDING_MODAL.md) | Voice recording modal (5-phase flow) |

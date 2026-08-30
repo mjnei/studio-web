@@ -821,7 +821,7 @@ The frontend uses a flexible grid layout system with these standardized patterns
 className = "grid gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6";
 ```
 
-**Used in**: Movies page (primary layout)
+**Used in**: Movies page (primary layout), project Source step (poster grid)
 
 ---
 
@@ -843,6 +843,12 @@ className = "grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3";
 
 ```tsx
 className = "grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4";
+```
+
+**Voices page variant** (voice cards need more width than poster thumbnails — not Pattern 1):
+
+```tsx
+className = "grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
 ```
 
 ---
@@ -887,6 +893,17 @@ className = "grid gap-4 grid-cols-2 lg:grid-cols-4";
 ```tsx
 className = "space-y-3"; // or space-y-4
 ```
+
+---
+
+### Responsive anti-patterns
+
+Avoid these common mistakes:
+
+1. **Skipping mobile** — `md:grid-cols-3` with no base columns assumes 640px+. Prefer `grid-cols-1 sm:grid-cols-2 md:grid-cols-3`.
+2. **Too many columns on small screens** — `grid-cols-3` on 320px yields ~100px per card. For dense poster grids, start at `grid-cols-2`.
+3. **Inconsistent patterns for the same content type** — pick Pattern 1 or 2 per card size and reuse across pages.
+4. **Big column jumps** — `grid-cols-1 lg:grid-cols-4` skips intermediate breakpoints. Prefer gradual steps: `sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4`.
 
 ---
 
