@@ -62,7 +62,7 @@ Used on every step (including `/project/new/*`).
 | Session resume helpers | `src/lib/utils/time-format.ts` | `formatRelativeTimeAgo`, `formatSessionResumeMessage` |
 | Resume landing | `src/app/project/[projectId]/page.tsx` | Toast + redirect to `last_step` |
 
-**Per-step layout pattern (except Script):** `PageHeader` with optional drawer trigger → optional revisit banner → **hero** (one primary decision) → drawer for secondary context.
+**Per-step layout pattern:** `PageHeader` with optional drawer trigger → optional `StepRevisitBanner` (Source, Script, Voice, Details, Compose only) → **hero** (one primary decision) → drawer for secondary context. Preview and Export omit the revisit banner. Script has no ContextDrawer.
 
 | Step | Hero | Contextual drawer |
 | :--- | :--- | :--- |
@@ -101,7 +101,7 @@ Generate/edit voiceover narration in an inline editor (textarea + metrics). Word
 - **New project** (`/project/new/script`): `POST /scripts?movie_id=…` via `createScript` creates the project + first script, then redirects to `/project/{id}/voice`.
 - **Existing project** (`/project/[projectId]/script`): edit/activate versions via `addScript` / `setActiveScript`. Continue may navigate to Voice immediately while a dirty save continues in the background.
 
-**Note:** This step was intentionally left stable during the UX redesign; no ContextDrawer / revisit-banner pattern here.
+**Note:** This step was intentionally left stable during the UX redesign — no ContextDrawer. `StepRevisitBanner` is still shown when revisiting a completed script.
 
 **Completion:** Active script saved → Voice.
 
@@ -191,6 +191,8 @@ Render final video, manage versions, download/share.
 **When completed:** Master player, version switcher, download / export-format modal / share (X intent URL; WeChat shows a copied-URL toast).
 
 **Processing:** Live telemetry card; poll videos ~10s while any job is `queued`/`processing`; may refresh on `video_job_completed` notification.
+
+**Known gap (main hero):** While a job is `queued`/`processing`, the pre-flight Start CTA can still appear above the telemetry card until the next poll. The bottom dock already shows "Generating…" correctly. Planned fix: [EXPORT_PAGE_RENDER_STATE.md](./EXPORT_PAGE_RENDER_STATE.md).
 
 **Navigation:** Back → Compose. **Bottom Dock Action** adapts dynamically to video state:
 - **No completed video:** "Generate Video" (or "Retry Generation" if previous attempt failed) → opens generation flow.

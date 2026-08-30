@@ -1,6 +1,6 @@
 # Export Page — Video Render State & UI Plan
 
-**Status:** Proposed  
+**Status:** Proposed (not yet implemented in `export/page.tsx`)  
 **Scope:** `src/app/project/[projectId]/export/page.tsx`  
 **Last updated:** 2026-08-30
 

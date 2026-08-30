@@ -18,7 +18,9 @@ Related:
 
 ---
 
-## Current state (updated after P0 + P1 + P2 + P3 pass)
+## Current state
+
+Alignment pass **P0–P4 completed (Aug 2026)**. Both repos share tier limits, FAQ set, semantic `pricing.json` feature keys, and funnel wiring. Use the canonical tables below when changing pricing copy.
 
 ### What matches (both repos)
 
@@ -46,7 +48,7 @@ Related:
 | Extra sections    | Compare table, custom-solution CTA, Enterprise tier | —                                |
 | Surface-only keys | `subtitle`, `cta`, `monthly`/`annual`      | `description`, `button`, `billingToggle` |
 
-### Checkout wiring (P4)
+### Checkout wiring
 
 - **Landing** tier CTAs (Free / Pro / Premium) → `NEXT_PUBLIC_SIGNUP_URL`; Enterprise → `/about#connect-with-us`
 - **Studio** upgrade buttons call `POST /billing/checkout-session` when `NEXT_PUBLIC_BILLING_ENABLED=true`; otherwise shows an info toast
@@ -56,53 +58,15 @@ Related:
 
 - Stripe / `POST /billing/checkout-session` must return `{ checkout_url }` before setting `NEXT_PUBLIC_BILLING_ENABLED=true`
 
----
+### Completed alignment work (P0–P4, Aug 2026)
 
-## Alignment to-do
-
-### P0 — Fix correctness bugs (Landing)
-
-- [x] **Compare table column headers use missing i18n keys**
-- [x] **Compare table tier names match plan cards**
-- [x] **Replace placeholder contact email** — Enterprise CTA → `/about#connect-with-us`
-
-### P1 — Single source of truth for pricing model
-
-- [x] **Unify billing unit: credits** — Landing copy & compare table updated to Studio credits model
-- [x] **Align feature lists per tier** — Free/Pro/Premium features match tier matrix
-- [x] **Move hardcoded prices out of Landing `page.tsx`** — prices in `pricing.json`
-
----
-
-### P2 — Structural / product alignment
-
-- [x] **Enterprise tier** — Landing-only (marketing). Studio stays 3 tiers. Documented here.
-- [x] **Annual billing UX** — Landing now matches Studio (strikethrough + “billed annually”)
-- [x] **FAQ alignment** — 6 canonical FAQs merged on both surfaces; free-trial and refund copy removed
-- [x] **Sections only on Landing** — compare table, custom-solution CTA stay Landing-only (free-trial CTA removed)
-
----
-
-### P3 — i18n engineering alignment
-
-- [x] **Shared `pricing.json` key schema**  
-      Feature keys unified to semantic names (`credits`, `rollover`, `voices`, …). FAQ keys unified (`faq.q1`–`faq.q6`). Schema documented in `SHARED_I18N_CHECKLIST.md`.
-
-- [x] **Glossary updates**  
-      Credits, rollover, and tier naming added to both `TRANSLATION_GUIDE.md` files and `SHARED_I18N_CHECKLIST.md`.
-
-- [x] **All 8 locales in sync (Landing)** — `pricing.json` updated for en, zh-CN, zh-TW, ja, ko, de, fr, es
-- [x] **All 8 locales in sync (both repos)** — FAQ, feature keys, and pricing copy aligned across all locales
-
----
-
-### P4 — CTA / funnel alignment
-
-- [x] **Signup vs upgrade flow**  
-      Landing all tiers → `NEXT_PUBLIC_SIGNUP_URL`. Studio upgrade → checkout API (gated by `NEXT_PUBLIC_BILLING_ENABLED`) with coming-soon toast fallback.
-
-- [x] **Free tier CTA**  
-      Landing: “Get Started”. Studio: “Get Started” when logged out, “Current Plan” when on Free (intentional surface difference, aligned tone).
+| Phase | Summary |
+| ----- | ------- |
+| P0 | Landing compare-table i18n keys, tier names, Enterprise contact CTA |
+| P1 | Credits model, tier feature lists, prices moved into `pricing.json` |
+| P2 | Enterprise Landing-only; annual billing UX; 6-question FAQ set |
+| P3 | Shared `pricing.json` schema + glossary; all 8 locales in both repos |
+| P4 | Landing → signup URL; Studio → checkout API (gated) |
 
 ---
 
@@ -139,22 +103,6 @@ Use this table when updating copy. Adjust only with explicit product decision.
 | `faq.q6` | Can I use my own scripts or voices? |
 
 **Excluded (by product decision):** free-trial FAQs, refund/money-back FAQs.
-
----
-
-## Suggested execution order
-
-| Step | Work                                                               | Repo(s) | Status |
-| ---- | ------------------------------------------------------------------ | ------- | ------ |
-| 1    | Fix compare-table i18n keys + tier names                           | Landing | Done   |
-| 2    | Agree canonical tier matrix (product sign-off)                     | Both    | Done   |
-| 3    | Update `pricing.json` (English first)                              | Landing | Done   |
-| 4    | Propagate to 7 non-English locales                                 | Landing | Done   |
-| 5    | Move Landing prices into JSON; remove hardcoded numbers            | Landing | Done   |
-| 6    | Decide Enterprise + section parity                                 | Both    | Done   |
-| 7    | Align annual billing UX + merge FAQs                               | Both    | Done   |
-| 8    | Document final `pricing.json` schema in `SHARED_I18N_CHECKLIST.md` | Both    | Done   |
-| 9    | Wire CTAs to signup / checkout                                     | Both    | Done   |
 
 ---
 

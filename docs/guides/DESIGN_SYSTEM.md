@@ -892,7 +892,7 @@ className = "space-y-3"; // or space-y-4
 
 ### Layout Toggle Implementation
 
-**Current Implementation**: Movies, Projects, and Admin Movies pages support layout toggle.
+**Current Implementation**: Movies, Projects, Jobs, Admin Movies, and Admin Queues support layout toggle (`grid-sm` | `grid-md` | `list`).
 
 ```tsx
 // User can switch between multiple grid modes
@@ -1405,7 +1405,7 @@ Do **not** treat historical “all pages tested” notes as current. After the A
 
 - Mobile-first Tailwind breakpoints
 - Common page shell `max-w-7xl mx-auto`
-- Layout toggle on Projects, Movies, and admin movies
+- Layout toggle on Projects, Movies, Jobs, and admin Movies / Queues
 - Overflow handling on shell layouts
 - `Button` loading a11y (`aria-busy` / `aria-disabled`)
 - Ambient theme SSR via `ambient-bg` cookie; glass chrome on shell / project shells
@@ -1431,8 +1431,8 @@ Do **not** treat historical “all pages tested” notes as current. After the A
 
 ---
 
-**Last Updated**: August 24, 2026  
-**Version**: 2.4  
+**Last Updated**: August 26, 2026  
+**Version**: 2.5  
 **Status**: Living — tokens and primitives match code; form/icon adoption is incomplete  
 **Maintained by**: Frontend Team  
 **Repository**: `studio-web/`

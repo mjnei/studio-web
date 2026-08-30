@@ -3,7 +3,7 @@
 **Version**: 1.3  
 **Last Updated**: August 24, 2026  
 **Status**: Adopted (role system + legacy migration complete)  
-**Related**: [DESIGN_SYSTEM.md](./guides/DESIGN_SYSTEM.md) (master design/UI doc), [BREAKPOINT_REFERENCE.md](./guides/BREAKPOINT_REFERENCE.md)
+**Related**: [DESIGN_SYSTEM.md](./guides/DESIGN_SYSTEM.md) (master design/UI doc) · [BREAKPOINT_REFERENCE.md](./guides/BREAKPOINT_REFERENCE.md)
 **Source of truth**: `src/app/globals.css` (`@theme` tokens) + `src/components/ui/typography.ts` / `heading.tsx` / `text.tsx`
 
 ---
@@ -362,7 +362,26 @@ Once coverage is high, consider removing responsive steps from base `h1`–`h4` 
 
 ## 10. Step-by-step refactor checklist
 
+> **Status (Aug 2026):** Phases 0–6 are **complete**. The phase checklist below is retained for history. For day-to-day work, use [§12 Maintenance](#12-maintenance) and the [Quick reference card](#quick-reference-card).
+
 Work in **phases**. Prefer small PRs. Do not mix unrelated UI redesign into typography PRs.
+
+### Phase summary
+
+| Phase | Scope | Status |
+| ----- | ----- | ------ |
+| 0 | Document roles, tokens, anti-patterns | Done |
+| 1 | `@theme` tokens, `typography.ts`, `Heading`/`Text`, `PageHeader`/`CardTitle` | Done |
+| 2 | Shared components (jobs, shell, cards, admin) | Done |
+| 3 | Shell / auth / admin / project route pages | Done |
+| 4 | ESLint enforcement, allowlists, grep audit | Done |
+| 5 | Global density token pass | Done |
+| 6 | Bulk `text-xs`–`text-xl` → token utilities | Done |
+
+**Open (optional):** product/design sign-off on role table; human visual QA at 375px / 1280px (shell, project, auth, admin).
+
+<details>
+<summary>Full phase checklist (historical)</summary>
 
 ### Phase 0 — Align & document (this doc)
 
@@ -510,6 +529,9 @@ This is the payoff: **one change updates the product**.
 - [x] Shared UI → `<Text>` / `forwardRef` on `Heading`/`Text`; page-title audit
 - [x] Automated preflight + codemod (`pnpm typography:migrate:dry`)
 - [ ] Optional: human browser spot-checks at 375px / 1280px
+
+</details>
+
 ---
 
 ## 11. Acceptance criteria

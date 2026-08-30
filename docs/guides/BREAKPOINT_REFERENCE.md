@@ -60,13 +60,15 @@ grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6
 **Example**:
 
 ```tsx
-// Movies page, Voices page (community grid)
+// Movies page, project Source step (poster grid)
 <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
   {items.map((item) => (
     <SmallCard key={item.id} {...item} />
   ))}
 </div>
 ```
+
+**Voices page** uses a medium-card variant (not Pattern 1): `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4` — voice cards need more width than poster thumbnails.
 
 ---
 
@@ -380,7 +382,7 @@ When creating a new responsive component:
 - [ ] Mobile first (start with `grid-cols-1` or `flex-col`)
 - [ ] Add appropriate breakpoints (sm, md, lg, xl)
 - [ ] Test at 320px, 768px, 1280px, 1920px
-- [ ] Check touch targets >= 44px
+- [ ] Check touch targets: dense controls use `Button` `sm`/`md`/`icon` (32–40px); bump isolated primary mobile chrome toward 44px only when needed
 - [ ] Verify no horizontal scroll
 - [ ] Test with long content (text truncation)
 - [ ] Check spacing consistency
@@ -418,9 +420,8 @@ Phone:   < 640px                                 Desktop: p-8
 Tablet:  768-1024px  Stats:
 Desktop: > 1024px    2-4 cols                    TARGETS
                                                  ────────
-                                                 Min:  44×44px
-                                                 Rec:  48×48px
-                                                 Good: 56×56px
+                                                 Default: h-8 / h-9 / h-10 (Button sm/md/lg)
+                                                 Mobile primary chrome: up to 44×44px when isolated
 ```
 
 ---
