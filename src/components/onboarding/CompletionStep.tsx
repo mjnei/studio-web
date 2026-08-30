@@ -3,9 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CheckCircle2, Sparkles, Rocket, AlertCircle } from "lucide-react";
-import { completeOnboarding } from "@/lib/api-client";
+import { completeOnboarding, updateUser } from "@/lib/api-client";
 import { useAuth } from "@/lib/auth-context";
-import { useI18n } from "@/i18n";
+import { useI18n, getApiLocale } from "@/i18n";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { Spinner } from "@/components/ui/spinner";
@@ -17,7 +17,7 @@ import OnboardingStepFooter, {
 export default function CompletionStep() {
   const router = useRouter();
   const { refreshUser } = useAuth();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [error, setError] = useState("");
   const [isCompleting, setIsCompleting] = useState(true);
   const [countdown, setCountdown] = useState(5);
@@ -28,6 +28,7 @@ export default function CompletionStep() {
 
     const complete = async () => {
       try {
+        await updateUser({ locale: getApiLocale(locale) });
         await completeOnboarding();
         setIsCompleting(false);
 
@@ -58,7 +59,7 @@ export default function CompletionStep() {
       if (redirectTimer) clearTimeout(redirectTimer);
       if (countdownInterval) clearInterval(countdownInterval);
     };
-  }, [router, refreshUser]);
+  }, [router, refreshUser, locale]);
 
   const handleManualRedirect = () => {
     refreshUser().then(() => {
@@ -71,7 +72,8 @@ export default function CompletionStep() {
     setIsCompleting(true);
     setCountdown(5);
 
-    completeOnboarding()
+    updateUser({ locale: getApiLocale(locale) })
+      .then(() => completeOnboarding())
       .then(() => {
         setIsCompleting(false);
         const countdownInterval = setInterval(() => {

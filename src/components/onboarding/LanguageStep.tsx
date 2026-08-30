@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Check, Globe } from "lucide-react";
-import { useI18n, locales, localeNames } from "@/i18n";
+import { updateUser } from "@/lib/api-client";
+import { useI18n, locales, localeNames, getApiLocale } from "@/i18n";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { Button } from "@/components/ui/button";
@@ -18,18 +19,33 @@ interface LanguageStepProps {
 
 export default function LanguageStep({ onNext, onBack }: LanguageStepProps) {
   const { t, locale, setLocale } = useI18n();
+  const [error, setError] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     containerRef.current?.focus();
   }, []);
 
+  const handleContinue = async () => {
+    setError("");
+    setIsSaving(true);
+    try {
+      await updateUser({ locale: getApiLocale(locale) });
+      onNext();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to save language preference");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       const target = e.target as HTMLElement;
-      if (target === containerRef.current) {
+      if (target === containerRef.current && !isSaving) {
         e.preventDefault();
-        onNext();
+        void handleContinue();
       }
     }
   };
@@ -90,6 +106,12 @@ export default function LanguageStep({ onNext, onBack }: LanguageStepProps) {
             );
           })}
         </div>
+
+        {error ? (
+          <Text variant="body" className="mt-4 text-center text-red-400" role="alert">
+            {error}
+          </Text>
+        ) : null}
       </div>
 
       <OnboardingStepFooter
@@ -110,7 +132,8 @@ export default function LanguageStep({ onNext, onBack }: LanguageStepProps) {
             type="button"
             variant="primary"
             size="lg"
-            onClick={onNext}
+            onClick={() => void handleContinue()}
+            disabled={isSaving}
             aria-label={t("onboarding.language.continueTakeStep")}
             className={ONBOARDING_PRIMARY_BTN_CLASS}
           >
