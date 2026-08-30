@@ -1,7 +1,7 @@
 "use client";
 
 import type { StaleJob } from "@/types/admin";
-import { StaleJobsAlert } from "@/app/(shell)/admin/tts-jobs/_shared/StaleJobsAlert";
+import { StaleJobsAlert as StaleJobsAlertBase } from "@/app/(shell)/admin/tts-jobs/_shared/StaleJobsAlert";
 import { formatStaleDuration } from "@/app/(shell)/admin/tts-jobs/_shared/formatters";
 
 interface StaleJobsAlertProps {
@@ -13,7 +13,7 @@ export function StaleJobsAlert({ staleJobs, onCancel }: StaleJobsAlertProps) {
   const count = staleJobs.length;
 
   return (
-    <StaleJobsAlert
+    <StaleJobsAlertBase
       staleJobs={staleJobs}
       title={`${count} Stale Job${count !== 1 ? "s" : ""} Detected`}
       description="These jobs have been queued or processing for over 5 minutes. They may require manual intervention."

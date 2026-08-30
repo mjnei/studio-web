@@ -2,7 +2,7 @@
 
 import { EmptyState } from "@/components/ui/EmptyState";
 import { useState } from "react";
-import { CheckCircle2, Eye, Clock, AlertCircle } from "lucide-react";
+import { CheckCircle2, Clock, AlertCircle } from "lucide-react";
 import type { FailedJob } from "@/types/admin";
 import { formatRelativeTime } from "@/app/(shell)/admin/tts-jobs/_shared/formatters";
 import { DetailsButton, RetryButton } from "@/app/(shell)/admin/tts-jobs/_shared/table-actions";

@@ -1,7 +1,7 @@
 "use client";
 
 import { EmptyState } from "@/components/ui/EmptyState";
-import { CheckCircle2, Eye, Clock, Play } from "lucide-react";
+import { CheckCircle2, Clock, Play } from "lucide-react";
 import type { CompletedJob } from "@/types/admin";
 import {
   formatRelativeTime,
