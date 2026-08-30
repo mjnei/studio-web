@@ -88,7 +88,11 @@
       "confirmDelete": "Tippe delete my account zur Bestätigung:",
       "deleteAccountPlaceholder": "delete my account",
       "permanentlyDeleteAccount": "Konto dauerhaft löschen",
-      "deleteAccountConfirmCancel": "Abbrechen"
+      "deleteAccountConfirmCancel": "Abbrechen",
+      "deleteAccountFinalConfirmTitle": "Konto löschen?",
+      "deleteAccountFinalConfirmDescription": "Dein Konto und alle zugehörigen Daten werden dauerhaft gelöscht. Du wirst sofort abgemeldet.",
+      "deleteAccountReferralRestoreNote": "Wenn du dein Konto später wiederherstellst, bleiben bereits verdiente Empfehlungsprämien erhalten.",
+      "deleteAccountFinalConfirmButton": "Ja, mein Konto löschen"
     }
   }
 }

@@ -33,6 +33,13 @@ import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { Toggle } from "@/components/ui/toggle";
 import { UserAvatar } from "@/components/ui/UserAvatar";
+import { ConfirmModal } from "@/components/ui/modal";
+
+const DELETE_ACCOUNT_PHRASE = "delete my account";
+
+function isDeleteAccountPhraseMatch(value: string): boolean {
+  return value.trim().toLowerCase() === DELETE_ACCOUNT_PHRASE;
+}
 
 /** Capitalize the first letter of each whitespace-separated word; leave the rest unchanged. */
 function capitalizeWordStarts(value: string): string {
@@ -57,6 +64,8 @@ export default function ProfilePage() {
   const [profileError, setProfileError] = useState("");
   const [profileSuccess, setProfileSuccess] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showDeleteFinalConfirm, setShowDeleteFinalConfirm] = useState(false);
+  const [deletingAccount, setDeletingAccount] = useState(false);
   const [deleteText, setDeleteText] = useState("");
   const [copyFeedback, setCopyFeedback] = useState(false);
   const [resettingOnboarding, setResettingOnboarding] = useState(false);
@@ -144,14 +153,23 @@ export default function ProfilePage() {
     }
   }
 
-  async function handleDeleteAccount() {
-    if (deleteText !== "delete my account") return;
+  function handleRequestDeleteAccount() {
+    if (!isDeleteAccountPhraseMatch(deleteText)) return;
+    setShowDeleteFinalConfirm(true);
+  }
+
+  async function handleConfirmDeleteAccount() {
+    if (!isDeleteAccountPhraseMatch(deleteText)) return;
+    setDeletingAccount(true);
     try {
       await deleteUser();
     } catch (err: unknown) {
+      setShowDeleteFinalConfirm(false);
       setProfileError(
         err instanceof Error ? err.message : t("profile.accountOverview.profileUpdatedError")
       );
+    } finally {
+      setDeletingAccount(false);
     }
   }
 
@@ -625,6 +643,7 @@ export default function ProfilePage() {
                       size="md"
                       onClick={() => {
                         setShowDeleteConfirm(false);
+                        setShowDeleteFinalConfirm(false);
                         setDeleteText("");
                       }}
                     >
@@ -633,8 +652,8 @@ export default function ProfilePage() {
                     <Button
                       variant="danger"
                       size="md"
-                      onClick={handleDeleteAccount}
-                      disabled={deleteText !== "delete my account"}
+                      onClick={handleRequestDeleteAccount}
+                      disabled={!isDeleteAccountPhraseMatch(deleteText)}
                       leftIcon={<Trash2 className="h-4 w-4" />}
                     >
                       {t("profile.dangerZone.permanentlyDeleteAccount")}
@@ -656,6 +675,24 @@ export default function ProfilePage() {
           </Collapsible>
         </div>
       </div>
+
+      <ConfirmModal
+        open={showDeleteFinalConfirm}
+        onClose={() => setShowDeleteFinalConfirm(false)}
+        onConfirm={handleConfirmDeleteAccount}
+        title={t("profile.dangerZone.deleteAccountFinalConfirmTitle")}
+        description={t("profile.dangerZone.deleteAccountFinalConfirmDescription")}
+        confirmText={t("profile.dangerZone.deleteAccountFinalConfirmButton")}
+        cancelText={t("profile.dangerZone.deleteAccountConfirmCancel")}
+        variant="danger"
+        loading={deletingAccount}
+        confirmOnEnter={false}
+      >
+        <div className="rounded-lg border border-status-warning/30 bg-status-warning/10 px-4 py-3 text-body text-text-secondary flex items-start gap-2">
+          <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0 text-status-warning" />
+          <span>{t("profile.dangerZone.deleteAccountReferralRestoreNote")}</span>
+        </div>
+      </ConfirmModal>
     </div>
   );
 }

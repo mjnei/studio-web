@@ -88,7 +88,11 @@
       "confirmDelete": "확인하려면 delete my account를 입력하세요:",
       "deleteAccountPlaceholder": "delete my account",
       "permanentlyDeleteAccount": "계정 영구 삭제",
-      "deleteAccountConfirmCancel": "취소"
+      "deleteAccountConfirmCancel": "취소",
+      "deleteAccountFinalConfirmTitle": "계정을 삭제할까요?",
+      "deleteAccountFinalConfirmDescription": "계정과 관련된 모든 데이터가 영구 삭제되며 즉시 로그아웃됩니다.",
+      "deleteAccountReferralRestoreNote": "나중에 계정을 복구하면 이미 받은 추천 보상은 유지됩니다.",
+      "deleteAccountFinalConfirmButton": "네, 계정을 삭제합니다"
     }
   }
 }

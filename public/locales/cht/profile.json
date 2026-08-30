@@ -88,7 +88,11 @@
       "confirmDelete": "請輸入 delete my account 以確認：",
       "deleteAccountPlaceholder": "delete my account",
       "permanentlyDeleteAccount": "永久刪除帳號",
-      "deleteAccountConfirmCancel": "取消"
+      "deleteAccountConfirmCancel": "取消",
+      "deleteAccountFinalConfirmTitle": "確定刪除帳號？",
+      "deleteAccountFinalConfirmDescription": "這將永久刪除你的帳號及所有相關資料，並立即登出。",
+      "deleteAccountReferralRestoreNote": "如果之後恢復此帳號，你已獲得的推薦獎勵將會保留。",
+      "deleteAccountFinalConfirmButton": "是的，刪除我的帳號"
     }
   }
 }

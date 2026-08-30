@@ -88,7 +88,11 @@
       "confirmDelete": "Tape delete my account pour confirmer :",
       "deleteAccountPlaceholder": "delete my account",
       "permanentlyDeleteAccount": "Supprimer définitivement le compte",
-      "deleteAccountConfirmCancel": "Annuler"
+      "deleteAccountConfirmCancel": "Annuler",
+      "deleteAccountFinalConfirmTitle": "Supprimer ton compte ?",
+      "deleteAccountFinalConfirmDescription": "Ton compte et toutes les données associées seront supprimés définitivement. Tu seras déconnecté immédiatement.",
+      "deleteAccountReferralRestoreNote": "Si tu restaures ce compte plus tard, les récompenses de parrainage déjà gagnées seront conservées.",
+      "deleteAccountFinalConfirmButton": "Oui, supprimer mon compte"
     }
   }
 }

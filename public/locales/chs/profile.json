@@ -88,7 +88,11 @@
       "confirmDelete": "请输入 delete my account 以确认：",
       "deleteAccountPlaceholder": "delete my account",
       "permanentlyDeleteAccount": "永久删除账户",
-      "deleteAccountConfirmCancel": "取消"
+      "deleteAccountConfirmCancel": "取消",
+      "deleteAccountFinalConfirmTitle": "确定删除账户？",
+      "deleteAccountFinalConfirmDescription": "这将永久删除你的账户及所有相关数据，并立即退出登录。",
+      "deleteAccountReferralRestoreNote": "如果之后恢复此账户，你已获得的推荐奖励将会保留。",
+      "deleteAccountFinalConfirmButton": "是的，删除我的账户"
     }
   }
 }

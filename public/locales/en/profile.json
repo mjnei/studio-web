@@ -88,7 +88,11 @@
       "confirmDelete": "Type delete my account to confirm:",
       "deleteAccountPlaceholder": "delete my account",
       "permanentlyDeleteAccount": "Permanently delete account",
-      "deleteAccountConfirmCancel": "Cancel"
+      "deleteAccountConfirmCancel": "Cancel",
+      "deleteAccountFinalConfirmTitle": "Delete your account?",
+      "deleteAccountFinalConfirmDescription": "This will permanently delete your account and all associated data. You will be signed out immediately.",
+      "deleteAccountReferralRestoreNote": "If you later restore this account, any referral rewards you earned will be retained.",
+      "deleteAccountFinalConfirmButton": "Yes, delete my account"
     }
   }
 }

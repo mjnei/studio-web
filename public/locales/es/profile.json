@@ -88,7 +88,11 @@
       "confirmDelete": "Escribe delete my account para confirmar:",
       "deleteAccountPlaceholder": "delete my account",
       "permanentlyDeleteAccount": "Eliminar cuenta permanentemente",
-      "deleteAccountConfirmCancel": "Cancelar"
+      "deleteAccountConfirmCancel": "Cancelar",
+      "deleteAccountFinalConfirmTitle": "¿Eliminar tu cuenta?",
+      "deleteAccountFinalConfirmDescription": "Esto eliminará permanentemente tu cuenta y todos los datos asociados. Se cerrará tu sesión de inmediato.",
+      "deleteAccountReferralRestoreNote": "Si restauras esta cuenta más adelante, las recompensas de referidos que ya hayas ganado se conservarán.",
+      "deleteAccountFinalConfirmButton": "Sí, eliminar mi cuenta"
     }
   }
 }

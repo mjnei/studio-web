@@ -88,7 +88,11 @@
       "confirmDelete": "確認のため delete my account と入力：",
       "deleteAccountPlaceholder": "delete my account",
       "permanentlyDeleteAccount": "アカウントを完全に削除",
-      "deleteAccountConfirmCancel": "キャンセル"
+      "deleteAccountConfirmCancel": "キャンセル",
+      "deleteAccountFinalConfirmTitle": "アカウントを削除しますか？",
+      "deleteAccountFinalConfirmDescription": "アカウントと関連データが完全に削除され、すぐにサインアウトされます。",
+      "deleteAccountReferralRestoreNote": "後でアカウントを復元した場合、獲得済みの紹介報酬は保持されます。",
+      "deleteAccountFinalConfirmButton": "はい、アカウントを削除します"
     }
   }
 }
