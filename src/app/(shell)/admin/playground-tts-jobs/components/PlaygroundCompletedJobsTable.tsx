@@ -14,6 +14,7 @@ interface PlaygroundCompletedJobsTableProps {
 export function PlaygroundCompletedJobsTable({
   completedJobs,
   onViewDetails,
+  onPlay,
 }: PlaygroundCompletedJobsTableProps) {
   const formatRelativeTime = (dateString: string) => {
     const date = new Date(dateString);
@@ -67,7 +68,16 @@ export function PlaygroundCompletedJobsTable({
       {completedJobs.map((job) => (
         <div
           key={job.id}
-          className="border-b border-border-default last:border-0 hover:bg-surface-raised/50 transition-colors"
+          onClick={() => {
+            if (onPlay && job.audio_path) {
+              onPlay(job);
+            }
+          }}
+          className={`border-b border-border-default last:border-0 transition-all ${
+            job.audio_path && onPlay
+              ? "cursor-pointer hover:bg-accent-primary/5 hover:border-l-4 hover:border-accent-primary"
+              : "hover:bg-surface-raised/50"
+          }`}
         >
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-4 items-center">
             {/* Job ID */}
@@ -78,6 +88,11 @@ export function PlaygroundCompletedJobsTable({
               <div className="flex items-center gap-1.5 text-caption text-green-600 mt-1">
                 <CheckCircle2 className="h-3 w-3" />
                 {formatRelativeTime(job.completed_at || job.created_at)}
+                {job.audio_path && onPlay && (
+                  <span className="text-caption text-accent-primary font-medium ml-2">
+                    • Click to play
+                  </span>
+                )}
               </div>
             </div>
 
@@ -128,23 +143,15 @@ export function PlaygroundCompletedJobsTable({
               </div>
               {onViewDetails && (
                 <button
-                  onClick={() => onViewDetails(job)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onViewDetails(job);
+                  }}
                   className="flex items-center gap-1.5 rounded-lg border-2 border-border-default bg-surface-base px-3 py-1.5 text-caption font-medium text-text-secondary hover:border-accent-primary hover:text-accent-primary hover:bg-accent-primary/5 transition-all"
                 >
                   <Eye className="h-3.5 w-3.5" />
                   <span className="hidden sm:inline">Details</span>
                 </button>
-              )}
-              {job.audio_path && (
-                <a
-                  href={job.audio_path}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 rounded-lg border border-green-500/50 bg-green-500/10 px-3 py-1.5 text-caption font-medium text-green-600 hover:bg-green-500/20 transition-all"
-                >
-                  <Play className="h-3.5 w-3.5" />
-                  <span className="hidden sm:inline">Play</span>
-                </a>
               )}
             </div>
           </div>

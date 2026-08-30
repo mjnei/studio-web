@@ -6,6 +6,7 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useToast } from "@/components/ui/toast";
 import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
+import { AudioPlayer } from "@/app/(shell)/admin/playground/components/AudioPlayer";
 import { PlaygroundStatsWidget } from "./components/PlaygroundStatsWidget";
 import { PlaygroundStaleJobsAlert } from "./components/PlaygroundStaleJobsAlert";
 import { PlaygroundFailedJobsTable } from "./components/PlaygroundFailedJobsTable";
@@ -45,6 +46,12 @@ export default function PlaygroundTTSJobsPage() {
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
   const [activeTab, setActiveTab] = useState<TabType>("failed");
+  const [currentAudio, setCurrentAudio] = useState<{
+    url: string;
+    jobId: string;
+    jobName: string;
+  } | null>(null);
+  const [showAudioPlayer, setShowAudioPlayer] = useState(false);
 
   const loadData = useCallback(async () => {
     try {
@@ -179,6 +186,22 @@ export default function PlaygroundTTSJobsPage() {
     };
     setSelectedJob(ttsJob);
     setIsModalOpen(true);
+  };
+
+  const handlePlayAudio = (job: PlaygroundCompletedJob) => {
+    if (job.audio_path) {
+      setCurrentAudio({
+        url: job.audio_path,
+        jobId: job.job_id,
+        jobName: `Job #${job.job_id}`,
+      });
+      setShowAudioPlayer(true);
+    }
+  };
+
+  const handleDismissPlayer = () => {
+    setShowAudioPlayer(false);
+    setCurrentAudio(null);
   };
 
   const handleExportCSV = () => {
@@ -436,8 +459,23 @@ export default function PlaygroundTTSJobsPage() {
               <PlaygroundCompletedJobsTable
                 completedJobs={completedJobs}
                 onViewDetails={handleViewDetails}
+                onPlay={handlePlayAudio}
               />
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Sticky Bottom Audio Player */}
+      {showAudioPlayer && currentAudio && (
+        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-border-default bg-surface-base/95 backdrop-blur-lg shadow-2xl">
+          <div className="mx-auto max-w-7xl px-4 py-4">
+            <AudioPlayer
+              audioUrl={currentAudio.url}
+              jobId={currentAudio.jobId}
+              jobName={currentAudio.jobName}
+              onDismiss={handleDismissPlayer}
+            />
           </div>
         </div>
       )}
