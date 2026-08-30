@@ -211,7 +211,7 @@ export function UserDetailModal({
               <p className="text-body text-text-muted">{user.email}</p>
               <Button
                 type="button"
-                variant="secondary"
+                variant="primary"
                 size="icon"
                 title="Copy email"
                 aria-label="Copy email"
@@ -271,6 +271,89 @@ export function UserDetailModal({
             </div>
           </div>
 
+          {!user.is_deleted && (
+            <div className="rounded-xl border border-border-default bg-surface-panel p-4">
+              <p className="mb-2 text-caption font-semibold uppercase tracking-wider text-text-muted">
+                Password
+              </p>
+              <div className="mb-3 flex items-center gap-2">
+                <KeyRound className="h-4 w-4 text-text-muted" aria-hidden />
+                <span className={user.has_password ? "text-status-completed" : "text-text-muted"}>
+                  {user.has_password ? "Configured" : "Not set"}
+                </span>
+              </div>
+
+              {passwordError && (
+                <p className="mb-3 text-body text-status-failed">{passwordError}</p>
+              )}
+
+              {showPasswordForm ? (
+                <div className="space-y-3">
+                  <Input
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    label="New password"
+                    autoComplete="new-password"
+                  />
+                  <Input
+                    type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    label="Confirm password"
+                    autoComplete="new-password"
+                  />
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      type="button"
+                      size="sm"
+                      disabled={savingPassword}
+                      onClick={() => void handleSavePassword()}
+                    >
+                      {savingPassword
+                        ? "Saving…"
+                        : user.has_password
+                          ? "Update password"
+                          : "Set password"}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      disabled={savingPassword}
+                      onClick={resetPasswordForm}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    leftIcon={<KeyRound className="h-4 w-4" />}
+                    onClick={() => setShowPasswordForm(true)}
+                  >
+                    {user.has_password ? "Modify password" : "Set password"}
+                  </Button>
+                  {user.has_password && (
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      disabled={clearingPassword}
+                      onClick={() => void handleClearPassword()}
+                    >
+                      {clearingPassword ? "Clearing…" : "Clear password"}
+                    </Button>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
           <details className="group rounded-xl border border-border-default bg-surface-raised">
             <summary className="flex cursor-pointer list-none items-center justify-between px-4 py-3 text-caption font-semibold uppercase tracking-wider text-text-muted marker:content-none">
               <span>Account details</span>
@@ -309,111 +392,26 @@ export function UserDetailModal({
               </div>
 
               {!user.is_deleted && (
-                <>
-                  <div className="rounded-xl border border-border-default bg-surface-panel p-4">
-                    <p className="mb-2 text-caption font-semibold uppercase tracking-wider text-text-muted">
-                      Role
-                    </p>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <Select
-                        value={role}
-                        onChange={(value) => setRole(value as AdminUserRole)}
-                        options={ROLES.map((r) => ({ value: r, label: r }))}
-                      />
-                      <Button
-                        type="button"
-                        size="sm"
-                        disabled={savingRole || role === user.role}
-                        onClick={() => void handleSaveRole()}
-                      >
-                        {savingRole ? "Saving…" : "Save role"}
-                      </Button>
-                    </div>
+                <div className="rounded-xl border border-border-default bg-surface-panel p-4">
+                  <p className="mb-2 text-caption font-semibold uppercase tracking-wider text-text-muted">
+                    Role
+                  </p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Select
+                      value={role}
+                      onChange={(value) => setRole(value as AdminUserRole)}
+                      options={ROLES.map((r) => ({ value: r, label: r }))}
+                    />
+                    <Button
+                      type="button"
+                      size="sm"
+                      disabled={savingRole || role === user.role}
+                      onClick={() => void handleSaveRole()}
+                    >
+                      {savingRole ? "Saving…" : "Save role"}
+                    </Button>
                   </div>
-
-                  <div className="rounded-xl border border-border-default bg-surface-panel p-4">
-                    <p className="mb-2 text-caption font-semibold uppercase tracking-wider text-text-muted">
-                      Password
-                    </p>
-                    <div className="mb-3 flex items-center gap-2">
-                      <KeyRound className="h-4 w-4 text-text-muted" aria-hidden />
-                      <span
-                        className={user.has_password ? "text-status-completed" : "text-text-muted"}
-                      >
-                        {user.has_password ? "Configured" : "Not set"}
-                      </span>
-                    </div>
-
-                    {passwordError && (
-                      <p className="mb-3 text-body text-status-failed">{passwordError}</p>
-                    )}
-
-                    {showPasswordForm ? (
-                      <div className="space-y-3">
-                        <Input
-                          type="password"
-                          value={newPassword}
-                          onChange={(e) => setNewPassword(e.target.value)}
-                          label="New password"
-                          autoComplete="new-password"
-                        />
-                        <Input
-                          type="password"
-                          value={confirmPassword}
-                          onChange={(e) => setConfirmPassword(e.target.value)}
-                          label="Confirm password"
-                          autoComplete="new-password"
-                        />
-                        <div className="flex flex-wrap gap-2">
-                          <Button
-                            type="button"
-                            size="sm"
-                            disabled={savingPassword}
-                            onClick={() => void handleSavePassword()}
-                          >
-                            {savingPassword
-                              ? "Saving…"
-                              : user.has_password
-                                ? "Update password"
-                                : "Set password"}
-                          </Button>
-                          <Button
-                            type="button"
-                            variant="secondary"
-                            size="sm"
-                            disabled={savingPassword}
-                            onClick={resetPasswordForm}
-                          >
-                            Cancel
-                          </Button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="flex flex-wrap gap-2">
-                        <Button
-                          type="button"
-                          variant="secondary"
-                          size="sm"
-                          leftIcon={<KeyRound className="h-4 w-4" />}
-                          onClick={() => setShowPasswordForm(true)}
-                        >
-                          {user.has_password ? "Modify password" : "Set password"}
-                        </Button>
-                        {user.has_password && (
-                          <Button
-                            type="button"
-                            variant="secondary"
-                            size="sm"
-                            disabled={clearingPassword}
-                            onClick={() => void handleClearPassword()}
-                          >
-                            {clearingPassword ? "Clearing…" : "Clear password"}
-                          </Button>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </>
+                </div>
               )}
             </div>
           </details>
