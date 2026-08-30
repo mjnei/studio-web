@@ -27,7 +27,7 @@ export function LeftRail() {
       {/* Desktop Sidebar */}
       {!isNarrow && (
         <aside
-          className={`glass-chrome flex shrink-0 flex-col border-r border-border-default transition-all duration-300 ease-in-out ${
+          className={`glass-chrome flex shrink-0 flex-col border-r border-border-default/60 transition-all duration-300 ease-in-out ${
             collapsed ? "w-16" : "w-64"
           }`}
         >
@@ -46,7 +46,7 @@ export function LeftRail() {
           />
           {/* Drawer */}
           <div
-            className="fixed inset-y-0 left-0 z-50 w-[min(16rem,61.8%)] border-r border-border-default bg-surface-panel shadow-2xl animate-in slide-in-from-left duration-300"
+            className="fixed inset-y-0 left-0 z-50 w-[min(17rem,75vw)] border-r border-border-default/80 bg-surface-panel shadow-2xl animate-in slide-in-from-left duration-300"
             role="dialog"
             aria-modal="true"
           >

@@ -15,6 +15,7 @@ import {
   CreditCard,
   Activity,
   Crown,
+  Sparkles,
   type LucideIcon,
 } from "lucide-react";
 import Link from "next/link";
@@ -89,10 +90,41 @@ const iconMap: Record<string, LucideIcon> = {
 
 /** Drawer section headers — caption (12px) per typography minimum readable size */
 const sectionLabelClass =
-  "mb-2 px-3 text-caption font-bold uppercase tracking-wider text-text-muted lg:mb-1.5 lg:px-2.5";
+  "mb-2 px-3 text-caption font-semibold uppercase tracking-wider text-text-muted/80 lg:mb-1.5 lg:px-2.5";
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return <p className={sectionLabelClass}>{children}</p>;
+}
+
+function CreateProjectButton({
+  collapsed,
+  onClick,
+}: {
+  collapsed?: boolean;
+  onClick?: () => void;
+}) {
+  const { t } = useI18n();
+  return (
+    <div className={`mb-3 ${collapsed ? "px-1" : "px-0"}`}>
+      <Link
+        href="/project/new"
+        onClick={onClick}
+        title={collapsed ? t("project.newProject") || "New Project" : undefined}
+        className={`group relative flex items-center justify-center rounded-xl bg-gradient-to-r from-accent-primary to-accent-secondary p-px font-medium text-white shadow-sm shadow-accent-primary/20 transition-all duration-200 hover:shadow-md hover:shadow-accent-primary/30 active:scale-[0.98] ${
+          collapsed ? "mx-auto h-9 w-9" : "h-9 w-full px-3"
+        }`}
+      >
+        <div className="flex h-full w-full items-center justify-center gap-2 rounded-[11px] bg-accent-primary/90 transition-colors group-hover:bg-transparent">
+          <Sparkles className="h-3.5 w-3.5 shrink-0 transition-transform duration-200 group-hover:rotate-12" />
+          {!collapsed && (
+            <span className="truncate text-caption font-semibold">
+              {t("project.newProject") || "New Project"}
+            </span>
+          )}
+        </div>
+      </Link>
+    </div>
+  );
 }
 
 function RailLink({
@@ -117,18 +149,26 @@ function RailLink({
       href={item.href}
       onClick={onClick}
       title={collapsed ? label : undefined}
-      className={`flex items-center gap-3 lg:gap-2.5 rounded-lg transition-all duration-200 focus-ring ${
-        collapsed
-          ? "justify-center px-0 py-2.5 lg:py-2"
-          : "px-3 py-2.5 text-body font-medium lg:px-2.5 lg:py-2"
+      className={`group relative flex items-center rounded-lg transition-all duration-200 focus-ring ${
+        collapsed ? "mx-auto h-9 w-9 justify-center" : "h-9 px-3 text-body font-medium lg:px-2.5"
       } ${
         active
-          ? "bg-accent-muted text-accent-primary border border-accent-primary/30 shadow-sm"
-          : "text-text-secondary hover:bg-surface-hover hover:text-text-primary hover:border hover:border-border-default"
+          ? "bg-accent-primary/10 text-accent-primary font-semibold shadow-xs"
+          : "text-text-secondary hover:bg-surface-hover hover:text-text-primary"
       }`}
     >
-      <Icon icon={NavIcon} size="md" />
-      {!collapsed && <span>{label}</span>}
+      {/* Active Glowing Notch */}
+      {active && !collapsed && (
+        <span className="absolute left-0 top-1/2 h-4 w-1 -translate-y-1/2 rounded-r-full bg-accent-primary shadow-[0_0_8px_var(--color-accent-primary)]" />
+      )}
+      <Icon
+        icon={NavIcon}
+        size="md"
+        className={`shrink-0 transition-transform duration-200 group-hover:scale-110 ${
+          active ? "text-accent-primary" : "text-text-muted group-hover:text-text-primary"
+        } ${!collapsed ? "mr-2.5" : ""}`}
+      />
+      {!collapsed && <span className="truncate">{label}</span>}
     </Link>
   );
 }
@@ -138,14 +178,19 @@ function LogoMark({ collapsed }: { collapsed?: boolean }) {
   return (
     <Link
       href="/dashboard"
-      className="flex items-center gap-2 text-page font-bold group focus-ring rounded-lg"
+      className="group flex items-center gap-2.5 rounded-lg text-page font-bold focus-ring"
     >
-      <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-accent-secondary via-accent-primary to-accent-tertiary shadow-md group-hover:shadow-lg transition-all">
+      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-accent-secondary via-accent-primary to-accent-tertiary shadow-md transition-all group-hover:scale-105 group-hover:shadow-lg">
         <Icon icon={Activity} size="sm" className="text-white" />
       </div>
-      <span className="bg-gradient-to-r from-text-primary to-text-secondary bg-clip-text text-transparent">
-        Huavoi
-      </span>
+      <div className="flex items-center gap-1.5">
+        <span className="bg-gradient-to-r from-text-primary to-text-secondary bg-clip-text tracking-tight text-transparent">
+          Huavoi
+        </span>
+        <span className="rounded bg-accent-primary/10 px-1.5 py-0.5 text-micro font-semibold uppercase tracking-wider text-accent-primary">
+          Studio
+        </span>
+      </div>
     </Link>
   );
 }
@@ -162,18 +207,18 @@ function UserSection({ collapsed, onNavigate }: { collapsed?: boolean; onNavigat
 
   return (
     <div
-      className={`border-t border-border-default p-4 lg:p-3 ${
-        collapsed ? "flex flex-col items-center gap-2 lg:gap-1.5" : ""
+      className={`border-t border-border-default/60 p-3 lg:p-2.5 ${
+        collapsed ? "flex flex-col items-center gap-2" : ""
       }`}
     >
       <Link
         href="/profile"
         onClick={onNavigate}
-        title={collapsed ? tierLabel : undefined}
-        className={`flex items-center gap-3 lg:gap-2.5 rounded-lg text-body transition-all focus-ring ${
+        title={collapsed ? `${displayName} (${tierLabel})` : undefined}
+        className={`flex items-center gap-2.5 rounded-xl text-body transition-all focus-ring ${
           collapsed
             ? "justify-center p-0"
-            : "px-3 py-2.5 hover:bg-surface-hover border border-transparent hover:border-border-default lg:px-2.5 lg:py-2"
+            : "border border-transparent p-2 hover:border-border-default/60 hover:bg-surface-hover"
         }`}
       >
         <div className="relative shrink-0">
@@ -182,31 +227,33 @@ function UserSection({ collapsed, onNavigate }: { collapsed?: boolean; onNavigat
             name={displayName}
             email={displayEmail}
             pictureUrl={user?.picture_url}
-            width={40}
-            height={40}
+            width={36}
+            height={36}
             initialsLength={1}
             ringWidth={2}
-            className="h-10 w-10 rounded-full text-body shadow-lg"
-            imageClassName="h-10 w-10 rounded-full object-cover ring-2 ring-accent-primary/20"
+            className="h-9 w-9 rounded-full text-body shadow-md"
+            imageClassName="h-9 w-9 rounded-full object-cover ring-2 ring-accent-primary/20"
           />
           {collapsed && (
             <span
-              className={`absolute -bottom-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full shadow-sm ${
+              className={`absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full shadow-sm ${
                 isPaidTier
                   ? "bg-accent-cyan text-white"
                   : "border border-border-default bg-surface-elevated text-text-muted"
               }`}
               aria-hidden
             >
-              <Crown className="h-2.5 w-2.5" />
+              <Crown className="h-2 w-2" />
             </span>
           )}
         </div>
         {!collapsed && (
           <div className="min-w-0 flex-1 overflow-hidden">
-            <p className="truncate text-body font-medium text-text-primary">{displayName}</p>
-            <Badge variant={tierBadgeVariant} size="sm" className="mt-1">
-              <Crown className="mr-0.5 h-3 w-3" />
+            <p className="truncate text-caption font-semibold leading-tight text-text-primary">
+              {displayName}
+            </p>
+            <Badge variant={tierBadgeVariant} size="sm" className="mt-0.5 px-1.5 py-0 text-micro">
+              <Crown className="mr-0.5 h-2.5 w-2.5" />
               {tierLabel}
             </Badge>
           </div>
@@ -235,7 +282,7 @@ export function DrawerContent({
   return (
     <div className="flex h-full flex-col">
       <div
-        className={`flex h-14 items-center border-b border-border-default shrink-0 ${
+        className={`flex h-14 shrink-0 items-center border-b border-border-default/60 ${
           collapsed ? "justify-center px-2 lg:px-1.5" : "px-4 lg:px-3"
         }`}
       >
@@ -243,7 +290,7 @@ export function DrawerContent({
         {onToggle && (
           <button
             onClick={onToggle}
-            className={`h-9 w-9 rounded-md text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all active:scale-95 focus-ring flex items-center justify-center ${
+            className={`flex h-8 w-8 items-center justify-center rounded-lg text-text-secondary transition-all hover:bg-surface-hover hover:text-text-primary active:scale-95 focus-ring ${
               collapsed ? "" : "ml-auto"
             }`}
             aria-label={collapsed ? t("shell.expandSidebar") : t("shell.collapseSidebar")}
@@ -255,7 +302,7 @@ export function DrawerContent({
         {onClose && (
           <button
             onClick={onClose}
-            className="ml-auto h-9 w-9 rounded-md text-text-secondary hover:bg-surface-hover hover:text-text-primary transition-all active:scale-95 focus-ring flex items-center justify-center"
+            className="ml-auto flex h-8 w-8 items-center justify-center rounded-lg text-text-secondary transition-all hover:bg-surface-hover hover:text-text-primary active:scale-95 focus-ring"
             aria-label={t("shell.closeMenu")}
             title={t("shell.closeMenu")}
           >
@@ -266,9 +313,11 @@ export function DrawerContent({
 
       <div
         className={`flex-1 overflow-y-auto ${
-          collapsed ? "px-2 py-4 lg:px-1.5 lg:py-3" : "px-3 py-4 lg:px-2.5 lg:py-3"
+          collapsed ? "px-2 py-3 lg:px-1.5" : "px-3 py-3 lg:px-2.5"
         }`}
       >
+        <CreateProjectButton collapsed={collapsed} onClick={onNavigate} />
+
         {!collapsed && <SectionLabel>{t("shell.main")}</SectionLabel>}
         <div className="space-y-1 lg:space-y-0.5">
           {mainItems.map((item) => (
@@ -284,7 +333,7 @@ export function DrawerContent({
         </div>
 
         <div
-          className={`my-4 border-t border-border-default lg:my-3 ${collapsed ? "mx-0" : "mx-2 lg:mx-1.5"}`}
+          className={`my-3 border-t border-border-default/60 ${collapsed ? "mx-0" : "mx-2 lg:mx-1.5"}`}
         />
 
         {!collapsed && <SectionLabel>{t("shell.utilities")}</SectionLabel>}
@@ -305,7 +354,7 @@ export function DrawerContent({
         {isAdmin && (
           <>
             <div
-              className={`my-4 border-t border-border-default lg:my-3 ${
+              className={`my-3 border-t border-border-default/60 ${
                 collapsed ? "mx-0" : "mx-2 lg:mx-1.5"
               }`}
             />
