@@ -84,12 +84,31 @@ function shouldAttemptSessionRefreshOn401(path: string): boolean {
 
 const ACCOUNT_SUSPENDED_MESSAGE = "Account suspended. Please contact support.";
 
+function normalizeApiErrorDetail(detail: unknown): string | null {
+  if (typeof detail === "string") return detail;
+  if (Array.isArray(detail)) {
+    const messages = detail
+      .map((item) => {
+        if (typeof item === "string") return item;
+        if (item && typeof item === "object" && "msg" in item && typeof item.msg === "string") {
+          return item.msg;
+        }
+        return null;
+      })
+      .filter((message): message is string => Boolean(message));
+    return messages.length > 0 ? messages.join(" ") : null;
+  }
+  if (detail && typeof detail === "object" && "message" in detail) {
+    const message = (detail as { message: unknown }).message;
+    if (typeof message === "string") return message;
+  }
+  return null;
+}
+
 function parseApiErrorDetail(errorText: string): string | null {
   try {
     const errorJson = JSON.parse(errorText);
-    const detail = errorJson.detail ?? errorJson.message;
-    if (typeof detail === "string") return detail;
-    return null;
+    return normalizeApiErrorDetail(errorJson.detail ?? errorJson.message);
   } catch {
     return null;
   }
@@ -172,7 +191,9 @@ export async function request<T>(path: string, options: RequestInit = {}): Promi
     // Try to parse JSON error response
     try {
       const errorJson = JSON.parse(errorText);
-      throw new ApiError(res.status, errorJson.detail || errorJson.message || errorText);
+      const detail =
+        normalizeApiErrorDetail(errorJson.detail ?? errorJson.message) ?? errorText;
+      throw new ApiError(res.status, detail);
     } catch (err) {
       if (err instanceof ApiError) throw err;
       throw new ApiError(res.status, errorText);

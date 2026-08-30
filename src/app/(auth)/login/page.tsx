@@ -28,6 +28,16 @@ export default function LoginPage() {
   async function handlePasswordLogin(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+
+    if (!email.trim()) {
+      setError(t("auth.login.validation.emailRequired"));
+      return;
+    }
+    if (!password) {
+      setError(t("auth.login.validation.passwordRequired"));
+      return;
+    }
+
     setLoading(true);
     try {
       await loginWithPassword(email, password);
