@@ -33,6 +33,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { Toggle } from "@/components/ui/toggle";
+import { UserAvatarFallback } from "@/components/ui/UserAvatarFallback";
 
 /** Capitalize the first letter of each whitespace-separated word; leave the rest unchanged. */
 function capitalizeWordStarts(value: string): string {
@@ -223,9 +224,12 @@ export default function ProfilePage() {
                     height={112}
                   />
                 ) : (
-                  <div className="h-28 w-28 rounded-2xl bg-gradient-to-br from-accent-primary via-purple-600 to-accent-cyan text-4xl font-bold text-white flex items-center justify-center ring-4 ring-accent-primary/20 shadow-md transition-all duration-300 group-hover:scale-105 group-hover:ring-accent-primary/40">
-                    {initials}
-                  </div>
+                  <UserAvatarFallback
+                    seed={user.id}
+                    initials={initials}
+                    label={user.name}
+                    className="h-28 w-28 rounded-2xl text-4xl group-hover:scale-105"
+                  />
                 )}
                 <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-lg bg-surface-elevated border border-border-default flex items-center justify-center shadow-sm">
                   <Shield className="h-3.5 w-3.5 text-accent-cyan" />
