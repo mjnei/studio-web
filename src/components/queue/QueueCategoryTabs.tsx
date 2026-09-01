@@ -1,16 +1,21 @@
 "use client";
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { QueueCategory } from "@/lib/types/queue";
-import { getCategoryLabel } from "@/lib/types/queue";
+
+export type FilterCategory = "all" | "tts" | "video" | "background";
 
 interface QueueCategoryTabsProps {
-  activeCategory: QueueCategory | "all";
-  onCategoryChange: (category: QueueCategory | "all") => void;
-  counts?: Record<QueueCategory | "all", number>;
+  activeCategory: FilterCategory;
+  onCategoryChange: (category: FilterCategory) => void;
+  counts?: Record<FilterCategory, number>;
 }
 
-const CATEGORIES: Array<QueueCategory | "all"> = ["all", "tts", "video", "agnes"];
+const CATEGORY_TABS: { key: FilterCategory; label: string }[] = [
+  { key: "all", label: "All Queues" },
+  { key: "tts", label: "TTS" },
+  { key: "video", label: "Video" },
+  { key: "background", label: "Background" },
+];
 
 export function QueueCategoryTabs({
   activeCategory,
@@ -18,18 +23,13 @@ export function QueueCategoryTabs({
   counts,
 }: QueueCategoryTabsProps) {
   return (
-    <Tabs
-      value={activeCategory}
-      onValueChange={(v) => onCategoryChange(v as QueueCategory | "all")}
-    >
+    <Tabs value={activeCategory} onValueChange={(v) => onCategoryChange(v as FilterCategory)}>
       <TabsList>
-        {CATEGORIES.map((category) => {
-          const label =
-            category === "all" ? "All Queues" : getCategoryLabel(category as QueueCategory);
-          const count = counts?.[category];
+        {CATEGORY_TABS.map(({ key, label }) => {
+          const count = counts?.[key];
 
           return (
-            <TabsTrigger key={category} value={category} className="relative">
+            <TabsTrigger key={key} value={key} className="relative">
               {label}
               {count !== undefined && (
                 <span className="ml-2 px-1.5 py-0.5 text-caption rounded-full bg-muted">

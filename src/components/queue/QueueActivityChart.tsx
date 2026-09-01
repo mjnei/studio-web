@@ -256,7 +256,7 @@ export function QueueActivityChart({ queueName, stats, compact = false }: QueueA
                     <polyline
                       fill="none"
                       stroke="currentColor"
-                      strokeWidth="2"
+                      strokeWidth="2.5"
                       vectorEffect="non-scaling-stroke"
                       strokeLinejoin="round"
                       strokeLinecap="round"
@@ -289,10 +289,10 @@ export function QueueActivityChart({ queueName, stats, compact = false }: QueueA
                         key={`${point.ts}-${i}`}
                         cx={x}
                         cy={y}
-                        r="3.5"
+                        r="4"
                         fill="currentColor"
                         stroke="var(--surface-raised)"
-                        strokeWidth="1.5"
+                        strokeWidth="2"
                         vectorEffect="non-scaling-stroke"
                       >
                         <title>
@@ -348,50 +348,34 @@ export function QueueActivityChart({ queueName, stats, compact = false }: QueueA
                     strokeDasharray="4"
                   />
 
-                  {displayHistory.map((point, i) => {
-                    if (i === 0 || displayHistory.length < 2) return null;
-                    const prev = displayHistory[i - 1];
-                    const x1 = xForTs(prev.ts, rangeStart, rangeEnd, CON_VIEW.w, CON_VIEW.padX);
-                    const x2 = xForTs(point.ts, rangeStart, rangeEnd, CON_VIEW.w, CON_VIEW.padX);
-                    const y1 = yForValue(
-                      prev.consumerCount,
-                      maxConsumers,
-                      CON_VIEW.h,
-                      CON_VIEW.padY
-                    );
-                    const y2 = yForValue(
-                      point.consumerCount,
-                      maxConsumers,
-                      CON_VIEW.h,
-                      CON_VIEW.padY
-                    );
-
-                    return (
-                      <g key={`step-${point.ts}-${i}`}>
-                        <line
-                          x1={x1}
-                          y1={y1}
-                          x2={x2}
-                          y2={y1}
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          vectorEffect="non-scaling-stroke"
-                        />
-                        <line
-                          x1={x2}
-                          y1={y1}
-                          x2={x2}
-                          y2={y2}
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeDasharray="2"
-                          strokeLinecap="round"
-                          vectorEffect="non-scaling-stroke"
-                        />
-                      </g>
-                    );
-                  })}
+                  {displayHistory.length > 1 && (
+                    <polyline
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      vectorEffect="non-scaling-stroke"
+                      strokeLinejoin="round"
+                      strokeLinecap="round"
+                      points={displayHistory
+                        .map((point) => {
+                          const x = xForTs(
+                            point.ts,
+                            rangeStart,
+                            rangeEnd,
+                            CON_VIEW.w,
+                            CON_VIEW.padX
+                          );
+                          const y = yForValue(
+                            point.consumerCount,
+                            maxConsumers,
+                            CON_VIEW.h,
+                            CON_VIEW.padY
+                          );
+                          return `${x},${y}`;
+                        })
+                        .join(" ")}
+                    />
+                  )}
 
                   {displayHistory.map((point, i) => {
                     const x = xForTs(point.ts, rangeStart, rangeEnd, CON_VIEW.w, CON_VIEW.padX);
@@ -406,10 +390,10 @@ export function QueueActivityChart({ queueName, stats, compact = false }: QueueA
                         key={`c-${point.ts}-${i}`}
                         cx={x}
                         cy={y}
-                        r="3.5"
+                        r="4"
                         fill="currentColor"
                         stroke="var(--surface-raised)"
-                        strokeWidth="1.5"
+                        strokeWidth="2"
                         vectorEffect="non-scaling-stroke"
                       >
                         <title>

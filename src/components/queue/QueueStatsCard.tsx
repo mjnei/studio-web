@@ -1,8 +1,16 @@
 "use client";
 
-import { AlertCircle, CheckCircle2, Clock, Users } from "lucide-react";
+import {
+  AlertCircle,
+  AlertTriangle,
+  CheckCircle2,
+  Inbox,
+  Users,
+  ShieldAlert,
+  Info,
+} from "lucide-react";
 import type { QueueStats } from "@/lib/types/queue";
-import { getQueueHealth, getHealthColor } from "@/lib/types/queue";
+import { getQueueHealth } from "@/lib/types/queue";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip } from "@/components/ui/tooltip";
@@ -12,108 +20,219 @@ import { Text } from "@/components/ui/text";
 interface QueueStatsCardProps {
   stats: QueueStats;
   onViewDetails?: () => void;
-  isRefreshing?: boolean;
 }
 
-export function QueueStatsCard({ stats, onViewDetails, isRefreshing }: QueueStatsCardProps) {
-  const health = getQueueHealth(stats);
-  const colors = getHealthColor(health.status);
+export function getQueueDisplayCategory(
+  queueName: string,
+  category?: string
+): {
+  label: "TTS" | "Video" | "Background";
+  badgeClass: string;
+} {
+  const name = queueName.toLowerCase();
+  if (
+    name.includes("_result") ||
+    name === "agnes_jobs" ||
+    name === "credit_warnings" ||
+    name === "thumbnail_jobs" ||
+    category === "system" ||
+    category === "agnes" ||
+    category === "background"
+  ) {
+    return {
+      label: "Background",
+      badgeClass: "border-purple-500/30 bg-purple-500/10 text-purple-600 dark:text-purple-400",
+    };
+  }
+  if (category === "tts" || name.startsWith("tts_")) {
+    return {
+      label: "TTS",
+      badgeClass: "border-blue-500/30 bg-blue-500/10 text-blue-600 dark:text-blue-400",
+    };
+  }
+  if (category === "video" || name.startsWith("video_")) {
+    return {
+      label: "Video",
+      badgeClass: "border-indigo-500/30 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400",
+    };
+  }
+  return {
+    label: "Background",
+    badgeClass: "border-purple-500/30 bg-purple-500/10 text-purple-600 dark:text-purple-400",
+  };
+}
 
+export function QueueStatsCard({ stats, onViewDetails }: QueueStatsCardProps) {
+  const health = getQueueHealth(stats);
   const { metadata, message_count, consumer_count, queue_name } = stats;
+  const categoryInfo = getQueueDisplayCategory(queue_name, metadata?.category);
+
+  const getHealthBadge = () => {
+    switch (health.status) {
+      case "critical":
+        return (
+          <Badge variant="destructive" className="gap-1 px-2 py-0.5 font-medium">
+            <AlertCircle className="h-3 w-3" />
+            Critical
+          </Badge>
+        );
+      case "warning":
+        return (
+          <Badge
+            variant="outline"
+            className="gap-1 border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2 py-0.5 font-medium"
+          >
+            <AlertTriangle className="h-3 w-3" />
+            Warning
+          </Badge>
+        );
+      case "healthy":
+      default:
+        return (
+          <Badge
+            variant="outline"
+            className="gap-1 border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 font-medium"
+          >
+            <CheckCircle2 className="h-3 w-3" />
+            Healthy
+          </Badge>
+        );
+    }
+  };
 
   return (
-    <Card variant="glass" className="hover:shadow-md transition-shadow">
-      <CardHeader>
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center gap-2">
-              <CardTitle>{queue_name}</CardTitle>
+    <Card
+      variant="glass"
+      role="button"
+      tabIndex={0}
+      onClick={onViewDetails}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onViewDetails?.();
+        }
+      }}
+      className="group relative flex flex-col justify-between overflow-hidden border-border-default hover:border-accent-primary/60 hover:shadow-md hover:scale-[1.01] transition-all duration-200 cursor-pointer select-none"
+    >
+      <div>
+        <CardHeader className="pb-3 pt-4 px-4">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 min-w-0">
+              <CardTitle className="font-mono text-section truncate text-text-primary group-hover:text-accent-primary transition-colors">
+                {metadata?.display_name || queue_name}
+              </CardTitle>
               {metadata?.description && (
                 <Tooltip content={metadata.description} position="top">
-                  <div className="text-muted-foreground hover:text-foreground cursor-help">
-                    <AlertCircle className="h-4 w-4" />
+                  <div
+                    className="text-text-muted hover:text-text-primary transition-colors cursor-help shrink-0"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Info className="h-3.5 w-3.5" />
                   </div>
                 </Tooltip>
               )}
             </div>
+            {getHealthBadge()}
           </div>
-          <Badge variant="outline" className={colors.badge}>
-            {health.status === "healthy" && <CheckCircle2 className="h-3 w-3 mr-1" />}
-            {health.status === "warning" && <AlertCircle className="h-3 w-3 mr-1" />}
-            {health.status === "critical" && <AlertCircle className="h-3 w-3 mr-1" />}
-            {health.status.charAt(0).toUpperCase() + health.status.slice(1)}
-          </Badge>
-        </div>
-      </CardHeader>
+          {metadata?.display_name && metadata.display_name !== queue_name && (
+            <p className="font-mono text-micro text-text-muted truncate mt-0.5">{queue_name}</p>
+          )}
+        </CardHeader>
 
-      <CardContent>
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          {/* Message Count */}
-          <div className="flex items-center space-x-2">
-            <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded">
-              <Clock className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+        <CardContent className="px-4 pb-4 pt-0 space-y-3">
+          {/* Key Metrics Grid */}
+          <div className="grid grid-cols-2 gap-2.5">
+            {/* Messages / Backlog */}
+            <div className="flex items-center gap-2.5 rounded-lg border border-border-default bg-surface-raised/60 p-2.5">
+              <div
+                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-md ${
+                  message_count > 0
+                    ? "bg-amber-500/15 text-amber-600 dark:text-amber-400"
+                    : "bg-accent-muted text-accent-primary"
+                }`}
+              >
+                <Inbox className="h-4 w-4" />
+              </div>
+              <div className="min-w-0">
+                <Heading variant="metric" className="text-text-primary text-section">
+                  {message_count.toLocaleString()}
+                </Heading>
+                <Text variant="caption" className="text-text-muted text-micro truncate">
+                  Messages
+                </Text>
+              </div>
             </div>
-            <div>
-              <Heading variant="metric">{message_count.toLocaleString()}</Heading>
-              <Text variant="caption" className="text-muted-foreground">
-                Messages
-              </Text>
+
+            {/* Consumers / Workers */}
+            <div className="flex items-center gap-2.5 rounded-lg border border-border-default bg-surface-raised/60 p-2.5">
+              <div
+                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-md ${
+                  consumer_count > 0
+                    ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
+                    : "bg-surface-panel text-text-muted"
+                }`}
+              >
+                <Users className="h-4 w-4" />
+              </div>
+              <div className="min-w-0">
+                <Heading variant="metric" className="text-text-primary text-section">
+                  {consumer_count}
+                </Heading>
+                <Text variant="caption" className="text-text-muted text-micro truncate">
+                  Consumers
+                </Text>
+              </div>
             </div>
           </div>
 
-          {/* Consumer Count */}
-          <div className="flex items-center space-x-2">
-            <div className="p-2 bg-purple-100 dark:bg-purple-900 rounded">
-              <Users className="h-4 w-4 text-purple-600 dark:text-purple-400" />
-            </div>
-            <div>
-              <Heading variant="metric">{consumer_count}</Heading>
-              <Text variant="caption" className="text-muted-foreground">
-                Consumers
-              </Text>
-            </div>
-          </div>
-        </div>
-
-        {/* Health Message */}
-        {health.status !== "healthy" && (
-          <div className={`p-2 rounded text-body mb-3 ${colors.badge}`}>{health.message}</div>
-        )}
-
-        {/* Queue Details */}
-        <div className="text-caption text-muted-foreground space-y-1">
-          <div className="flex justify-between">
-            <span>Type:</span>
-            <span className="font-medium">
-              {metadata?.is_job_queue ? "Job Queue" : "Result Queue"}
-            </span>
-          </div>
-          {metadata?.dlq_name && (
-            <div className="flex justify-between">
-              <span>DLQ:</span>
-              <span className="font-medium">{metadata.dlq_name}</span>
+          {/* Health Alert message if non-healthy */}
+          {health.status !== "healthy" && (
+            <div className="flex items-center gap-1.5 rounded-md bg-destructive/10 px-2.5 py-1.5 text-caption text-destructive">
+              <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+              <span className="truncate">{health.message}</span>
             </div>
           )}
-          {metadata?.retention_hours && (
-            <div className="flex justify-between">
-              <span>Retention:</span>
-              <span className="font-medium">{metadata.retention_hours}h</span>
-            </div>
-          )}
-        </div>
 
-        {onViewDetails && (
-          <div className="flex gap-2 mt-4">
-            <button
-              onClick={onViewDetails}
-              disabled={isRefreshing}
-              className="flex-1 px-3 py-1.5 text-caption font-medium rounded border border-primary bg-primary text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          {/* Metadata tags */}
+          <div className="flex flex-wrap items-center gap-1.5 pt-1">
+            <Badge
+              variant="outline"
+              className={`text-micro font-medium uppercase tracking-wider ${categoryInfo.badgeClass}`}
             >
-              View Details
-            </button>
+              {categoryInfo.label}
+            </Badge>
+
+            {metadata?.is_job_queue ? (
+              <Badge variant="outline" className="text-micro text-text-secondary">
+                Job Queue
+              </Badge>
+            ) : (
+              <Badge variant="outline" className="text-micro text-text-muted">
+                Result Queue
+              </Badge>
+            )}
+
+            {metadata?.dlq_name && (
+              <Tooltip content={`Dead-letter queue: ${metadata.dlq_name}`} position="top">
+                <Badge
+                  variant="outline"
+                  className="gap-1 text-micro border-border-default text-text-muted cursor-help"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <ShieldAlert className="h-3 w-3" />
+                  DLQ
+                </Badge>
+              </Tooltip>
+            )}
+
+            {metadata?.retention_hours && (
+              <span className="text-micro text-text-muted ml-auto">
+                {metadata.retention_hours}h ttl
+              </span>
+            )}
           </div>
-        )}
-      </CardContent>
+        </CardContent>
+      </div>
     </Card>
   );
 }
