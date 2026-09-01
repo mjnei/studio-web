@@ -11,7 +11,12 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { listAllQueues } from "@/lib/api/queue-admin";
-import type { QueueStats, QueueCategory } from "@/lib/types/queue";
+import {
+  QUEUE_HISTORY_MONITORED_QUEUES,
+  type QueueStats,
+  type QueueCategory,
+} from "@/lib/types/queue";
+import { QueueActivityChart } from "@/components/queue/QueueActivityChart";
 import { QueueStatsCard } from "@/components/queue/QueueStatsCard";
 import { QueueCategoryTabs } from "@/components/queue/QueueCategoryTabs";
 import { Button } from "@/components/ui/button";
@@ -37,6 +42,7 @@ export default function QueueManagementPage() {
   const [activeCategory, setActiveCategory] = useState<QueueCategory | "all">("all");
   const [sortBy, setSortBy] = useState<"name" | "messages" | "consumers">("messages");
   const [statsExpanded, setStatsExpanded] = useState(true);
+  const [activityExpanded, setActivityExpanded] = useState(true);
 
   // Auto-refresh interval (10 seconds)
   const [autoRefresh, setAutoRefresh] = useState(true);
@@ -279,6 +285,56 @@ export default function QueueManagementPage() {
                     <QueueDistributionChart queues={Object.values(queues)} />
                   </CardContent>
                 </Card>
+              </div>
+            </CardContent>
+          )}
+        </Card>
+      )}
+
+      {/* Job queue activity history (tts_jobs, video_jobs only) */}
+      {!loading && !error && (
+        <Card>
+          <CardHeader
+            className="cursor-pointer hover:bg-muted/50 transition-colors"
+            onClick={() => setActivityExpanded(!activityExpanded)}
+          >
+            <div className="flex items-center gap-2">
+              <CardTitle>Job Queue Activity</CardTitle>
+              <ChevronDown
+                className={`h-5 w-5 text-muted-foreground transition-transform ${
+                  activityExpanded ? "rotate-0" : "-rotate-90"
+                }`}
+              />
+            </div>
+            <CardDescription>
+              Message and consumer trends for monitored job queues (sampled every 60s)
+            </CardDescription>
+          </CardHeader>
+
+          {activityExpanded && (
+            <CardContent>
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                {QUEUE_HISTORY_MONITORED_QUEUES.map((queueName) => {
+                  const queueStats = queues[queueName];
+                  const label = queueStats?.metadata?.display_name ?? queueName;
+
+                  return (
+                    <div key={queueName} className="space-y-4">
+                      <Heading variant="subsection" as="h3">
+                        {label}
+                      </Heading>
+                      {queueStats ? (
+                        <QueueActivityChart queueName={queueName} stats={queueStats} />
+                      ) : (
+                        <Card>
+                          <CardContent className="py-12">
+                            <Skeleton className="h-48 w-full" />
+                          </CardContent>
+                        </Card>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </CardContent>
           )}

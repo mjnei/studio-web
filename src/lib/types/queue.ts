@@ -6,6 +6,10 @@
 
 export type QueueCategory = "tts" | "video" | "agnes" | "system";
 
+/** Mirrors backend `QUEUE_HISTORY_MONITORED_QUEUES` — job queues with Valkey time-series sampling. */
+export const QUEUE_HISTORY_MONITORED_QUEUES = ["tts_jobs", "video_jobs"] as const;
+export type QueueHistoryMonitoredQueue = (typeof QUEUE_HISTORY_MONITORED_QUEUES)[number];
+
 export interface QueueMetadata {
   name: string;
   display_name: string;

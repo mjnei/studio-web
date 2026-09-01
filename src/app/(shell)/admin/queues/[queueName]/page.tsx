@@ -14,7 +14,6 @@ import {
 import { getQueueStats, getQueueDLQStats } from "@/lib/api/queue-admin";
 import type { QueueStats } from "@/lib/types/queue";
 import { QueueDetailPanel } from "@/components/queue/QueueDetailPanel";
-import { QueueActivityChart } from "@/components/queue/QueueActivityChart";
 import { DLQInspector } from "@/components/queue/DLQInspector";
 import { QueueMessagePeeker } from "@/components/queue/QueueMessagePeeker";
 import { QueuePurgeDialog } from "@/components/queue/QueuePurgeDialog";
@@ -380,17 +379,12 @@ export default function QueueDetailPage() {
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="activity">Activity Chart</TabsTrigger>
           <TabsTrigger value="messages">Peek Messages</TabsTrigger>
           {dlqStats && <TabsTrigger value="dlq">Dead-Letter Queue</TabsTrigger>}
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
           <QueueDetailPanel stats={stats} />
-        </TabsContent>
-
-        <TabsContent value="activity" className="space-y-6">
-          <QueueActivityChart queueName={queueName} stats={stats} />
         </TabsContent>
 
         <TabsContent value="messages" className="space-y-6">
