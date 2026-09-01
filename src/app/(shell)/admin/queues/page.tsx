@@ -21,7 +21,6 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { LayoutToggle, type LayoutMode } from "@/components/ui/LayoutToggle";
 import { Select } from "@/components/ui/select";
 import { HealthIndicator } from "@/components/queue/HealthIndicator";
-import { QueueDistributionChart } from "@/components/queue/QueueDistributionChart";
 
 export default function QueueManagementPage() {
   const router = useRouter();
@@ -201,28 +200,15 @@ export default function QueueManagementPage() {
             </p>
           </section>
 
-          {/* Health + distribution — secondary row */}
-          <div className="grid gap-4 lg:grid-cols-12">
-            <Card className="lg:col-span-4">
-              <CardHeader className="pb-3">
-                <CardTitle>Queue Health</CardTitle>
-                <CardDescription>Healthy, warning, and critical queues</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <HealthIndicator queues={queueList} />
-              </CardContent>
-            </Card>
-
-            <Card className="lg:col-span-8">
-              <CardHeader className="pb-3">
-                <CardTitle>Messages by Category</CardTitle>
-                <CardDescription>Message volume across TTS, Video, Agnes, and System</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <QueueDistributionChart queues={queueList} />
-              </CardContent>
-            </Card>
-          </div>
+          <Card className="max-w-xl">
+            <CardHeader className="pb-3">
+              <CardTitle>Queue Health</CardTitle>
+              <CardDescription>Healthy, warning, and critical queues</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <HealthIndicator queues={queueList} />
+            </CardContent>
+          </Card>
         </div>
       )}
 
