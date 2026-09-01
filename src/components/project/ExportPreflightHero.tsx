@@ -78,7 +78,9 @@ export function ExportPreflightHero({
           </Button>
 
           {!hasCredits && (
-            <p className="text-caption text-error-text">{t("project.export.insufficientCredits")}</p>
+            <p className="text-caption text-error-text">
+              {t("project.export.insufficientCredits")}
+            </p>
           )}
         </div>
       </div>

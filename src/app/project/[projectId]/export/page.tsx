@@ -332,8 +332,7 @@ export default function ExportPage() {
 
   const isAwaitingRender = isSubmittingGeneration || processingVideos.length > 0;
   const hasCompletedVideo = completedVideos.length > 0;
-  const hasOnlyFailed =
-    failedVideos.length > 0 && !hasCompletedVideo && !isAwaitingRender;
+  const hasOnlyFailed = failedVideos.length > 0 && !hasCompletedVideo && !isAwaitingRender;
   const canStartGeneration = !isAwaitingRender && hasCredits;
 
   const renderActivityKey = processingVideos

@@ -99,9 +99,7 @@ export function ExportPreflightChecklist({
               <p className="text-body font-semibold text-text-primary">
                 {t("project.export.check3Title")}
               </p>
-              <p className="text-caption text-text-muted">
-                {t("project.export.check3Desc")}
-              </p>
+              <p className="text-caption text-text-muted">{t("project.export.check3Desc")}</p>
             </div>
           </div>
           <Badge variant="success" size="sm">
