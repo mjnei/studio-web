@@ -2,14 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  RefreshCw,
-  AlertCircle,
-  TrendingUp,
-  ArrowUpDown,
-  AlertTriangle,
-  ChevronDown,
-} from "lucide-react";
+import { RefreshCw, AlertCircle, ArrowUpDown } from "lucide-react";
 import { listAllQueues } from "@/lib/api/queue-admin";
 import {
   QUEUE_HISTORY_MONITORED_QUEUES,
@@ -25,7 +18,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/toast";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { Heading } from "@/components/ui/heading";
 import { LayoutToggle, type LayoutMode } from "@/components/ui/LayoutToggle";
 import { Select } from "@/components/ui/select";
 import { HealthIndicator } from "@/components/queue/HealthIndicator";
@@ -41,8 +33,6 @@ export default function QueueManagementPage() {
   const [error, setError] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState<QueueCategory | "all">("all");
   const [sortBy, setSortBy] = useState<"name" | "messages" | "consumers">("messages");
-  const [statsExpanded, setStatsExpanded] = useState(true);
-  const [activityExpanded, setActivityExpanded] = useState(true);
 
   // Auto-refresh interval (10 seconds)
   const [autoRefresh, setAutoRefresh] = useState(true);
@@ -152,23 +142,16 @@ export default function QueueManagementPage() {
     }
   };
 
-  // Calculate summary stats
-  const totalMessages = Object.values(queues).reduce((sum, q) => sum + q.message_count, 0);
-  const totalConsumers = Object.values(queues).reduce((sum, q) => sum + q.consumer_count, 0);
-  const criticalQueues = Object.values(queues).filter(
-    (q) => q.metadata?.is_job_queue && q.message_count > 0 && q.consumer_count === 0
-  ).length;
-  const warningQueues = Object.values(queues).filter((q) => q.message_count > 1000).length;
+  const queueList = Object.values(queues);
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
-      {/* Header */}
+    <div className="max-w-7xl mx-auto space-y-5">
       <PageHeader
         title="LavinMQ"
-        description="Monitor and manage all RabbitMQ across TTS, Video, and Agnes services"
+        description="Monitor RabbitMQ queues across TTS, Video, and Agnes"
+        className="mb-2 sm:mb-4"
       />
 
-      {/* Error State */}
       {error && (
         <Card className="border-destructive">
           <CardContent className="flex items-center gap-3 pt-6">
@@ -181,177 +164,78 @@ export default function QueueManagementPage() {
         </Card>
       )}
 
-      {/* Summary Stats Charts - Expandable */}
       {!loading && !error && (
-        <Card>
-          <CardHeader
-            className="cursor-pointer hover:bg-muted/50 transition-colors"
-            onClick={() => setStatsExpanded(!statsExpanded)}
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <CardTitle>Summary Statistics</CardTitle>
-                <ChevronDown
-                  className={`h-5 w-5 text-muted-foreground transition-transform ${
-                    statsExpanded ? "rotate-0" : "-rotate-90"
-                  }`}
-                />
-              </div>
-              {/* Show compact stats in header when collapsed */}
-              {!statsExpanded && (
-                <div className="flex items-center gap-4 text-body text-muted-foreground">
-                  <span>
-                    Messages: <strong>{totalMessages.toLocaleString()}</strong>
-                  </span>
-                  <span>
-                    Consumers: <strong>{totalConsumers}</strong>
-                  </span>
-                  {criticalQueues > 0 && (
-                    <span className="text-destructive">
-                      Critical: <strong>{criticalQueues}</strong>
-                    </span>
-                  )}
-                </div>
-              )}
-            </div>
-          </CardHeader>
+        <div className="space-y-5">
+          {/* Job queue activity — primary dashboard row */}
+          <section aria-label="Job queue activity">
+            <div className="grid gap-4 lg:grid-cols-2">
+              {QUEUE_HISTORY_MONITORED_QUEUES.map((queueName) => {
+                const queueStats = queues[queueName];
+                const label = queueStats?.metadata?.display_name ?? queueName;
 
-          {statsExpanded && (
-            <CardContent className="space-y-4">
-              {/* Key Metrics Grid */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <Card className="border-muted">
-                  <CardHeader>
-                    <CardDescription className="text-caption">Total Messages</CardDescription>
-                    <Heading variant="metric">{totalMessages.toLocaleString()}</Heading>
-                  </CardHeader>
-                </Card>
-                <Card className="border-muted">
-                  <CardHeader>
-                    <CardDescription className="text-caption">Active Consumers</CardDescription>
-                    <Heading variant="metric">{totalConsumers}</Heading>
-                  </CardHeader>
-                </Card>
-                <Card
-                  className={
-                    criticalQueues > 0 ? "border-destructive bg-destructive/5" : "border-muted"
-                  }
-                >
-                  <CardHeader>
-                    <CardDescription className="text-caption">Critical Queues</CardDescription>
-                    <Heading variant="metric" className="flex items-center gap-2">
-                      {criticalQueues}
-                      {criticalQueues > 0 && <AlertTriangle className="h-5 w-5 text-destructive" />}
-                    </Heading>
-                  </CardHeader>
-                </Card>
-                <Card
-                  className={
-                    warningQueues > 0 ? "border-yellow-500/50 bg-yellow-500/5" : "border-muted"
-                  }
-                >
-                  <CardHeader>
-                    <CardDescription className="text-caption">High Load Queues</CardDescription>
-                    <Heading variant="metric" className="flex items-center gap-2">
-                      {warningQueues}
-                      {warningQueues > 0 && <TrendingUp className="h-5 w-5 text-yellow-600" />}
-                    </Heading>
-                  </CardHeader>
-                </Card>
-              </div>
-
-              {/* Health & Distribution Charts */}
-              <div className="grid md:grid-cols-2 gap-4">
-                {/* Health Indicator Chart */}
-                <Card>
-                  <CardHeader>
-                    <Heading variant="label" as="h3">
-                      Queue Health Status
-                    </Heading>
-                  </CardHeader>
-                  <CardContent>
-                    <HealthIndicator queues={Object.values(queues)} />
-                  </CardContent>
-                </Card>
-
-                {/* Queue Distribution Chart */}
-                <Card>
-                  <CardHeader>
-                    <Heading variant="label" as="h3">
-                      Messages by Category
-                    </Heading>
-                  </CardHeader>
-                  <CardContent>
-                    <QueueDistributionChart queues={Object.values(queues)} />
-                  </CardContent>
-                </Card>
-              </div>
-            </CardContent>
-          )}
-        </Card>
-      )}
-
-      {/* Job queue activity history (tts_jobs, video_jobs only) */}
-      {!loading && !error && (
-        <Card>
-          <CardHeader
-            className="cursor-pointer hover:bg-muted/50 transition-colors"
-            onClick={() => setActivityExpanded(!activityExpanded)}
-          >
-            <div className="flex items-center gap-2">
-              <CardTitle>Job Queue Activity</CardTitle>
-              <ChevronDown
-                className={`h-5 w-5 text-muted-foreground transition-transform ${
-                  activityExpanded ? "rotate-0" : "-rotate-90"
-                }`}
-              />
-            </div>
-            <CardDescription>
-              Message and consumer trends for monitored job queues (sampled every 60s)
-            </CardDescription>
-          </CardHeader>
-
-          {activityExpanded && (
-            <CardContent>
-              <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-                {QUEUE_HISTORY_MONITORED_QUEUES.map((queueName) => {
-                  const queueStats = queues[queueName];
-                  const label = queueStats?.metadata?.display_name ?? queueName;
-
-                  return (
-                    <div key={queueName} className="space-y-4">
-                      <Heading variant="subsection" as="h3">
-                        {label}
-                      </Heading>
+                return (
+                  <Card key={queueName}>
+                    <CardHeader className="pb-3">
+                      <CardTitle>{label}</CardTitle>
+                      <CardDescription>Backlog and consumer trends over the last 5 hours</CardDescription>
+                    </CardHeader>
+                    <CardContent>
                       {queueStats ? (
-                        <QueueActivityChart queueName={queueName} stats={queueStats} />
+                        <QueueActivityChart
+                          queueName={queueName}
+                          stats={queueStats}
+                          compact
+                        />
                       ) : (
-                        <Card>
-                          <CardContent className="py-12">
-                            <Skeleton className="h-48 w-full" />
-                          </CardContent>
-                        </Card>
+                        <Skeleton className="h-64 w-full" />
                       )}
-                    </div>
-                  );
-                })}
-              </div>
-            </CardContent>
-          )}
-        </Card>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+            <p className="mt-3 text-caption text-muted-foreground">
+              History is sampled every 60 seconds by the background worker. Enable{" "}
+              <code className="text-text-secondary">QUEUE_HISTORY_ENABLED</code> on the worker if
+              charts stay empty.
+            </p>
+          </section>
+
+          {/* Health + distribution — secondary row */}
+          <div className="grid gap-4 lg:grid-cols-12">
+            <Card className="lg:col-span-4">
+              <CardHeader className="pb-3">
+                <CardTitle>Queue Health</CardTitle>
+                <CardDescription>Healthy, warning, and critical queues</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <HealthIndicator queues={queueList} />
+              </CardContent>
+            </Card>
+
+            <Card className="lg:col-span-8">
+              <CardHeader className="pb-3">
+                <CardTitle>Messages by Category</CardTitle>
+                <CardDescription>Message volume across TTS, Video, Agnes, and System</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <QueueDistributionChart queues={queueList} />
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       )}
 
       {/* Category Tabs with Control Buttons */}
       <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <QueueCategoryTabs
             activeCategory={activeCategory}
             onCategoryChange={setActiveCategory}
             counts={categoryCounts}
           />
 
-          {/* Control Buttons (moved from header) */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 self-end sm:self-auto">
             <Button variant="outline" size="sm" onClick={() => fetchQueues()} disabled={refreshing}>
               <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? "animate-spin" : ""}`} />
               Refresh
@@ -400,21 +284,18 @@ export default function QueueManagementPage() {
           </CardContent>
         </Card>
       ) : (
-        <>
-          <div className={getGridClass()}>
-            {sortedQueues.map((queue) => (
-              <QueueStatsCard
-                key={queue.queue_name}
-                stats={queue}
-                isRefreshing={refreshing}
-                onViewDetails={() => router.push(`/admin/queues/${queue.queue_name}`)}
-              />
-            ))}
-          </div>
-        </>
+        <div className={getGridClass()}>
+          {sortedQueues.map((queue) => (
+            <QueueStatsCard
+              key={queue.queue_name}
+              stats={queue}
+              isRefreshing={refreshing}
+              onViewDetails={() => router.push(`/admin/queues/${queue.queue_name}`)}
+            />
+          ))}
+        </div>
       )}
 
-      {/* Auto-refresh indicator */}
       <div className="flex justify-center">
         <button
           onClick={() => setAutoRefresh(!autoRefresh)}

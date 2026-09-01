@@ -9,6 +9,8 @@ import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 interface QueueActivityChartProps {
   queueName: string;
   stats: QueueStats;
+  /** Tighter layout for the hub page: inline trend, no footer note. */
+  compact?: boolean;
 }
 
 interface ChartPoint {
@@ -81,7 +83,7 @@ function yForValue(value: number, maxValue: number, height: number, padY: number
   return height - padY - (value / Math.max(1, maxValue)) * usable;
 }
 
-export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps) {
+export function QueueActivityChart({ queueName, stats, compact = false }: QueueActivityChartProps) {
   const [history, setHistory] = useState<ChartPoint[]>([]);
   const [loadedQueue, setLoadedQueue] = useState<string | null>(null);
   const [unavailable, setUnavailable] = useState(false);
@@ -154,41 +156,52 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
     </div>
   ) : null;
 
+  const trendBadge = hasSeries ? (
+    <div className="flex items-center gap-2 text-body font-normal">
+      {trend > 0 ? (
+        <>
+          <TrendingUp className="h-4 w-4 text-status-error" />
+          <span className="text-status-error">+{trendPercent}%</span>
+        </>
+      ) : trend < 0 ? (
+        <>
+          <TrendingDown className="h-4 w-4 text-status-success" />
+          <span className="text-status-success">{trendPercent}%</span>
+        </>
+      ) : (
+        <>
+          <Minus className="h-4 w-4 text-text-muted" />
+          <span className="text-text-muted">No change</span>
+        </>
+      )}
+    </div>
+  ) : null;
+
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <span>Activity Trend</span>
-            {hasSeries && (
-              <div className="flex items-center gap-2 text-body font-normal">
-                {trend > 0 ? (
-                  <>
-                    <TrendingUp className="h-4 w-4 text-status-error" />
-                    <span className="text-status-error">+{trendPercent}%</span>
-                  </>
-                ) : trend < 0 ? (
-                  <>
-                    <TrendingDown className="h-4 w-4 text-status-success" />
-                    <span className="text-status-success">{trendPercent}%</span>
-                  </>
-                ) : (
-                  <>
-                    <Minus className="h-4 w-4 text-text-muted" />
-                    <span className="text-text-muted">No change</span>
-                  </>
-                )}
-              </div>
-            )}
-          </CardTitle>
-          <CardDescription>Message count over time (sampled every 60 seconds)</CardDescription>
-        </CardHeader>
-      </Card>
+    <div className={compact ? "space-y-3" : "space-y-6"}>
+      {!compact && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              <span>Activity Trend</span>
+              {trendBadge}
+            </CardTitle>
+            <CardDescription>Message count over time (sampled every 60 seconds)</CardDescription>
+          </CardHeader>
+        </Card>
+      )}
 
       <Card>
-        <CardHeader>
-          <CardTitle>Message Count</CardTitle>
-          <CardDescription>Number of pending messages in the queue</CardDescription>
+        <CardHeader className={compact ? "pb-2" : undefined}>
+          <CardTitle className="flex items-center justify-between gap-2">
+            <span>{compact ? "Backlog" : "Message Count"}</span>
+            {compact && trendBadge}
+          </CardTitle>
+          <CardDescription>
+            {compact
+              ? "Pending messages (sampled every 60s)"
+              : "Number of pending messages in the queue"}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {!hasSeries ? (
@@ -298,9 +311,13 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
       </Card>
 
       <Card>
-        <CardHeader>
+        <CardHeader className={compact ? "pb-2" : undefined}>
           <CardTitle>Consumer Count</CardTitle>
-          <CardDescription>Number of active consumers processing the queue</CardDescription>
+          <CardDescription>
+            {compact
+              ? "Active consumers processing the queue"
+              : "Number of active consumers processing the queue"}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {!hasSeries ? (
@@ -410,16 +427,18 @@ export function QueueActivityChart({ queueName, stats }: QueueActivityChartProps
         </CardContent>
       </Card>
 
-      <Card className="bg-surface-raised/60">
-        <CardContent className="pt-6">
-          <p className="text-caption text-text-muted">
-            History is sampled every 60 seconds by the background worker and stored in Valkey
-            (shared across admins). Enable{" "}
-            <code className="text-text-secondary">QUEUE_HISTORY_ENABLED</code> on the worker if the
-            chart stays empty.
-          </p>
-        </CardContent>
-      </Card>
+      {!compact && (
+        <Card className="bg-surface-raised/60">
+          <CardContent className="pt-6">
+            <p className="text-caption text-text-muted">
+              History is sampled every 60 seconds by the background worker and stored in Valkey
+              (shared across admins). Enable{" "}
+              <code className="text-text-secondary">QUEUE_HISTORY_ENABLED</code> on the worker if
+              the chart stays empty.
+            </p>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
