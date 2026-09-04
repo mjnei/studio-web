@@ -36,7 +36,7 @@ export function TopNav() {
           <span className="font-medium text-text-muted capitalize">Huavoi</span>
           <span className="text-text-muted/50">/</span>
           <span className="font-semibold text-text-primary capitalize">
-            {t(`shell.${rootSegment}` as any) || rootSegment}
+            {t(`shell.${rootSegment}` as const) || rootSegment}
           </span>
         </div>
       </div>
@@ -57,7 +57,7 @@ export function TopNav() {
             <span className="truncate">{t("common.searchEllipsis") || "Search..."}</span>
           </div>
           <kbd className="hidden items-center gap-0.5 rounded border border-border-default bg-surface-elevated px-1.5 py-0.5 text-micro font-medium text-text-muted shadow-xs group-hover:border-accent-primary/30 group-hover:text-text-secondary sm:inline-flex">
-            <span className="text-[10px]">⌘</span>K
+            <span className="text-micro">⌘</span>K
           </kbd>
         </button>
       </div>

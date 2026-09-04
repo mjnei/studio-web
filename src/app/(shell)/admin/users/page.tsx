@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, RefreshCw, Users } from "lucide-react";
 import { Heading } from "@/components/ui/heading";
@@ -33,31 +33,33 @@ export default function AdminUsersPage() {
   const [pagination, setPagination] = useState({ page: 1, pageSize: 20, total: 0 });
   const [selected, setSelected] = useState<AdminUser | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [refreshCounter, setRefreshCounter] = useState(0);
 
-  const loadData = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const [statsData, listData] = await Promise.all([
-        getAdminUserStats(),
-        getAdminUsers(pagination.page, pagination.pageSize, filters),
-      ]);
-      setStats(statsData);
-      setUsers(listData.users);
-      setPagination((prev) => ({ ...prev, total: listData.total }));
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "An error occurred";
-      toast.error("Failed to load users", message);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [filters, pagination.page, pagination.pageSize, toast]);
-
+  // Load data when filters, pagination, or refresh counter changes
   useEffect(() => {
+    const loadData = async () => {
+      setIsLoading(true);
+      try {
+        const [statsData, listData] = await Promise.all([
+          getAdminUserStats(),
+          getAdminUsers(pagination.page, pagination.pageSize, filters),
+        ]);
+        setStats(statsData);
+        setUsers(listData.users);
+        setPagination((prev) => ({ ...prev, total: listData.total }));
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : "An error occurred";
+        toast.error("Failed to load users", message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     void loadData();
-  }, [loadData]);
+  }, [filters, pagination.page, pagination.pageSize, toast, refreshCounter]);
 
   function handleRefresh() {
-    void loadData();
+    setRefreshCounter((prev) => prev + 1);
   }
 
   function handleFilterChange(next: AdminUserFilter) {
@@ -159,7 +161,7 @@ export default function AdminUsersPage() {
       );
       setModalOpen(false);
       setSelected(null);
-      await loadData();
+      setRefreshCounter((prev) => prev + 1);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "An error occurred";
       toast.error("Failed to delete user", message);

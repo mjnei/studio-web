@@ -267,7 +267,7 @@ export default function PreviewPage() {
     return () => {
       cancelled = true;
     };
-  }, [state, activeScript, ttsJob, isLoading, projectId, t]);
+  }, [state, activeScript, ttsJob, isLoading, projectId, t, locale]);
 
   // Audio event listeners
   useEffect(() => {

@@ -37,7 +37,6 @@ import {
   type VideoGenerationResponse,
   type CreditStatus,
 } from "@/lib/credit-client";
-import { CreditUsageIndicator } from "@/components/credits/CreditUsageIndicator";
 import { InsufficientCreditsModal } from "@/components/credits/InsufficientCreditsModal";
 import { CreditConfirmationModal } from "@/components/credits/CreditConfirmationModal";
 import { useNotifications } from "@/lib/notification-context";

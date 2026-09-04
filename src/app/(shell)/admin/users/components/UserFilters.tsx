@@ -4,7 +4,7 @@ import { Heading } from "@/components/ui/heading";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Filter, Search, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import type { AdminUserFilter, AdminUserRole } from "@/types/admin";
 
 interface UserFiltersProps {
@@ -33,26 +33,23 @@ function isActiveFilter(value: unknown): boolean {
 export function UserFilters({ filters, onFilterChange, onClear }: UserFiltersProps) {
   const [searchDraft, setSearchDraft] = useState(filters.q ?? "");
   const [isExpanded, setIsExpanded] = useState(false);
-  const filtersRef = useRef(filters);
-  const onFilterChangeRef = useRef(onFilterChange);
 
-  filtersRef.current = filters;
-  onFilterChangeRef.current = onFilterChange;
-
+  // Sync search draft when filters.q changes (e.g., from parent or clear)
   useEffect(() => {
     setSearchDraft(filters.q ?? "");
   }, [filters.q]);
 
+  // Debounce search changes
   useEffect(() => {
     const nextQ = searchDraft.trim() || undefined;
-    if (nextQ === (filtersRef.current.q ?? undefined)) return;
+    if (nextQ === (filters.q ?? undefined)) return;
 
     const timer = window.setTimeout(() => {
-      onFilterChangeRef.current(normalizeFilters({ ...filtersRef.current, q: nextQ }));
+      onFilterChange(normalizeFilters({ ...filters, q: nextQ }));
     }, SEARCH_DEBOUNCE_MS);
 
     return () => window.clearTimeout(timer);
-  }, [searchDraft]);
+  }, [searchDraft, filters, onFilterChange]);
 
   const activeCount = Object.entries(filters).filter(([, value]) => isActiveFilter(value)).length;
 

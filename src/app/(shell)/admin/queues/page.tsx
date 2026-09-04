@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AlertCircle, ArrowUpDown, Users } from "lucide-react";
+import { AlertCircle, ArrowUpDown } from "lucide-react";
 import { listAllQueues } from "@/lib/api/queue-admin";
 import { QUEUE_HISTORY_MONITORED_QUEUES, type QueueStats } from "@/lib/types/queue";
 import { QueueActivityChart } from "@/components/queue/QueueActivityChart";
@@ -14,8 +14,6 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Select } from "@/components/ui/select";
 import { HealthIndicator } from "@/components/queue/HealthIndicator";
-import { Heading } from "@/components/ui/heading";
-import { Text } from "@/components/ui/text";
 
 export default function QueueManagementPage() {
   const router = useRouter();
@@ -58,7 +56,6 @@ export default function QueueManagementPage() {
 
   // Compute key KPI metrics
   const totalQueues = queueList.length;
-  const totalConsumers = queueList.reduce((sum, q) => sum + (q.consumer_count || 0), 0);
 
   // Filter queues by active category
   const filteredQueues = queueList.filter((queue) => {
@@ -130,7 +127,6 @@ export default function QueueManagementPage() {
 
       {/* Top Row: Active Consumers Card & Health Distribution Card side by side */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
         {/* Health Distribution (No title to save space) */}
         <Card
           variant="glass"
