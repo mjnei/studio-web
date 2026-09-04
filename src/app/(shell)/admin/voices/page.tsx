@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   Mic,
   CheckCircle2,
@@ -13,6 +13,8 @@ import {
   ThumbsUp,
   XCircle,
   Upload,
+  ImagePlus,
+  Trash2,
 } from "lucide-react";
 import { ConfirmModal } from "@/components/ui/modal";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
@@ -29,12 +31,16 @@ import {
   adminUnapproveVoice,
   adminGetVoiceRecordings,
   adminGetAllVoices,
+  adminUploadVoiceAvatar,
+  adminDeleteVoiceAvatar,
   attachAdminVoiceAudioUrls,
 } from "@/lib/api/admin";
 import { useVoiceAudioPlayback } from "@/lib/hooks/use-voice-audio-playback";
 import type { VoiceWithCreator } from "@/lib/types/api";
 
 type ViewType = "pending" | "approved" | "all";
+
+const AVATAR_ACCEPT = "image/jpeg,image/png,image/webp";
 
 export default function AdminVoicesPage() {
   const toast = useToast();
@@ -60,6 +66,8 @@ export default function AdminVoicesPage() {
   });
 
   const [isProcessing, setIsProcessing] = useState(false);
+  const [avatarVoiceId, setAvatarVoiceId] = useState<number | null>(null);
+  const avatarFileInputRef = useRef<HTMLInputElement>(null);
 
   const [approveModal, setApproveModal] = useState<{
     open: boolean;
@@ -72,6 +80,14 @@ export default function AdminVoicesPage() {
   }>({ open: false, voice: null });
 
   const [bulkImportModal, setBulkImportModal] = useState(false);
+
+  const applyUpdatedVoice = useCallback((updated: VoiceWithCreator) => {
+    const merge = (list: VoiceWithCreator[]) =>
+      list.map((v) => (v.id === updated.id ? { ...v, ...updated } : v));
+    setPendingVoices(merge);
+    setApprovedVoices(merge);
+    setAllSharedVoices(merge);
+  }, []);
 
   const loadVoices = useCallback(async () => {
     setIsLoading(true);
@@ -185,6 +201,47 @@ export default function AdminVoicesPage() {
     }
   };
 
+  const handleAvatarUploadClick = (voiceId: number) => {
+    setAvatarVoiceId(voiceId);
+    avatarFileInputRef.current?.click();
+  };
+
+  const handleAvatarFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    const voiceId = avatarVoiceId;
+    event.target.value = "";
+    setAvatarVoiceId(null);
+
+    if (!file || voiceId == null) return;
+
+    setIsProcessing(true);
+    try {
+      const updated = await adminUploadVoiceAvatar(voiceId, file);
+      applyUpdatedVoice(updated);
+      toast.success("Avatar updated", "Community voice avatar saved");
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "An error occurred";
+      toast.error("Failed to upload avatar", message);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleAvatarRemove = async (voice: VoiceWithCreator) => {
+    if (isProcessing || !voice.creator_avatar_url) return;
+    setIsProcessing(true);
+    try {
+      const updated = await adminDeleteVoiceAvatar(voice.id);
+      applyUpdatedVoice(updated);
+      toast.success("Avatar removed", `Cleared avatar for "${voice.name}"`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "An error occurred";
+      toast.error("Failed to remove avatar", message);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   const formatRelativeTime = (dateString: string | null | undefined) => {
     if (!dateString) return "Unknown";
     const date = new Date(dateString);
@@ -234,6 +291,14 @@ export default function AdminVoicesPage() {
 
   return (
     <div className="mx-auto max-w-7xl">
+      <input
+        ref={avatarFileInputRef}
+        type="file"
+        accept={AVATAR_ACCEPT}
+        className="hidden"
+        onChange={handleAvatarFileChange}
+      />
+
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-6">
@@ -429,7 +494,7 @@ export default function AdminVoicesPage() {
         <div className="space-y-2 rounded-2xl border border-border-default bg-surface-panel overflow-hidden">
           {/* Table Header */}
           <div className="hidden md:grid md:grid-cols-12 gap-4 border-b border-border-default bg-surface-raised/50 px-6 py-3 text-body font-semibold text-text-secondary">
-            <div className="col-span-3">Voice Name</div>
+            <div className="col-span-3">Voice</div>
             <div className="col-span-2">Creator</div>
             <div className="col-span-2">Status</div>
             <div className="col-span-2">Timestamp</div>
@@ -444,13 +509,33 @@ export default function AdminVoicesPage() {
             >
               <div className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-4 items-center">
                 <div className="col-span-1 md:col-span-3">
-                  <p className="text-body font-semibold text-text-primary">{voice.name}</p>
-                  {voice.duration_seconds && (
-                    <p className="mt-1 text-caption text-text-secondary">
-                      {Math.floor(voice.duration_seconds / 60)}:
-                      {String(Math.floor(voice.duration_seconds % 60)).padStart(2, "0")}
-                    </p>
-                  )}
+                  <div className="flex items-center gap-3">
+                    <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full border border-border-default bg-surface-raised">
+                      {voice.creator_avatar_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={voice.creator_avatar_url}
+                          alt=""
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center text-text-muted">
+                          <User className="h-5 w-5" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-body font-semibold text-text-primary truncate">
+                        {voice.name}
+                      </p>
+                      {voice.duration_seconds && (
+                        <p className="mt-1 text-caption text-text-secondary">
+                          {Math.floor(voice.duration_seconds / 60)}:
+                          {String(Math.floor(voice.duration_seconds % 60)).padStart(2, "0")}
+                        </p>
+                      )}
+                    </div>
+                  </div>
                 </div>
                 <div className="col-span-1 md:col-span-2">
                   <div className="md:hidden text-caption font-medium text-text-muted mb-1">
@@ -495,7 +580,31 @@ export default function AdminVoicesPage() {
                   <div className="md:hidden text-caption font-medium text-text-muted mb-1">
                     Actions
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => handleAvatarUploadClick(voice.id)}
+                      disabled={isProcessing}
+                      className="shrink-0"
+                      leftIcon={<ImagePlus className="h-4 w-4" />}
+                    >
+                      <span className="hidden md:inline">
+                        {voice.creator_avatar_url ? "Change" : "Avatar"}
+                      </span>
+                    </Button>
+                    {voice.creator_avatar_url ? (
+                      <Button
+                        size="icon"
+                        variant="secondary"
+                        onClick={() => handleAvatarRemove(voice)}
+                        disabled={isProcessing}
+                        className="shrink-0"
+                        aria-label="Remove avatar"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    ) : null}
                     <Button
                       size="sm"
                       variant={playingVoiceId === voice.id ? "primary" : "secondary"}

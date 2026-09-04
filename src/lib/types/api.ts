@@ -114,6 +114,8 @@ export interface VoiceResponse {
  */
 export interface VoiceWithCreator extends VoiceResponse {
   creator_username: string;
+  /** Admin-configured community voice avatar URL; empty/null when not set */
+  creator_avatar_url?: string | null;
   admin_approved_at?: string | null; // "Approved 3 days ago" format
 }
 

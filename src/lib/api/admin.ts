@@ -383,6 +383,45 @@ export async function adminUnapproveVoice(voiceId: number): Promise<VoiceRespons
   });
 }
 
+/**
+ * Upload or replace the admin-configured avatar for a community voice.
+ */
+export async function adminUploadVoiceAvatar(
+  voiceId: number,
+  file: File
+): Promise<VoiceWithCreator> {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const token = getAccessToken();
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020/api/v1";
+
+  const response = await fetch(`${API_BASE}/voices/admin/${voiceId}/avatar`, {
+    method: "PUT",
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: formData,
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(errorText || "Failed to upload voice avatar");
+  }
+
+  return response.json();
+}
+
+/**
+ * Clear the admin-configured avatar for a community voice.
+ */
+export async function adminDeleteVoiceAvatar(voiceId: number): Promise<VoiceWithCreator> {
+  return request<VoiceWithCreator>(`/voices/admin/${voiceId}/avatar`, {
+    method: "DELETE",
+  });
+}
+
 // ============================================================================
 // Admin User Search
 // ============================================================================
