@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Pencil } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
@@ -88,6 +88,11 @@ export function VoiceEditModal({ open, voice, onClose, onSaved }: VoiceEditModal
     }
   };
 
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    void handleSave();
+  };
+
   if (!voice) return null;
 
   return (
@@ -127,7 +132,7 @@ export function VoiceEditModal({ open, voice, onClose, onSaved }: VoiceEditModal
         </>
       }
     >
-      <div className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-5">
         <Input
           label="Name"
           value={name}
@@ -139,7 +144,7 @@ export function VoiceEditModal({ open, voice, onClose, onSaved }: VoiceEditModal
         <Select
           label="Language"
           value={language}
-          onChange={(value) => setLanguage(value as Locale)}
+          onChange={(value) => setLanguage(value as VoiceLanguage)}
           options={LANGUAGE_OPTIONS}
           disabled={isSaving}
         />
@@ -171,7 +176,7 @@ export function VoiceEditModal({ open, voice, onClose, onSaved }: VoiceEditModal
         />
 
         {error ? <p className="text-caption text-red-600">{error}</p> : null}
-      </div>
+      </form>
     </Modal>
   );
 }
