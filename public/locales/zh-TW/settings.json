@@ -67,21 +67,21 @@
     "loadingPreferences": "正在載入通知偏好…",
     "preferencesSaved": "偏好已儲存！",
     "categories": {
-      "videoJobs": "影片工作",
+      "videoJobs": "影片任務",
       "account": "帳號",
       "projects": "專案"
     },
     "types": {
       "videoJobQueued": {
-        "title": "影片工作已排入佇列",
-        "description": "當你的影片產生工作進入處理佇列時"
+        "title": "影片任務已排入佇列",
+        "description": "當你的影片產生任務進入處理佇列時"
       },
       "videoJobCompleted": {
-        "title": "影片工作已完成",
+        "title": "影片任務已完成",
         "description": "當影片成功產生完成時"
       },
       "videoJobFailed": {
-        "title": "影片工作失敗",
+        "title": "影片任務失敗",
         "description": "當影片產生發生錯誤時"
       },
       "lowCredits": {

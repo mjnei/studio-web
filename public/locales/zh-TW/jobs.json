@@ -1,32 +1,32 @@
 {
   "jobs": {
     "dashboard": {
-      "title": "影片工作台",
-      "description": "監控、預覽、下載並管理所有專案的 AI 影片產生工作",
+      "title": "影片產生任務",
+      "description": "監控、預覽、下載並管理所有專案的 AI 影片產生任務",
       "newProject": "新增專案"
     },
     "status": {
       "active": "進行中",
       "completed": "已完成",
       "failed": "失敗",
-      "total": "工作總數",
+      "total": "任務總數",
       "live": "即時",
       "activeDescription": "目前正在渲染",
-      "noActive": "沒有進行中的工作",
+      "noActive": "沒有進行中的任務",
       "successRate": "% 成功率",
       "noFailed": "沒有失敗紀錄",
       "retryAll": "全部重試"
     },
     "sections": {
       "active": "進行中的影片產生",
-      "failed": "失敗的產生工作",
+      "failed": "失敗的產生任務",
       "completed": "已完成影片"
     },
     "empty": {
-      "title": "尚無影片工作",
+      "title": "尚無影片任務",
       "message": "在任何專案中建立第一支影片後，即可在此追蹤渲染進度、分析與下載。",
       "cta": "探索專案",
-      "noMatches": "找不到符合的工作",
+      "noMatches": "找不到符合的任務",
       "noMatchesMessage": "試著清除或調整搜尋條件與篩選選項。",
       "clearFilters": "清除全部篩選"
     },
@@ -48,7 +48,7 @@
       "smallGrid": "小密度網格",
       "mediumGrid": "中等平衡網格",
       "listView": "列表檢視",
-      "showing": "顯示 {count} 個符合的工作"
+      "showing": "顯示 {count} 個符合的任務"
     },
     "bulk": {
       "retryFailed": "重試失敗項目",
@@ -68,7 +68,7 @@
       "viewProject": "查看專案",
       "notificationEnabled": "已啟用通知",
       "notifyWhenComplete": "完成時通知",
-      "cancelJob": "取消工作",
+      "cancelJob": "取消任務",
       "initializing": "正在初始化影片產生…",
       "processingAudio": "正在處理音訊並同步…",
       "renderingFrames": "正在渲染影片影格…",
@@ -132,7 +132,7 @@
       "date": "日期",
       "default": "預設"
     },
-    "loading": "正在載入影片產生工作台…",
+    "loading": "正在載入影片產生任務…",
     "credit": "點數",
     "credits": "點數"
   }

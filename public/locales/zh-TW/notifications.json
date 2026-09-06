@@ -6,8 +6,8 @@
     "filters": {
       "all": "全部",
       "unread": "未讀",
-      "completedJobs": "已完成工作",
-      "failedJobs": "失敗工作",
+      "completedJobs": "已完成任務",
+      "failedJobs": "失敗任務",
       "creditWarnings": "點數警告"
     },
     "markAllAsRead": "全部標為已讀",

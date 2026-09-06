@@ -1,7 +1,7 @@
 {
   "referral": {
     "title": "推薦計畫",
-    "description": "邀請朋友，賺取推薦獎勵——與影片生成額度分開",
+    "description": "邀請朋友，賺取推薦獎勵——與影片生成點數分開",
     "viewLeaderboard": "查看排行榜",
     "errorTitle": "錯誤",
     "errorLoadingData": "無法載入推薦資料",
@@ -24,7 +24,7 @@
     },
     "rewardsActivity": {
       "title": "推薦獎勵記錄",
-      "description": "歡迎獎勵與推薦獎勵——與影片額度無關",
+      "description": "歡迎獎勵與推薦獎勵——與影片點數無關",
       "noRewards": "尚無推薦獎勵",
       "noRewardsDescription": "註冊獎勵與推薦獎勵會顯示在這裡",
       "rewardTransaction": "推薦獎勵變動",
