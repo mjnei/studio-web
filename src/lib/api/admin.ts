@@ -302,7 +302,7 @@ export async function adminBulkImportVoices(
 /**
  * Bulk upload voice files for a specific user.
  * Accepts multiple audio files and uploads them for the target user.
- * All voices default to English language.
+ * Language and name are parsed from each filename (e.g. "en Male 1.wav").
  */
 export async function adminBulkUploadVoices(
   targetUserId: number,
@@ -340,7 +340,7 @@ export async function adminBulkUploadVoices(
 // All voices are user-owned. Admins can only approve/unapprove for public catalog.
 // ============================================================================
 
-import type { VoiceWithCreator, VoiceResponse } from "@/lib/types/api";
+import type { VoiceWithCreator, VoiceResponse, AdminVoiceUpdateRequest } from "@/lib/types/api";
 
 /**
  * Get voices shared by users awaiting admin approval.
@@ -419,6 +419,20 @@ export async function adminUploadVoiceAvatar(
 export async function adminDeleteVoiceAvatar(voiceId: number): Promise<VoiceWithCreator> {
   return request<VoiceWithCreator>(`/voices/admin/${voiceId}/avatar`, {
     method: "DELETE",
+  });
+}
+
+/**
+ * Admin update of any voice's name, language, and/or is_shared status.
+ * When is_shared is set to false, approval is cascade-revoked.
+ */
+export async function adminUpdateVoice(
+  voiceId: number,
+  data: AdminVoiceUpdateRequest
+): Promise<VoiceWithCreator> {
+  return request<VoiceWithCreator>(`/voices/admin/${voiceId}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
   });
 }
 

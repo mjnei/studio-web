@@ -15,6 +15,7 @@ import {
   Upload,
   ImagePlus,
   Trash2,
+  Pencil,
 } from "lucide-react";
 import { ConfirmModal } from "@/components/ui/modal";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
@@ -24,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/toast";
 import { VoiceBulkImportModal } from "@/components/admin/VoiceBulkImportModal";
+import { VoiceEditModal } from "@/components/admin/VoiceEditModal";
 import {
   adminGetPendingVoices,
   adminGetApprovedVoices,
@@ -80,6 +82,10 @@ export default function AdminVoicesPage() {
   }>({ open: false, voice: null });
 
   const [bulkImportModal, setBulkImportModal] = useState(false);
+  const [editModal, setEditModal] = useState<{
+    open: boolean;
+    voice: VoiceWithCreator | null;
+  }>({ open: false, voice: null });
 
   const applyUpdatedVoice = useCallback((updated: VoiceWithCreator) => {
     const merge = (list: VoiceWithCreator[]) =>
@@ -240,6 +246,13 @@ export default function AdminVoicesPage() {
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  const handleEditSaved = (updated: VoiceWithCreator) => {
+    applyUpdatedVoice(updated);
+    toast.success("Voice updated", `Saved changes for "${updated.name}"`);
+    // Refresh lists so pending/approved/all tabs stay consistent after share toggle
+    void loadVoices();
   };
 
   const formatRelativeTime = (dateString: string | null | undefined) => {
@@ -496,8 +509,9 @@ export default function AdminVoicesPage() {
           <div className="hidden md:grid md:grid-cols-12 gap-4 border-b border-border-default bg-surface-raised/50 px-6 py-3 text-body font-semibold text-text-secondary">
             <div className="col-span-3">Voice</div>
             <div className="col-span-2">Creator</div>
+            <div className="col-span-1">Lang</div>
             <div className="col-span-2">Status</div>
-            <div className="col-span-2">Timestamp</div>
+            <div className="col-span-1">Timestamp</div>
             <div className="col-span-3">Actions</div>
           </div>
 
@@ -545,6 +559,12 @@ export default function AdminVoicesPage() {
                     <User className="h-3.5 w-3.5" />@{voice.creator_username}
                   </p>
                 </div>
+                <div className="col-span-1 md:col-span-1">
+                  <div className="md:hidden text-caption font-medium text-text-muted mb-1">
+                    Language
+                  </div>
+                  <p className="text-body text-text-secondary">{voice.language || "—"}</p>
+                </div>
                 <div className="col-span-1 md:col-span-2">
                   <div className="md:hidden text-caption font-medium text-text-muted mb-1">
                     Status
@@ -566,7 +586,7 @@ export default function AdminVoicesPage() {
                     </span>
                   )}
                 </div>
-                <div className="col-span-1 md:col-span-2">
+                <div className="col-span-1 md:col-span-1">
                   <div className="md:hidden text-caption font-medium text-text-muted mb-1">
                     {voice.is_approved ? "Approved" : "Shared"}
                   </div>
@@ -581,6 +601,16 @@ export default function AdminVoicesPage() {
                     Actions
                   </div>
                   <div className="flex items-center gap-2 flex-wrap">
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => setEditModal({ open: true, voice })}
+                      disabled={isProcessing}
+                      className="shrink-0"
+                      leftIcon={<Pencil className="h-4 w-4" />}
+                    >
+                      <span className="hidden md:inline">Edit</span>
+                    </Button>
                     <Button
                       size="sm"
                       variant="secondary"
@@ -692,6 +722,13 @@ export default function AdminVoicesPage() {
         onSuccess={() => {
           void loadVoices();
         }}
+      />
+
+      <VoiceEditModal
+        open={editModal.open}
+        voice={editModal.voice}
+        onClose={() => setEditModal({ open: false, voice: null })}
+        onSaved={handleEditSaved}
       />
     </div>
   );

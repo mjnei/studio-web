@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Modal } from "@/components/ui/modal";
 import { adminSearchUsers, adminBulkUploadVoices, type UserSearchResult } from "@/lib/api/admin";
+import { parseVoiceFilename } from "@/lib/voice-filename";
 
 interface VoiceBulkImportModalProps {
   open: boolean;
@@ -21,6 +22,8 @@ interface VoiceBulkImportModalProps {
 interface SelectedFile {
   file: File;
   name: string;
+  language: string;
+  hasLocalePrefix: boolean;
   size: number;
   type: string;
   duration?: number;
@@ -87,13 +90,18 @@ export function VoiceBulkImportModal({ open, onClose, onSuccess }: VoiceBulkImpo
       return;
     }
 
-    // Convert to SelectedFile format
-    const newFiles: SelectedFile[] = audioFiles.map((file) => ({
-      file,
-      name: file.name.replace(/\.[^/.]+$/, ""), // Remove extension for display name
-      size: file.size,
-      type: file.type || "audio/unknown",
-    }));
+    // Convert to SelectedFile format with filename-parsed language/name
+    const newFiles: SelectedFile[] = audioFiles.map((file) => {
+      const parsed = parseVoiceFilename(file.name);
+      return {
+        file,
+        name: parsed.name,
+        language: parsed.language,
+        hasLocalePrefix: parsed.hasLocalePrefix,
+        size: file.size,
+        type: file.type || "audio/unknown",
+      };
+    });
 
     setSelectedFiles(newFiles);
     toast.success("Files selected", `${audioFiles.length} audio files ready to upload`);
@@ -337,7 +345,11 @@ export function VoiceBulkImportModal({ open, onClose, onSuccess }: VoiceBulkImpo
           </div>
         </div>
         <p className="mt-2 text-caption text-text-muted">
-          All voices will be uploaded with language set to English by default
+          Filename format:{" "}
+          <code className="rounded bg-surface-raised px-1">{"{language} {name}.ext"}</code> — e.g.{" "}
+          <code className="rounded bg-surface-raised px-1">en Male 1.wav</code>,{" "}
+          <code className="rounded bg-surface-raised px-1">zh-TW Mao.mp3</code>. Unrecognized
+          prefixes default to English.
         </p>
       </div>
 
@@ -356,12 +368,20 @@ export function VoiceBulkImportModal({ open, onClose, onSuccess }: VoiceBulkImpo
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-body font-semibold text-text-primary truncate">{file.name}</p>
-                  <div className="flex items-center gap-2 mt-1">
+                  <div className="flex items-center gap-2 mt-1 flex-wrap">
+                    <span
+                      className={`text-caption font-medium ${
+                        file.hasLocalePrefix ? "text-accent-primary" : "text-text-muted"
+                      }`}
+                    >
+                      {file.language}
+                    </span>
+                    <span className="text-caption text-text-muted">•</span>
                     <span className="text-caption text-text-muted">
                       {formatFileSize(file.size)}
                     </span>
                     <span className="text-caption text-text-muted">•</span>
-                    <span className="text-caption text-text-muted">{file.type}</span>
+                    <span className="text-caption text-text-muted truncate">{file.file.name}</span>
                   </div>
                 </div>
                 {!isImporting && (

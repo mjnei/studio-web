@@ -245,6 +245,12 @@ export interface VoiceUpdateRequest {
   language?: string | null;
 }
 
+export interface AdminVoiceUpdateRequest {
+  name?: string;
+  language?: string | null;
+  is_shared?: boolean;
+}
+
 export interface VoiceShareRequest {
   is_shared: boolean;
 }
