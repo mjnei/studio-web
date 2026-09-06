@@ -13,11 +13,11 @@ Guides: `docs/guides/TRANSLATION_GUIDE.md` in each repo.
 
 ## Locale codes (must match)
 
-- [ ] `src/i18n/config.ts` → `locales` is exactly: `en`, `zh-CN`, `zh-TW`, `ja`, `ko`, `de`, `fr`, `es`
+- [ ] `src/i18n/config.ts` → UI `locales` is exactly: `en`, `zh-CN`, `zh-TW` (voice/catalog codes may be broader via `voiceLanguages`)
 - [ ] `defaultLocale` is `en` in both repos
 - [ ] `localeNames` uses the same `name` per code (flags: `简` / `繁` for Chinese; emoji flags for others)
 - [ ] `localStorage` key is `"locale"` with BCP-47 values
-- [ ] Language switcher shows all 8 locales
+- [ ] Language switcher shows all UI locales
 
 ---
 
@@ -74,7 +74,7 @@ Path: `pricing.{tier}.features.{key}`
 ### Pricing PR checklist
 
 - [ ] Feature keys identical across repos for shared tiers (free / pro / premium)
-- [ ] FAQ `q1`–`q6` identical across repos (all 8 locales)
+- [ ] FAQ `q1`–`q6` identical across repos (all UI locales)
 - [ ] Tier matrix limits unchanged or updated in `PRICING_ALIGNMENT.md`
 - [ ] Cross-repo PR linked when only one repo touched
 

@@ -71,7 +71,7 @@ Canonical English → meaning → current Simplified Chinese (`zh-CN`) reference
 | **Full name** | Display / legal name field | 姓名 | Form-label length over literal “full name” |
 | **Required** (validation) | Missing field | 请填写… | Imperative UX copy, not “X is required” calques |
 
-When introducing a **new** English product term, add a row here **before** translating into 8 locales.
+When introducing a **new** English product term, add a row here **before** translating into all UI locales.
 
 ### Cross-product alignment (Huavoi landing site)
 
@@ -182,7 +182,7 @@ public/locales/
 ### Locale codes
 
 - Use the codes registered in `src/i18n/config.ts` (`locales`, `localeNames`).
-- Current: `en`, `zh-CN`, `zh-TW`, `ja`, `ko`, `de`, `fr`, `es` (BCP-47 throughout — UI folders, API, TMDB, voices).
+- Current UI locales: `en`, `zh-CN`, `zh-TW`. Voice / catalog codes (`voiceLanguages`) still include `ja`, `ko`, `de`, `fr`, `es` for TTS metadata and admin imports.
 
 ### Adding a new locale (checklist)
 
@@ -253,10 +253,11 @@ For each locale PR, reviewers should confirm:
 - Credits: **點數** (not Mainland 额度).
 - Voices library: **音色**; workflow step: **配音**; TTS process: **語音合成**.
 
-### Japanese (`ja`) / Korean (`ko`) / German (`de`) / French (`fr`) / Spanish (`es`)
+### Japanese / Korean / German / French / Spanish (not shipped in UI yet)
 
-- Lock glossary terms in the PR (see tables in prior locale PRs / `config.ts` display names).
-- Research how major **short-video / TTS / creator** apps in that market name: home/workspace, voice/timbre/voiceover, credits, first-run setup.
+- UI locale folders are **not** currently loaded — product UI is `en` / `zh-CN` / `zh-TW` only.
+- Those codes remain in `voiceLanguages` for voice metadata, recording language, and catalog imports.
+- When re-enabling a UI locale: copy `en` JSON, lock glossary terms in the PR, and register in `locales` / `localeNames`.
 
 ---
 

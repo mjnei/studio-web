@@ -14,7 +14,7 @@ Related:
 | official-landing | `src/app/pricing/page.tsx`         |
 | studio-web       | `src/app/(shell)/pricing/page.tsx` |
 
-**Translation files:** `public/locales/{locale}/pricing.json` (8 locales in both repos)
+**Translation files:** `public/locales/{locale}/pricing.json` (UI locales: `en`, `zh-CN`, `zh-TW`)
 
 ---
 
@@ -34,7 +34,7 @@ Alignment pass **P0–P4 completed (Aug 2026)**. Both repos share tier limits, F
 - Premium description: maximum capacity (100 credits/month — not unlimited)
 - Landing prices live in `pricing.json` (no hardcoded numbers in `page.tsx`)
 - Landing compare table uses correct tier keys (`free` / `pro` / `premium` / `enterprise`)
-- **FAQ**: identical 6-question set (`faq.q1`–`faq.q6`) in all 8 locales — credits, rollover, plan changes, team plans, video formats, own scripts/voices. No free-trial or refund copy.
+- **FAQ**: identical 6-question set (`faq.q1`–`faq.q6`) in all UI locales — credits, rollover, plan changes, team plans, video formats, own scripts/voices. No free-trial or refund copy.
 - **Feature keys**: semantic schema shared for free/pro/premium (`features.credits`, `features.rollover`, …) — documented in `SHARED_I18N_CHECKLIST.md`
 
 ### Intentional differences
@@ -65,7 +65,7 @@ Alignment pass **P0–P4 completed (Aug 2026)**. Both repos share tier limits, F
 | P0 | Landing compare-table i18n keys, tier names, Enterprise contact CTA |
 | P1 | Credits model, tier feature lists, prices moved into `pricing.json` |
 | P2 | Enterprise Landing-only; annual billing UX; 6-question FAQ set |
-| P3 | Shared `pricing.json` schema + glossary; all 8 locales in both repos |
+| P3 | Shared `pricing.json` schema + glossary; all UI locales in both repos |
 | P4 | Landing → signup URL; Studio → checkout API (gated) |
 
 ---
@@ -125,7 +125,7 @@ Pricing is aligned when:
 ### Pricing alignment
 
 - [ ] Tier matrix updated (if limits changed)
-- [ ] `pricing.json` updated in both repos (all 8 locales)
+- [ ] `pricing.json` updated in both repos (all UI locales)
 - [ ] Landing `page.tsx` — no hardcoded prices
 - [ ] Compare table keys match tier names (Landing)
 - [ ] FAQ answers consistent (Landing + Studio)

@@ -4,16 +4,15 @@ This directory contains translation files for the Huavoi Studio application.
 
 ## Supported Languages
 
+**UI locales** (language switcher / `public/locales/`):
+
 - **English (en)**: Default language
 - **Simplified Chinese (zh-CN)**: 简体中文
 - **Traditional Chinese (zh-TW)**: 繁體中文 (Taiwan UI phrasing)
-- **Japanese (ja)**: 日本語
-- **Korean (ko)**: 한국어
-- **German (de)**: Deutsch
-- **French (fr)**: Français
-- **Spanish (es)**: Español
 
-Locale codes are BCP-47 throughout (UI, API, TMDB, voices, TTS job metadata). Helpers in `src/i18n/config.ts`: `normalizeLocale`, `resolveStoredLocale`, `getDateLocale`, `resolveTtsLanguage`.
+**Voice / catalog languages** (`voiceLanguages` in `src/i18n/config.ts`) still include `ja`, `ko`, `de`, `fr`, `es` for TTS metadata, voice recording tags, and admin imports. Labels live under `voices.languages.*` inside the UI locale files.
+
+Locale codes are BCP-47. Helpers in `src/i18n/config.ts`: `normalizeLocale`, `normalizeVoiceLanguage`, `resolveStoredLocale`, `getDateLocale`, `resolveTtsLanguage`.
 
 ## Structure
 
