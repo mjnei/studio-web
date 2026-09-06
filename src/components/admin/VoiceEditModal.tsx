@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Toggle } from "@/components/ui/toggle";
 import { Heading } from "@/components/ui/heading";
-import { voiceLanguages, voiceLanguageNames, type VoiceLanguage } from "@/i18n";
+import { locales, voiceLanguageNames, type Locale } from "@/i18n";
 import { adminUpdateVoice } from "@/lib/api/admin";
 import type { VoiceWithCreator } from "@/lib/types/api";
 import { useToast } from "@/components/ui/toast";
@@ -21,7 +21,7 @@ interface VoiceEditModalProps {
   onSaved: (updated: VoiceWithCreator) => void;
 }
 
-const LANGUAGE_OPTIONS = voiceLanguages.map((code) => ({
+const LANGUAGE_OPTIONS = locales.map((code) => ({
   value: code,
   label: `${voiceLanguageNames[code]} (${code})`,
 }));
@@ -29,7 +29,7 @@ const LANGUAGE_OPTIONS = voiceLanguages.map((code) => ({
 export function VoiceEditModal({ open, voice, onClose, onSaved }: VoiceEditModalProps) {
   const toast = useToast();
   const [name, setName] = useState("");
-  const [language, setLanguage] = useState<VoiceLanguage>("en");
+  const [language, setLanguage] = useState<Locale>("en");
   const [isShared, setIsShared] = useState(false);
   const [isApproved, setIsApproved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -39,8 +39,8 @@ export function VoiceEditModal({ open, voice, onClose, onSaved }: VoiceEditModal
     if (!open || !voice) return;
     setName(voice.name);
     const lang = (
-      voiceLanguages.includes(voice.language as VoiceLanguage) ? voice.language : "en"
-    ) as VoiceLanguage;
+      locales.includes(voice.language as Locale) ? voice.language : "en"
+    ) as Locale;
     setLanguage(lang || "en");
     setIsShared(voice.is_shared);
     setIsApproved(voice.is_approved);
@@ -144,7 +144,7 @@ export function VoiceEditModal({ open, voice, onClose, onSaved }: VoiceEditModal
         <Select
           label="Language"
           value={language}
-          onChange={(value) => setLanguage(value as VoiceLanguage)}
+          onChange={(value) => setLanguage(value as Locale)}
           options={LANGUAGE_OPTIONS}
           disabled={isSaving}
         />

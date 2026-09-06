@@ -1,23 +1,9 @@
-/** UI languages currently shipped in `public/locales/`. */
+/** Supported languages (UI, voices, catalog, TTS). */
 export const locales = ["en", "zh-CN", "zh-TW"] as const;
 export type Locale = (typeof locales)[number];
 
-/**
- * Voice / catalog / TTS language codes (BCP-47).
- * Broader than UI locales — users can still record or tag voices in these languages
- * even when the product UI is only en / zh-CN / zh-TW.
- */
-export const voiceLanguages = [
-  "en",
-  "zh-CN",
-  "zh-TW",
-  "ja",
-  "ko",
-  "de",
-  "fr",
-  "es",
-] as const;
-export type VoiceLanguage = (typeof voiceLanguages)[number];
+/** @deprecated Use {@link Locale} — voice/catalog codes are the same as UI locales. */
+export type VoiceLanguage = Locale;
 
 export const localeNames: Record<Locale, { name: string; flag: string }> = {
   en: { name: "English", flag: "🇺🇸" },
@@ -25,30 +11,20 @@ export const localeNames: Record<Locale, { name: string; flag: string }> = {
   "zh-TW": { name: "繁體中文", flag: "繁" },
 };
 
-/** English display names for voice / catalog language codes (admin + filename UX). */
-export const voiceLanguageNames: Record<VoiceLanguage, string> = {
+/** English display names for language codes (admin + filename UX). */
+export const voiceLanguageNames: Record<Locale, string> = {
   en: "English",
   "zh-CN": "Chinese (Simplified)",
   "zh-TW": "Chinese (Traditional)",
-  ja: "Japanese",
-  ko: "Korean",
-  de: "German",
-  fr: "French",
-  es: "Spanish",
 };
 
 export const defaultLocale: Locale = "en";
 
-/** voices.languages.* translation key suffix for each voice language. */
-export const voiceLanguageLabelKey: Record<VoiceLanguage, string> = {
+/** voices.languages.* translation key suffix for each locale. */
+export const voiceLanguageLabelKey: Record<Locale, string> = {
   en: "en",
   "zh-CN": "zhCN",
   "zh-TW": "zhTW",
-  ja: "ja",
-  ko: "ko",
-  de: "de",
-  fr: "fr",
-  es: "es",
 };
 
 /** Locale → BCP 47 tag for `Intl` / `toLocaleDateString`. */
@@ -62,12 +38,8 @@ const LOCALE_BY_LOWER = new Map<string, Locale>(
   locales.map((locale) => [locale.toLowerCase(), locale])
 );
 
-const VOICE_LANGUAGE_BY_LOWER = new Map<string, VoiceLanguage>(
-  voiceLanguages.map((lang) => [lang.toLowerCase(), lang])
-);
-
 /**
- * Normalize any locale input to a supported UI locale.
+ * Normalize any locale input to a supported locale.
  * Mirrors backend `normalize_locale()` but returns null when unrecognized.
  */
 export function normalizeLocale(input: string | null | undefined): Locale | null {
@@ -107,49 +79,21 @@ export function resolveStoredLocale(raw: string | null | undefined): Locale | nu
   return normalizeLocale(raw);
 }
 
-/** Normalize any language input to a supported voice / catalog language code. */
+/** Normalize any language input to a supported locale (voices / catalog / TTS). */
 export function normalizeVoiceLanguage(
   language: string | null | undefined
-): VoiceLanguage | null {
-  if (!language?.trim()) return null;
-
-  const normalized = language.trim().replace(/_/g, "-");
-  if (voiceLanguages.includes(normalized as VoiceLanguage)) {
-    return normalized as VoiceLanguage;
-  }
-
-  const lower = normalized.toLowerCase();
-
-  const caseMatch = VOICE_LANGUAGE_BY_LOWER.get(lower);
-  if (caseMatch) {
-    return caseMatch;
-  }
-
-  if (lower.startsWith("zh")) {
-    if (lower.includes("hant") || lower === "zh-tw") {
-      return "zh-TW";
-    }
-    return "zh-CN";
-  }
-
-  const languageOnly = lower.split("-")[0];
-  for (const voiceLang of voiceLanguages) {
-    if (voiceLang.split("-")[0].toLowerCase() === languageOnly) {
-      return voiceLang;
-    }
-  }
-
-  return null;
+): Locale | null {
+  return normalizeLocale(language);
 }
 
 /** Translation key for a voice language code (BCP-47 canonical set only). */
 export function getVoiceLanguageTranslationKey(language: string | null | undefined): string | null {
   if (!language) return null;
 
-  const voiceLocale = normalizeVoiceLanguage(language);
-  if (!voiceLocale) return null;
+  const locale = normalizeLocale(language);
+  if (!locale) return null;
 
-  return `voices.languages.${voiceLanguageLabelKey[voiceLocale]}`;
+  return `voices.languages.${voiceLanguageLabelKey[locale]}`;
 }
 
 export function getDateLocale(locale: Locale): string {
@@ -164,6 +108,6 @@ export function isChineseLocale(locale: Locale): boolean {
 export function resolveTtsLanguage(
   voiceLanguage: string | null | undefined,
   uiLocale: Locale = defaultLocale
-): VoiceLanguage {
-  return normalizeVoiceLanguage(voiceLanguage) ?? uiLocale;
+): Locale {
+  return normalizeLocale(voiceLanguage) ?? uiLocale;
 }

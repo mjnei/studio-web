@@ -1,7 +1,6 @@
 export { I18nProvider, useI18n, type InterpolationValues } from "./context";
 export {
   locales,
-  voiceLanguages,
   localeNames,
   voiceLanguageNames,
   defaultLocale,

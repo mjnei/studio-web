@@ -30,14 +30,14 @@ import {
 } from "@/lib/api/admin";
 import { useVoiceAudioPlayback } from "@/lib/hooks/use-voice-audio-playback";
 import { formatRelativeTimeCompact } from "@/lib/utils/time-format";
-import { voiceLanguages, voiceLanguageNames, type VoiceLanguage } from "@/i18n";
+import { locales, voiceLanguageNames, type Locale } from "@/i18n";
 import type { VoiceWithCreator } from "@/lib/types/api";
 
 type ViewType = "pending" | "approved" | "all";
 
 const LANGUAGE_FILTER_OPTIONS = [
   { value: "all", label: "All languages" },
-  ...voiceLanguages.map((code) => ({
+  ...locales.map((code) => ({
     value: code,
     label: `${voiceLanguageNames[code]} (${code})`,
   })),
@@ -57,7 +57,7 @@ export default function AdminVoicesPage() {
   const [allRecordings, setAllRecordings] = useState<Record<string, unknown>[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [languageFilter, setLanguageFilter] = useState<"all" | VoiceLanguage>("all");
+  const [languageFilter, setLanguageFilter] = useState<"all" | Locale>("all");
   const [viewType, setViewType] = useState<ViewType>("pending");
   const audioUrlCacheRef = useRef(new Map<number, string>());
   const { togglePlayback, playingVoiceId, loadingVoiceId } = useVoiceAudioPlayback({
@@ -359,7 +359,7 @@ export default function AdminVoicesPage() {
         <div className="w-full sm:w-56">
           <Select
             value={languageFilter}
-            onChange={(value) => setLanguageFilter(value as "all" | VoiceLanguage)}
+            onChange={(value) => setLanguageFilter(value as "all" | Locale)}
             options={LANGUAGE_FILTER_OPTIONS}
             placeholder="Language"
           />

@@ -64,7 +64,7 @@ Do not document SSE behavior in this repo. Canonical status for notifications SS
 
 ## Internationalization (i18n)
 
-**Supported languages (UI)**: English (en), Simplified Chinese (zh-CN), Traditional Chinese (zh-TW). Voice / catalog language codes still include ja, ko, de, fr, es for TTS metadata and admin imports — see `voiceLanguages` in `src/i18n/config.ts`.
+**Supported languages (UI)**: English (en), Simplified Chinese (zh-CN), Traditional Chinese (zh-TW). Same codes are used for voices, catalog, and TTS metadata — see `locales` in `src/i18n/config.ts`.
 
 **Implementation**: Custom i18n provider using client-side context and translation files in `public/locales/`
 

@@ -121,13 +121,8 @@
     },
     "languages": {
       "en": "English",
-      "es": "Spanish",
-      "fr": "French",
-      "de": "German",
-      "ja": "Japanese",
       "zhCN": "Simplified Chinese",
-      "zhTW": "Traditional Chinese",
-      "ko": "Korean"
+      "zhTW": "Traditional Chinese"
     },
     "errors": {
       "loadingVoices": "Loading your voices...",

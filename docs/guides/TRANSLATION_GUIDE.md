@@ -1,6 +1,6 @@
 # Translation Guide (Huavoi Studio)
 
-Guide for translators and engineers adding or updating UI copy in **Huavoi Studio** (the authenticated creator app). Source locale is **English (`en`)**. All other locales must follow these principles so product language stays consistent across ~8 languages.
+Guide for translators and engineers adding or updating UI copy in **Huavoi Studio** (the authenticated creator app). Source locale is **English (`en`)**. All other locales must follow these principles so product language stays consistent across supported locales.
 
 For file layout, `useI18n` usage, and namespace inventory, see also [`public/locales/README.md`](../../public/locales/README.md). For the marketing site and TTS playground, see the companion guide in the **official-landing** repo (`docs/guides/TRANSLATION_GUIDE.md`) — shared terms (voices, credits, playground) should align across both products.
 
@@ -182,7 +182,7 @@ public/locales/
 ### Locale codes
 
 - Use the codes registered in `src/i18n/config.ts` (`locales`, `localeNames`).
-- Current UI locales: `en`, `zh-CN`, `zh-TW`. Voice / catalog codes (`voiceLanguages`) still include `ja`, `ko`, `de`, `fr`, `es` for TTS metadata and admin imports.
+- Supported locales: `en`, `zh-CN`, `zh-TW` (UI, voices, catalog, and TTS).
 
 ### Adding a new locale (checklist)
 
@@ -252,12 +252,6 @@ For each locale PR, reviewers should confirm:
 - Translate **from English**, not by converting `zh-CN`. Taiwan product wording differs (e.g. 登入 / 影片 / 設定 / 專案 / 點數).
 - Credits: **點數** (not Mainland 额度).
 - Voices library: **音色**; workflow step: **配音**; TTS process: **語音合成**.
-
-### Japanese / Korean / German / French / Spanish (not shipped in UI yet)
-
-- UI locale folders are **not** currently loaded — product UI is `en` / `zh-CN` / `zh-TW` only.
-- Those codes remain in `voiceLanguages` for voice metadata, recording language, and catalog imports.
-- When re-enabling a UI locale: copy `en` JSON, lock glossary terms in the PR, and register in `locales` / `localeNames`.
 
 ---
 

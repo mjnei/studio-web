@@ -1,11 +1,11 @@
 import {
-  voiceLanguages,
+  locales,
   normalizeVoiceLanguage,
-  type VoiceLanguage,
+  type Locale,
 } from "@/i18n";
 
 export interface ParsedVoiceFilename {
-  language: VoiceLanguage;
+  language: Locale;
   name: string;
   /** True when a recognized locale prefix was found in the filename. */
   hasLocalePrefix: boolean;
@@ -46,23 +46,17 @@ function isKnownLocaleToken(token: string): boolean {
   if (!normalized) return false;
   const lower = normalized.toLowerCase();
 
-  if (voiceLanguages.some((locale) => locale.toLowerCase() === lower)) {
+  if (locales.some((locale) => locale.toLowerCase() === lower)) {
     return true;
   }
 
   // Aliases aligned with backend LOCALE_ALIASES
-  const aliases: Record<string, VoiceLanguage> = {
+  const aliases: Record<string, Locale> = {
     zh: "zh-CN",
     "zh-hans": "zh-CN",
     "zh-hant": "zh-TW",
     "en-us": "en",
     "en-gb": "en",
-    "es-es": "es",
-    "es-mx": "es",
-    "fr-fr": "fr",
-    "de-de": "de",
-    "ja-jp": "ja",
-    "ko-kr": "ko",
   };
   return lower in aliases;
 }

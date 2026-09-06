@@ -13,7 +13,7 @@ Guides: `docs/guides/TRANSLATION_GUIDE.md` in each repo.
 
 ## Locale codes (must match)
 
-- [ ] `src/i18n/config.ts` → UI `locales` is exactly: `en`, `zh-CN`, `zh-TW` (voice/catalog codes may be broader via `voiceLanguages`)
+- [ ] `src/i18n/config.ts` → `locales` is exactly: `en`, `zh-CN`, `zh-TW` (UI, voices, catalog, TTS)
 - [ ] `defaultLocale` is `en` in both repos
 - [ ] `localeNames` uses the same `name` per code (flags: `简` / `繁` for Chinese; emoji flags for others)
 - [ ] `localStorage` key is `"locale"` with BCP-47 values
