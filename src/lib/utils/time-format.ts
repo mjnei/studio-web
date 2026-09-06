@@ -33,6 +33,66 @@ export function formatDuration(seconds: number): string {
   return `${mins}:${secs.toString().padStart(2, "0")}`;
 }
 
+type RelativeTimeBucket =
+  | { kind: "invalid" }
+  | { kind: "just_now" }
+  | { kind: "minutes"; count: number }
+  | { kind: "hours"; count: number }
+  | { kind: "days"; count: number }
+  | { kind: "weeks"; count: number }
+  | { kind: "months"; count: number }
+  | { kind: "years"; count: number };
+
+function getRelativeTimeBucket(
+  dateInput: string | Date | number | undefined | null
+): RelativeTimeBucket {
+  if (dateInput == null || dateInput === "") return { kind: "invalid" };
+  const date = new Date(dateInput);
+  if (Number.isNaN(date.getTime())) return { kind: "invalid" };
+
+  const diffMs = Math.max(0, Date.now() - date.getTime());
+  const diffMins = Math.floor(diffMs / (1000 * 60));
+  if (diffMins < 1) return { kind: "just_now" };
+  if (diffMins < 60) return { kind: "minutes", count: diffMins };
+
+  const diffHours = Math.floor(diffMins / 60);
+  if (diffHours < 24) return { kind: "hours", count: diffHours };
+
+  const diffDays = Math.floor(diffHours / 24);
+  if (diffDays < 7) return { kind: "days", count: diffDays };
+  if (diffDays < 30) return { kind: "weeks", count: Math.floor(diffDays / 7) };
+  if (diffDays < 365) return { kind: "months", count: Math.floor(diffDays / 30) };
+  return { kind: "years", count: Math.floor(diffDays / 365) };
+}
+
+/**
+ * Compact relative time for dense UI (e.g. "5m ago", "2w ago", "1y ago").
+ */
+export function formatRelativeTimeCompact(
+  dateInput: string | Date | number | undefined | null,
+  fallback = "—"
+): string {
+  const bucket = getRelativeTimeBucket(dateInput);
+  switch (bucket.kind) {
+    case "invalid":
+      return fallback;
+    case "just_now":
+      return "just now";
+    case "minutes":
+      return `${bucket.count}m ago`;
+    case "hours":
+      return `${bucket.count}h ago`;
+    case "days":
+      return `${bucket.count}d ago`;
+    case "weeks":
+      return `${bucket.count}w ago`;
+    case "months":
+      return `${bucket.count}mo ago`;
+    case "years":
+      return `${bucket.count}y ago`;
+  }
+}
+
 /**
  * Format timestamp into human-readable relative time (e.g. "5 minutes", "2 hours", "yesterday")
  */
@@ -106,4 +166,35 @@ export function formatRelativeTimeAgoWithSuffix(
     return t(`${keyPrefix}.recently`);
   }
   return t(`${keyPrefix}.ago`, { time: relativeTime });
+}
+
+/**
+ * Localized relative time using count-based keys under `keyPrefix`:
+ * justNow, minutesAgo, hoursAgo, daysAgo, weeksAgo, monthsAgo, yearsAgo.
+ */
+export function formatRelativeTimeLocalized(
+  dateInput: string | Date | number | undefined | null,
+  t: (key: string, options?: Record<string, string | number>) => string,
+  keyPrefix: string,
+  fallback = "—"
+): string {
+  const bucket = getRelativeTimeBucket(dateInput);
+  switch (bucket.kind) {
+    case "invalid":
+      return fallback;
+    case "just_now":
+      return t(`${keyPrefix}.justNow`);
+    case "minutes":
+      return t(`${keyPrefix}.minutesAgo`, { count: bucket.count });
+    case "hours":
+      return t(`${keyPrefix}.hoursAgo`, { count: bucket.count });
+    case "days":
+      return t(`${keyPrefix}.daysAgo`, { count: bucket.count });
+    case "weeks":
+      return t(`${keyPrefix}.weeksAgo`, { count: bucket.count });
+    case "months":
+      return t(`${keyPrefix}.monthsAgo`, { count: bucket.count });
+    case "years":
+      return t(`${keyPrefix}.yearsAgo`, { count: bucket.count });
+  }
 }
