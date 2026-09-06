@@ -1,5 +1,6 @@
 import { request, getAccessToken } from "@/lib/api-client";
 import type { MovieResponse } from "@/lib/types/api";
+import { compressAvatarImage } from "@/lib/utils/compress-avatar";
 
 // ============================================================================
 // Admin TMDB Movies (Unified TMDB + CRUD)
@@ -385,13 +386,15 @@ export async function adminUnapproveVoice(voiceId: number): Promise<VoiceRespons
 
 /**
  * Upload or replace the admin-configured avatar for a community voice.
+ * Compresses to a square avatar JPEG before upload to keep S3 objects small.
  */
 export async function adminUploadVoiceAvatar(
   voiceId: number,
   file: File
 ): Promise<VoiceWithCreator> {
+  const compressed = await compressAvatarImage(file);
   const formData = new FormData();
-  formData.append("file", file);
+  formData.append("file", compressed);
 
   const token = getAccessToken();
   const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8020/api/v1";

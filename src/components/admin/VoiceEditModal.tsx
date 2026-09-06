@@ -17,6 +17,7 @@ import {
 } from "@/lib/api/admin";
 import type { VoiceWithCreator } from "@/lib/types/api";
 import { useToast } from "@/components/ui/toast";
+import { AVATAR_MAX_SIZE_PX } from "@/lib/utils/compress-avatar";
 
 interface VoiceEditModalProps {
   open: boolean;
@@ -212,7 +213,9 @@ export function VoiceEditModal({ open, voice, onClose, onSaved }: VoiceEditModal
               ) : null}
             </div>
           </div>
-          <p className="mt-2 text-caption text-text-muted">JPEG, PNG, or WebP · max 5MB</p>
+          <p className="mt-2 text-caption text-text-muted">
+            JPEG, PNG, or WebP · max 5MB · auto-resized to {AVATAR_MAX_SIZE_PX}×{AVATAR_MAX_SIZE_PX}
+          </p>
         </div>
 
         <Input
