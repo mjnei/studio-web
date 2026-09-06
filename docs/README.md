@@ -1,17 +1,13 @@
 # Studio Web — Documentation
 
-Guides for design, workflow, i18n, and cross-repo alignment.
+Guides for design, workflow, i18n, and modals. All docs live flat under `docs/`.
 
 | Guide | Role |
 | ----- | ---- |
-| [guides/DESIGN_SYSTEM.md](./guides/DESIGN_SYSTEM.md) | **Master** UI/design system (tokens, components, layout, responsive rules) |
-| [TYPOGRAPHY.md](./TYPOGRAPHY.md) | Type roles, tokens, `Heading` / `Text` API |
-| [guides/PROJECT_WORKFLOW.md](./guides/PROJECT_WORKFLOW.md) | 7-step project creation flow |
-| [guides/MODALS.md](./guides/MODALS.md) | Feature modal catalog |
-| [guides/VOICE_RECORDING_MODAL.md](./guides/VOICE_RECORDING_MODAL.md) | Voice recording modal (5-phase flow) |
-| [guides/TRANSLATION_GUIDE.md](./guides/TRANSLATION_GUIDE.md) | Translator / engineer i18n principles |
-| [guides/SHARED_I18N_CHECKLIST.md](./guides/SHARED_I18N_CHECKLIST.md) | Cross-repo locale & glossary checklist |
-| [guides/PRICING_ALIGNMENT.md](./guides/PRICING_ALIGNMENT.md) | Landing ↔ Studio pricing alignment reference |
-| [guides/EXPORT_PAGE_RENDER_STATE.md](./guides/EXPORT_PAGE_RENDER_STATE.md) | Export page rendering hero — implemented (Phases 1–3) |
+| [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md) | **Master** UI/design system (tokens, typography, components, layout, a11y) |
+| [PROJECT_WORKFLOW.md](./PROJECT_WORKFLOW.md) | 7-step project creation flow |
+| [MODALS.md](./MODALS.md) | Feature modal catalog |
+| [VOICE_RECORDING_MODAL.md](./VOICE_RECORDING_MODAL.md) | Voice recording modal (5-phase flow) |
+| [TRANSLATION_GUIDE.md](./TRANSLATION_GUIDE.md) | Translator / engineer i18n principles |
 
 Agent quick start: [AGENTS.md](../AGENTS.md).

@@ -16,7 +16,7 @@
  *   text-xl → text-page      (20px)
  *   text-[10px]/[11px] → text-micro (10px; badges / overlays only)
  *
- * @see docs/TYPOGRAPHY.md
+ * @see docs/DESIGN_SYSTEM.md#typography
  */
 export const typography = {
   display: "text-display sm:text-display-sm leading-display font-bold tracking-tight",

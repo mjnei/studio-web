@@ -26,7 +26,7 @@
 
 ## Scope & Purpose
 
-This is the **canonical / master frontend design system** for Huavoi Studio (TTS and AI-driven video generation). When design or UI guidance conflicts elsewhere, **this document wins** (except [TYPOGRAPHY.md](../TYPOGRAPHY.md) for type-role details).
+This is the **canonical / master frontend design system** for Huavoi Studio (TTS and AI-driven video generation). When design or UI guidance conflicts elsewhere, **this document wins**.
 
 | Layer | Location |
 | ----- | -------- |
@@ -34,8 +34,8 @@ This is the **canonical / master frontend design system** for Huavoi Studio (TTS
 | Shared primitives | `src/components/ui/` |
 | Ambient theme persistence | `src/lib/ambient-background-shared.ts`, `src/lib/ambient-background.tsx` |
 | Ambient background layers | `src/components/shell/ambient-background.tsx` |
-| Type roles (deep dive) | [TYPOGRAPHY.md](../TYPOGRAPHY.md) |
-| Agent summary | [AGENTS.md](../../AGENTS.md) |
+| Type roles | [Typography](#typography) |
+| Agent summary | [AGENTS.md](../AGENTS.md) |
 
 > [!IMPORTANT]
 > **Scope Rule**: These guidelines apply to **all frontend user-facing pages**. `src/app/(shell)/admin` is not held to the same premium consumer aesthetic — density and internal utility win there — but it **should still use the same tokens, type roles, Button/Input/Select/Spinner primitives, and icon size scale**.
@@ -47,8 +47,10 @@ This is the **canonical / master frontend design system** for Huavoi Studio (TTS
 
 | Topic | Role |
 | ----- | ---- |
-| [TYPOGRAPHY.md](../TYPOGRAPHY.md) | Type roles, tokens, Heading/Text API (detail) |
-| [AGENTS.md](../../AGENTS.md) | Agent conventions (port, i18n, icons pointer) |
+| [Typography](#typography) | Type roles, tokens, Heading/Text API |
+| [AGENTS.md](../AGENTS.md) | Agent conventions (port, i18n, icons pointer) |
+| [MODALS.md](./MODALS.md) | Feature modal catalog |
+| [TRANSLATION_GUIDE.md](./TRANSLATION_GUIDE.md) | i18n phrasing and glossary |
 
 This document covers:
 
@@ -95,7 +97,7 @@ Huavoi Studio's frontend embodies a premium, state-of-the-art aesthetic that is 
 
 ## Typography
 
-**Full guide**: [TYPOGRAPHY.md](../TYPOGRAPHY.md).
+Type-role details live in this section (and in `src/components/ui/typography.ts`).
 
 The app uses a **role-based type scale**. Sizes live in `@theme` tokens in `src/app/globals.css`. Class strings live in `src/components/ui/typography.ts`. `Heading`, `Text`, `PageHeader`, and `CardTitle` consume those roles.
 
@@ -134,7 +136,7 @@ Do **not** use legacy Tailwind steps (`text-xs`, `text-sm`, `text-base`, `text-l
 
 ## Icons
 
-Product UI icons use **Lucide React** (`lucide-react`). Brand logos that Lucide does not provide live in `@/components/icons`. Agent-facing summary: [AGENTS.md](../../AGENTS.md) § Icons. Spinners are **not** icons — see [Spinner and LoadingSpinner](#11-spinner-and-loadingspinner).
+Product UI icons use **Lucide React** (`lucide-react`). Brand logos that Lucide does not provide live in `@/components/icons`. Agent-facing summary: [AGENTS.md](../AGENTS.md) § Icons. Spinners are **not** icons — see [Spinner and LoadingSpinner](#11-spinner-and-loadingspinner).
 
 ### Libraries
 
@@ -1024,7 +1026,7 @@ className = "p-4 md:p-6 lg:p-8";
 
 ### Testing Checklist
 
-Target viewports for visual QA (human spot-checks at 375px / 1280px remain open in [TYPOGRAPHY.md](../TYPOGRAPHY.md)):
+Target viewports for visual QA (human spot-checks at 375px / 1280px remain open):
 
 - **320px** — smallest mobile
 - **375px** — common mobile
@@ -1154,7 +1156,7 @@ Target viewports for visual QA (human spot-checks at 375px / 1280px remain open 
 - `gap-3` - Gap between items (12px)
 - `gap-6` - Gap between items (24px)
 
-**Text** (roles — see [TYPOGRAPHY.md](../TYPOGRAPHY.md)):
+**Text** (roles — see [Typography](#typography)):
 
 - Page title → `<PageHeader>` / `<Heading variant="page">`
 - Card / section → `<CardTitle>` / `<Heading variant="section">`
@@ -1410,13 +1412,13 @@ className = "flex flex-col md:flex-row gap-4";
 | Spinners | `Spinner` / `LoadingSpinner` | Implemented; `Button` loading uses `Spinner` |
 | Control height | `h-8` / `h-9` / `h-10` (32–40px) | Shared primitives match; form `Select` uses padding scale (`sm`/`md`/`lg`) |
 | Touch 44×44 everywhere | Not the product standard | Dense 36px default; bump only isolated mobile chrome |
-| Visual QA at 375 / 1280 | Human spot-check after density pass | Still open in [TYPOGRAPHY.md](../TYPOGRAPHY.md) |
+| Visual QA at 375 / 1280 | Human spot-check after density pass | Still open |
 
 ---
 
 ## Testing & Verification
 
-Do **not** treat historical “all pages tested” notes as current. After the Aug 2026 density/typography pass, human spot-checks at 375px and 1280px (shell, project workflow, admin, auth) remain on the [TYPOGRAPHY.md](../TYPOGRAPHY.md) checklist.
+Do **not** treat historical “all pages tested” notes as current. After the Aug 2026 density/typography pass, human spot-checks at 375px and 1280px (shell, project workflow, admin, auth) remain open.
 
 **Still true in code**:
 

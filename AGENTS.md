@@ -52,11 +52,11 @@ Prettier: semi: true, singleQuote: false, tabWidth: 2, trailingComma: es5, print
 
 ## Typography
 
-Role-based type scale (not bare `h1`–`h4` CSS). See `docs/TYPOGRAPHY.md`. Prefer `PageHeader` / `Heading` / `CardTitle`; change sizes in shared tokens, not per page.
+Role-based type scale (not bare `h1`–`h4` CSS). See [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md#typography). Prefer `PageHeader` / `Heading` / `CardTitle`; change sizes in shared tokens, not per page.
 
 ## Design & UI
 
-**Master source of truth:** [`docs/guides/DESIGN_SYSTEM.md`](docs/guides/DESIGN_SYSTEM.md) — tokens, glass surfaces, ambient themes, components, layout, a11y.
+**Master source of truth:** [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md) — tokens, glass surfaces, ambient themes, components, layout, a11y.
 
 ## Server-Sent Events (SSE)
 
@@ -68,7 +68,7 @@ Do not document SSE behavior in this repo. Canonical status for notifications SS
 
 **Implementation**: Custom i18n provider using client-side context and translation files in `public/locales/`
 
-**Translation principles** (for translators and new locales): **`docs/guides/TRANSLATION_GUIDE.md`** — product UI phrasing over literal translation; locked glossary (onboarding, voices, credits, etc.).
+**Translation principles** (for translators and new locales): **[`docs/TRANSLATION_GUIDE.md`](docs/TRANSLATION_GUIDE.md)** — product UI phrasing over literal translation; locked glossary (onboarding, voices, credits, etc.).
 
 **Usage**:
 
@@ -89,4 +89,4 @@ function Component() {
 
 ## Icons
 
-Lucide React for UI icons; brand SVGs in `@/components/icons`. Use the shared `Icon` wrapper (`@/components/ui/icon`) for nav and repeated dense-UI patterns; use `EmptyState` for page/list empty blocks (hero-tier sizing). Conventions (size tokens, semantic glossary, accessibility): **`docs/guides/DESIGN_SYSTEM.md`** § Icons. Loading primitives: `Spinner` / `LoadingSpinner` in `@/components/ui` (conventions: **`docs/guides/DESIGN_SYSTEM.md`** § Spinner).
+Lucide React for UI icons; brand SVGs in `@/components/icons`. Use the shared `Icon` wrapper (`@/components/ui/icon`) for nav and repeated dense-UI patterns; use `EmptyState` for page/list empty blocks (hero-tier sizing). Conventions (size tokens, semantic glossary, accessibility): **[`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md)** § Icons. Loading primitives: `Spinner` / `LoadingSpinner` in `@/components/ui` (conventions: same doc § Spinner).

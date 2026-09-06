@@ -9,7 +9,7 @@
  *   node scripts/migrate-typography.mjs           # write changes
  *   node scripts/migrate-typography.mjs --dry-run # report only
  *
- * @see docs/TYPOGRAPHY.md
+ * @see docs/DESIGN_SYSTEM.md#typography
  */
 
 import fs from "node:fs";

@@ -2,7 +2,7 @@
 
 Guide for translators and engineers adding or updating UI copy in **Huavoi Studio** (the authenticated creator app). Source locale is **English (`en`)**. All other locales must follow these principles so product language stays consistent across supported locales.
 
-For file layout, `useI18n` usage, and namespace inventory, see also [`public/locales/README.md`](../../public/locales/README.md). For the marketing site and TTS playground, see the companion guide in the **official-landing** repo (`docs/guides/TRANSLATION_GUIDE.md`) — shared terms (voices, credits, playground) should align across both products.
+For file layout, `useI18n` usage, and namespace inventory, see also [`public/locales/README.md`](../public/locales/README.md). For the marketing site and TTS playground, see the companion guide in the **official-landing** repo (`docs/guides/TRANSLATION_GUIDE.md`) — shared terms (voices, credits, playground) should align across both products.
 
 Translation files live in `public/locales/{locale}/{namespace}.json`. Namespaces are registered in `src/i18n/context.tsx` (`translationFiles`).
 
