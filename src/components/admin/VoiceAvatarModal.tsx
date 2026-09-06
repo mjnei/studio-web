@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { ImagePlus, Trash2, User } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,7 @@ import { AVATAR_MAX_SIZE_PX } from "@/lib/utils/compress-avatar";
 
 interface VoiceAvatarModalProps {
   open: boolean;
-  voice: VoiceWithCreator | null;
+  voice: VoiceWithCreator;
   onClose: () => void;
   /** Called after a successful avatar upload or remove. */
   onSaved: (updated: VoiceWithCreator) => void;
@@ -26,20 +26,15 @@ const AVATAR_ACCEPT = "image/jpeg,image/png,image/webp";
 export function VoiceAvatarModal({ open, voice, onClose, onSaved }: VoiceAvatarModalProps) {
   const toast = useToast();
   const avatarInputRef = useRef<HTMLInputElement>(null);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  // Parent remounts via key={voice.id} when opening a different voice.
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(voice.creator_avatar_url ?? null);
   const [isBusy, setIsBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!open || !voice) return;
-    setAvatarUrl(voice.creator_avatar_url ?? null);
-    setError(null);
-  }, [open, voice]);
 
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     event.target.value = "";
-    if (!file || !voice || isBusy) return;
+    if (!file || isBusy) return;
 
     setIsBusy(true);
     setError(null);
@@ -56,7 +51,7 @@ export function VoiceAvatarModal({ open, voice, onClose, onSaved }: VoiceAvatarM
   };
 
   const handleAvatarRemove = async () => {
-    if (!voice || !avatarUrl || isBusy) return;
+    if (!avatarUrl || isBusy) return;
 
     setIsBusy(true);
     setError(null);
@@ -71,8 +66,6 @@ export function VoiceAvatarModal({ open, voice, onClose, onSaved }: VoiceAvatarM
       setIsBusy(false);
     }
   };
-
-  if (!voice) return null;
 
   return (
     <Modal

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { Pencil } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,7 @@ import { useToast } from "@/components/ui/toast";
 
 interface VoiceEditModalProps {
   open: boolean;
-  voice: VoiceWithCreator | null;
+  voice: VoiceWithCreator;
   onClose: () => void;
   /** Called after a successful save. */
   onSaved: (updated: VoiceWithCreator) => void;
@@ -26,26 +26,19 @@ const LANGUAGE_OPTIONS = locales.map((code) => ({
   label: `${voiceLanguageNames[code]} (${code})`,
 }));
 
+function resolveLanguage(language: string): Locale {
+  return (locales.includes(language as Locale) ? language : "en") as Locale;
+}
+
 export function VoiceEditModal({ open, voice, onClose, onSaved }: VoiceEditModalProps) {
   const toast = useToast();
-  const [name, setName] = useState("");
-  const [language, setLanguage] = useState<Locale>("en");
-  const [isShared, setIsShared] = useState(false);
-  const [isApproved, setIsApproved] = useState(false);
+  // Parent remounts via key={voice.id} when opening a different voice.
+  const [name, setName] = useState(voice.name);
+  const [language, setLanguage] = useState<Locale>(() => resolveLanguage(voice.language));
+  const [isShared, setIsShared] = useState(voice.is_shared);
+  const [isApproved, setIsApproved] = useState(voice.is_approved);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!open || !voice) return;
-    setName(voice.name);
-    const lang = (
-      locales.includes(voice.language as Locale) ? voice.language : "en"
-    ) as Locale;
-    setLanguage(lang || "en");
-    setIsShared(voice.is_shared);
-    setIsApproved(voice.is_approved);
-    setError(null);
-  }, [open, voice]);
 
   const handleSharedChange = (shared: boolean) => {
     setIsShared(shared);
@@ -62,7 +55,7 @@ export function VoiceEditModal({ open, voice, onClose, onSaved }: VoiceEditModal
   };
 
   const handleSave = async () => {
-    if (!voice || isSaving) return;
+    if (isSaving) return;
     const trimmed = name.trim();
     if (!trimmed) {
       setError("Name is required");
@@ -92,8 +85,6 @@ export function VoiceEditModal({ open, voice, onClose, onSaved }: VoiceEditModal
     e.preventDefault();
     void handleSave();
   };
-
-  if (!voice) return null;
 
   return (
     <Modal

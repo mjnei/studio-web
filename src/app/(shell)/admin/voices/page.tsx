@@ -122,7 +122,9 @@ export default function AdminVoicesPage() {
     [toast]
   );
 
+  // Initial load
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void loadVoices();
   }, [loadVoices]);
 
@@ -572,19 +574,25 @@ export default function AdminVoicesPage() {
         }}
       />
 
-      <VoiceEditModal
-        open={editModal.open}
-        voice={editModal.voice}
-        onClose={() => setEditModal({ open: false, voice: null })}
-        onSaved={applyUpdatedVoice}
-      />
+      {editModal.voice ? (
+        <VoiceEditModal
+          key={editModal.voice.id}
+          open={editModal.open}
+          voice={editModal.voice}
+          onClose={() => setEditModal({ open: false, voice: null })}
+          onSaved={applyUpdatedVoice}
+        />
+      ) : null}
 
-      <VoiceAvatarModal
-        open={avatarModal.open}
-        voice={avatarModal.voice}
-        onClose={() => setAvatarModal({ open: false, voice: null })}
-        onSaved={applyUpdatedVoice}
-      />
+      {avatarModal.voice ? (
+        <VoiceAvatarModal
+          key={avatarModal.voice.id}
+          open={avatarModal.open}
+          voice={avatarModal.voice}
+          onClose={() => setAvatarModal({ open: false, voice: null })}
+          onSaved={applyUpdatedVoice}
+        />
+      ) : null}
     </div>
   );
 }
