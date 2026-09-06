@@ -114,7 +114,7 @@ export default function QueueManagementPage() {
 
       {/* Error state if API call failed */}
       {error && (
-        <Card variant="solid" className="border-destructive/50 bg-destructive/10">
+        <Card variant="default" className="border-destructive/50 bg-destructive/10">
           <CardContent className="flex items-center gap-3 py-4">
             <AlertCircle className="h-5 w-5 text-destructive shrink-0" />
             <div>

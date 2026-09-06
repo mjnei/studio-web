@@ -4,7 +4,7 @@ import { Heading } from "@/components/ui/heading";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Filter, Search, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { AdminUserFilter, AdminUserRole } from "@/types/admin";
 
 interface UserFiltersProps {
@@ -34,9 +34,16 @@ export function UserFilters({ filters, onFilterChange, onClear }: UserFiltersPro
   const [searchDraft, setSearchDraft] = useState(filters.q ?? "");
   const [isExpanded, setIsExpanded] = useState(false);
 
-  // Sync search draft when filters.q changes (e.g., from parent or clear)
+  // Track previous filters.q to detect when it changes externally (from parent)
+  const prevFiltersQRef = useRef(filters.q);
+
+  // Use effect to sync searchDraft only when filters.q changes externally
+  // This is a legitimate synchronization pattern, not a performance issue
   useEffect(() => {
-    setSearchDraft(filters.q ?? "");
+    if (prevFiltersQRef.current !== filters.q) {
+      setSearchDraft(filters.q ?? "");
+      prevFiltersQRef.current = filters.q;
+    }
   }, [filters.q]);
 
   // Debounce search changes
