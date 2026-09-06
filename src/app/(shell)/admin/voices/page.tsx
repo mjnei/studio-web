@@ -8,7 +8,6 @@ import {
   User,
   Play,
   Pause,
-  Volume2,
   Clock,
   Upload,
   Pencil,
@@ -27,6 +26,7 @@ import {
   adminGetApprovedVoices,
   adminGetVoiceRecordings,
   adminGetAllVoices,
+  adminApproveVoice,
   attachAdminVoiceAudioUrls,
 } from "@/lib/api/admin";
 import { useVoiceAudioPlayback } from "@/lib/hooks/use-voice-audio-playback";
@@ -72,6 +72,7 @@ export default function AdminVoicesPage() {
     open: boolean;
     voice: VoiceWithCreator | null;
   }>({ open: false, voice: null });
+  const [approvingVoiceId, setApprovingVoiceId] = useState<number | null>(null);
 
   const applyUpdatedVoice = useCallback((updated: VoiceWithCreator) => {
     const merge = (list: VoiceWithCreator[]) =>
@@ -165,19 +166,46 @@ export default function AdminVoicesPage() {
     void loadVoices({ silent: true });
   };
 
+  const handleApprove = async (voice: VoiceWithCreator) => {
+    if (approvingVoiceId !== null) return;
+    setApprovingVoiceId(voice.id);
+    try {
+      await adminApproveVoice(voice.id);
+      toast.success("Voice approved", `"${voice.name}" is now in the public catalog`);
+      await loadVoices({ silent: true });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "An error occurred";
+      toast.error("Failed to approve voice", message);
+    } finally {
+      setApprovingVoiceId(null);
+    }
+  };
+
   const formatRelativeTime = (dateString: string | null | undefined) => {
     if (!dateString) return "Unknown";
     const date = new Date(dateString);
+    if (Number.isNaN(date.getTime())) return "Unknown";
+
     const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
+    const diffMs = Math.max(0, now.getTime() - date.getTime());
+    const diffMins = Math.floor(diffMs / (1000 * 60));
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-    if (diffDays === 0) return "Today";
-    if (diffDays === 1) return "1 day ago";
-    if (diffDays < 7) return `${diffDays} days ago`;
-    if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
-    if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
-    return `${Math.floor(diffDays / 365)} years ago`;
+    if (diffMins < 1) return "just now";
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffDays < 7) return `${diffDays}d ago`;
+    if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`;
+    if (diffDays < 365) return `${Math.floor(diffDays / 30)}mo ago`;
+    return `${Math.floor(diffDays / 365)}y ago`;
+  };
+
+  const formatAbsoluteTime = (dateString: string | null | undefined) => {
+    if (!dateString) return undefined;
+    const date = new Date(dateString);
+    if (Number.isNaN(date.getTime())) return undefined;
+    return date.toLocaleString();
   };
 
   const getFilteredVoices = (): VoiceWithCreator[] => {
@@ -430,28 +458,17 @@ export default function AdminVoicesPage() {
           </div>
 
           {/* Table Rows */}
-          {filteredVoices.map((voice) => (
-            <div
-              key={voice.id}
-              className="border-b border-border-default last:border-0 hover:bg-surface-raised/50 transition-colors"
-            >
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-4 items-center">
-                <div className="col-span-1 md:col-span-3">
-                  <div className="flex items-center gap-3">
-                    <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full border border-border-default bg-surface-raised">
-                      {voice.creator_avatar_url ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={voice.creator_avatar_url}
-                          alt=""
-                          className="h-full w-full object-cover"
-                        />
-                      ) : (
-                        <div className="flex h-full w-full items-center justify-center text-text-muted">
-                          <User className="h-5 w-5" />
-                        </div>
-                      )}
-                    </div>
+          {filteredVoices.map((voice) => {
+            const timestampValue = voice.is_approved ? voice.admin_approved_at : voice.created_at;
+            const isPending = voice.is_shared && !voice.is_approved;
+
+            return (
+              <div
+                key={voice.id}
+                className="border-b border-border-default last:border-0 hover:bg-surface-raised/50 transition-colors"
+              >
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-4 items-center">
+                  <div className="col-span-1 md:col-span-3">
                     <div className="min-w-0">
                       <p className="text-body font-semibold text-text-primary truncate">
                         {voice.name}
@@ -464,93 +481,124 @@ export default function AdminVoicesPage() {
                       )}
                     </div>
                   </div>
-                </div>
-                <div className="col-span-1 md:col-span-2">
-                  <div className="md:hidden text-caption font-medium text-text-muted mb-1">
-                    Creator
+                  <div className="col-span-1 md:col-span-2">
+                    <div className="md:hidden text-caption font-medium text-text-muted mb-1">
+                      Creator
+                    </div>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <div className="relative h-7 w-7 shrink-0 overflow-hidden rounded-full border border-border-default bg-surface-raised">
+                        {voice.creator_avatar_url ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={voice.creator_avatar_url}
+                            alt=""
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center text-text-muted">
+                            <User className="h-3.5 w-3.5" />
+                          </div>
+                        )}
+                      </div>
+                      <p className="text-body text-text-secondary truncate">
+                        @{voice.creator_username}
+                      </p>
+                    </div>
                   </div>
-                  <p className="text-body text-text-secondary flex items-center gap-1.5">
-                    <User className="h-3.5 w-3.5" />@{voice.creator_username}
-                  </p>
-                </div>
-                <div className="col-span-1 md:col-span-1">
-                  <div className="md:hidden text-caption font-medium text-text-muted mb-1">
-                    Language
+                  <div className="col-span-1 md:col-span-1">
+                    <div className="md:hidden text-caption font-medium text-text-muted mb-1">
+                      Language
+                    </div>
+                    <p className="text-body text-text-secondary">{voice.language || "—"}</p>
                   </div>
-                  <p className="text-body text-text-secondary">{voice.language || "—"}</p>
-                </div>
-                <div className="col-span-1 md:col-span-2">
-                  <div className="md:hidden text-caption font-medium text-text-muted mb-1">
-                    Status
+                  <div className="col-span-1 md:col-span-2">
+                    <div className="md:hidden text-caption font-medium text-text-muted mb-1">
+                      Status
+                    </div>
+                    {!voice.is_shared ? (
+                      <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-caption font-bold bg-gray-500/10 text-gray-600 border border-gray-500/30">
+                        <User className="h-3.5 w-3.5" />
+                        Private
+                      </span>
+                    ) : voice.is_approved ? (
+                      <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-caption font-bold bg-green-500/10 text-green-600 border border-green-500/30">
+                        <CheckCircle2 className="h-3.5 w-3.5" />
+                        Approved
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-caption font-bold bg-orange-500/10 text-orange-600 border border-orange-500/30">
+                        <Clock className="h-3.5 w-3.5" />
+                        Pending
+                      </span>
+                    )}
                   </div>
-                  {!voice.is_shared ? (
-                    <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-caption font-bold bg-gray-500/10 text-gray-600 border border-gray-500/30">
-                      <User className="h-3.5 w-3.5" />
-                      Private
-                    </span>
-                  ) : voice.is_approved ? (
-                    <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-caption font-bold bg-green-500/10 text-green-600 border border-green-500/30">
-                      <CheckCircle2 className="h-3.5 w-3.5" />
-                      Approved
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-caption font-bold bg-orange-500/10 text-orange-600 border border-orange-500/30">
-                      <Clock className="h-3.5 w-3.5" />
-                      Pending
-                    </span>
-                  )}
-                </div>
-                <div className="col-span-1 md:col-span-2">
-                  <div className="md:hidden text-caption font-medium text-text-muted mb-1">
-                    {voice.is_approved ? "Approved" : "Shared"}
-                  </div>
-                  <p className="text-body text-text-secondary">
-                    {voice.is_approved
-                      ? formatRelativeTime(voice.admin_approved_at)
-                      : formatRelativeTime(voice.created_at)}
-                  </p>
-                </div>
-                <div className="col-span-1 md:col-span-2">
-                  <div className="md:hidden text-caption font-medium text-text-muted mb-1">
-                    Actions
-                  </div>
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      onClick={() => setEditModal({ open: true, voice })}
-                      className="shrink-0"
-                      leftIcon={<Pencil className="h-4 w-4" />}
+                  <div className="col-span-1 md:col-span-2">
+                    <div className="md:hidden text-caption font-medium text-text-muted mb-1">
+                      {voice.is_approved ? "Approved" : "Shared"}
+                    </div>
+                    <p
+                      className="text-body text-text-secondary cursor-default"
+                      title={formatAbsoluteTime(timestampValue)}
                     >
-                      <span className="hidden md:inline">Edit</span>
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant={playingVoiceId === voice.id ? "primary" : "secondary"}
-                      onClick={() => handlePreviewToggle(voice)}
-                      className="shrink-0"
-                      leftIcon={
-                        playingVoiceId === voice.id ? (
+                      {formatRelativeTime(timestampValue)}
+                    </p>
+                  </div>
+                  <div className="col-span-1 md:col-span-2">
+                    <div className="md:hidden text-caption font-medium text-text-muted mb-1">
+                      Actions
+                    </div>
+                    <div className="flex items-center gap-1.5 flex-nowrap">
+                      {isPending && (
+                        <Button
+                          size="icon"
+                          variant="success"
+                          onClick={() => void handleApprove(voice)}
+                          className="shrink-0 h-8 w-8"
+                          aria-label={`Approve ${voice.name}`}
+                          title="Approve"
+                          disabled={approvingVoiceId !== null}
+                        >
+                          {approvingVoiceId === voice.id ? (
+                            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                          ) : (
+                            <CheckCircle2 className="h-4 w-4" />
+                          )}
+                        </Button>
+                      )}
+                      <Button
+                        size="icon"
+                        variant="secondary"
+                        onClick={() => setEditModal({ open: true, voice })}
+                        className="shrink-0 h-8 w-8"
+                        aria-label={`Edit ${voice.name}`}
+                        title="Edit"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="icon"
+                        variant={playingVoiceId === voice.id ? "primary" : "secondary"}
+                        onClick={() => handlePreviewToggle(voice)}
+                        className="shrink-0 h-8 w-8"
+                        aria-label={
+                          playingVoiceId === voice.id
+                            ? `Pause preview of ${voice.name}`
+                            : `Preview ${voice.name}`
+                        }
+                        title={playingVoiceId === voice.id ? "Pause" : "Preview"}
+                      >
+                        {playingVoiceId === voice.id ? (
                           <Pause className="h-4 w-4" />
                         ) : (
                           <Play className="h-4 w-4" />
-                        )
-                      }
-                      rightIcon={
-                        playingVoiceId === voice.id ? (
-                          <Volume2 className="h-4 w-4 animate-pulse" />
-                        ) : undefined
-                      }
-                    >
-                      {playingVoiceId !== voice.id && (
-                        <span className="hidden md:inline">Preview</span>
-                      )}
-                    </Button>
+                        )}
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
