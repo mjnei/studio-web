@@ -1,6 +1,7 @@
-import { locales } from "@/i18n";
+import { voiceLanguages } from "@/i18n";
 
-export const SUPPORTED_LOCALES: string[] = [...locales];
+/** Catalog / TMDB import locales (broader than UI locales). */
+export const SUPPORTED_LOCALES: string[] = [...voiceLanguages];
 
 export const LAYOUT_STORAGE_KEY = "layoutMode:admin-movies";
 

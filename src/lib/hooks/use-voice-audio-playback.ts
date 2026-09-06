@@ -16,10 +16,12 @@ function stopAudioElement(audioRef: React.RefObject<HTMLAudioElement | null>) {
   audioRef.current = null;
 }
 
+export type VoiceAudioUrlInput = string | null | undefined | (() => Promise<string | null | undefined>);
+
 /**
  * Shared voice sample playback hook.
- * Requires presigned audio_url to be attached before user interaction
- * (see attachVoiceAudioUrls / attachAdminVoiceAudioUrls).
+ * Pass a ready `audio_url`, or a resolver that fetches it on first play
+ * (e.g. admin lazy-load via getAdminRecordingAudioUrl).
  */
 export function useVoiceAudioPlayback(options: UseVoiceAudioPlaybackOptions = {}) {
   const { onError } = options;
@@ -51,7 +53,7 @@ export function useVoiceAudioPlayback(options: UseVoiceAudioPlaybackOptions = {}
   }, []);
 
   const togglePlayback = useCallback(
-    async (voiceId: number, audioUrl?: string | null) => {
+    async (voiceId: number, audioUrl?: VoiceAudioUrlInput) => {
       if (playingVoiceIdRef.current === voiceId) {
         stopPlayback();
         return;
@@ -60,16 +62,17 @@ export function useVoiceAudioPlayback(options: UseVoiceAudioPlaybackOptions = {}
       stopAudioElement(audioRef);
       playingVoiceIdRef.current = null;
       setPlayingVoiceId(null);
-
-      if (!audioUrl) {
-        onErrorRef.current?.("unavailable");
-        return;
-      }
-
       setLoadingVoiceId(voiceId);
 
       try {
-        const audio = new Audio(audioUrl);
+        const resolvedUrl = typeof audioUrl === "function" ? await audioUrl() : audioUrl;
+        if (!resolvedUrl) {
+          setLoadingVoiceId(null);
+          onErrorRef.current?.("unavailable");
+          return;
+        }
+
+        const audio = new Audio(resolvedUrl);
         audioRef.current = audio;
 
         audio.onended = () => {

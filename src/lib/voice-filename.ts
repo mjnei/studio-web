@@ -1,7 +1,11 @@
-import { locales, normalizeLocale, type Locale } from "@/i18n";
+import {
+  voiceLanguages,
+  normalizeVoiceLanguage,
+  type VoiceLanguage,
+} from "@/i18n";
 
 export interface ParsedVoiceFilename {
-  language: Locale;
+  language: VoiceLanguage;
   name: string;
   /** True when a recognized locale prefix was found in the filename. */
   hasLocalePrefix: boolean;
@@ -25,9 +29,9 @@ export function parseVoiceFilename(filename: string): ParsedVoiceFilename {
   if (spaceIdx > 0) {
     const token = stem.slice(0, spaceIdx);
     const rest = stem.slice(spaceIdx).trim();
-    const locale = normalizeLocale(token);
+    const locale = normalizeVoiceLanguage(token);
     // Only treat as locale prefix when token itself is a known locale/alias,
-    // not when normalizeLocale fell through via language-prefix heuristics on
+    // not when normalize fell through via language-prefix heuristics on
     // arbitrary words. Match backend match_locale_token by checking exact locals.
     if (rest && isKnownLocaleToken(token) && locale) {
       return { language: locale, name: rest, hasLocalePrefix: true };
@@ -42,12 +46,12 @@ function isKnownLocaleToken(token: string): boolean {
   if (!normalized) return false;
   const lower = normalized.toLowerCase();
 
-  if (locales.some((locale) => locale.toLowerCase() === lower)) {
+  if (voiceLanguages.some((locale) => locale.toLowerCase() === lower)) {
     return true;
   }
 
   // Aliases aligned with backend LOCALE_ALIASES
-  const aliases: Record<string, Locale> = {
+  const aliases: Record<string, VoiceLanguage> = {
     zh: "zh-CN",
     "zh-hans": "zh-CN",
     "zh-hant": "zh-TW",

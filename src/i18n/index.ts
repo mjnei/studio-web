@@ -1,7 +1,9 @@
 export { I18nProvider, useI18n, type InterpolationValues } from "./context";
 export {
   locales,
+  voiceLanguages,
   localeNames,
+  voiceLanguageNames,
   defaultLocale,
   voiceLanguageLabelKey,
   localeToDateLocale,
@@ -13,4 +15,5 @@ export {
   resolveTtsLanguage,
   isChineseLocale,
   type Locale,
+  type VoiceLanguage,
 } from "./config";

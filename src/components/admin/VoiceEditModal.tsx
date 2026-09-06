@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Toggle } from "@/components/ui/toggle";
 import { Heading } from "@/components/ui/heading";
-import { locales, localeNames, type Locale } from "@/i18n";
+import { voiceLanguages, voiceLanguageNames, type VoiceLanguage } from "@/i18n";
 import { adminUpdateVoice } from "@/lib/api/admin";
 import type { VoiceWithCreator } from "@/lib/types/api";
 import { useToast } from "@/components/ui/toast";
@@ -21,15 +21,15 @@ interface VoiceEditModalProps {
   onSaved: (updated: VoiceWithCreator) => void;
 }
 
-const LANGUAGE_OPTIONS = locales.map((code) => ({
+const LANGUAGE_OPTIONS = voiceLanguages.map((code) => ({
   value: code,
-  label: `${localeNames[code].name} (${code})`,
+  label: `${voiceLanguageNames[code]} (${code})`,
 }));
 
 export function VoiceEditModal({ open, voice, onClose, onSaved }: VoiceEditModalProps) {
   const toast = useToast();
   const [name, setName] = useState("");
-  const [language, setLanguage] = useState<Locale>("en");
+  const [language, setLanguage] = useState<VoiceLanguage>("en");
   const [isShared, setIsShared] = useState(false);
   const [isApproved, setIsApproved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -38,7 +38,9 @@ export function VoiceEditModal({ open, voice, onClose, onSaved }: VoiceEditModal
   useEffect(() => {
     if (!open || !voice) return;
     setName(voice.name);
-    const lang = (locales.includes(voice.language as Locale) ? voice.language : "en") as Locale;
+    const lang = (
+      voiceLanguages.includes(voice.language as VoiceLanguage) ? voice.language : "en"
+    ) as VoiceLanguage;
     setLanguage(lang || "en");
     setIsShared(voice.is_shared);
     setIsApproved(voice.is_approved);

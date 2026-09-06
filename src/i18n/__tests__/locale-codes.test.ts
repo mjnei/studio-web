@@ -7,13 +7,19 @@ import {
   resolveStoredLocale,
   resolveTtsLanguage,
   voiceLanguageLabelKey,
+  voiceLanguages,
 } from "../config";
 
 describe("locale codes", () => {
-  it("defines 8 BCP-47 locales", () => {
-    expect(locales).toHaveLength(8);
-    expect(locales).toContain("zh-CN");
-    expect(locales).toContain("zh-TW");
+  it("defines 3 UI locales", () => {
+    expect(locales).toHaveLength(3);
+    expect(locales).toEqual(["en", "zh-CN", "zh-TW"]);
+  });
+
+  it("keeps 8 voice / catalog language codes", () => {
+    expect(voiceLanguages).toHaveLength(8);
+    expect(voiceLanguages).toContain("ja");
+    expect(voiceLanguages).toContain("ko");
   });
 
   it("normalizes locale aliases to canonical BCP-47 codes", () => {
@@ -29,23 +35,29 @@ describe("locale codes", () => {
     expect(normalizeLocale("zh-Hans")).toBe("zh-CN");
     expect(normalizeLocale("zh-Hant")).toBe("zh-TW");
     expect(normalizeLocale("en-US")).toBe("en");
+    expect(normalizeLocale("ja")).toBeNull();
+    expect(normalizeLocale("de")).toBeNull();
   });
 
-  it("normalizes voice language aliases to canonical locale codes", () => {
+  it("normalizes voice language aliases to canonical codes", () => {
     expect(normalizeVoiceLanguage("zh-CN")).toBe("zh-CN");
     expect(normalizeVoiceLanguage("zh-TW")).toBe("zh-TW");
     expect(normalizeVoiceLanguage("chs")).toBeNull();
     expect(normalizeVoiceLanguage("cht")).toBeNull();
     expect(normalizeVoiceLanguage("zh-Hans")).toBe("zh-CN");
     expect(normalizeVoiceLanguage("zh-Hant")).toBe("zh-TW");
+    expect(normalizeVoiceLanguage("ja")).toBe("ja");
+    expect(normalizeVoiceLanguage("ja-JP")).toBe("ja");
+    expect(normalizeVoiceLanguage("de")).toBe("de");
   });
 
-  it("maps locales to voice translation keys", () => {
+  it("maps voice languages to voice translation keys", () => {
     expect(voiceLanguageLabelKey["zh-CN"]).toBe("zhCN");
     expect(voiceLanguageLabelKey["zh-TW"]).toBe("zhTW");
     expect(getVoiceLanguageTranslationKey("zh-CN")).toBe("voices.languages.zhCN");
     expect(getVoiceLanguageTranslationKey("zh-TW")).toBe("voices.languages.zhTW");
     expect(getVoiceLanguageTranslationKey("zh")).toBe("voices.languages.zhCN");
+    expect(getVoiceLanguageTranslationKey("ja")).toBe("voices.languages.ja");
     expect(getVoiceLanguageTranslationKey("chs")).toBeNull();
     expect(getVoiceLanguageTranslationKey("it")).toBeNull();
   });
@@ -61,6 +73,7 @@ describe("locale codes", () => {
     expect(resolveStoredLocale("zh-TW")).toBe("zh-TW");
     expect(resolveStoredLocale("zh-tw")).toBe("zh-TW");
     expect(resolveStoredLocale("en")).toBe("en");
+    expect(resolveStoredLocale("ja")).toBeNull();
     expect(resolveStoredLocale("invalid")).toBeNull();
     expect(resolveStoredLocale(null)).toBeNull();
   });
@@ -68,7 +81,8 @@ describe("locale codes", () => {
   it("resolveTtsLanguage prefers voice language over UI locale", () => {
     expect(resolveTtsLanguage("zh-CN", "en")).toBe("zh-CN");
     expect(resolveTtsLanguage("chs", "en")).toBe("en");
-    expect(resolveTtsLanguage(null, "ja")).toBe("ja");
-    expect(resolveTtsLanguage(undefined, "de")).toBe("de");
+    expect(resolveTtsLanguage(null, "zh-CN")).toBe("zh-CN");
+    expect(resolveTtsLanguage("ja", "en")).toBe("ja");
+    expect(resolveTtsLanguage(undefined, "zh-TW")).toBe("zh-TW");
   });
 });

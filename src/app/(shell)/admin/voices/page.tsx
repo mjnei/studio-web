@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   Mic,
   CheckCircle2,
@@ -23,39 +23,44 @@ import { VoiceBulkImportModal } from "@/components/admin/VoiceBulkImportModal";
 import { VoiceEditModal } from "@/components/admin/VoiceEditModal";
 import { VoiceAvatarModal } from "@/components/admin/VoiceAvatarModal";
 import {
-  adminGetPendingVoices,
-  adminGetApprovedVoices,
   adminGetVoiceRecordings,
   adminGetAllVoices,
   adminApproveVoice,
-  attachAdminVoiceAudioUrls,
+  getAdminRecordingAudioUrl,
 } from "@/lib/api/admin";
 import { useVoiceAudioPlayback } from "@/lib/hooks/use-voice-audio-playback";
 import { formatRelativeTimeCompact } from "@/lib/utils/time-format";
-import { locales, localeNames, type Locale } from "@/i18n";
+import { voiceLanguages, voiceLanguageNames, type VoiceLanguage } from "@/i18n";
 import type { VoiceWithCreator } from "@/lib/types/api";
 
 type ViewType = "pending" | "approved" | "all";
 
 const LANGUAGE_FILTER_OPTIONS = [
   { value: "all", label: "All languages" },
-  ...locales.map((code) => ({
+  ...voiceLanguages.map((code) => ({
     value: code,
-    label: `${localeNames[code].name} (${code})`,
+    label: `${voiceLanguageNames[code]} (${code})`,
   })),
 ];
 
+function isPendingVoice(voice: VoiceWithCreator) {
+  return voice.is_shared && !voice.is_approved;
+}
+
+function isApprovedVoice(voice: VoiceWithCreator) {
+  return voice.is_approved;
+}
+
 export default function AdminVoicesPage() {
   const toast = useToast();
-  const [pendingVoices, setPendingVoices] = useState<VoiceWithCreator[]>([]);
-  const [approvedVoices, setApprovedVoices] = useState<VoiceWithCreator[]>([]);
-  const [allSharedVoices, setAllSharedVoices] = useState<VoiceWithCreator[]>([]);
+  const [allVoices, setAllVoices] = useState<VoiceWithCreator[]>([]);
   const [allRecordings, setAllRecordings] = useState<Record<string, unknown>[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [languageFilter, setLanguageFilter] = useState<"all" | Locale>("all");
+  const [languageFilter, setLanguageFilter] = useState<"all" | VoiceLanguage>("all");
   const [viewType, setViewType] = useState<ViewType>("pending");
-  const { togglePlayback, playingVoiceId } = useVoiceAudioPlayback({
+  const audioUrlCacheRef = useRef(new Map<number, string>());
+  const { togglePlayback, playingVoiceId, loadingVoiceId } = useVoiceAudioPlayback({
     onError: (error) => {
       if (error === "unavailable") {
         toast.error("Audio unavailable", "Audio preview URL is not available for this voice.");
@@ -80,12 +85,11 @@ export default function AdminVoicesPage() {
   }>({ open: false, voice: null });
   const [approvingVoiceId, setApprovingVoiceId] = useState<number | null>(null);
 
+  const pendingVoices = allVoices.filter(isPendingVoice);
+  const approvedVoices = allVoices.filter(isApprovedVoice);
+
   const applyUpdatedVoice = useCallback((updated: VoiceWithCreator) => {
-    const merge = (list: VoiceWithCreator[]) =>
-      list.map((v) => (v.id === updated.id ? { ...v, ...updated } : v));
-    setPendingVoices(merge);
-    setApprovedVoices(merge);
-    setAllSharedVoices(merge);
+    setAllVoices((prev) => prev.map((v) => (v.id === updated.id ? { ...v, ...updated } : v)));
     setEditModal((prev) =>
       prev.voice?.id === updated.id ? { ...prev, voice: { ...prev.voice, ...updated } } : prev
     );
@@ -94,94 +98,54 @@ export default function AdminVoicesPage() {
     );
   }, []);
 
-  const loadVoices = useCallback(async (opts?: { silent?: boolean }) => {
-    if (!opts?.silent) {
-      setIsLoading(true);
-    }
-    try {
-      const [pending, approved, allVoices, recordings] = await Promise.all([
-        adminGetPendingVoices(),
-        adminGetApprovedVoices(),
-        adminGetAllVoices(),
-        adminGetVoiceRecordings(),
-      ]);
-      const [pendingWithUrls, approvedWithUrls, allVoicesWithUrls] = await Promise.all([
-        attachAdminVoiceAudioUrls(pending),
-        attachAdminVoiceAudioUrls(approved),
-        attachAdminVoiceAudioUrls(allVoices),
-      ]);
-      setPendingVoices(pendingWithUrls);
-      setApprovedVoices(approvedWithUrls);
-      setAllSharedVoices(allVoicesWithUrls);
-      setAllRecordings(recordings);
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "An error occurred";
-      toast.error("Failed to load voices", message);
-    } finally {
+  const loadVoices = useCallback(
+    async (opts?: { silent?: boolean }) => {
       if (!opts?.silent) {
-        setIsLoading(false);
+        setIsLoading(true);
       }
-    }
-  }, [toast]);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const load = async () => {
-      setIsLoading(true);
       try {
-        const [pending, approved, allVoices, recordings] = await Promise.all([
-          adminGetPendingVoices(),
-          adminGetApprovedVoices(),
+        const [voices, recordings] = await Promise.all([
           adminGetAllVoices(),
           adminGetVoiceRecordings(),
         ]);
-        const [pendingWithUrls, approvedWithUrls, allVoicesWithUrls] = await Promise.all([
-          attachAdminVoiceAudioUrls(pending),
-          attachAdminVoiceAudioUrls(approved),
-          attachAdminVoiceAudioUrls(allVoices),
-        ]);
-        if (isMounted) {
-          setPendingVoices(pendingWithUrls);
-          setApprovedVoices(approvedWithUrls);
-          setAllSharedVoices(allVoicesWithUrls);
-          setAllRecordings(recordings);
-        }
+        setAllVoices(voices);
+        setAllRecordings(recordings);
       } catch (error: unknown) {
-        if (isMounted) {
-          const message = error instanceof Error ? error.message : "An error occurred";
-          toast.error("Failed to load voices", message);
-        }
+        const message = error instanceof Error ? error.message : "An error occurred";
+        toast.error("Failed to load voices", message);
       } finally {
-        if (isMounted) {
+        if (!opts?.silent) {
           setIsLoading(false);
         }
       }
-    };
+    },
+    [toast]
+  );
 
-    load();
+  useEffect(() => {
+    void loadVoices();
+  }, [loadVoices]);
 
-    return () => {
-      isMounted = false;
-    };
-  }, [toast]);
+  const resolveAudioUrl = useCallback(async (voiceId: number) => {
+    const cached = audioUrlCacheRef.current.get(voiceId);
+    if (cached) return cached;
+
+    const data = await getAdminRecordingAudioUrl(String(voiceId));
+    audioUrlCacheRef.current.set(voiceId, data.audio_url);
+    return data.audio_url;
+  }, []);
 
   const handlePreviewToggle = (voice: VoiceWithCreator) => {
-    void togglePlayback(voice.id, voice.audio_url);
-  };
-
-  const handleEditUpdated = (updated: VoiceWithCreator) => {
-    applyUpdatedVoice(updated);
-    void loadVoices({ silent: true });
+    void togglePlayback(voice.id, () => resolveAudioUrl(voice.id));
   };
 
   const handleApprove = async (voice: VoiceWithCreator) => {
     if (approvingVoiceId !== null) return;
     setApprovingVoiceId(voice.id);
     try {
-      await adminApproveVoice(voice.id);
+      const result = await adminApproveVoice(voice.id);
       toast.success("Voice approved", `"${voice.name}" is now in the public catalog`);
-      await loadVoices({ silent: true });
+      applyUpdatedVoice({ ...voice, ...result });
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "An error occurred";
       toast.error("Failed to approve voice", message);
@@ -205,7 +169,7 @@ export default function AdminVoicesPage() {
     } else if (viewType === "approved") {
       voices = approvedVoices;
     } else {
-      voices = allSharedVoices;
+      voices = allVoices;
     }
 
     if (languageFilter !== "all") {
@@ -228,7 +192,7 @@ export default function AdminVoicesPage() {
     total: allRecordings.length,
     pending: pendingVoices.length,
     approved: approvedVoices.length,
-    allShared: allSharedVoices.length,
+    allShared: allVoices.length,
   };
 
   return (
@@ -395,7 +359,7 @@ export default function AdminVoicesPage() {
         <div className="w-full sm:w-56">
           <Select
             value={languageFilter}
-            onChange={(value) => setLanguageFilter(value as "all" | Locale)}
+            onChange={(value) => setLanguageFilter(value as "all" | VoiceLanguage)}
             options={LANGUAGE_FILTER_OPTIONS}
             placeholder="Language"
           />
@@ -581,8 +545,11 @@ export default function AdminVoicesPage() {
                             : `Preview ${voice.name}`
                         }
                         title={playingVoiceId === voice.id ? "Pause" : "Preview"}
+                        disabled={loadingVoiceId !== null && loadingVoiceId !== voice.id}
                       >
-                        {playingVoiceId === voice.id ? (
+                        {loadingVoiceId === voice.id ? (
+                          <span className="h-4 w-4 animate-spin rounded-full border-2 border-current/30 border-t-current" />
+                        ) : playingVoiceId === voice.id ? (
                           <Pause className="h-4 w-4" />
                         ) : (
                           <Play className="h-4 w-4" />
@@ -609,14 +576,14 @@ export default function AdminVoicesPage() {
         open={editModal.open}
         voice={editModal.voice}
         onClose={() => setEditModal({ open: false, voice: null })}
-        onSaved={handleEditUpdated}
+        onSaved={applyUpdatedVoice}
       />
 
       <VoiceAvatarModal
         open={avatarModal.open}
         voice={avatarModal.voice}
         onClose={() => setAvatarModal({ open: false, voice: null })}
-        onSaved={handleEditUpdated}
+        onSaved={applyUpdatedVoice}
       />
     </div>
   );
