@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Mic,
   CheckCircle2,
@@ -10,39 +10,38 @@ import {
   Pause,
   Volume2,
   Clock,
-  ThumbsUp,
-  XCircle,
   Upload,
-  ImagePlus,
-  Trash2,
   Pencil,
 } from "lucide-react";
-import { ConfirmModal } from "@/components/ui/modal";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
 import { useToast } from "@/components/ui/toast";
 import { VoiceBulkImportModal } from "@/components/admin/VoiceBulkImportModal";
 import { VoiceEditModal } from "@/components/admin/VoiceEditModal";
 import {
   adminGetPendingVoices,
   adminGetApprovedVoices,
-  adminApproveVoice,
-  adminUnapproveVoice,
   adminGetVoiceRecordings,
   adminGetAllVoices,
-  adminUploadVoiceAvatar,
-  adminDeleteVoiceAvatar,
   attachAdminVoiceAudioUrls,
 } from "@/lib/api/admin";
 import { useVoiceAudioPlayback } from "@/lib/hooks/use-voice-audio-playback";
+import { locales, localeNames, type Locale } from "@/i18n";
 import type { VoiceWithCreator } from "@/lib/types/api";
 
 type ViewType = "pending" | "approved" | "all";
 
-const AVATAR_ACCEPT = "image/jpeg,image/png,image/webp";
+const LANGUAGE_FILTER_OPTIONS = [
+  { value: "all", label: "All languages" },
+  ...locales.map((code) => ({
+    value: code,
+    label: `${localeNames[code].name} (${code})`,
+  })),
+];
 
 export default function AdminVoicesPage() {
   const toast = useToast();
@@ -52,6 +51,7 @@ export default function AdminVoicesPage() {
   const [allRecordings, setAllRecordings] = useState<Record<string, unknown>[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [languageFilter, setLanguageFilter] = useState<"all" | Locale>("all");
   const [viewType, setViewType] = useState<ViewType>("pending");
   const { togglePlayback, playingVoiceId } = useVoiceAudioPlayback({
     onError: (error) => {
@@ -67,20 +67,6 @@ export default function AdminVoicesPage() {
     },
   });
 
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [avatarVoiceId, setAvatarVoiceId] = useState<number | null>(null);
-  const avatarFileInputRef = useRef<HTMLInputElement>(null);
-
-  const [approveModal, setApproveModal] = useState<{
-    open: boolean;
-    voice: VoiceWithCreator | null;
-  }>({ open: false, voice: null });
-
-  const [unapproveModal, setUnapproveModal] = useState<{
-    open: boolean;
-    voice: VoiceWithCreator | null;
-  }>({ open: false, voice: null });
-
   const [bulkImportModal, setBulkImportModal] = useState(false);
   const [editModal, setEditModal] = useState<{
     open: boolean;
@@ -93,10 +79,15 @@ export default function AdminVoicesPage() {
     setPendingVoices(merge);
     setApprovedVoices(merge);
     setAllSharedVoices(merge);
+    setEditModal((prev) =>
+      prev.voice?.id === updated.id ? { ...prev, voice: { ...prev.voice, ...updated } } : prev
+    );
   }, []);
 
-  const loadVoices = useCallback(async () => {
-    setIsLoading(true);
+  const loadVoices = useCallback(async (opts?: { silent?: boolean }) => {
+    if (!opts?.silent) {
+      setIsLoading(true);
+    }
     try {
       const [pending, approved, allVoices, recordings] = await Promise.all([
         adminGetPendingVoices(),
@@ -117,7 +108,9 @@ export default function AdminVoicesPage() {
       const message = error instanceof Error ? error.message : "An error occurred";
       toast.error("Failed to load voices", message);
     } finally {
-      setIsLoading(false);
+      if (!opts?.silent) {
+        setIsLoading(false);
+      }
     }
   }, [toast]);
 
@@ -167,92 +160,9 @@ export default function AdminVoicesPage() {
     void togglePlayback(voice.id, voice.audio_url);
   };
 
-  const handleApprove = (voice: VoiceWithCreator) => {
-    setApproveModal({ open: true, voice });
-  };
-
-  const handleConfirmApprove = async () => {
-    if (!approveModal.voice || isProcessing) return;
-    setIsProcessing(true);
-    try {
-      await adminApproveVoice(approveModal.voice.id);
-      toast.success("Voice approved", `Approved "${approveModal.voice.name}" for public catalog`);
-      await loadVoices();
-      setApproveModal({ open: false, voice: null });
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "An error occurred";
-      toast.error("Failed to approve voice", message);
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  const handleUnapprove = (voice: VoiceWithCreator) => {
-    setUnapproveModal({ open: true, voice });
-  };
-
-  const handleConfirmUnapprove = async () => {
-    if (!unapproveModal.voice || isProcessing) return;
-    setIsProcessing(true);
-    try {
-      await adminUnapproveVoice(unapproveModal.voice.id);
-      toast.success("Approval revoked", `Revoked approval for "${unapproveModal.voice.name}"`);
-      await loadVoices();
-      setUnapproveModal({ open: false, voice: null });
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "An error occurred";
-      toast.error("Failed to unapprove voice", message);
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  const handleAvatarUploadClick = (voiceId: number) => {
-    setAvatarVoiceId(voiceId);
-    avatarFileInputRef.current?.click();
-  };
-
-  const handleAvatarFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    const voiceId = avatarVoiceId;
-    event.target.value = "";
-    setAvatarVoiceId(null);
-
-    if (!file || voiceId == null) return;
-
-    setIsProcessing(true);
-    try {
-      const updated = await adminUploadVoiceAvatar(voiceId, file);
-      applyUpdatedVoice(updated);
-      toast.success("Avatar updated", "Community voice avatar saved");
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "An error occurred";
-      toast.error("Failed to upload avatar", message);
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  const handleAvatarRemove = async (voice: VoiceWithCreator) => {
-    if (isProcessing || !voice.creator_avatar_url) return;
-    setIsProcessing(true);
-    try {
-      const updated = await adminDeleteVoiceAvatar(voice.id);
-      applyUpdatedVoice(updated);
-      toast.success("Avatar removed", `Cleared avatar for "${voice.name}"`);
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : "An error occurred";
-      toast.error("Failed to remove avatar", message);
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  const handleEditSaved = (updated: VoiceWithCreator) => {
+  const handleEditUpdated = (updated: VoiceWithCreator) => {
     applyUpdatedVoice(updated);
-    toast.success("Voice updated", `Saved changes for "${updated.name}"`);
-    // Refresh lists so pending/approved/all tabs stay consistent after share toggle
-    void loadVoices();
+    void loadVoices({ silent: true });
   };
 
   const formatRelativeTime = (dateString: string | null | undefined) => {
@@ -270,7 +180,6 @@ export default function AdminVoicesPage() {
     return `${Math.floor(diffDays / 365)} years ago`;
   };
 
-  // Filter voices based on search and view type
   const getFilteredVoices = (): VoiceWithCreator[] => {
     let voices: VoiceWithCreator[] = [];
 
@@ -279,8 +188,11 @@ export default function AdminVoicesPage() {
     } else if (viewType === "approved") {
       voices = approvedVoices;
     } else {
-      // "all" shows all voices
       voices = allSharedVoices;
+    }
+
+    if (languageFilter !== "all") {
+      voices = voices.filter((v) => v.language === languageFilter);
     }
 
     if (!searchTerm) return voices;
@@ -293,8 +205,8 @@ export default function AdminVoicesPage() {
   };
 
   const filteredVoices = getFilteredVoices();
+  const hasActiveFilters = Boolean(searchTerm) || languageFilter !== "all";
 
-  // Statistics
   const stats = {
     total: allRecordings.length,
     pending: pendingVoices.length,
@@ -304,14 +216,6 @@ export default function AdminVoicesPage() {
 
   return (
     <div className="mx-auto max-w-7xl">
-      <input
-        ref={avatarFileInputRef}
-        type="file"
-        accept={AVATAR_ACCEPT}
-        className="hidden"
-        onChange={handleAvatarFileChange}
-      />
-
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-6">
@@ -329,7 +233,6 @@ export default function AdminVoicesPage() {
             </p>
           </div>
 
-          {/* Bulk Import Button */}
           <Button
             size="md"
             onClick={() => setBulkImportModal(true)}
@@ -449,33 +352,44 @@ export default function AdminVoicesPage() {
         </div>
       )}
 
-      {/* Search Bar */}
-      <div className="mb-6">
-        <Input
-          type="search"
-          placeholder="Search by voice name or creator username..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          icon={<Search className="h-4 w-4" />}
-          rightIcon={
-            searchTerm ? (
-              <button
-                type="button"
-                onClick={() => setSearchTerm("")}
-                className="text-text-muted hover:text-text-primary transition-colors"
-                aria-label="Clear search"
-              >
-                ×
-              </button>
-            ) : undefined
-          }
-        />
-        {searchTerm && (
-          <p className="mt-2 text-caption text-text-muted">
-            Found {filteredVoices.length} voice{filteredVoices.length !== 1 ? "s" : ""}
-          </p>
-        )}
+      {/* Search + Language Filter */}
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end">
+        <div className="flex-1">
+          <Input
+            type="search"
+            placeholder="Search by voice name or creator username..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            icon={<Search className="h-4 w-4" />}
+            rightIcon={
+              searchTerm ? (
+                <button
+                  type="button"
+                  onClick={() => setSearchTerm("")}
+                  className="text-text-muted hover:text-text-primary transition-colors"
+                  aria-label="Clear search"
+                >
+                  ×
+                </button>
+              ) : undefined
+            }
+          />
+        </div>
+        <div className="w-full sm:w-56">
+          <Select
+            value={languageFilter}
+            onChange={(value) => setLanguageFilter(value as "all" | Locale)}
+            options={LANGUAGE_FILTER_OPTIONS}
+            placeholder="Language"
+          />
+        </div>
       </div>
+      {hasActiveFilters && (
+        <p className="mb-4 -mt-3 text-caption text-text-muted">
+          Found {filteredVoices.length} voice{filteredVoices.length !== 1 ? "s" : ""}
+          {languageFilter !== "all" ? ` in ${languageFilter}` : ""}
+        </p>
+      )}
 
       {/* Voices List */}
       {isLoading ? (
@@ -492,10 +406,10 @@ export default function AdminVoicesPage() {
               <Mic aria-hidden />
             )
           }
-          title={searchTerm ? "No voices found" : `No ${viewType} voices`}
+          title={hasActiveFilters ? "No voices found" : `No ${viewType} voices`}
           description={
-            searchTerm
-              ? "Try adjusting your search criteria"
+            hasActiveFilters
+              ? "Try adjusting your search or language filter"
               : viewType === "pending"
                 ? "User-shared voices will appear here for your approval"
                 : viewType === "approved"
@@ -511,8 +425,8 @@ export default function AdminVoicesPage() {
             <div className="col-span-2">Creator</div>
             <div className="col-span-1">Lang</div>
             <div className="col-span-2">Status</div>
-            <div className="col-span-1">Timestamp</div>
-            <div className="col-span-3">Actions</div>
+            <div className="col-span-2">Timestamp</div>
+            <div className="col-span-2">Actions</div>
           </div>
 
           {/* Table Rows */}
@@ -586,7 +500,7 @@ export default function AdminVoicesPage() {
                     </span>
                   )}
                 </div>
-                <div className="col-span-1 md:col-span-1">
+                <div className="col-span-1 md:col-span-2">
                   <div className="md:hidden text-caption font-medium text-text-muted mb-1">
                     {voice.is_approved ? "Approved" : "Shared"}
                   </div>
@@ -596,7 +510,7 @@ export default function AdminVoicesPage() {
                       : formatRelativeTime(voice.created_at)}
                   </p>
                 </div>
-                <div className="col-span-1 md:col-span-3">
+                <div className="col-span-1 md:col-span-2">
                   <div className="md:hidden text-caption font-medium text-text-muted mb-1">
                     Actions
                   </div>
@@ -605,36 +519,11 @@ export default function AdminVoicesPage() {
                       size="sm"
                       variant="secondary"
                       onClick={() => setEditModal({ open: true, voice })}
-                      disabled={isProcessing}
                       className="shrink-0"
                       leftIcon={<Pencil className="h-4 w-4" />}
                     >
                       <span className="hidden md:inline">Edit</span>
                     </Button>
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      onClick={() => handleAvatarUploadClick(voice.id)}
-                      disabled={isProcessing}
-                      className="shrink-0"
-                      leftIcon={<ImagePlus className="h-4 w-4" />}
-                    >
-                      <span className="hidden md:inline">
-                        {voice.creator_avatar_url ? "Change" : "Avatar"}
-                      </span>
-                    </Button>
-                    {voice.creator_avatar_url ? (
-                      <Button
-                        size="icon"
-                        variant="secondary"
-                        onClick={() => handleAvatarRemove(voice)}
-                        disabled={isProcessing}
-                        className="shrink-0"
-                        aria-label="Remove avatar"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    ) : null}
                     <Button
                       size="sm"
                       variant={playingVoiceId === voice.id ? "primary" : "secondary"}
@@ -657,30 +546,6 @@ export default function AdminVoicesPage() {
                         <span className="hidden md:inline">Preview</span>
                       )}
                     </Button>
-
-                    {voice.is_shared ? (
-                      voice.is_approved ? (
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          onClick={() => handleUnapprove(voice)}
-                          className="shrink-0"
-                          leftIcon={<XCircle className="h-4 w-4" />}
-                        >
-                          <span className="hidden md:inline">Revoke</span>
-                        </Button>
-                      ) : (
-                        <Button
-                          size="sm"
-                          variant="success"
-                          onClick={() => handleApprove(voice)}
-                          className="shrink-0"
-                          leftIcon={<ThumbsUp className="h-4 w-4" />}
-                        >
-                          <span className="hidden md:inline">Approve</span>
-                        </Button>
-                      )
-                    ) : null}
                   </div>
                 </div>
               </div>
@@ -689,33 +554,6 @@ export default function AdminVoicesPage() {
         </div>
       )}
 
-      {/* Approve Confirmation Modal */}
-      <ConfirmModal
-        open={approveModal.open}
-        onClose={() => setApproveModal({ open: false, voice: null })}
-        onConfirm={handleConfirmApprove}
-        title="Approve Voice"
-        description={`Approve "${approveModal.voice?.name}" by @${approveModal.voice?.creator_username} for the public catalog?`}
-        confirmText="Approve"
-        cancelText="Cancel"
-        variant="success"
-        loading={isProcessing}
-      />
-
-      {/* Unapprove Confirmation Modal */}
-      <ConfirmModal
-        open={unapproveModal.open}
-        onClose={() => setUnapproveModal({ open: false, voice: null })}
-        onConfirm={handleConfirmUnapprove}
-        title="Revoke Approval"
-        description={`Revoke approval for "${unapproveModal.voice?.name}"? This will remove it from the public catalog.`}
-        confirmText="Revoke"
-        cancelText="Cancel"
-        variant="danger"
-        loading={isProcessing}
-      />
-
-      {/* Bulk Import Modal */}
       <VoiceBulkImportModal
         open={bulkImportModal}
         onClose={() => setBulkImportModal(false)}
@@ -728,7 +566,7 @@ export default function AdminVoicesPage() {
         open={editModal.open}
         voice={editModal.voice}
         onClose={() => setEditModal({ open: false, voice: null })}
-        onSaved={handleEditSaved}
+        onSaved={handleEditUpdated}
       />
     </div>
   );

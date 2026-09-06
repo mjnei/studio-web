@@ -423,7 +423,7 @@ export async function adminDeleteVoiceAvatar(voiceId: number): Promise<VoiceWith
 }
 
 /**
- * Admin update of any voice's name, language, and/or is_shared status.
+ * Admin update of any voice's name, language, is_shared, and/or is_approved.
  * When is_shared is set to false, approval is cascade-revoked.
  */
 export async function adminUpdateVoice(

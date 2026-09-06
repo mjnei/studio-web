@@ -249,6 +249,7 @@ export interface AdminVoiceUpdateRequest {
   name?: string;
   language?: string | null;
   is_shared?: boolean;
+  is_approved?: boolean;
 }
 
 export interface VoiceShareRequest {
