@@ -21,6 +21,7 @@ import { Select } from "@/components/ui/select";
 import { useToast } from "@/components/ui/toast";
 import { VoiceBulkImportModal } from "@/components/admin/VoiceBulkImportModal";
 import { VoiceEditModal } from "@/components/admin/VoiceEditModal";
+import { VoiceAvatarModal } from "@/components/admin/VoiceAvatarModal";
 import {
   adminGetPendingVoices,
   adminGetApprovedVoices,
@@ -73,6 +74,10 @@ export default function AdminVoicesPage() {
     open: boolean;
     voice: VoiceWithCreator | null;
   }>({ open: false, voice: null });
+  const [avatarModal, setAvatarModal] = useState<{
+    open: boolean;
+    voice: VoiceWithCreator | null;
+  }>({ open: false, voice: null });
   const [approvingVoiceId, setApprovingVoiceId] = useState<number | null>(null);
 
   const applyUpdatedVoice = useCallback((updated: VoiceWithCreator) => {
@@ -82,6 +87,9 @@ export default function AdminVoicesPage() {
     setApprovedVoices(merge);
     setAllSharedVoices(merge);
     setEditModal((prev) =>
+      prev.voice?.id === updated.id ? { ...prev, voice: { ...prev.voice, ...updated } } : prev
+    );
+    setAvatarModal((prev) =>
       prev.voice?.id === updated.id ? { ...prev, voice: { ...prev.voice, ...updated } } : prev
     );
   }, []);
@@ -450,24 +458,14 @@ export default function AdminVoicesPage() {
               >
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-4 items-center">
                   <div className="col-span-1 md:col-span-3">
-                    <div className="min-w-0">
-                      <p className="text-body font-semibold text-text-primary truncate">
-                        {voice.name}
-                      </p>
-                      {voice.duration_seconds && (
-                        <p className="mt-1 text-caption text-text-secondary">
-                          {Math.floor(voice.duration_seconds / 60)}:
-                          {String(Math.floor(voice.duration_seconds % 60)).padStart(2, "0")}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                  <div className="col-span-1 md:col-span-2">
-                    <div className="md:hidden text-caption font-medium text-text-muted mb-1">
-                      Creator
-                    </div>
-                    <div className="flex items-center gap-2 min-w-0">
-                      <div className="relative h-7 w-7 shrink-0 overflow-hidden rounded-full border border-border-default bg-surface-raised">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <button
+                        type="button"
+                        onClick={() => setAvatarModal({ open: true, voice })}
+                        className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full border border-border-default bg-surface-raised transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-primary"
+                        aria-label={`Manage avatar for ${voice.name}`}
+                        title="Manage avatar"
+                      >
                         {voice.creator_avatar_url ? (
                           // eslint-disable-next-line @next/next/no-img-element
                           <img
@@ -477,14 +475,30 @@ export default function AdminVoicesPage() {
                           />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center text-text-muted">
-                            <User className="h-3.5 w-3.5" />
+                            <User className="h-4 w-4" />
                           </div>
                         )}
+                      </button>
+                      <div className="min-w-0">
+                        <p className="text-body font-semibold text-text-primary truncate">
+                          {voice.name}
+                        </p>
+                        {voice.duration_seconds && (
+                          <p className="mt-1 text-caption text-text-secondary">
+                            {Math.floor(voice.duration_seconds / 60)}:
+                            {String(Math.floor(voice.duration_seconds % 60)).padStart(2, "0")}
+                          </p>
+                        )}
                       </div>
-                      <p className="text-body text-text-secondary truncate">
-                        @{voice.creator_username}
-                      </p>
                     </div>
+                  </div>
+                  <div className="col-span-1 md:col-span-2">
+                    <div className="md:hidden text-caption font-medium text-text-muted mb-1">
+                      Creator
+                    </div>
+                    <p className="text-body text-text-secondary truncate">
+                      @{voice.creator_username}
+                    </p>
                   </div>
                   <div className="col-span-1 md:col-span-1">
                     <div className="md:hidden text-caption font-medium text-text-muted mb-1">
@@ -595,6 +609,13 @@ export default function AdminVoicesPage() {
         open={editModal.open}
         voice={editModal.voice}
         onClose={() => setEditModal({ open: false, voice: null })}
+        onSaved={handleEditUpdated}
+      />
+
+      <VoiceAvatarModal
+        open={avatarModal.open}
+        voice={avatarModal.voice}
+        onClose={() => setAvatarModal({ open: false, voice: null })}
         onSaved={handleEditUpdated}
       />
     </div>
