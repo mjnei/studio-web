@@ -1,5 +1,20 @@
-const CACHE_NAME = "huavoi-studio-shell-v1";
+const CACHE_NAME = "huavoi-studio-shell-v2";
 const APP_SHELL = ["/", "/dashboard", "/manifest.webmanifest", "/icon", "/apple-icon"];
+
+function shouldBypassCache(requestUrl) {
+  // Never cache Next.js build / HMR assets — stale chunks cause
+  // "module factory is not available" after deploys or local rebuilds.
+  if (requestUrl.pathname.startsWith("/_next/")) {
+    return true;
+  }
+
+  // Avoid caching API and auth traffic.
+  if (requestUrl.pathname.startsWith("/api/")) {
+    return true;
+  }
+
+  return false;
+}
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -29,6 +44,10 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  if (shouldBypassCache(requestUrl)) {
+    return;
+  }
+
   if (event.request.mode === "navigate") {
     event.respondWith(
       fetch(event.request).catch(async () => {
@@ -36,6 +55,12 @@ self.addEventListener("fetch", (event) => {
         return cache.match("/dashboard") || cache.match("/");
       })
     );
+    return;
+  }
+
+  // App-shell assets only: cache-first for the known shell list.
+  const isAppShellAsset = APP_SHELL.includes(requestUrl.pathname);
+  if (!isAppShellAsset) {
     return;
   }
 
