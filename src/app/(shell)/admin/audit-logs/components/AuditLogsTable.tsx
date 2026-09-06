@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Copy, FileText } from "lucide-react";
 import type { AuditLog } from "@/types/admin";
 import { useToast } from "@/lib/hooks/use-toast";
+import { formatRelativeTimeCompact } from "@/lib/utils/time-format";
 import { Spinner } from "@/components/ui/spinner";
 import { EmptyState } from "@/components/ui/EmptyState";
 import ActionBadge from "./ActionBadge";
@@ -81,22 +82,6 @@ export default function AuditLogsTable({
       description: `${label} copied to clipboard`,
       variant: "success",
     });
-  }
-
-  function formatRelativeTime(dateString: string): string {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffMins = Math.floor(diffMs / (1000 * 60));
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-    if (diffMins < 1) return "Just now";
-    if (diffMins < 60) return `${diffMins}m ago`;
-    if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffDays < 7) return `${diffDays}d ago`;
-    if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`;
-    return date.toLocaleDateString();
   }
 
   const sortedLogs = [...logs].sort((a, b) => {
@@ -198,7 +183,7 @@ export default function AuditLogsTable({
                     <td className="px-4 py-3 text-body">
                       <div className="flex flex-col">
                         <span className="font-medium text-text-primary">
-                          {formatRelativeTime(log.created_at)}
+                          {formatRelativeTimeCompact(log.created_at)}
                         </span>
                         <span className="text-caption text-text-muted">
                           {new Date(log.created_at).toLocaleString()}
@@ -292,7 +277,9 @@ export default function AuditLogsTable({
                   <ActionBadge action={log.action} />
                   <SourceBadge source={log.source} />
                 </div>
-                <p className="text-body text-text-muted">{formatRelativeTime(log.created_at)}</p>
+                <p className="text-body text-text-muted">
+                  {formatRelativeTimeCompact(log.created_at)}
+                </p>
               </div>
             </div>
 

@@ -4,7 +4,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { useState } from "react";
 import { CheckCircle2, Clock, AlertCircle } from "lucide-react";
 import type { FailedJob } from "@/types/admin";
-import { formatRelativeTime } from "@/app/(shell)/admin/tts-jobs/_shared/formatters";
+import { formatRelativeTimeCompact } from "@/lib/utils/time-format";
 import { DetailsButton, RetryButton } from "@/app/(shell)/admin/tts-jobs/_shared/table-actions";
 
 interface FailedJobsTableProps {
@@ -83,7 +83,7 @@ export function FailedJobsTable({ failedJobs, onRetry, onViewDetails }: FailedJo
               </div>
               <div className="flex items-center gap-1.5 text-body text-text-secondary">
                 <Clock className="h-3.5 w-3.5" />
-                {formatRelativeTime(job.completed_at || job.created_at)}
+                {formatRelativeTimeCompact(job.completed_at || job.created_at)}
               </div>
             </div>
 

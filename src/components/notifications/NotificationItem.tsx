@@ -2,7 +2,7 @@
 
 import { type Notification } from "@/lib/notification-context";
 import { useNotifications } from "@/lib/notification-context";
-import { formatDistanceToNow } from "date-fns";
+import { formatRelativeTimeCompact } from "@/lib/utils/time-format";
 import { CheckCircle2, AlertCircle, Info, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useI18n } from "@/i18n";
@@ -79,7 +79,7 @@ export function NotificationItem({ notification, onClose }: NotificationItemProp
   const iconColor =
     colorMap[notification.notification_type as keyof typeof colorMap] || "text-text-muted";
 
-  const timeAgo = formatDistanceToNow(new Date(notification.created_at), { addSuffix: true });
+  const timeAgo = formatRelativeTimeCompact(notification.created_at);
 
   return (
     <div

@@ -4,24 +4,13 @@ import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";
 import { UserAvatar } from "@/components/ui/UserAvatar";
+import { formatRelativeTimeCompact } from "@/lib/utils/time-format";
 import type { AdminUser } from "@/types/admin";
 
 interface UsersTableProps {
   users: AdminUser[];
   isLoading: boolean;
   onView: (user: AdminUser) => void;
-}
-
-function formatRelativeTime(dateString: string | null | undefined): string {
-  if (!dateString) return "Never";
-  const diffMs = Date.now() - new Date(dateString).getTime();
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  if (diffDays < 0) return "Just now";
-  if (diffDays === 0) return "Today";
-  if (diffDays === 1) return "1 day ago";
-  if (diffDays < 7) return `${diffDays} days ago`;
-  if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
-  return `${Math.floor(diffDays / 30)} months ago`;
 }
 
 function UserAvatarCell({ user }: { user: AdminUser }) {
@@ -139,7 +128,7 @@ export function UsersTable({ users, isLoading, onView }: UsersTableProps) {
 
             <div className="md:col-span-1">
               <span className="text-body text-text-muted">
-                {formatRelativeTime(user.created_at)}
+                {formatRelativeTimeCompact(user.created_at, "Never")}
               </span>
             </div>
 

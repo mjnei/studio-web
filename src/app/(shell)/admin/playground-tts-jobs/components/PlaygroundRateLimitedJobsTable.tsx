@@ -4,7 +4,8 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { useState } from "react";
 import { CheckCircle2, Clock } from "lucide-react";
 import type { PlaygroundRateLimitedJob } from "@/types/admin";
-import { formatIPHash, formatRelativeTime } from "@/app/(shell)/admin/tts-jobs/_shared/formatters";
+import { formatIPHash } from "@/app/(shell)/admin/tts-jobs/_shared/formatters";
+import { formatRelativeTimeCompact } from "@/lib/utils/time-format";
 import { DetailsButton, RetryButton } from "@/app/(shell)/admin/tts-jobs/_shared/table-actions";
 
 interface PlaygroundRateLimitedJobsTableProps {
@@ -85,7 +86,7 @@ export function PlaygroundRateLimitedJobsTable({
               </div>
               <div className="flex items-center gap-1.5 text-body text-text-secondary">
                 <Clock className="h-3.5 w-3.5" />
-                {formatRelativeTime(job.created_at)}
+                {formatRelativeTimeCompact(job.created_at)}
               </div>
               <p className="text-caption font-mono text-text-muted mt-1 md:hidden">
                 IP: {formatIPHash(job.client_ip_address)}

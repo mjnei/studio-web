@@ -3,10 +3,8 @@
 import { EmptyState } from "@/components/ui/EmptyState";
 import { CheckCircle2, Clock, Play } from "lucide-react";
 import type { CompletedJob } from "@/types/admin";
-import {
-  formatRelativeTime,
-  formatTableDuration,
-} from "@/app/(shell)/admin/tts-jobs/_shared/formatters";
+import { formatTableDuration } from "@/app/(shell)/admin/tts-jobs/_shared/formatters";
+import { formatRelativeTimeCompact } from "@/lib/utils/time-format";
 import { DetailsButton } from "@/app/(shell)/admin/tts-jobs/_shared/table-actions";
 
 interface CompletedJobsTableProps {
@@ -98,7 +96,7 @@ export function CompletedJobsTable({
               </div>
               <div className="flex items-center gap-1.5 text-body text-green-600">
                 <CheckCircle2 className="h-3.5 w-3.5" />
-                {formatRelativeTime(job.completed_at || job.created_at)}
+                {formatRelativeTimeCompact(job.completed_at || job.created_at)}
                 {job.audio_path && onPlay && (
                   <span className="text-caption text-accent-primary font-medium ml-2">
                     • Click to play

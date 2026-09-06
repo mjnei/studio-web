@@ -3,6 +3,7 @@
 import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Eye, RotateCcw, Trash2 } from "lucide-react";
+import { formatRelativeTimeCompact } from "@/lib/utils/time-format";
 import type { AdminProject } from "@/types/admin";
 
 interface ProjectsTableProps {
@@ -11,17 +12,6 @@ interface ProjectsTableProps {
   onView: (project: AdminProject) => void;
   onDelete: (project: AdminProject) => void;
   onRestore: (project: AdminProject) => void;
-}
-
-function formatRelativeTime(dateString: string): string {
-  const diffMs = Date.now() - new Date(dateString).getTime();
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  if (diffDays < 0) return "Just now";
-  if (diffDays === 0) return "Today";
-  if (diffDays === 1) return "1 day ago";
-  if (diffDays < 7) return `${diffDays} days ago`;
-  if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
-  return `${Math.floor(diffDays / 30)} months ago`;
 }
 
 function StatusBadge({ status, isDeleted }: { status: string; isDeleted: boolean }) {
@@ -115,7 +105,7 @@ export function ProjectsTable({
 
             <div className="md:col-span-1">
               <span className="text-body text-text-muted">
-                {formatRelativeTime(project.updated_at)}
+                {formatRelativeTimeCompact(project.updated_at)}
               </span>
             </div>
 

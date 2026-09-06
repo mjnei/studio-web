@@ -30,6 +30,7 @@ import {
   attachAdminVoiceAudioUrls,
 } from "@/lib/api/admin";
 import { useVoiceAudioPlayback } from "@/lib/hooks/use-voice-audio-playback";
+import { formatRelativeTimeCompact } from "@/lib/utils/time-format";
 import { locales, localeNames, type Locale } from "@/i18n";
 import type { VoiceWithCreator } from "@/lib/types/api";
 
@@ -179,26 +180,6 @@ export default function AdminVoicesPage() {
     } finally {
       setApprovingVoiceId(null);
     }
-  };
-
-  const formatRelativeTime = (dateString: string | null | undefined) => {
-    if (!dateString) return "Unknown";
-    const date = new Date(dateString);
-    if (Number.isNaN(date.getTime())) return "Unknown";
-
-    const now = new Date();
-    const diffMs = Math.max(0, now.getTime() - date.getTime());
-    const diffMins = Math.floor(diffMs / (1000 * 60));
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-    if (diffMins < 1) return "just now";
-    if (diffMins < 60) return `${diffMins}m ago`;
-    if (diffHours < 24) return `${diffHours}h ago`;
-    if (diffDays < 7) return `${diffDays}d ago`;
-    if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`;
-    if (diffDays < 365) return `${Math.floor(diffDays / 30)}mo ago`;
-    return `${Math.floor(diffDays / 365)}y ago`;
   };
 
   const formatAbsoluteTime = (dateString: string | null | undefined) => {
@@ -540,7 +521,7 @@ export default function AdminVoicesPage() {
                       className="text-body text-text-secondary cursor-default"
                       title={formatAbsoluteTime(timestampValue)}
                     >
-                      {formatRelativeTime(timestampValue)}
+                      {formatRelativeTimeCompact(timestampValue, "Unknown")}
                     </p>
                   </div>
                   <div className="col-span-1 md:col-span-2">
