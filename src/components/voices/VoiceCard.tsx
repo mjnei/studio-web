@@ -5,10 +5,11 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { useToast } from "@/components/ui/toast";
-import { useI18n, type InterpolationValues } from "@/i18n";
+import { useI18n } from "@/i18n";
 import { getVoiceLanguageTranslationKey } from "@/i18n/config";
 import { Spinner } from "@/components/ui/spinner";
 import { useVoiceAudioPlayback } from "@/lib/hooks/use-voice-audio-playback";
+import { formatDuration, formatRelativeTimeLocalized } from "@/lib/utils/time-format";
 import type { VoiceWithCreator, VoiceResponse } from "@/lib/types/api";
 
 interface VoiceCardProps {
@@ -18,45 +19,6 @@ interface VoiceCardProps {
   onDelete: (id: number) => void;
   onShare?: (id: number) => void;
   onUnshare?: (id: number) => void;
-}
-
-/**
- * Format relative time for display
- */
-function formatRelativeTime(
-  dateString: string,
-  t: (key: string, options?: InterpolationValues) => string
-): string {
-  const date = new Date(dateString);
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffSec = Math.floor(diffMs / 1000);
-  const diffMin = Math.floor(diffSec / 60);
-  const diffHours = Math.floor(diffMin / 60);
-  const diffDays = Math.floor(diffHours / 24);
-  const diffWeeks = Math.floor(diffDays / 7);
-
-  if (diffSec < 60) return t("voices.metadata.justNow");
-  if (diffMin < 60) return t("voices.metadata.minutesAgo", { count: diffMin });
-  if (diffHours < 24) return t("voices.metadata.hoursAgo", { count: diffHours });
-  if (diffDays < 7) return t("voices.metadata.daysAgo", { count: diffDays });
-  if (diffWeeks < 4) return t("voices.metadata.weeksAgo", { count: diffWeeks });
-
-  const months = Math.floor(diffDays / 30);
-  if (months < 12) return t("voices.metadata.monthsAgo", { count: months });
-
-  const years = Math.floor(diffDays / 365);
-  return t("voices.metadata.yearsAgo", { count: years });
-}
-
-/**
- * Format duration in seconds to MM:SS format
- */
-function formatDuration(seconds: number | null | undefined): string {
-  if (!seconds) return "0:00";
-  const mins = Math.floor(seconds / 60);
-  const secs = Math.floor(seconds % 60);
-  return `${mins}:${secs.toString().padStart(2, "0")}`;
 }
 
 /**
@@ -159,7 +121,7 @@ export function VoiceCard({
               <span>•</span>
             </>
           )}
-          <span>{formatRelativeTime(voice.created_at, t)}</span>
+          <span>{formatRelativeTimeLocalized(voice.created_at, t, "voices.metadata")}</span>
           {voice.duration_seconds && (
             <>
               <span>•</span>
