@@ -328,6 +328,8 @@ export default function ExportPage() {
   const processingVideos =
     videos?.filter((v) => v.status === "processing" || v.status === "queued") || [];
   const failedVideos = videos?.filter((v) => v.status === "failed") || [];
+  const creditsAvailable = creditStatus?.credits_remaining ?? 0;
+  const hasCredits = creditsAvailable >= 1;
 
   const isAwaitingRender = isSubmittingGeneration || processingVideos.length > 0;
   const hasCompletedVideo = completedVideos.length > 0;
@@ -394,8 +396,6 @@ export default function ExportPage() {
   const latestFailedVideo = [...failedVideos].sort(
     (a, b) => b.generation_attempt - a.generation_attempt
   )[0];
-  const creditsAvailable = creditStatus?.credits_remaining ?? 0;
-  const hasCredits = creditsAvailable >= 1;
   const telemetryProps = {
     videos: processingVideos,
     getStatusLabel,

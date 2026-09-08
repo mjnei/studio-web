@@ -26,8 +26,8 @@ const LANGUAGE_OPTIONS = locales.map((code) => ({
   label: `${voiceLanguageNames[code]} (${code})`,
 }));
 
-function resolveLanguage(language: string): Locale {
-  return (locales.includes(language as Locale) ? language : "en") as Locale;
+function resolveLanguage(language?: string | null): Locale {
+  return language && locales.includes(language as Locale) ? (language as Locale) : "en";
 }
 
 export function VoiceEditModal({ open, voice, onClose, onSaved }: VoiceEditModalProps) {
