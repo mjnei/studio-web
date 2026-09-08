@@ -133,6 +133,15 @@ export const ADMIN_NAV: AdminNavItem[] = [
     dashboardDescription: "Test voices and TTS settings without creating a full project",
   },
   {
+    href: "/admin/flow",
+    labelKey: "shell.flowJobs",
+    icon: Film,
+    showInDrawer: true,
+    showOnDashboard: true,
+    dashboardTitle: "Flow Video Jobs",
+    dashboardDescription: "Submit and test 3-locale TTS + ffmpeg multi-clip video generation",
+  },
+  {
     href: "/admin/audit-logs",
     labelKey: "shell.auditLogs",
     icon: Activity,
