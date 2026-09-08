@@ -41,6 +41,13 @@ The backend executes a 2-phase pipeline handled entirely by the **IndexTTS worke
 - **Speech Speed Ratio**: Interactive slider from `0.5x` to `2.0x` (step `0.1x`, default `1.0x`).
 - **Video Resolution**: Dropdown with `480p`, `720p` (default), `1080p`, and `1440p`.
 - **Aspect Ratio Format**: Dropdown with `16:9` (landscape default), `9:16` (portrait / shorts), `1:1` (square), `4:3`, and `3:4`.
+- **Clip Alignment Strategy (`clip_alignment_strategy`)**:
+  - **Option 2 (Default - `speed_long_slow_short`)**: Speeds up long video clips to fit the speech window duration (preserving all visual content); slows down short clips to match speech duration.
+  - **Option 1 (`trim_long_slow_short`)**: Trims long video clips from the front (keeping the ending action at 1.0x normal speed); slows down short clips to match speech duration.
+  - *Audio Integrity Guarantee*: In both strategies, speech narration audio speed and duration are strictly unmodified and never trimmed.
+- **Skip First Frame (`skip_first_frame`)**:
+  - **Default: Enabled (`true`)**. Drops the opening frame (`n=0`) of each video clip before merging using ffmpeg `select='gte(n\,1)',setpts=PTS-STARTPTS`.
+  - **Rationale**: Consecutive video clips (especially in AI continuation / loop workflows) often have an opening frame identical to the preceding clip's ending frame. Skipping the opening frame removes visible freeze/stutter frame duplicates at scene transitions.
 - **Idempotency Key**: Optional client-generated UUID to prevent duplicate job creation upon retries.
 
 ### 2.4 Live Phase Monitoring (`FlowJobMonitor`)

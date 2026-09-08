@@ -18,6 +18,7 @@ export interface FlowJobCreate {
   resolution?: VideoResolution;
   ratio_format?: VideoRatioFormat;
   clip_alignment_strategy?: ClipAlignmentStrategy;
+  skip_first_frame?: boolean;
   idempotency_key?: string | null;
 }
 
@@ -31,6 +32,7 @@ export interface FlowJobResponse {
   lifecycle_status: FlowLifecycleStatus;
   current_phase: FlowPhase;
   clip_alignment_strategy?: ClipAlignmentStrategy | null;
+  skip_first_frame?: boolean | null;
 
   // Per-locale TTS statuses
   tts_en_status: FlowSubStatus;

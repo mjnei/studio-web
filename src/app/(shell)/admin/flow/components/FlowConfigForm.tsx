@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Sliders, Mic, Search, ChevronDown, FastForward, Scissors, Info } from "lucide-react";
+import { Sliders, Mic, Search, ChevronDown, FastForward, Scissors, Info, SkipForward } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -16,6 +16,7 @@ interface FlowConfigFormProps {
   resolution: VideoResolution;
   ratioFormat: VideoRatioFormat;
   clipAlignmentStrategy: ClipAlignmentStrategy;
+  skipFirstFrame: boolean;
   idempotencyKey: string;
   onChangeVoiceId: (id: number) => void;
   onChangeIsAnon: (isAnon: boolean) => void;
@@ -23,6 +24,7 @@ interface FlowConfigFormProps {
   onChangeResolution: (resolution: VideoResolution) => void;
   onChangeRatioFormat: (ratioFormat: VideoRatioFormat) => void;
   onChangeClipAlignmentStrategy: (strategy: ClipAlignmentStrategy) => void;
+  onChangeSkipFirstFrame: (skip: boolean) => void;
   onChangeIdempotencyKey: (key: string) => void;
   disabled?: boolean;
 }
@@ -34,6 +36,7 @@ export function FlowConfigForm({
   resolution,
   ratioFormat,
   clipAlignmentStrategy,
+  skipFirstFrame,
   idempotencyKey,
   onChangeVoiceId,
   onChangeIsAnon,
@@ -41,6 +44,7 @@ export function FlowConfigForm({
   onChangeResolution,
   onChangeRatioFormat,
   onChangeClipAlignmentStrategy,
+  onChangeSkipFirstFrame,
   onChangeIdempotencyKey,
   disabled = false,
 }: FlowConfigFormProps) {
@@ -334,6 +338,47 @@ export function FlowConfigForm({
             <strong>Audio Integrity Guarantee:</strong> In both strategies, speech narration audio speed is never altered, and audio is never trimmed.
           </span>
         </div>
+      </div>
+
+      {/* Skip Opening Frame Option */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <Label className="text-caption font-medium text-text-primary mb-0">
+            Video Transition Frame Handling
+          </Label>
+          <Badge className="bg-accent-primary/20 text-accent-primary border-accent-primary/30 text-micro">
+            Default: Enabled
+          </Badge>
+        </div>
+
+        <label
+          className={`flex items-start gap-3 p-3.5 rounded-xl border transition-all cursor-pointer ${
+            skipFirstFrame
+              ? "border-accent-primary/60 bg-accent-primary/5 shadow-sm"
+              : "border-border-default bg-surface-panel hover:border-border-hover hover:bg-surface-hover/50"
+          } ${disabled ? "opacity-60 cursor-not-allowed" : ""}`}
+        >
+          <div className="pt-0.5">
+            <input
+              type="checkbox"
+              checked={skipFirstFrame}
+              onChange={(e) => onChangeSkipFirstFrame(e.target.checked)}
+              disabled={disabled}
+              className="rounded border-border-default text-accent-primary focus:ring-accent-primary h-4 w-4"
+            />
+          </div>
+          <div className="space-y-1 min-w-0 flex-1">
+            <div className="flex items-center gap-2">
+              <SkipForward className="h-4 w-4 text-accent-primary shrink-0" />
+              <span className="text-caption font-semibold text-text-primary">
+                Skip first frame in each video clip
+              </span>
+            </div>
+            <p className="text-micro text-text-secondary leading-relaxed">
+              When enabled (default), drops the opening frame of each video clip before merging. This eliminates duplicate freeze-frame stutter at scene transitions for consecutive clips (e.g. AI-generated video continuations or loops) where each clip's opening frame matches the preceding ending frame.
+            </p>
+          </div>
+        </label>
       </div>
 
       {/* Idempotency Key */}

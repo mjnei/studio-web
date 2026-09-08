@@ -34,6 +34,7 @@ export default function FlowAdminPage() {
   const [resolution, setResolution] = useState<VideoResolution>("720p");
   const [ratioFormat, setRatioFormat] = useState<VideoRatioFormat>("16x9");
   const [clipAlignmentStrategy, setClipAlignmentStrategy] = useState<ClipAlignmentStrategy>("speed_long_slow_short");
+  const [skipFirstFrame, setSkipFirstFrame] = useState(true);
   const [idempotencyKey, setIdempotencyKey] = useState("");
 
   // Submission & Active Job State
@@ -95,6 +96,7 @@ export default function FlowAdminPage() {
         resolution,
         ratio_format: ratioFormat,
         clip_alignment_strategy: clipAlignmentStrategy,
+        skip_first_frame: skipFirstFrame,
         idempotency_key: idempotencyKey.trim() || undefined,
       });
 
@@ -184,6 +186,7 @@ export default function FlowAdminPage() {
               resolution={resolution}
               ratioFormat={ratioFormat}
               clipAlignmentStrategy={clipAlignmentStrategy}
+              skipFirstFrame={skipFirstFrame}
               idempotencyKey={idempotencyKey}
               onChangeVoiceId={setVoiceId}
               onChangeIsAnon={setIsAnon}
@@ -191,6 +194,7 @@ export default function FlowAdminPage() {
               onChangeResolution={setResolution}
               onChangeRatioFormat={setRatioFormat}
               onChangeClipAlignmentStrategy={setClipAlignmentStrategy}
+              onChangeSkipFirstFrame={setSkipFirstFrame}
               onChangeIdempotencyKey={setIdempotencyKey}
               disabled={isSubmitting}
             />
