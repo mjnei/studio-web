@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Film, Play, AlertCircle, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { PageHeader } from "@/components/ui/PageHeader";
@@ -19,6 +20,7 @@ import { convertCnToTw, convertTwToCn } from "@/lib/chinese-converter";
 import type { FlowJobResponse, VideoResolution, VideoRatioFormat } from "@/types/flow";
 
 export default function FlowAdminPage() {
+  const router = useRouter();
   const toast = useToast();
 
   // Form State
@@ -96,6 +98,7 @@ export default function FlowAdminPage() {
 
       setActiveJob(response);
       toast.success("Flow Job Created", `Job #${response.id} is now processing.`);
+      router.push(`/admin/flow/${response.id}`);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Failed to create Flow job";
       setFormError(msg);
@@ -227,13 +230,7 @@ export default function FlowAdminPage() {
       {/* Job Lookup & History */}
       <Card variant="glass" padding="lg">
         <CardContent>
-          <FlowJobHistory
-            onSelectJob={(job) => {
-              setActiveJob(job);
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }}
-            currentJobId={activeJob?.id}
-          />
+          <FlowJobHistory currentJobId={activeJob?.id} />
         </CardContent>
       </Card>
     </div>

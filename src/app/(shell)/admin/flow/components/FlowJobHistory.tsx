@@ -1,25 +1,27 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { History, Search, ArrowRight, RotateCw, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Spinner } from "@/components/ui/spinner";
-import { listFlowJobs, getFlowJob } from "@/lib/api/flow-client";
+import { listFlowJobs } from "@/lib/api/flow-client";
 import type { FlowJobResponse } from "@/types/flow";
 
 interface FlowJobHistoryProps {
-  onSelectJob: (job: FlowJobResponse) => void;
+  onSelectJob?: (job: FlowJobResponse) => void;
   currentJobId?: number;
 }
 
 export function FlowJobHistory({ onSelectJob, currentJobId }: FlowJobHistoryProps) {
+  const router = useRouter();
   const [historyJobs, setHistoryJobs] = useState<FlowJobResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchJobId, setSearchJobId] = useState("");
   const [searchError, setSearchError] = useState<string | null>(null);
-  const [isSearching, setIsSearching] = useState(false);
 
   const loadHistory = async () => {
     setIsLoading(true);
@@ -51,7 +53,7 @@ export function FlowJobHistory({ onSelectJob, currentJobId }: FlowJobHistoryProp
     };
   }, []);
 
-  const handleLookupJob = async (e: React.FormEvent) => {
+  const handleLookupJob = (e: React.FormEvent) => {
     e.preventDefault();
     const id = parseInt(searchJobId.trim(), 10);
     if (isNaN(id) || id <= 0) {
@@ -59,18 +61,9 @@ export function FlowJobHistory({ onSelectJob, currentJobId }: FlowJobHistoryProp
       return;
     }
 
-    setIsSearching(true);
     setSearchError(null);
-    try {
-      const job = await getFlowJob(id);
-      onSelectJob(job);
-      setSearchJobId("");
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Job not found";
-      setSearchError(msg);
-    } finally {
-      setIsSearching(false);
-    }
+    router.push(`/admin/flow/${id}`);
+    setSearchJobId("");
   };
 
   const getStatusBadge = (status: string) => {
@@ -116,12 +109,11 @@ export function FlowJobHistory({ onSelectJob, currentJobId }: FlowJobHistoryProp
             placeholder="Enter Flow Job ID to inspect..."
             value={searchJobId}
             onChange={(e) => setSearchJobId(e.target.value)}
-            disabled={isSearching}
             className="text-caption h-9"
           />
         </div>
-        <Button type="submit" size="sm" disabled={isSearching || !searchJobId.trim()}>
-          {isSearching ? <Spinner size="sm" /> : <Search className="h-4 w-4" />}
+        <Button type="submit" size="sm" disabled={!searchJobId.trim()}>
+          <Search className="h-4 w-4" />
           <span className="ml-1.5 hidden sm:inline">Inspect</span>
         </Button>
       </form>
@@ -176,15 +168,13 @@ export function FlowJobHistory({ onSelectJob, currentJobId }: FlowJobHistoryProp
                         {new Date(item.created_at).toLocaleTimeString()}
                       </td>
                       <td className="py-2 px-3 text-right">
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => onSelectJob(item)}
-                          className="h-7 text-micro text-accent-primary hover:text-accent-secondary"
+                        <Link
+                          href={`/admin/flow/${item.id}`}
+                          onClick={() => onSelectJob?.(item)}
+                          className="inline-flex items-center h-7 px-2.5 text-micro font-medium rounded-lg text-accent-primary hover:text-accent-secondary hover:bg-surface-hover transition-colors"
                         >
                           View <ArrowRight className="ml-1 h-3 w-3" />
-                        </Button>
+                        </Link>
                       </td>
                     </tr>
                   );

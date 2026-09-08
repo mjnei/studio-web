@@ -58,8 +58,8 @@ The backend executes a 2-phase pipeline handled entirely by the **IndexTTS worke
 - **S3 Keys & Downloads**: One-click S3 key copy buttons and direct download links for both audio and video files.
 
 ### 2.6 Job Lookup & History (`FlowJobHistory`)
-- **Direct Job ID Lookup**: Input any numeric Job ID to fetch and monitor that job immediately.
-- **Recent Jobs List**: Fetches recent Flow jobs for the current user via `GET /api/v1/flow?limit=20`, displaying ID, status badge, phase, timestamp, and a "View" button to load into the active monitor.
+- **Direct Job ID Lookup**: Input any numeric Job ID to inspect and navigate to `/admin/flow/{job_id}` immediately.
+- **Recent Jobs List**: Fetches recent Flow jobs for the current user via `GET /api/v1/flow?limit=20`, displaying ID, status badge, phase, timestamp, and a **"View"** link that navigates directly to the dedicated detail page at `/admin/flow/{job_id}`.
 
 ---
 
@@ -77,7 +77,11 @@ studio-web/
 │   │   └── admin-nav.ts                         # Admin navigation registration (/admin/flow)
 │   └── app/(shell)/admin/
 │       └── flow/
-│           ├── page.tsx                         # Main Flow Admin Page
+│           ├── layout.tsx                       # Flow Admin layout metadata
+│           ├── page.tsx                         # Main Flow Admin Page (creation & history)
+│           ├── [id]/
+│           │   ├── layout.tsx                   # Flow Job detail page metadata
+│           │   └── page.tsx                     # Dedicated Flow Job detail & monitor page
 │           └── components/
 │               ├── FlowClipsUploader.tsx        # 10-clip uploader with a-z sorting & sample keys
 │               ├── FlowTextInput.tsx            # 3-locale script inputs with auto-translation
