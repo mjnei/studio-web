@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Sliders, Mic, Search, ChevronDown } from "lucide-react";
+import { Sliders, Mic, Search, ChevronDown, FastForward, Scissors, Info } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { getAvailableVoices } from "@/lib/api/voice-client";
 import type { VoiceResponse } from "@/lib/types/api";
-import type { VideoResolution, VideoRatioFormat } from "@/types/flow";
+import type { VideoResolution, VideoRatioFormat, ClipAlignmentStrategy } from "@/types/flow";
 
 interface FlowConfigFormProps {
   voiceId: number | null;
@@ -14,12 +15,14 @@ interface FlowConfigFormProps {
   speedRatio: number;
   resolution: VideoResolution;
   ratioFormat: VideoRatioFormat;
+  clipAlignmentStrategy: ClipAlignmentStrategy;
   idempotencyKey: string;
   onChangeVoiceId: (id: number) => void;
   onChangeIsAnon: (isAnon: boolean) => void;
   onChangeSpeedRatio: (ratio: number) => void;
   onChangeResolution: (resolution: VideoResolution) => void;
   onChangeRatioFormat: (ratioFormat: VideoRatioFormat) => void;
+  onChangeClipAlignmentStrategy: (strategy: ClipAlignmentStrategy) => void;
   onChangeIdempotencyKey: (key: string) => void;
   disabled?: boolean;
 }
@@ -30,12 +33,14 @@ export function FlowConfigForm({
   speedRatio,
   resolution,
   ratioFormat,
+  clipAlignmentStrategy,
   idempotencyKey,
   onChangeVoiceId,
   onChangeIsAnon,
   onChangeSpeedRatio,
   onChangeResolution,
   onChangeRatioFormat,
+  onChangeClipAlignmentStrategy,
   onChangeIdempotencyKey,
   disabled = false,
 }: FlowConfigFormProps) {
@@ -241,6 +246,93 @@ export function FlowConfigForm({
             <option value="4x3">4:3 (Traditional TV/Monitor)</option>
             <option value="3x4">3:4 (Vertical Tablet)</option>
           </select>
+        </div>
+      </div>
+
+      {/* Clip to Voice Alignment Strategy */}
+      <div className="space-y-2.5">
+        <div className="flex items-center justify-between">
+          <Label className="text-caption font-medium text-text-primary mb-0">
+            Video Clip to Voice Audio Alignment Strategy
+          </Label>
+          <span className="text-micro text-text-muted">Voice audio is never altered</span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {/* Option 2: Speed up long / slow down short (Default) */}
+          <button
+            type="button"
+            disabled={disabled}
+            onClick={() => onChangeClipAlignmentStrategy("speed_long_slow_short")}
+            className={`relative flex flex-col p-3.5 rounded-xl border text-left transition-all ${
+              clipAlignmentStrategy === "speed_long_slow_short"
+                ? "border-accent-primary bg-accent-primary/10 shadow-sm ring-1 ring-accent-primary/50"
+                : "border-border-default bg-surface-panel hover:border-border-hover hover:bg-surface-hover/50"
+            }`}
+          >
+            <div className="flex items-center justify-between gap-2 mb-1.5">
+              <div className="flex items-center gap-2">
+                <div
+                  className={`flex items-center justify-center w-7 h-7 rounded-lg ${
+                    clipAlignmentStrategy === "speed_long_slow_short"
+                      ? "bg-accent-primary/20 text-accent-primary"
+                      : "bg-surface-base text-text-muted"
+                  }`}
+                >
+                  <FastForward className="h-4 w-4" />
+                </div>
+                <span className="text-caption font-semibold text-text-primary">
+                  Speed Up Long / Slow Down Short
+                </span>
+              </div>
+              <Badge className="bg-accent-primary/20 text-accent-primary border-accent-primary/30 text-micro">
+                Default
+              </Badge>
+            </div>
+            <p className="text-micro text-text-secondary leading-relaxed">
+              <strong>Long clips</strong> are sped up to preserve all visual content. <strong>Short clips</strong> are slowed down to match voice window duration.
+            </p>
+          </button>
+
+          {/* Option 1: Trim long / slow down short */}
+          <button
+            type="button"
+            disabled={disabled}
+            onClick={() => onChangeClipAlignmentStrategy("trim_long_slow_short")}
+            className={`relative flex flex-col p-3.5 rounded-xl border text-left transition-all ${
+              clipAlignmentStrategy === "trim_long_slow_short"
+                ? "border-accent-primary bg-accent-primary/10 shadow-sm ring-1 ring-accent-primary/50"
+                : "border-border-default bg-surface-panel hover:border-border-hover hover:bg-surface-hover/50"
+            }`}
+          >
+            <div className="flex items-center justify-between gap-2 mb-1.5">
+              <div className="flex items-center gap-2">
+                <div
+                  className={`flex items-center justify-center w-7 h-7 rounded-lg ${
+                    clipAlignmentStrategy === "trim_long_slow_short"
+                      ? "bg-accent-primary/20 text-accent-primary"
+                      : "bg-surface-base text-text-muted"
+                  }`}
+                >
+                  <Scissors className="h-4 w-4" />
+                </div>
+                <span className="text-caption font-semibold text-text-primary">
+                  Trim Long (Keep End) / Slow Down Short
+                </span>
+              </div>
+              <span className="text-micro font-mono text-text-muted">Option 1</span>
+            </div>
+            <p className="text-micro text-text-secondary leading-relaxed">
+              <strong>Long clips</strong> are trimmed from the front (retaining climax & ending action at 1.0x). <strong>Short clips</strong> are slowed down to match voice window.
+            </p>
+          </button>
+        </div>
+
+        <div className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-surface-panel/80 border border-border-default text-micro text-text-muted">
+          <Info className="h-3.5 w-3.5 text-accent-primary shrink-0" />
+          <span>
+            <strong>Audio Integrity Guarantee:</strong> In both strategies, speech narration audio speed is never altered, and audio is never trimmed.
+          </span>
         </div>
       </div>
 

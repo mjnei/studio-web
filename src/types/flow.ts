@@ -5,6 +5,8 @@ export type FlowSubStatus = "queued" | "processing" | "completed" | "failed";
 export type VideoResolution = "480p" | "720p" | "1080p" | "1440p";
 export type VideoRatioFormat = "16x9" | "4x3" | "1x1" | "3x4" | "9x16";
 
+export type ClipAlignmentStrategy = "speed_long_slow_short" | "trim_long_slow_short";
+
 export interface FlowJobCreate {
   text_en: string;
   text_zh_cn: string;
@@ -15,6 +17,7 @@ export interface FlowJobCreate {
   speed_ratio?: number;
   resolution?: VideoResolution;
   ratio_format?: VideoRatioFormat;
+  clip_alignment_strategy?: ClipAlignmentStrategy;
   idempotency_key?: string | null;
 }
 
@@ -27,6 +30,7 @@ export interface FlowJobResponse {
   user_id: number | null;
   lifecycle_status: FlowLifecycleStatus;
   current_phase: FlowPhase;
+  clip_alignment_strategy?: ClipAlignmentStrategy | null;
 
   // Per-locale TTS statuses
   tts_en_status: FlowSubStatus;

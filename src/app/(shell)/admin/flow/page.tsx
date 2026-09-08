@@ -17,7 +17,7 @@ import { FlowResultsPreview } from "./components/FlowResultsPreview";
 import { FlowJobHistory } from "./components/FlowJobHistory";
 import { createFlowJob } from "@/lib/api/flow-client";
 import { convertCnToTw, convertTwToCn } from "@/lib/chinese-converter";
-import type { FlowJobResponse, VideoResolution, VideoRatioFormat } from "@/types/flow";
+import type { FlowJobResponse, VideoResolution, VideoRatioFormat, ClipAlignmentStrategy } from "@/types/flow";
 
 export default function FlowAdminPage() {
   const router = useRouter();
@@ -33,6 +33,7 @@ export default function FlowAdminPage() {
   const [speedRatio, setSpeedRatio] = useState(1.0);
   const [resolution, setResolution] = useState<VideoResolution>("720p");
   const [ratioFormat, setRatioFormat] = useState<VideoRatioFormat>("16x9");
+  const [clipAlignmentStrategy, setClipAlignmentStrategy] = useState<ClipAlignmentStrategy>("speed_long_slow_short");
   const [idempotencyKey, setIdempotencyKey] = useState("");
 
   // Submission & Active Job State
@@ -93,6 +94,7 @@ export default function FlowAdminPage() {
         speed_ratio: speedRatio,
         resolution,
         ratio_format: ratioFormat,
+        clip_alignment_strategy: clipAlignmentStrategy,
         idempotency_key: idempotencyKey.trim() || undefined,
       });
 
@@ -181,12 +183,14 @@ export default function FlowAdminPage() {
               speedRatio={speedRatio}
               resolution={resolution}
               ratioFormat={ratioFormat}
+              clipAlignmentStrategy={clipAlignmentStrategy}
               idempotencyKey={idempotencyKey}
               onChangeVoiceId={setVoiceId}
               onChangeIsAnon={setIsAnon}
               onChangeSpeedRatio={setSpeedRatio}
               onChangeResolution={setResolution}
               onChangeRatioFormat={setRatioFormat}
+              onChangeClipAlignmentStrategy={setClipAlignmentStrategy}
               onChangeIdempotencyKey={setIdempotencyKey}
               disabled={isSubmitting}
             />
