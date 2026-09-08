@@ -18,6 +18,7 @@
 
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { vi } from "vitest";
 import { VoiceRecordingCard } from "../voice-recording-card";
 import type { VoiceResponse } from "@/lib/types/api";
 
@@ -49,8 +50,8 @@ const mockVoiceResponse: VoiceResponse = {
  */
 describe("VoiceRecordingCard - Schema Migration", () => {
   test("should display voice name (not title)", () => {
-    const onDelete = jest.fn();
-    const onToggleSharing = jest.fn();
+    const onDelete = vi.fn();
+    const onToggleSharing = vi.fn();
 
     render(
       <VoiceRecordingCard
@@ -65,8 +66,8 @@ describe("VoiceRecordingCard - Schema Migration", () => {
   });
 
   test("should not display description field (removed from new schema)", () => {
-    const onDelete = jest.fn();
-    const onToggleSharing = jest.fn();
+    const onDelete = vi.fn();
+    const onToggleSharing = vi.fn();
 
     // Note: New schema doesn't have description field
     // Component should not attempt to render it
@@ -81,8 +82,8 @@ describe("VoiceRecordingCard - Schema Migration", () => {
   });
 
   test("should display creation date", () => {
-    const onDelete = jest.fn();
-    const onToggleSharing = jest.fn();
+    const onDelete = vi.fn();
+    const onToggleSharing = vi.fn();
 
     render(
       <VoiceRecordingCard
@@ -97,8 +98,8 @@ describe("VoiceRecordingCard - Schema Migration", () => {
   });
 
   test("should display duration", () => {
-    const onDelete = jest.fn();
-    const onToggleSharing = jest.fn();
+    const onDelete = vi.fn();
+    const onToggleSharing = vi.fn();
 
     render(
       <VoiceRecordingCard
@@ -113,8 +114,8 @@ describe("VoiceRecordingCard - Schema Migration", () => {
   });
 
   test("should handle missing duration gracefully", () => {
-    const onDelete = jest.fn();
-    const onToggleSharing = jest.fn();
+    const onDelete = vi.fn();
+    const onToggleSharing = vi.fn();
     const voiceWithoutDuration = {
       ...mockVoiceResponse,
       duration_seconds: undefined,
@@ -145,8 +146,8 @@ describe("VoiceRecordingCard - Schema Migration", () => {
  */
 describe("VoiceRecordingCard - Audio Playback", () => {
   test("should load audio from audio_url attached by hook", async () => {
-    const onDelete = jest.fn();
-    const onToggleSharing = jest.fn();
+    const onDelete = vi.fn();
+    const onToggleSharing = vi.fn();
 
     render(
       <VoiceRecordingCard
@@ -167,8 +168,8 @@ describe("VoiceRecordingCard - Audio Playback", () => {
   });
 
   test("should show loading state while audio is being prepared", async () => {
-    const onDelete = jest.fn();
-    const onToggleSharing = jest.fn();
+    const onDelete = vi.fn();
+    const onToggleSharing = vi.fn();
 
     render(
       <VoiceRecordingCard
@@ -187,10 +188,10 @@ describe("VoiceRecordingCard - Audio Playback", () => {
   });
 
   test("should show error when audio_url is missing", async () => {
-    const onDelete = jest.fn();
-    const onToggleSharing = jest.fn();
+    const onDelete = vi.fn();
+    const onToggleSharing = vi.fn();
     const voiceWithoutAudioUrl = { ...mockVoiceResponse };
-    delete (voiceWithoutAudioUrl as Record<string, unknown>).audio_url;
+    delete (voiceWithoutAudioUrl as unknown as Record<string, unknown>).audio_url;
 
     render(
       <VoiceRecordingCard
@@ -211,8 +212,8 @@ describe("VoiceRecordingCard - Audio Playback", () => {
   });
 
   test("should toggle between play and pause", async () => {
-    const onDelete = jest.fn();
-    const onToggleSharing = jest.fn();
+    const onDelete = vi.fn();
+    const onToggleSharing = vi.fn();
 
     render(
       <VoiceRecordingCard
@@ -245,8 +246,8 @@ describe("VoiceRecordingCard - Audio Playback", () => {
   });
 
   test("should handle audio playback errors", async () => {
-    const onDelete = jest.fn();
-    const onToggleSharing = jest.fn();
+    const onDelete = vi.fn();
+    const onToggleSharing = vi.fn();
     const invalidAudioUrl = {
       ...mockVoiceResponse,
       audio_url: "https://invalid-audio-url.example.com/missing.webm",
@@ -276,14 +277,16 @@ describe("VoiceRecordingCard - Audio Playback", () => {
    * non-empty URL string and valid storage type.
    */
   test("Property 1: Should use valid audio URL from new endpoint", () => {
-    const onDelete = jest.fn();
-    const onToggleSharing = jest.fn();
+    const onDelete = vi.fn();
+    const onToggleSharing = vi.fn();
 
     // Verify that mockVoiceResponse has audio_url from hook
     expect(mockVoiceResponse).toHaveProperty("audio_url");
-    expect(typeof (mockVoiceResponse as Record<string, unknown>).audio_url).toBe("string");
+    expect(typeof (mockVoiceResponse as unknown as Record<string, unknown>).audio_url).toBe(
+      "string"
+    );
     expect(
-      ((mockVoiceResponse as Record<string, unknown>).audio_url as string).length
+      ((mockVoiceResponse as unknown as Record<string, unknown>).audio_url as string).length
     ).toBeGreaterThan(0);
 
     render(
@@ -311,8 +314,8 @@ describe("VoiceRecordingCard - Audio Playback", () => {
  */
 describe("VoiceRecordingCard - Sharing Toggle", () => {
   test("should display Private badge for non-shared voice", () => {
-    const onDelete = jest.fn();
-    const onToggleSharing = jest.fn();
+    const onDelete = vi.fn();
+    const onToggleSharing = vi.fn();
     const privateVoice = { ...mockVoiceResponse, is_shared: false };
 
     render(
@@ -328,8 +331,8 @@ describe("VoiceRecordingCard - Sharing Toggle", () => {
   });
 
   test("should display Shared badge for shared voice", () => {
-    const onDelete = jest.fn();
-    const onToggleSharing = jest.fn();
+    const onDelete = vi.fn();
+    const onToggleSharing = vi.fn();
     const sharedVoice = { ...mockVoiceResponse, is_shared: true };
 
     render(
@@ -345,8 +348,8 @@ describe("VoiceRecordingCard - Sharing Toggle", () => {
   });
 
   test("should call onToggleSharing with correct parameters", async () => {
-    const onDelete = jest.fn();
-    const onToggleSharing = jest.fn().mockResolvedValue(undefined);
+    const onDelete = vi.fn();
+    const onToggleSharing = vi.fn().mockResolvedValue(undefined);
     const privateVoice = { ...mockVoiceResponse, is_shared: false };
 
     render(
@@ -368,8 +371,8 @@ describe("VoiceRecordingCard - Sharing Toggle", () => {
   });
 
   test("should update badge after successful toggle", async () => {
-    const onDelete = jest.fn();
-    const onToggleSharing = jest.fn().mockResolvedValue(undefined);
+    const onDelete = vi.fn();
+    const onToggleSharing = vi.fn().mockResolvedValue(undefined);
     const privateVoice = { ...mockVoiceResponse, is_shared: false };
 
     render(
@@ -394,9 +397,9 @@ describe("VoiceRecordingCard - Sharing Toggle", () => {
   });
 
   test("should show loading state while toggling", async () => {
-    const onDelete = jest.fn();
+    const onDelete = vi.fn();
     let resolveToggle: (() => void) | undefined;
-    const onToggleSharing = jest.fn(
+    const onToggleSharing = vi.fn(
       () =>
         new Promise<void>((resolve) => {
           resolveToggle = resolve;
@@ -423,14 +426,12 @@ describe("VoiceRecordingCard - Sharing Toggle", () => {
     });
 
     // Resolve the toggle
-    resolveToggle();
+    resolveToggle?.();
   });
 
   test("should handle sharing toggle errors", async () => {
-    const onDelete = jest.fn();
-    const onToggleSharing = jest
-      .fn()
-      .mockRejectedValue(new Error("Failed to update sharing status"));
+    const onDelete = vi.fn();
+    const onToggleSharing = vi.fn().mockRejectedValue(new Error("Failed to update sharing status"));
 
     render(
       <VoiceRecordingCard
@@ -456,8 +457,8 @@ describe("VoiceRecordingCard - Sharing Toggle", () => {
    * response should match the requested value.
    */
   test("Property 4: Should update local state to match toggle request", async () => {
-    const onDelete = jest.fn();
-    const onToggleSharing = jest.fn().mockResolvedValue(undefined);
+    const onDelete = vi.fn();
+    const onToggleSharing = vi.fn().mockResolvedValue(undefined);
     const privateVoice = { ...mockVoiceResponse, is_shared: false };
 
     render(
@@ -484,9 +485,9 @@ describe("VoiceRecordingCard - Sharing Toggle", () => {
   });
 
   test("should call onSharingToggled callback after successful toggle", async () => {
-    const onDelete = jest.fn();
-    const onToggleSharing = jest.fn().mockResolvedValue(undefined);
-    const onSharingToggled = jest.fn();
+    const onDelete = vi.fn();
+    const onToggleSharing = vi.fn().mockResolvedValue(undefined);
+    const onSharingToggled = vi.fn();
 
     render(
       <VoiceRecordingCard
@@ -516,8 +517,8 @@ describe("VoiceRecordingCard - Sharing Toggle", () => {
  */
 describe("VoiceRecordingCard - Delete Voice", () => {
   test("should show delete confirmation modal", async () => {
-    const onDelete = jest.fn();
-    const onToggleSharing = jest.fn();
+    const onDelete = vi.fn();
+    const onToggleSharing = vi.fn();
 
     render(
       <VoiceRecordingCard
@@ -538,8 +539,8 @@ describe("VoiceRecordingCard - Delete Voice", () => {
   });
 
   test("should call onDelete when confirmed", async () => {
-    const onDelete = jest.fn().mockResolvedValue(undefined);
-    const onToggleSharing = jest.fn();
+    const onDelete = vi.fn().mockResolvedValue(undefined);
+    const onToggleSharing = vi.fn();
 
     render(
       <VoiceRecordingCard
@@ -569,8 +570,8 @@ describe("VoiceRecordingCard - Delete Voice", () => {
   });
 
   test("should handle delete errors", async () => {
-    const onDelete = jest.fn().mockRejectedValue(new Error("Failed to delete voice"));
-    const onToggleSharing = jest.fn();
+    const onDelete = vi.fn().mockRejectedValue(new Error("Failed to delete voice"));
+    const onToggleSharing = vi.fn();
 
     render(
       <VoiceRecordingCard
@@ -617,8 +618,8 @@ describe("VoiceRecordingCard - Community Voice Features", () => {
    * Use `is_approved` flag for approval indicator
    */
   test("should display 🔒 Private badge for non-shared voice", () => {
-    const onDelete = jest.fn();
-    const onToggleSharing = jest.fn();
+    const onDelete = vi.fn();
+    const onToggleSharing = vi.fn();
     const privateVoice = {
       ...mockVoiceResponse,
       is_shared: false,
@@ -638,8 +639,8 @@ describe("VoiceRecordingCard - Community Voice Features", () => {
   });
 
   test("should display ⏳ Pending Approval badge for shared but not approved voice", () => {
-    const onDelete = jest.fn();
-    const onToggleSharing = jest.fn();
+    const onDelete = vi.fn();
+    const onToggleSharing = vi.fn();
     const pendingVoice = {
       ...mockVoiceResponse,
       is_shared: true,
@@ -659,8 +660,8 @@ describe("VoiceRecordingCard - Community Voice Features", () => {
   });
 
   test("should display ✅ Community badge for approved shared voice", () => {
-    const onDelete = jest.fn();
-    const onToggleSharing = jest.fn();
+    const onDelete = vi.fn();
+    const onToggleSharing = vi.fn();
     const approvedVoice = {
       ...mockVoiceResponse,
       is_shared: true,
@@ -682,8 +683,8 @@ describe("VoiceRecordingCard - Community Voice Features", () => {
   });
 
   test("should display ✅ Community badge without date if admin_approved_at is null", () => {
-    const onDelete = jest.fn();
-    const onToggleSharing = jest.fn();
+    const onDelete = vi.fn();
+    const onToggleSharing = vi.fn();
     const approvedVoiceNoDate = {
       ...mockVoiceResponse,
       is_shared: true,
@@ -710,8 +711,8 @@ describe("VoiceRecordingCard - Community Voice Features", () => {
    * Handle null/undefined values gracefully
    */
   test("should display language when present", () => {
-    const onDelete = jest.fn();
-    const onToggleSharing = jest.fn();
+    const onDelete = vi.fn();
+    const onToggleSharing = vi.fn();
     const voiceWithLanguage = {
       ...mockVoiceResponse,
       language: "en",
@@ -730,8 +731,8 @@ describe("VoiceRecordingCard - Community Voice Features", () => {
   });
 
   test("should display multiple language codes correctly", () => {
-    const onDelete = jest.fn();
-    const onToggleSharing = jest.fn();
+    const onDelete = vi.fn();
+    const onToggleSharing = vi.fn();
 
     const languages = [
       { code: "es", display: "Spanish" },
@@ -756,8 +757,8 @@ describe("VoiceRecordingCard - Community Voice Features", () => {
   });
 
   test("should not display language badge when language is null", () => {
-    const onDelete = jest.fn();
-    const onToggleSharing = jest.fn();
+    const onDelete = vi.fn();
+    const onToggleSharing = vi.fn();
     const voiceNoLanguage = {
       ...mockVoiceResponse,
       language: null,
@@ -779,8 +780,8 @@ describe("VoiceRecordingCard - Community Voice Features", () => {
   });
 
   test("should not display language badge when language is undefined", () => {
-    const onDelete = jest.fn();
-    const onToggleSharing = jest.fn();
+    const onDelete = vi.fn();
+    const onToggleSharing = vi.fn();
     const voiceUndefinedLanguage = {
       ...mockVoiceResponse,
       language: undefined,
@@ -809,8 +810,8 @@ describe("VoiceRecordingCard - Community Voice Features", () => {
    * returned by `listVoices()` or in available voices.
    */
   test("should display all voice information for approved community voice", () => {
-    const onDelete = jest.fn();
-    const onToggleSharing = jest.fn();
+    const onDelete = vi.fn();
+    const onToggleSharing = vi.fn();
     const communityVoice = {
       id: 42,
       user_id: 5,
@@ -851,8 +852,8 @@ describe("VoiceRecordingCard - Community Voice Features", () => {
   });
 
   test("should allow toggling a private voice to pending approval state", async () => {
-    const onDelete = jest.fn();
-    const onToggleSharing = jest.fn().mockResolvedValue(undefined);
+    const onDelete = vi.fn();
+    const onToggleSharing = vi.fn().mockResolvedValue(undefined);
     const privateVoice = {
       ...mockVoiceResponse,
       is_shared: false,
@@ -881,8 +882,8 @@ describe("VoiceRecordingCard - Community Voice Features", () => {
   });
 
   test("Property 6: Component should be able to render soft-deleted voices (filtering is parent responsibility)", () => {
-    const onDelete = jest.fn();
-    const onToggleSharing = jest.fn();
+    const onDelete = vi.fn();
+    const onToggleSharing = vi.fn();
     const deletedVoice = {
       ...mockVoiceResponse,
       is_deleted: true,
@@ -911,8 +912,8 @@ describe("VoiceRecordingCard - Community Voice Features", () => {
  */
 describe("VoiceRecordingCard - Type Safety", () => {
   test("should accept VoiceResponse type", () => {
-    const onDelete = jest.fn();
-    const onToggleSharing = jest.fn();
+    const onDelete = vi.fn();
+    const onToggleSharing = vi.fn();
 
     // This test verifies the component accepts VoiceResponse
     // TypeScript compilation will verify this

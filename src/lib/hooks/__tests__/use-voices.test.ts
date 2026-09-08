@@ -14,15 +14,17 @@
  * **Property 1: Audio URL Retrieval Consistency**
  */
 
+import { vi } from "vitest";
+
 /**
  * Mock voice-client module
  */
 const mockVoiceClient = {
-  listVoices: jest.fn(),
-  getVoiceAudioUrl: jest.fn(),
-  uploadVoice: jest.fn(),
-  deleteVoice: jest.fn(),
-  toggleVoiceSharing: jest.fn(),
+  listVoices: vi.fn(),
+  getVoiceAudioUrl: vi.fn(),
+  uploadVoice: vi.fn(),
+  deleteVoice: vi.fn(),
+  toggleVoiceSharing: vi.fn(),
 };
 
 /**
