@@ -74,7 +74,7 @@ export function FlowConfigForm({
   const filteredVoices = voices.filter(
     (v) =>
       v.name.toLowerCase().includes(voiceSearch.toLowerCase()) ||
-      v.language.toLowerCase().includes(voiceSearch.toLowerCase())
+      (v.language?.toLowerCase().includes(voiceSearch.toLowerCase()) ?? false)
   );
 
   return (
