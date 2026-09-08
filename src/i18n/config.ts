@@ -38,9 +38,14 @@ const LOCALE_BY_LOWER = new Map<string, Locale>(
   locales.map((locale) => [locale.toLowerCase(), locale])
 );
 
-/** Input aliases → canonical locale (aligned with backend LOCALE_ALIASES). */
+/**
+ * Input aliases → canonical locale (aligned with backend LOCALE_ALIASES).
+ * Script tags are accepted as input only; output is always zh-CN / zh-TW.
+ */
 const LOCALE_ALIASES: Record<string, Locale> = {
   zh: "zh-CN",
+  "zh-hans": "zh-CN",
+  "zh-hant": "zh-TW",
   "en-us": "en",
   "en-gb": "en",
 };
@@ -48,7 +53,7 @@ const LOCALE_ALIASES: Record<string, Locale> = {
 /**
  * Normalize any locale input to a supported locale.
  * Mirrors backend `normalize_locale()` but returns null when unrecognized.
- * Script tags (zh-Hans / zh-Hant) are not accepted — use zh-CN / zh-TW.
+ * Script-tag inputs map to regional codes: zh-Hans → zh-CN, zh-Hant → zh-TW.
  */
 export function normalizeLocale(input: string | null | undefined): Locale | null {
   if (!input?.trim()) return null;
@@ -71,7 +76,6 @@ export function normalizeLocale(input: string | null | undefined): Locale | null
   }
 
   // Regional variants of single-tag locales only (e.g. en-US → en).
-  // Multi-tag Chinese forms like zh-Hans / zh-Hant are not accepted.
   const language = lower.split("-")[0];
   if (language === "zh") {
     return null;

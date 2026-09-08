@@ -53,6 +53,8 @@ function isKnownLocaleToken(token: string): boolean {
   // Aliases aligned with backend LOCALE_ALIASES
   const aliases: Record<string, Locale> = {
     zh: "zh-CN",
+    "zh-hans": "zh-CN",
+    "zh-hant": "zh-TW",
     "en-us": "en",
     "en-gb": "en",
   };
